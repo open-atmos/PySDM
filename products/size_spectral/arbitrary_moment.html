@@ -54,6 +54,8 @@ def make_arbitrary_moment_product(**kwargs):
     return ArbitraryMoment
 
 
+ZerothMoment = make_arbitrary_moment_product(rank=0, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
+
 VolumeFirstMoment = make_arbitrary_moment_product(
     rank=1, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;
 )
@@ -105,6 +107,38 @@ RadiusFirstMoment = make_arbitrary_moment_product(rank=1, attr=&#34;radius&#34;,
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="PySDM.products.size_spectral.arbitrary_moment.make_arbitrary_moment_product.<locals>.ArbitraryMoment"><code class="flex name class">
+<span>class <span class="ident">ZerothMoment</span></span>
+<span>(</span><span>name=None, unit='(m^3)**0')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ArbitraryMoment(MomentProduct):
+    def __init__(
+        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+    ):
+        super().__init__(name=name, unit=unit)
+        self.attr = kwargs[&#34;attr&#34;]
+        self.rank = kwargs[&#34;rank&#34;]
+
+    def _impl(self, **kwargs):
+        self._download_moment_to_buffer(
+            attr=self.attr, rank=self.rank, skip_division_by_m0=True
+        )
+        return self.buffer</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+<li>abc.ABC</li>
+</ul>
+</dd>
 <dt id="PySDM.products.size_spectral.arbitrary_moment.make_arbitrary_moment_product.<locals>.ArbitraryMoment"><code class="flex name class">
 <span>class <span class="ident">VolumeFirstMoment</span></span>
 <span>(</span><span>name=None, unit='(m^3)**1')</span>
@@ -230,6 +264,9 @@ inheritance.</p></div>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="PySDM.products.size_spectral.arbitrary_moment.make_arbitrary_moment_product.<locals>.ArbitraryMoment" href="#PySDM.products.size_spectral.arbitrary_moment.make_arbitrary_moment_product.<locals>.ArbitraryMoment">make_arbitrary_moment_product.<locals>.ArbitraryMoment</a></code></h4>
+</li>
 <li>
 <h4><code><a title="PySDM.products.size_spectral.arbitrary_moment.make_arbitrary_moment_product.<locals>.ArbitraryMoment" href="#PySDM.products.size_spectral.arbitrary_moment.make_arbitrary_moment_product.<locals>.ArbitraryMoment">make_arbitrary_moment_product.<locals>.ArbitraryMoment</a></code></h4>
 </li>

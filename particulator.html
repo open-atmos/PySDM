@@ -334,6 +334,17 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
+        &#34;&#34;&#34;
+        Writes to `moment_0` and `moment` the zero-th and the k-th statistical moments
+        of particle attributes computed filtering by value of the attribute `attr_name`
+        to fall within `attr_range`. The moment ranks are defined by `specs`.
+
+        Parameters:
+            specs: e.g., `specs={&#39;volume&#39;: (1,2,3), &#39;kappa&#39;: (1)}` computes three moments
+                of volume and one moment of kappa
+            skip_division_by_m0: if set to `True`, the values written to `moments` are
+                multiplied by the 0-th moment (e.g., total volume instead of mean volume)
+        &#34;&#34;&#34;
         if len(specs) == 0:
             raise ValueError(&#34;empty specs passed&#34;)
         attr_data, ranks = [], []
@@ -758,6 +769,17 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
+        &#34;&#34;&#34;
+        Writes to `moment_0` and `moment` the zero-th and the k-th statistical moments
+        of particle attributes computed filtering by value of the attribute `attr_name`
+        to fall within `attr_range`. The moment ranks are defined by `specs`.
+
+        Parameters:
+            specs: e.g., `specs={&#39;volume&#39;: (1,2,3), &#39;kappa&#39;: (1)}` computes three moments
+                of volume and one moment of kappa
+            skip_division_by_m0: if set to `True`, the values written to `moments` are
+                multiplied by the 0-th moment (e.g., total volume instead of mean volume)
+        &#34;&#34;&#34;
         if len(specs) == 0:
             raise ValueError(&#34;empty specs passed&#34;)
         attr_data, ranks = [], []
@@ -1193,7 +1215,14 @@ def n_sd(self) -&gt; int:
 <span>def <span class="ident">moments</span></span>(<span>self, *, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0, skip_division_by_m0=False)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Writes to <code>moment_0</code> and <code>moment</code> the zero-th and the k-th statistical moments
+of particle attributes computed filtering by value of the attribute <code>attr_name</code>
+to fall within <code>attr_range</code>. The moment ranks are defined by <code>specs</code>.</p>
+<h2 id="parameters">Parameters</h2>
+<p>specs: e.g., <code>specs={'volume': (1,2,3), 'kappa': (1)}</code> computes three moments
+of volume and one moment of kappa
+skip_division_by_m0: if set to <code>True</code>, the values written to <code>moments</code> are
+multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1210,6 +1239,17 @@ def n_sd(self) -&gt; int:
     weighting_rank=0,
     skip_division_by_m0=False,
 ):
+    &#34;&#34;&#34;
+    Writes to `moment_0` and `moment` the zero-th and the k-th statistical moments
+    of particle attributes computed filtering by value of the attribute `attr_name`
+    to fall within `attr_range`. The moment ranks are defined by `specs`.
+
+    Parameters:
+        specs: e.g., `specs={&#39;volume&#39;: (1,2,3), &#39;kappa&#39;: (1)}` computes three moments
+            of volume and one moment of kappa
+        skip_division_by_m0: if set to `True`, the values written to `moments` are
+            multiplied by the 0-th moment (e.g., total volume instead of mean volume)
+    &#34;&#34;&#34;
     if len(specs) == 0:
         raise ValueError(&#34;empty specs passed&#34;)
     attr_data, ranks = [], []
