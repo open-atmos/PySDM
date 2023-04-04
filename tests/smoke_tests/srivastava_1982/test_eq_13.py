@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
 from matplotlib import pyplot
@@ -13,20 +14,15 @@ from PySDM.physics import si
 @pytest.mark.parametrize(
     "title, c, beta, frag_mass, n_sds",
     (
-        ("merging only", 0.5e-6 / si.s, 1e-15 / si.s, -1 * si.g, (8, 32, 128, 256)),
-        ("breakup only", 1e-15 / si.s, 1e-9 / si.s, 0.25 * si.g, (8, 32, 128, 256)),
-        (
-            "merge + break",
-            0.5e-6 / si.s,
-            1e-9 / si.s,
-            0.25 * si.g,
-            [2**power for power in range(8, 12)],
-        ),
+        ("merging only", 0.5e-6 / si.s, 1e-15 / si.s, -1 * si.g, (8, 64)),
+        ("breakup only", 1e-15 / si.s, 1e-9 / si.s, 0.25 * si.g, (64, 256)),
+        ("merge + break", 0.5e-6 / si.s, 1e-9 / si.s, 0.25 * si.g, (2**10, 2**12)),
     ),
 )
 def test_pysdm_coalescence_and_breakup_is_close_to_analytic_coalescence_and_breakup(
-    title, c, beta, frag_mass, n_sds, plot=True
+    title, c, beta, frag_mass, n_sds, plot=False  # TODO #987 (backend_class: CPU, GPU)
 ):
+    n_steps = 256
     settings = Settings(
         srivastava_c=c,
         srivastava_beta=beta,
@@ -38,7 +34,7 @@ def test_pysdm_coalescence_and_breakup_is_close_to_analytic_coalescence_and_brea
         total_number=1e6,
     )
     results = coalescence_and_breakup_eq13(
-        settings, n_steps=256, n_realisations=5, title=title
+        settings, n_steps=n_steps, n_realisations=5, title=title
     )
 
     if plot:
@@ -50,4 +46,19 @@ def test_pysdm_coalescence_and_breakup_is_close_to_analytic_coalescence_and_brea
         actual=results.pysdm[settings.n_sds[-1]][assert_prod]["avg"],
         desired=results.analytic[assert_prod],
         rtol=2e-1,
+    )
+    assert np.mean(results.pysdm[settings.n_sds[-1]][assert_prod]["std"]) < np.mean(
+        results.pysdm[settings.n_sds[0]][assert_prod]["std"]
+    )
+
+    assert np.mean(
+        np.abs(
+            results.pysdm[settings.n_sds[-1]][assert_prod]["avg"]
+            - results.analytic[assert_prod]
+        )
+    ) < np.mean(
+        np.abs(
+            results.pysdm[settings.n_sds[0]][assert_prod]["avg"]
+            - results.analytic[assert_prod]
+        )
     )

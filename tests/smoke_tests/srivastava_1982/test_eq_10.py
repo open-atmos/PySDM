@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Srivastava_1982.equations import Equations, EquationsHelpers
@@ -16,10 +17,12 @@ from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.physics import si
 
 
-def test_pysdm_coalescence_is_close_to_analytic_coalescence(plot=False):
+def test_pysdm_coalescence_is_close_to_analytic_coalescence(
+    plot=False,
+):  # TODO #987 (backend_class: CPU, GPU)
     # arrange
-    n_steps = 10
-    n_realisations = 2
+    n_steps = 32
+    n_realisations = 5
     seeds = [i for i in range(n_realisations)]
 
     settings = Settings(
@@ -28,7 +31,7 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(plot=False):
         drop_mass_0=1 * si.g,
         dt=1 * si.s,
         dv=1 * si.m**3,
-        n_sds=[2**power for power in range(3, 14, 3)],
+        n_sds=(16, 128),
         total_number=1e6,
     )
 
@@ -91,4 +94,19 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(plot=False):
         actual=pysdm_results[settings.n_sds[-1]][assert_prod]["avg"],
         desired=analytic_results[assert_prod],
         rtol=2e-1,
+    )
+    assert np.mean(pysdm_results[settings.n_sds[-1]][assert_prod]["std"]) < np.mean(
+        pysdm_results[settings.n_sds[0]][assert_prod]["std"]
+    )
+
+    assert np.mean(
+        np.abs(
+            pysdm_results[settings.n_sds[-1]][assert_prod]["avg"]
+            - analytic_results[assert_prod]
+        )
+    ) < np.mean(
+        np.abs(
+            pysdm_results[settings.n_sds[0]][assert_prod]["avg"]
+            - analytic_results[assert_prod]
+        )
     )
