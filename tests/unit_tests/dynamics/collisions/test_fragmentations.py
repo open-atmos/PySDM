@@ -3,9 +3,11 @@ import numpy as np
 import pytest
 
 from PySDM import Builder, Formulae
+from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
+    ConstantSize,
     ExponFrag,
     Feingold1988Frag,
     Gaussian,
@@ -217,3 +219,54 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         np.testing.assert_array_less(
             [((6660.0 + 440.0) / 2 - 1) * si.um**3], frag_size.to_ndarray()
         )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "fragmentation_fn, volume, expected_nf",
+        (
+            (
+                ConstantSize(c=4 * si.um**3),
+                np.asarray([400.0 * si.um**3, 600.0 * si.um**3]),
+                250,
+            ),
+            (AlwaysN(n=250), np.asarray([400.0 * si.um**3, 600.0 * si.um**3]), 250),
+        ),
+    )
+    def test_fragmentation_nf_and_frag_size_equals(  # TODO #987
+        fragmentation_fn,
+        volume,
+        expected_nf,
+        backend_class=CPU,  # pylint:disable=redefined-outer-name
+    ):
+        # arrange
+        expected_frag_size = np.sum(volume) / expected_nf
+
+        fragments = np.asarray([-1.0])
+        builder = Builder(
+            volume.size,
+            backend_class(
+                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+            ),
+        )
+        sut = fragmentation_fn
+        sut.vmin = 1 * si.um**3
+        sut.register(builder)
+        builder.set_environment(Box(dv=None, dt=None))
+        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+
+        _PairwiseStorage = builder.particulator.PairwiseStorage
+        _Indicator = builder.particulator.PairIndicator
+        nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+        frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+        is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+
+        # act
+        sut(nf, frag_size, u01, is_first_in_pair)
+
+        # Assert
+        np.testing.assert_array_equal(nf.to_ndarray(), expected_nf)
+        np.testing.assert_array_equal([expected_frag_size], frag_size.to_ndarray())
