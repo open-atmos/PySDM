@@ -528,7 +528,7 @@ class CollisionsMethods(
             ),
             name_iter="i",
             body="""
-            frag_size[i] = max(frag_size[i], vmin);
+            frag_size[i] = min(frag_size[i], x_plus_y[i])
 
             if (nfmax_is_not_none) {
                 if (x_plus_y[i] / frag_size[i] > nfmax) {
@@ -631,7 +631,7 @@ class CollisionsMethods(
                 auto mu2, sigma2 = {self.formulae.fragmentation_function.params_p2.c_inline(CW="CW[i]")};
                 auto mu3, sigma3 = {self.formulae.fragmentation_function.params_p3.c_inline(CW="CW[i]", ds="ds[i]")};
                 auto M31, M32, M33, M34, d34 = {self.formulae.fragmentation_function.params_p4.c_inline(
-                    v_max="v_max[i]",
+                    vl="v_max[i]",
                     ds="ds[i]",
                     mu1="mu1",
                     sigma1="sigma1",
@@ -639,9 +639,9 @@ class CollisionsMethods(
                     sigma2="sigma2",
                     mu3="mu3",
                     sigma3="sigma3",
-                    Nr1="Nr1[i]",
-                    Nr2="Nr2[i]",
-                    Nr3="Nr3[i]",
+                    N1="Nr1[i]",
+                    N2="Nr2[i]",
+                    N3="Nr3[i]",
                 )};
                 Nr1[i] = Nr1[i] * M31;
                 Nr2[i] = Nr2[i] * M32;
@@ -651,21 +651,21 @@ class CollisionsMethods(
 
                 if (rand[i] < Nr1[i] / Nrt[i]) {{
                     auto X = rand[i] * Nrt[i] / Nr1[i];
-                    auto lnarg = mu1[i] + sqrt(2.0) * sigma1 * {self.formulae.fragmentation_function.erfinv.c_inline(
-                        X="X"
+                    auto lnarg = mu1[i] + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
+                        c="X"
                     )};
                     frag_size[i] = expf(lnarg);
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i],
-                    frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.fragmentation_function.erfinv.c_inline(
-                        X="X"
+                    frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
+                        c="X"
                     )};
                 }}
                 else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
-                    frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.fragmentation_function.erfinv.c_inline(
-                        X="X"
+                    frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
+                        c="X"
                     )};
                 }}
                 else {{

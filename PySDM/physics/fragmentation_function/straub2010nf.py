@@ -29,16 +29,15 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def params_p2(const, CW):
-        mu2 = const.STRAUB_MU2
-        deltaD2 = 7 * (CW - 21) / 1000 * const.CM
+        deltaD2 = 7 * (CW - 21) * const.CM / 1000
         deltaD2 = max(0.0, deltaD2)
         sigma2 = deltaD2 / np.sqrt(12)
-        return (mu2, sigma2)
+        return (const.STRAUB_MU2, sigma2)
 
     @staticmethod
     def params_p3(const, CW, ds):
         mu3 = 0.9 * ds
-        deltaD3 = (1 + 0.76 * np.sqrt(CW)) / 100 * const.CM
+        deltaD3 = (1 + 0.76 * np.sqrt(CW)) * const.CM / 100
         sigma3 = deltaD3 / np.sqrt(12)
         return (mu3, sigma3)
 

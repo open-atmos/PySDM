@@ -10,6 +10,7 @@ from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
+    ConstantSize,
     ExponFrag,
     Feingold1988Frag,
     Gaussian,
