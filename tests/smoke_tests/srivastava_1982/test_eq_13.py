@@ -10,29 +10,41 @@ from PySDM_examples.Srivastava_1982 import (
 
 from PySDM.physics import si
 
+COMMON_PARAMS = {
+  'drop_mass_0': 1 * si.g,
+  'dt': 1 * si.s,
+  'dv': 1 * si.m ** 3,
+  'total_number': 1e6,
+}
 
 @pytest.mark.parametrize(
-    "title, c, beta, frag_mass, n_sds",
+    "title, settings",
     (
-        ("merging only", 0.5e-6 / si.s, 1e-15 / si.s, -1 * si.g, (8, 64)),
-        ("breakup only", 1e-15 / si.s, 1e-9 / si.s, 0.25 * si.g, (64, 256)),
-        ("merge + break", 0.5e-6 / si.s, 1e-9 / si.s, 0.25 * si.g, (2**10, 2**12)),
+        ("merging only", Settings(
+             srivastava_c=0.5e-6 / si.s,
+             srivastava_beta=1e-15 / si.s,
+             frag_mass=-1 * si.g,
+             n_sds=(8, 64),
+             **COMMON_PARAMS
+        )),
+        ("breakup only", Settings(
+            srivastava_c=1e-15 / si.s,
+            srivastava_beta=1e-9 / si.s,
+            frag_mass=0.25 * si.g,
+            n_sds=(64, 256)
+        )),
+        ("merge + break", Settings(
+            srivastava_c=0.5e-6 / si.s,
+            srivastava_beta=1e-9 / si.s,
+            frag_mass=0.25 * si.g,
+            n_sds=(2**10, 2**12)
+        )),
     ),
 )
 def test_pysdm_coalescence_and_breakup_is_close_to_analytic_coalescence_and_breakup(
-    title, c, beta, frag_mass, n_sds, plot=False  # TODO #987 (backend_class: CPU, GPU)
+    title, settings, plot=False  # TODO #987 (backend_class: CPU, GPU)
 ):
     n_steps = 256
-    settings = Settings(
-        srivastava_c=c,
-        srivastava_beta=beta,
-        frag_mass=frag_mass,
-        drop_mass_0=1 * si.g,
-        dt=1 * si.s,
-        dv=1 * si.m**3,
-        n_sds=n_sds,
-        total_number=1e6,
-    )
     results = coalescence_and_breakup_eq13(
         settings, n_steps=n_steps, n_realisations=5, title=title
     )
