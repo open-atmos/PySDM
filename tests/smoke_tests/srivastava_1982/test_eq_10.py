@@ -16,15 +16,16 @@ from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.physics import si
 
+ASSERT_PROD = SimProducts.Computed.mean_drop_volume_total_volume_ratio.name
+N_STEPS = 32
+N_REALISATIONS = 5
+SEEDS = list(range(N_REALISATIONS))
+
 
 def test_pysdm_coalescence_is_close_to_analytic_coalescence(
     plot=False,
 ):  # TODO #987 (backend_class: CPU, GPU)
     # arrange
-    n_steps = 32
-    n_realisations = 5
-    seeds = [i for i in range(n_realisations)]
-
     settings = Settings(
         srivastava_c=0.5e-6 / si.s,
         frag_mass=-1 * si.g,
@@ -36,14 +37,14 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(
     )
 
     simulation = Simulation(
-        n_steps=n_steps,
+        n_steps=N_STEPS,
         settings=settings,
         collision_dynamic=Coalescence(
             collision_kernel=ConstantK(a=settings.srivastava_c)
         ),
     )
 
-    x = np.arange(n_steps + 1, dtype=float)
+    x = np.arange(N_STEPS + 1, dtype=float)
 
     equations = Equations(
         M=settings.total_volume * settings.rho / settings.frag_mass,
@@ -63,7 +64,7 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(
     )
 
     # act
-    sim_products = simulation.run(x, seeds=seeds)
+    sim_products = simulation.run(x, seeds=SEEDS)
     secondary_products = get_pysdm_secondary_products(
         products=sim_products, total_volume=settings.total_volume
     )
@@ -89,24 +90,23 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(
         pyplot.show()
 
     # assert
-    assert_prod = SimProducts.Computed.mean_drop_volume_total_volume_ratio.name
     np.testing.assert_allclose(
-        actual=pysdm_results[settings.n_sds[-1]][assert_prod]["avg"],
-        desired=analytic_results[assert_prod],
+        actual=pysdm_results[settings.n_sds[-1]][ASSERT_PROD]["avg"],
+        desired=analytic_results[ASSERT_PROD],
         rtol=2e-1,
     )
-    assert np.mean(pysdm_results[settings.n_sds[-1]][assert_prod]["std"]) < np.mean(
-        pysdm_results[settings.n_sds[0]][assert_prod]["std"]
+    assert np.mean(pysdm_results[settings.n_sds[-1]][ASSERT_PROD]["std"]) < np.mean(
+        pysdm_results[settings.n_sds[0]][ASSERT_PROD]["std"]
     )
 
     assert np.mean(
         np.abs(
-            pysdm_results[settings.n_sds[-1]][assert_prod]["avg"]
-            - analytic_results[assert_prod]
+            pysdm_results[settings.n_sds[-1]][ASSERT_PROD]["avg"]
+            - analytic_results[ASSERT_PROD]
         )
     ) < np.mean(
         np.abs(
-            pysdm_results[settings.n_sds[0]][assert_prod]["avg"]
-            - analytic_results[assert_prod]
+            pysdm_results[settings.n_sds[0]][ASSERT_PROD]["avg"]
+            - analytic_results[ASSERT_PROD]
         )
     )
