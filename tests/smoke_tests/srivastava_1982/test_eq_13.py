@@ -11,34 +11,44 @@ from PySDM_examples.Srivastava_1982 import (
 from PySDM.physics import si
 
 COMMON_PARAMS = {
-  'drop_mass_0': 1 * si.g,
-  'dt': 1 * si.s,
-  'dv': 1 * si.m ** 3,
-  'total_number': 1e6,
+    "drop_mass_0": 1 * si.g,
+    "dt": 1 * si.s,
+    "dv": 1 * si.m**3,
+    "total_number": 1e6,
 }
+
 
 @pytest.mark.parametrize(
     "title, settings",
     (
-        ("merging only", Settings(
-             srivastava_c=0.5e-6 / si.s,
-             srivastava_beta=1e-15 / si.s,
-             frag_mass=-1 * si.g,
-             n_sds=(8, 64),
-             **COMMON_PARAMS
-        )),
-        ("breakup only", Settings(
-            srivastava_c=1e-15 / si.s,
-            srivastava_beta=1e-9 / si.s,
-            frag_mass=0.25 * si.g,
-            n_sds=(64, 256)
-        )),
-        ("merge + break", Settings(
-            srivastava_c=0.5e-6 / si.s,
-            srivastava_beta=1e-9 / si.s,
-            frag_mass=0.25 * si.g,
-            n_sds=(2**10, 2**12)
-        )),
+        (
+            "merging only",
+            Settings(
+                srivastava_c=0.5e-6 / si.s,
+                srivastava_beta=1e-15 / si.s,
+                frag_mass=-1 * si.g,
+                n_sds=(8, 64),
+                **COMMON_PARAMS
+            ),
+        ),
+        (
+            "breakup only",
+            Settings(
+                srivastava_c=1e-15 / si.s,
+                srivastava_beta=1e-9 / si.s,
+                frag_mass=0.25 * si.g,
+                n_sds=(64, 256),
+            ),
+        ),
+        (
+            "merge + break",
+            Settings(
+                srivastava_c=0.5e-6 / si.s,
+                srivastava_beta=1e-9 / si.s,
+                frag_mass=0.25 * si.g,
+                n_sds=(2**10, 2**12),
+            ),
+        ),
     ),
 )
 def test_pysdm_coalescence_and_breakup_is_close_to_analytic_coalescence_and_breakup(
