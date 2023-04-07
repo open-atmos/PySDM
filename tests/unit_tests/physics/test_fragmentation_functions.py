@@ -7,63 +7,70 @@ from PySDM.physics.constants import si
 
 class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
     @staticmethod
-    def test_straub_p1():
+    def test_straub_sigma1():
         # arrange
         formulae = Formulae(fragmentation_function="Straub2010Nf")
 
         # act
-        params = formulae.fragmentation_function.params_p1(CW=30.0)
+        params = formulae.fragmentation_function.params_sigma1(CW=30.0)
 
         # assert
-        np.testing.assert_array_almost_equal(params, [-7.933269, 0.467381])
+        np.testing.assert_array_almost_equal(params, [0.467381])
 
     @staticmethod
-    def test_straub_p2():
+    def test_straub_mu1():
         # arrange
         formulae = Formulae(fragmentation_function="Straub2010Nf")
 
         # act
-        params = formulae.fragmentation_function.params_p2(CW=30.0)
+        params = formulae.fragmentation_function.params_mu1(sigma1=0.467381)
 
         # assert
-        np.testing.assert_array_almost_equal(params, [0.00095, 0.000182])
+        np.testing.assert_array_almost_equal(params, [-7.933269])
 
     @staticmethod
-    def test_straub_p3():
+    def test_straub_sigma2():
         # arrange
         formulae = Formulae(fragmentation_function="Straub2010Nf")
 
         # act
-        params = formulae.fragmentation_function.params_p3(CW=30.0, ds=0.18 * si.cm)
+        params = formulae.fragmentation_function.params_sigma2(CW=30.0)
 
         # assert
-        np.testing.assert_array_almost_equal(params, [0.00162, 0.000149])
+        np.testing.assert_array_almost_equal(params, [0.000182])
 
     @staticmethod
-    def test_straub_p4():
+    def test_straub_mu2():
         # arrange
         formulae = Formulae(fragmentation_function="Straub2010Nf")
 
         # act
-        params = formulae.fragmentation_function.params_p4(
-            vl=(0.36 * si.cm) ** 3 * np.pi / 6,
-            ds=0.18 * si.cm,
-            mu1=-7.933269,
-            sigma1=0.467381,
-            mu2=0.00095,
-            sigma2=0.000182,
-            mu3=0.00162,
-            sigma3=0.000149,
-            N1=2.0,
-            N2=1.0,
-            N3=1.0,
-        )
+        params = formulae.fragmentation_function.params_mu2(ds=0.0)
 
         # assert
-        np.testing.assert_array_almost_equal(
-            params,
-            [2.465004e-10, 9.517784e-10, 4.359425e-09, 4.693030e-08, 3.607041e-03],
-        )
+        np.testing.assert_array_almost_equal(params, [0.00095])
+
+    @staticmethod
+    def test_straub_sigma3():
+        # arrange
+        formulae = Formulae(fragmentation_function="Straub2010Nf")
+
+        # act
+        params = formulae.fragmentation_function.params_sigma3(CW=30.0)
+
+        # assert
+        np.testing.assert_array_almost_equal(params, [0.000149])
+
+    @staticmethod
+    def test_straub_mu3():
+        # arrange
+        formulae = Formulae(fragmentation_function="Straub2010Nf")
+
+        # act
+        params = formulae.fragmentation_function.params_mu3(ds=0.18 * si.cm)
+
+        # assert
+        np.testing.assert_array_almost_equal(params, [0.00162])
 
     @staticmethod
     def test_ll82_pf1():
