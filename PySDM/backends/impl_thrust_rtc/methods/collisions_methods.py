@@ -609,6 +609,20 @@ class CollisionsMethods(
                 Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
         """
 
+        self.__straub_mass_remainder = """
+                Nr1[i] = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.0) / 2);
+                Nr2[i] = Nr2[i] * (pow(mu2, 3.0) + 3 * mu2 * pow(sigma2, 2.0));
+                Nr3[i] = Nr3[i] * (pow(mu3, 3.0) + 3 * mu3 * pow(sigma3, 2.0));
+                Nr4[i] = v_max[i] * 6.0 / 3.141592654 + pow(ds[i], 3.0) - Nr1[i] - Nr2[i] - Nr3[i];
+                if Nr4[i] <= 0.0 {
+                    d34[i] = 0;
+                    Nr4[i] = 0;
+                }
+                else {
+                    d34[i] = exp(log(Nr4[i]) / 3);
+                }
+        """
+
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
             self.__straub_fragmentation_body = trtc.For(
                 param_names=(
@@ -623,38 +637,26 @@ class CollisionsMethods(
                     "Nr3",
                     "Nr4",
                     "Nrt",
+                    "d34",
                 ),
                 name_iter="i",
                 body=f"""
                 {self.__straub_Nr_body}
-                auto mu1, sigma1 = {self.formulae.fragmentation_function.params_p1.c_inline(CW="CW[i]")};
-                auto mu2, sigma2 = {self.formulae.fragmentation_function.params_p2.c_inline(CW="CW[i]")};
-                auto mu3, sigma3 = {self.formulae.fragmentation_function.params_p3.c_inline(CW="CW[i]", ds="ds[i]")};
-                auto M31, M32, M33, M34, d34 = {self.formulae.fragmentation_function.params_p4.c_inline(
-                    vl="v_max[i]",
-                    ds="ds[i]",
-                    mu1="mu1",
-                    sigma1="sigma1",
-                    mu2="mu2",
-                    sigma2="sigma2",
-                    mu3="mu3",
-                    sigma3="sigma3",
-                    N1="Nr1[i]",
-                    N2="Nr2[i]",
-                    N3="Nr3[i]",
-                )};
-                Nr1[i] = Nr1[i] * M31;
-                Nr2[i] = Nr2[i] * M32;
-                Nr3[i] = Nr3[i] * M33;
-                Nr4[i] = Nr4[i] * M34;
-                Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
+                auto sigma1 = {self.formulae.fragmentation_function.params_sigma1.c_inline(CW="CW[i]")};
+                auto mu1 = {self.formulae.fragmentation_function.params_mu1.c_inline(sigma1="sigma1")};
+                auto sigma2 = {self.formulae.fragmentation_function.params_sigma2.c_inline(CW="CW[i]")};
+                auto mu2 = {self.formulae.fragmentation_function.params_mu2.c_inline(ds="ds[i]")};
+                auto sigma3 = {self.formulae.fragmentation_function.params_sigma3.c_inline(CW="CW[i]")};
+                auto mu3 = {self.formulae.fragmentation_function.params_mu3.c_inline(ds="ds[i]")};
+                {self.__straub_mass_remainder}
+                Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
                 if (rand[i] < Nr1[i] / Nrt[i]) {{
                     auto X = rand[i] * Nrt[i] / Nr1[i];
                     auto lnarg = mu1[i] + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
-                    frag_size[i] = expf(lnarg);
+                    frag_size[i] = exp(lnarg);
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i],
@@ -669,10 +671,10 @@ class CollisionsMethods(
                     )};
                 }}
                 else {{
-                    frag_size[i] = d34;
+                    frag_size[i] = d34[i];
                 }}
 
-                frag_size[i] = pow(frag_size[i], 3.0) * 3.141592654f / 6
+                frag_size[i] = pow(frag_size[i], 3.0) * 3.141592654 / 6.0
                 """.replace(
                     "real_type", self._get_c_type()
                 ),
@@ -1057,6 +1059,7 @@ class CollisionsMethods(
         Nr3,
         Nr4,
         Nrt,
+        d34,
     ):
         self.__straub_fragmentation_body.launch_n(
             n=len(frag_size),
@@ -1072,6 +1075,7 @@ class CollisionsMethods(
                 Nr3.data,
                 Nr4.data,
                 Nrt.data,
+                d34.data,
             ),
         )
 

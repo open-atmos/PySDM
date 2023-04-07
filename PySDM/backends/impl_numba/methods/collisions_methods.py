@@ -257,6 +257,22 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
+    i, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, d34, Nr1, Nr2, Nr3, Nr4
+):
+    # pylint: disable=too-many-arguments, too-many-locals
+    Nr1[i] = Nr1[i] * np.exp(3 * mu1 + 9 * np.power(sigma1, 2) / 2)
+    Nr2[i] = Nr2[i] * (mu2**3 + 3 * mu2 * sigma2**2)
+    Nr3[i] = Nr3[i] * (mu3**3 + 3 * mu3 * sigma3**2)
+    Nr4[i] = vl[i] * 6 / np.pi + ds[i] ** 3 - Nr1[i] - Nr2[i] - Nr3[i]
+    if Nr4[i] <= 0.0:
+        d34[i] = 0
+        Nr4[i] = 0
+    else:
+        d34[i] = np.exp(np.log(Nr4[i]) / 3)
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
     i,
     Rf,
@@ -359,40 +375,44 @@ class CollisionsMethods(BackendMethods):
         self.__ll82_coalescence_check_body = __ll82_coalescence_check_body
 
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
-            straub_paramsp1 = self.formulae.fragmentation_function.params_p1
-            straub_paramsp2 = self.formulae.fragmentation_function.params_p2
-            straub_paramsp3 = self.formulae.fragmentation_function.params_p3
-            straub_paramsp4 = self.formulae.fragmentation_function.params_p4
+            straub_sigma1 = self.formulae.fragmentation_function.params_sigma1
+            straub_mu1 = self.formulae.fragmentation_function.params_mu1
+            straub_sigma2 = self.formulae.fragmentation_function.params_sigma2
+            straub_mu2 = self.formulae.fragmentation_function.params_mu2
+            straub_sigma3 = self.formulae.fragmentation_function.params_sigma3
+            straub_mu3 = self.formulae.fragmentation_function.params_mu3
             straub_erfinv = self.formulae.trivia.erfinv_approx
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __straub_fragmentation_body(
-                *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
+                *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
             ):  # pylint: disable=too-many-arguments,too-many-locals
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
                     straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
-                    (mu1, sigma1) = straub_paramsp1(CW[i])
-                    (mu2, sigma2) = straub_paramsp2(CW[i])
-                    (mu3, sigma3) = straub_paramsp3(CW[i], ds[i])
-                    (M31, M32, M33, M34, d34) = straub_paramsp4(
-                        v_max[i],
-                        ds[i],
+                    sigma1 = straub_sigma1(CW[i])
+                    mu1 = straub_mu1(sigma1)
+                    sigma2 = straub_sigma2(CW[i])
+                    mu2 = straub_mu2(ds[i])
+                    sigma3 = straub_sigma3(CW[i])
+                    mu3 = straub_mu3(ds[i])
+                    straub_mass_remainder(
+                        i,
+                        v_max,
+                        ds,
                         mu1,
                         sigma1,
                         mu2,
                         sigma2,
                         mu3,
                         sigma3,
-                        Nr1[i],
-                        Nr2[i],
-                        Nr3[i],
+                        d34,
+                        Nr1,
+                        Nr2,
+                        Nr3,
+                        Nr4,
                     )
-                    Nr1[i] = Nr1[i] * M31
-                    Nr2[i] = Nr2[i] * M32
-                    Nr3[i] = Nr3[i] * M33
-                    Nr4[i] = Nr4[i] * M34
                     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
                     if rand[i] < Nr1[i] / Nrt[i]:
@@ -406,7 +426,7 @@ class CollisionsMethods(BackendMethods):
                         X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i]
                         frag_size[i] = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(X)
                     else:
-                        frag_size[i] = d34
+                        frag_size[i] = d34[i]
 
                     frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
 
@@ -869,6 +889,7 @@ class CollisionsMethods(BackendMethods):
         Nr3,
         Nr4,
         Nrt,
+        d34,
     ):
         self.__straub_fragmentation_body(
             CW=CW.data,
@@ -882,6 +903,7 @@ class CollisionsMethods(BackendMethods):
             Nr3=Nr3.data,
             Nr4=Nr4.data,
             Nrt=Nrt.data,
+            d34=d34.data,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,

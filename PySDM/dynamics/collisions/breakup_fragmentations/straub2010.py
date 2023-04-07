@@ -32,7 +32,7 @@ class Straub2010Nf:
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
-        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
+        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt", "d34"):
             self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
@@ -93,4 +93,5 @@ class Straub2010Nf:
             Nr3=self.straub_tmp["Nr3"],
             Nr4=self.straub_tmp["Nr4"],
             Nrt=self.straub_tmp["Nrt"],
+            d34=self.straub_tmp["d34"],
         )
