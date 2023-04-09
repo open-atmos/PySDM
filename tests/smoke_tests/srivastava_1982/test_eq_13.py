@@ -27,7 +27,7 @@ COMMON_PARAMS = {
                 srivastava_c=0.5e-6 / si.s,
                 srivastava_beta=1e-15 / si.s,
                 frag_mass=-1 * si.g,
-                n_sds=(8, 64),
+                n_sds=(8, 128),
                 **COMMON_PARAMS
             ),
         ),
