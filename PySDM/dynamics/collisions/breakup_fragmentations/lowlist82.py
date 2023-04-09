@@ -74,8 +74,8 @@ class LowList1982Nf:
         self.arrays["CKE"] *= self.arrays["tmp2"]
         self.arrays["CKE"] *= self.const.rho_w / 2
 
-        self.arrays["We"][:] = self.arrays["CKE"][:]  # TODO #976
-        self.arrays["W2"][:] = self.arrays["CKE"][:]
+        self.arrays["We"].fill(self.arrays["CKE"])
+        self.arrays["W2"].fill(self.arrays["CKE"])
         self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])
         self.arrays["W2"].divide_if_not_zero(self.arrays["St"])
 
