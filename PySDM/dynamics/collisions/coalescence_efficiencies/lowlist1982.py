@@ -59,7 +59,7 @@ class LowList1982Ec:
         self.arrays["tmp"] **= 2
         self.arrays["St"] += self.arrays["tmp"]
         self.arrays["St"] *= self.const.PI * self.const.sgm_w
-        self.arrays["dS"][:] = self.arrays["St"][:]
+        self.arrays["dS"].fill(self.arrays["St"])
         self.arrays["dS"] -= self.arrays["Sc"]
 
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
@@ -74,18 +74,18 @@ class LowList1982Ec:
         self.arrays["CKE"] *= self.arrays["tmp2"]
         self.arrays["CKE"] *= self.const.rho_w / 2
 
-        self.arrays["Et"][:] = self.arrays["CKE"][:]
+        self.arrays["Et"].fill(self.arrays["CKE"])
         self.arrays["Et"] += self.arrays["dS"]
 
         a = 0.778
         b = 2.61e6 / si.J**2 * si.m**2
 
-        self.arrays["tmp2"][:] = self.arrays["Et"]
+        self.arrays["tmp2"].fill(self.arrays["Et"])
         self.arrays["tmp2"] **= 2
         self.arrays["tmp2"] *= -1.0 * b * self.const.sgm_w
         self.arrays["tmp2"] /= self.arrays["Sc"]
 
-        output[:] = self.arrays["ds"][:]
+        output.fill(self.arrays["ds"])
         output /= self.arrays["dl"]
         output += 1.0
         output **= -2.0
