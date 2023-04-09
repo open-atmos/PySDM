@@ -659,7 +659,7 @@ class CollisionsMethods(
                     frag_size[i] = exp(lnarg);
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                    auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i],
+                    auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
                     frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
