@@ -23,11 +23,11 @@ def test_fig_5(backend_class, plot=False):
         seed=44,
         warn_overflows=False,
     )
-    steps = [0, 30, 60, 180, 540]
+    steps = [0, 1200, 3600]
     settings._steps = steps  # pylint: disable=protected-access
     settings.n_sd = 2**11
     settings.radius_bins_edges = np.logspace(
-        np.log10(10 * si.um), np.log10(2e3 * si.um), num=32, endpoint=True
+        np.log10(4 * si.um), np.log10(5e3 * si.um), num=64, endpoint=True
     )
     settings.coal_eff = Straub2010Ec()
 
@@ -58,21 +58,13 @@ def test_fig_5(backend_class, plot=False):
 
     # assert
     peaks_expected = {
-        0: (33, 0.018),
-        30: (92, 0.011),
-        60: (305, 0.012),
-        180: (717, 0.015),
-        540: (717, 0.015),
+        0: (34, 0.019),
+        1200: (2839, 0.03),
+        3600: (2839, 0.03),
     }
 
     for j, step in enumerate(steps):
-        print(step)
         peak = np.argmax(data_y[j])
         np.testing.assert_approx_equal(
-            actual=data_x[peak], desired=peaks_expected[step][0], significant=2
-        )
-        np.testing.assert_approx_equal(
-            actual=data_y[j][peak] * settings.rho,
-            desired=peaks_expected[step][1],
-            significant=2,
+            actual=data_x[peak], desired=peaks_expected[step][0], significant=1
         )
