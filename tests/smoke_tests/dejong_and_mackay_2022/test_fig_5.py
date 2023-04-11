@@ -1,7 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import matplotlib
 import numpy as np
-import pytest
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import Settings0D, run_box_breakup
 
