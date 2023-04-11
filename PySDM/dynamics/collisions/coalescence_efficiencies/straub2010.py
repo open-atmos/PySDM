@@ -46,4 +46,4 @@ class Straub2010Ec:
         self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])
         self.arrays["We"] *= -1.15
 
-        output[:] = np.exp(self.arrays["We"])  # TODO #976
+        output.fill(np.exp(self.arrays["We"]))
