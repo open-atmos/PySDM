@@ -414,19 +414,21 @@ class CollisionsMethods(BackendMethods):
                         Nr4,
                     )
                     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
-
-                    if rand[i] < Nr1[i] / Nrt[i]:
-                        X = rand[i] * Nrt[i] / Nr1[i]
-                        lnarg = mu1 + np.sqrt(2) * sigma1 * straub_erfinv(X)
-                        frag_size[i] = np.exp(lnarg)
-                    elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
-                        X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i]
-                        frag_size[i] = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(X)
-                    elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
-                        X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i]
-                        frag_size[i] = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(X)
+                    if Nrt[i] == 0.0:
+                        frag_size[i] = 0.0
                     else:
-                        frag_size[i] = d34[i]
+                        if rand[i] < Nr1[i] / Nrt[i]:
+                            X = rand[i] * Nrt[i] / Nr1[i]
+                            lnarg = mu1 + np.sqrt(2) * sigma1 * straub_erfinv(X)
+                            frag_size[i] = np.exp(lnarg)
+                        elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
+                            X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i]
+                            frag_size[i] = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(X)
+                        elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
+                            X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i]
+                            frag_size[i] = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(X)
+                        else:
+                            frag_size[i] = d34[i]
 
                     frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
 
@@ -742,14 +744,18 @@ class CollisionsMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     def __fragmentation_limiters(n_fragment, frag_size, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            if np.isnan(frag_size[i]) or frag_size[i] == 0.0:
-                frag_size[i] = x_plus_y[i]
-            frag_size[i] = min(frag_size[i], x_plus_y[i])
-            if nfmax is not None and x_plus_y[i] / frag_size[i] > nfmax:
-                frag_size[i] = x_plus_y[i] / nfmax
-            elif frag_size[i] < vmin:
-                frag_size[i] = x_plus_y[i]
-            n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if x_plus_y[i] == 0.0:
+                frag_size[i] == 0.0
+                n_fragment[i] = 1.0
+            else:
+                if np.isnan(frag_size[i]) or frag_size[i] == 0.0:
+                    frag_size[i] = x_plus_y[i]
+                frag_size[i] = min(frag_size[i], x_plus_y[i])
+                if nfmax is not None and x_plus_y[i] / frag_size[i] > nfmax:
+                    frag_size[i] = x_plus_y[i] / nfmax
+                elif frag_size[i] < vmin:
+                    frag_size[i] = x_plus_y[i]
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
 
     def fragmentation_limiters(self, *, n_fragment, frag_size, vmin, nfmax, x_plus_y):
         self.__fragmentation_limiters(
