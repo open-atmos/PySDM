@@ -745,7 +745,7 @@ class CollisionsMethods(BackendMethods):
     def __fragmentation_limiters(n_fragment, frag_size, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
             if x_plus_y[i] == 0.0:
-                frag_size[i] == 0.0
+                frag_size[i] = 0.0
                 n_fragment[i] = 1.0
             else:
                 if np.isnan(frag_size[i]) or frag_size[i] == 0.0:
