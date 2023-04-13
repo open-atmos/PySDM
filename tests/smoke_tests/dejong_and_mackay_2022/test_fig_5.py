@@ -68,6 +68,8 @@ def test_fig_5(backend_class, plot=False):
         np.testing.assert_approx_equal(
             actual=data_x[peak], desired=peaks_expected[step][0], significant=1
         )
+
+
 # TODO #1048
 #         np.testing.assert_approx_equal(
 #             actual=data_y[j][peak] * settings.rho,
