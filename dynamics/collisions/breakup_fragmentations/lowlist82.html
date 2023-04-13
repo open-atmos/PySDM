@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.breakup_fragmentations.straub2010 API documentation</title>
-<meta name="description" content="See Straub et al 2010" />
+<title>PySDM.dynamics.collisions.breakup_fragmentations.lowlist82 API documentation</title>
+<meta name="description" content="See Low &amp; List 1982" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,37 +19,32 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.breakup_fragmentations.straub2010</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.breakup_fragmentations.lowlist82</code></h1>
 </header>
 <section id="section-intro">
-<p>See Straub et al 2010</p>
+<p>See Low &amp; List 1982</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-See Straub et al 2010
+See Low &amp; List 1982
 &#34;&#34;&#34;
-from PySDM.physics.constants import si
 
 
-class Straub2010Nf:
+class LowList1982Nf:
     # pylint: disable=too-many-instance-attributes
     def __init__(self, vmin=0.0, nfmax=None):
         self.particulator = None
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
-        self.straub_tmp = {}
-        self.max_size = None
+        self.ll82_tmp = {}
         self.sum_of_volumes = None
         self.const = None
 
     def register(self, builder):
         self.particulator = builder.particulator
-        self.max_size = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
         self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
@@ -57,30 +52,46 @@ class Straub2010Nf:
         builder.request_attribute(&#34;radius&#34;)
         builder.request_attribute(&#34;volume&#34;)
         builder.request_attribute(&#34;terminal velocity&#34;)
-        for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;gam&#34;, &#34;CW&#34;, &#34;ds&#34;):
+        for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;W2&#34;, &#34;ds&#34;, &#34;dl&#34;, &#34;dcoal&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
-        for key in (&#34;Nr1&#34;, &#34;Nr2&#34;, &#34;Nr3&#34;, &#34;Nr4&#34;, &#34;Nrt&#34;, &#34;d34&#34;):
-            self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
+        for key in (&#34;Rf&#34;, &#34;Rs&#34;, &#34;Rd&#34;):
+            self.ll82_tmp[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
 
     def __call__(self, nf, frag_size, u01, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.sum_of_volumes.sum(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
         self.arrays[&#34;ds&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         self.arrays[&#34;ds&#34;] *= 2
+        self.arrays[&#34;dl&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;dl&#34;] *= 2
+        self.arrays[&#34;dcoal&#34;].sum(
+            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        )
 
-        # compute the dimensionless numbers and CW=CKE * We
-        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
+        self.arrays[&#34;dcoal&#34;] /= self.const.PI / 6
+        self.arrays[&#34;dcoal&#34;] **= 1 / 3
+
+        # compute the surface energy, CKE, &amp; dimensionless numbers
+        self.arrays[&#34;Sc&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.arrays[&#34;Sc&#34;] **= 2 / 3
         self.arrays[&#34;Sc&#34;] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
+        self.arrays[&#34;St&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;St&#34;] *= 2
+        self.arrays[&#34;St&#34;] **= 2
+        self.arrays[&#34;tmp&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;] *= 2
+        self.arrays[&#34;tmp&#34;] **= 2
+        self.arrays[&#34;St&#34;] += self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;St&#34;] *= self.const.PI * self.const.sgm_w
+
+        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.arrays[&#34;tmp2&#34;].distance(
             self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
         )
@@ -93,36 +104,30 @@ class Straub2010Nf:
         self.arrays[&#34;CKE&#34;] *= self.const.rho_w / 2
 
         self.arrays[&#34;We&#34;].fill(self.arrays[&#34;CKE&#34;])
+        self.arrays[&#34;W2&#34;].fill(self.arrays[&#34;CKE&#34;])
         self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
+        self.arrays[&#34;W2&#34;].divide_if_not_zero(self.arrays[&#34;St&#34;])
 
-        self.arrays[&#34;CW&#34;].fill(self.arrays[&#34;We&#34;])
-        self.arrays[&#34;CW&#34;] *= self.arrays[&#34;CKE&#34;]
-        self.arrays[&#34;CW&#34;] /= si.uJ
+        for key in (&#34;Rf&#34;, &#34;Rs&#34;, &#34;Rd&#34;):
+            self.ll82_tmp[key] *= 0.0
 
-        self.arrays[&#34;gam&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
-        self.arrays[&#34;tmp&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
-        self.arrays[&#34;gam&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
-
-        for key in (&#34;Nr1&#34;, &#34;Nr2&#34;, &#34;Nr3&#34;, &#34;Nr4&#34;, &#34;Nrt&#34;):
-            self.straub_tmp[key] *= 0.0
-
-        self.particulator.backend.straub_fragmentation(
+        self.particulator.backend.ll82_fragmentation(
             n_fragment=nf,
-            CW=self.arrays[&#34;CW&#34;],
-            gam=self.arrays[&#34;gam&#34;],
+            CKE=self.arrays[&#34;CKE&#34;],
+            W=self.arrays[&#34;We&#34;],
+            W2=self.arrays[&#34;W2&#34;],
+            St=self.arrays[&#34;St&#34;],
             ds=self.arrays[&#34;ds&#34;],
+            dl=self.arrays[&#34;dl&#34;],
+            dcoal=self.arrays[&#34;dcoal&#34;],
             frag_size=frag_size,
-            v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
             vmin=self.vmin,
             nfmax=self.nfmax,
-            Nr1=self.straub_tmp[&#34;Nr1&#34;],
-            Nr2=self.straub_tmp[&#34;Nr2&#34;],
-            Nr3=self.straub_tmp[&#34;Nr3&#34;],
-            Nr4=self.straub_tmp[&#34;Nr4&#34;],
-            Nrt=self.straub_tmp[&#34;Nrt&#34;],
-            d34=self.straub_tmp[&#34;d34&#34;],
+            Rf=self.ll82_tmp[&#34;Rf&#34;],
+            Rs=self.ll82_tmp[&#34;Rs&#34;],
+            Rd=self.ll82_tmp[&#34;Rd&#34;],
         )</code></pre>
 </details>
 </section>
@@ -135,8 +140,8 @@ class Straub2010Nf:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf"><code class="flex name class">
-<span>class <span class="ident">Straub2010Nf</span></span>
+<dt id="PySDM.dynamics.collisions.breakup_fragmentations.lowlist82.LowList1982Nf"><code class="flex name class">
+<span>class <span class="ident">LowList1982Nf</span></span>
 <span>(</span><span>vmin=0.0, nfmax=None)</span>
 </code></dt>
 <dd>
@@ -145,23 +150,19 @@ class Straub2010Nf:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Straub2010Nf:
+<pre><code class="python">class LowList1982Nf:
     # pylint: disable=too-many-instance-attributes
     def __init__(self, vmin=0.0, nfmax=None):
         self.particulator = None
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
-        self.straub_tmp = {}
-        self.max_size = None
+        self.ll82_tmp = {}
         self.sum_of_volumes = None
         self.const = None
 
     def register(self, builder):
         self.particulator = builder.particulator
-        self.max_size = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
         self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
@@ -169,30 +170,46 @@ class Straub2010Nf:
         builder.request_attribute(&#34;radius&#34;)
         builder.request_attribute(&#34;volume&#34;)
         builder.request_attribute(&#34;terminal velocity&#34;)
-        for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;gam&#34;, &#34;CW&#34;, &#34;ds&#34;):
+        for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;W2&#34;, &#34;ds&#34;, &#34;dl&#34;, &#34;dcoal&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
-        for key in (&#34;Nr1&#34;, &#34;Nr2&#34;, &#34;Nr3&#34;, &#34;Nr4&#34;, &#34;Nrt&#34;, &#34;d34&#34;):
-            self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
+        for key in (&#34;Rf&#34;, &#34;Rs&#34;, &#34;Rd&#34;):
+            self.ll82_tmp[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
 
     def __call__(self, nf, frag_size, u01, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.sum_of_volumes.sum(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
         self.arrays[&#34;ds&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         self.arrays[&#34;ds&#34;] *= 2
+        self.arrays[&#34;dl&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;dl&#34;] *= 2
+        self.arrays[&#34;dcoal&#34;].sum(
+            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        )
 
-        # compute the dimensionless numbers and CW=CKE * We
-        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
+        self.arrays[&#34;dcoal&#34;] /= self.const.PI / 6
+        self.arrays[&#34;dcoal&#34;] **= 1 / 3
+
+        # compute the surface energy, CKE, &amp; dimensionless numbers
+        self.arrays[&#34;Sc&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.arrays[&#34;Sc&#34;] **= 2 / 3
         self.arrays[&#34;Sc&#34;] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
+        self.arrays[&#34;St&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;St&#34;] *= 2
+        self.arrays[&#34;St&#34;] **= 2
+        self.arrays[&#34;tmp&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;] *= 2
+        self.arrays[&#34;tmp&#34;] **= 2
+        self.arrays[&#34;St&#34;] += self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;St&#34;] *= self.const.PI * self.const.sgm_w
+
+        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.arrays[&#34;tmp2&#34;].distance(
             self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
         )
@@ -205,41 +222,35 @@ class Straub2010Nf:
         self.arrays[&#34;CKE&#34;] *= self.const.rho_w / 2
 
         self.arrays[&#34;We&#34;].fill(self.arrays[&#34;CKE&#34;])
+        self.arrays[&#34;W2&#34;].fill(self.arrays[&#34;CKE&#34;])
         self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
+        self.arrays[&#34;W2&#34;].divide_if_not_zero(self.arrays[&#34;St&#34;])
 
-        self.arrays[&#34;CW&#34;].fill(self.arrays[&#34;We&#34;])
-        self.arrays[&#34;CW&#34;] *= self.arrays[&#34;CKE&#34;]
-        self.arrays[&#34;CW&#34;] /= si.uJ
+        for key in (&#34;Rf&#34;, &#34;Rs&#34;, &#34;Rd&#34;):
+            self.ll82_tmp[key] *= 0.0
 
-        self.arrays[&#34;gam&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
-        self.arrays[&#34;tmp&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
-        self.arrays[&#34;gam&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
-
-        for key in (&#34;Nr1&#34;, &#34;Nr2&#34;, &#34;Nr3&#34;, &#34;Nr4&#34;, &#34;Nrt&#34;):
-            self.straub_tmp[key] *= 0.0
-
-        self.particulator.backend.straub_fragmentation(
+        self.particulator.backend.ll82_fragmentation(
             n_fragment=nf,
-            CW=self.arrays[&#34;CW&#34;],
-            gam=self.arrays[&#34;gam&#34;],
+            CKE=self.arrays[&#34;CKE&#34;],
+            W=self.arrays[&#34;We&#34;],
+            W2=self.arrays[&#34;W2&#34;],
+            St=self.arrays[&#34;St&#34;],
             ds=self.arrays[&#34;ds&#34;],
+            dl=self.arrays[&#34;dl&#34;],
+            dcoal=self.arrays[&#34;dcoal&#34;],
             frag_size=frag_size,
-            v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
             vmin=self.vmin,
             nfmax=self.nfmax,
-            Nr1=self.straub_tmp[&#34;Nr1&#34;],
-            Nr2=self.straub_tmp[&#34;Nr2&#34;],
-            Nr3=self.straub_tmp[&#34;Nr3&#34;],
-            Nr4=self.straub_tmp[&#34;Nr4&#34;],
-            Nrt=self.straub_tmp[&#34;Nrt&#34;],
-            d34=self.straub_tmp[&#34;d34&#34;],
+            Rf=self.ll82_tmp[&#34;Rf&#34;],
+            Rs=self.ll82_tmp[&#34;Rs&#34;],
+            Rd=self.ll82_tmp[&#34;Rd&#34;],
         )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.register"><code class="name flex">
+<dt id="PySDM.dynamics.collisions.breakup_fragmentations.lowlist82.LowList1982Nf.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
@@ -250,9 +261,6 @@ class Straub2010Nf:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
-    self.max_size = self.particulator.PairwiseStorage.empty(
-        self.particulator.n_sd // 2, dtype=float
-    )
     self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
         self.particulator.n_sd // 2, dtype=float
     )
@@ -260,12 +268,12 @@ class Straub2010Nf:
     builder.request_attribute(&#34;radius&#34;)
     builder.request_attribute(&#34;volume&#34;)
     builder.request_attribute(&#34;terminal velocity&#34;)
-    for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;gam&#34;, &#34;CW&#34;, &#34;ds&#34;):
+    for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;W2&#34;, &#34;ds&#34;, &#34;dl&#34;, &#34;dcoal&#34;):
         self.arrays[key] = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
-    for key in (&#34;Nr1&#34;, &#34;Nr2&#34;, &#34;Nr3&#34;, &#34;Nr4&#34;, &#34;Nrt&#34;, &#34;d34&#34;):
-        self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
+    for key in (&#34;Rf&#34;, &#34;Rs&#34;, &#34;Rd&#34;):
+        self.ll82_tmp[key] = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )</code></pre>
 </details>
@@ -289,9 +297,9 @@ class Straub2010Nf:
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf" href="#PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf">Straub2010Nf</a></code></h4>
+<h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.lowlist82.LowList1982Nf" href="#PySDM.dynamics.collisions.breakup_fragmentations.lowlist82.LowList1982Nf">LowList1982Nf</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.register">register</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.lowlist82.LowList1982Nf.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.lowlist82.LowList1982Nf.register">register</a></code></li>
 </ul>
 </li>
 </ul>

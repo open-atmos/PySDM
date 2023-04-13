@@ -40,10 +40,14 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def sigma1(const, CW):
+    def params_sigma1(const, CW):
         return np.sqrt(
             np.log(
-                np.power((np.sqrt(CW) / 8) / 10, 2)
+                CW
+                / 64
+                / 100
+                * const.CM
+                * const.CM
                 / 12
                 / np.power(const.STRAUB_E_D1, const.TWO)
                 + 1
@@ -51,99 +55,24 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def p1(const, rand, sigma1):
-        return (
-            const.PI
-            / 6
-            * np.power(
-                np.exp(
-                    np.log(const.STRAUB_E_D1)
-                    - np.power(sigma1, const.TWO) / 2
-                    - sigma1
-                    / const.sqrt_two
-                    / const.sqrt_pi
-                    / const.LN_2
-                    * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand))
-                ),
-                const.THREE,
-            )
-        )
+    def params_mu1(const, sigma1):
+        return np.log(const.STRAUB_E_D1) - np.power(sigma1, const.TWO) / 2
 
     @staticmethod
-    def p2(const, CW, rand):
-        return (
-            const.PI
-            / 6
-            * np.power(
-                const.STRAUB_MU2
-                - (np.power(7 * (CW - 21) / 1000, const.TWO) / 12)
-                / const.sqrt_two
-                / const.sqrt_pi
-                / const.LN_2
-                * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand)),
-                const.THREE,
-            )
-        )
+    def params_sigma2(const, CW):
+        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(12)
 
     @staticmethod
-    def p3(const, CW, ds, rand):
-        return (
-            const.PI
-            / 6
-            * np.power(
-                (9 * ds / 10)
-                - (np.power((76 * np.sqrt(CW) / 100 + 1) / 100, const.TWO) / 12)
-                / const.sqrt_two
-                / const.sqrt_pi
-                / const.LN_2
-                * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand)),
-                const.THREE,
-            )
-        )
+    def params_mu2(const, ds):  # pylint: disable=unused-argument
+        return const.STRAUB_MU2
 
     @staticmethod
-    def p4(const, CW, ds, v_max, Nr1, Nr2, Nr3):  # pylint: disable=too-many-arguments
-        return (
-            const.PI
-            / 6
-            * (
-                v_max / const.PI_4_3 * 8
-                + np.power(ds, const.THREE)
-                - Nr1
-                * np.exp(
-                    3 * np.log(const.STRAUB_E_D1)
-                    + 6
-                    * np.log(
-                        np.power((np.sqrt(CW) / 8) / 10, const.TWO)
-                        / 12
-                        / np.power(const.STRAUB_E_D1, const.TWO)
-                        + 1
-                    )
-                    / 2
-                )
-                - Nr2
-                * (
-                    np.power(const.STRAUB_MU2, const.THREE)
-                    + 3
-                    * const.STRAUB_MU2
-                    * np.power(
-                        np.power(7 * (CW - 21) / 1000, const.TWO) / 12, const.TWO
-                    )
-                )
-                - Nr3
-                * (
-                    np.power(9 * ds / 10, const.THREE)
-                    + 3
-                    * 9
-                    * ds
-                    / 10
-                    * np.power(
-                        np.power((76 * np.sqrt(CW) / 100 + 1) / 100, const.TWO) / 12,
-                        const.TWO,
-                    )
-                )
-            )
-        )</code></pre>
+    def params_sigma3(const, CW):
+        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(12)
+
+    @staticmethod
+    def params_mu3(ds):
+        return 0.9 * ds</code></pre>
 </details>
 </section>
 <section>
@@ -170,10 +99,14 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def sigma1(const, CW):
+    def params_sigma1(const, CW):
         return np.sqrt(
             np.log(
-                np.power((np.sqrt(CW) / 8) / 10, 2)
+                CW
+                / 64
+                / 100
+                * const.CM
+                * const.CM
                 / 12
                 / np.power(const.STRAUB_E_D1, const.TWO)
                 + 1
@@ -181,104 +114,29 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def p1(const, rand, sigma1):
-        return (
-            const.PI
-            / 6
-            * np.power(
-                np.exp(
-                    np.log(const.STRAUB_E_D1)
-                    - np.power(sigma1, const.TWO) / 2
-                    - sigma1
-                    / const.sqrt_two
-                    / const.sqrt_pi
-                    / const.LN_2
-                    * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand))
-                ),
-                const.THREE,
-            )
-        )
+    def params_mu1(const, sigma1):
+        return np.log(const.STRAUB_E_D1) - np.power(sigma1, const.TWO) / 2
 
     @staticmethod
-    def p2(const, CW, rand):
-        return (
-            const.PI
-            / 6
-            * np.power(
-                const.STRAUB_MU2
-                - (np.power(7 * (CW - 21) / 1000, const.TWO) / 12)
-                / const.sqrt_two
-                / const.sqrt_pi
-                / const.LN_2
-                * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand)),
-                const.THREE,
-            )
-        )
+    def params_sigma2(const, CW):
+        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(12)
 
     @staticmethod
-    def p3(const, CW, ds, rand):
-        return (
-            const.PI
-            / 6
-            * np.power(
-                (9 * ds / 10)
-                - (np.power((76 * np.sqrt(CW) / 100 + 1) / 100, const.TWO) / 12)
-                / const.sqrt_two
-                / const.sqrt_pi
-                / const.LN_2
-                * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand)),
-                const.THREE,
-            )
-        )
+    def params_mu2(const, ds):  # pylint: disable=unused-argument
+        return const.STRAUB_MU2
 
     @staticmethod
-    def p4(const, CW, ds, v_max, Nr1, Nr2, Nr3):  # pylint: disable=too-many-arguments
-        return (
-            const.PI
-            / 6
-            * (
-                v_max / const.PI_4_3 * 8
-                + np.power(ds, const.THREE)
-                - Nr1
-                * np.exp(
-                    3 * np.log(const.STRAUB_E_D1)
-                    + 6
-                    * np.log(
-                        np.power((np.sqrt(CW) / 8) / 10, const.TWO)
-                        / 12
-                        / np.power(const.STRAUB_E_D1, const.TWO)
-                        + 1
-                    )
-                    / 2
-                )
-                - Nr2
-                * (
-                    np.power(const.STRAUB_MU2, const.THREE)
-                    + 3
-                    * const.STRAUB_MU2
-                    * np.power(
-                        np.power(7 * (CW - 21) / 1000, const.TWO) / 12, const.TWO
-                    )
-                )
-                - Nr3
-                * (
-                    np.power(9 * ds / 10, const.THREE)
-                    + 3
-                    * 9
-                    * ds
-                    / 10
-                    * np.power(
-                        np.power((76 * np.sqrt(CW) / 100 + 1) / 100, const.TWO) / 12,
-                        const.TWO,
-                    )
-                )
-            )
-        )</code></pre>
+    def params_sigma3(const, CW):
+        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(12)
+
+    @staticmethod
+    def params_mu3(ds):
+        return 0.9 * ds</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p1"><code class="name flex">
-<span>def <span class="ident">p1</span></span>(<span>const, rand, sigma1)</span>
+<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu1"><code class="name flex">
+<span>def <span class="ident">params_mu1</span></span>(<span>const, sigma1)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -287,27 +145,12 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p1(const, rand, sigma1):
-    return (
-        const.PI
-        / 6
-        * np.power(
-            np.exp(
-                np.log(const.STRAUB_E_D1)
-                - np.power(sigma1, const.TWO) / 2
-                - sigma1
-                / const.sqrt_two
-                / const.sqrt_pi
-                / const.LN_2
-                * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand))
-            ),
-            const.THREE,
-        )
-    )</code></pre>
+def params_mu1(const, sigma1):
+    return np.log(const.STRAUB_E_D1) - np.power(sigma1, const.TWO) / 2</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p2"><code class="name flex">
-<span>def <span class="ident">p2</span></span>(<span>const, CW, rand)</span>
+<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu2"><code class="name flex">
+<span>def <span class="ident">params_mu2</span></span>(<span>const, ds)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -316,24 +159,12 @@ def p1(const, rand, sigma1):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p2(const, CW, rand):
-    return (
-        const.PI
-        / 6
-        * np.power(
-            const.STRAUB_MU2
-            - (np.power(7 * (CW - 21) / 1000, const.TWO) / 12)
-            / const.sqrt_two
-            / const.sqrt_pi
-            / const.LN_2
-            * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand)),
-            const.THREE,
-        )
-    )</code></pre>
+def params_mu2(const, ds):  # pylint: disable=unused-argument
+    return const.STRAUB_MU2</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p3"><code class="name flex">
-<span>def <span class="ident">p3</span></span>(<span>const, CW, ds, rand)</span>
+<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu3"><code class="name flex">
+<span>def <span class="ident">params_mu3</span></span>(<span>ds)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -342,24 +173,12 @@ def p2(const, CW, rand):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p3(const, CW, ds, rand):
-    return (
-        const.PI
-        / 6
-        * np.power(
-            (9 * ds / 10)
-            - (np.power((76 * np.sqrt(CW) / 100 + 1) / 100, const.TWO) / 12)
-            / const.sqrt_two
-            / const.sqrt_pi
-            / const.LN_2
-            * np.log((1 / const.TWO + rand) / (const.THREE / const.TWO - rand)),
-            const.THREE,
-        )
-    )</code></pre>
+def params_mu3(ds):
+    return 0.9 * ds</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p4"><code class="name flex">
-<span>def <span class="ident">p4</span></span>(<span>const, CW, ds, v_max, Nr1, Nr2, Nr3)</span>
+<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma1"><code class="name flex">
+<span>def <span class="ident">params_sigma1</span></span>(<span>const, CW)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -368,69 +187,47 @@ def p3(const, CW, ds, rand):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p4(const, CW, ds, v_max, Nr1, Nr2, Nr3):  # pylint: disable=too-many-arguments
-    return (
-        const.PI
-        / 6
-        * (
-            v_max / const.PI_4_3 * 8
-            + np.power(ds, const.THREE)
-            - Nr1
-            * np.exp(
-                3 * np.log(const.STRAUB_E_D1)
-                + 6
-                * np.log(
-                    np.power((np.sqrt(CW) / 8) / 10, const.TWO)
-                    / 12
-                    / np.power(const.STRAUB_E_D1, const.TWO)
-                    + 1
-                )
-                / 2
-            )
-            - Nr2
-            * (
-                np.power(const.STRAUB_MU2, const.THREE)
-                + 3
-                * const.STRAUB_MU2
-                * np.power(
-                    np.power(7 * (CW - 21) / 1000, const.TWO) / 12, const.TWO
-                )
-            )
-            - Nr3
-            * (
-                np.power(9 * ds / 10, const.THREE)
-                + 3
-                * 9
-                * ds
-                / 10
-                * np.power(
-                    np.power((76 * np.sqrt(CW) / 100 + 1) / 100, const.TWO) / 12,
-                    const.TWO,
-                )
-            )
-        )
-    )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.sigma1"><code class="name flex">
-<span>def <span class="ident">sigma1</span></span>(<span>const, CW)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def sigma1(const, CW):
+def params_sigma1(const, CW):
     return np.sqrt(
         np.log(
-            np.power((np.sqrt(CW) / 8) / 10, 2)
+            CW
+            / 64
+            / 100
+            * const.CM
+            * const.CM
             / 12
             / np.power(const.STRAUB_E_D1, const.TWO)
             + 1
         )
     )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma2"><code class="name flex">
+<span>def <span class="ident">params_sigma2</span></span>(<span>const, CW)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def params_sigma2(const, CW):
+    return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(12)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma3"><code class="name flex">
+<span>def <span class="ident">params_sigma3</span></span>(<span>const, CW)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def params_sigma3(const, CW):
+    return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(12)</code></pre>
 </details>
 </dd>
 </dl>
@@ -453,12 +250,13 @@ def sigma1(const, CW):
 <ul>
 <li>
 <h4><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf">Straub2010Nf</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p1" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p1">p1</a></code></li>
-<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p2" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p2">p2</a></code></li>
-<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p3" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p3">p3</a></code></li>
-<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p4" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.p4">p4</a></code></li>
-<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.sigma1" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.sigma1">sigma1</a></code></li>
+<ul class="two-column">
+<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu1" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu1">params_mu1</a></code></li>
+<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu2" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu2">params_mu2</a></code></li>
+<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu3" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_mu3">params_mu3</a></code></li>
+<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma1" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma1">params_sigma1</a></code></li>
+<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma2" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma2">params_sigma2</a></code></li>
+<li><code><a title="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma3" href="#PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma3">params_sigma3</a></code></li>
 </ul>
 </li>
 </ul>

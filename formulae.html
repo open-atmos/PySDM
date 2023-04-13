@@ -31,6 +31,7 @@
 Logic for enabling common CPU/GPU physics formulae code
 &#34;&#34;&#34;
 import inspect
+import math
 import numbers
 import re
 import warnings
@@ -160,7 +161,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
     extras = func.__extras if hasattr(func, &#34;__extras&#34;) else {}
     exec(  # pylint:disable=exec-used
-        source, {&#34;const&#34;: constants, &#34;np&#34;: np, **extras}, loc
+        source, {&#34;const&#34;: constants, &#34;np&#34;: np, &#34;math&#34;: math, **extras}, loc
     )
 
     n_params = len(parameters_keys) - (1 if parameters_keys[0] in special_params else 0)
@@ -232,7 +233,8 @@ def _c_inline(fun, return_type=None, constants=None, **args):
             stripped += &#34; &#34;
         source += stripped
     source = source.replace(&#34;np.power(&#34;, &#34;np.pow(&#34;)
-    source = source.replace(&#34;np.&#34;, &#34;&#34;)
+    for pkg in (&#34;np&#34;, &#34;math&#34;):
+        source = source.replace(f&#34;{pkg}.&#34;, &#34;&#34;)
     source = source.replace(&#34;, )&#34;, &#34;)&#34;)
     source = re.sub(&#34;^return &#34;, &#34;&#34;, source)
     for arg in inspect.signature(fun).parameters:

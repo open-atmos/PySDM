@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.trivia API documentation</title>
-<meta name="description" content="Various (hopefully) undebatable formulae" />
+<meta name="description" content="Various (hopefully) undebatable formulae …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,12 +23,15 @@
 </header>
 <section id="section-intro">
 <p>Various (hopefully) undebatable formulae</p>
+<p><code>erfinv</code> approximation based on eqs. 11-12 from Vedder 1987, <a href="https://doi.org/10.1119/1.15018">https://doi.org/10.1119/1.15018</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
 Various (hopefully) undebatable formulae
+
+`erfinv` approximation based on eqs. 11-12 from Vedder 1987, https://doi.org/10.1119/1.15018
 &#34;&#34;&#34;
 import numpy as np
 
@@ -107,7 +110,23 @@ class Trivia:
 
     @staticmethod
     def frozen_and_above_freezing_point(const, volume, temperature):
-        return volume &lt; 0 and temperature &gt; const.T0</code></pre>
+        return volume &lt; 0 and temperature &gt; const.T0
+
+    @staticmethod
+    def erfinv_approx(const, c):
+        return (
+            2
+            * np.sqrt(const.VEDDER_1987_A)
+            * np.sinh(
+                np.arcsinh(
+                    np.arctanh(c)
+                    / 2
+                    / const.VEDDER_1987_b
+                    / np.power(const.VEDDER_1987_A, const.ONE_AND_A_HALF)
+                )
+                / 3
+            )
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -203,7 +222,23 @@ class Trivia:
 
     @staticmethod
     def frozen_and_above_freezing_point(const, volume, temperature):
-        return volume &lt; 0 and temperature &gt; const.T0</code></pre>
+        return volume &lt; 0 and temperature &gt; const.T0
+
+    @staticmethod
+    def erfinv_approx(const, c):
+        return (
+            2
+            * np.sqrt(const.VEDDER_1987_A)
+            * np.sinh(
+                np.arcsinh(
+                    np.arctanh(c)
+                    / 2
+                    / const.VEDDER_1987_b
+                    / np.power(const.VEDDER_1987_A, const.ONE_AND_A_HALF)
+                )
+                / 3
+            )
+        )</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -247,6 +282,32 @@ def area(const, radius):
 <pre><code class="python">@staticmethod
 def arrhenius(const, A, Ea, T):
     return A * np.exp(-Ea / (const.R_str * T))</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.erfinv_approx"><code class="name flex">
+<span>def <span class="ident">erfinv_approx</span></span>(<span>const, c)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def erfinv_approx(const, c):
+    return (
+        2
+        * np.sqrt(const.VEDDER_1987_A)
+        * np.sinh(
+            np.arcsinh(
+                np.arctanh(c)
+                / 2
+                / const.VEDDER_1987_b
+                / np.power(const.VEDDER_1987_A, const.ONE_AND_A_HALF)
+            )
+            / 3
+        )
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.explicit_euler"><code class="name flex">
@@ -483,6 +544,7 @@ def within_tolerance(error_estimate, value, rtol):
 <li><code><a title="PySDM.physics.trivia.Trivia.H2pH" href="#PySDM.physics.trivia.Trivia.H2pH">H2pH</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.area" href="#PySDM.physics.trivia.Trivia.area">area</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.arrhenius" href="#PySDM.physics.trivia.Trivia.arrhenius">arrhenius</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.erfinv_approx" href="#PySDM.physics.trivia.Trivia.erfinv_approx">erfinv_approx</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.explicit_euler" href="#PySDM.physics.trivia.Trivia.explicit_euler">explicit_euler</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point" href="#PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point">frozen_and_above_freezing_point</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction" href="#PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction">mixing_ratio_2_mole_fraction</a></code></li>

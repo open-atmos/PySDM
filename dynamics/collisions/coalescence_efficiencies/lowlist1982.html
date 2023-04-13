@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.coalescence_efficiencies.straub2010 API documentation</title>
-<meta name="description" content="TODO #744" />
+<title>PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982 API documentation</title>
+<meta name="description" content="See Low &amp; List 1982" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,63 +19,111 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.coalescence_efficiencies.straub2010</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982</code></h1>
 </header>
 <section id="section-intro">
-<p>TODO #744</p>
+<p>See Low &amp; List 1982</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-TODO #744
+See Low &amp; List 1982
 &#34;&#34;&#34;
 import numpy as np
 
-# TODO #744: TEST
+from PySDM.physics.constants import si
 
 
-class Straub2010Ec:
-    def __init__(self):
+class LowList1982Ec:
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self, vmin=0.0, nfmax=None):
         self.particulator = None
-        self.pair_tmp = None
+        self.vmin = vmin
+        self.nfmax = nfmax
         self.arrays = {}
+        self.ll82_tmp = {}
+        self.max_size = None
+        self.sum_of_volumes = None
         self.const = None
 
     def register(self, builder):
         self.particulator = builder.particulator
+        self.max_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
         self.const = self.particulator.formulae.constants
+        builder.request_attribute(&#34;radius&#34;)
         builder.request_attribute(&#34;volume&#34;)
         builder.request_attribute(&#34;terminal velocity&#34;)
-        for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
+        for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;dS&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;Et&#34;, &#34;ds&#34;, &#34;dl&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
 
     def __call__(self, output, is_first_in_pair):
-        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
-        self.arrays[&#34;Sc&#34;] *= 6 / self.const.PI
-        self.arrays[&#34;tmp&#34;] *= 2
+        self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.sum_of_volumes.sum(
+            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        )
+        self.arrays[&#34;ds&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;ds&#34;] *= 2
+        self.arrays[&#34;dl&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;dl&#34;] *= 2
 
+        # compute the surface energy, CKE
+        self.arrays[&#34;Sc&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;Sc&#34;] **= 2 / 3
+        self.arrays[&#34;Sc&#34;] *= (
+            self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
+        )
+        self.arrays[&#34;St&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;St&#34;] *= 2
+        self.arrays[&#34;St&#34;] **= 2
+        self.arrays[&#34;tmp&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;] *= 2
+        self.arrays[&#34;tmp&#34;] **= 2
+        self.arrays[&#34;St&#34;] += self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;St&#34;] *= self.const.PI * self.const.sgm_w
+        self.arrays[&#34;dS&#34;].fill(self.arrays[&#34;St&#34;])
+        self.arrays[&#34;dS&#34;] -= self.arrays[&#34;Sc&#34;]
+
+        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.arrays[&#34;tmp2&#34;].distance(
             self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
         )
         self.arrays[&#34;tmp2&#34;] **= 2
-        self.arrays[&#34;We&#34;].multiply(
+        self.arrays[&#34;CKE&#34;].multiply(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
-        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
-        self.arrays[&#34;We&#34;] *= self.arrays[&#34;tmp2&#34;]
-        self.arrays[&#34;We&#34;] *= self.const.rho_w
+        self.arrays[&#34;CKE&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
+        self.arrays[&#34;CKE&#34;] *= self.arrays[&#34;tmp2&#34;]
+        self.arrays[&#34;CKE&#34;] *= self.const.rho_w / 2
 
-        self.arrays[&#34;Sc&#34;] **= 2 / 3
-        self.arrays[&#34;Sc&#34;] *= self.const.PI * self.const.sgm_w
+        self.arrays[&#34;Et&#34;].fill(self.arrays[&#34;CKE&#34;])
+        self.arrays[&#34;Et&#34;] += self.arrays[&#34;dS&#34;]
 
-        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
-        self.arrays[&#34;We&#34;] *= -1.15
+        a = 0.778
+        b = 2.61e6 / si.J**2 * si.m**2
 
-        output.fill(np.exp(self.arrays[&#34;We&#34;]))</code></pre>
+        self.arrays[&#34;tmp2&#34;].fill(self.arrays[&#34;Et&#34;])
+        self.arrays[&#34;tmp2&#34;] **= 2
+        self.arrays[&#34;tmp2&#34;] *= -1.0 * b * self.const.sgm_w
+        self.arrays[&#34;tmp2&#34;] /= self.arrays[&#34;Sc&#34;]
+
+        output.fill(self.arrays[&#34;ds&#34;])
+        output /= self.arrays[&#34;dl&#34;]
+        output += 1.0
+        output **= -2.0
+        output *= a
+        output *= np.exp(self.arrays[&#34;tmp2&#34;])
+
+        self.particulator.backend.ll82_coalescence_check(
+            Ec=output, dl=self.arrays[&#34;dl&#34;]
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -87,8 +135,9 @@ class Straub2010Ec:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.coalescence_efficiencies.straub2010.Straub2010Ec"><code class="flex name class">
-<span>class <span class="ident">Straub2010Ec</span></span>
+<dt id="PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982.LowList1982Ec"><code class="flex name class">
+<span>class <span class="ident">LowList1982Ec</span></span>
+<span>(</span><span>vmin=0.0, nfmax=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -96,51 +145,99 @@ class Straub2010Ec:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Straub2010Ec:
-    def __init__(self):
+<pre><code class="python">class LowList1982Ec:
+    # pylint: disable=too-many-instance-attributes
+    def __init__(self, vmin=0.0, nfmax=None):
         self.particulator = None
-        self.pair_tmp = None
+        self.vmin = vmin
+        self.nfmax = nfmax
         self.arrays = {}
+        self.ll82_tmp = {}
+        self.max_size = None
+        self.sum_of_volumes = None
         self.const = None
 
     def register(self, builder):
         self.particulator = builder.particulator
+        self.max_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
         self.const = self.particulator.formulae.constants
+        builder.request_attribute(&#34;radius&#34;)
         builder.request_attribute(&#34;volume&#34;)
         builder.request_attribute(&#34;terminal velocity&#34;)
-        for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
+        for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;dS&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;Et&#34;, &#34;ds&#34;, &#34;dl&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
 
     def __call__(self, output, is_first_in_pair):
-        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
-        self.arrays[&#34;Sc&#34;] *= 6 / self.const.PI
-        self.arrays[&#34;tmp&#34;] *= 2
+        self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.sum_of_volumes.sum(
+            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        )
+        self.arrays[&#34;ds&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;ds&#34;] *= 2
+        self.arrays[&#34;dl&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;dl&#34;] *= 2
 
+        # compute the surface energy, CKE
+        self.arrays[&#34;Sc&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;Sc&#34;] **= 2 / 3
+        self.arrays[&#34;Sc&#34;] *= (
+            self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
+        )
+        self.arrays[&#34;St&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;St&#34;] *= 2
+        self.arrays[&#34;St&#34;] **= 2
+        self.arrays[&#34;tmp&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;] *= 2
+        self.arrays[&#34;tmp&#34;] **= 2
+        self.arrays[&#34;St&#34;] += self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;St&#34;] *= self.const.PI * self.const.sgm_w
+        self.arrays[&#34;dS&#34;].fill(self.arrays[&#34;St&#34;])
+        self.arrays[&#34;dS&#34;] -= self.arrays[&#34;Sc&#34;]
+
+        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.arrays[&#34;tmp2&#34;].distance(
             self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
         )
         self.arrays[&#34;tmp2&#34;] **= 2
-        self.arrays[&#34;We&#34;].multiply(
+        self.arrays[&#34;CKE&#34;].multiply(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
-        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
-        self.arrays[&#34;We&#34;] *= self.arrays[&#34;tmp2&#34;]
-        self.arrays[&#34;We&#34;] *= self.const.rho_w
+        self.arrays[&#34;CKE&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
+        self.arrays[&#34;CKE&#34;] *= self.arrays[&#34;tmp2&#34;]
+        self.arrays[&#34;CKE&#34;] *= self.const.rho_w / 2
 
-        self.arrays[&#34;Sc&#34;] **= 2 / 3
-        self.arrays[&#34;Sc&#34;] *= self.const.PI * self.const.sgm_w
+        self.arrays[&#34;Et&#34;].fill(self.arrays[&#34;CKE&#34;])
+        self.arrays[&#34;Et&#34;] += self.arrays[&#34;dS&#34;]
 
-        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
-        self.arrays[&#34;We&#34;] *= -1.15
+        a = 0.778
+        b = 2.61e6 / si.J**2 * si.m**2
 
-        output.fill(np.exp(self.arrays[&#34;We&#34;]))</code></pre>
+        self.arrays[&#34;tmp2&#34;].fill(self.arrays[&#34;Et&#34;])
+        self.arrays[&#34;tmp2&#34;] **= 2
+        self.arrays[&#34;tmp2&#34;] *= -1.0 * b * self.const.sgm_w
+        self.arrays[&#34;tmp2&#34;] /= self.arrays[&#34;Sc&#34;]
+
+        output.fill(self.arrays[&#34;ds&#34;])
+        output /= self.arrays[&#34;dl&#34;]
+        output += 1.0
+        output **= -2.0
+        output *= a
+        output *= np.exp(self.arrays[&#34;tmp2&#34;])
+
+        self.particulator.backend.ll82_coalescence_check(
+            Ec=output, dl=self.arrays[&#34;dl&#34;]
+        )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.dynamics.collisions.coalescence_efficiencies.straub2010.Straub2010Ec.register"><code class="name flex">
+<dt id="PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982.LowList1982Ec.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
@@ -151,10 +248,17 @@ class Straub2010Ec:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
+    self.max_size = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )
+    self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )
     self.const = self.particulator.formulae.constants
+    builder.request_attribute(&#34;radius&#34;)
     builder.request_attribute(&#34;volume&#34;)
     builder.request_attribute(&#34;terminal velocity&#34;)
-    for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
+    for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;dS&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;Et&#34;, &#34;ds&#34;, &#34;dl&#34;):
         self.arrays[key] = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )</code></pre>
@@ -179,9 +283,9 @@ class Straub2010Ec:
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.straub2010.Straub2010Ec" href="#PySDM.dynamics.collisions.coalescence_efficiencies.straub2010.Straub2010Ec">Straub2010Ec</a></code></h4>
+<h4><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982.LowList1982Ec" href="#PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982.LowList1982Ec">LowList1982Ec</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.straub2010.Straub2010Ec.register" href="#PySDM.dynamics.collisions.coalescence_efficiencies.straub2010.Straub2010Ec.register">register</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982.LowList1982Ec.register" href="#PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982.LowList1982Ec.register">register</a></code></li>
 </ul>
 </li>
 </ul>
