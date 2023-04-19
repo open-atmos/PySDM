@@ -363,6 +363,95 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
+    @pytest.mark.parametrize("_n_times, _gamma", [(1, 2), (1, 3)])
+    # pylint: disable=redefined-outer-name
+    def test_attribute_update_n_breakups(
+        _n_times, _gamma, backend_class=CPU
+    ):  # pylint: disable=too-many-locals
+        # Arrange
+        params = {
+            "n_init": [64, 2],
+            "v_init": [128, 128],
+            "is_first_in_pair": [True, False],
+            "n_fragment": [2],
+            "frag_size": [128],
+        }
+
+        def run_simulation(_n_times, _gamma):
+            n_init = params["n_init"]
+            n_sd = len(n_init)
+            builder = Builder(n_sd, backend_class())
+            builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+            particulator = builder.build(
+                attributes={
+                    "n": np.asarray(n_init),
+                    "volume": np.asarray(params["v_init"]),
+                },
+                products=(),
+            )
+
+            n_pairs = n_sd // 2
+            rand = [1.0] * n_pairs
+            Eb = [1.0] * n_pairs
+            pairwise_zeros = particulator.PairwiseStorage.from_ndarray(
+                np.array([0.0] * n_pairs)
+            )
+            general_zeros = particulator.Storage.from_ndarray(np.array([0] * n_sd))
+
+            gamma = particulator.PairwiseStorage.from_ndarray(np.array(_gamma))
+            rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
+            Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
+            breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
+            breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0]))
+            n_fragment = particulator.PairwiseStorage.from_ndarray(
+                np.asarray(params["n_fragment"], dtype=float)
+            )
+            frag_size = particulator.PairwiseStorage.from_ndarray(
+                np.asarray(params["frag_size"], dtype=float)
+            )
+            is_first_in_pair = particulator.PairIndicator(n_sd)
+            is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
+                np.asarray(params["is_first_in_pair"], dtype=bool)
+            )
+
+            # Act
+            for i in range(_n_times):
+                particulator.collision_coalescence_breakup(
+                    enable_breakup=True,
+                    gamma=gamma,
+                    rand=rand,
+                    Ec=pairwise_zeros,
+                    Eb=Eb,
+                    n_fragment=n_fragment,
+                    fragment_size=frag_size,
+                    coalescence_rate=general_zeros,
+                    breakup_rate=breakup_rate,
+                    breakup_rate_deficit=breakup_rate_deficit,
+                    is_first_in_pair=is_first_in_pair,
+                    warn_overflows=False,
+                    max_multiplicity=DEFAULTS.max_multiplicity,
+                )
+
+            res_mult = particulator.attributes["n"].to_ndarray()
+            res_volume = particulator.attributes["volume"].to_ndarray()
+            return res_mult, res_volume
+
+        run1 = run_simulation(_n_times=_n_times, _gamma=[_gamma])
+        run2 = run_simulation(_n_times=_gamma, _gamma=[_n_times])
+
+        # Assert
+        # "n"
+        np.testing.assert_array_equal(
+            run1[0],
+            run2[0],
+        )
+        # "v"
+        np.testing.assert_array_equal(
+            run1[1],
+            run2[1],
+        )
+
+    @staticmethod
     # pylint: disable=redefined-outer-name
     def test_multiplicity_overflow(backend=CPU()):  # pylint: disable=too-many-locals
         # Arrange
