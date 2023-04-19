@@ -363,10 +363,10 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    @pytest.mark.parametrize("_n_times, _gamma", [(1, 2), (1, 3)])
+    @pytest.mark.parametrize("_n", [2, 3])
     # pylint: disable=redefined-outer-name
     def test_attribute_update_n_breakups(
-        _n_times, _gamma, backend_class=CPU
+        _n, backend_class=CPU
     ):  # pylint: disable=too-many-locals
         # Arrange
         params = {
@@ -436,8 +436,8 @@ class TestSDMBreakup:
             res_volume = particulator.attributes["volume"].to_ndarray()
             return res_mult, res_volume
 
-        run1 = run_simulation(_n_times=_n_times, _gamma=[_gamma])
-        run2 = run_simulation(_n_times=_gamma, _gamma=[_n_times])
+        run1 = run_simulation(_n_times=1, _gamma=[_n])
+        run2 = run_simulation(_n_times=_n, _gamma=[1])
 
         # Assert
         # "n"
