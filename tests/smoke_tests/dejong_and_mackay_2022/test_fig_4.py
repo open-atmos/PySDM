@@ -107,7 +107,7 @@ class TestFig4:
         "backend_class",
         (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
     )
-    def test_fig_4b(backend_class, plot=False):
+    def test_fig_4b(backend_class, plot=False):  # pylint: disable=too-many-locals
         # arrange
         settings0 = Settings0D()
         settings0.n_sd = N_SD
