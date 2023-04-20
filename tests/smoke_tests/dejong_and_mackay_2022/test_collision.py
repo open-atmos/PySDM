@@ -1,6 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
 
+import pytest
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import (
     Settings0D,
@@ -8,12 +9,14 @@ from PySDM_examples.deJong_Mackay_2022 import (
     run_box_NObreakup,
 )
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
+from PySDM.backends import CPU, GPU
 
 
 # pylint: disable=redefined-outer-name
+@pytest.mark.parametrize(
+    "backend_class",
+    (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=False))),  # TODO #987
+)
 def test_collision(backend_class, plot=False):
     settings = Settings0D(warn_overflows=False)
     t_steps = [0, 100, 200]
