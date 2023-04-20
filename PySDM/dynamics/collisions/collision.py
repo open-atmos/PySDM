@@ -221,7 +221,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             rand=proc_rand,
             Ec=self.Ec_temp,
             Eb=self.Eb_temp,
-            n_fragment=self.n_fragment,
             fragment_size=self.fragment_size,
             coalescence_rate=self.coalescence_rate,
             breakup_rate=self.breakup_rate,

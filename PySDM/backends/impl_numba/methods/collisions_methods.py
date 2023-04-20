@@ -60,7 +60,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def breakup0_compute_mult_transfer(
-    gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity
+    gamma, j, k, multiplicity, volume, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
     gamma_j_k = 0
@@ -137,7 +137,6 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     multiplicity,
     gamma,
     attributes,
-    n_fragment,
     fragment_size,
     max_multiplicity,
     breakup_rate,
@@ -151,7 +150,6 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
         k,
         multiplicity,
         volume,
-        n_fragment[i],
         fragment_size[i],
         max_multiplicity,
     )
@@ -180,7 +178,6 @@ def break_up_while(
     multiplicity,
     gamma,
     attributes,
-    n_fragment,
     fragment_size,
     max_multiplicity,
     breakup_rate,
@@ -216,7 +213,6 @@ def break_up_while(
                 k,
                 multiplicity,
                 volume,
-                (volume[j] + volume[k]) / fragment_size[i],
                 fragment_size[i],
                 max_multiplicity,
             )
@@ -315,7 +311,6 @@ class CollisionsMethods(BackendMethods):
             rand,
             Ec,
             Eb,
-            n_fragment,
             fragment_size,
             healthy,
             cell_id,
@@ -356,7 +351,6 @@ class CollisionsMethods(BackendMethods):
                         multiplicity,
                         gamma,
                         attributes,
-                        n_fragment,
                         fragment_size,
                         max_multiplicity,
                         breakup_rate,
@@ -706,7 +700,6 @@ class CollisionsMethods(BackendMethods):
         rand,
         Ec,
         Eb,
-        n_fragment,
         fragment_size,
         healthy,
         cell_id,
@@ -728,7 +721,6 @@ class CollisionsMethods(BackendMethods):
             rand=rand.data,
             Ec=Ec.data,
             Eb=Eb.data,
-            n_fragment=n_fragment.data,
             fragment_size=fragment_size.data,
             healthy=healthy.data,
             cell_id=cell_id.data,
