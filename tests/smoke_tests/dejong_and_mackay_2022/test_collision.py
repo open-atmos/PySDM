@@ -15,7 +15,7 @@ from PySDM.backends import CPU, GPU
 # pylint: disable=redefined-outer-name
 @pytest.mark.parametrize(
     "backend_class",
-    (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=False))),  # TODO #987
+    (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
 )
 def test_collision(backend_class, plot=False):
     settings = Settings0D(warn_overflows=False)

@@ -26,7 +26,7 @@ class TestFig4:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
-        (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=False))),  # TODO #987
+        (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
     )
     def test_fig_4a(backend_class, plot=False):
         # arrange
@@ -105,7 +105,7 @@ class TestFig4:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
-        (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=False))),  # TODO #987
+        (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
     )
     def test_fig_4b(backend_class, plot=False):
         # arrange
