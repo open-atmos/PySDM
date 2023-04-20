@@ -363,19 +363,41 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    @pytest.mark.parametrize("_n", [2, 3])
+    @pytest.mark.parametrize("_n", [1, 2, 3, 4, 5])
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {
+                "n_init": [64, 2],
+                "v_init": [128, 128],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [2],
+                "frag_size": [128],
+            },
+            {
+                "n_init": [20, 4],
+                "v_init": [1, 2],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [3],
+                "frag_size": [1.0],
+            },
+            {
+                "n_init": [3, 1],
+                "v_init": [1, 1],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [4],
+                "frag_size": [0.5],
+            },
+        ],
+    )
     # pylint: disable=redefined-outer-name
     def test_attribute_update_n_breakups(
-        _n, backend_class=CPU
+        _n, params, backend_class=CPU
     ):  # pylint: disable=too-many-locals
         # Arrange
-        params = {
-            "n_init": [64, 2],
-            "v_init": [128, 128],
-            "is_first_in_pair": [True, False],
-            "n_fragment": [2],
-            "frag_size": [128],
-        }
+
+        assert len(params["n_fragment"]) == 1
+        assert len(params["frag_size"]) == 1
 
         def run_simulation(_n_times, _gamma):
             n_init = params["n_init"]
@@ -415,7 +437,7 @@ class TestSDMBreakup:
             )
 
             # Act
-            for _ in range(_n_times):
+            for i in range(_n_times):
                 particulator.collision_coalescence_breakup(
                     enable_breakup=True,
                     gamma=gamma,
@@ -430,6 +452,10 @@ class TestSDMBreakup:
                     is_first_in_pair=is_first_in_pair,
                     warn_overflows=False,
                     max_multiplicity=DEFAULTS.max_multiplicity,
+                )
+                n_fragment.data[0] = (
+                    np.sum(particulator.attributes["volume"].to_ndarray())
+                    / frag_size[0]
                 )
 
             res_mult = particulator.attributes["n"].to_ndarray()
