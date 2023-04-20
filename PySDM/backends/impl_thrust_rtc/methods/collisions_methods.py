@@ -102,8 +102,7 @@ struct Commons {
         gamma_j_k = m + 1;
 
         take_from_j_test += new_mult_k_test;
-        new_mult_k_test *= volume[j] / fragment_size_i;
-        new_mult_k_test += new_mult_k_test
+        new_mult_k_test = new_mult_k_test * (volume[j] / fragment_size_i) + new_mult_k_test;
     }
     return gamma_j_k;
   }
