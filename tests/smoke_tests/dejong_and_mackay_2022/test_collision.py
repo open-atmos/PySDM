@@ -9,14 +9,12 @@ from PySDM_examples.deJong_Mackay_2022 import (
     run_box_NObreakup,
 )
 
-from PySDM.backends import CPU, GPU
+from ....backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 # pylint: disable=redefined-outer-name
-@pytest.mark.parametrize(
-    "backend_class",
-    (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
-)
 def test_collision(backend_class, plot=False):
     settings = Settings0D(warn_overflows=False)
     t_steps = [0, 100, 200]

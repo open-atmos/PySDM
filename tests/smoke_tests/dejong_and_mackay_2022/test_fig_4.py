@@ -10,6 +10,11 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, ExponFrag
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics.constants import si
 
+from ....backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
+
+
 CMAP = matplotlib.cm.get_cmap("viridis")
 N_SD = 2**12
 DT = 1 * si.s
@@ -21,7 +26,6 @@ def bins_edges(num):
     )
 
 
-# pylint: disable=redefined-outer-name
 class TestFig4:
     @staticmethod
     @pytest.mark.parametrize(
@@ -103,10 +107,6 @@ class TestFig4:
             )
 
     @staticmethod
-    @pytest.mark.parametrize(
-        "backend_class",
-        (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
-    )
     def test_fig_4b(backend_class, plot=False):  # pylint: disable=too-many-locals
         # arrange
         settings0 = Settings0D()
