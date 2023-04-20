@@ -60,7 +60,7 @@ def test_fig_5(backend_class, plot=False):
     peaks_expected = {
         0: (34, 0.019),
         1200: (2839, 0.03),
-        3600: (2839, 0.03),
+        3600: (2839, 0.02),
     }
 
     for j, step in enumerate(steps):

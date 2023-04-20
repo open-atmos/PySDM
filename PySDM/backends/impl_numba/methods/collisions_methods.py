@@ -60,21 +60,15 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def breakup0_compute_mult_transfer(
-    gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity
+    gamma, j, k, multiplicity, volume, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
     gamma_j_k = 0
     take_from_j_test = multiplicity[k]
     take_from_j = 0
-    new_mult_k_test = 0
+    new_mult_k_test = ((volume[j] + volume[k]) / fragment_size_i) * multiplicity[k]
     new_mult_k = multiplicity[k]
     for m in range(int(gamma)):
-        take_from_j_test += new_mult_k_test
-        new_mult_k_test *= (
-            volume[j] / fragment_size_i
-        )  # TODO #1040 new_mult_k_test == 0 in first pass
-        new_mult_k_test += nfi * multiplicity[k]
-
         # check for overflow of multiplicity
         if new_mult_k_test > max_multiplicity:
             overflow_flag = True
@@ -87,6 +81,12 @@ def breakup0_compute_mult_transfer(
         take_from_j = take_from_j_test
         new_mult_k = new_mult_k_test
         gamma_j_k = m + 1
+
+        take_from_j_test += new_mult_k_test
+        new_mult_k_test = (
+            new_mult_k_test * (volume[j] / fragment_size_i) + new_mult_k_test
+        )
+
     return take_from_j, new_mult_k, gamma_j_k, overflow_flag
 
 
@@ -137,7 +137,6 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     multiplicity,
     gamma,
     attributes,
-    n_fragment,
     fragment_size,
     max_multiplicity,
     breakup_rate,
@@ -151,7 +150,6 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
         k,
         multiplicity,
         volume,
-        n_fragment[i],
         fragment_size[i],
         max_multiplicity,
     )
@@ -180,7 +178,6 @@ def break_up_while(
     multiplicity,
     gamma,
     attributes,
-    n_fragment,
     fragment_size,
     max_multiplicity,
     breakup_rate,
@@ -216,7 +213,6 @@ def break_up_while(
                 k,
                 multiplicity,
                 volume,
-                (volume[j] + volume[k]) / fragment_size[i],
                 fragment_size[i],
                 max_multiplicity,
             )
@@ -315,7 +311,6 @@ class CollisionsMethods(BackendMethods):
             rand,
             Ec,
             Eb,
-            n_fragment,
             fragment_size,
             healthy,
             cell_id,
@@ -356,7 +351,6 @@ class CollisionsMethods(BackendMethods):
                         multiplicity,
                         gamma,
                         attributes,
-                        n_fragment,
                         fragment_size,
                         max_multiplicity,
                         breakup_rate,
@@ -706,7 +700,6 @@ class CollisionsMethods(BackendMethods):
         rand,
         Ec,
         Eb,
-        n_fragment,
         fragment_size,
         healthy,
         cell_id,
@@ -728,7 +721,6 @@ class CollisionsMethods(BackendMethods):
             rand=rand.data,
             Ec=Ec.data,
             Eb=Eb.data,
-            n_fragment=n_fragment.data,
             fragment_size=fragment_size.data,
             healthy=healthy.data,
             cell_id=cell_id.data,
