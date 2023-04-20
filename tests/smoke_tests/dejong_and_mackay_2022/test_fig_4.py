@@ -102,11 +102,11 @@ class TestFig4:
                 data_y[lbl][0][peak] * settings.rho, x_y[1], significant=1
             )
 
+    @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
         (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=False))),  # TODO #987
     )
-    @staticmethod
     def test_fig_4b(backend_class, plot=False):
         # arrange
         settings0 = Settings0D()
