@@ -10,7 +10,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, ExponFrag
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics.constants import si
 
-from ....backends_fixture import backend_class
+from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 
@@ -29,7 +29,7 @@ def bins_edges(num):
 class TestFig4:
     @staticmethod
     @pytest.mark.parametrize(
-        "backend_class",
+        "backend_class",  # pylint: disable=redefined-outer-name
         (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
     )
     def test_fig_4a(backend_class, plot=False):

@@ -1,7 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
 
-import pytest
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import (
     Settings0D,
@@ -9,7 +8,7 @@ from PySDM_examples.deJong_Mackay_2022 import (
     run_box_NObreakup,
 )
 
-from ....backends_fixture import backend_class
+from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 
