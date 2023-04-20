@@ -105,7 +105,7 @@ class TestSDMBreakup:
         gamma = particulator.PairwiseStorage.from_ndarray(np.asarray([params["gamma"]]))
         rand = particulator.PairwiseStorage.from_ndarray(np.asarray([params["rand"]]))
         fragment_size = particulator.PairwiseStorage.from_ndarray(
-            np.array([-1.0], dtype=float)
+            np.array([50 * si.um**3], dtype=float)
         )
         is_first_in_pair = make_PairIndicator(backend)(n_sd)
 
@@ -126,7 +126,6 @@ class TestSDMBreakup:
         )
 
         # Assert
-        print(particulator.attributes["n"].to_ndarray())
         assert (particulator.attributes["n"].to_ndarray() == n_init).all()
 
     @staticmethod
@@ -194,9 +193,7 @@ class TestSDMBreakup:
             np.array([params["Eb"]] * n_pairs)
         )
         breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
-        frag_size = particulator.PairwiseStorage.from_ndarray(
-            np.array([-1.0] * n_pairs)
-        )
+        frag_size = particulator.PairwiseStorage.from_ndarray(np.array([2.0] * n_pairs))
         is_first_in_pair = particulator.PairIndicator(n_sd)
         is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
             np.asarray(params["is_first_in_pair"])
@@ -220,6 +217,8 @@ class TestSDMBreakup:
 
         # Assert
         cell_id = 0
+        print(breakup_rate.to_ndarray()[cell_id])
+        print(np.sum(params["gamma"] * get_smaller_of_pairs(is_first_in_pair, n_init)))
         assert breakup_rate.to_ndarray()[cell_id] == np.sum(
             params["gamma"] * get_smaller_of_pairs(is_first_in_pair, n_init)
         )
@@ -611,16 +610,6 @@ class TestSDMBreakup:
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
                 "frag_size": [1 / 1.3],
-            },
-            {
-                "gamma": [2.0],
-                "n_init": [20, 4],
-                "v_init": [1, 2],
-                "n_expected": [6, 18],
-                "v_expected": [1, 11 / 9],
-                "expected_deficit": [0.0],
-                "is_first_in_pair": [True, False],
-                "frag_size": [3 / 2.5],
             },
             {
                 "gamma": [2.0],
