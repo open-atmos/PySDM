@@ -29,9 +29,10 @@ def bins_edges(num):
 class TestFig4:
     @staticmethod
     @pytest.mark.parametrize(
-        "backend_class",  # pylint: disable=redefined-outer-name
+        "backend_class",
         (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
     )
+    # pylint: disable=redefined-outer-name
     def test_fig_4a(backend_class, plot=False):
         # arrange
         settings0 = Settings0D(seed=44)
@@ -107,6 +108,7 @@ class TestFig4:
             )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_fig_4b(backend_class, plot=False):  # pylint: disable=too-many-locals
         # arrange
         settings0 = Settings0D()
