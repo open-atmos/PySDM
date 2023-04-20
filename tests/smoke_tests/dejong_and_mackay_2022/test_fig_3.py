@@ -36,22 +36,21 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
 
     # act
     lbl = "initial"
-    (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0], backend_class)
+    res = run_box_breakup(settings, [0], backend_class)
+    data_x[lbl], data_y[lbl] = res.x, res.y
 
     for i, ec_value in enumerate(EC_VALS):
         settings.coal_eff = ConstEc(Ec=ec_value)
         lbl = "Ec = " + str(ec_value)
         if ec_value == 1.0:
             lbl = "Ec = 1.0"
-        (data_x[lbl], data_y[lbl], _) = run_box_breakup(
-            settings, backend_class=backend_class
-        )
+        res = run_box_breakup(settings, backend_class=backend_class)
+        data_x[lbl], data_y[lbl] = res.x, res.y
 
     lbl = "Straub 2010"
     settings.coal_eff = Straub2010Ec()
-    (data_x[lbl], data_y[lbl], _) = run_box_breakup(
-        settings, backend_class=backend_class
-    )
+    res = run_box_breakup(settings, backend_class=backend_class)
+    data_x[lbl], data_y[lbl] = res.x, res.y
 
     # plot
     lbl = "initial"

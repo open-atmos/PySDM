@@ -40,7 +40,8 @@ class TestFig4:
 
         # act
         lbl = "initial"
-        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
+        res = run_box_breakup(settings0, [0], backend_class)
+        data_x[lbl], data_y[lbl] = res.x, res.y
         for i, nf_val in enumerate(nf_vals):
             settings = Settings0D(
                 fragmentation=AlwaysN(n=nf_val), seed=44, warn_overflows=False
@@ -51,9 +52,8 @@ class TestFig4:
             settings.dt = DT
 
             lbl = "n_f = " + str(nf_val)
-            (data_x[lbl], data_y[lbl], _) = run_box_breakup(
-                settings, [120], backend_class
-            )
+            res = run_box_breakup(settings, [120], backend_class)
+            data_x[lbl], data_y[lbl] = res.x, res.y
 
         # plot
         pyplot.step(
@@ -119,7 +119,8 @@ class TestFig4:
 
         # act
         lbl = "initial"
-        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
+        res = run_box_breakup(settings0, [0], backend_class)
+        data_x[lbl], data_y[lbl] = res.x, res.y
         for i, mu_val in enumerate(mu_vals):
             settings = Settings0D(
                 fragmentation=ExponFrag(
@@ -133,9 +134,8 @@ class TestFig4:
             settings.radius_bins_edges = settings0.radius_bins_edges
             settings.coal_eff = ConstEc(Ec=0.95)
             lbl = r"$\mu$ = " + str(round(mu_val / x_0, 2)) + "X$_0$"
-            (data_x[lbl], data_y[lbl], _) = run_box_breakup(
-                settings, [120], backend_class
-            )
+            res = run_box_breakup(settings, [120], backend_class)
+            data_x[lbl], data_y[lbl] = res.x, res.y
 
         # plot
         pyplot.step(

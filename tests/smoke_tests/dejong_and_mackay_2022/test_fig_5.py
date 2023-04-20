@@ -32,7 +32,8 @@ def test_fig_5(backend_class, plot=False):
     settings.coal_eff = Straub2010Ec()
 
     # act
-    (data_x, data_y, _) = run_box_breakup(settings, backend_class=backend_class)
+    res = run_box_breakup(settings, backend_class=backend_class)
+    data_x, data_y = res.x, res.y
 
     # plot
     cmap = matplotlib.cm.get_cmap("viridis")
