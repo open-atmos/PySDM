@@ -217,8 +217,6 @@ class TestSDMBreakup:
 
         # Assert
         cell_id = 0
-        print(breakup_rate.to_ndarray()[cell_id])
-        print(np.sum(params["gamma"] * get_smaller_of_pairs(is_first_in_pair, n_init)))
         assert breakup_rate.to_ndarray()[cell_id] == np.sum(
             params["gamma"] * get_smaller_of_pairs(is_first_in_pair, n_init)
         )
