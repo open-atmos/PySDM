@@ -112,7 +112,7 @@ jobs:
         platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 150
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v2
 
@@ -140,7 +140,7 @@ jobs:
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 -p no:unraisableexception -We
+        run: pytest --durations=10 --timeout=600 --timeout_method=thread -p no:unraisableexception -We
 
 #       - if: ${{ failure() }}
 #         uses: mxschmitt/action-tmate@v3
