@@ -414,7 +414,7 @@ class TestSDMBreakup:
             )
 
             # Act
-            for i in range(_n_times):
+            for _ in range(_n_times):
                 particulator.collision_coalescence_breakup(
                     enable_breakup=True,
                     gamma=gamma,

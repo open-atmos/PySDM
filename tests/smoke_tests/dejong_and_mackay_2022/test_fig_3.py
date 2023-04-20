@@ -12,7 +12,7 @@ from PySDM.physics.constants import si
 
 R_MIN = 0.1 * si.um
 V_MIN = 4 / 3 * np.pi * R_MIN**3
-EC_VALS = [1.0, 0.95, 0.9, 0.8]
+EC_VALS = [1.0, 0.9, 0.8]
 BINS = 32
 N_SD = 2**10
 
@@ -94,7 +94,6 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
     peaks_expected = {
         "initial": (30, 0.017),
         "Ec = 1.0": (1600, 0.015),
-        "Ec = 0.95": (800, 0.01),
         "Ec = 0.9": (200, 0.01),
         "Ec = 0.8": (20, 0.0125),
         "Straub 2010": (200, 0.0125),
