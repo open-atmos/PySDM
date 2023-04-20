@@ -66,13 +66,9 @@ def breakup0_compute_mult_transfer(
     gamma_j_k = 0
     take_from_j_test = multiplicity[k]
     take_from_j = 0
-    new_mult_k_test = 0
+    new_mult_k_test = ((volume[j] + volume[k]) / fragment_size_i) * multiplicity[k]
     new_mult_k = multiplicity[k]
     for m in range(int(gamma)):
-        take_from_j_test += new_mult_k_test
-        new_mult_k_test *= volume[j] / fragment_size_i
-        new_mult_k_test += nfi * multiplicity[k]
-
         # check for overflow of multiplicity
         if new_mult_k_test > max_multiplicity:
             overflow_flag = True
@@ -85,6 +81,12 @@ def breakup0_compute_mult_transfer(
         take_from_j = take_from_j_test
         new_mult_k = new_mult_k_test
         gamma_j_k = m + 1
+
+        take_from_j_test += new_mult_k_test
+        new_mult_k_test = (
+            new_mult_k_test * (volume[j] / fragment_size_i) + new_mult_k_test
+        )
+
     return take_from_j, new_mult_k, gamma_j_k, overflow_flag
 
 
