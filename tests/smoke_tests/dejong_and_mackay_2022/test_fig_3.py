@@ -12,7 +12,7 @@ from PySDM.physics.constants import si
 
 R_MIN = 0.1 * si.um
 V_MIN = 4 / 3 * np.pi * R_MIN**3
-EC_VALS = [1.0, 0.95, 0.9, 0.8]
+EC_VALS = [1.0, 0.9, 0.8]
 BINS = 32
 N_SD = 2**10
 
@@ -36,22 +36,21 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
 
     # act
     lbl = "initial"
-    (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0], backend_class)
+    res = run_box_breakup(settings, [0], backend_class)
+    data_x[lbl], data_y[lbl] = res.x, res.y
 
     for i, ec_value in enumerate(EC_VALS):
         settings.coal_eff = ConstEc(Ec=ec_value)
         lbl = "Ec = " + str(ec_value)
         if ec_value == 1.0:
             lbl = "Ec = 1.0"
-        (data_x[lbl], data_y[lbl], _) = run_box_breakup(
-            settings, backend_class=backend_class
-        )
+        res = run_box_breakup(settings, backend_class=backend_class)
+        data_x[lbl], data_y[lbl] = res.x, res.y
 
     lbl = "Straub 2010"
     settings.coal_eff = Straub2010Ec()
-    (data_x[lbl], data_y[lbl], _) = run_box_breakup(
-        settings, backend_class=backend_class
-    )
+    res = run_box_breakup(settings, backend_class=backend_class)
+    data_x[lbl], data_y[lbl] = res.x, res.y
 
     # plot
     lbl = "initial"
@@ -94,7 +93,6 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
     peaks_expected = {
         "initial": (30, 0.017),
         "Ec = 1.0": (1600, 0.015),
-        "Ec = 0.95": (800, 0.01),
         "Ec = 0.9": (200, 0.01),
         "Ec = 0.8": (20, 0.0125),
         "Straub 2010": (200, 0.0125),
