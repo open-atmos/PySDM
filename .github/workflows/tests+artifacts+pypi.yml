@@ -114,7 +114,7 @@ jobs:
         test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v2
 
