@@ -167,7 +167,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         rand,
         Ec,
         Eb,
-        n_fragment,
         fragment_size,
         coalescence_rate,
         breakup_rate,
@@ -191,7 +190,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 rand=rand,
                 Ec=Ec,
                 Eb=Eb,
-                n_fragment=n_fragment,
                 fragment_size=fragment_size,
                 healthy=healthy,
                 cell_id=cell_id,
@@ -602,7 +600,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         rand,
         Ec,
         Eb,
-        n_fragment,
         fragment_size,
         coalescence_rate,
         breakup_rate,
@@ -626,7 +623,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 rand=rand,
                 Ec=Ec,
                 Eb=Eb,
-                n_fragment=n_fragment,
                 fragment_size=fragment_size,
                 healthy=healthy,
                 cell_id=cell_id,
@@ -1031,7 +1027,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, n_fragment, fragment_size, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, max_multiplicity)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, fragment_size, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, max_multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1047,7 +1043,6 @@ def n_sd(self) -&gt; int:
     rand,
     Ec,
     Eb,
-    n_fragment,
     fragment_size,
     coalescence_rate,
     breakup_rate,
@@ -1071,7 +1066,6 @@ def n_sd(self) -&gt; int:
             rand=rand,
             Ec=Ec,
             Eb=Eb,
-            n_fragment=n_fragment,
             fragment_size=fragment_size,
             healthy=healthy,
             cell_id=cell_id,
