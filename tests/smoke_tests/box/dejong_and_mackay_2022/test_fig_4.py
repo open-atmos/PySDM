@@ -10,7 +10,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, ExponFrag
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics.constants import si
 
-from ...backends_fixture import backend_class
+from ....backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 

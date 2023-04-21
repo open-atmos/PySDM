@@ -17,7 +17,7 @@ from PySDM.dynamics.collisions.collision_kernels import (
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
-from ...backends_fixture import backend_class
+from ....backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 

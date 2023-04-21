@@ -8,7 +8,7 @@ from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM.formulae import Formulae
 from PySDM.physics import si
 
-from ...backends_fixture import backend_class
+from ....backends_fixture import backend_class
 from .dummy_storage import DummyStorage
 
 assert hasattr(backend_class, "_pytestfixturefunction")

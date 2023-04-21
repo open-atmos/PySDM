@@ -12,7 +12,7 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
 from PySDM.physics.constants import si
 
-from ...backends_fixture import backend_class
+from ....backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 

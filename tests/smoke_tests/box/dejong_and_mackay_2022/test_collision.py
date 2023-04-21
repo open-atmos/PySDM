@@ -8,7 +8,7 @@ from PySDM_examples.deJong_Mackay_2022 import (
     run_box_NObreakup,
 )
 
-from ...backends_fixture import backend_class
+from ....backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 
