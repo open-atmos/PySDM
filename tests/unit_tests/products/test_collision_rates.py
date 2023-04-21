@@ -19,10 +19,6 @@ from PySDM.products import (
     CollisionRatePerGridbox,
 )
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 ENV_ARGS = {"dv": 1 * si.m**3, "dt": 1 * si.s}
 RHO_DRY = 1 * si.kg / si.m**3
 
@@ -73,7 +69,6 @@ class TestCollisionProducts:
             },
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_individual_dynamics_rates_nonadaptive(params, backend_class):
         # TODO #744
         if backend_class.__name__ == "ThrustRTC" and params["enable_breakup"]:
@@ -138,7 +133,6 @@ class TestCollisionProducts:
         "n_init",
         [[5, 2], [1, 2, 3, 4], [3, 7] * 10],
     )
-    # pylint: disable=redefined-outer-name
     def test_no_collision_deficits_when_adaptive(params, n_init, backend_class=CPU):
         # Arrange
         n_sd = len(n_init)
@@ -186,7 +180,6 @@ class TestCollisionProducts:
             },
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_breakup_deficits_when_adaptive(params, backend_class=CPU):
         # Arrange
         n_init = [7, 353]
@@ -236,7 +229,6 @@ class TestCollisionProducts:
             },
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_no_breakup_deficits_when_while_loop(params, backend_class=CPU):
         # Arrange
         n_init = [7, 353]
@@ -294,7 +286,6 @@ class TestCollisionProducts:
             },
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_rate_sums_single_cell(params, backend_class=CPU):
         # Arrange
         n_init = [7, 353]

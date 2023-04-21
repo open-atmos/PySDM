@@ -8,12 +8,7 @@ from PySDM_examples.deJong_Mackay_2022 import (
     run_box_NObreakup,
 )
 
-from ....backends_fixture import backend_class
 
-assert hasattr(backend_class, "_pytestfixturefunction")
-
-
-# pylint: disable=redefined-outer-name
 def test_collision(backend_class, plot=False):
     settings = Settings0D(warn_overflows=False)
     t_steps = [0, 100, 200]

@@ -8,12 +8,7 @@ from PySDM_examples.utils import DummyController
 
 from PySDM.exporters import NetCDFExporter, VTKExporter
 
-from ....backends_fixture import backend_class
 
-assert hasattr(backend_class, "_pytestfixturefunction")
-
-
-# pylint: disable=redefined-outer-name
 def test_export(backend_class, tmp_path):
     # Arrange
     settings = Settings()

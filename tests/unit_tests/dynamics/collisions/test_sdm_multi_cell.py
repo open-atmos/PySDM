@@ -8,17 +8,13 @@ from PySDM.environments import Box
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling.spatial_sampling import Pseudorandom
 
-from ....backends_fixture import backend_class
 from .__parametrisation__ import get_dummy_particulator_and_coalescence
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
-    # pylint: disable=redefined-outer-name
     def test_coalescence_call(n_sd, backend_class, adaptive):
         # TODO #330
         if backend_class is ThrustRTC:

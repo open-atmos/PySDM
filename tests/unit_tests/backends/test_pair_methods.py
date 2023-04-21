@@ -8,10 +8,6 @@ from PySDM.backends import CPU
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 class TestPairMethods:
     @staticmethod
@@ -37,7 +33,6 @@ class TestPairMethods:
             ),
         ),
     )
-    # pylint: disable=redefined-outer-name
     def test_sum_pair_body_out_of_bounds(
         _data_in, _data_out, _is_first_in_pair, _idx, backend_class=CPU
     ):
@@ -83,7 +78,6 @@ class TestPairMethods:
             ),
         ),
     )
-    # pylint: disable=redefined-outer-name
     def test_sum_pair(_data_in, _data_out, _idx, backend_class):
         # Arrange
         backend = backend_class()
@@ -108,7 +102,6 @@ class TestPairMethods:
 
     @staticmethod
     @pytest.mark.parametrize("length", (1, 2, 3, 4))
-    # pylint: disable=redefined-outer-name
     def test_find_pairs_length(backend_class, length):
         # arrange
         backend = backend_class()

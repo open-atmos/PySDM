@@ -19,10 +19,6 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
 from PySDM.environments import Box
 from PySDM.physics import si
 
-from ....backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 ARBITRARY_VALUE_BETWEEN_0_AND_1 = 0.5
 
 
@@ -45,9 +41,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             Straub2010Nf(),
         ),
     )
-    def test_fragmentation_fn_call(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
+    def test_fragmentation_fn_call(fragmentation_fn, backend_class):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -92,9 +86,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
         ],
     )
-    def test_fragmentation_limiters_vmin(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
+    def test_fragmentation_limiters_vmin(fragmentation_fn, backend_class):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -141,9 +133,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             pytest.param(AlwaysN(n=0.01), marks=pytest.mark.xfail(strict=True)),
         ],
     )
-    def test_fragmentation_limiters_vmax(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
+    def test_fragmentation_limiters_vmax(fragmentation_fn, backend_class):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -190,9 +180,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
         ],
     )
-    def test_fragmentation_limiters_nfmax(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
+    def test_fragmentation_limiters_nfmax(fragmentation_fn, backend_class):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -241,7 +229,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     )
     def test_fragmentation_fn_distribution(
         fragmentation_fn, plot=False
-    ):  # pylint: disable=redefined-outer-name, too-many-locals, unnecessary-lambda-assignment
+    ):  # pylint: disable=too-many-locals, unnecessary-lambda-assignment
         # arrange
 
         drop_size_L_diam = 0.4 * si.cm
@@ -337,7 +325,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         fragmentation_fn,
         volume,
         expected_nf,
-        backend_class=CPU,  # pylint:disable=redefined-outer-name
+        backend_class=CPU,
     ):
         # arrange
         expected_frag_size = np.sum(volume) / expected_nf

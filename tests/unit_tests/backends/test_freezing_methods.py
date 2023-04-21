@@ -10,10 +10,6 @@ from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 from PySDM.products import IceWaterContent
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 class TestFreezingMethods:
     # TODO #599
@@ -28,7 +24,6 @@ class TestFreezingMethods:
     @pytest.mark.parametrize("singular", (True, False))
     @pytest.mark.parametrize("thaw", (True, False))
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
-    # pylint: disable=redefined-outer-name
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
         formulae = Formulae()
@@ -66,7 +61,6 @@ class TestFreezingMethods:
             assert particulator.products["ice water content"].get() > 0
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_freeze_singular(backend_class):
         # arrange
         n_sd = 44
@@ -102,7 +96,7 @@ class TestFreezingMethods:
         )
 
     @staticmethod
-    # pylint: disable=too-many-locals,redefined-outer-name
+    # pylint: disable=too-many-locals
     def test_freeze_time_dependent(backend_class, plot=False):
         # Arrange
         seed = 44

@@ -3,14 +3,9 @@ import numpy as np
 
 from PySDM.physics import si
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 class TestPhysicsMethods:  # pylint: disable=too-few-public-methods
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_temperature_pressure_RH(backend_class):
         # Arrange
         backend = backend_class()

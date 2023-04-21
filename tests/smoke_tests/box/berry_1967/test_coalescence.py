@@ -17,15 +17,10 @@ from PySDM.dynamics.collisions.collision_kernels import (
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
-from ....backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 @pytest.mark.parametrize("croupier", ("local", "global"))
 @pytest.mark.parametrize("adaptive", (True, False))
 @pytest.mark.parametrize("kernel", (Geometric(), Electric(), Hydrodynamic()))
-# pylint: disable=redefined-outer-name
 def test_coalescence(backend_class, kernel, croupier, adaptive):
     if backend_class == ThrustRTC and croupier == "local":  # TODO #358
         return
@@ -62,7 +57,6 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
 
 
 @pytest.mark.xfail(struct.calcsize("P") * 8 == 32, reason="32 bit", strict=False)
-# pylint: disable=redefined-outer-name
 def test_coalescence_2_sd(backend_class):
     # Arrange
     s = Settings()

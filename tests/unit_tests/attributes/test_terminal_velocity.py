@@ -4,13 +4,9 @@ import numpy as np
 
 from PySDM.dynamics.terminal_velocity import Interpolation, RogersYau
 from PySDM.physics import constants as const
-from tests.backends_fixture import backend_class
 from tests.unit_tests.dummy_particulator import DummyParticulator
 
-assert hasattr(backend_class, "_pytestfixturefunction")
 
-
-# pylint: disable=redefined-outer-name
 def test_approximation(backend_class, plot=False):
     r = (
         np.array(
