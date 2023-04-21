@@ -76,7 +76,6 @@ struct Commons {
     int64_t k,
     VectorView<int64_t> multiplicity,
     VectorView<real_type> volume,
-    real_type nfi,
     real_type fragment_size_i,
     int64_t max_multiplicity,
 
@@ -86,14 +85,10 @@ struct Commons {
     real_type gamma_j_k = 0;
     real_type take_from_j_test = multiplicity[k];
     take_from_j[0] = 0;
-    real_type new_mult_k_test = 0;
+    real_type new_mult_k_test = ((volume[j] + volume[k]) / fragment_size_i * multiplicity[k]);
     new_mult_k[0] = multiplicity[k];
 
     for (auto m = 0; m < (int64_t) (gamma); m += 1) {
-        take_from_j_test += new_mult_k_test;
-        new_mult_k_test *= volume[j] / fragment_size_i;
-        new_mult_k_test += nfi * multiplicity[k];
-
         if (new_mult_k_test > max_multiplicity) {
             break;
         }
@@ -105,6 +100,9 @@ struct Commons {
         take_from_j[0] = take_from_j_test;
         new_mult_k[0] = new_mult_k_test;
         gamma_j_k = m + 1;
+
+        take_from_j_test += new_mult_k_test;
+        new_mult_k_test = new_mult_k_test * (volume[j] / fragment_size_i) + new_mult_k_test;
     }
     return gamma_j_k;
   }
@@ -170,7 +168,6 @@ struct Commons {
     VectorView<int64_t> multiplicity,
     VectorView<real_type> gamma,
     VectorView<real_type> attributes,
-    VectorView<real_type> n_fragment,
     VectorView<real_type> fragment_size,
     int64_t max_multiplicity,
     VectorView<int64_t> breakup_rate,
@@ -187,7 +184,6 @@ struct Commons {
         k,
         multiplicity,
         volume,
-        n_fragment[i],
         fragment_size[i],
         max_multiplicity,
         take_from_j,
@@ -200,22 +196,15 @@ struct Commons {
 
     Commons::breakup_fun1(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
 
-    if (multiplicity[j] <= take_from_j[0] && (int64_t)(round(nj[0])) == 0) {
-        atomicAdd(
-            (unsigned long long int*)&breakup_rate_deficit[cid],
-            (unsigned long long int)(gamma[i] * multiplicity[k])
-        );
-    } else {
-        atomicAdd(
-            (unsigned long long int*)&breakup_rate[cid],
-            (unsigned long long int)(gamma_j_k * multiplicity[k])
-        );
-        atomicAdd(
-            (unsigned long long int*)&breakup_rate_deficit[cid],
-            (unsigned long long int)(gamma_deficit * multiplicity[k])
-        );
-        Commons::breakup_fun2(j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr);
-    }
+    atomicAdd(
+        (unsigned long long int*)&breakup_rate[cid],
+        (unsigned long long int)(gamma_j_k * multiplicity[k])
+    );
+    atomicAdd(
+        (unsigned long long int*)&breakup_rate_deficit[cid],
+        (unsigned long long int)(gamma_deficit * multiplicity[k])
+    );
+    Commons::breakup_fun2(j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr);
   }
 };
 """
@@ -355,7 +344,6 @@ class CollisionsMethods(
                 "rand",
                 "Ec",
                 "Eb",
-                "n_fragment",
                 "fragment_size",
                 "healthy",
                 "cell_id",
@@ -404,7 +392,6 @@ class CollisionsMethods(
                     multiplicity,
                     gamma,
                     attributes,
-                    n_fragment,
                     fragment_size,
                     max_multiplicity,
                     breakup_rate,
@@ -797,7 +784,6 @@ class CollisionsMethods(
         rand,
         Ec,
         Eb,
-        n_fragment,
         fragment_size,
         healthy,
         cell_id,
@@ -825,7 +811,6 @@ class CollisionsMethods(
                 rand.data,
                 Ec.data,
                 Eb.data,
-                n_fragment.data,
                 fragment_size.data,
                 healthy.data,
                 cell_id.data,
