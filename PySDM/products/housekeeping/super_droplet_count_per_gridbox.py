@@ -10,22 +10,22 @@ from PySDM.products.impl.product import Product
 class SuperDropletCountPerGridbox(Product):
     def __init__(self, unit="dimensionless", name=None):
         super().__init__(unit=unit, name=name)
-        self.impl = None
+        self._jit_impl = None
 
     def register(self, builder):
         super().register(builder)
 
         @numba.njit(**{**JIT_FLAGS, "fastmath": builder.formulae.fastmath})
-        def impl(cell_start, buffer_ravel):
+        def jit_impl(cell_start, ravelled_buffer):
             n_cell = cell_start.shape[0] - 1
             for i in numba.prange(n_cell):  # pylint: disable=not-an-iterable
-                buffer_ravel[i] = cell_start[i + 1] - cell_start[i]
+                ravelled_buffer[i] = cell_start[i + 1] - cell_start[i]
 
-        self.impl = impl
+        self._jit_impl = jit_impl
 
     def _impl(self, **kwargs):
-        self.impl(
+        self._jit_impl(
             cell_start=self.particulator.attributes.cell_start.to_ndarray(),
-            buffer_ravel=self.buffer.ravel(),
+            ravelled_buffer=self.buffer.ravel(),
         )
         return self.buffer
