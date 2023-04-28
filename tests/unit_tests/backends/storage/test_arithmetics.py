@@ -2,10 +2,6 @@
 import numpy as np
 import pytest
 
-from ....backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 class TestArithmetics:  # pylint: disable=too-few-public-methods
     @staticmethod
@@ -16,7 +12,6 @@ class TestArithmetics:  # pylint: disable=too-few-public-methods
             ([1.0], [2], [3.0]),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_addition(backend_class, output, addend, expected):
         # Arrange
         backend = backend_class()

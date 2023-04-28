@@ -19,10 +19,6 @@ from PySDM.physics import si
 from PySDM.physics.trivia import Trivia
 from PySDM.products.size_spectral import ParticleVolumeVersusRadiusLogarithmSpectrum
 
-from ....backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 class TestSDMBreakup:
     @staticmethod
@@ -33,7 +29,6 @@ class TestSDMBreakup:
             10 * si.s,
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class):
         # Arrange
         attributes = {
@@ -83,7 +78,6 @@ class TestSDMBreakup:
             ),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_single_collision_bounce(params, backend_class):
         # Arrange
         backend = backend_class()
@@ -162,7 +156,6 @@ class TestSDMBreakup:
             },
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_breakup_counters(params, backend_class):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
@@ -268,7 +261,6 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    # pylint: disable=redefined-outer-name
     def test_attribute_update_single_breakup(
         params, flag, backend_class
     ):  # pylint: disable=too-many-locals
@@ -369,7 +361,6 @@ class TestSDMBreakup:
             },
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_attribute_update_n_breakups(
         _n, params, backend_class=CPU
     ):  # pylint: disable=too-many-locals
@@ -448,7 +439,6 @@ class TestSDMBreakup:
         )
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_multiplicity_overflow(backend=CPU()):  # pylint: disable=too-many-locals
         # Arrange
         params = {
@@ -516,7 +506,6 @@ class TestSDMBreakup:
         )
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_same_multiplicity_overflow_no_substeps(
         backend=CPU(),
     ):  # pylint: disable=too-many-locals
@@ -622,7 +611,6 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    # pylint: disable=redefined-outer-name
     def test_noninteger_fragments(
         params, flag, backend_class
     ):  # pylint: disable=too-many-locals
@@ -777,7 +765,6 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    # pylint: disable=redefined-outer-name
     def test_while_loop_multi_breakup(
         params, flag, backend_class=CPU
     ):  # pylint:disable=too-many-locals

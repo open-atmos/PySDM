@@ -105,15 +105,16 @@ jobs:
           path: '.zenodo.json'
           prop_path: 'creators'
 
-  build:
+  tests:
     needs: [pylint, pdoc, nojit_and_codecov, precommit, zenodo_json]
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: ["3.7", "3.10"]
+        test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 120
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v2
 
@@ -141,7 +142,7 @@ jobs:
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We
+        run: pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
 
 #       - if: ${{ failure() }}
 #         uses: mxschmitt/action-tmate@v3
@@ -151,7 +152,7 @@ jobs:
   dist:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    needs: [build]
+    needs: [tests]
     steps:
       - uses: actions/checkout@v2
         with:

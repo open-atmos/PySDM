@@ -10,11 +10,6 @@ from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_numba.methods.collisions_methods import pair_indices
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
-
 NONZERO = 44
 
 
@@ -72,7 +67,6 @@ class TestCollisionMethods:
             ((4, 5, 4.5, 3, 0.1), (0, 1, 2, 3, 4, 5), 5),
         ),
     )
-    # pylint: disable=redefined-outer-name
     def test_adaptive_sdm_end(backend_class, dt_left, cell_start, expected):
         # Arrange
         backend = backend_class()
@@ -153,7 +147,7 @@ class TestCollisionMethods:
             ),
         ),
     )
-    # pylint: disable=redefined-outer-name,too-many-locals
+    # pylint: disable=too-many-locals
     def test_scale_prob_for_adaptive_sdm_gamma(
         *,
         backend_class,
@@ -214,7 +208,6 @@ class TestCollisionMethods:
         "backend_class, scheme",
         ((CPU, "counting_sort"), (CPU, "counting_sort_parallel"), (GPU, "default")),
     )
-    # pylint: disable=redefined-outer-name
     def test_cell_caretaker(backend_class, scheme):
         # Arrange
         backend = backend_class()

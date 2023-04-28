@@ -3,16 +3,12 @@ import numpy as np
 
 from PySDM.dynamics import EulerianAdvection
 
-from ...backends_fixture import backend_class
 from ..dummy_environment import DummyEnvironment
 from ..dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_update(backend_class):
         # Arrange
         particulator = DummyParticulator(backend_class)

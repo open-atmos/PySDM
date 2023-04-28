@@ -7,10 +7,6 @@ from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra.lognormal import Lognormal
 from PySDM.physics import si
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 m_mode = 0.5e-5
 n_part = 256 * 16
 s_geom = 1.5
@@ -28,7 +24,6 @@ formulae = Formulae()
         pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
     ),
 )
-# pylint: disable=redefined-outer-name
 def test_spectral_discretisation(discretisation, backend_class):
     # Arrange
     n_sd = 100000

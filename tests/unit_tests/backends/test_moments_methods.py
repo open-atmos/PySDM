@@ -4,10 +4,6 @@ import pytest
 
 from PySDM import Formulae
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 @pytest.mark.parametrize(
     "min_x, max_x, value, expected",
@@ -19,7 +15,6 @@ assert hasattr(backend_class, "_pytestfixturefunction")
         (0, 1, 1.5, 0),
     ],
 )
-# pylint: disable=redefined-outer-name
 def test_moments_range(backend_class, min_x, max_x, value, expected):
     # Arrange
     backend = backend_class(Formulae())
