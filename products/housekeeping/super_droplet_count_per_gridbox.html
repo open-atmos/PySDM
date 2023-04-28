@@ -30,19 +30,33 @@
 <pre><code class="python">&#34;&#34;&#34;
 super-droplet count per gridbox (dimensionless)
 &#34;&#34;&#34;
+import numba
+
+from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.products.impl.product import Product
 
 
 class SuperDropletCountPerGridbox(Product):
     def __init__(self, unit=&#34;dimensionless&#34;, name=None):
         super().__init__(unit=unit, name=name)
+        self._jit_impl = None
 
-    # TODO #992: should be njitted (with prange)
+    def register(self, builder):
+        super().register(builder)
+
+        @numba.njit(**{**JIT_FLAGS, &#34;fastmath&#34;: builder.formulae.fastmath})
+        def jit_impl(cell_start, ravelled_buffer):
+            n_cell = cell_start.shape[0] - 1
+            for i in numba.prange(n_cell):  # pylint: disable=not-an-iterable
+                ravelled_buffer[i] = cell_start[i + 1] - cell_start[i]
+
+        self._jit_impl = jit_impl
+
     def _impl(self, **kwargs):
-        cell_start = self.particulator.attributes.cell_start
-        n_cell = cell_start.shape[0] - 1
-        for i in range(n_cell):
-            self.buffer.ravel()[i] = cell_start[i + 1] - cell_start[i]
+        self._jit_impl(
+            cell_start=self.particulator.attributes.cell_start.to_ndarray(),
+            ravelled_buffer=self.buffer.ravel(),
+        )
         return self.buffer</code></pre>
 </details>
 </section>
@@ -68,19 +82,54 @@ class SuperDropletCountPerGridbox(Product):
 <pre><code class="python">class SuperDropletCountPerGridbox(Product):
     def __init__(self, unit=&#34;dimensionless&#34;, name=None):
         super().__init__(unit=unit, name=name)
+        self._jit_impl = None
 
-    # TODO #992: should be njitted (with prange)
+    def register(self, builder):
+        super().register(builder)
+
+        @numba.njit(**{**JIT_FLAGS, &#34;fastmath&#34;: builder.formulae.fastmath})
+        def jit_impl(cell_start, ravelled_buffer):
+            n_cell = cell_start.shape[0] - 1
+            for i in numba.prange(n_cell):  # pylint: disable=not-an-iterable
+                ravelled_buffer[i] = cell_start[i + 1] - cell_start[i]
+
+        self._jit_impl = jit_impl
+
     def _impl(self, **kwargs):
-        cell_start = self.particulator.attributes.cell_start
-        n_cell = cell_start.shape[0] - 1
-        for i in range(n_cell):
-            self.buffer.ravel()[i] = cell_start[i + 1] - cell_start[i]
+        self._jit_impl(
+            cell_start=self.particulator.attributes.cell_start.to_ndarray(),
+            ravelled_buffer=self.buffer.ravel(),
+        )
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.register"><code class="name flex">
+<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register(self, builder):
+    super().register(builder)
+
+    @numba.njit(**{**JIT_FLAGS, &#34;fastmath&#34;: builder.formulae.fastmath})
+    def jit_impl(cell_start, ravelled_buffer):
+        n_cell = cell_start.shape[0] - 1
+        for i in numba.prange(n_cell):  # pylint: disable=not-an-iterable
+            ravelled_buffer[i] = cell_start[i + 1] - cell_start[i]
+
+    self._jit_impl = jit_impl</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -100,6 +149,9 @@ class SuperDropletCountPerGridbox(Product):
 <ul>
 <li>
 <h4><code><a title="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox" href="#PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox">SuperDropletCountPerGridbox</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.register" href="#PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.register">register</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
