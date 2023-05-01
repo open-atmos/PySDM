@@ -5,15 +5,12 @@ from PySDM.initialisation.discretise_multiplicities import discretise_multiplici
 from PySDM.initialisation.sampling.spectral_sampling import Linear
 from PySDM.initialisation.spectra.lognormal import Lognormal
 
-from ...backends_fixture import backend_class
 from ..dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestMaths:
     @staticmethod
-    # pylint: disable=redefined-outer-name,too-many-locals
+    # pylint: disable=too-many-locals
     def test_moment_0d(backend_class):
         # Arrange
         n_part = 100000
@@ -73,7 +70,7 @@ class TestMaths:
         np.testing.assert_approx_equal(discr_mean_T_squared, 300.0**2, significant=6)
 
     @staticmethod
-    # pylint: disable=redefined-outer-name,too-many-locals
+    # pylint: disable=too-many-locals
     def test_spectrum_moment_0d(backend_class):
         # Arrange
         n_part = 100000

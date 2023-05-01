@@ -7,10 +7,6 @@ from PySDM.initialisation.sampling import spectro_glacial_sampling
 from PySDM.initialisation.spectra.lognormal import Lognormal
 from PySDM.physics import si
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 formulae = Formulae(
     freezing_temperature_spectrum="Niemand_et_al_2012",
     constants={"NIEMAND_A": -0.517, "NIEMAND_B": 8.934},
@@ -37,7 +33,6 @@ m_range = (
         ),
     ),
 )
-# pylint: disable=redefined-outer-name
 def test_spectral_discretisation(discretisation, backend_class):
     # Arrange
     n_sd = 100000

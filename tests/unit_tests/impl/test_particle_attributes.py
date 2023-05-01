@@ -7,11 +7,8 @@ from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 
-from ...backends_fixture import backend_class
 from ..dummy_environment import DummyEnvironment
 from ..dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 def make_indexed_storage(backend, iterable, idx=None):
@@ -34,7 +31,6 @@ class TestParticleAttributes:
             pytest.param(np.array([1.0, 1, 4]), np.array([5, 0, 0])),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_housekeeping(backend_class, volume, multiplicity):
         # Arrange
         particulator = DummyParticulator(backend_class, n_sd=len(multiplicity))
@@ -122,7 +118,6 @@ class TestParticleAttributes:
         )
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_recalculate_cell_id(backend_class):
         # Arrange
         multiplicity = np.ones(1, dtype=np.int64)
@@ -176,7 +171,6 @@ class TestParticleAttributes:
         assert not sut._ParticleAttributes__sorted
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_permutation_local(backend_class):
         if backend_class is GPU:  # TODO #358
             return
@@ -207,7 +201,6 @@ class TestParticleAttributes:
         assert sut._ParticleAttributes__sorted
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_permutation_global_repeatable(backend_class):
         if backend_class is ThrustRTC:
             return  # TODO #328
@@ -239,7 +232,6 @@ class TestParticleAttributes:
         assert not sut._ParticleAttributes__sorted
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_permutation_local_repeatable(backend_class):
         if backend_class is GPU:  # TODO #358
             return

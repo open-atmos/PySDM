@@ -6,14 +6,10 @@ from PySDM.backends import ThrustRTC
 from PySDM.initialisation.sampling.spectral_sampling import Linear
 from PySDM.initialisation.spectra.lognormal import Lognormal
 
-from ....backends_fixture import backend_class
 from ...dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 @pytest.mark.parametrize("croupier", ["local", "global"])
-# pylint: disable=redefined-outer-name
 def test_final_state(croupier, backend_class):
     if backend_class is ThrustRTC:
         return  # TODO #330

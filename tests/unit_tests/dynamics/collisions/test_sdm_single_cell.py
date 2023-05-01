@@ -8,7 +8,6 @@ from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Coalescence
 
-from ....backends_fixture import backend_class
 from .__parametrisation__ import (
     T_2,
     backend_fill,
@@ -17,7 +16,6 @@ from .__parametrisation__ import (
     v_2,
 )
 
-assert hasattr(backend_class, "_pytestfixturefunction")
 assert hasattr(v_2, "_pytestfixturefunction")
 assert hasattr(T_2, "_pytestfixturefunction")
 assert hasattr(n_2, "_pytestfixturefunction")
@@ -25,8 +23,9 @@ assert hasattr(n_2, "_pytestfixturefunction")
 
 class TestSDMSingleCell:
     @staticmethod
-    # pylint: disable=redefined-outer-name
-    def test_single_collision(backend_class, v_2, T_2, n_2):
+    def test_single_collision(
+        backend_class, v_2, T_2, n_2
+    ):  # pylint: disable=redefined-outer-name
         # Arrange
         const = 1.0
         particulator, sut = get_dummy_particulator_and_coalescence(
@@ -87,7 +86,6 @@ class TestSDMSingleCell:
             pytest.param(3, np.array([2, 1])),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_single_collision_same_n(backend_class, n_in, n_out):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(backend_class, 2)
@@ -115,8 +113,9 @@ class TestSDMSingleCell:
             pytest.param(7),
         ],
     )
-    # pylint: disable=redefined-outer-name
-    def test_multi_collision(backend_class, v_2, n_2, p):
+    def test_multi_collision(
+        backend_class, v_2, n_2, p
+    ):  # pylint: disable=redefined-outer-name
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
             backend_class, len(n_2)
@@ -159,7 +158,6 @@ class TestSDMSingleCell:
             pytest.param(np.array([1.0, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_multi_droplet(backend_class, v, n, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
@@ -185,7 +183,6 @@ class TestSDMSingleCell:
         ) == np.sum(n * v)
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_multi_step(backend_class):
         # Arrange
         n_sd = 256
@@ -215,7 +212,6 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_compute_gamma(backend_class):
         # Arrange
         backend = backend_class()
@@ -269,7 +265,6 @@ class TestSDMSingleCell:
         "adaptive",
         (pytest.param(True, id="adaptive_dt"), pytest.param(False, id="const_dt")),
     )
-    # pylint: disable=redefined-outer-name
     def test_rnd_reuse(backend_class, optimized_random, adaptive):
         if backend_class is ThrustRTC:
             return  # TODO #330

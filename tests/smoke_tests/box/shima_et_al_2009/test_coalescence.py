@@ -12,10 +12,6 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
 from PySDM.physics.constants import si
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 def check(*, n_part, dv, n_sd, rho, attributes, step):
     check_lwc = 1e-3 * si.kilogram / si.metre**3
@@ -35,7 +31,7 @@ def check(*, n_part, dv, n_sd, rho, attributes, step):
 
 @pytest.mark.parametrize("croupier", ["local", "global"])
 @pytest.mark.parametrize("adaptive", [True, False])
-# pylint: disable=redefined-outer-name,too-many-locals
+# pylint: disable=too-many-locals
 def test_coalescence(backend_class, croupier, adaptive):
     if backend_class == ThrustRTC and croupier == "local":  # TODO #358
         return
