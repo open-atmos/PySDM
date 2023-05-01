@@ -5,6 +5,7 @@ ipywidgets!=8.0.3
 ghapi
 pytest
 pytest-timeout
+pygsl
 
 # note: if cloning both PySDM and PySDM examples, consider "pip install -e"
 PySDM-examples @ git+https://github.com/edejong-caltech/PySDM-examples@4bf5122#egg=PySDM-examples
