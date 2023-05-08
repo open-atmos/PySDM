@@ -11,7 +11,7 @@ pytest
 pytest-timeout
 
 # note: if cloning both PySDM and PySDM examples, consider "pip install -e"
-PySDM-examples @ git+https://github.com/edejong-caltech/PySDM-examples@4bf5122#egg=PySDM-examples
+PySDM-examples @ git+https://github.com/slayoo/PySDM-examples@13a5fe3#egg=PySDM-examples
 PyMPDATA @ git+https://github.com/open-atmos/PyMPDATA@63f1c11#egg=PyMPDATA
 
 PyPartMC==0.0.32
