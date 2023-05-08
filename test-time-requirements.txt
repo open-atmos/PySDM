@@ -1,4 +1,8 @@
 # test-time requirements
+
+## note: if needed to specify arch, this is the syntax:
+# PyPartMC==0.0.9; platform_machine == 'x86_64'
+
 matplotlib==3.5.3
 jupyter-core<5.0.0
 ipywidgets!=8.0.3
