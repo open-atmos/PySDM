@@ -83,11 +83,9 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
     phys_D = formulae.diffusion_thermics.D
     phys_K = formulae.diffusion_thermics.K
 
-    @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _ql(n, x, m_d_mean):
         return np.sum(n * volume(x)) * rho_w / m_d_mean
 
-    @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _impl(  # pylint: disable=too-many-arguments,too-many-locals
         dy_dt,
         x,
@@ -131,7 +129,6 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
-    @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _odesys(  # pylint: disable=too-many-arguments,too-many-locals
         t, y, kappa, f_org, dry_volume, n, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt
     ):
