@@ -23,7 +23,7 @@ def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
         "HAC": 1,
         "c_pd": 1006 * si.joule / si.kilogram / si.kelvin,
         "g_std": 9.81 * si.metre / si.second**2,
-        "BDF": False,
+        "scipy_ode_solver": False,
     }
 
     cdnc_compare = np.zeros((len(models), len(subplot_list), len(updraft_list)))
