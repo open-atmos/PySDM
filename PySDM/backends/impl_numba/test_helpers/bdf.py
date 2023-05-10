@@ -1,9 +1,8 @@
 """
 condensation/evaporation solver drop-in replacement implemented using
- SciPy adaptive-timestep BDF solver, for use in tests only
+ SciPy adaptive-timestep ODE solver, for use in tests only
 """
 import types
-import warnings
 from functools import lru_cache
 
 import numba
@@ -205,18 +204,16 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         if dthd_dt == 0 and dqv_dt == 0 and (_odesys(0, y0, *args)[idx_x] == 0).all():
             y1 = y0
         else:
-            with warnings.catch_warnings(record=True) as _:
-                warnings.simplefilter("ignore")
-                integ = scipy.integrate.solve_ivp(
-                    fun=_odesys,
-                    args=args,
-                    t_span=(0, dt),
-                    t_eval=(dt,),
-                    y0=y0,
-                    rtol=rtol,
-                    atol=0,
-                    method="BDF",
-                )
+            integ = scipy.integrate.solve_ivp(
+                fun=_odesys,
+                args=args,
+                t_span=(0, dt),
+                t_eval=(dt,),
+                y0=y0,
+                rtol=rtol,
+                atol=0,
+                method="LSODA",
+            )
             assert integ.success, integ.message
             y1 = integ.y[:, 0]
 
