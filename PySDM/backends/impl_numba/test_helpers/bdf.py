@@ -1,6 +1,6 @@
 """
 condensation/evaporation solver drop-in replacement implemented using
- SciPy adaptive-timestep BDF solver (for use in tests only)
+ SciPy adaptive-timestep ODE solver (for use in tests only)
 """
 import types
 from functools import lru_cache
@@ -210,7 +210,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
                 y0=y0,
                 rtol=rtol,
                 atol=0,
-                method="BDF",
+                method="Radau",
             )
             assert integ.success, integ.message
             y1 = integ.y[:, 0]
