@@ -25,7 +25,7 @@ def split(arg1, arg2):
 @pytest.mark.parametrize("leg", ["ascent", "descent"])
 @pytest.mark.parametrize("scheme", ("CPU",))  # 'GPU'))  # TODO #588
 # pylint: disable=redefined-outer-name
-def test_vs_BDF(settings_idx, data, rtol, leg, scheme):
+def test_vs_scipy(settings_idx, data, rtol, leg, scheme):
     # Arrange
     supersaturation = {}
     for sch in schemes:
