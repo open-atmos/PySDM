@@ -637,6 +637,8 @@ To run all pre-commit hooks, run `pre-commit run --all-files`.
 The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
   existing ones need to be altered.  
 
+Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki).
+
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).
 Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github.com/open-atmos/PySDM/wiki/Ideas-for-new-features-and-examples).
