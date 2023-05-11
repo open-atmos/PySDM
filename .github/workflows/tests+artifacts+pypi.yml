@@ -110,7 +110,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
-        python-version: ["3.7", "3.10"]
+        python-version: ["3.7", "3.11"]
         test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
