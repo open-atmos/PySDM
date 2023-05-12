@@ -15,6 +15,7 @@ from . import (
     hydrostatics,
     hygroscopicity,
     impl,
+    isotope_equilibrium_fractionation_factors,
     latent_heat,
     particle_advection,
     saturation_vapour_pressure,
