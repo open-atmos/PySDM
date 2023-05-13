@@ -4,29 +4,29 @@ import pytest
 from PySDM_examples.Yang_et_al_2018 import Settings, Simulation
 
 from PySDM.backends import CPU, GPU
-from PySDM.backends.impl_numba.test_helpers import bdf
+from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.physics.constants import si
 
 #  TODO #527
 
 
-@pytest.mark.parametrize("scheme", ("default", "BDF"))
+@pytest.mark.parametrize("scheme", ("default", "SciPy"))
 @pytest.mark.parametrize("adaptive", (True, False))
 def test_just_do_it(scheme, adaptive, backend_class=CPU):
     # Arrange
-    if scheme == "BDF" and (not adaptive or backend_class is GPU):
+    if scheme == "SciPy" and (not adaptive or backend_class is GPU):
         return
 
     settings = Settings(dt_output=10 * si.second)
     settings.adaptive = adaptive
-    if scheme == "BDF":
-        settings.dt_max = settings.dt_output  # TODO #334 'BDF')
+    if scheme == "SciPy":
+        settings.dt_max = settings.dt_output  # TODO #334
     elif not adaptive:
         settings.dt_max = 1 * si.second
 
     simulation = Simulation(settings, backend_class)
-    if scheme == "BDF":
-        bdf.patch_particulator(simulation.particulator)
+    if scheme == "SciPy":
+        scipy_ode_condensation_solver.patch_particulator(simulation.particulator)
 
     # Act
     output = simulation.run()

@@ -7,7 +7,7 @@ from scipy import signal
 from PySDM import Builder
 from PySDM import products as PySDM_products
 from PySDM.backends import CPU
-from PySDM.backends.impl_numba.test_helpers import bdf
+from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
@@ -76,8 +76,8 @@ def test_single_supersaturation_peak(
 
     particulator = builder.build(attributes, products=products)
 
-    if scheme == "BDF":
-        bdf.patch_particulator(particulator)
+    if scheme == "SciPy":
+        scipy_ode_condensation_solver.patch_particulator(particulator)
 
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {"volume": tuple([] for _ in range(particulator.n_sd))}
