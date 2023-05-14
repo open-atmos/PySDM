@@ -170,12 +170,12 @@ UM = 1 * si.um
 VEDDER_1987_b = 89 / 880
 VEDDER_1987_A = 993 / 880 / 3 / VEDDER_1987_b
 
-""" [Merlivat and Nief (1967)](http://doi.org/10.1111/j.2153-3490.1967.tb01465.x) """
+""" [Merlivat and Nief (1967)](https://doi.org/10.1111/j.2153-3490.1967.tb01465.x) """
 MERLIVAT_NIEF_1967_ALPHA_L_HDO_T2 = 15013 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_L_HDO_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_L_HDO_T0 = -0.1
 
-""" [Merlivat and Nief (1967)](http://doi.org/10.1111/j.2153-3490.1967.tb01465.x) """
+""" [Merlivat and Nief (1967)](https://doi.org/10.1111/j.2153-3490.1967.tb01465.x) """
 MERLIVAT_NIEF_1967_ALPHA_I_HDO_T2 = 16289 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_I_HDO_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_I_HDO_T0 = -0.0945
@@ -185,7 +185,7 @@ MAJOUBE_1971_ALPHA_L_H218O_T2 = 1137 * si.K**2
 MAJOUBE_1971_ALPHA_L_H218O_T1 = -0.4156 * si.K
 MAJOUBE_1971_ALPHA_L_H218O_T0 = -0.0020667
 
-""" [Majoube (1970)](http://dx.doi.org/10.1038/2261242a0) """
+""" [Majoube (1970)](https://dx.doi.org/10.1038/2261242a0) """
 MAJOUBE_1970_ALPHA_I_H218O_T2 = 0 * si.K**2
 MAJOUBE_1970_ALPHA_I_H218O_T1 = 11.839 * si.K
 MAJOUBE_1970_ALPHA_I_H218O_T0 = -0.028224
