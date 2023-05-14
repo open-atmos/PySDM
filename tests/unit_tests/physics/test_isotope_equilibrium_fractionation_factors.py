@@ -7,13 +7,13 @@ from PySDM import Formulae
 from PySDM.physics import constants_defaults
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
-"""values from Fig. 1 in [Bolot et al. 2013](https://10.5194/acp-13-7903-2013)"""
 CASES = (
     ("HDO", "ice", {-120: 1.82, 0: 1.13}),
     ("HDO", "liquid", {-40: 1.2, 20: 1.08}),
     ("H2_18O", "ice", {-120: 1.05, 0: 1.015}),
     ("H2_18O", "liquid", {-40: 1.02, 20: 1.01}),
 )
+"""values from Fig. 1 in [Bolot et al. 2013](https://10.5194/acp-13-7903-2013)"""
 
 
 class TestIsotopeEquilibriumFractionationFactors:
@@ -83,7 +83,9 @@ class TestIsotopeEquilibriumFractionationFactors:
                 Formulae().isotope_equilibrium_fractionation_factors,
                 f"alpha_{phase[0]}_{isotopologue}",
             )
-            arg = eval(argument, None, {"si": constants_defaults.si})
+            arg = eval(  # pylint: disable=eval-used
+                argument, None, {"si": constants_defaults.si}
+            )
 
             # act
             result = sut(arg)
