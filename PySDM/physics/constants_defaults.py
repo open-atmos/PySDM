@@ -170,12 +170,12 @@ UM = 1 * si.um
 VEDDER_1987_b = 89 / 880
 VEDDER_1987_A = 993 / 880 / 3 / VEDDER_1987_b
 
-""" [Merlivat and Nief (1967)](https://doi.org/10.1111/j.2153-3490.1967.tb01465.x) """
+""" [eq. 5 in Merlivat and Nief (1967)](https://doi.org/10.3402/tellusa.v19i1.9756) """
 MERLIVAT_NIEF_1967_ALPHA_L_HDO_T2 = 15013 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_L_HDO_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_L_HDO_T0 = -0.1
 
-""" [Merlivat and Nief (1967)](https://doi.org/10.1111/j.2153-3490.1967.tb01465.x) """
+""" [eq. 5 in Merlivat and Nief (1967)](https://doi.org/10.3402/tellusa.v19i1.9756) """
 MERLIVAT_NIEF_1967_ALPHA_I_HDO_T2 = 16289 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_I_HDO_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_I_HDO_T0 = -0.0945
