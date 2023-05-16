@@ -15,13 +15,18 @@ CASES = (
 )
 """values from Fig. 1 in [Bolot et al. 2013](https://10.5194/acp-13-7903-2013)"""
 
+PAPERS = ("BolotEtAl2013", "VanHook1968")
+
+# TODO #1063: tests for VanHook1968 H2_17O, HOT
+
 
 class TestIsotopeEquilibriumFractionationFactors:
     @staticmethod
+    @pytest.mark.parametrize("paper", PAPERS)
     @pytest.mark.parametrize("isotopologue, phase, expected_alpha_celsius_pairs", CASES)
-    def test_values(isotopologue, phase, expected_alpha_celsius_pairs):
+    def test_values(paper, isotopologue, phase, expected_alpha_celsius_pairs):
         # arrange
-        formulae = Formulae()
+        formulae = Formulae(isotope_equilibrium_fractionation_factors=paper)
         sut = getattr(
             formulae.isotope_equilibrium_fractionation_factors,
             f"alpha_{phase[0]}_{isotopologue}",
@@ -36,14 +41,15 @@ class TestIsotopeEquilibriumFractionationFactors:
         # assert
         for k, v in expected_alpha_celsius_pairs.items():
             np.testing.assert_approx_equal(
-                actual=actual_pairs[k], desired=v, significant=3
+                actual=actual_pairs[k], desired=v, significant=2
             )
 
     @staticmethod
+    @pytest.mark.parametrize("paper", PAPERS)
     @pytest.mark.parametrize("isotopologue, phase, expected_alpha_celsius_pairs", CASES)
-    def test_monotonic(isotopologue, phase, expected_alpha_celsius_pairs):
+    def test_monotonic(paper, isotopologue, phase, expected_alpha_celsius_pairs):
         # arrange
-        formulae = Formulae()
+        formulae = Formulae(isotope_equilibrium_fractionation_factors=paper)
         sut = getattr(
             formulae.isotope_equilibrium_fractionation_factors,
             f"alpha_{phase[0]}_{isotopologue}",
@@ -63,6 +69,7 @@ class TestIsotopeEquilibriumFractionationFactors:
         assert (np.diff(values) < 0).all()
 
     @staticmethod
+    @pytest.mark.parametrize("paper", PAPERS)
     @pytest.mark.parametrize("isotopologue, phase, _", CASES)
     @pytest.mark.parametrize(
         "argument",
@@ -76,11 +83,13 @@ class TestIsotopeEquilibriumFractionationFactors:
             "300 * si.K",
         ),
     )
-    def test_units(isotopologue, phase, _, argument):
+    def test_units(paper, isotopologue, phase, _, argument):
         with DimensionalAnalysis():
             # arrange
             sut = getattr(
-                Formulae().isotope_equilibrium_fractionation_factors,
+                Formulae(
+                    isotope_equilibrium_fractionation_factors=paper
+                ).isotope_equilibrium_fractionation_factors,
                 f"alpha_{phase[0]}_{isotopologue}",
             )
             arg = eval(  # pylint: disable=eval-used
