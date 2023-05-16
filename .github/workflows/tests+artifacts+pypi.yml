@@ -111,7 +111,10 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: ["3.7", "3.10"]
-        test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
+        test-suite: ["devops_tests", "unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
+        exclude:
+          - test-suite: "devops_tests"
+            python-version: "3.7"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 45
@@ -142,6 +145,7 @@ jobs:
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBA_OPT: 0
         run: pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
 
 #       - if: ${{ failure() }}
