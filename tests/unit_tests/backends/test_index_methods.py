@@ -1,9 +1,13 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
-import matplotlib.pyplot as plt
 
-from PySDM.backends.impl_numba.methods.index_methods import draw_random_int, fisher_yates_shuffle, IndexMethods
+from PySDM.backends.impl_numba.methods.index_methods import (
+    IndexMethods,
+    draw_random_int,
+    fisher_yates_shuffle,
+)
 
 
 @pytest.mark.parametrize(
@@ -37,7 +41,7 @@ def test_fisher_yates_shuffle():
     n = 10
 
     idx = np.arange(n)
-    random_nums = np.linspace(1, 0, n+2)[1:-1]
+    random_nums = np.linspace(1, 0, n + 2)[1:-1]
 
     # act
     fisher_yates_shuffle(idx, random_nums, 0, len(idx))
@@ -49,9 +53,7 @@ def test_fisher_yates_shuffle():
 
 @pytest.mark.parametrize("seed", (1, 2, 3, 1231, 42))
 # pylint: disable=redefined-outer-name
-def test_shuffle_global_generates_uniform_distribution(
-    seed, plot=False
-):
+def test_shuffle_global_generates_uniform_distribution(seed, plot=False):
     # arrange
     np.random.seed(seed)
 
@@ -80,10 +82,7 @@ def test_shuffle_global_generates_uniform_distribution(
     all_permutations_vals = np.array(list(all_permutations.values()))
     deviations_from_mean = all_permutations_vals - coverage
 
-    plt.bar(
-        np.arange(possible_permutations_num),
-        deviations_from_mean
-    )
+    plt.bar(np.arange(possible_permutations_num), deviations_from_mean)
     plt.axhline(0, color="green")
 
     if plot:
@@ -93,6 +92,6 @@ def test_shuffle_global_generates_uniform_distribution(
     assert len(all_permutations.keys()) == possible_permutations_num
     assert np.amax(np.abs(deviations_from_mean)) < coverage * 0.15
 
-    tmp = np.abs(all_permutations_vals - coverage) ** 2.
+    tmp = np.abs(all_permutations_vals - coverage) ** 2.0
     std = np.sqrt(np.mean(tmp))
     assert std < coverage * 0.05
