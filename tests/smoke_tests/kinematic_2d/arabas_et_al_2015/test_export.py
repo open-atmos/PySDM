@@ -69,7 +69,7 @@ def test_export_with_gui_settings():
         filename=file.absolute_path,
     )
     with TemporaryDirectory() as tempdir:
-        vtk_exporter = VTKExporter(path=tempdir.name)
+        vtk_exporter = VTKExporter(path=tempdir)
 
         # Act
         simulator.reinit()
@@ -83,7 +83,7 @@ def test_export_with_gui_settings():
         ).versions
         assert "PyMPDATA" in str(versions)
 
-        filenames_list = os.listdir(os.path.join(tempdir.name, "output"))
+        filenames_list = os.listdir(os.path.join(tempdir, "output"))
     assert len(list(filter(lambda x: x.endswith(".pvd"), filenames_list))) == 2
     assert len(list(filter(lambda x: x.endswith(".vts"), filenames_list))) == 2
     assert len(list(filter(lambda x: x.endswith(".vtu"), filenames_list))) == 2
