@@ -17,7 +17,7 @@ from PySDM.backends import CPU
 from PySDM.exporters import NetCDFExporter, VTKExporter
 
 
-def test_export1(backend_class, tmp_path):
+def test_export(backend_class, tmp_path):
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt
