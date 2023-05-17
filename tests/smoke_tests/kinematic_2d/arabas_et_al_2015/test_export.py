@@ -68,22 +68,22 @@ def test_export_with_gui_settings():
         simulator=simulator,
         filename=file.absolute_path,
     )
-    tempdir = TemporaryDirectory()
-    vtk_exporter = VTKExporter(path=tempdir.name)
+    with TemporaryDirectory() as tempdir:
+        vtk_exporter = VTKExporter(path=tempdir.name)
 
-    # Act
-    simulator.reinit()
-    simulator.run(vtk_exporter=vtk_exporter)
-    ncdf_exporter.run(controller=DummyController())
-    vtk_exporter.write_pvd()
+        # Act
+        simulator.reinit()
+        simulator.run(vtk_exporter=vtk_exporter)
+        ncdf_exporter.run(controller=DummyController())
+        vtk_exporter.write_pvd()
 
-    # Assert
-    versions = netcdf.netcdf_file(  # pylint: disable=no-member
-        file.absolute_path
-    ).versions
-    assert "PyMPDATA" in str(versions)
+        # Assert
+        versions = netcdf.netcdf_file(  # pylint: disable=no-member
+            file.absolute_path
+        ).versions
+        assert "PyMPDATA" in str(versions)
 
-    filenames_list = os.listdir(os.path.join(tempdir.name, "output"))
+        filenames_list = os.listdir(os.path.join(tempdir.name, "output"))
     assert len(list(filter(lambda x: x.endswith(".pvd"), filenames_list))) == 2
     assert len(list(filter(lambda x: x.endswith(".vts"), filenames_list))) == 2
     assert len(list(filter(lambda x: x.endswith(".vtu"), filenames_list))) == 2
