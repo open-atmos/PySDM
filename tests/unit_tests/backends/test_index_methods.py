@@ -66,7 +66,7 @@ def test_shuffle_global_generates_uniform_distribution(seed, plot=False):
     # act
     all_permutations = {}
 
-    for i in range(n_runs):
+    for _ in range(n_runs):
         idx = np.arange(0, n)
         u01 = np.random.uniform(0, 1, n)
 
