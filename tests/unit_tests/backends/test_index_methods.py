@@ -95,3 +95,7 @@ def test_shuffle_global_generates_uniform_distribution(seed, plot=False):
     tmp = np.abs(all_permutations_vals - coverage) ** 2.0
     std = np.sqrt(np.mean(tmp))
     assert std < coverage * 0.05
+
+
+def test_merge_shuffle_equals_fisher_yates_when_depth_0():
+    pass  # TODO:
