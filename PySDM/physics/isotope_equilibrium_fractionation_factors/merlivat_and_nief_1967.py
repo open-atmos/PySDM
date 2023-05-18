@@ -1,5 +1,6 @@
 """
-Equilibrium fractionation factors from [Merlivat and Nief 1967](https://doi.org/10.3402/tellusa.v19i1.9756)
+Equilibrium fractionation factors from
+[Merlivat and Nief 1967](https://doi.org/10.3402/tellusa.v19i1.9756)
 """
 import numpy as np
 
