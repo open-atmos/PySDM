@@ -153,7 +153,7 @@ jobs:
           python -We -c "import PySDM"
 
       - run: |
-          pip install -e ./PyMPDATA-examples
+          pip install -e ./PySDM-examples
           SYSTEM_VERSION_COMPAT=0 pip install -e .[tests]
 
       # ensure previous pip did not overwrite the package
@@ -220,7 +220,7 @@ jobs:
   dist:
     strategy:
       matrix:
-        packages-dir: [".", "PyMPDATA-examples"]
+        packages-dir: [".", "PySDM-examples"]
     runs-on: ubuntu-latest
     timeout-minutes: 90
     needs: [tests]
