@@ -183,7 +183,9 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v2
-
+        with:
+          submodules: recursive
+          fetch-depth: 0
       - uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
@@ -191,7 +193,7 @@ jobs:
           python -m pip install --upgrade --user pip
       - run: |
           python -m pip install --user -e .[tests]
-          python -m pip install --user -e ./PySDM-examples
+          python -m pip install --user -e ./PySDM-examples[tests]
       - run: |
           python -We -c "import PySDM_examples"
 
