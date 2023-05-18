@@ -359,6 +359,20 @@ class TestSDMBreakup:
                 "is_first_in_pair": [True, False],
                 "frag_size": [0.5],
             },
+            {
+                "n_init": [64, 2],
+                "v_init": [8, 16],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [6],
+                "frag_size": [4.0],
+            },
+            {
+                "n_init": [64, 2],
+                "v_init": [6, 2],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [2],
+                "frag_size": [4.0],
+            },
         ],
     )
     def test_attribute_update_n_breakups(
