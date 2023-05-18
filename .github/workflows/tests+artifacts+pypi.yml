@@ -16,15 +16,17 @@ on:
 
 jobs:
   precommit:
+    strategy:
+      matrix:
+        package-dir: [".", "PySDM-examples"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
+      - uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - name: Linting
-        run: |
+      - run: |
+          cd ${{ matrix.package-dir }}
           pip install pre-commit
           pre-commit clean
           pre-commit autoupdate
