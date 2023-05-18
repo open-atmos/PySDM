@@ -12,6 +12,8 @@ def get_long_description():
     return long_description
 
 
+CI = "CI" in os.environ
+
 setup(
     name="PySDM",
     description="Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry"
@@ -21,16 +23,27 @@ setup(
     setup_requires=["setuptools_scm"],
     install_requires=[
         "ThrustRTC==0.3.20",
-        "CURandRTC" + ("==0.1.6" if "CI" in os.environ else ">=0.1.2"),
-        "numba" + ("==0.56.4" if "CI" in os.environ else ">=0.51.2"),
-        "numpy" + ("==1.21.6" if "CI" in os.environ else ""),
-        "Pint" + ("==0.17" if "CI" in os.environ else ""),
-        "chempy" + ("==0.7.10" if "CI" in os.environ else ""),
-        "scipy" + ("==1.7.3" if "CI" in os.environ else ""),
-        "pyevtk" + ("==1.2.0" if "CI" in os.environ else ""),
+        "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
+        "numba" + ("==0.56.4" if CI else ">=0.51.2"),
+        "numpy" + ("==1.21.6" if CI else ""),
+        "Pint" + ("==0.17" if CI else ""),
+        "chempy" + ("==0.7.10" if CI else ""),
+        "scipy" + ("==1.7.3" if CI else ""),
+        "pyevtk" + ("==1.2.0" if CI else ""),
     ],
+    extras_require={
+        "tests": [
+            "matplotlib" + ("==3.5.3" if CI else ""),
+            "jupyter-core<5.0.0",
+            "ipywidgets!=8.0.3",
+            "ghapi",
+            "pytest",
+            "pytest-timeout",
+            "PyPartMC==0.0.32",
+        ]
+    },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
-    author_email="sylwester.arabas@uj.edu.pl",
+    author_email="sylwester.arabas@agh.edu.pl",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     url="https://github.com/open-atmos/PySDM",
