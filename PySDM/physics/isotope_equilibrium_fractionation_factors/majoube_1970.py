@@ -4,7 +4,7 @@ Equilibrium fractionation factors from [Majoube 1970](https://doi.org/10.1038/22
 import numpy as np
 
 
-class Majoube1970:
+class Majoube1970:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
