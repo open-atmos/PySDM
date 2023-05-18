@@ -14,5 +14,7 @@ class PruppacherKlett:
         return D / np.sqrt(2 * const.Rv * T)
 
     @staticmethod
-    def D(const, D, r, lmbd, dv):
-        return D / ((r / (r + dv)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC)
+    def D(const, D, r, lmbd):
+        return D / (
+            (r / (r + const.dv_pk05)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC
+        )

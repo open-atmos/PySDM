@@ -7,8 +7,9 @@ from PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005 import Pruppache
 
 
 class LoweEtAl2019(PruppacherKlett):
-    def __init__(self, _):
-        pass
+    def __init__(self, const):
+        assert const.dv_pk05 == 0
+        PruppacherKlett.__init__(self, const)
 
     @staticmethod
     def lambdaK(const, T, p):  # pylint: disable=unused-argument
@@ -17,7 +18,3 @@ class LoweEtAl2019(PruppacherKlett):
     @staticmethod
     def K(const, K, r, lmbd):  # pylint: disable=unused-argument
         return K
-
-    @staticmethod
-    def D(const, D, r, lmbd):
-        return super().D(const, D, r, lmbd, const.l19_dv)

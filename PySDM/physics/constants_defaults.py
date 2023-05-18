@@ -108,8 +108,8 @@ k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
 
-# Delta v for diffusivity
-l19_dv = 0.0 * si.metres
+# Delta v for diffusivity in Pruppacher & Klett eq. 13-14
+dv_pk05 = 0.0 * si.metres
 
 # Seinfeld & Pandis eq. 15.65
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
