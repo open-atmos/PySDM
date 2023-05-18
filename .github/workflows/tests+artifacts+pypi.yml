@@ -120,7 +120,9 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v2
-
+        with:
+          submodules: recursive
+          fetch-depth: 0
       - uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
