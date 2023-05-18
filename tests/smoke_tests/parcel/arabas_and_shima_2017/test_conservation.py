@@ -5,7 +5,7 @@ from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, setups, w_av
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 
 from PySDM.backends import CPU, GPU
-from PySDM.backends.impl_numba.test_helpers import bdf
+from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.physics.constants_defaults import rho_w
 
 
@@ -19,11 +19,11 @@ def liquid_water_mixing_ratio(simulation: Simulation):
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
 @pytest.mark.parametrize("mass_of_dry_air", (1, 10000))
-@pytest.mark.parametrize("scheme", ("BDF", "CPU", "GPU"))
+@pytest.mark.parametrize("scheme", ("SciPy", "CPU", "GPU"))
 @pytest.mark.parametrize("coord", ("VolumeLogarithm", "Volume"))
 def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     # Arrange
-    assert scheme in ("BDF", "CPU", "GPU")
+    assert scheme in ("SciPy", "CPU", "GPU")
 
     settings = Settings(
         w_avg=setups[settings_idx].w_avg,
@@ -37,8 +37,8 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     simulation = Simulation(settings, GPU if scheme == "GPU" else CPU)
     qt0 = settings.q0 + liquid_water_mixing_ratio(simulation)
 
-    if scheme == "BDF":
-        bdf.patch_particulator(simulation.particulator)
+    if scheme == "SciPy":
+        scipy_ode_condensation_solver.patch_particulator(simulation.particulator)
 
     # Act
     simulation.particulator.products["S_max"].get()
@@ -49,7 +49,7 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     qt = simulation.particulator.environment["qv"].to_ndarray() + ql
     significant = 6 if scheme == "GPU" else 14  # TODO #540
     np.testing.assert_approx_equal(qt, qt0, significant)
-    if scheme != "BDF":
+    if scheme != "SciPy":
         assert simulation.particulator.products["S_max"].get() >= output["S"][-1]
 
 

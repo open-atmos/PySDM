@@ -1,1 +1,1 @@
-""" logic intended to be used in tests only including the SciPy-based BDF condensation solver """
+""" logic intended to be used in tests only including the SciPy-based condensation solver """

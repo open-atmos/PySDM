@@ -2,12 +2,12 @@
 import numpy as np
 import pytest
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
-from PySDM_examples.Bartman_2020_MasterThesis.fig_5_BDF_VS_ADAPTIVE import (
+from PySDM_examples.Bartman_2020_MasterThesis.fig_5_SCIPY_VS_ADAPTIVE import (
     data as data_method,
 )
 
 rtols = (1e-3, 1e-7)
-schemes = ("CPU", "GPU", "BDF")
+schemes = ("CPU", "GPU", "SciPy")
 setups_num = len(setups)
 
 
@@ -25,7 +25,7 @@ def split(arg1, arg2):
 @pytest.mark.parametrize("leg", ["ascent", "descent"])
 @pytest.mark.parametrize("scheme", ("CPU",))  # 'GPU'))  # TODO #588
 # pylint: disable=redefined-outer-name
-def test_vs_BDF(settings_idx, data, rtol, leg, scheme):
+def test_vs_scipy(settings_idx, data, rtol, leg, scheme):
     # Arrange
     supersaturation = {}
     for sch in schemes:
@@ -34,6 +34,6 @@ def test_vs_BDF(settings_idx, data, rtol, leg, scheme):
         supersaturation[sch] = ascent if leg == "ascent" else descent
 
     # Assert
-    desired = np.array(supersaturation["BDF"])
+    desired = np.array(supersaturation["SciPy"])
     actual = np.array(supersaturation[scheme])
     assert np.mean((desired - actual) ** 2) < rtol
