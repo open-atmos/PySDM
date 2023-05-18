@@ -71,6 +71,7 @@ jobs:
       - run: |
           pip install pdoc3
           pip install -e .
+          pip install -e PySDM-examples
           python -We -m pdoc --html ${{ matrix.pkg-dir }}
           echo PKG_NAME=`ls -1 html` >> $GITHUB_ENV
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
