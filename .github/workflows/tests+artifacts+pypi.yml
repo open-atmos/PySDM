@@ -215,6 +215,9 @@ jobs:
         run: python -m pytest --durations=10 -v -p no:unraisableexception -We PySDM-examples
 
   dist:
+    strategy:
+      matrix:
+        packages-dir: [".", "PyMPDATA-examples"]
     runs-on: ubuntu-latest
     timeout-minutes: 90
     needs: [tests]
@@ -230,18 +233,21 @@ jobs:
 
       - run: |
           unset CI
+          cd ${{ matrix.packages-dir }}
           python -m build 2>&1 | tee build.log
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | wc -l`
-
-      - run: twine check --strict dist/*
+          twine check --strict dist/*
+          cd ..
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@unstable/v1
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository_url: https://test.pypi.org/legacy/
+          packages-dir: ${{ matrix.packages-dir }}
 
       - if: startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@unstable/v1
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: ${{ matrix.packages-dir }}
