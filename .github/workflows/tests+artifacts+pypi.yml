@@ -225,7 +225,7 @@ jobs:
         packages-dir: [".", "PySDM-examples"]
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    needs: [tests]
+    needs: [tests, examples]
     steps:
       - uses: actions/checkout@v2
         with:
