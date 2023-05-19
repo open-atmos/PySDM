@@ -152,9 +152,12 @@ jobs:
       - run: |
           python -We -c "import PySDM"
 
+      - if: startsWith(matrix.platform, 'macos-') && matrix.python-version == "3.7"
+          echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
+
       - run: |
           pip install -e ./PySDM-examples
-          SYSTEM_VERSION_COMPAT=0 pip install -e .[tests]
+          pip install -e .[tests]
 
       # ensure previous pip did not overwrite the package
       - run: |
@@ -191,6 +194,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: |
           python -m pip install --upgrade --user pip
+      - if: startsWith(matrix.platform, 'macos-') && matrix.python-version == "3.7"
+          echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
       - run: |
           python -m pip install --user -e .[tests]
           python -m pip install --user -e ./PySDM-examples[tests]
