@@ -177,7 +177,7 @@ jobs:
     needs: [pylint, precommit]
     strategy:
       matrix:
-        platform: [ubuntu-22.04, macos-latest, windows-latest]
+        platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.7", "3.10"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
