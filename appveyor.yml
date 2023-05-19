@@ -18,7 +18,7 @@ install:
       if ($env:platform -Match "x86") 
       {
         $env:PYTHON="C:\Python38\python"
-        Set-Content -Path "test-time-requirements.txt" -Value (get-content -Path "setup.py" | Select-String -Pattern 'PyPartMC' -NotMatch)
+        Set-Content -Path "setup.py" -Value (get-content -Path "setup.py" | Select-String -Pattern 'PyPartMC' -NotMatch)
       }
       elseif ($env:platform -Match "x64") 
       {
