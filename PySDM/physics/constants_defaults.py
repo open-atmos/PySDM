@@ -101,9 +101,12 @@ p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin
 l_tri = 2.5e6 * si.joule / si.kilogram
 
+# Seinfeld and Pandis, Appendix 16.1, 16A.2
+# default constant values according to Lowe et al (2019), from ICPM code
 l_l19_a = 0.167 * si.dimensionless
 l_l19_b = 3.65e-4 / si.kelvin
 
+# Thermal diffusivity constants from Lowe et al (2019)
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
