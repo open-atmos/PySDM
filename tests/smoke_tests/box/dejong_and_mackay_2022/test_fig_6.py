@@ -93,15 +93,15 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
     peaks_expected = {
         "initial": (30, 0.017),
         "Ec = 1.0": (2100, 0.015),
-        "Ec = 0.9": (200, 0.01),
-        "Ec = 0.8": (20, 0.0125),
-        "Straub 2010": (200, 0.0125),
+        "Ec = 0.9": (280, 0.011),
+        "Ec = 0.8": (24, 0.011),
+        "Straub 2010": (225, 0.017),
     }
 
     for lbl, x_y in peaks_expected.items():
         print(lbl)
         peak = np.argmax(data_y[lbl][0])
-        np.testing.assert_approx_equal(data_x[lbl][peak], x_y[0], significant=1)
+        np.testing.assert_approx_equal(data_x[lbl][peak], x_y[0], significant=2)
         np.testing.assert_approx_equal(
-            data_y[lbl][0][peak] * settings.rho, x_y[1], significant=1
+            data_y[lbl][0][peak] * settings.rho, x_y[1], significant=2
         )
