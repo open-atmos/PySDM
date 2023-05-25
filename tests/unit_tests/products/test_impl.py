@@ -19,6 +19,7 @@ from PySDM.products import (
     FrozenParticleConcentration,
     FrozenParticleSpecificConcentration,
     GaseousMoleFraction,
+    NumberSizeSpectrum,
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
     ParticleVolumeVersusRadiusLogarithmSpectrum,
@@ -45,6 +46,7 @@ _ARGUMENTS = {
         "count_unactivated": True,
         "count_activated": True,
     },
+    NumberSizeSpectrum: {"radius_bins_edges": (0, np.inf)},
 }
 
 

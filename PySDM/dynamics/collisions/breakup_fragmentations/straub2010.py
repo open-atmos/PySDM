@@ -32,7 +32,7 @@ class Straub2010Nf:
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
-        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
+        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt", "d34"):
             self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
@@ -47,12 +47,11 @@ class Straub2010Nf:
 
         # compute the dimensionless numbers and CW=CKE * We
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["Sc"][:] = self.arrays["tmp"][:]  # TODO #976
+        self.arrays["Sc"].fill(self.arrays["tmp"])
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
-        self.arrays["tmp"] *= 2
         self.arrays["tmp2"].distance(
             self.particulator.attributes["terminal velocity"], is_first_in_pair
         )
@@ -62,14 +61,14 @@ class Straub2010Nf:
         )
         self.arrays["CKE"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["CKE"] *= self.arrays["tmp2"]
-        self.arrays["CKE"] *= self.const.rho_w
+        self.arrays["CKE"] *= self.const.rho_w / 2
 
-        self.arrays["We"][:] = self.arrays["CKE"][:]  # TODO #976
+        self.arrays["We"].fill(self.arrays["CKE"])
         self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])
 
-        self.arrays["CW"][:] = self.arrays["We"][:]  # TODO #976
+        self.arrays["CW"].fill(self.arrays["We"])
         self.arrays["CW"] *= self.arrays["CKE"]
-        self.arrays["CW"] /= si.joule * 1e-6  # convert to µJ
+        self.arrays["CW"] /= si.uJ
 
         self.arrays["gam"].max(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["tmp"].min(self.particulator.attributes["radius"], is_first_in_pair)
@@ -94,4 +93,5 @@ class Straub2010Nf:
             Nr3=self.straub_tmp["Nr3"],
             Nr4=self.straub_tmp["Nr4"],
             Nrt=self.straub_tmp["Nrt"],
+            d34=self.straub_tmp["d34"],
         )

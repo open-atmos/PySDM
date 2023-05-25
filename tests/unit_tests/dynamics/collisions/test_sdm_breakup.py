@@ -19,10 +19,6 @@ from PySDM.physics import si
 from PySDM.physics.trivia import Trivia
 from PySDM.products.size_spectral import ParticleVolumeVersusRadiusLogarithmSpectrum
 
-from ....backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 class TestSDMBreakup:
     @staticmethod
@@ -33,7 +29,6 @@ class TestSDMBreakup:
             10 * si.s,
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class):
         # Arrange
         attributes = {
@@ -83,14 +78,13 @@ class TestSDMBreakup:
             ),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_single_collision_bounce(params, backend_class):
         # Arrange
         backend = backend_class()
         n_sd = 2
         builder = Builder(n_sd, backend)
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
-        n_init = [1, 1]
+        n_init = [6, 6]
         particulator = builder.build(
             attributes={
                 "n": np.asarray(n_init),
@@ -104,11 +98,8 @@ class TestSDMBreakup:
 
         gamma = particulator.PairwiseStorage.from_ndarray(np.asarray([params["gamma"]]))
         rand = particulator.PairwiseStorage.from_ndarray(np.asarray([params["rand"]]))
-        n_fragment = particulator.PairwiseStorage.from_ndarray(
-            np.array([4.0], dtype=float)
-        )
         fragment_size = particulator.PairwiseStorage.from_ndarray(
-            np.array([-1.0], dtype=float)
+            np.array([50 * si.um**3], dtype=float)
         )
         is_first_in_pair = make_PairIndicator(backend)(n_sd)
 
@@ -119,7 +110,6 @@ class TestSDMBreakup:
             rand=rand,
             Ec=pairwise_zeros,
             Eb=pairwise_zeros,
-            n_fragment=n_fragment,
             fragment_size=fragment_size,
             coalescence_rate=general_zeros,
             breakup_rate=general_zeros,
@@ -166,7 +156,6 @@ class TestSDMBreakup:
             },
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_breakup_counters(params, backend_class):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
@@ -197,12 +186,7 @@ class TestSDMBreakup:
             np.array([params["Eb"]] * n_pairs)
         )
         breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
-        n_fragment = particulator.PairwiseStorage.from_ndarray(
-            np.array([4.0] * n_pairs)
-        )
-        frag_size = particulator.PairwiseStorage.from_ndarray(
-            np.array([-1.0] * n_pairs)
-        )
+        frag_size = particulator.PairwiseStorage.from_ndarray(np.array([2.0] * n_pairs))
         is_first_in_pair = particulator.PairIndicator(n_sd)
         is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
             np.asarray(params["is_first_in_pair"])
@@ -215,7 +199,6 @@ class TestSDMBreakup:
             rand=rand,
             Ec=pairwise_zeros,
             Eb=Eb,
-            n_fragment=n_fragment,
             fragment_size=frag_size,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
@@ -243,7 +226,6 @@ class TestSDMBreakup:
                 "v_expected": [0.5, 0.5],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [4],
                 "frag_size": [0.5],
             },
             {
@@ -254,7 +236,6 @@ class TestSDMBreakup:
                 "v_expected": [1, 1],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [3],
                 "frag_size": [1.0],
             },
             {
@@ -265,7 +246,6 @@ class TestSDMBreakup:
                 "v_expected": [0.5, 0.5],
                 "expected_deficit": [1.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [4],
                 "frag_size": [0.5],
             },
             {
@@ -276,13 +256,11 @@ class TestSDMBreakup:
                 "v_expected": [1.0, 0.5],
                 "expected_deficit": [1.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [4],
                 "frag_size": [0.5],
             },
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    # pylint: disable=redefined-outer-name
     def test_attribute_update_single_breakup(
         params, flag, backend_class
     ):  # pylint: disable=too-many-locals
@@ -312,9 +290,6 @@ class TestSDMBreakup:
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
         breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0]))
-        n_fragment = particulator.PairwiseStorage.from_ndarray(
-            np.asarray(params["n_fragment"], dtype=float)
-        )
         frag_size = particulator.PairwiseStorage.from_ndarray(
             np.asarray(params["frag_size"], dtype=float)
         )
@@ -330,7 +305,6 @@ class TestSDMBreakup:
             rand=rand,
             Ec=pairwise_zeros,
             Eb=Eb,
-            n_fragment=n_fragment,
             fragment_size=frag_size,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
@@ -363,7 +337,122 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
+    @pytest.mark.parametrize("_n", [1, 2, 3, 4, 5])
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {
+                "n_init": [64, 2],
+                "v_init": [128, 128],
+                "is_first_in_pair": [True, False],
+                "frag_size": [128],
+            },
+            {
+                "n_init": [20, 4],
+                "v_init": [1, 2],
+                "is_first_in_pair": [True, False],
+                "frag_size": [1.0],
+            },
+            {
+                "n_init": [3, 1],
+                "v_init": [1, 1],
+                "is_first_in_pair": [True, False],
+                "frag_size": [0.5],
+            },
+            {
+                "n_init": [64, 2],
+                "v_init": [8, 16],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [6],
+                "frag_size": [4.0],
+            },
+            {
+                "n_init": [64, 2],
+                "v_init": [6, 2],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [2],
+                "frag_size": [4.0],
+            },
+        ],
+    )
+    def test_attribute_update_n_breakups(
+        _n, params, backend_class=CPU
+    ):  # pylint: disable=too-many-locals
+        # Arrange
+
+        assert len(params["frag_size"]) == 1
+
+        def run_simulation(_n_times, _gamma):
+            n_init = params["n_init"]
+            n_sd = len(n_init)
+            builder = Builder(n_sd, backend_class())
+            builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+            particulator = builder.build(
+                attributes={
+                    "n": np.asarray(n_init),
+                    "volume": np.asarray(params["v_init"]),
+                },
+                products=(),
+            )
+
+            n_pairs = n_sd // 2
+            rand = [1.0] * n_pairs
+            Eb = [1.0] * n_pairs
+            pairwise_zeros = particulator.PairwiseStorage.from_ndarray(
+                np.array([0.0] * n_pairs)
+            )
+            general_zeros = particulator.Storage.from_ndarray(np.array([0] * n_sd))
+
+            gamma = particulator.PairwiseStorage.from_ndarray(np.array(_gamma))
+            rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
+            Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
+            breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
+            breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0]))
+            frag_size = particulator.PairwiseStorage.from_ndarray(
+                np.asarray(params["frag_size"], dtype=float)
+            )
+            is_first_in_pair = particulator.PairIndicator(n_sd)
+            is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
+                np.asarray(params["is_first_in_pair"], dtype=bool)
+            )
+
+            # Act
+            for _ in range(_n_times):
+                particulator.collision_coalescence_breakup(
+                    enable_breakup=True,
+                    gamma=gamma,
+                    rand=rand,
+                    Ec=pairwise_zeros,
+                    Eb=Eb,
+                    fragment_size=frag_size,
+                    coalescence_rate=general_zeros,
+                    breakup_rate=breakup_rate,
+                    breakup_rate_deficit=breakup_rate_deficit,
+                    is_first_in_pair=is_first_in_pair,
+                    warn_overflows=False,
+                    max_multiplicity=DEFAULTS.max_multiplicity,
+                )
+
+            res_mult = particulator.attributes["n"].to_ndarray()
+            res_volume = particulator.attributes["volume"].to_ndarray()
+            return res_mult, res_volume
+
+        run1 = run_simulation(_n_times=1, _gamma=[_n])
+        run2 = run_simulation(_n_times=_n, _gamma=[1])
+
+        # Assert
+        # "n"
+        np.testing.assert_array_equal(
+            run1[0],
+            run2[0],
+        )
+        # "v"
+        np.testing.assert_array_equal(
+            run1[1],
+            run2[1],
+        )
+
+    @staticmethod
     def test_multiplicity_overflow(backend=CPU()):  # pylint: disable=too-many-locals
         # Arrange
         params = {
@@ -371,7 +460,6 @@ class TestSDMBreakup:
             "n_init": [1, 3],
             "v_init": [1, 1],
             "is_first_in_pair": [True, False],
-            "n_fragment": [1e16],
             "frag_size": [2e-10],
         }
         n_init = params["n_init"]
@@ -399,9 +487,6 @@ class TestSDMBreakup:
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
         breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0]))
-        n_fragment = particulator.PairwiseStorage.from_ndarray(
-            np.array(params["n_fragment"], dtype=float)
-        )
         frag_size = particulator.PairwiseStorage.from_ndarray(
             np.array(params["frag_size"], dtype=float)
         )
@@ -417,7 +502,6 @@ class TestSDMBreakup:
             rand=rand,
             Ec=pairwise_zeros,
             Eb=Eb,
-            n_fragment=n_fragment,
             fragment_size=frag_size,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
@@ -436,7 +520,6 @@ class TestSDMBreakup:
         )
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_same_multiplicity_overflow_no_substeps(
         backend=CPU(),
     ):  # pylint: disable=too-many-locals
@@ -446,7 +529,6 @@ class TestSDMBreakup:
             "n_init": [1, 1],
             "v_init": [1, 1],
             "is_first_in_pair": [True, False],
-            "n_fragment": [4],
             "frag_size": [0.5],
         }
         n_init = params["n_init"]
@@ -474,9 +556,6 @@ class TestSDMBreakup:
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
         breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0]))
-        n_fragment = particulator.PairwiseStorage.from_ndarray(
-            np.array(params["n_fragment"], dtype=float)
-        )
         frag_size = particulator.PairwiseStorage.from_ndarray(
             np.array(params["frag_size"], dtype=float)
         )
@@ -492,7 +571,6 @@ class TestSDMBreakup:
             rand=rand,
             Ec=pairwise_zeros,
             Eb=Eb,
-            n_fragment=n_fragment,
             fragment_size=frag_size,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
@@ -522,7 +600,6 @@ class TestSDMBreakup:
                 "v_expected": [1, 1],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [1.6],
                 "frag_size": [1.25],
             },
             {
@@ -533,19 +610,7 @@ class TestSDMBreakup:
                 "v_expected": [1, 1],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [2.6],
                 "frag_size": [1 / 1.3],
-            },
-            {
-                "gamma": [2.0],
-                "n_init": [20, 4],
-                "v_init": [1, 2],
-                "n_expected": [6, 18],
-                "v_expected": [1, 11 / 9],
-                "expected_deficit": [0.0],
-                "is_first_in_pair": [True, False],
-                "n_fragment": [2.5],
-                "frag_size": [3 / 2.5],
             },
             {
                 "gamma": [2.0],
@@ -555,13 +620,11 @@ class TestSDMBreakup:
                 "v_expected": [1, 2 / 3],
                 "expected_deficit": [1.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [2.8],
                 "frag_size": [1 / 1.4],
             },
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    # pylint: disable=redefined-outer-name
     def test_noninteger_fragments(
         params, flag, backend_class
     ):  # pylint: disable=too-many-locals
@@ -591,9 +654,6 @@ class TestSDMBreakup:
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
         breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0]))
-        n_fragment = particulator.PairwiseStorage.from_ndarray(
-            np.asarray(params["n_fragment"], dtype=float)
-        )
         frag_size = particulator.PairwiseStorage.from_ndarray(
             np.asarray(params["frag_size"], dtype=float)
         )
@@ -609,7 +669,6 @@ class TestSDMBreakup:
             rand=rand,
             Ec=pairwise_zeros,
             Eb=Eb,
-            n_fragment=n_fragment,
             fragment_size=frag_size,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
@@ -705,7 +764,6 @@ class TestSDMBreakup:
                 "v_expected": [0.5, 0.5],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [4],
                 "frag_size": [0.5],
             },
             {
@@ -716,13 +774,11 @@ class TestSDMBreakup:
                 "v_expected": [1, 1],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "n_fragment": [3.0],
                 "frag_size": [1.0],
             },
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    # pylint: disable=redefined-outer-name
     def test_while_loop_multi_breakup(
         params, flag, backend_class=CPU
     ):  # pylint:disable=too-many-locals
@@ -752,9 +808,6 @@ class TestSDMBreakup:
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
         breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0]))
-        n_fragment = particulator.PairwiseStorage.from_ndarray(
-            np.array(params["n_fragment"], dtype=float)
-        )
         frag_size = particulator.PairwiseStorage.from_ndarray(
             np.array(params["frag_size"], dtype=float)
         )
@@ -770,7 +823,6 @@ class TestSDMBreakup:
             rand=rand,
             Ec=pairwise_zeros,
             Eb=Eb,
-            n_fragment=n_fragment,
             fragment_size=frag_size,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,

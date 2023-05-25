@@ -1,7 +1,13 @@
 """ products expressing particle size-spectral quantities """
-from .arbitrary_moment import RadiusFirstMoment, RadiusSixthMoment, VolumeFirstMoment
+from .arbitrary_moment import (
+    RadiusFirstMoment,
+    RadiusSixthMoment,
+    VolumeFirstMoment,
+    ZerothMoment,
+)
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
+from .number_size_spectrum import NumberSizeSpectrum
 from .particle_concentration import ParticleConcentration, ParticleSpecificConcentration
 from .particle_size_spectrum import (
     ParticleSizeSpectrumPerMass,
