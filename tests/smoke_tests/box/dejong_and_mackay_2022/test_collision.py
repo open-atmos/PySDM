@@ -1,6 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
 
+import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import (
     Settings0D,
@@ -34,6 +35,11 @@ def test_collision(backend_class, plot=False):
             where="post",
             label=f"WITH breakup, t = {step*settings.dt}s",
         )
+
+        x1max = np.argmax(y1[step])
+        x2max = np.argmax(y2[step])
+        assert x1max <= x2max
+
     pyplot.xscale("log")
     pyplot.xlabel("radius (um)")
     pyplot.ylabel("dm/dlnr")
@@ -46,4 +52,3 @@ def test_collision(backend_class, plot=False):
         pyplot.clf()
 
     # TODO #744: add asserts here to check whether stuff is correct
-    assert True
