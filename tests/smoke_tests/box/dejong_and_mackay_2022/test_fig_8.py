@@ -16,18 +16,18 @@ from PySDM.physics import si
     "backend_class",
     (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
 )
-def test_fig_5(backend_class, plot=False):
+def test_fig_8(backend_class, plot=False):
     # arrange
     settings = Settings0D(
         fragmentation=Straub2010Nf(vmin=Settings0D.X0 * 1e-3, nfmax=10),
         seed=44,
         warn_overflows=False,
     )
-    steps = [0, 1200, 3600]
+    steps = [0, 60, 240, 1800, 7200]
     settings._steps = steps  # pylint: disable=protected-access
     settings.n_sd = 2**11
     settings.radius_bins_edges = np.logspace(
-        np.log10(4 * si.um), np.log10(5e3 * si.um), num=64, endpoint=True
+        np.log10(4 * si.um), np.log10(1e4 * si.um), num=64, endpoint=True
     )
     settings.coal_eff = Straub2010Ec()
 
@@ -59,21 +59,20 @@ def test_fig_5(backend_class, plot=False):
 
     # assert
     peaks_expected = {
-        0: (34, 0.019),
-        1200: (2839, 0.03),
-        3600: (2839, 0.02),
+        0: (37, 0.0189),
+        60: (308, 0.016),
+        240: (1200, 0.027),
+        1800: (2890, 0.033),
+        7200: (2550, 0.023),
     }
 
     for j, step in enumerate(steps):
         peak = np.argmax(data_y[j])
         np.testing.assert_approx_equal(
-            actual=data_x[peak], desired=peaks_expected[step][0], significant=1
+            actual=data_x[peak], desired=peaks_expected[step][0], significant=2
         )
-
-
-# TODO #1048
-#         np.testing.assert_approx_equal(
-#             actual=data_y[j][peak] * settings.rho,
-#             desired=peaks_expected[step][1],
-#             significant=2,
-#         )
+        np.testing.assert_approx_equal(
+            actual=data_y[j][peak] * settings.rho,
+            desired=peaks_expected[step][1],
+            significant=2,
+        )
