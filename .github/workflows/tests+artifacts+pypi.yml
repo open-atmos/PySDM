@@ -209,6 +209,7 @@ jobs:
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: |
+          sudo apt-get update
           sudo apt-get install python3-paraview
       - if: startsWith(matrix.platform, 'macos-')
         run: |
