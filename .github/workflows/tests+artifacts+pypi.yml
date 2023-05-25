@@ -152,7 +152,7 @@ jobs:
           python -We -c "import PySDM"
 
       - if: startsWith(matrix.platform, 'macos-') && matrix.python-version == "3.7"
-          echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
+        run: echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
 
       - run: |
           pip install -e ./PySDM-examples
