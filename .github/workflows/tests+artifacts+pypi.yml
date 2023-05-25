@@ -194,7 +194,7 @@ jobs:
       - run: |
           python -m pip install --upgrade --user pip
       - if: startsWith(matrix.platform, 'macos-') && matrix.python-version == "3.7"
-          echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
+        run: echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
       - run: |
           python -m pip install --user -e .[tests]
           python -m pip install --user -e ./PySDM-examples[tests]
