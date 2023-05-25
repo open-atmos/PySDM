@@ -209,11 +209,6 @@ jobs:
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: |
-          # <workaround for apt-get install python3-paraview failing with 404 errors due to "1ubuntu1" vs. "1ubuntu2" in dependency name> 
-          wget "http://azure.archive.ubuntu.com/ubuntu/pool/universe/i/intel-media-driver/intel-media-va-driver_22.3.1+dfsg1-1ubuntu2_amd64.deb"
-          wget "http://azure.archive.ubuntu.com/ubuntu/pool/main/m/mesa/libegl-mesa0_22.2.5-0ubuntu0.1~22.04.2_amd64.deb"
-          sudo apt install ./*.deb 
-          # </workaround>
           sudo apt-get install python3-paraview
       - if: startsWith(matrix.platform, 'macos-')
         run: |
