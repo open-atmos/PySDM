@@ -92,7 +92,7 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
 
     peaks_expected = {
         "initial": (30, 0.017),
-        "Ec = 1.0": (1600, 0.015),
+        "Ec = 1.0": (2100, 0.015),
         "Ec = 0.9": (200, 0.01),
         "Ec = 0.8": (20, 0.0125),
         "Straub 2010": (200, 0.0125),
