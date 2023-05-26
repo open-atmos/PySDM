@@ -85,6 +85,30 @@ jupyter-notebook
 Alternatively, one can also install the examples package from pypi.org by 
 using ``pip install PySDM-examples``.
 
+## Submodule organization
+```mermaid
+  graph LR
+      I(Initialisation) --> A
+      A(Attributes) --> P(Particulator)
+      B{Builder} --> P
+      B2(Backends) --> B
+      I2[Impl] -.-> B
+      I2 -.-> E
+      E(Environments) --> B
+      D(Dynamics) --> B
+      P3(Products) --> P
+      E2(Exporters) --> SDM
+      P --> SDM
+      SDM((SDM Simulation))
+
+      F{{Formulae}} -.-> P3
+      F{{Formulae}} -.-> D
+      F{{Formulae}} -.-> A 
+      F{{Formulae}} -.-> I
+      P2{{Physics}} -.-> B2
+      F <--> P2
+```
+
 ## PySDM examples (Jupyter notebooks reproducing results from literature):
 
 Examples are maintained at the `PySDM-examples` repository, see [PySDM-examples README.md](https://github.com/open-atmos/PySDM-examples/blob/main/README.md) file for details.
@@ -309,6 +333,52 @@ pyplot.savefig('readme.png')
 The resultant plot (generated with the Python code) looks as follows:
 
 ![plot](https://github.com/open-atmos/PySDM/releases/download/tip/readme.png)
+
+The component submodules used to create this simulation are visualized below:
+```mermaid 
+  flowchart LR
+    subgraph Initialisation
+        direction TB
+        I2[.spectra.exponential]
+        I1[.sampling.spectral_sampling]
+        I2 --> I1
+    end
+    subgraph Attributes
+        'n'
+        'volume'
+    end
+    subgraph Backends
+        .CPU
+    end
+    subgraph Environments
+        .Box
+    end
+    subgraph Dynamics
+        direction TB
+        Coal[.Coalescence]
+        Coll[.collisions.collision_kernels.Golovin]
+        Coll --> Coal
+    end
+    subgraph Products
+        .ParticleVolumeVersusLogarithmSpectrum
+    end
+    subgraph Physics
+        .si
+    end
+    Physics --> I2
+    Physics --> Coll
+    Physics --> Environments
+    Products --> P
+
+    I1 -->|.sample| Attributes
+    Backends --> B{Builder}
+    Environments -->|.set_environment| B
+    Coal -->|.add_dynamic| B
+
+    Attributes --> P(Particulator)
+    B -->|.build| P
+    P -->|.step| SDM((SDM Simulation))
+```
 
 ## Hello-world condensation example in Python, Julia and Matlab
 
