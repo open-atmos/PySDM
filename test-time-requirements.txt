@@ -10,4 +10,4 @@ pytest-timeout
 PySDM-examples @ git+https://github.com/open-atmos/PySDM-examples@9495158#egg=PySDM-examples
 PyMPDATA @ git+https://github.com/open-atmos/PyMPDATA@63f1c11#egg=PyMPDATA
 
-PyPartMC==0.0.32
+PyPartMC==0.0.34
