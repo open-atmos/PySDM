@@ -1,4 +1,0 @@
-pytest
-ghapi
-gitpython
-binaryornot
