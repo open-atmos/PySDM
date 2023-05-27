@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>PySDM_examples.UIUC_2021.curved_text API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PySDM_examples.UIUC_2021.curved_text</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># https://stackoverflow.com/questions/19353576/curved-text-rendering-in-matplotlib
+import math
+
+import numpy as np
+from matplotlib import text as mtext
+
+
+class CurvedText(mtext.Text):
+    &#34;&#34;&#34;
+    A text object that follows an arbitrary curve.
+    &#34;&#34;&#34;
+
+    def __init__(self, x, y, text, axes, **kwargs):
+        super().__init__(x[0], y[0], &#34; &#34;, **kwargs)
+
+        axes.add_artist(self)
+
+        ##saving the curve:
+        self.__x = x
+        self.__y = y
+        self.__zorder = self.get_zorder()
+
+        ##creating the text objects
+        self.__Characters = []
+        for c in text:
+            if c == &#34; &#34;:
+                ##make this an invisible &#39;a&#39;:
+                t = mtext.Text(0, 0, &#34;a&#34;)
+                t.set_alpha(0.0)
+            else:
+                t = mtext.Text(0, 0, c, **kwargs)
+
+            # resetting unnecessary arguments
+            t.set_rotation(0)
+            t.set_zorder(self.__zorder + 1)
+
+            self.__Characters.append((c, t))
+            axes.add_artist(t)
+
+    ##overloading some member functions, to assure correct functionality
+    ##on update
+    def set_zorder(self, level):
+        super().set_zorder(level)
+        self.__zorder = self.get_zorder()
+        for _, t in self.__Characters:
+            t.set_zorder(self.__zorder + 1)
+
+    def draw(self, renderer, *_, **__):
+        &#34;&#34;&#34;
+        Overload of the Text.draw() function. Do not do
+        do any drawing, but update the positions and rotation
+        angles of self.__Characters.
+        &#34;&#34;&#34;
+        self.update_positions(renderer)
+
+    def update_positions(self, renderer):
+        &#34;&#34;&#34;
+        Update positions and rotations of the individual text elements.
+        &#34;&#34;&#34;
+
+        # preparations
+
+        ##determining the aspect ratio:
+        ##from https://stackoverflow.com/a/42014041/2454357
+
+        ##data limits
+        xlim = self.axes.get_xlim()
+        ylim = self.axes.get_ylim()
+        ## Axis size on figure
+        figW, figH = self.axes.get_figure().get_size_inches()
+        ## Ratio of display units
+        _, _, w, h = self.axes.get_position().bounds
+        ##final aspect ratio
+        aspect = ((figW * w) / (figH * h)) * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
+
+        # points of the curve in figure coordinates:
+        x_fig, y_fig = (
+            np.array(l)
+            for l in zip(*self.axes.transData.transform(list(zip(self.__x, self.__y))))
+        )
+
+        # point distances in figure coordinates
+        x_fig_dist = x_fig[1:] - x_fig[:-1]
+        y_fig_dist = y_fig[1:] - y_fig[:-1]
+        r_fig_dist = np.sqrt(x_fig_dist**2 + y_fig_dist**2)
+
+        # arc length in figure coordinates
+        l_fig = np.insert(np.cumsum(r_fig_dist), 0, 0)
+
+        # angles in figure coordinates
+        rads = np.arctan2((y_fig[1:] - y_fig[:-1]), (x_fig[1:] - x_fig[:-1]))
+        degs = np.rad2deg(rads)
+
+        rel_pos = 10
+        for c, t in self.__Characters:
+            # finding the width of c:
+            t.set_rotation(0)
+            t.set_va(&#34;center&#34;)
+            bbox1 = t.get_window_extent(renderer=renderer)
+            w = bbox1.width
+            h = bbox1.height
+
+            # ignore all letters that don&#39;t fit:
+            if rel_pos + w / 2 &gt; l_fig[-1]:
+                t.set_alpha(0.0)
+                rel_pos += w
+                continue
+
+            if c != &#34; &#34;:
+                t.set_alpha(1.0)
+
+            # finding the two data points between which the horizontal
+            # center point of the character will be situated
+            # left and right indices:
+            il = np.where(rel_pos + w / 2 &gt;= l_fig)[0][-1]
+            ir = np.where(rel_pos + w / 2 &lt;= l_fig)[0][0]
+
+            # if we exactly hit a data point:
+            if ir == il:
+                ir += 1
+
+            # how much of the letter width was needed to find il:
+            used = l_fig[il] - rel_pos
+            rel_pos = l_fig[il]
+
+            # relative distance between il and ir where the center
+            # of the character will be
+            fraction = (w / 2 - used) / r_fig_dist[il]
+
+            ##setting the character position in data coordinates:
+            ##interpolate between the two points:
+            x = self.__x[il] + fraction * (self.__x[ir] - self.__x[il])
+            y = self.__y[il] + fraction * (self.__y[ir] - self.__y[il])
+
+            # getting the offset when setting correct vertical alignment
+            # in data coordinates
+            bbox2 = t.get_window_extent(renderer=renderer)
+
+            bbox1d = self.axes.transData.inverted().transform(bbox1)
+            bbox2d = self.axes.transData.inverted().transform(bbox2)
+            dr = np.array(bbox2d[0] - bbox1d[0])
+
+            # the rotation/stretch matrix
+            rad = rads[il]
+            rot_mat = np.array(
+                [
+                    [math.cos(rad), math.sin(rad) * aspect],
+                    [-math.sin(rad) / aspect, math.cos(rad)],
+                ]
+            )
+
+            ##computing the offset vector of the rotated character
+            drp = np.dot(dr, rot_mat)
+
+            # setting final position and rotation:
+            t.set_position(np.array([x, y]) + drp)
+            t.set_rotation(degs[il])
+
+            t.set_va(&#34;center&#34;)
+            t.set_ha(&#34;center&#34;)
+
+            # updating rel_pos to right edge of character
+            rel_pos += w - used</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="PySDM_examples.UIUC_2021.curved_text.CurvedText"><code class="flex name class">
+<span>class <span class="ident">CurvedText</span></span>
+<span>(</span><span>x, y, text, axes, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A text object that follows an arbitrary curve.</p>
+<p>Create a <code>.Text</code> instance at <em>x</em>, <em>y</em> with string <em>text</em>.</p>
+<p>The text is aligned relative to the anchor point (<em>x</em>, <em>y</em>) according
+to <code>horizontalalignment</code> (default: 'left') and <code>verticalalignment</code>
+(default: 'bottom'). See also
+:doc:<code>/gallery/text_labels_and_annotations/text_alignment</code>.</p>
+<p>While Text accepts the 'label' keyword argument, by default it is not
+added to the handles of a legend.</p>
+<p>Valid keyword arguments are:</p>
+<h2 id="properties">Properties</h2>
+<p>agg_filter: a filter function, which takes a (m, n, 3) float array and a dpi value, and returns a (m, n, 3) array and two offsets from the bottom left corner of the image
+alpha: scalar or None
+animated: bool
+backgroundcolor: color
+bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
+clip_box: unknown
+clip_on: unknown
+clip_path: unknown
+color or c: color
+figure: <code>.Figure</code>
+fontfamily or family: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
+fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
+fontsize or size: float or {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}
+fontstretch or stretch: {a numeric value in range 0-1000, 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded'}
+fontstyle or style: {'normal', 'italic', 'oblique'}
+fontvariant or variant: {'normal', 'small-caps'}
+fontweight or weight: {a numeric value in range 0-1000, 'ultralight', 'light', 'normal', 'regular', 'book', 'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black'}
+gid: str
+horizontalalignment or ha: {'left', 'center', 'right'}
+in_layout: bool
+label: object
+linespacing: float (multiple of font size)
+math_fontfamily: str
+mouseover: bool
+multialignment or ma: {'left', 'right', 'center'}
+parse_math: bool
+path_effects: <code>.AbstractPathEffect</code>
+picker: None or bool or float or callable
+position: (float, float)
+rasterized: bool
+rotation: float or {'vertical', 'horizontal'}
+rotation_mode: {None, 'default', 'anchor'}
+sketch_params: (scale: float, length: float, randomness: float)
+snap: bool or None
+text: object
+transform: <code>.Transform</code>
+transform_rotates_text: bool
+url: str
+usetex: bool or None
+verticalalignment or va: {'bottom', 'baseline', 'center', 'center_baseline', 'top'}
+visible: bool
+wrap: bool
+x: float
+y: float
+zorder: float</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CurvedText(mtext.Text):
+    &#34;&#34;&#34;
+    A text object that follows an arbitrary curve.
+    &#34;&#34;&#34;
+
+    def __init__(self, x, y, text, axes, **kwargs):
+        super().__init__(x[0], y[0], &#34; &#34;, **kwargs)
+
+        axes.add_artist(self)
+
+        ##saving the curve:
+        self.__x = x
+        self.__y = y
+        self.__zorder = self.get_zorder()
+
+        ##creating the text objects
+        self.__Characters = []
+        for c in text:
+            if c == &#34; &#34;:
+                ##make this an invisible &#39;a&#39;:
+                t = mtext.Text(0, 0, &#34;a&#34;)
+                t.set_alpha(0.0)
+            else:
+                t = mtext.Text(0, 0, c, **kwargs)
+
+            # resetting unnecessary arguments
+            t.set_rotation(0)
+            t.set_zorder(self.__zorder + 1)
+
+            self.__Characters.append((c, t))
+            axes.add_artist(t)
+
+    ##overloading some member functions, to assure correct functionality
+    ##on update
+    def set_zorder(self, level):
+        super().set_zorder(level)
+        self.__zorder = self.get_zorder()
+        for _, t in self.__Characters:
+            t.set_zorder(self.__zorder + 1)
+
+    def draw(self, renderer, *_, **__):
+        &#34;&#34;&#34;
+        Overload of the Text.draw() function. Do not do
+        do any drawing, but update the positions and rotation
+        angles of self.__Characters.
+        &#34;&#34;&#34;
+        self.update_positions(renderer)
+
+    def update_positions(self, renderer):
+        &#34;&#34;&#34;
+        Update positions and rotations of the individual text elements.
+        &#34;&#34;&#34;
+
+        # preparations
+
+        ##determining the aspect ratio:
+        ##from https://stackoverflow.com/a/42014041/2454357
+
+        ##data limits
+        xlim = self.axes.get_xlim()
+        ylim = self.axes.get_ylim()
+        ## Axis size on figure
+        figW, figH = self.axes.get_figure().get_size_inches()
+        ## Ratio of display units
+        _, _, w, h = self.axes.get_position().bounds
+        ##final aspect ratio
+        aspect = ((figW * w) / (figH * h)) * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
+
+        # points of the curve in figure coordinates:
+        x_fig, y_fig = (
+            np.array(l)
+            for l in zip(*self.axes.transData.transform(list(zip(self.__x, self.__y))))
+        )
+
+        # point distances in figure coordinates
+        x_fig_dist = x_fig[1:] - x_fig[:-1]
+        y_fig_dist = y_fig[1:] - y_fig[:-1]
+        r_fig_dist = np.sqrt(x_fig_dist**2 + y_fig_dist**2)
+
+        # arc length in figure coordinates
+        l_fig = np.insert(np.cumsum(r_fig_dist), 0, 0)
+
+        # angles in figure coordinates
+        rads = np.arctan2((y_fig[1:] - y_fig[:-1]), (x_fig[1:] - x_fig[:-1]))
+        degs = np.rad2deg(rads)
+
+        rel_pos = 10
+        for c, t in self.__Characters:
+            # finding the width of c:
+            t.set_rotation(0)
+            t.set_va(&#34;center&#34;)
+            bbox1 = t.get_window_extent(renderer=renderer)
+            w = bbox1.width
+            h = bbox1.height
+
+            # ignore all letters that don&#39;t fit:
+            if rel_pos + w / 2 &gt; l_fig[-1]:
+                t.set_alpha(0.0)
+                rel_pos += w
+                continue
+
+            if c != &#34; &#34;:
+                t.set_alpha(1.0)
+
+            # finding the two data points between which the horizontal
+            # center point of the character will be situated
+            # left and right indices:
+            il = np.where(rel_pos + w / 2 &gt;= l_fig)[0][-1]
+            ir = np.where(rel_pos + w / 2 &lt;= l_fig)[0][0]
+
+            # if we exactly hit a data point:
+            if ir == il:
+                ir += 1
+
+            # how much of the letter width was needed to find il:
+            used = l_fig[il] - rel_pos
+            rel_pos = l_fig[il]
+
+            # relative distance between il and ir where the center
+            # of the character will be
+            fraction = (w / 2 - used) / r_fig_dist[il]
+
+            ##setting the character position in data coordinates:
+            ##interpolate between the two points:
+            x = self.__x[il] + fraction * (self.__x[ir] - self.__x[il])
+            y = self.__y[il] + fraction * (self.__y[ir] - self.__y[il])
+
+            # getting the offset when setting correct vertical alignment
+            # in data coordinates
+            bbox2 = t.get_window_extent(renderer=renderer)
+
+            bbox1d = self.axes.transData.inverted().transform(bbox1)
+            bbox2d = self.axes.transData.inverted().transform(bbox2)
+            dr = np.array(bbox2d[0] - bbox1d[0])
+
+            # the rotation/stretch matrix
+            rad = rads[il]
+            rot_mat = np.array(
+                [
+                    [math.cos(rad), math.sin(rad) * aspect],
+                    [-math.sin(rad) / aspect, math.cos(rad)],
+                ]
+            )
+
+            ##computing the offset vector of the rotated character
+            drp = np.dot(dr, rot_mat)
+
+            # setting final position and rotation:
+            t.set_position(np.array([x, y]) + drp)
+            t.set_rotation(degs[il])
+
+            t.set_va(&#34;center&#34;)
+            t.set_ha(&#34;center&#34;)
+
+            # updating rel_pos to right edge of character
+            rel_pos += w - used</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>matplotlib.text.Text</li>
+<li>matplotlib.artist.Artist</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM_examples.UIUC_2021.curved_text.CurvedText.draw"><code class="name flex">
+<span>def <span class="ident">draw</span></span>(<span>self, renderer, *_, **__)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Overload of the Text.draw() function. Do not do
+do any drawing, but update the positions and rotation
+angles of self.__Characters.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def draw(self, renderer, *_, **__):
+    &#34;&#34;&#34;
+    Overload of the Text.draw() function. Do not do
+    do any drawing, but update the positions and rotation
+    angles of self.__Characters.
+    &#34;&#34;&#34;
+    self.update_positions(renderer)</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.UIUC_2021.curved_text.CurvedText.set"><code class="name flex">
+<span>def <span class="ident">set</span></span>(<span>self, *, agg_filter=&lt;UNSET&gt;, alpha=&lt;UNSET&gt;, animated=&lt;UNSET&gt;, backgroundcolor=&lt;UNSET&gt;, bbox=&lt;UNSET&gt;, clip_box=&lt;UNSET&gt;, clip_on=&lt;UNSET&gt;, clip_path=&lt;UNSET&gt;, color=&lt;UNSET&gt;, fontfamily=&lt;UNSET&gt;, fontproperties=&lt;UNSET&gt;, fontsize=&lt;UNSET&gt;, fontstretch=&lt;UNSET&gt;, fontstyle=&lt;UNSET&gt;, fontvariant=&lt;UNSET&gt;, fontweight=&lt;UNSET&gt;, gid=&lt;UNSET&gt;, horizontalalignment=&lt;UNSET&gt;, in_layout=&lt;UNSET&gt;, label=&lt;UNSET&gt;, linespacing=&lt;UNSET&gt;, math_fontfamily=&lt;UNSET&gt;, mouseover=&lt;UNSET&gt;, multialignment=&lt;UNSET&gt;, parse_math=&lt;UNSET&gt;, path_effects=&lt;UNSET&gt;, picker=&lt;UNSET&gt;, position=&lt;UNSET&gt;, rasterized=&lt;UNSET&gt;, rotation=&lt;UNSET&gt;, rotation_mode=&lt;UNSET&gt;, sketch_params=&lt;UNSET&gt;, snap=&lt;UNSET&gt;, text=&lt;UNSET&gt;, transform=&lt;UNSET&gt;, transform_rotates_text=&lt;UNSET&gt;, url=&lt;UNSET&gt;, usetex=&lt;UNSET&gt;, verticalalignment=&lt;UNSET&gt;, visible=&lt;UNSET&gt;, wrap=&lt;UNSET&gt;, x=&lt;UNSET&gt;, y=&lt;UNSET&gt;, zorder=&lt;UNSET&gt;)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set multiple properties at once.</p>
+<p>Supported properties are</p>
+<h2 id="properties">Properties</h2>
+<p>agg_filter: a filter function, which takes a (m, n, 3) float array and a dpi value, and returns a (m, n, 3) array and two offsets from the bottom left corner of the image
+alpha: scalar or None
+animated: bool
+backgroundcolor: color
+bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
+clip_box: <code>.Bbox</code>
+clip_on: bool
+clip_path: Patch or (Path, Transform) or None
+color or c: color
+figure: <code>.Figure</code>
+fontfamily or family: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
+fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
+fontsize or size: float or {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}
+fontstretch or stretch: {a numeric value in range 0-1000, 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded'}
+fontstyle or style: {'normal', 'italic', 'oblique'}
+fontvariant or variant: {'normal', 'small-caps'}
+fontweight or weight: {a numeric value in range 0-1000, 'ultralight', 'light', 'normal', 'regular', 'book', 'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black'}
+gid: str
+horizontalalignment or ha: {'left', 'center', 'right'}
+in_layout: bool
+label: object
+linespacing: float (multiple of font size)
+math_fontfamily: str
+mouseover: bool
+multialignment or ma: {'left', 'right', 'center'}
+parse_math: bool
+path_effects: <code>.AbstractPathEffect</code>
+picker: None or bool or float or callable
+position: (float, float)
+rasterized: bool
+rotation: float or {'vertical', 'horizontal'}
+rotation_mode: {None, 'default', 'anchor'}
+sketch_params: (scale: float, length: float, randomness: float)
+snap: bool or None
+text: object
+transform: <code>.Transform</code>
+transform_rotates_text: bool
+url: str
+usetex: bool or None
+verticalalignment or va: {'bottom', 'baseline', 'center', 'center_baseline', 'top'}
+visible: bool
+wrap: bool
+x: float
+y: float
+zorder: unknown</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">cls.set = lambda self, **kwargs: Artist.set(self, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.UIUC_2021.curved_text.CurvedText.set_zorder"><code class="name flex">
+<span>def <span class="ident">set_zorder</span></span>(<span>self, level)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the zorder for the artist.
+Artists with lower zorder
+values are drawn first.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>level</code></strong> :&ensp;<code>float</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_zorder(self, level):
+    super().set_zorder(level)
+    self.__zorder = self.get_zorder()
+    for _, t in self.__Characters:
+        t.set_zorder(self.__zorder + 1)</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.UIUC_2021.curved_text.CurvedText.update_positions"><code class="name flex">
+<span>def <span class="ident">update_positions</span></span>(<span>self, renderer)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Update positions and rotations of the individual text elements.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_positions(self, renderer):
+    &#34;&#34;&#34;
+    Update positions and rotations of the individual text elements.
+    &#34;&#34;&#34;
+
+    # preparations
+
+    ##determining the aspect ratio:
+    ##from https://stackoverflow.com/a/42014041/2454357
+
+    ##data limits
+    xlim = self.axes.get_xlim()
+    ylim = self.axes.get_ylim()
+    ## Axis size on figure
+    figW, figH = self.axes.get_figure().get_size_inches()
+    ## Ratio of display units
+    _, _, w, h = self.axes.get_position().bounds
+    ##final aspect ratio
+    aspect = ((figW * w) / (figH * h)) * (ylim[1] - ylim[0]) / (xlim[1] - xlim[0])
+
+    # points of the curve in figure coordinates:
+    x_fig, y_fig = (
+        np.array(l)
+        for l in zip(*self.axes.transData.transform(list(zip(self.__x, self.__y))))
+    )
+
+    # point distances in figure coordinates
+    x_fig_dist = x_fig[1:] - x_fig[:-1]
+    y_fig_dist = y_fig[1:] - y_fig[:-1]
+    r_fig_dist = np.sqrt(x_fig_dist**2 + y_fig_dist**2)
+
+    # arc length in figure coordinates
+    l_fig = np.insert(np.cumsum(r_fig_dist), 0, 0)
+
+    # angles in figure coordinates
+    rads = np.arctan2((y_fig[1:] - y_fig[:-1]), (x_fig[1:] - x_fig[:-1]))
+    degs = np.rad2deg(rads)
+
+    rel_pos = 10
+    for c, t in self.__Characters:
+        # finding the width of c:
+        t.set_rotation(0)
+        t.set_va(&#34;center&#34;)
+        bbox1 = t.get_window_extent(renderer=renderer)
+        w = bbox1.width
+        h = bbox1.height
+
+        # ignore all letters that don&#39;t fit:
+        if rel_pos + w / 2 &gt; l_fig[-1]:
+            t.set_alpha(0.0)
+            rel_pos += w
+            continue
+
+        if c != &#34; &#34;:
+            t.set_alpha(1.0)
+
+        # finding the two data points between which the horizontal
+        # center point of the character will be situated
+        # left and right indices:
+        il = np.where(rel_pos + w / 2 &gt;= l_fig)[0][-1]
+        ir = np.where(rel_pos + w / 2 &lt;= l_fig)[0][0]
+
+        # if we exactly hit a data point:
+        if ir == il:
+            ir += 1
+
+        # how much of the letter width was needed to find il:
+        used = l_fig[il] - rel_pos
+        rel_pos = l_fig[il]
+
+        # relative distance between il and ir where the center
+        # of the character will be
+        fraction = (w / 2 - used) / r_fig_dist[il]
+
+        ##setting the character position in data coordinates:
+        ##interpolate between the two points:
+        x = self.__x[il] + fraction * (self.__x[ir] - self.__x[il])
+        y = self.__y[il] + fraction * (self.__y[ir] - self.__y[il])
+
+        # getting the offset when setting correct vertical alignment
+        # in data coordinates
+        bbox2 = t.get_window_extent(renderer=renderer)
+
+        bbox1d = self.axes.transData.inverted().transform(bbox1)
+        bbox2d = self.axes.transData.inverted().transform(bbox2)
+        dr = np.array(bbox2d[0] - bbox1d[0])
+
+        # the rotation/stretch matrix
+        rad = rads[il]
+        rot_mat = np.array(
+            [
+                [math.cos(rad), math.sin(rad) * aspect],
+                [-math.sin(rad) / aspect, math.cos(rad)],
+            ]
+        )
+
+        ##computing the offset vector of the rotated character
+        drp = np.dot(dr, rot_mat)
+
+        # setting final position and rotation:
+        t.set_position(np.array([x, y]) + drp)
+        t.set_rotation(degs[il])
+
+        t.set_va(&#34;center&#34;)
+        t.set_ha(&#34;center&#34;)
+
+        # updating rel_pos to right edge of character
+        rel_pos += w - used</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PySDM_examples.UIUC_2021" href="index.html">PySDM_examples.UIUC_2021</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="PySDM_examples.UIUC_2021.curved_text.CurvedText" href="#PySDM_examples.UIUC_2021.curved_text.CurvedText">CurvedText</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM_examples.UIUC_2021.curved_text.CurvedText.draw" href="#PySDM_examples.UIUC_2021.curved_text.CurvedText.draw">draw</a></code></li>
+<li><code><a title="PySDM_examples.UIUC_2021.curved_text.CurvedText.set" href="#PySDM_examples.UIUC_2021.curved_text.CurvedText.set">set</a></code></li>
+<li><code><a title="PySDM_examples.UIUC_2021.curved_text.CurvedText.set_zorder" href="#PySDM_examples.UIUC_2021.curved_text.CurvedText.set_zorder">set_zorder</a></code></li>
+<li><code><a title="PySDM_examples.UIUC_2021.curved_text.CurvedText.update_positions" href="#PySDM_examples.UIUC_2021.curved_text.CurvedText.update_positions">update_positions</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

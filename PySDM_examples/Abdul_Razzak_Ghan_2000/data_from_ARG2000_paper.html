@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>PySDM_examples.Abdul_Razzak_Ghan_2000.data_from_ARG2000_paper API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PySDM_examples.Abdul_Razzak_Ghan_2000.data_from_ARG2000_paper</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># figure 1
+Fig1_N2_obs = [
+    0,
+    90.2394106813997,
+    399.6316758747698,
+    904.2357274401473,
+    1906.0773480662983,
+    4926.33517495396,
+]
+Fig1_AF_obs = [
+    0.7935943060498221,
+    0.7124555160142347,
+    0.594306049822064,
+    0.48185053380782916,
+    0.34946619217081853,
+    0.17580071174377226,
+]
+Fig1_N2_param = [
+    0,
+    12.891344383057117,
+    27.624309392265218,
+    68.13996316758755,
+    97.60589318600375,
+    149.1712707182321,
+    200.73664825046046,
+    274.40147329650097,
+    325.9668508287293,
+    388.5819521178637,
+    454.88029465930015,
+    499.0791896869245,
+    591.1602209944751,
+    653.7753222836095,
+    786.3720073664825,
+    712.7071823204419,
+    841.6206261510129,
+    904.2357274401473,
+    963.1675874769797,
+    1033.1491712707182,
+    1092.0810313075506,
+    1165.745856353591,
+    1239.4106813996316,
+    1298.3425414364642,
+    1364.6408839779006,
+    1441.988950276243,
+    1515.6537753222838,
+    1659.3001841620626,
+    1581.95211786372,
+    1725.598526703499,
+    1839.779005524862,
+    2226.5193370165744,
+    2016.5745856353592,
+    2591.160220994475,
+    2421.731123388582,
+    2826.8876611418045,
+    3106.8139963167587,
+    3471.4548802946592,
+    3736.648250460405,
+    4023.941068139963,
+    4233.885819521179,
+    4458.563535911602,
+    4639.042357274401,
+    4815.837937384898,
+    4915.285451197053,
+]
+Fig1_AF_param = [
+    0.783629893238434,
+    0.7437722419928825,
+    0.7209964412811387,
+    0.6967971530249111,
+    0.6654804270462633,
+    0.6412811387900356,
+    0.6199288256227757,
+    0.5957295373665481,
+    0.5772241992882562,
+    0.5615658362989324,
+    0.5459074733096085,
+    0.5373665480427046,
+    0.5174377224199288,
+    0.5060498220640569,
+    0.4832740213523132,
+    0.49323843416370106,
+    0.47473309608540926,
+    0.4676156583629893,
+    0.4590747330960854,
+    0.4505338078291815,
+    0.44199288256227753,
+    0.4320284697508897,
+    0.4192170818505338,
+    0.41209964412811384,
+    0.40498220640569393,
+    0.39786476868327403,
+    0.3893238434163701,
+    0.37224199288256227,
+    0.38220640569395015,
+    0.3693950177935943,
+    0.3580071174377224,
+    0.3323843416370107,
+    0.3466192170818505,
+    0.31103202846975087,
+    0.3209964412811388,
+    0.2939501779359431,
+    0.2825622775800712,
+    0.2612099644128114,
+    0.24555160142348756,
+    0.22846975088967972,
+    0.21992882562277583,
+    0.20854092526690393,
+    0.2,
+    0.18861209964412812,
+    0.18434163701067616,
+]
+
+# figure 2
+Fig2a_N2_obs = [
+    0,
+    84.38061041292644,
+    188.5098743267505,
+    500.89766606822263,
+    1000,
+    1994.6140035906642,
+    4996.4093357271095,
+]
+Fig2a_AF_obs = [
+    0.7951557093425605,
+    0.7619377162629757,
+    0.7411764705882353,
+    0.6982698961937717,
+    0.6581314878892733,
+    0.5986159169550174,
+    0.4975778546712803,
+]
+Fig2a_N2_param = [
+    12.567324955116646,
+    44.88330341113101,
+    73.60861759425495,
+    109.51526032315974,
+    166.9658886894075,
+    238.7791741472172,
+    350.0897666068223,
+    493.7163375224417,
+    669.6588868940754,
+    863.5547576301616,
+    1078.9946140035906,
+    1359.0664272890485,
+    1754.0394973070017,
+    2105.9245960502694,
+    2533.2136445242368,
+    2978.456014362657,
+    3416.517055655296,
+    3912.0287253141832,
+    4339.317773788151,
+    4705.56552962298,
+    4942.549371633752,
+]
+Fig2a_AF_param = [
+    0.7771626297577854,
+    0.7522491349480969,
+    0.7314878892733563,
+    0.7107266435986159,
+    0.6927335640138408,
+    0.6816608996539792,
+    0.6650519031141868,
+    0.6442906574394464,
+    0.627681660899654,
+    0.6166089965397924,
+    0.6,
+    0.590311418685121,
+    0.5695501730103807,
+    0.5612456747404844,
+    0.5487889273356401,
+    0.5321799307958477,
+    0.5211072664359861,
+    0.5044982698961937,
+    0.4975778546712803,
+    0.485121107266436,
+    0.4782006920415225,
+]
+Fig2b_N2_obs = [
+    82.31173380035023,
+    190.893169877408,
+    499.12434325744306,
+    1003.5026269702277,
+    1994.7460595446587,
+    5000,
+]
+Fig2b_AF_obs = [
+    0.34177215189873417,
+    0.3189873417721519,
+    0.27721518987341776,
+    0.23670886075949368,
+    0.1949367088607595,
+    0.1329113924050633,
+]
+Fig2b_N2_param = [
+    78.80910683012257,
+    113.83537653239921,
+    201.40105078809108,
+    306.4798598949212,
+    488.61646234676004,
+    803.8528896672505,
+    1626.970227670753,
+    1227.6707530647986,
+    2197.8984238178637,
+    2789.8423817863395,
+    3413.3099824868655,
+    4120.840630472854,
+    4754.816112084063,
+    4947.460595446585,
+]
+Fig2b_AF_param = [
+    0.2974683544303798,
+    0.2860759493670886,
+    0.2670886075949367,
+    0.2481012658227848,
+    0.23037974683544304,
+    0.20506329113924052,
+    0.1848101265822785,
+    0.19240506329113927,
+    0.17215189873417724,
+    0.15822784810126583,
+    0.1468354430379747,
+    0.1316455696202532,
+    0.12658227848101267,
+    0.12151898734177217,
+]
+
+# figure 3
+Fig3a_sol2_obs = [
+    0.09790209790209793,
+    0.2517482517482518,
+    0.5013986013986014,
+    0.7496503496503495,
+    1.0034965034965033,
+]
+Fig3a_AF_obs = [0.7586666666666667, 0.7453333333333334, 0.732, 0.72, 0.712]
+Fig3a_sol2_param = [
+    0.10069930069930072,
+    0.14405594405594407,
+    0.2062937062937063,
+    0.3195804195804196,
+    0.4258741258741259,
+    0.5706293706293706,
+    0.7097902097902098,
+    0.8349650349650348,
+    0.9853146853146852,
+]
+Fig3a_AF_param = [
+    0.7186666666666667,
+    0.7173333333333334,
+    0.7066666666666667,
+    0.7013333333333334,
+    0.6946666666666667,
+    0.6839999999999999,
+    0.68,
+    0.676,
+    0.6733333333333333,
+]
+Fig3b_sol2_obs = [
+    0.09765765765765769,
+    0.2518918918918919,
+    0.49981981981981977,
+    0.7506306306306305,
+    1.0036036036036036,
+]
+Fig3b_AF_obs = [
+    0.3441696113074205,
+    0.49823321554770317,
+    0.6084805653710248,
+    0.6734982332155477,
+    0.7074204946996467,
+]
+Fig3b_sol2_param = [
+    0.10270270270270272,
+    0.12000000000000002,
+    0.14522522522522524,
+    0.19423423423423425,
+    0.23891891891891892,
+    0.285045045045045,
+    0.36720720720720723,
+    0.42414414414414414,
+    0.5099099099099098,
+    0.6108108108108108,
+    0.7109909909909908,
+    0.8219819819819818,
+    0.9055855855855854,
+    0.9927927927927926,
+]
+Fig3b_AF_param = [
+    0.3017667844522968,
+    0.3201413427561838,
+    0.34982332155477036,
+    0.4007067137809187,
+    0.43745583038869257,
+    0.4685512367491166,
+    0.5109540636042402,
+    0.537809187279152,
+    0.5646643109540637,
+    0.5985865724381625,
+    0.6183745583038869,
+    0.6409893992932862,
+    0.6551236749116608,
+    0.665017667844523,
+]
+
+# figure 4
+Fig4a_rad2_obs = [
+    0.009935074902399183,
+    0.02489084291235577,
+    0.050627295045896775,
+    0.0750810625568039,
+    0.10032621481488437,
+    0.25217226111925467,
+    0.5095814127548347,
+]
+Fig4a_AF_obs = [
+    0.7866666666666666,
+    0.7586666666666666,
+    0.7146666666666666,
+    0.6839999999999999,
+    0.6506666666666667,
+    0.4013333333333333,
+    0.12266666666666667,
+]
+Fig4a_rad2_param = [
+    0.010398558176237407,
+    0.011922822170487846,
+    0.01483015485791573,
+    0.021013064412958932,
+    0.028913672210108283,
+    0.03952649091680607,
+    0.0519637089296805,
+    0.06743017922474633,
+    0.08065806660390755,
+    0.09188082665813241,
+    0.10777842296164428,
+    0.1260156048064904,
+    0.1598370702863125,
+    0.19816625542394176,
+    0.25882887807971816,
+    0.35614478651156634,
+    0.4606449735804084,
+    0.5013504888178284,
+]
+Fig4a_AF_param = [
+    0.7466666666666666,
+    0.744,
+    0.7373333333333334,
+    0.7266666666666666,
+    0.708,
+    0.6933333333333334,
+    0.6719999999999999,
+    0.648,
+    0.6253333333333333,
+    0.6133333333333333,
+    0.5693333333333334,
+    0.5266666666666666,
+    0.4533333333333333,
+    0.39066666666666666,
+    0.30533333333333335,
+    0.20400000000000001,
+    0.12400000000000001,
+    0.09200000000000001,
+]
+Fig4b_rad2_obs = [
+    0.009901663304056691,
+    0.024822743830633227,
+    0.05023442442984435,
+    0.07582777734439355,
+    0.10066099764048131,
+    0.25485590857890217,
+    0.5140622784173832,
+]
+Fig4b_AF_obs = [
+    0.06363636363636363,
+    0.3805194805194806,
+    0.7142857142857144,
+    0.8532467532467534,
+    0.9181818181818182,
+    0.9805194805194806,
+    0.9844155844155846,
+]
+Fig4b_rad2_param = [
+    0.010822678662544178,
+    0.012760436250146357,
+    0.014995662770320169,
+    0.019135119880936365,
+    0.02449781353843868,
+    0.02860001345745697,
+    0.034621184073166916,
+    0.040954656754592984,
+    0.04892789247282757,
+    0.058261158079809215,
+    0.06581302820245384,
+    0.07862580283595474,
+    0.08650733493819075,
+    0.09517892000062586,
+    0.11038713326488418,
+    0.128871643665347,
+    0.17797444766159812,
+    0.24741109434009928,
+    0.3349930256451866,
+    0.4925130468761019,
+]
+Fig4b_AF_param = [
+    0.07532467532467532,
+    0.12597402597402596,
+    0.17142857142857143,
+    0.24415584415584418,
+    0.3337662337662338,
+    0.3935064935064936,
+    0.48961038961038966,
+    0.5675324675324676,
+    0.6584415584415586,
+    0.7350649350649352,
+    0.781818181818182,
+    0.8324675324675326,
+    0.8636363636363638,
+    0.8844155844155845,
+    0.903896103896104,
+    0.9181818181818182,
+    0.9454545454545455,
+    0.9675324675324677,
+    0.9753246753246754,
+    0.9792207792207794,
+]
+
+# figure 5
+Fig5a_w_obs = [
+    0.009807965902972919,
+    0.10048593159311135,
+    0.49755615755592225,
+    1.0146489013900863,
+    2.01958975016438,
+    5.122402304631117,
+]
+Fig5a_AF_obs = [
+    0.13752711496746203,
+    0.4889370932754881,
+    0.7583514099783082,
+    0.8533622559652929,
+    0.9223427331887204,
+    0.975704989154013,
+]
+Fig5a_w_param = [
+    0.012498045610787637,
+    0.0206913808111479,
+    0.03701869055846206,
+    0.06559067575083277,
+    0.010547703053816347,
+    0.1019579400961098,
+    0.15544578391512495,
+    0.2347071477635516,
+    0.32320173554892717,
+    0.46266128305129245,
+    0.6590940156644131,
+    1.0547703053816342,
+    1.562011440893281,
+    2.214436126209504,
+    3.216387910475258,
+    4.786300923226383,
+]
+Fig5a_AF_param = [
+    0.1505422993492408,
+    0.21301518438177874,
+    0.2911062906724512,
+    0.3691973969631237,
+    0.1336225596529284,
+    0.42906724511930594,
+    0.4967462039045554,
+    0.5761388286334057,
+    0.6412147505422994,
+    0.7062906724511933,
+    0.7635574837310197,
+    0.832537960954447,
+    0.8806941431670283,
+    0.9119305856832973,
+    0.9418655097613884,
+    0.9600867678958787,
+]
+Fig5b_w_obs = [
+    0.009715695698228766,
+    0.1,
+    0.49567650039033445,
+    1.0048186394823608,
+    2.0369343663782664,
+    5.2008599192176295,
+]
+Fig5b_AF_obs = [
+    0.014237288135593246,
+    0.12677966101694915,
+    0.3396610169491525,
+    0.47389830508474573,
+    0.6230508474576271,
+    0.7993220338983051,
+]
+Fig5b_w_param = [
+    0.011331300304886677,
+    0.013602279391211175,
+    0.020764800655076382,
+    0.03325987924068119,
+    0.05200859919217632,
+    0.08533092860365864,
+    0.14340893163476384,
+    0.24217739964485852,
+    0.3786937174482352,
+    0.5921648008652588,
+    0.7422730185233171,
+    0.9622735280876262,
+    1.3733684187482063,
+    1.8770957658454737,
+    2.6279930788429735,
+    3.992570647470934,
+    5.101811705369689,
+]
+Fig5b_AF_param = [
+    0.01830508474576273,
+    0.025084745762711885,
+    0.035932203389830525,
+    0.046779661016949164,
+    0.0657627118644068,
+    0.08474576271186443,
+    0.12542372881355934,
+    0.18779661016949153,
+    0.2555932203389831,
+    0.3193220338983051,
+    0.36,
+    0.41966101694915253,
+    0.4928813559322034,
+    0.5647457627118644,
+    0.632542372881356,
+    0.7030508474576271,
+    0.7505084745762711,
+]</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PySDM_examples.Abdul_Razzak_Ghan_2000" href="index.html">PySDM_examples.Abdul_Razzak_Ghan_2000</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

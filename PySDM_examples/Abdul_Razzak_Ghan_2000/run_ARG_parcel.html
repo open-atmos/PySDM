@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from collections import namedtuple
+
+import numpy as np
+from PySDM import Builder, Formulae
+from PySDM import products as PySDM_products
+from PySDM.backends import CPU
+from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
+from PySDM.dynamics import AmbientThermodynamics, Condensation
+from PySDM.environments import Parcel
+from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.physics import si
+
+from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
+
+
+def run_parcel(
+    w,
+    sol2,
+    N2,
+    rad2,
+    n_sd_per_mode,
+    RH0=1.0,
+    T0=294 * si.K,
+    p0=1e5 * si.Pa,
+    n_steps=50,
+    mass_of_dry_air=1e3 * si.kg,
+    dt=2 * si.s,
+):
+    products = (
+        PySDM_products.WaterMixingRatio(unit=&#34;g/kg&#34;, name=&#34;ql&#34;),
+        PySDM_products.PeakSupersaturation(name=&#34;S max&#34;),
+        PySDM_products.AmbientRelativeHumidity(name=&#34;RH&#34;),
+        PySDM_products.ParcelDisplacement(name=&#34;z&#34;),
+    )
+
+    formulae = Formulae()
+    const = formulae.constants
+    pv0 = RH0 * formulae.saturation_vapour_pressure.pvs_Celsius(T0 - const.T0)
+    q0 = const.eps * pv0 / (p0 - pv0)
+
+    env = Parcel(dt=dt, mass_of_dry_air=mass_of_dry_air, p0=p0, q0=q0, w=w, T0=T0)
+
+    aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
+    n_sd = n_sd_per_mode * len(aerosol.modes)
+
+    builder = Builder(backend=CPU(), n_sd=n_sd)
+    builder.set_environment(env)
+    builder.add_dynamic(AmbientThermodynamics())
+    builder.add_dynamic(Condensation())
+    builder.request_attribute(&#34;critical supersaturation&#34;)
+
+    attributes = {k: np.empty(0) for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;n&#34;)}
+    for i, mode in enumerate(aerosol.modes):
+        kappa, spectrum = mode[&#34;kappa&#34;][&#34;CompressedFilmOvadnevaite&#34;], mode[&#34;spectrum&#34;]
+        r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
+        v_dry = builder.formulae.trivia.volume(radius=r_dry)
+        specific_concentration = concentration / builder.formulae.constants.rho_STP
+        attributes[&#34;n&#34;] = np.append(
+            attributes[&#34;n&#34;], specific_concentration * env.mass_of_dry_air
+        )
+        attributes[&#34;dry volume&#34;] = np.append(attributes[&#34;dry volume&#34;], v_dry)
+        attributes[&#34;kappa times dry volume&#34;] = np.append(
+            attributes[&#34;kappa times dry volume&#34;], v_dry * kappa
+        )
+
+    r_wet = equilibrate_wet_radii(
+        r_dry=builder.formulae.trivia.radius(volume=attributes[&#34;dry volume&#34;]),
+        environment=env,
+        kappa_times_dry_volume=attributes[&#34;kappa times dry volume&#34;],
+    )
+    attributes[&#34;volume&#34;] = builder.formulae.trivia.volume(radius=r_wet)
+
+    particulator = builder.build(attributes, products=products)
+    scipy_ode_condensation_solver.patch_particulator(particulator)
+
+    output = {product.name: [] for product in particulator.products.values()}
+    output_attributes = {
+        &#34;n&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;volume&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;critical volume&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;critical supersaturation&#34;: tuple([] for _ in range(particulator.n_sd)),
+    }
+
+    for _ in range(n_steps):
+        particulator.run(steps=1)
+        for product in particulator.products.values():
+            value = product.get()
+            output[product.name].append(value[0])
+        for key, attr in output_attributes.items():
+            attr_data = particulator.attributes[key].to_ndarray()
+            for drop_id in range(particulator.n_sd):
+                attr[drop_id].append(attr_data[drop_id])
+
+    error = np.zeros(len(aerosol.modes))
+    activated_fraction_S = np.zeros(len(aerosol.modes))
+    activated_fraction_V = np.zeros(len(aerosol.modes))
+    for j, mode in enumerate(aerosol.modes):
+        activated_drops_j_S = 0
+        activated_drops_j_V = 0
+        RHmax = np.nanmax(np.asarray(output[&#34;RH&#34;]))
+        for i, volume in enumerate(output_attributes[&#34;volume&#34;]):
+            if j * n_sd_per_mode &lt;= i &lt; (j + 1) * n_sd_per_mode:
+                if output_attributes[&#34;critical supersaturation&#34;][i][-1] &lt; RHmax:
+                    activated_drops_j_S += output_attributes[&#34;n&#34;][i][-1]
+                if output_attributes[&#34;critical volume&#34;][i][-1] &lt; volume[-1]:
+                    activated_drops_j_V += output_attributes[&#34;n&#34;][i][-1]
+        Nj = np.asarray(output_attributes[&#34;n&#34;])[
+            j * n_sd_per_mode : (j + 1) * n_sd_per_mode, -1
+        ]
+        max_multiplicity_j = np.max(Nj)
+        sum_multiplicity_j = np.sum(Nj)
+        error[j] = max_multiplicity_j / sum_multiplicity_j
+        activated_fraction_S[j] = activated_drops_j_S / sum_multiplicity_j
+        activated_fraction_V[j] = activated_drops_j_V / sum_multiplicity_j
+
+    Output = namedtuple(
+        &#34;Output&#34;,
+        [
+            &#34;profile&#34;,
+            &#34;attributes&#34;,
+            &#34;aerosol&#34;,
+            &#34;activated_fraction_S&#34;,
+            &#34;activated_fraction_V&#34;,
+            &#34;error&#34;,
+        ],
+    )
+    return Output(
+        profile=output,
+        attributes=output_attributes,
+        aerosol=aerosol,
+        activated_fraction_S=activated_fraction_S,
+        activated_fraction_V=activated_fraction_V,
+        error=error,
+    )</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel.run_parcel"><code class="name flex">
+<span>def <span class="ident">run_parcel</span></span>(<span>w, sol2, N2, rad2, n_sd_per_mode, RH0=1.0, T0=294.0, p0=100000.0, n_steps=50, mass_of_dry_air=1000.0, dt=2.0)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run_parcel(
+    w,
+    sol2,
+    N2,
+    rad2,
+    n_sd_per_mode,
+    RH0=1.0,
+    T0=294 * si.K,
+    p0=1e5 * si.Pa,
+    n_steps=50,
+    mass_of_dry_air=1e3 * si.kg,
+    dt=2 * si.s,
+):
+    products = (
+        PySDM_products.WaterMixingRatio(unit=&#34;g/kg&#34;, name=&#34;ql&#34;),
+        PySDM_products.PeakSupersaturation(name=&#34;S max&#34;),
+        PySDM_products.AmbientRelativeHumidity(name=&#34;RH&#34;),
+        PySDM_products.ParcelDisplacement(name=&#34;z&#34;),
+    )
+
+    formulae = Formulae()
+    const = formulae.constants
+    pv0 = RH0 * formulae.saturation_vapour_pressure.pvs_Celsius(T0 - const.T0)
+    q0 = const.eps * pv0 / (p0 - pv0)
+
+    env = Parcel(dt=dt, mass_of_dry_air=mass_of_dry_air, p0=p0, q0=q0, w=w, T0=T0)
+
+    aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
+    n_sd = n_sd_per_mode * len(aerosol.modes)
+
+    builder = Builder(backend=CPU(), n_sd=n_sd)
+    builder.set_environment(env)
+    builder.add_dynamic(AmbientThermodynamics())
+    builder.add_dynamic(Condensation())
+    builder.request_attribute(&#34;critical supersaturation&#34;)
+
+    attributes = {k: np.empty(0) for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;n&#34;)}
+    for i, mode in enumerate(aerosol.modes):
+        kappa, spectrum = mode[&#34;kappa&#34;][&#34;CompressedFilmOvadnevaite&#34;], mode[&#34;spectrum&#34;]
+        r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
+        v_dry = builder.formulae.trivia.volume(radius=r_dry)
+        specific_concentration = concentration / builder.formulae.constants.rho_STP
+        attributes[&#34;n&#34;] = np.append(
+            attributes[&#34;n&#34;], specific_concentration * env.mass_of_dry_air
+        )
+        attributes[&#34;dry volume&#34;] = np.append(attributes[&#34;dry volume&#34;], v_dry)
+        attributes[&#34;kappa times dry volume&#34;] = np.append(
+            attributes[&#34;kappa times dry volume&#34;], v_dry * kappa
+        )
+
+    r_wet = equilibrate_wet_radii(
+        r_dry=builder.formulae.trivia.radius(volume=attributes[&#34;dry volume&#34;]),
+        environment=env,
+        kappa_times_dry_volume=attributes[&#34;kappa times dry volume&#34;],
+    )
+    attributes[&#34;volume&#34;] = builder.formulae.trivia.volume(radius=r_wet)
+
+    particulator = builder.build(attributes, products=products)
+    scipy_ode_condensation_solver.patch_particulator(particulator)
+
+    output = {product.name: [] for product in particulator.products.values()}
+    output_attributes = {
+        &#34;n&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;volume&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;critical volume&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;critical supersaturation&#34;: tuple([] for _ in range(particulator.n_sd)),
+    }
+
+    for _ in range(n_steps):
+        particulator.run(steps=1)
+        for product in particulator.products.values():
+            value = product.get()
+            output[product.name].append(value[0])
+        for key, attr in output_attributes.items():
+            attr_data = particulator.attributes[key].to_ndarray()
+            for drop_id in range(particulator.n_sd):
+                attr[drop_id].append(attr_data[drop_id])
+
+    error = np.zeros(len(aerosol.modes))
+    activated_fraction_S = np.zeros(len(aerosol.modes))
+    activated_fraction_V = np.zeros(len(aerosol.modes))
+    for j, mode in enumerate(aerosol.modes):
+        activated_drops_j_S = 0
+        activated_drops_j_V = 0
+        RHmax = np.nanmax(np.asarray(output[&#34;RH&#34;]))
+        for i, volume in enumerate(output_attributes[&#34;volume&#34;]):
+            if j * n_sd_per_mode &lt;= i &lt; (j + 1) * n_sd_per_mode:
+                if output_attributes[&#34;critical supersaturation&#34;][i][-1] &lt; RHmax:
+                    activated_drops_j_S += output_attributes[&#34;n&#34;][i][-1]
+                if output_attributes[&#34;critical volume&#34;][i][-1] &lt; volume[-1]:
+                    activated_drops_j_V += output_attributes[&#34;n&#34;][i][-1]
+        Nj = np.asarray(output_attributes[&#34;n&#34;])[
+            j * n_sd_per_mode : (j + 1) * n_sd_per_mode, -1
+        ]
+        max_multiplicity_j = np.max(Nj)
+        sum_multiplicity_j = np.sum(Nj)
+        error[j] = max_multiplicity_j / sum_multiplicity_j
+        activated_fraction_S[j] = activated_drops_j_S / sum_multiplicity_j
+        activated_fraction_V[j] = activated_drops_j_V / sum_multiplicity_j
+
+    Output = namedtuple(
+        &#34;Output&#34;,
+        [
+            &#34;profile&#34;,
+            &#34;attributes&#34;,
+            &#34;aerosol&#34;,
+            &#34;activated_fraction_S&#34;,
+            &#34;activated_fraction_V&#34;,
+            &#34;error&#34;,
+        ],
+    )
+    return Output(
+        profile=output,
+        attributes=output_attributes,
+        aerosol=aerosol,
+        activated_fraction_S=activated_fraction_S,
+        activated_fraction_V=activated_fraction_V,
+        error=error,
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PySDM_examples.Abdul_Razzak_Ghan_2000" href="index.html">PySDM_examples.Abdul_Razzak_Ghan_2000</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel.run_parcel" href="#PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel.run_parcel">run_parcel</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

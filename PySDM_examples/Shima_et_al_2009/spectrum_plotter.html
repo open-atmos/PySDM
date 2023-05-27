@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>PySDM_examples.Shima_et_al_2009.spectrum_plotter API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PySDM_examples.Shima_et_al_2009.spectrum_plotter</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import matplotlib
+import numpy as np
+from matplotlib import pyplot
+from open_atmos_jupyter_utils import show_plot
+from packaging import version
+from PySDM.physics.constants import si
+
+from PySDM_examples.Shima_et_al_2009.error_measure import error_measure
+
+_matplotlib_version_3_3_3 = version.parse(&#34;3.3.0&#34;)
+_matplotlib_version_actual = version.parse(matplotlib.__version__)
+
+
+class SpectrumColors:
+    def __init__(self, begining=&#34;#2cbdfe&#34;, end=&#34;#b317b1&#34;):
+        self.b = begining
+        self.e = end
+
+    def __call__(self, value: float):
+        bR, bG, bB = int(self.b[1:3], 16), int(self.b[3:5], 16), int(self.b[5:7], 16)
+        eR, eG, eB = int(self.e[1:3], 16), int(self.e[3:5], 16), int(self.e[5:7], 16)
+        R = bR + int((eR - bR) * value)
+        G = bG + int((eG - bG) * value)
+        B = bB + int((eB - bB) * value)
+        result = f&#34;#{hex(R)[2:4]}{hex(G)[2:4]}{hex(B)[2:4]}&#34;
+        return result
+
+
+class SpectrumPlotter:
+    def __init__(self, settings, title=None, grid=True, legend=True, log_base=10):
+        self.settings = settings
+        self.format = &#34;pdf&#34;
+        self.colors = SpectrumColors()
+        self.smooth = False
+        self.smooth_scope = 2
+        self.legend = legend
+        self.grid = grid
+        self.title = title
+        self.xlabel = &#34;particle radius [µm]&#34;
+        self.ylabel = &#34;dm/dlnr [g/m^3/(unit dr/r)]&#34;
+        self.log_base = log_base
+        self.ax = pyplot
+        self.fig = pyplot
+        self.finished = False
+
+    def finish(self):
+        if self.finished:
+            return
+        self.finished = True
+        if self.grid:
+            self.ax.grid()
+
+        base_arg = {
+            &#34;base&#34;
+            + (
+                &#34;x&#34; if _matplotlib_version_actual &lt; _matplotlib_version_3_3_3 else &#34;&#34;
+            ): self.log_base
+        }
+        if self.title is not None:
+            try:
+                self.ax.title(self.title)
+            except TypeError:
+                self.ax.set_title(self.title)
+        try:
+            self.ax.xscale(&#34;log&#34;, **base_arg)
+            self.ax.xlabel(self.xlabel)
+            self.ax.ylabel(self.ylabel)
+        except AttributeError:
+            self.ax.set_xscale(&#34;log&#34;, **base_arg)
+            self.ax.set_xlabel(self.xlabel)
+            self.ax.set_ylabel(self.ylabel)
+        if self.legend:
+            self.ax.legend()
+
+    def show(self):
+        self.finish()
+        pyplot.tight_layout()
+        show_plot()
+
+    def save(self, file):
+        self.finish()
+        pyplot.savefig(file, format=self.format)
+
+    def plot(self, spectrum, t):
+        error = self.plot_analytic_solution(self.settings, t, spectrum)
+        self.plot_data(self.settings, t, spectrum)
+        return error
+
+    def plot_analytic_solution(self, settings, t, spectrum=None):
+        if t == 0:
+            analytic_solution = settings.spectrum.size_distribution
+        else:
+
+            def analytic_solution(x):
+                return settings.norm_factor * settings.kernel.analytic_solution(
+                    x=x, t=t, x_0=settings.X0, N_0=settings.n_part
+                )
+
+        volume_bins_edges = self.settings.formulae.trivia.volume(
+            settings.radius_bins_edges
+        )
+        dm = np.diff(volume_bins_edges)
+        dr = np.diff(settings.radius_bins_edges)
+
+        pdf_m_x = volume_bins_edges[:-1] + dm / 2
+        pdf_m_y = analytic_solution(pdf_m_x)
+
+        pdf_r_x = settings.radius_bins_edges[:-1] + dr / 2
+        pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
+
+        x = pdf_r_x * si.metres / si.micrometres
+        y_true = (
+            pdf_r_y
+            * self.settings.formulae.trivia.volume(radius=pdf_r_x)
+            * settings.rho
+            / settings.dv
+            * si.kilograms
+            / si.grams
+        )
+
+        self.ax.plot(x, y_true, color=&#34;black&#34;)
+
+        if spectrum is not None:
+            y = spectrum * si.kilograms / si.grams
+            error = error_measure(y, y_true, x)
+            self.title = f&#34;error measure: {error:.2f}&#34;  # TODO #327 relative error
+            return error
+        return None
+
+    def plot_data(self, settings, t, spectrum):
+        if self.smooth:
+            scope = self.smooth_scope
+            if t != 0:
+                new = np.copy(spectrum)
+                for _ in range(2):
+                    for i in range(scope, len(spectrum) - scope):
+                        new[i] = np.mean(spectrum[i - scope : i + scope + 1])
+                    scope = 1
+                    for i in range(scope, len(spectrum) - scope):
+                        spectrum[i] = np.mean(new[i - scope : i + scope + 1])
+
+            x = settings.radius_bins_edges[:-scope]
+            dx = np.diff(x)
+            self.ax.plot(
+                (x[:-1] + dx / 2) * si.metres / si.micrometres,
+                spectrum[:-scope] * si.kilograms / si.grams,
+                label=f&#34;t = {t}s&#34;,
+                color=self.colors(
+                    t / (self.settings.output_steps[-1] * self.settings.dt)
+                ),
+            )
+        else:
+            self.ax.step(
+                settings.radius_bins_edges[:-1] * si.metres / si.micrometres,
+                spectrum * si.kilograms / si.grams,
+                where=&#34;post&#34;,
+                label=f&#34;t = {t}s&#34;,
+                color=self.colors(
+                    t / (self.settings.output_steps[-1] * self.settings.dt)
+                ),
+            )</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumColors"><code class="flex name class">
+<span>class <span class="ident">SpectrumColors</span></span>
+<span>(</span><span>begining='#2cbdfe', end='#b317b1')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SpectrumColors:
+    def __init__(self, begining=&#34;#2cbdfe&#34;, end=&#34;#b317b1&#34;):
+        self.b = begining
+        self.e = end
+
+    def __call__(self, value: float):
+        bR, bG, bB = int(self.b[1:3], 16), int(self.b[3:5], 16), int(self.b[5:7], 16)
+        eR, eG, eB = int(self.e[1:3], 16), int(self.e[3:5], 16), int(self.e[5:7], 16)
+        R = bR + int((eR - bR) * value)
+        G = bG + int((eG - bG) * value)
+        B = bB + int((eB - bB) * value)
+        result = f&#34;#{hex(R)[2:4]}{hex(G)[2:4]}{hex(B)[2:4]}&#34;
+        return result</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter"><code class="flex name class">
+<span>class <span class="ident">SpectrumPlotter</span></span>
+<span>(</span><span>settings, title=None, grid=True, legend=True, log_base=10)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SpectrumPlotter:
+    def __init__(self, settings, title=None, grid=True, legend=True, log_base=10):
+        self.settings = settings
+        self.format = &#34;pdf&#34;
+        self.colors = SpectrumColors()
+        self.smooth = False
+        self.smooth_scope = 2
+        self.legend = legend
+        self.grid = grid
+        self.title = title
+        self.xlabel = &#34;particle radius [µm]&#34;
+        self.ylabel = &#34;dm/dlnr [g/m^3/(unit dr/r)]&#34;
+        self.log_base = log_base
+        self.ax = pyplot
+        self.fig = pyplot
+        self.finished = False
+
+    def finish(self):
+        if self.finished:
+            return
+        self.finished = True
+        if self.grid:
+            self.ax.grid()
+
+        base_arg = {
+            &#34;base&#34;
+            + (
+                &#34;x&#34; if _matplotlib_version_actual &lt; _matplotlib_version_3_3_3 else &#34;&#34;
+            ): self.log_base
+        }
+        if self.title is not None:
+            try:
+                self.ax.title(self.title)
+            except TypeError:
+                self.ax.set_title(self.title)
+        try:
+            self.ax.xscale(&#34;log&#34;, **base_arg)
+            self.ax.xlabel(self.xlabel)
+            self.ax.ylabel(self.ylabel)
+        except AttributeError:
+            self.ax.set_xscale(&#34;log&#34;, **base_arg)
+            self.ax.set_xlabel(self.xlabel)
+            self.ax.set_ylabel(self.ylabel)
+        if self.legend:
+            self.ax.legend()
+
+    def show(self):
+        self.finish()
+        pyplot.tight_layout()
+        show_plot()
+
+    def save(self, file):
+        self.finish()
+        pyplot.savefig(file, format=self.format)
+
+    def plot(self, spectrum, t):
+        error = self.plot_analytic_solution(self.settings, t, spectrum)
+        self.plot_data(self.settings, t, spectrum)
+        return error
+
+    def plot_analytic_solution(self, settings, t, spectrum=None):
+        if t == 0:
+            analytic_solution = settings.spectrum.size_distribution
+        else:
+
+            def analytic_solution(x):
+                return settings.norm_factor * settings.kernel.analytic_solution(
+                    x=x, t=t, x_0=settings.X0, N_0=settings.n_part
+                )
+
+        volume_bins_edges = self.settings.formulae.trivia.volume(
+            settings.radius_bins_edges
+        )
+        dm = np.diff(volume_bins_edges)
+        dr = np.diff(settings.radius_bins_edges)
+
+        pdf_m_x = volume_bins_edges[:-1] + dm / 2
+        pdf_m_y = analytic_solution(pdf_m_x)
+
+        pdf_r_x = settings.radius_bins_edges[:-1] + dr / 2
+        pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
+
+        x = pdf_r_x * si.metres / si.micrometres
+        y_true = (
+            pdf_r_y
+            * self.settings.formulae.trivia.volume(radius=pdf_r_x)
+            * settings.rho
+            / settings.dv
+            * si.kilograms
+            / si.grams
+        )
+
+        self.ax.plot(x, y_true, color=&#34;black&#34;)
+
+        if spectrum is not None:
+            y = spectrum * si.kilograms / si.grams
+            error = error_measure(y, y_true, x)
+            self.title = f&#34;error measure: {error:.2f}&#34;  # TODO #327 relative error
+            return error
+        return None
+
+    def plot_data(self, settings, t, spectrum):
+        if self.smooth:
+            scope = self.smooth_scope
+            if t != 0:
+                new = np.copy(spectrum)
+                for _ in range(2):
+                    for i in range(scope, len(spectrum) - scope):
+                        new[i] = np.mean(spectrum[i - scope : i + scope + 1])
+                    scope = 1
+                    for i in range(scope, len(spectrum) - scope):
+                        spectrum[i] = np.mean(new[i - scope : i + scope + 1])
+
+            x = settings.radius_bins_edges[:-scope]
+            dx = np.diff(x)
+            self.ax.plot(
+                (x[:-1] + dx / 2) * si.metres / si.micrometres,
+                spectrum[:-scope] * si.kilograms / si.grams,
+                label=f&#34;t = {t}s&#34;,
+                color=self.colors(
+                    t / (self.settings.output_steps[-1] * self.settings.dt)
+                ),
+            )
+        else:
+            self.ax.step(
+                settings.radius_bins_edges[:-1] * si.metres / si.micrometres,
+                spectrum * si.kilograms / si.grams,
+                where=&#34;post&#34;,
+                label=f&#34;t = {t}s&#34;,
+                color=self.colors(
+                    t / (self.settings.output_steps[-1] * self.settings.dt)
+                ),
+            )</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM_examples.Berry_1967.spectrum_plotter.SpectrumPlotter" href="../Berry_1967/spectrum_plotter.html#PySDM_examples.Berry_1967.spectrum_plotter.SpectrumPlotter">SpectrumPlotter</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.finish"><code class="name flex">
+<span>def <span class="ident">finish</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def finish(self):
+    if self.finished:
+        return
+    self.finished = True
+    if self.grid:
+        self.ax.grid()
+
+    base_arg = {
+        &#34;base&#34;
+        + (
+            &#34;x&#34; if _matplotlib_version_actual &lt; _matplotlib_version_3_3_3 else &#34;&#34;
+        ): self.log_base
+    }
+    if self.title is not None:
+        try:
+            self.ax.title(self.title)
+        except TypeError:
+            self.ax.set_title(self.title)
+    try:
+        self.ax.xscale(&#34;log&#34;, **base_arg)
+        self.ax.xlabel(self.xlabel)
+        self.ax.ylabel(self.ylabel)
+    except AttributeError:
+        self.ax.set_xscale(&#34;log&#34;, **base_arg)
+        self.ax.set_xlabel(self.xlabel)
+        self.ax.set_ylabel(self.ylabel)
+    if self.legend:
+        self.ax.legend()</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot"><code class="name flex">
+<span>def <span class="ident">plot</span></span>(<span>self, spectrum, t)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot(self, spectrum, t):
+    error = self.plot_analytic_solution(self.settings, t, spectrum)
+    self.plot_data(self.settings, t, spectrum)
+    return error</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot_analytic_solution"><code class="name flex">
+<span>def <span class="ident">plot_analytic_solution</span></span>(<span>self, settings, t, spectrum=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_analytic_solution(self, settings, t, spectrum=None):
+    if t == 0:
+        analytic_solution = settings.spectrum.size_distribution
+    else:
+
+        def analytic_solution(x):
+            return settings.norm_factor * settings.kernel.analytic_solution(
+                x=x, t=t, x_0=settings.X0, N_0=settings.n_part
+            )
+
+    volume_bins_edges = self.settings.formulae.trivia.volume(
+        settings.radius_bins_edges
+    )
+    dm = np.diff(volume_bins_edges)
+    dr = np.diff(settings.radius_bins_edges)
+
+    pdf_m_x = volume_bins_edges[:-1] + dm / 2
+    pdf_m_y = analytic_solution(pdf_m_x)
+
+    pdf_r_x = settings.radius_bins_edges[:-1] + dr / 2
+    pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
+
+    x = pdf_r_x * si.metres / si.micrometres
+    y_true = (
+        pdf_r_y
+        * self.settings.formulae.trivia.volume(radius=pdf_r_x)
+        * settings.rho
+        / settings.dv
+        * si.kilograms
+        / si.grams
+    )
+
+    self.ax.plot(x, y_true, color=&#34;black&#34;)
+
+    if spectrum is not None:
+        y = spectrum * si.kilograms / si.grams
+        error = error_measure(y, y_true, x)
+        self.title = f&#34;error measure: {error:.2f}&#34;  # TODO #327 relative error
+        return error
+    return None</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot_data"><code class="name flex">
+<span>def <span class="ident">plot_data</span></span>(<span>self, settings, t, spectrum)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_data(self, settings, t, spectrum):
+    if self.smooth:
+        scope = self.smooth_scope
+        if t != 0:
+            new = np.copy(spectrum)
+            for _ in range(2):
+                for i in range(scope, len(spectrum) - scope):
+                    new[i] = np.mean(spectrum[i - scope : i + scope + 1])
+                scope = 1
+                for i in range(scope, len(spectrum) - scope):
+                    spectrum[i] = np.mean(new[i - scope : i + scope + 1])
+
+        x = settings.radius_bins_edges[:-scope]
+        dx = np.diff(x)
+        self.ax.plot(
+            (x[:-1] + dx / 2) * si.metres / si.micrometres,
+            spectrum[:-scope] * si.kilograms / si.grams,
+            label=f&#34;t = {t}s&#34;,
+            color=self.colors(
+                t / (self.settings.output_steps[-1] * self.settings.dt)
+            ),
+        )
+    else:
+        self.ax.step(
+            settings.radius_bins_edges[:-1] * si.metres / si.micrometres,
+            spectrum * si.kilograms / si.grams,
+            where=&#34;post&#34;,
+            label=f&#34;t = {t}s&#34;,
+            color=self.colors(
+                t / (self.settings.output_steps[-1] * self.settings.dt)
+            ),
+        )</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self, file)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save(self, file):
+    self.finish()
+    pyplot.savefig(file, format=self.format)</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show(self):
+    self.finish()
+    pyplot.tight_layout()
+    show_plot()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PySDM_examples.Shima_et_al_2009" href="index.html">PySDM_examples.Shima_et_al_2009</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumColors" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumColors">SpectrumColors</a></code></h4>
+</li>
+<li>
+<h4><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter">SpectrumPlotter</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.finish" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.finish">finish</a></code></li>
+<li><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot">plot</a></code></li>
+<li><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot_analytic_solution" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot_analytic_solution">plot_analytic_solution</a></code></li>
+<li><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot_data" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.plot_data">plot_data</a></code></li>
+<li><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.save" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.save">save</a></code></li>
+<li><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.show" href="#PySDM_examples.Shima_et_al_2009.spectrum_plotter.SpectrumPlotter.show">show</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
