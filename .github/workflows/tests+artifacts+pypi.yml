@@ -199,7 +199,7 @@ jobs:
       - if: startsWith(matrix.platform, 'macos-') && matrix.python-version == '3.7'
         run: echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
       - run: |
-          python -m pip install -e .[tests] ./PySDM-examples
+          python -m pip install -e . ./PySDM-examples
           python -m pip install -r tests/devops_tests/requirements.txt
 
       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
