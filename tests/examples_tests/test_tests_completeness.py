@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring
 import pathlib
 
-from conftest import TEST_SUITES, findfiles, get_selected_test_suites
+from .conftest import TEST_SUITES, findfiles, get_selected_test_suites
 
 
 def test_all_cases_in_testsuites():
