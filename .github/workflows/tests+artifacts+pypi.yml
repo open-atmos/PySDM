@@ -183,6 +183,7 @@ jobs:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.7", "3.10"]
+        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process" ]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     steps:
@@ -220,7 +221,9 @@ jobs:
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python -m pytest --durations=10 -v -p no:unraisableexception -We -k run_notebook tests/devops_tests
+        run: |
+          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
+          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
 
   devops:
     runs-on: ubuntu-latest
