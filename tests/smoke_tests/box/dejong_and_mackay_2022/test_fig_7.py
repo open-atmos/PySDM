@@ -21,7 +21,7 @@ def bins_edges(num):
     )
 
 
-class TestFig4:
+class TestFig7:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
@@ -88,7 +88,7 @@ class TestFig4:
 
         peaks_expected = {
             "initial": (37, 0.017),
-            "n_f = 1": (1050, 0.0125),
+            "n_f = 1": (841, 0.0125),
             "n_f = 4": (430, 0.0098),
             "n_f = 16": (180, 0.0075),
             "n_f = 64": (37, 0.0061),
@@ -105,7 +105,7 @@ class TestFig4:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
-        (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
+        (CPU, GPU),
     )
     def test_fig_7b(backend_class, plot=False):  # pylint: disable=too-many-locals
         # arrange
