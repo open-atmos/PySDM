@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring
 import os
 import pathlib
 import re
@@ -66,16 +67,20 @@ def pytest_addoption(parser):
 def pytest_generate_tests(metafunc):
     suite_name = metafunc.config.option.suite
 
+    pysdm_examples_abs_path = (
+        pathlib.Path(__file__)
+        .parent.parent.parent.absolute()
+        .joinpath("PySDM-examples")
+        .joinpath("PySDM_examples")
+    )
     if "notebook_filename" in metafunc.fixturenames:
-        notebook_paths = findfiles(
-            pathlib.Path(__file__).parent.parent.absolute(), r".*\.(ipynb)$"
-        )
+        notebook_paths = findfiles(pysdm_examples_abs_path, r".*\.(ipynb)$")
         selected_suites = get_selected_test_suites(suite_name, notebook_paths)
         metafunc.parametrize("notebook_filename", selected_suites)
 
     if "example_filename" in metafunc.fixturenames:
         examples_paths = findfiles(
-            pathlib.Path(__file__).parent.parent.absolute().joinpath("PySDM_examples"),
+            pysdm_examples_abs_path,
             r".*\.(py)$",
         )
         selected_suites = get_selected_test_suites(suite_name, examples_paths)

@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring
 import pathlib
 
 from conftest import TEST_SUITES, findfiles, get_selected_test_suites
