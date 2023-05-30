@@ -92,8 +92,6 @@ using ``pip install PySDM-examples``.
       A(Attributes) --> P(Particulator)
       B{Builder} --> P
       B2(Backends) --> B
-      I2[Impl] -.-> B
-      I2 -.-> E
       E(Environments) --> B
       D(Dynamics) --> B
       P3(Products) --> P
@@ -108,14 +106,12 @@ using ``pip install PySDM-examples``.
       F{{Formulae}} -.-> I
       F -.-> B
       P2{{Physics}} -.-> B2
-      F <--> P2
 
       click I "https://open-atmos.github.io/PySDM/PySDM/initialisation/index.html"
       click A "https://open-atmos.github.io/PySDM/PySDM/attributes/index.html"
       click P "https://open-atmos.github.io/PySDM/PySDM/particulator.html"
       click B "https://open-atmos.github.io/PySDM/PySDM/builder.html"
       click B2 "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-      click I2 "https://open-atmos.github.io/PySDM/PySDM/impl/index.html"
       click E "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
       click D "https://open-atmos.github.io/PySDM/PySDM/dynamics/index.html"
       click P3 "https://open-atmos.github.io/PySDM/PySDM/products/index.html"
@@ -382,7 +378,6 @@ The component submodules used to create this simulation are visualized below:
     end
     Physics --> I2
     Physics --> Coll
-    Physics --> Environments
     Products --> P
 
     I1 -->|.sample| Attributes
