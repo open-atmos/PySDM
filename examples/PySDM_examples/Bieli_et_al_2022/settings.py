@@ -1,3 +1,5 @@
+from pystrict import strict
+
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import Feingold1988Frag
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
@@ -6,7 +8,6 @@ from PySDM.formulae import Formulae
 from PySDM.initialisation.spectra import Gamma
 from PySDM.physics.constants import si
 from PySDM.physics.constants_defaults import rho_w
-from pystrict import strict
 
 
 @strict

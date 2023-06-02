@@ -1,7 +1,6 @@
 import os
 
 from matplotlib import pyplot as plt
-
 from PySDM_examples.Shima_et_al_2009.example import run
 from PySDM_examples.Shima_et_al_2009.settings import Settings
 from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter

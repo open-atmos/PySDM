@@ -1,7 +1,7 @@
 import numpy as np
-from PySDM.physics import si
-
 from PySDM_examples.Morrison_and_Grabowski_2007.common import Common
+
+from PySDM.physics import si
 
 
 class StratoCumulus(Common):

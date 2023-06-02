@@ -1,7 +1,7 @@
+from PySDM_examples.Alpert_and_Knopf_2016.table import Table
+
 from PySDM.initialisation.spectra import Lognormal, TopHat
 from PySDM.physics import si
-
-from PySDM_examples.Alpert_and_Knopf_2016.table import Table
 
 
 class Table1(Table):

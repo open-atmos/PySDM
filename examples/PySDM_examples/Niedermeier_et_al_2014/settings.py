@@ -1,9 +1,10 @@
 from typing import Optional
 
+from pystrict import strict
+
 from PySDM import Formulae
 from PySDM.physics import constants as const
 from PySDM.physics import si
-from pystrict import strict
 
 
 @strict

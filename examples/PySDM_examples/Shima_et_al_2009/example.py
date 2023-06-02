@@ -2,15 +2,15 @@ import os
 from typing import Optional
 
 import numpy as np
+from PySDM_examples.Shima_et_al_2009.settings import Settings
+from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
+
 from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
-
-from PySDM_examples.Shima_et_al_2009.settings import Settings
-from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
 
 
 def run(settings, backend=CPU, observers=()):

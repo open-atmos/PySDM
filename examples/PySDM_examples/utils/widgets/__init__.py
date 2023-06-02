@@ -24,6 +24,5 @@ from ipywidgets import (
     interactive_output,
     jslink,
 )
-
 from PySDM_examples.utils.widgets.freezer import Freezer
 from PySDM_examples.utils.widgets.progbar_updater import ProgbarUpdater

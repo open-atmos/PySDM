@@ -1,13 +1,14 @@
 from typing import Iterable
 
 import numpy as np
+from scipy.integrate import solve_ivp
+from scipy.interpolate import interp1d
+from scipy.misc import derivative
+
 from PySDM import Formulae
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
 from PySDM.physics import si
-from scipy.integrate import solve_ivp
-from scipy.interpolate import interp1d
-from scipy.misc import derivative
 
 
 class Settings:

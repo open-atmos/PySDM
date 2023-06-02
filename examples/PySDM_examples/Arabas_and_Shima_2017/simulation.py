@@ -1,4 +1,5 @@
 import numpy as np
+
 import PySDM.products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.builder import Builder

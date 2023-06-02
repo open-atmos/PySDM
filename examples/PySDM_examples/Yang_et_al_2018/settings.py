@@ -1,10 +1,11 @@
 import numpy as np
+from pystrict import strict
+
 from PySDM.backends import CPU
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.physics import si
-from pystrict import strict
 
 
 @strict

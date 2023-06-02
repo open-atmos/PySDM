@@ -1,8 +1,9 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from scipy.optimize import minimize
+
 from PySDM.backends import CPU
 from PySDM.physics import constants as const
-from scipy.optimize import minimize
 
 backend = CPU
 um = const.si.um

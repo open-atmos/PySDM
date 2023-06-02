@@ -1,6 +1,8 @@
 from typing import Optional
 
 import numpy as np
+from pystrict import strict
+
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import ExponFrag
 from PySDM.dynamics.collisions.coalescence_efficiencies import Berry1967
@@ -8,7 +10,6 @@ from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.formulae import Formulae
 from PySDM.initialisation.spectra import Exponential
 from PySDM.physics.constants import si
-from pystrict import strict
 
 TRIVIA = Formulae().trivia
 

@@ -3,9 +3,9 @@ from tempfile import TemporaryDirectory
 from threading import Thread
 from time import sleep
 
-from PySDM.exporters import VTKExporter
-
 from PySDM_examples.utils.widgets import Button, Checkbox, FloatProgress, HBox
+
+from PySDM.exporters import VTKExporter
 
 
 class GUIController:

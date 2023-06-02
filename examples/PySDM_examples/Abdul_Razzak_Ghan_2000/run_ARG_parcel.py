@@ -1,6 +1,8 @@
 from collections import namedtuple
 
 import numpy as np
+from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
+
 from PySDM import Builder, Formulae
 from PySDM import products as PySDM_products
 from PySDM.backends import CPU
@@ -10,8 +12,6 @@ from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
-
-from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
 
 
 def run_parcel(

@@ -2,8 +2,9 @@ import numba
 import numpy
 import numpy as np  # pylint: disable=reimported
 import PyMPDATA
-import PySDM
 import scipy
+
+import PySDM
 from PySDM import Formulae
 from PySDM.dynamics import collisions, condensation, displacement
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb

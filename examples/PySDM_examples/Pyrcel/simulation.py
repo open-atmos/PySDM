@@ -1,4 +1,6 @@
 import numpy as np
+from PySDM_examples.utils import BasicSimulation
+
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
@@ -7,8 +9,6 @@ from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
-
-from PySDM_examples.utils import BasicSimulation
 
 
 class Simulation(BasicSimulation):

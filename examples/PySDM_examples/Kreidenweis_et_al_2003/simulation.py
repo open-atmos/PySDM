@@ -1,4 +1,6 @@
 import numpy as np
+from PySDM_examples.utils import BasicSimulation
+
 import PySDM.products as PySDM_products
 from PySDM import Builder
 from PySDM.backends import CPU
@@ -6,8 +8,6 @@ from PySDM.dynamics import AmbientThermodynamics, AqueousChemistry, Condensation
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS
 from PySDM.environments import Parcel
 from PySDM.physics import si
-
-from PySDM_examples.utils import BasicSimulation
 
 
 class Simulation(BasicSimulation):

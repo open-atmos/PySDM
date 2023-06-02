@@ -1,10 +1,6 @@
 import inspect
 
 import numpy as np
-from PySDM import Formulae, formulae, physics
-from PySDM.initialisation.spectra import Lognormal
-from PySDM.physics import si
-
 from PySDM_examples.utils.widgets import (
     Accordion,
     Checkbox,
@@ -15,6 +11,10 @@ from PySDM_examples.utils.widgets import (
     RadioButtons,
     VBox,
 )
+
+from PySDM import Formulae, formulae, physics
+from PySDM.initialisation.spectra import Lognormal
+from PySDM.physics import si
 
 
 class GUISettings:
