@@ -35,20 +35,173 @@ The package features a Pythonic high-performance implementation of the
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
 
+There is a growing set of example Jupyter notebooks exemplifying how to perform 
+  various types of calculations and simulations using PySDM.
+Most of the example notebooks reproduce resutls and plot from literature, see below for 
+  a list of examples and links to the notebooks (which can be either executed or viewed 
+  "in the cloud").
+
 PySDM has two alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
-The [`Numba`](https://open-atmos.github.io/PySDM/backends/numba/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
+The [`Numba`](https://open-atmos.github.io/PySDM/PySDM/backends/numba/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
   multi-core CPUs, it uses the just-in-time compilation technique based on the LLVM infrastructure.
-The [`ThrustRTC`](https://open-atmos.github.io/PySDM/backends/thrustRTC/thrustRTC.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
+The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrustRTC/thrustRTC.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
 
-For an overview paper on PySDM v1 (and the preferred item to cite if using PySDM), see [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (J. Open Source Software).
+For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS paper:
+- [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
+- [de Jong et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
 For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
 A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
+
+## Example Jupyter notebooks (reproducing results from literature):
+
+### 0D box-model coalescence and breakup examples:
+- [Shima et al. 2009](http://doi.org/10.1002/qj.441) (Box model, coalescence only, test case employing Golovin analytical solution):
+    - Fig. 2:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb)    
+
+- [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024<0688:CDGBC>2.0.CO;2) (Box model, coalescence only, test cases for realistic kernels):
+    - Figs. 5, 8 & 10:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb) 
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)
+
+- [Bieli et al. 2022](https://www.essoar.org/doi/abs/10.1002/essoar.10510248.1) (Box model, coalescence and breakup with fixed coalescence efficiency):
+    - Fig. 3:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bieli_et_al_2022/make_fig_3.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Bieli_et_al_2022/make_fig_3.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bieli_et_al_2022/make_fig_3.ipynb)
+
+- [deJong et al. 2023](https://doi.org/10.5194/egusphere-2022-1243) (Box model, coalescence and breakup):
+    - Figs. 3-5 (Berry 1967 coalescence efficiency):
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_2022/box_sensitivities.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/deJong_Mackay_2022/box_sensitivities.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_2022/box_sensitivities.ipynb)
+    - Appendix figures (validation against Srivastava 1982 analytic solution):
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_2022/convergence.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/deJong_Mackay_2022/convergence.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_2022/convergence.ipynb)
+
+### 0D box-model immersion freezing-only example:
+- [Alpert & Knopf 2016](https://doi.org/10.5194/acp-16-2083-2016) (stochastic immersion freezing with monodisperse vs. lognormal immersed surface areas):
+  - Fig. 1:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_1.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_1.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_1.ipynb)    
+  - Fig. 2:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_2.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_2.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_2.ipynb)    
+  - Fig. 3:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb)    
+  - Fig. 4: 
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb)    
+  - Fig. 5:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb)    
+  
+### 0D parcel-model condensation only examples:
+- [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) (monodisperse size spectrum activation/deactivation test case):
+  - Fig. 5:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb)    
+  
+- [Yang et al. 2018](https://doi.org/10.5194/acp-18-7313-2018) (polydisperse size spectrum activation/deactivation test case):
+  - Fig. 2:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
+
+- [Abdul-Razzak & Ghan 2000](http://doi.wiley.com/10.1029/1999JD901161) (aerosol activation parameterization for GCMs):
+  - Figs. 1 - 5:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Abdul_Razzak_Ghan_2000/figs1-5.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=PySDM_examples/Abdul_Razzak_Ghan_2000/figs1-5.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Abdul_Razzak_Ghan_2000/figs1-5.ipynb)
+
+- [Pyrcel documentation example](https://pyrcel.readthedocs.io/en/latest/examples/basic_run.html) (externally mixed polydisperse size spectrum activation test case):
+  - supersaturation, temperature, wet radii evolution and dry spectra plots:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Pyrcel/example_basic_run.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=PySDM_examples/Pyrcel/example_basic_run.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Pyrcel/example_basic_run.ipynb)
+
+- [Lowe et al. 2019](https://doi.org/10.1038/s41467-019-12982-0) (externally mixed polydisperse size spectrum with surface-active organics case):
+  - Fig. 1: 
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Lowe_et_al_2019/fig_1.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Lowe_et_al_2019/fig_1.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Lowe_et_al_2019/fig_1.ipynb)
+  - Fig. 2:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Lowe_et_al_2019/fig_2.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Lowe_et_al_2019/fig_2.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Lowe_et_al_2019/fig_2.ipynb)
+  - Fig. 3:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Lowe_et_al_2019/fig_3.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Lowe_et_al_2019/fig_3.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Lowe_et_al_2019/fig_3.ipynb)
+
+### 0D parcel-model condensation/aqueous-chemistry example:
+- [Kreidenweis et al. 2003](https://doi.org/10.1029/2002JD002697) (Adiabatic parcel, polydisperse size spectrum, aqueous‐phase SO2 oxidation test case):
+  - Fig 1:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb)
+- [Jaruga and Pawlowska 2018](https://doi.org/10.5194/gmd-11-3623-2018) (same test case as above, different numerical settings):
+  - Fig 2:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb)    
+  - Fig 3:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb)    
+
+### 1D kinematic (prescribed-flow, single-column):  
+- [Shipway & Hill 2012](https://doi.org/10.1002/qj.1913):
+  - Fig 1 (thermodynamics/condensation only, no particle displacement yet):   
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)
+
+- [deJong et al. 2023](https://doi.org/10.5194/egusphere-2022-1243) (Kinematic setup as in Shipway and Hill, including breakup with Berry 1967 coalescence efficiency):
+    - Figs. 6-8:
+      [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_2022/rainshaft_1D.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/deJong_Mackay_2022/rainshaft_1D.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_2022/rainshaft_1D.ipynb)
+
+### 2D kinematic (prescribed-flow) Sc-mimicking aerosol collisional processing (warm-rain) examples:
+- [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) 
+  - Figs. 8 & 9 (interactive web-GUI with product selection, parameter sliders and netCDF/plot export buttons):    
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb)       
+  
+- Bartman et al. 2021 (in preparation):
+  - Fig 1 (default-settings based script generating a netCDF file and loading it subsequently to create the animation below):    
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bartman_et_al_2021/demo.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Bartman_et_al_2021/demo.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bartman_et_al_2021/demo.ipynb)       
+  - Fig 2:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bartman_et_al_2021/demo_fig2.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Bartman_et_al_2021/demo_fig2.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bartman_et_al_2021/demo_fig2.ipynb)
+  - Fig 3:
+    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bartman_et_al_2021/demo_fig3.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Bartman_et_al_2021/demo_fig3.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bartman_et_al_2021/demo_fig3.ipynb)       
+
+![animation](https://github.com/open-atmos/PySDM/wiki/files/kinematic_2D_example.gif)
 
 ## Dependencies and Installation
 
@@ -69,27 +222,21 @@ Conda users may use ``pip`` as well, see the [Installing non-conda packages](htt
 - nvidia: [cudatoolkit](https://anaconda.org/nvidia/cudatoolkit)
 
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
-Test-time dependencies are listed in the ``test-time-requirements.txt`` file.
+Test-time dependencies can be installed with ``pip -e .[tests]``.
 
-PySDM examples are hosted in a separate repository and constitute 
-the [``PySDM_examples``](https://github.com/open-atmos/PySDM-examples) package.
-The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM-examples/blob/main/setup.py) file.
-Running the examples requires the ``PySDM_examples`` package to be installed.
-Since the examples package includes Jupyter notebooks (and their execution requires write access), the suggested install and launch steps are:
+PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM-examples) package.
+The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM/blob/main/examples/setup.py) file.
+Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
+The suggested install and launch steps are:
 ```
-git clone https://github.com/open-atmos/PySDM-examples.git
-cd PySDM-examples
+git clone https://github.com/open-atmos/PySDM.git
+cd examples
 pip install -e .
 jupyter-notebook
 ```
 Alternatively, one can also install the examples package from pypi.org by 
-using ``pip install PySDM-examples``.
-
-## PySDM examples (Jupyter notebooks reproducing results from literature):
-
-Examples are maintained at the `PySDM-examples` repository, see [PySDM-examples README.md](https://github.com/open-atmos/PySDM-examples/blob/main/README.md) file for details.
-
-![animation](https://github.com/open-atmos/PySDM/wiki/files/kinematic_2D_example.gif)
+using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
+only the supporting .py files).
 
 ## Hello-world coalescence example in Python, Julia and Matlab
 
@@ -97,8 +244,8 @@ In order to depict the PySDM API with a practical example, the following
   listings provide sample code roughly reproducing the 
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
   using PySDM from Python, Julia and Matlab.
-It is a [`Coalescence`](https://open-atmos.github.io/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
-  spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Exponential) and is deterministically sampled to match
+It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
+  spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Exponential) and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -152,9 +299,9 @@ attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).s
 ```
 </details>
 
-The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/particulator.html) 
+The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html) 
   class instances of which are used to manage the system state and control the simulation.
-Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/particulator.html) class is handled by the [``Builder``](https://open-atmos.github.io/PySDM/builder.html)
+Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html) class is handled by the [``Builder``](https://open-atmos.github.io/PySDM/PySDM/builder.html)
   as exemplified below:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -224,18 +371,18 @@ particulator = builder.build(attributes, products)
 The ``backend`` argument may be set to ``CPU`` or ``GPU``
   what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
-The employed [`Box`](https://open-atmos.github.io/PySDM/environments/box.html) environment corresponds to a zero-dimensional framework
+The employed [`Box`](https://open-atmos.github.io/PySDM/PySDM/environments/box.html) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
   used to initialise super-droplet attributes.
-The [`Coalescence`](https://open-atmos.github.io/PySDM/dynamics/coalescence.html)
+The [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/coalescence.html)
   Monte-Carlo algorithm (Super Droplet Method) is registered as the only
   dynamic in the system.
-Finally, the [`build()`](https://open-atmos.github.io/PySDM/builder.html#PySDM.builder.Builder.build) method is used to obtain an instance
-  of [`Particulator`](https://open-atmos.github.io/PySDM/particulator.html#PySDM.particulator.Particulator) which can then be used to control time-stepping and
+Finally, the [`build()`](https://open-atmos.github.io/PySDM/PySDM/builder.html#PySDM.builder.Builder.build) method is used to obtain an instance
+  of [`Particulator`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#PySDM.particulator.Particulator) which can then be used to control time-stepping and
   access simulation state.
 
-The [`run(nt)`](https://open-atmos.github.io/PySDM/particulator.html#PySDM.particuparticulatorr.Particulator.run) method advances the simulation by ``nt`` timesteps.
+The [`run(nt)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#PySDM.particuparticulatorr.Particulator.run) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
@@ -313,20 +460,20 @@ The resultant plot (generated with the Python code) looks as follows:
 ## Hello-world condensation example in Python, Julia and Matlab
 
 In the following example, a condensation-only setup is used with the adiabatic 
-[`Parcel`](https://open-atmos.github.io/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://open-atmos.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
+[`Parcel`](https://open-atmos.github.io/PySDM/PySDM/environments/parcel.html) environment.
+An initial [`Lognormal`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
-Subsequent particle growth due to [`Condensation`](https://open-atmos.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
+Subsequent particle growth due to [`Condensation`](https://open-atmos.github.io/PySDM/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
 causes a subset of particles to activate into cloud droplets.
 Results of the simulation are plotted against vertical 
-[`ParcelDisplacement`](https://open-atmos.github.io/PySDM/products/housekeeping/parcel_displacement.html)
+[`ParcelDisplacement`](https://open-atmos.github.io/PySDM/PySDM/products/housekeeping/parcel_displacement.html)
 and depict the evolution of 
-[`PeakSupersaturation`](https://open-atmos.github.io/PySDM/products/condensation/peak_supersaturation.html), 
-[`EffectiveRadius`](https://open-atmos.github.io/PySDM/products/size_spectral/effective_radius.html), 
-[`ParticleConcentration`](https://open-atmos.github.io/PySDM/products/size_spectral/particle_concentration.html#PySDM.products.particles_concentration.ParticleConcentration) 
+[`PeakSupersaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_supersaturation.html), 
+[`EffectiveRadius`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/effective_radius.html), 
+[`ParticleConcentration`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_concentration.html#PySDM.products.particles_concentration.ParticleConcentration) 
 and the 
-[`WaterMixingRatio `](https://open-atmos.github.io/PySDM/products/size_spectral/water_mixing_ratio.html).
+[`WaterMixingRatio `](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/water_mixing_ratio.html).
 
 <details>
 <summary>Julia (click to expand)</summary>
@@ -610,14 +757,12 @@ The resultant plot (generated with the Matlab code) looks as follows:
 [![Jupyter](https://img.shields.io/static/v1?label=+&logo=Jupyter&color=blue&message=Jupyter)](https://jupyter.org/)
 [![PyCharm](https://img.shields.io/static/v1?label=+&logo=pycharm&color=purple&message=PyCharm)](https:///)
 
-Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/open-atmos/PySDM/pulls) 
-(or the [PySDM-examples PR site](https://github.com/open-atmos/PySDM-examples/pulls) if working on examples) - it helps to keep record of code authorship, 
+Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/open-atmos/PySDM/pulls) - it helps to keep record of code authorship, 
 track and archive the code review workflow and allows to benefit
 from the continuous integration setup which automates execution of tests 
 with the newly added code. 
 
-As of now, the copyright to the entire PySDM codebase is with the Jagiellonian
-University, and code contributions are assumed to imply transfer of copyright.
+Code contributions are assumed to imply transfer of copyright.
 Should there be a need to make an exception, please indicate it when creating
 a pull request or contributing code in any other way. In any case, 
 the license of the contributed code must be compatible with GPL v3.
@@ -646,7 +791,6 @@ Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github
 We encourage to use the [GitHub Discussions](https://github.com/open-atmos/PySDM/discussions) feature
 (rather than the issue tracker) for seeking support in understanding, using and extending PySDM code.
 
-Please use the PySDM issue-tracking and dicsussion infrastructure for `PySDM-examples` as well.
 We look forward to your contributions and feedback.
 
 ## Credits:
