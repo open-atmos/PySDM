@@ -179,7 +179,7 @@ jobs:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.8", "3.10"]
-        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process" ]
+        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     steps:
