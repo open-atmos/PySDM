@@ -27,13 +27,13 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from open_atmos_jupyter_utils import TemporaryFile
-from PySDM import Formulae
-from PySDM.exporters import NetCDFExporter
-from PySDM.physics import si
-
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
 from PySDM_examples.utils import DummyController
+
+from PySDM import Formulae
+from PySDM.exporters import NetCDFExporter
+from PySDM.physics import si
 
 
 def main():

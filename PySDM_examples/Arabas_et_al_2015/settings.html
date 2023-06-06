@@ -29,13 +29,13 @@
 <pre><code class="python">from typing import Iterable
 
 import numpy as np
+from PySDM_examples.Morrison_and_Grabowski_2007.strato_cumulus import StratoCumulus
+
 from PySDM import Formulae
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import Gaussian
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics import si
-
-from PySDM_examples.Morrison_and_Grabowski_2007.strato_cumulus import StratoCumulus
 
 
 class Settings(StratoCumulus):

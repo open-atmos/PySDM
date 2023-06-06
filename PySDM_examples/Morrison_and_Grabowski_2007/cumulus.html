@@ -27,12 +27,12 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import numpy as np
-from PySDM.physics import si
+from PySDM_examples.Morrison_and_Grabowski_2007.common import Common
+from PySDM_examples.Szumowski_et_al_1998 import sounding
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
 
-from PySDM_examples.Morrison_and_Grabowski_2007.common import Common
-from PySDM_examples.Szumowski_et_al_1998 import sounding
+from PySDM.physics import si
 
 
 class Cumulus(Common):

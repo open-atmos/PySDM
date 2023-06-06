@@ -28,14 +28,14 @@
 </summary>
 <pre><code class="python">import importlib
 
-import PySDM.backends.impl_numba.conf
 from matplotlib import pyplot as plt
+from PySDM_examples.Arabas_et_al_2015 import Settings
+from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
+
+import PySDM.backends.impl_numba.conf
 from PySDM import Formulae
 from PySDM.backends import CPU, GPU
 from PySDM.products import WallTime
-
-from PySDM_examples.Arabas_et_al_2015 import Settings
-from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
 
 
 def reload_cpu_backend():

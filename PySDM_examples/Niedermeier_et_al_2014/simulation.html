@@ -27,18 +27,18 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import numpy as np
+from PySDM_examples.Ervens_and_Feingold_2012.settings import (
+    sampled_ccn_diameter_number_concentration_spectrum,
+)
+from PySDM_examples.Niedermeier_et_al_2014.settings import Settings
+from PySDM_examples.utils import BasicSimulation
+
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation, Freezing
 from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.products import AmbientTemperature, IceWaterContent, ParcelDisplacement
-
-from PySDM_examples.Ervens_and_Feingold_2012.settings import (
-    sampled_ccn_diameter_number_concentration_spectrum,
-)
-from PySDM_examples.Niedermeier_et_al_2014.settings import Settings
-from PySDM_examples.utils import BasicSimulation
 
 
 class Simulation(BasicSimulation):

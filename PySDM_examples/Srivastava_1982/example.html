@@ -30,15 +30,15 @@
 
 import numpy as np
 from matplotlib import pyplot
+from PySDM_examples.Srivastava_1982.equations import Equations, EquationsHelpers
+from PySDM_examples.Srivastava_1982.settings import SimProducts
+from PySDM_examples.Srivastava_1982.simulation import Simulation
+
 from PySDM.dynamics import Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import ConstantSize
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
-
-from PySDM_examples.Srivastava_1982.equations import Equations, EquationsHelpers
-from PySDM_examples.Srivastava_1982.settings import SimProducts
-from PySDM_examples.Srivastava_1982.simulation import Simulation
 
 NO_BOUNCE = ConstEb(1)
 

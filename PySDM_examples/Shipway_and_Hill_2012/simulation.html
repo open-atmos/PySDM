@@ -29,6 +29,8 @@
 <pre><code class="python">from collections import namedtuple
 
 import numpy as np
+from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
+
 import PySDM.products as PySDM_products
 from PySDM import Builder
 from PySDM.backends import CPU
@@ -43,8 +45,6 @@ from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
-
-from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
 
 
 class Simulation:

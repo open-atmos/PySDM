@@ -32,14 +32,14 @@ from threading import Thread
 import numpy as np
 from PyMPDATA import Options, ScalarField, Solver, Stepper, VectorField
 from PyMPDATA.boundary_conditions import Periodic
-from PySDM.backends.impl_numba import conf
-from PySDM.impl.arakawa_c import make_rhod
-
 from PySDM_examples.Szumowski_et_al_1998.fields import (
     nondivergent_vector_field_2d,
     x_vec_coord,
     z_vec_coord,
 )
+
+from PySDM.backends.impl_numba import conf
+from PySDM.impl.arakawa_c import make_rhod
 
 
 class MPDATA_2D:

@@ -29,14 +29,14 @@
 <pre><code class="python">import os
 
 from matplotlib import pyplot as plt
+from PySDM_examples.Shima_et_al_2009.settings import Settings
+
 from PySDM.backends import Numba, ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import WallTime
-
-from PySDM_examples.Shima_et_al_2009.settings import Settings
 
 
 def run(settings, backend):

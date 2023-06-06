@@ -27,12 +27,12 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import numpy as np
+from PySDM_examples.Srivastava_1982.settings import SimProducts
+
 from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.products import SuperDropletCountPerGridbox, VolumeFirstMoment, ZerothMoment
-
-from PySDM_examples.Srivastava_1982.settings import SimProducts
 
 
 class Simulation:
