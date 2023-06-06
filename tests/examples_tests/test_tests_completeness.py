@@ -9,7 +9,7 @@ def test_all_cases_in_testsuites():
     tmp = findfiles(
         pathlib.Path(__file__)
         .parent.parent.absolute()
-        .joinpath("examples)
+        .joinpath("examples")
         .joinpath("PySDM_examples"),
         r".*\.(py|ipynb)$",
     )
