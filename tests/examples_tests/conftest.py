@@ -41,6 +41,11 @@ TEST_SUITES = {
         "Shipway_and_Hill_2012",
         "utils",
     ],
+    "isotopes": [
+        "Bolot_et_al_2013",
+        "Merlivat_and_Nief_1967",
+        "Van_Hook_1968",
+    ],
 }
 
 
