@@ -9,7 +9,7 @@ from pdoc import import_module, _render_template
 
 modules = [
     import_module(module, reload=False)
-    for module in ('PySDM', 'PySDM-examples/PySDM_examples')
+    for module in ('PySDM', 'examples/PySDM_examples')
 ]
 
 with open('html/index.html', 'w', encoding='utf-8') as index:
