@@ -7,7 +7,10 @@ from .conftest import TEST_SUITES, findfiles, get_selected_test_suites
 def test_all_cases_in_testsuites():
     """raise error, e.g., if a newly added example is not within TEST_SUITES dict"""
     tmp = findfiles(
-        pathlib.Path(__file__).parent.parent.absolute().joinpath("PySDM_examples"),
+        pathlib.Path(__file__)
+        .parent.parent.absolute()
+        .joinpath("examples)
+        .joinpath("PySDM_examples"),
         r".*\.(py|ipynb)$",
     )
     all_files = list(
@@ -23,6 +26,7 @@ def test_all_cases_in_testsuites():
             map(str, get_selected_test_suites(suite_name, all_files))
         )
 
+    assert len(all_files) > 0
     assert selected_paths_set == set(all_files)
 
 
