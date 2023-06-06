@@ -45,6 +45,7 @@ TEST_SUITES = {
         "Bolot_et_al_2013",
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
+        "Pierchala_et_al_2022",
     ],
 }
 
