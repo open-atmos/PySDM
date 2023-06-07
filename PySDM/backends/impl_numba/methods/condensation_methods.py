@@ -424,7 +424,7 @@ class CondensationMethods(BackendMethods):
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
-                if v[drop] < 0:  # TODO: use _unfrozen from freezing_methods.py
+                if v[drop] < 0:  # TODO #1086: use _unfrozen from freezing_methods.py
                     continue
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
