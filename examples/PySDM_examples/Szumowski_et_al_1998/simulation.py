@@ -58,7 +58,7 @@ class Simulation:
                 kwargs["substeps"] = (self.settings.condensation_substeps,)
             condensation = Condensation(
                 rtol_x=self.settings.condensation_rtol_x,
-                rtol_thd=self.settings.condensation_rtol_thd,
+                rtol_RH=self.settings.condensation_rtol_RH,
                 adaptive=self.settings.condensation_adaptive,
                 dt_cond_range=self.settings.condensation_dt_cond_range,
                 schedule=self.settings.condensation_schedule,

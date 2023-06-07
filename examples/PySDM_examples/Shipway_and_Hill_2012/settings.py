@@ -127,7 +127,7 @@ class Settings:
 
         self.mpdata_settings = {"n_iters": 3, "iga": True, "fct": True, "tot": True}
         self.condensation_rtol_x = condensation.DEFAULTS.rtol_x
-        self.condensation_rtol_thd = condensation.DEFAULTS.rtol_thd
+        self.condensation_rtol_RH = condensation.DEFAULTS.rtol_RH
         self.condensation_adaptive = True
         self.condensation_update_thd = False
         self.coalescence_adaptive = True

@@ -44,7 +44,7 @@ class Settings:
         self.coord = "VolumeLogarithm"
         self.adaptive = True
         self.rtol_x = condensation.DEFAULTS.rtol_x
-        self.rtol_thd = condensation.DEFAULTS.rtol_thd
+        self.rtol_RH = condensation.DEFAULTS.rtol_RH
         self.dt_cond_range = condensation.DEFAULTS.cond_range
 
         self.T0 = 284.3 * si.kelvin
