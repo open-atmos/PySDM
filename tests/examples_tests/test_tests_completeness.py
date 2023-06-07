@@ -49,8 +49,9 @@ def test_all_test_suites_are_on_ci():
     )
     with open(workflow_file_path, "r", encoding="utf8") as workflow_file:
         d = yaml.safe_load(workflow_file)
-        ci_test_suites = set(d["jobs"]["examples"]["strategy"]["matrix"]["test-suite"])
+        ci_test_suites_lst = d["jobs"]["examples"]["strategy"]["matrix"]["test-suite"]
+        ci_test_suites_set = set(ci_test_suites_lst)
 
-        assert len(ci_test_suites) > 0
-        assert len(TEST_SUITES.keys()) == len(set(TEST_SUITES.keys()))
-        assert ci_test_suites == set(TEST_SUITES.keys())
+        assert len(ci_test_suites_set) > 0
+        assert len(ci_test_suites_lst) == len(ci_test_suites_set)
+        assert ci_test_suites_set == set(TEST_SUITES.keys())
