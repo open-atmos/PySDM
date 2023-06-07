@@ -8,7 +8,7 @@ def test_all_cases_in_testsuites():
     """raise error, e.g., if a newly added example is not within TEST_SUITES dict"""
     tmp = findfiles(
         pathlib.Path(__file__)
-        .parent.parent.absolute()
+        .parent.parent.parent.absolute()
         .joinpath("examples")
         .joinpath("PySDM_examples"),
         r".*\.(py|ipynb)$",
