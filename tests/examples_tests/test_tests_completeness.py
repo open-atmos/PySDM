@@ -1,6 +1,8 @@
 # pylint: disable=missing-module-docstring
 import pathlib
 
+import yaml
+
 from .conftest import TEST_SUITES, findfiles, get_selected_test_suites
 
 
@@ -35,3 +37,19 @@ def test_no_cases_in_multiple_testsuites():
     flattened_suites = sum(list(TEST_SUITES.values()), [])
 
     assert len(set(flattened_suites)) == len(flattened_suites)
+
+
+def test_all_test_suites_are_on_ci():
+    workflow_file_path = (
+        pathlib.Path(__file__)
+        .parent.parent.parent.absolute()
+        .joinpath(".github")
+        .joinpath("workflows")
+        .joinpath("tests+artifacts+pypi.yml")
+    )
+    with open(workflow_file_path, "r") as workflow_file:
+        d = yaml.safe_load(workflow_file)
+        ci_test_suites = set(d["jobs"]["examples"]["strategy"]["matrix"]["test-suite"])
+
+        assert len(ci_test_suites) > 0
+        assert ci_test_suites == set(TEST_SUITES.keys())
