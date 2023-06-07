@@ -52,4 +52,5 @@ def test_all_test_suites_are_on_ci():
         ci_test_suites = set(d["jobs"]["examples"]["strategy"]["matrix"]["test-suite"])
 
         assert len(ci_test_suites) > 0
+        assert len(TEST_SUITES.keys()) == len(set(TEST_SUITES.keys()))
         assert ci_test_suites == set(TEST_SUITES.keys())
