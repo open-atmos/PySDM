@@ -57,7 +57,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
             adaptive=self.adaptive,
             fuse=32,
             multiplier=2,
-            RH_rtol=1e-7,  # TODO: use rtol_RH?
+            RH_rtol=1e-7,  # TODO #868: use rtol_RH?
             max_iters=self.max_iters,
         )
         builder.request_attribute("critical volume")
