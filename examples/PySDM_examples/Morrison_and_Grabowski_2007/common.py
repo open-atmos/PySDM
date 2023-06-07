@@ -21,7 +21,7 @@ class Common:
         const = formulae.constants
 
         self.condensation_rtol_x = condensation.DEFAULTS.rtol_x
-        self.condensation_rtol_thd = condensation.DEFAULTS.rtol_thd
+        self.condensation_rtol_RH = condensation.DEFAULTS.rtol_RH
         self.condensation_adaptive = True
         self.condensation_substeps = -1
         self.condensation_dt_cond_range = condensation.DEFAULTS.cond_range

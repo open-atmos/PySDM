@@ -69,7 +69,7 @@ class Simulation:
         self.builder.add_dynamic(
             Condensation(
                 adaptive=settings.condensation_adaptive,
-                rtol_thd=settings.condensation_rtol_thd,
+                rtol_RH=settings.condensation_rtol_RH,
                 rtol_x=settings.condensation_rtol_x,
                 update_thd=settings.condensation_update_thd,
             )

@@ -37,7 +37,7 @@ class Settings:
         self.n_output = 500
 
         self.rtol_x = condensation.DEFAULTS.rtol_x
-        self.rtol_thd = condensation.DEFAULTS.rtol_thd
+        self.rtol_RH = condensation.DEFAULTS.rtol_RH
         self.coord = "volume logarithm"
         self.dt_cond_range = condensation.DEFAULTS.cond_range
 

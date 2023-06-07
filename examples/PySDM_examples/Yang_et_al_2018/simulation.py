@@ -36,7 +36,7 @@ class Simulation:
         condensation = Condensation(
             adaptive=settings.adaptive,
             rtol_x=settings.rtol_x,
-            rtol_thd=settings.rtol_thd,
+            rtol_RH=settings.rtol_RH,
             dt_cond_range=settings.dt_cond_range,
         )
         builder.add_dynamic(condensation)

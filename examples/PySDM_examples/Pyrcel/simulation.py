@@ -13,7 +13,7 @@ from PySDM.physics import si
 
 class Simulation(BasicSimulation):
     def __init__(
-        self, settings, products=None, scipy_solver=False, rtol_thd=1e-10, rtol_x=1e-10
+        self, settings, products=None, scipy_solver=False, rtol_RH=1e-6, rtol_x=1e-10
     ):
         env = Parcel(
             dt=settings.timestep,
@@ -27,7 +27,7 @@ class Simulation(BasicSimulation):
         builder = Builder(n_sd=n_sd, backend=CPU(formulae=settings.formulae))
         builder.set_environment(env)
         builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
+        builder.add_dynamic(Condensation(rtol_RH=rtol_RH, rtol_x=rtol_x))
 
         volume = env.mass_of_dry_air / settings.initial_air_density
         attributes = {

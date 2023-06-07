@@ -80,16 +80,16 @@ class GUISettings:
             description="simulation time $[s]$",
         )
         self.ui_condensation_rtol_x = IntSlider(
-            value=np.log10(settings.condensation_rtol_thd),
-            min=-9,
-            max=-3,
+            value=np.log10(settings.condensation_rtol_RH),
+            min=-7,
+            max=-1,
             description="log$_{10}$(rtol$_x$)",
         )
-        self.ui_condensation_rtol_thd = IntSlider(
-            value=np.log10(settings.condensation_rtol_thd),
+        self.ui_condensation_rtol_RH = IntSlider(
+            value=np.log10(settings.condensation_rtol_RH),
             min=-9,
             max=-3,
-            description="log$_{10}$(rtol$_\\theta$)",
+            description="log$_{10}$(rtol$_{RH}$)",
         )
         self.ui_condensation_adaptive = Checkbox(
             value=settings.condensation_adaptive,
@@ -274,8 +274,8 @@ class GUISettings:
         return 10**self.ui_condensation_rtol_x.value
 
     @property
-    def condensation_rtol_thd(self):
-        return 10**self.ui_condensation_rtol_thd.value
+    def condensation_rtol_RH(self):
+        return 10**self.ui_condensation_rtol_RH.value
 
     @property
     def condensation_adaptive(self):
@@ -371,7 +371,7 @@ class GUISettings:
                         self.ui_dt,
                         self.ui_simulation_time,
                         self.ui_condensation_rtol_x,
-                        self.ui_condensation_rtol_thd,
+                        self.ui_condensation_rtol_RH,
                         self.ui_condensation_adaptive,
                         self.ui_coalescence_adaptive,
                         self.ui_displacement_rtol,

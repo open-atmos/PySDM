@@ -34,7 +34,7 @@ def data(n_output, rtols, schemes, setups_num):
                 for settings_idx in range(setups_num):
                     settings = setups[settings_idx]
                     settings.rtol_x = rtol
-                    settings.rtol_thd = rtol
+                    settings.rtol_RH = rtol
                     settings.n_output = n_output
                     simulation = Simulation(
                         settings, backend=CPU if scheme == "CPU" else GPU
