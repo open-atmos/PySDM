@@ -47,7 +47,7 @@ def test_all_test_suites_are_on_ci():
         .joinpath("workflows")
         .joinpath("tests+artifacts+pypi.yml")
     )
-    with open(workflow_file_path, "r") as workflow_file:
+    with open(workflow_file_path, "r", encoding="utf8") as workflow_file:
         d = yaml.safe_load(workflow_file)
         ci_test_suites = set(d["jobs"]["examples"]["strategy"]["matrix"]["test-suite"])
 
