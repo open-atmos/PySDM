@@ -229,7 +229,7 @@ jobs:
       - run: pip install -r tests/devops_tests/requirements.txt
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_notebooks" tests/devops_tests
+        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
 
   dist:
     strategy:
