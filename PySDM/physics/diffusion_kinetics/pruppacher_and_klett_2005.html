@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.diffusion_thermics.lowe_et_al_2019 API documentation</title>
-<meta name="description" content="as in [Lowe et al. 2019](https://doi.org/10.1038/s41467-019-12982-0)" />
+<title>PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005 API documentation</title>
+<meta name="description" content="as in Pruppacher and Klett 2005 (eq. 13-14)
+with reference to [Okuyama and Zung 1967](https://doi.org/10.1063/1.1840906)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,29 +20,35 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.diffusion_thermics.lowe_et_al_2019</code></h1>
+<h1 class="title">Module <code>PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005</code></h1>
 </header>
 <section id="section-intro">
-<p>as in <a href="https://doi.org/10.1038/s41467-019-12982-0">Lowe et al. 2019</a></p>
+<p>as in Pruppacher and Klett 2005 (eq. 13-14)
+with reference to <a href="https://doi.org/10.1063/1.1840906">Okuyama and Zung 1967</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-as in [Lowe et al. 2019](https://doi.org/10.1038/s41467-019-12982-0)
+as in Pruppacher and Klett 2005 (eq. 13-14)
+with reference to [Okuyama and Zung 1967](https://doi.org/10.1063/1.1840906)
 &#34;&#34;&#34;
-from PySDM.physics.diffusion_thermics.seinfeld_and_pandis_2010 import (
-    SeinfeldAndPandis2010,
-)
+import numpy as np
 
 
-class LoweEtAl2019(SeinfeldAndPandis2010):
-    def __init__(self, const):
-        SeinfeldAndPandis2010.__init__(self, const)
+class PruppacherKlett:
+    def __init__(self, _):
+        pass
 
     @staticmethod
-    def K(const, T, p):  # pylint: disable=unused-argument
-        return const.k_l19_a * (const.k_l19_b + const.k_l19_c * T)</code></pre>
+    def lambdaD(const, D, T):
+        return D / np.sqrt(2 * const.Rv * T)
+
+    @staticmethod
+    def D(const, D, r, lmbd):
+        return D / (
+            (r / (r + const.dv_pk05)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -53,9 +60,9 @@ class LoweEtAl2019(SeinfeldAndPandis2010):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.diffusion_thermics.lowe_et_al_2019.LoweEtAl2019"><code class="flex name class">
-<span>class <span class="ident">LoweEtAl2019</span></span>
-<span>(</span><span>const)</span>
+<dt id="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett"><code class="flex name class">
+<span>class <span class="ident">PruppacherKlett</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -63,22 +70,28 @@ class LoweEtAl2019(SeinfeldAndPandis2010):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class LoweEtAl2019(SeinfeldAndPandis2010):
-    def __init__(self, const):
-        SeinfeldAndPandis2010.__init__(self, const)
+<pre><code class="python">class PruppacherKlett:
+    def __init__(self, _):
+        pass
 
     @staticmethod
-    def K(const, T, p):  # pylint: disable=unused-argument
-        return const.k_l19_a * (const.k_l19_b + const.k_l19_c * T)</code></pre>
+    def lambdaD(const, D, T):
+        return D / np.sqrt(2 * const.Rv * T)
+
+    @staticmethod
+    def D(const, D, r, lmbd):
+        return D / (
+            (r / (r + const.dv_pk05)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC
+        )</code></pre>
 </details>
-<h3>Ancestors</h3>
+<h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="PySDM.physics.diffusion_thermics.seinfeld_and_pandis_2010.SeinfeldAndPandis2010" href="seinfeld_and_pandis_2010.html#PySDM.physics.diffusion_thermics.seinfeld_and_pandis_2010.SeinfeldAndPandis2010">SeinfeldAndPandis2010</a></li>
+<li><a title="PySDM.physics.diffusion_kinetics.lowe_et_al_2019.LoweEtAl2019" href="lowe_et_al_2019.html#PySDM.physics.diffusion_kinetics.lowe_et_al_2019.LoweEtAl2019">LoweEtAl2019</a></li>
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.diffusion_thermics.lowe_et_al_2019.LoweEtAl2019.K"><code class="name flex">
-<span>def <span class="ident">K</span></span>(<span>const, T, p)</span>
+<dt id="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.D"><code class="name flex">
+<span>def <span class="ident">D</span></span>(<span>const, D, r, lmbd)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,8 +100,24 @@ class LoweEtAl2019(SeinfeldAndPandis2010):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def K(const, T, p):  # pylint: disable=unused-argument
-    return const.k_l19_a * (const.k_l19_b + const.k_l19_c * T)</code></pre>
+def D(const, D, r, lmbd):
+    return D / (
+        (r / (r + const.dv_pk05)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC
+    )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaD"><code class="name flex">
+<span>def <span class="ident">lambdaD</span></span>(<span>const, D, T)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def lambdaD(const, D, T):
+    return D / np.sqrt(2 * const.Rv * T)</code></pre>
 </details>
 </dd>
 </dl>
@@ -104,15 +133,16 @@ def K(const, T, p):  # pylint: disable=unused-argument
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.diffusion_thermics" href="index.html">PySDM.physics.diffusion_thermics</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics" href="index.html">PySDM.physics.diffusion_kinetics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.diffusion_thermics.lowe_et_al_2019.LoweEtAl2019" href="#PySDM.physics.diffusion_thermics.lowe_et_al_2019.LoweEtAl2019">LoweEtAl2019</a></code></h4>
+<h4><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett">PruppacherKlett</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.diffusion_thermics.lowe_et_al_2019.LoweEtAl2019.K" href="#PySDM.physics.diffusion_thermics.lowe_et_al_2019.LoweEtAl2019.K">K</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.D" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.D">D</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaD" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaD">lambdaD</a></code></li>
 </ul>
 </li>
 </ul>
