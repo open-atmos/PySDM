@@ -3,8 +3,9 @@ import importlib
 import os
 
 import numpy as np
+import pint
 
-from PySDM.physics import constants
+from PySDM.physics import constants, constants_defaults
 
 
 def consecutive_seeds():
@@ -36,3 +37,14 @@ class TestConstants:
         if CI:
             os.environ["CI"] = CI
         assert (seeds[1:] != seeds[0]).any()
+
+    @staticmethod
+    def test_standard_atmosphere_p():
+        # arrange
+        pint_si = pint.UnitRegistry()
+
+        # act
+        p = constants_defaults.p_STP * pint_si.Pa
+
+        # assert
+        assert p == 1 * pint_si.atm
