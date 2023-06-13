@@ -6,3 +6,5 @@ from .majoube_1970 import Majoube1970
 from .majoube_1971 import Majoube1971
 from .merlivat_and_nief_1967 import MerlivatAndNief1967
 from .van_hook_1968 import VanHook1968
+from .barkan_and_lu_2005 import BarkanAndLuz2005
+from .pierchala_et_al_2022 import PierchalaEtAl2022
