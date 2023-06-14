@@ -97,3 +97,8 @@ class Trivia:
                 / 3
             )
         )
+
+    @staticmethod
+    def rayleigh_fractionation(_, f, a):
+        """ https://en.wikipedia.org/wiki/Rayleigh_fractionation """
+        return f ** (a - 1)
