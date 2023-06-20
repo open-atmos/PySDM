@@ -42,7 +42,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
-        isotope_equilibrium_fractionation_factors: str = "BolotEtAl2013",
+        isotope_equilibrium_fractionation_factors: str = "Null",
+        isotope_meteoric_water_line_excess: str = "Null",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -65,6 +66,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_equilibrium_fractionation_factors = (
             isotope_equilibrium_fractionation_factors
         )
+        self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
         components = tuple(i for i in dir(self) if not i.startswith("__"))
 
         constants_defaults = {

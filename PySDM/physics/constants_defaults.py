@@ -260,3 +260,10 @@ HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3 = 1e-3 * 1158.8e-9 / si.K**3
 
 """ [Barkan and Luz 2005](https://doi.org/10.1002/rcm.2250) """
 BARKAN_AND_LUZ_2005_EXPONENT = 0.529
+
+""" eq. 11 in [Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180) """
+BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
+
+""" [Craig 1961](https://doi.org/10.1126/science.133.3465.170) """
+CRAIG_1961_SLOPE_COEFF = 8
+CRAIG_1961_INTERCEPT_COEFF = 10 * 1e-3
