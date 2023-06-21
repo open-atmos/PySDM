@@ -25,4 +25,4 @@ from . import (
     trivia,
     ventilation,
 )
-from .constants import si, convert_to, in_unit
+from .constants import convert_to, in_unit, si

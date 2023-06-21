@@ -21,8 +21,10 @@ if not DIMENSIONAL_ANALYSIS:
 def convert_to(value, unit):
     value /= unit
 
+
 def in_unit(value, unit):
     return value / unit
+
 
 sqrt_two = np.sqrt(2)
 sqrt_pi = np.sqrt(sci.pi)
