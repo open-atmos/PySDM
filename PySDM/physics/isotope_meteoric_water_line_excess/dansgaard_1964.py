@@ -1,9 +1,10 @@
 """
-Water isotopic line excess parameters defined in [Dansgaard 1964](https://doi.org/10.3402/tellusa.v16i4.8993)
+Water isotopic line excess parameters defined in
+[Dansgaard 1964](https://doi.org/10.3402/tellusa.v16i4.8993)
 """
 
 
-class Dansgaard1964:
+class Dansgaard1964:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 

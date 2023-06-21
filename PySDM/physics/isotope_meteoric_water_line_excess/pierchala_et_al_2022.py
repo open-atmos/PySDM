@@ -1,5 +1,6 @@
 """
-Water isotopic line excess parameters used in [Pierchala et al. 2022](https://10.1016/j.gca.2022.01.020)
+Water isotopic line excess parameters used in
+[Pierchala et al. 2022](https://10.1016/j.gca.2022.01.020)
 """
 
 from .barkan_and_luz_2007 import BarkanAndLuz2007

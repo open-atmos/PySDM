@@ -1,10 +1,11 @@
 """
-Water isotopic line excess parameters defined in [Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180)
+Water isotopic line excess parameters defined in
+[Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180)
 """
 import numpy as np
 
 
-class BarkanAndLuz2007:
+class BarkanAndLuz2007:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
