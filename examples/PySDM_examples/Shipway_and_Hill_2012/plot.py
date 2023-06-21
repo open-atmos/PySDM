@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
 
-from PySDM.physics.constants import convert_to, si
+from PySDM.physics import convert_to, si
 
 
 def plot(

@@ -11,6 +11,9 @@ from scipy import constants as sci
 from .constants import (  # pylint: disable=unused-import
     FOUR,
     ONE_THIRD,
+    PER_CENT,
+    PER_MEG,
+    PER_MILLE,
     PI,
     PI_4_3,
     T0,
@@ -19,9 +22,6 @@ from .constants import (  # pylint: disable=unused-import
     TWO_THIRDS,
     M,
     si,
-    PER_CENT,
-    PER_MILLE,
-    PER_MEG
 )
 
 Md = (
