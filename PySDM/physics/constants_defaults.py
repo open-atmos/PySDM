@@ -1,6 +1,8 @@
 """
-default values for constants which can be altered by providing alternative
-values in a constants dictionary passed to Formulae __init__ method
+Default values for constants which can be altered by providing alternative
+  values in a constants dictionary passed to Formulae __init__ method.
+Unless, there is a very specific and sound reason, everything here should
+  be provided in SI units.
 """
 import numpy as np
 from chempy import Substance
@@ -17,6 +19,9 @@ from .constants import (  # pylint: disable=unused-import
     TWO_THIRDS,
     M,
     si,
+    PER_CENT,
+    PER_MILLE,
+    PER_MEG
 )
 
 Md = (
@@ -164,9 +169,6 @@ J_HET = np.nan
 STRAUB_E_D1 = 0.04 * si.cm
 STRAUB_MU2 = 0.095 * si.cm
 
-CM = 1 * si.cm
-UM = 1 * si.um
-
 VEDDER_1987_b = 89 / 880
 VEDDER_1987_A = 993 / 880 / 3 / VEDDER_1987_b
 
@@ -266,4 +268,4 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 
 """ [Craig 1961](https://doi.org/10.1126/science.133.3465.170) """
 CRAIG_1961_SLOPE_COEFF = 8
-CRAIG_1961_INTERCEPT_COEFF = 10 * 1e-3
+CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
