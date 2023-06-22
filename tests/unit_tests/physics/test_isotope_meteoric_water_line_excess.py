@@ -34,6 +34,8 @@ class TestIsotopeMeteoricWaterLineExcess:
         pyplot.ylim(-360, 100)
         if plot:
             pyplot.show()
+        else:
+            pyplot.clf()
 
         # assert
         assert delta_2_hydrogen[0] == -390 * const.PER_MILLE
@@ -67,6 +69,8 @@ class TestIsotopeMeteoricWaterLineExcess:
         pyplot.grid()
         if plot:
             pyplot.show()
+        else:
+            pyplot.clf()
 
         # assert
         assert (0.0, 0.0) == (x_values[0], y_values[0])

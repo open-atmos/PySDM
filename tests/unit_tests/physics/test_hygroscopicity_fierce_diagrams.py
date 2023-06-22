@@ -85,6 +85,8 @@ def test_hygroscopicity_fierce_diagrams(plot=False):
 
     if plot:
         fig.show()
+    else:
+        fig.clear()
 
     # assert
     assert np.amax(log10_rel_diff) < -1.5
