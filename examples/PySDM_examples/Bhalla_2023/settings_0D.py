@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Settings(Settings_Shima):
-    def __init__(self, n_sd=None, steps=None):
+    def __init__(self, n_sd: Union[int, None] = None, steps: Union[list[int], None] = None, n_part: Union[float, None] = None):
         super().__init__()
 
         self.n_sd = n_sd or 2**13
@@ -21,3 +21,5 @@ class Settings(Settings_Shima):
         self.radius_bins_edges = np.logspace(
             np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True
         )
+
+        self.n_part = n_part or 2**23 / si.metre**3
