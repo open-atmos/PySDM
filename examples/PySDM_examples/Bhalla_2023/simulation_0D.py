@@ -6,7 +6,7 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, RadiusBinnedNumberAveragedTerminalVelocity, WallTime
 from PySDM.physics import si
 from open_atmos_jupyter_utils import show_plot
 from PySDM_examples.Bhalla_2023.settings_0D import Settings
@@ -40,6 +40,9 @@ class Simulation:
             ParticleVolumeVersusRadiusLogarithmSpectrum(
                 self.settings.radius_bins_edges, name="dv/dlnr"
             ),
+            RadiusBinnedNumberAveragedTerminalVelocity(
+                self.settings.radius_bins_edges, name="terminal_vel"
+            ),
             WallTime(),
         )
 
@@ -72,14 +75,21 @@ class Simulation:
             output_vals["dm/dlnr"] = self.particulator.products["dv/dlnr"].get()[0]
             output_vals["dm/dlnr"][:] *= self.settings.rho
 
+            output_vals["terminal_vel"] = self.particulator.products["terminal_vel"].get()
+
             self._output.append(output_vals)
 
         self._exec_time = self.particulator.products["wall time"].get()
         self.done = True
 
+    def get_plt_name(self, plot_var: str)->str:
+        return f"0D {plot_var} v_t-{self.builder.get_attribute('terminal velocity').approximation.__class__.__name__} n_sd-{self.settings.n_sd} kernel-{self.settings.kernel.__class__.__name__}"
+
     # TODO: make this a more generic function which can plot anything with domain ln r
-    def plot_dm_dlnr(self):
+    def plot_vs_lnr(self, product_name: str, y_scale: float = 1, y_label: Union[str, None] = None):
         assert self.done
+
+        y_label = y_label or product_name
 
         plt_colors = SpectrumColors()
 
@@ -87,7 +97,7 @@ class Simulation:
             plt.step(
                 self.settings.radius_bins_edges[:-
                                                 1] * si.metres / si.micrometres,
-                self._output[i]["dm/dlnr"] * si.kilograms / si.grams,
+                self._output[i][product_name] * y_scale,
                 where="post",
                 label=f"t = {self.settings.steps[i]}s",
                 color=plt_colors(
@@ -96,24 +106,24 @@ class Simulation:
                 ),
             )
 
-
-        plt_name = f"0D dm_dlnr kernel-{self.settings.kernel.__class__.__name__} n_sd-{self.settings.n_sd}"
+        plt_name = self.get_plt_name(product_name.replace("/", "_"))
 
         plt.xscale("log", base=10)
 
         plt.title(plt_name)
         plt.xlabel("particle radius [µm]")
-        plt.ylabel("dm/dlnr [g/m^3/(unit dr/r)]")
+        plt.ylabel(y_label)
         plt.legend()
 
-
-        show_plot(filename=plt_name+".pdf")
+        show_plot(filename=f"{plt_name}.pdf")
 
 
 if __name__ == "__main__":
-    settings = Settings()
+    settings = Settings(n_sd=2**18)
     simulation = Simulation(settings)
 
     simulation.run()
 
-    simulation.plot_dm_dlnr()
+    simulation.plot_vs_lnr("dm/dlnr", si.kilograms/si.grams, "dm/dlnr [g/m^3/(unit dr/r)]")
+
+    simulation.plot_vs_lnr("terminal_vel", 1, "terminal velocity [m/s]")
