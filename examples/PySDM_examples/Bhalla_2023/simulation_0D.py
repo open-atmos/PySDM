@@ -48,13 +48,11 @@ class Simulation:
 
         self.particulator = self.builder.build(attributes, products)
 
-        # TODO: what does this do?
         # if hasattr(self.settings, "u_term") and "terminal velocity" in self.particulator.attributes:
         #     self.particulator.attributes["terminal velocity"].approximation = self.settings.u_term(
         #         self.particulator
         #     )
 
-        # TODO: is this needed?
         # for observer in observers:
         #     self.particulator.observers.append(observer)
 
