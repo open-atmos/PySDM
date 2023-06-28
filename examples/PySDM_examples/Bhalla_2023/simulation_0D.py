@@ -1,4 +1,5 @@
 from typing import Any, Type, Union
+from PySDM_examples.Bhalla_2023.logging_observers import Progress, Logger
 from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumColors
 import matplotlib.pyplot as plt
 from PySDM.backends import CPU, GPU
@@ -53,8 +54,8 @@ class Simulation:
         #         self.particulator
         #     )
 
-        # for observer in observers:
-        #     self.particulator.observers.append(observer)
+        # self.particulator.observers.append(Progress(self.settings.output_steps[-1]))
+        self.particulator.observers.append(Logger(self.particulator))
 
         self.done: bool = False
         self._output: list[dict[str, Any]] = []
