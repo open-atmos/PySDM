@@ -18,11 +18,14 @@ from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
 
+from PySDM_examples.Bhalla_2023.logging_observers import Progress
+from PySDM_examples.Bhalla_2023.settings_1D import Settings
+
 class Simulation:
     """
     Based on PySDM_examples.Shipway_and_Hill_2012.simulation.Simulation
     """
-    def __init__(self, settings, backend=CPU):
+    def __init__(self, settings: Settings, backend=CPU):
         self.settings = settings
         self.nt = settings.nt
         self.z0 = -settings.particle_reservoir_depth
@@ -161,6 +164,8 @@ class Simulation:
         self.particulator = self.builder.build(
             attributes=self.attributes, products=self.products
         )
+
+        self.particulator.observers.append(Progress(self.nt))
 
         self.output_attributes = {
             "cell origin": [],
