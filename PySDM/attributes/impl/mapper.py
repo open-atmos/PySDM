@@ -21,6 +21,8 @@ from PySDM.attributes.physics import (
     Radius,
     Temperature,
     TerminalVelocity,
+    FallVelocity,
+    FallMomentum,
     Volume,
     WetToCriticalVolumeRatio,
 )
@@ -59,6 +61,8 @@ attributes = {
     "area": lambda _, __: Area,
     "dry radius": lambda _, __: DryRadius,
     "terminal velocity": lambda _, __: TerminalVelocity,
+    "fall momentum": lambda _, __: FallMomentum,
+    "fall velocity": lambda _, __: FallVelocity,
     "cell id": lambda _, __: CellID,
     "cell origin": lambda _, __: CellOrigin,
     "cooling rate": lambda _, __: CoolingRate,

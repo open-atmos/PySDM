@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Settings(Settings_Shima):
-    def __init__(self, n_sd: Union[int, None] = None, steps: Union[list[int], None] = None, n_part: Union[float, None] = None):
+    def __init__(self, n_sd: Union[int, None] = None, steps: Union[list[int], None] = None, n_part: Union[float, None] = None, evaluate_relaxed_velocity=False):
         super().__init__()
 
         self.n_sd = n_sd or 2**13
@@ -23,3 +23,5 @@ class Settings(Settings_Shima):
         )
 
         self.n_part = n_part or 2**23 / si.metre**3
+
+        self.evaluate_relaxed_velocity = evaluate_relaxed_velocity

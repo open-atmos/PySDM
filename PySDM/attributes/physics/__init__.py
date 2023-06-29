@@ -11,4 +11,6 @@ from .multiplicities import Multiplicities
 from .radius import Radius
 from .temperature import Temperature
 from .terminal_velocity import TerminalVelocity
+from .fall_velocity import FallMomentum
+from .fall_velocity import FallVelocity
 from .volume import Volume
