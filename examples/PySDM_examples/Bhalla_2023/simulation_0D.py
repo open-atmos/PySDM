@@ -1,16 +1,17 @@
 from typing import Any, Type, Union
-from PySDM_examples.Bhalla_2023.logging_observers import Progress, Logger
+import numpy as np
 from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumColors
 import matplotlib.pyplot as plt
 from PySDM.backends import CPU, GPU
 from PySDM.builder import Builder
-from PySDM.dynamics import Coalescence
+from PySDM.dynamics import Coalescence, RelaxedVelocity
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, RadiusBinnedNumberAveragedTerminalVelocity, WallTime
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, RadiusBinnedNumberAveragedTerminalVelocity, RadiusBinnedNumberAveragedFallVelocity, WallTime
 from PySDM.physics import si
 from open_atmos_jupyter_utils import show_plot
 from PySDM_examples.Bhalla_2023.settings_0D import Settings
+from PySDM_examples.Bhalla_2023.logging_observers import Progress, WarnVelocityDiff
 
 
 class Simulation:
@@ -37,7 +38,14 @@ class Simulation:
         )
         self.builder.add_dynamic(coalescence)
 
-        products = (
+        if self.settings.evaluate_relaxed_velocity:
+            attributes["fall momentum"] = attributes["volume"] * \
+                self.builder.formulae.constants.rho_w*2
+            relaxed_velocity = RelaxedVelocity()
+            self.builder.add_dynamic(relaxed_velocity)
+            self.builder.request_attribute("fall velocity")
+
+        products = [
             ParticleVolumeVersusRadiusLogarithmSpectrum(
                 self.settings.radius_bins_edges, name="dv/dlnr"
             ),
@@ -45,17 +53,18 @@ class Simulation:
                 self.settings.radius_bins_edges, name="terminal_vel"
             ),
             WallTime(),
-        )
+        ]
 
-        self.particulator = self.builder.build(attributes, products)
+        if self.settings.evaluate_relaxed_velocity:
+            products.append(RadiusBinnedNumberAveragedFallVelocity(
+                self.settings.radius_bins_edges, name="fall_vel"
+            ))
 
-        # if hasattr(self.settings, "u_term") and "terminal velocity" in self.particulator.attributes:
-        #     self.particulator.attributes["terminal velocity"].approximation = self.settings.u_term(
-        #         self.particulator
-        #     )
+        self.particulator = self.builder.build(attributes, tuple(products))
 
-        # self.particulator.observers.append(Progress(self.settings.output_steps[-1]))
-        self.particulator.observers.append(Logger(self.particulator))
+        self.particulator.observers.append(
+            Progress(self.settings.output_steps[-1]))
+        # self.particulator.observers.append(WarnVelocityDiff(self.particulator))
 
         self.done: bool = False
         self._output: list[dict[str, Any]] = []
@@ -76,6 +85,9 @@ class Simulation:
 
             output_vals["terminal_vel"] = self.particulator.products["terminal_vel"].get()
 
+            if self.settings.evaluate_relaxed_velocity:
+                output_vals["fall_vel"] = self.particulator.products["fall_vel"].get()
+
             self._output.append(output_vals)
 
         self._exec_time = self.particulator.products["wall time"].get()
@@ -84,7 +96,6 @@ class Simulation:
     def get_plt_name(self, plot_var: str)->str:
         return f"0D {plot_var} v_t-{self.builder.get_attribute('terminal velocity').approximation.__class__.__name__} n_sd-{self.settings.n_sd} kernel-{self.settings.kernel.__class__.__name__}"
 
-    # TODO: make this a more generic function which can plot anything with domain ln r
     def plot_vs_lnr(self, product_name: str, y_scale: float = 1, y_label: Union[str, None] = None):
         assert self.done
 
@@ -123,6 +134,7 @@ if __name__ == "__main__":
 
     simulation.run()
 
-    simulation.plot_vs_lnr("dm/dlnr", si.kilograms/si.grams, "dm/dlnr [g/m^3/(unit dr/r)]")
+    simulation.plot_vs_lnr("dm/dlnr", si.kilograms /
+                           si.grams, "dm/dlnr [g/m^3/(unit dr/r)]")
 
     simulation.plot_vs_lnr("terminal_vel", 1, "terminal velocity [m/s]")
