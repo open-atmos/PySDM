@@ -12,7 +12,7 @@ from PySDM.formulae import Formulae
 from PySDM.particulator import Particulator
 
 # radius values of 10**BOUND m
-LOG_LOWER_BOUND = -5
+LOG_LOWER_BOUND = -8
 LOG_UPPER_BOUND = -2.5
 
 N = 1000
