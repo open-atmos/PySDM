@@ -1,7 +1,14 @@
 from collections import namedtuple
+from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumColors
 
 import numpy as np
+import matplotlib.pyplot as plt
+from typing import Union
+
 from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
+from open_atmos_jupyter_utils import show_plot
+from PySDM.dynamics.relaxed_velocity import RelaxedVelocity
+from PySDM.initialisation import init_fall_momenta
 
 import PySDM.products as PySDM_products
 from PySDM import Builder
@@ -20,11 +27,16 @@ from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
 
 from PySDM_examples.Bhalla_2023.logging_observers import Progress
 from PySDM_examples.Bhalla_2023.settings_1D import Settings
+from PySDM.products.size_spectral.radius_binned_number_averaged_fall_velocity import RadiusBinnedNumberAveragedFallVelocity
+
+from PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity import RadiusBinnedNumberAveragedTerminalVelocity
+from PySDM.physics import si
 
 class Simulation:
     """
     Based on PySDM_examples.Shipway_and_Hill_2012.simulation.Simulation
     """
+
     def __init__(self, settings: Settings, backend=CPU):
         self.settings = settings
         self.nt = settings.nt
@@ -35,6 +47,9 @@ class Simulation:
         self.particulator = None
         self.output_attributes = None
         self.output_products = None
+
+        self.exec_time = -1
+        self.done = False
 
         self.builder = Builder(
             n_sd=settings.n_sd, backend=backend(formulae=settings.formulae)
@@ -59,9 +74,12 @@ class Simulation:
             nz=settings.nz,
             dt=settings.dt,
             mpdata_settings=settings.mpdata_settings,
-            advector_of_t=lambda t: settings.rho_times_w(t) * settings.dt / settings.dz,
-            advectee_of_zZ_at_t0=lambda zZ: settings.qv(zZ_to_z_above_reservoir(zZ)),
-            g_factor_of_zZ=lambda zZ: settings.rhod(zZ_to_z_above_reservoir(zZ)),
+            advector_of_t=lambda t: settings.rho_times_w(
+                t) * settings.dt / settings.dz,
+            advectee_of_zZ_at_t0=lambda zZ: settings.qv(
+                zZ_to_z_above_reservoir(zZ)),
+            g_factor_of_zZ=lambda zZ: settings.rhod(
+                zZ_to_z_above_reservoir(zZ)),
         )
 
         _extra_nz = settings.particle_reservoir_depth // settings.dz
@@ -100,6 +118,16 @@ class Simulation:
             ),
             kappa=settings.kappa,
         )
+
+        if self.settings.evaluate_relaxed_velocity:
+            relaxed_velocity = RelaxedVelocity()
+            self.builder.add_dynamic(relaxed_velocity)
+
+            self.attributes["fall momentum"] = init_fall_momenta(
+                self.attributes["volume"], self.builder.formulae.constants.rho_w)
+
+            self.builder.request_attribute("fall velocity")
+
         self.products += [
             PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
             PySDM_products.AmbientPressure(name="p"),
@@ -143,6 +171,7 @@ class Simulation:
                 name="rain averaged terminal velocity",
                 radius_range=settings.rain_water_radius_range,
             ),
+            PySDM_products.WallTime()
         ]
         if settings.precip:
             self.products.append(
@@ -161,6 +190,17 @@ class Simulation:
                 ),
             )
 
+        # self.products.append(
+        #     RadiusBinnedNumberAveragedTerminalVelocity(
+        #         self.settings.radius_bins_edges, name="terminal_vel"
+        #     )
+        # )
+
+        # if self.settings.evaluate_relaxed_velocity:
+        #     self.products.append(RadiusBinnedNumberAveragedFallVelocity(
+        #         self.settings.radius_bins_edges, name="fall_vel"
+        #     ))
+
         self.particulator = self.builder.build(
             attributes=self.attributes, products=self.products
         )
@@ -171,16 +211,23 @@ class Simulation:
             "cell origin": [],
             "position in cell": [],
             "radius": [],
-            "n": [],
+            "n": []
         }
+
+        self.output_attributes["terminal velocity"] = []
+        if self.settings.evaluate_relaxed_velocity:
+            self.output_attributes["fall velocity"] = []
+
         self.output_products = {}
         for k, v in self.particulator.products.items():
             if len(v.shape) == 1:
-                self.output_products[k] = np.zeros((self.mesh.grid[-1], self.nt + 1))
+                self.output_products[k] = np.zeros(
+                    (self.mesh.grid[-1], self.nt + 1))
             elif len(v.shape) == 2:
                 number_of_time_sections = len(self.save_spec_and_attr_times)
                 self.output_products[k] = np.zeros(
-                    (self.mesh.grid[-1], self.number_of_bins, number_of_time_sections)
+                    (self.mesh.grid[-1], self.number_of_bins,
+                     number_of_time_sections)
                 )
 
     @staticmethod
@@ -195,6 +242,8 @@ class Simulation:
     def save_scalar(self, step):
         for k, v in self.particulator.products.items():
             if len(v.shape) > 1:
+                continue
+            elif k == "wall time":
                 continue
             self.output_products[k][:, step] = v.get()
 
@@ -228,7 +277,10 @@ class Simulation:
             self.save_spectrum(save_index)
             self.save_attributes()
 
+
     def run(self):
+        assert not self.done
+
         mesh = self.particulator.mesh
 
         assert "t" not in self.output_products and "z" not in self.output_products
@@ -243,6 +295,7 @@ class Simulation:
         )
 
         self.save(0)
+        self.particulator.products["wall time"].reset()
         for step in range(self.nt):
             self.mpdata.update_advector_field()
             if "Displacement" in self.particulator.dynamics:
@@ -251,9 +304,13 @@ class Simulation:
                 )
             self.particulator.run(steps=1)
             self.save(step + 1)
+        self.exec_time = self.particulator.products["wall time"].get()
 
         Outputs = namedtuple("Outputs", "products attributes")
         output_results = Outputs(self.output_products, self.output_attributes)
+
+        self.done = True
+
         return output_results
 
     def get_plt_name(self, plot_var: str)->str:

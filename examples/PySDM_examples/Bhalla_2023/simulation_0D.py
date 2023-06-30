@@ -6,6 +6,7 @@ from PySDM.backends import CPU, GPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence, RelaxedVelocity
 from PySDM.environments import Box
+from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation import init_fall_momenta
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, RadiusBinnedNumberAveragedTerminalVelocity, RadiusBinnedNumberAveragedFallVelocity, WallTime
@@ -88,6 +89,7 @@ class Simulation:
             output_vals["dm/dlnr"][:] *= self.settings.rho
 
             output_vals["terminal_vel"] = self.particulator.products["terminal_vel"].get()
+
 
             if self.settings.evaluate_relaxed_velocity:
                 output_vals["fall_vel"] = self.particulator.products["fall_vel"].get()

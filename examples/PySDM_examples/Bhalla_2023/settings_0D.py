@@ -16,7 +16,7 @@ class Settings(Settings_Shima):
 
         self.X0 = self.formulae.trivia.volume(radius=30.531 * si.micrometres)
 
-        self.kernel: Union[Golovin, Geometric] = Golovin(b=1.5e3 / si.second)
+        self.kernel: Union[Golovin, Geometric] = Geometric()
 
         self.radius_bins_edges = np.logspace(
             np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True

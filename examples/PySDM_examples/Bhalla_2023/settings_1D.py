@@ -2,13 +2,16 @@ from PySDM.physics import si
 
 from PySDM_examples.Shipway_and_Hill_2012.settings import Settings as Settings_Shipway
 
+import numpy as np
 
 class Settings(Settings_Shipway):
     def __init__(
         self,
         n_sd_per_gridbox: int = 256,
         rho_times_w_1: float = 2 * si.m / si.s * si.kg / si.m**3,
-        precip: bool = True
+        precip: bool = True,
+        evaluate_relaxed_velocity=False,
+        times_to_save=None
     ):
         super().__init__(
             n_sd_per_gridbox=n_sd_per_gridbox,
@@ -19,3 +22,8 @@ class Settings(Settings_Shipway):
             dz=50 * si.m,
             p0=990 * si.hPa
         )
+        self.evaluate_relaxed_velocity = evaluate_relaxed_velocity
+        self.radius_bins_edges = np.logspace(
+            np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True
+        )
+        self.save_spec_and_attr_times = np.array([]) if times_to_save is None else times_to_save
