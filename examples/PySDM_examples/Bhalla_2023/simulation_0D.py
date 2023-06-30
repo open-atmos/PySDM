@@ -6,6 +6,7 @@ from PySDM.backends import CPU, GPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence, RelaxedVelocity
 from PySDM.environments import Box
+from PySDM.initialisation import init_fall_momenta
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, RadiusBinnedNumberAveragedTerminalVelocity, RadiusBinnedNumberAveragedFallVelocity, WallTime
 from PySDM.physics import si
@@ -39,10 +40,12 @@ class Simulation:
         self.builder.add_dynamic(coalescence)
 
         if self.settings.evaluate_relaxed_velocity:
-            attributes["fall momentum"] = attributes["volume"] * \
-                self.builder.formulae.constants.rho_w*2
             relaxed_velocity = RelaxedVelocity()
             self.builder.add_dynamic(relaxed_velocity)
+
+            attributes["fall momentum"] = init_fall_momenta(
+                attributes["volume"], self.builder.formulae.constants.rho_w)
+            
             self.builder.request_attribute("fall velocity")
 
         products = [
@@ -64,6 +67,7 @@ class Simulation:
 
         self.particulator.observers.append(
             Progress(self.settings.output_steps[-1]))
+
         # self.particulator.observers.append(WarnVelocityDiff(self.particulator))
 
         self.done: bool = False
