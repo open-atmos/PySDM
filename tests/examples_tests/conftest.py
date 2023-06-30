@@ -70,7 +70,7 @@ def pytest_generate_tests(metafunc):
     pysdm_examples_abs_path = (
         pathlib.Path(__file__)
         .parent.parent.parent.absolute()
-        .joinpath("PySDM-examples")
+        .joinpath("examples")
         .joinpath("PySDM_examples")
     )
     if "notebook_filename" in metafunc.fixturenames:
