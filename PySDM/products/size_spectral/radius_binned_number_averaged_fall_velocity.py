@@ -1,5 +1,5 @@
 """
-Provides radius bin-resolved average terminal velocity (average is particle-number weighted)
+Provides radius bin-resolved average fall velocity (average is particle-number weighted)
 """
 import numpy as np
 
