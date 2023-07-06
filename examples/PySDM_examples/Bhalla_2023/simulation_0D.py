@@ -14,7 +14,7 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, RadiusBi
 from PySDM.physics import si
 from open_atmos_jupyter_utils import show_plot
 from PySDM_examples.Bhalla_2023.settings_0D import Settings
-from PySDM_examples.Bhalla_2023.logging_observers import Progress, WarnVelocityDiff
+from PySDM_examples.Bhalla_2023.logging_observers import Progress
 from IPython.display import display, HTML
 
 
@@ -129,6 +129,7 @@ class Simulation:
                     (self.settings.output_steps[-1] * self.settings.dt)
                 ),
             )
+            
 
     def plot_vs_lnr(self, product_name: str, y_scale: float = 1, y_label: Optional[str] = None, num_plots: int = 4):
         assert self.done
@@ -202,14 +203,9 @@ class Simulation:
 
 if __name__ == "__main__":
     settings = Settings(
-        n_sd=2**16, max_t=3600, evaluate_relaxed_velocity=True)
+        n_sd=2**14, max_t=2000, evaluate_relaxed_velocity=True)
     simulation = Simulation(settings)
 
     simulation.run()
-
-    # simulation.plot_vs_lnr("dm/dlnr", si.kilograms /
-    #                        si.grams, "dm/dlnr [g/m^3/(unit dr/r)]")
-
-    # simulation.plot_vs_lnr("terminal_vel", 1, "terminal velocity [m/s]")
 
     simulation.plot_vs_lnr_animation("fall_vel", 1, "fall velocity [m/s]")
