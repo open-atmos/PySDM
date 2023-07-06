@@ -1,4 +1,4 @@
-from typing import Any, Type, Union
+from typing import Any, Optional, Type, Union
 import numpy as np
 from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumColors
 import matplotlib.pyplot as plt
@@ -15,6 +15,7 @@ from PySDM.physics import si
 from open_atmos_jupyter_utils import show_plot
 from PySDM_examples.Bhalla_2023.settings_0D import Settings
 from PySDM_examples.Bhalla_2023.logging_observers import Progress, WarnVelocityDiff
+from IPython.display import display, HTML
 
 
 class Simulation:
@@ -129,15 +130,17 @@ class Simulation:
                 ),
             )
 
-    def plot_vs_lnr(self, product_name: str, y_scale: float = 1, y_label: Union[str, None] = None):
+    def plot_vs_lnr(self, product_name: str, y_scale: float = 1, y_label: Optional[str] = None, num_plots: int = 4):
         assert self.done
 
         y_label = y_label or product_name
 
         plt_colors = SpectrumColors()
 
-        for i in range(len(self.settings.steps)):
-            self._plot_vs_lnr_single(i, product_name, y_scale, plt_colors)
+        steps = np.linspace(0, len(self.settings.steps)-1, num_plots)
+        for i in steps:
+            self._plot_vs_lnr_single(
+                int(i), product_name, y_scale, plt_colors)
 
         plt_name = self.get_plt_name(product_name.replace("/", "_"))
 
@@ -146,10 +149,11 @@ class Simulation:
         plt.title(plt_name)
         plt.xlabel("particle radius [µm]")
         plt.ylabel(y_label)
+        plt.legend()
 
         show_plot(filename=f"{plt_name}.pdf")
 
-    def plot_vs_lnr_animation(self, product_name: str, y_scale: float = 1, y_label: Union[str, None] = None):
+    def plot_vs_lnr_animation(self, product_name: str, y_scale: float = 1, y_label: Optional[str] = None, num_fixed: int  = 4):
         assert self.done
 
         plt_colors = SpectrumColors()
@@ -157,21 +161,21 @@ class Simulation:
         fig = plt.figure()
         graph, = self._plot_vs_lnr_single(0, product_name, y_scale, plt_colors)
 
-        stamp_times = [0, 1200, 2400, 3600]
+        stamp_steps = np.linspace(0, len(self.settings.steps)-1, num_fixed)
+        for i in stamp_steps:
+            new_graph, = self._plot_vs_lnr_single(
+                int(i), product_name, y_scale, plt_colors)
+            new_graph.set_alpha(0.5)
+        
 
         def animate(i):
-            update_list = [self._plot_vs_lnr_single(i, product_name, y_scale, plt_colors, set_to=graph), plt.legend()]
+            update_list = [self._plot_vs_lnr_single(
+                i, product_name, y_scale, plt_colors, set_to=graph), plt.legend()]
 
-            if len(stamp_times) > 0 and self.settings.steps[i] >= stamp_times[0]:
-                stamp_times.pop(0)
-                new_graph, = self._plot_vs_lnr_single(i, product_name, y_scale, plt_colors)
-                new_graph.set_alpha(0.5)
-                update_list.append(new_graph)
-            
             return update_list
 
         anim = animation.FuncAnimation(fig, animate,
-                                       frames=len(self.settings.steps), interval=50, repeat_delay=1000)
+                                       frames=len(self.settings.steps), interval=50)
 
         plt_name = self.get_plt_name(product_name.replace("/", "_"))
 
@@ -180,21 +184,25 @@ class Simulation:
         plt.title(plt_name)
         plt.xlabel("particle radius [µm]")
         plt.ylabel(y_label)
-        
-        
 
-        # save the animation as an mp4.  This requires ffmpeg or mencoder to be
-        # installed.  The extra_args ensure that the x264 codec is used, so that
-        # the video can be embedded in html5.  You may need to adjust this for
-        # your system: for more information, see
-        # http://matplotlib.sourceforge.net/api/animation_api.html
-        # anim.save('basic_animation.mp4', fps=30, extra_args=['-vcodec', 'libx264'])
+        output_nums = [i[product_name] for i in self._output]
+        plt.xlim((np.min(self.settings.radius_bins_edges) * si.metres / si.micrometres,
+                  np.max(self.settings.radius_bins_edges) * si.metres / si.micrometres))
+        plt.ylim((0, np.max(output_nums) * y_scale))
 
-        plt.show()
+        anim.save(f"{plt_name}.gif", fps=30)
+
+        try:
+            assert get_ipython().__class__.__name__ == "ZMQInteractiveShell"
+            display(HTML(anim.to_html5_video()))
+            plt.close()
+        except:
+            plt.show()
 
 
 if __name__ == "__main__":
-    settings = Settings(n_sd=2**16, steps=list(np.arange(0, 4000, 20)), evaluate_relaxed_velocity=True)
+    settings = Settings(
+        n_sd=2**16, max_t=3600, evaluate_relaxed_velocity=True)
     simulation = Simulation(settings)
 
     simulation.run()
