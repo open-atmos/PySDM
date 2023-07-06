@@ -14,7 +14,7 @@ DEFAULTS = namedtuple("_", ("rtol", "adaptive"))(rtol=1e-2, adaptive=True)
 
 
 class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, tau=100*si.second):
+    def __init__(self, tau=1000*si.second):
         self.tau: float = tau
 
     def register(self, builder):
