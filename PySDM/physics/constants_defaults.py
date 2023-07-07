@@ -14,6 +14,7 @@ from .constants import (  # pylint: disable=unused-import
     PER_CENT,
     PER_MEG,
     PER_MILLE,
+    PPM,
     PI,
     PI_4_3,
     T0,
@@ -276,3 +277,7 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 """ [Craig 1961](https://doi.org/10.1126/science.133.3465.170) """
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
+
+""" https://en.wikipedia.org/wiki/Vienna_Standard_Mean_Ocean_Water """
+VSMOW_R_2H = 155.76 * PPM
+VSMOW_R_18O = 2005.20 * PPM
