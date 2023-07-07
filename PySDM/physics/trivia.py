@@ -102,3 +102,11 @@ class Trivia:
     def rayleigh_fractionation(_, f, a):
         """https://en.wikipedia.org/wiki/Rayleigh_fractionation"""
         return f ** (a - 1)
+
+    @staticmethod
+    def isotopic_delta_2_ratio(_, delta, reference_ratio):
+        return (delta + 1) * reference_ratio
+
+    @staticmethod
+    def isotopic_ratio_2_delta(_, ratio, reference_ratio):
+        return ratio / reference_ratio - 1
