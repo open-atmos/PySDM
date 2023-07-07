@@ -7,8 +7,8 @@ from .gravitational import Gravitational
 
 
 class Parameterized(Gravitational):
-    def __init__(self, params):
-        super().__init__()
+    def __init__(self, params, relax_velocity=False):
+        super().__init__(relax_velocity=relax_velocity)
         self.params = params
 
     def __call__(self, output, is_first_in_pair):
@@ -26,6 +26,6 @@ class Parameterized(Gravitational):
         output *= self.pair_tmp
 
         self.pair_tmp.distance(
-            self.particulator.attributes["terminal velocity"], is_first_in_pair
+            self.particulator.attributes[self.vel_attr], is_first_in_pair
         )
         output *= self.pair_tmp

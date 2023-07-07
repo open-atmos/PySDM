@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Settings(Settings_Shima):
-    def __init__(self, n_sd: Union[int, None] = None, max_t: Optional[int] = None, n_part: Optional[float] = None, evaluate_relaxed_velocity=False):
+    def __init__(self, n_sd: Union[int, None] = None, max_t: Optional[int] = None, n_part: Optional[float] = None, evaluate_relaxed_velocity=False, tau=1*si.second):
         super().__init__()
 
         self.n_sd = n_sd or 2**13
@@ -18,7 +18,7 @@ class Settings(Settings_Shima):
         self.X0 = self.formulae.trivia.volume(radius=30.531 * si.micrometres)
 
         # self.kernel: Union[Golovin, Geometric] = Golovin(b=1.5e3 / si.second)
-        self.kernel: Union[Golovin, Geometric] = Geometric()
+        self.kernel: Union[Golovin, Geometric] = Geometric(relax_velocity=evaluate_relaxed_velocity)
 
         self.radius_bins_edges = np.logspace(
             np.log10(10 * si.um), np.log10(5e4 * si.um), num=128, endpoint=True
@@ -27,3 +27,4 @@ class Settings(Settings_Shima):
         self.n_part = n_part or 2**23 / si.metre**3
 
         self.evaluate_relaxed_velocity = evaluate_relaxed_velocity
+        self.tau = tau
