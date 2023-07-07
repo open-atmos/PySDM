@@ -8,7 +8,7 @@ import numpy as np
 
 
 class Settings(Settings_Shima):
-    def __init__(self, n_sd: Union[int, None] = None, max_t: Optional[int] = None, n_part: Optional[float] = None, evaluate_relaxed_velocity=False, tau=1*si.second):
+    def __init__(self, n_sd: Union[int, None] = None, max_t: Optional[int] = None, n_part: Optional[float] = None, evaluate_relaxed_velocity=True, tau=1*si.second):
         super().__init__()
 
         self.n_sd = n_sd or 2**13

@@ -10,7 +10,8 @@ class Settings(Settings_Shipway):
         n_sd_per_gridbox: int = 256,
         rho_times_w_1: float = 2 * si.m / si.s * si.kg / si.m**3,
         precip: bool = True,
-        evaluate_relaxed_velocity=False,
+        evaluate_relaxed_velocity=True,
+        tau=1*si.second,
         times_to_save=None
     ):
         super().__init__(
@@ -23,7 +24,5 @@ class Settings(Settings_Shipway):
             p0=990 * si.hPa
         )
         self.evaluate_relaxed_velocity = evaluate_relaxed_velocity
-        self.radius_bins_edges = np.logspace(
-            np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True
-        )
+        self.tau = tau
         self.save_spec_and_attr_times = np.array([]) if times_to_save is None else times_to_save
