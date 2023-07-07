@@ -20,6 +20,7 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         precipitation_counting_level_index: int = 0,
         adaptive=DEFAULTS.adaptive,
         rtol=DEFAULTS.rtol,
+        relax_velocity=False
     ):
         self.particulator = None
         self.enable_sedimentation = enable_sedimentation
@@ -35,8 +36,11 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         self.rtol = rtol
         self._n_substeps = 1
 
+        self.relax_velocity = relax_velocity
+        self.vel_attr = "fall velocity" if relax_velocity else "terminal velocity"
+
     def register(self, builder):
-        builder.request_attribute("terminal velocity")
+        builder.request_attribute(self.vel_attr)
         self.particulator = builder.particulator
         self.dimension = len(builder.particulator.environment.mesh.grid)
         self.grid = self.particulator.Storage.from_ndarray(
@@ -130,7 +134,7 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
             dt = self.particulator.dt / self._n_substeps
             dt_over_dz = dt / self.particulator.mesh.dz
             displacement_z *= 1 / dt_over_dz
-            displacement_z -= self.particulator.attributes["terminal velocity"]
+            displacement_z -= self.particulator.attributes[self.vel_attr]
             displacement_z *= dt_over_dz
 
     @staticmethod

@@ -43,7 +43,7 @@ class Simulation:
         self.builder.add_dynamic(coalescence)
 
         if self.settings.evaluate_relaxed_velocity:
-            relaxed_velocity = RelaxedVelocity()
+            relaxed_velocity = RelaxedVelocity(tau=self.settings.tau)
             self.builder.add_dynamic(relaxed_velocity)
 
             attributes["fall momentum"] = init_fall_momenta(
@@ -101,7 +101,11 @@ class Simulation:
         self.done = True
 
     def get_plt_name(self, plot_var: str)->str:
-        return f"0D {plot_var} v_t-{self.builder.get_attribute('terminal velocity').approximation.__class__.__name__} n_sd-{self.settings.n_sd} kernel-{self.settings.kernel.__class__.__name__}"
+        res = f"0D {plot_var} relax_vel={self.settings.evaluate_relaxed_velocity}"
+        if self.settings.evaluate_relaxed_velocity:
+            res += f" tau={self.settings.tau}s"
+        res += f" v_t={self.builder.get_attribute('terminal velocity').approximation.__class__.__name__}"
+        return res
 
     def _plot_vs_lnr_single(self, index: int, product_name: str, y_scale: float, colors: SpectrumColors, set_to=None):
         X = np.linspace(1, 100, 50)
@@ -129,7 +133,6 @@ class Simulation:
                     (self.settings.output_steps[-1] * self.settings.dt)
                 ),
             )
-            
 
     def plot_vs_lnr(self, product_name: str, y_scale: float = 1, y_label: Optional[str] = None, num_plots: int = 4):
         assert self.done
@@ -154,7 +157,7 @@ class Simulation:
 
         show_plot(filename=f"{plt_name}.pdf")
 
-    def plot_vs_lnr_animation(self, product_name: str, y_scale: float = 1, y_label: Optional[str] = None, num_fixed: int  = 4):
+    def plot_vs_lnr_animation(self, product_name: str, y_scale: float = 1, y_label: Optional[str] = None, num_fixed: int = 4, show=True):
         assert self.done
 
         plt_colors = SpectrumColors()
@@ -167,7 +170,6 @@ class Simulation:
             new_graph, = self._plot_vs_lnr_single(
                 int(i), product_name, y_scale, plt_colors)
             new_graph.set_alpha(0.5)
-        
 
         def animate(i):
             update_list = [self._plot_vs_lnr_single(
@@ -193,19 +195,30 @@ class Simulation:
 
         anim.save(f"{plt_name}.gif", fps=30)
 
-        try:
-            assert get_ipython().__class__.__name__ == "ZMQInteractiveShell"
-            display(HTML(anim.to_html5_video()))
-            plt.close()
-        except:
-            plt.show()
+        if show:
+            try:
+                assert get_ipython().__class__.__name__ == "ZMQInteractiveShell"
+                display(HTML(anim.to_html5_video()))
+                plt.close()
+            except:
+                plt.show()
 
 
-if __name__ == "__main__":
+def generate_dm_dlnr_animation(evaluate_relaxed_velocity=True, tau=100*si.seconds):
     settings = Settings(
-        n_sd=2**14, max_t=2000, evaluate_relaxed_velocity=True)
+        n_sd=2**18, max_t=7200, evaluate_relaxed_velocity=evaluate_relaxed_velocity, tau=tau)
     simulation = Simulation(settings)
 
     simulation.run()
 
-    simulation.plot_vs_lnr_animation("fall_vel", 1, "fall velocity [m/s]")
+    simulation.plot_vs_lnr_animation(
+        "dm/dlnr", si.kilograms/si.grams, "dm/dlnr [g/m^3/(unit dr/r)]", show=False, num_fixed=8)
+
+
+if __name__ == "__main__":
+    generate_dm_dlnr_animation(evaluate_relaxed_velocity=False)
+    for tau in [1, 10, 100]:
+        generate_dm_dlnr_animation(
+            evaluate_relaxed_velocity=True, tau=tau)
+
+# simulation.plot_vs_lnr_animation("fall_vel", 1, "fall velocity [m/s]")

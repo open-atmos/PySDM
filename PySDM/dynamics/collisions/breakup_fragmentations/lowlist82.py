@@ -5,7 +5,7 @@ See Low & List 1982
 
 class LowList1982Nf:
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, vmin=0.0, nfmax=None):
+    def __init__(self, vmin=0.0, nfmax=None, relax_velocity=False):
         self.particulator = None
         self.vmin = vmin
         self.nfmax = nfmax
@@ -13,6 +13,8 @@ class LowList1982Nf:
         self.ll82_tmp = {}
         self.sum_of_volumes = None
         self.const = None
+        self.relax_velocity = relax_velocity
+        self.vel_attr = "fall velocity" if relax_velocity else "terminal velocity"
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -22,7 +24,7 @@ class LowList1982Nf:
         self.const = self.particulator.formulae.constants
         builder.request_attribute("radius")
         builder.request_attribute("volume")
-        builder.request_attribute("terminal velocity")
+        builder.request_attribute(self.vel_attr)
         for key in ("Sc", "St", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
@@ -64,7 +66,7 @@ class LowList1982Nf:
 
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["tmp2"].distance(
-            self.particulator.attributes["terminal velocity"], is_first_in_pair
+            self.particulator.attributes[self.vel_attr], is_first_in_pair
         )
         self.arrays["tmp2"] **= 2
         self.arrays["CKE"].multiply(
