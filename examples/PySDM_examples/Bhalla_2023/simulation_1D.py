@@ -1,5 +1,6 @@
 from collections import namedtuple
 from IPython.display import display, HTML
+from PySDM.products.collision import CollisionRatePerGridbox
 from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumColors
 from PySDM_examples.Shipway_and_Hill_2012.plot import plot
 from PySDM_examples.Shipway_and_Hill_2012.simulation import Simulation as Simulation_Shipway
@@ -11,11 +12,11 @@ from typing import Optional, Union
 
 from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
 from open_atmos_jupyter_utils import show_plot
+from PySDM import Builder
 from PySDM.dynamics.relaxed_velocity import RelaxedVelocity
 from PySDM.initialisation import init_fall_momenta
 
 import PySDM.products as PySDM_products
-from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics import (
     AmbientThermodynamics,
@@ -24,6 +25,7 @@ from PySDM.dynamics import (
     Displacement,
     EulerianAdvection,
 )
+
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
@@ -31,7 +33,6 @@ from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
 
 from PySDM_examples.Bhalla_2023.logging_observers import Progress
 from PySDM_examples.Bhalla_2023.settings_1D import Settings
-from PySDM.products.size_spectral import RadiusBinnedNumberAveragedFallVelocity, RadiusBinnedNumberAveragedTerminalVelocity, NumberSizeSpectrum
 
 from PySDM.physics import si
 
@@ -196,17 +197,23 @@ class Simulation(Simulation_Shipway):
             # )
             pass
 
-        self.products.append(NumberSizeSpectrum(
+        self.products.append(PySDM_products.NumberSizeSpectrum(
             self.settings.r_bins_edges, name="number concentration"))
 
         self.products.append(
-            RadiusBinnedNumberAveragedTerminalVelocity(
+            PySDM_products.RadiusBinnedNumberAveragedTerminalVelocity(
                 self.settings.r_bins_edges, name="terminal_vel"
             )
         )
 
+        self.products.append(
+            PySDM_products.ParticleVolumeVersusRadiusLogarithmSpectrum(
+                self.settings.r_bins_edges, name="dv/dlnr"
+            )
+        )
+
         if self.settings.evaluate_relaxed_velocity:
-            self.products.append(RadiusBinnedNumberAveragedFallVelocity(
+            self.products.append(PySDM_products.RadiusBinnedNumberAveragedFallVelocity(
                 self.settings.r_bins_edges, name="fall_vel"
             ))
 
@@ -306,13 +313,20 @@ class Simulation(Simulation_Shipway):
 
     def get_total_spectrum(self, product_name, index):
         """
-        takes a weighted average w.r.t. "number concentration" product
+        either takes a weighted average w.r.t. "number concentration" product
+        or takes a sum
         """
-        num = self.output_products["number concentration"][:, :, index]
         prod = self.output_products[product_name][:, :, index]
-        weighted_sum = np.sum(prod*num, axis=0)
-        total_num = np.sum(num, axis=0)
-        return np.divide(weighted_sum, total_num, out=np.zeros_like(weighted_sum), where=total_num!=0)
+        if product_name == "terminal_vel" or product_name == "fall_vel":
+            num = self.output_products["number concentration"][:, :, index]
+            weighted_sum = np.sum(prod*num, axis=0)
+            total_num = np.sum(num, axis=0)
+            return np.divide(weighted_sum, total_num, out=np.zeros_like(weighted_sum), where=total_num!=0)
+        elif product_name == "dv/dlnr":
+            return np.sum(prod, axis=0)
+        else:
+            raise ValueError("no total spectrum behavior specified")
+
 
     def _plot_vs_lnr_single(self, index: int, product_name: str, y_scale: float, colors: SpectrumColors, set_to=None):
         X = np.linspace(1, 100, 50)
