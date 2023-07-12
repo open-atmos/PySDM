@@ -34,6 +34,7 @@ rogers_yau(output=rogers_yau_output, radius=radii)
 interpolation_arr = interpolation_output.to_ndarray()
 rogers_yau_arr = rogers_yau_output.to_ndarray()
 
+
 plt.plot(radii_arr*si.metres/si.micrometres, rogers_yau_arr,
          "r-", label="Rogers Yau", alpha=0.5, linewidth=3)
 plt.plot(radii_arr*si.metres/si.micrometres, interpolation_arr,

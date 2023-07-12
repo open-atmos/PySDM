@@ -13,7 +13,9 @@ class Settings(Settings_Shima):
 
         self.n_sd = n_sd or 2**13
         self.max_t = max_t or 3600
-        self.steps = np.arange(0, self.max_t+1, 50)
+
+        self.step_size = 50
+        self.steps = np.arange(0, self.max_t+1, self.step_size)
 
         self.X0 = self.formulae.trivia.volume(radius=30.531 * si.micrometres)
 
