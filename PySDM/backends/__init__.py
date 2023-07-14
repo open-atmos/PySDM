@@ -9,7 +9,7 @@ import warnings
 from numba import cuda
 
 from .numba import Numba
-
+from .numba_cuda import NumbaCUDA
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
 def _cuda_is_available():
@@ -79,3 +79,5 @@ GPU = ThrustRTC
 """
 alias for ThrustRTC
 """
+
+GPU_NUMBA = NumbaCUDA

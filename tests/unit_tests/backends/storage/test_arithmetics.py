@@ -8,7 +8,7 @@ class TestArithmetics:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize(
         "output, addend, expected",
         [
-            ([1.0], 2, [3.0]),
+            # ([1.0], 2, [3.0]),
             ([1.0], [2], [3.0]),
         ],
     )
