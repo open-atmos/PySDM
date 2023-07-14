@@ -2,7 +2,7 @@
 Multi-threaded GPU backend using LLVM-powered just-in-time compilation
 """
 
-from PySDM.backends.impl_numba.random import Random as ImportedRandom
+from PySDM.backends.impl_numba_cuda.random import Random as ImportedRandom
 from PySDM.backends.impl_numba_cuda.storage import Storage as ImportedStorage
 from PySDM.formulae import Formulae
 from PySDM.backends.impl_numba_cuda.methods.collisions_methods import CollisionsMethods
@@ -10,7 +10,7 @@ from PySDM.backends.impl_numba_cuda.methods.collisions_methods import Collisions
 
 class NumbaCUDA(CollisionsMethods):
     Storage = ImportedStorage
-    # Random = ImportedRandom
+    Random = ImportedRandom
 
     default_croupier = "local"
 
