@@ -37,15 +37,15 @@ class Storage(StorageBase):
 
     def __iadd__(self, other):
         if hasattr(other, "data"):
-            Storage.__inner_iadd_element_wise[self.threadsperblock, self.blockspergrid](self.data, other.data)
+            Storage.__inner_iadd_element_wise__[self.blockspergrid, self.threadsperblock](self.data, other.data)
         else:
-            Storage.__inner_iadd_element[self.threadsperblock, self.blockspergrid](self.data, other)
+            Storage.__inner_iadd_element__[self.blockspergrid, self.threadsperblock](self.data, other)
 
         return self
 
     @staticmethod
     @cuda.jit
-    def __inner_iadd_element(output, other):
+    def __inner_iadd_element__(output, other):
         tx = cuda.threadIdx.x
         bw = cuda.blockDim.x
         bi = cuda.blockIdx.x
@@ -56,7 +56,7 @@ class Storage(StorageBase):
 
     @staticmethod
     @cuda.jit
-    def __inner_iadd_element_wise(output, other):
+    def __inner_iadd_element_wise__(output, other):
         tx = cuda.threadIdx.x
         bw = cuda.blockDim.x
         bi = cuda.blockIdx.x
@@ -66,22 +66,95 @@ class Storage(StorageBase):
             output[pos] += other[pos]
 
     def __isub__(self, other):
-        impl.subtract(self.data, other.data)
+        if hasattr(other, "data"):
+            Storage.__inner_isub_element_wise__[self.blockspergrid, self.threadsperblock](self.data, other.data)
+        else:
+            Storage.__inner_isub_element__[self.blockspergrid, self.threadsperblock](self.data, other)
+
         return self
+
+    @staticmethod
+    @cuda.jit
+    def __inner_isub_element__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] -= other
+
+    @staticmethod
+    @cuda.jit
+    def __inner_isub_element_wise__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] -= other[pos]
 
     def __imul__(self, other):
         if hasattr(other, "data"):
-            impl.multiply(self.data, other.data)
+            Storage.__inner_imul_element_wise__[self.blockspergrid, self.threadsperblock](self.data, other.data)
         else:
-            impl.multiply(self.data, other)
+            Storage.__inner_imul_element__[self.blockspergrid, self.threadsperblock](self.data, other)
+
         return self
 
+    @staticmethod
+    @cuda.jit
+    def __inner_imul_element__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] *= other
+
+    @staticmethod
+    @cuda.jit
+    def __inner_imul_element_wise__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] *= other[pos]
+
     def __itruediv__(self, other):
+        # TODO this should be changed to throw an exception if both arrays are integers (TypeError)
         if hasattr(other, "data"):
-            self.data[:] /= other.data[:]
+            Storage.__inner_itruediv_element_wise__[self.blockspergrid, self.threadsperblock](self.data, other.data)
         else:
-            self.data[:] /= other
+            Storage.__inner_itruediv_element__[self.blockspergrid, self.threadsperblock](self.data, other)
+
         return self
+
+    @staticmethod
+    @cuda.jit
+    def __inner_itruediv_element__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] /= other
+
+    @staticmethod
+    @cuda.jit
+    def __inner_itruediv_element_wise__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] /= other[pos]
 
     def __imod__(self, other):
         impl.row_modulo(self.data, other.data)
