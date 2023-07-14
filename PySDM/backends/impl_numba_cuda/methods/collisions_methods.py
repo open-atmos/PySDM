@@ -4,6 +4,7 @@ CPU implementation of backend methods for particle collisions
 # pylint: disable=too-many-lines
 import numba
 import numpy as np
+from numba import cuda
 
 from PySDM.backends.impl_numba_cuda.storage import Storage
 
@@ -556,7 +557,7 @@ class CollisionsMethods(BackendMethods):
             self.__feingold1988_fragmentation_body = __feingold1988_fragmentation_body
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+    @cuda.jit
     def __adaptive_sdm_end_body(dt_left, n_cell, cell_start):
         end = 0
         for i in range(n_cell - 1, -1, -1):
@@ -1026,49 +1027,9 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme="default"):
-        class CellCaretaker:  # pylint: disable=too-few-public-methods
-            def __init__(self, idx_shape, idx_dtype, cell_start_len, scheme):
-                if scheme == "default":
-                    if conf.JIT_FLAGS["parallel"]:
-                        scheme = "counting_sort_parallel"
-                    else:
-                        scheme = "counting_sort"
-                self.scheme = scheme
-                if scheme in ("counting_sort", "counting_sort_parallel"):
-                    self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
-                if scheme == "counting_sort_parallel":
-                    self.cell_starts = Storage.empty(
-                        (
-                            numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
-                            cell_start_len,
-                        ),
-                        dtype=int,
-                    )
-
-            def __call__(self, cell_id, cell_idx, cell_start, idx):
-                length = len(idx)
-                if self.scheme == "counting_sort":
-                    CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data,
-                        idx.data,
-                        cell_id.data,
-                        cell_idx.data,
-                        length,
-                        cell_start.data,
-                    )
-                elif self.scheme == "counting_sort_parallel":
-                    CollisionsMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data,
-                        idx.data,
-                        cell_id.data,
-                        cell_idx.data,
-                        length,
-                        cell_start.data,
-                        self.cell_starts.data,
-                    )
-                idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
-
-        return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)
+        if not (scheme is None or scheme == "default"):
+            raise NotImplementedError()
+        return CollisionsMethods._sort_by_cell_id_and_update_cell_start_wrapper(Storage.empty(idx_shape, idx_dtype))
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -1133,43 +1094,22 @@ class CollisionsMethods(BackendMethods):
             new_idx[cell_end[cell_idx[cell_id[idx[i]]]]] = idx[i]
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
-    def _parallel_counting_sort_by_cell_id_and_update_cell_start(
-        new_idx, idx, cell_id, cell_idx, length, cell_start, cell_start_p
-    ):
-        cell_end_thread = cell_start_p
-        # Warning: Assuming len(cell_end) == n_cell+1
-        thread_num = cell_end_thread.shape[0]
-        for t in numba.prange(thread_num):  # pylint: disable=not-an-iterable
-            cell_end_thread[t, :] = 0
-            for i in range(
-                t * length // thread_num,
-                (t + 1) * length // thread_num if t < thread_num - 1 else length,
-            ):
-                cell_end_thread[t, cell_idx[cell_id[idx[i]]]] += 1
+    def _sort_by_cell_id_and_update_cell_start_wrapper(new_idx):
+        # pylint: disable=too-many-arguments
+        def _sort_by_cell_id_and_update_cell_start(
+            cell_id, cell_idx, cell_start, idx
+        ):
+            length = len(idx)
 
-        cell_start[:] = np.sum(cell_end_thread, axis=0)
-        for i in range(1, len(cell_start)):
-            cell_start[i] += cell_start[i - 1]
+            cell_end = cell_start
+            # Warning: Assuming len(cell_end) == n_cell+1
+            cell_end[:] = 0
+            for i in range(length):
+                cell_end[cell_idx[cell_id[idx[i]]]] += 1
+            for i in range(1, len(cell_end)):
+                cell_end[i] += cell_end[i - 1]
+            for i in range(length - 1, -1, -1):
+                cell_end[cell_idx[cell_id[idx[i]]]] -= 1
+                new_idx[cell_end[cell_idx[cell_id[idx[i]]]]] = idx[i]
 
-        tmp = cell_end_thread[0, :]
-        tmp[:] = cell_end_thread[thread_num - 1, :]
-        cell_end_thread[thread_num - 1, :] = cell_start[:]
-        for t in range(thread_num - 2, -1, -1):
-            cell_start[:] = cell_end_thread[t + 1, :] - tmp[:]
-            tmp[:] = cell_end_thread[t, :]
-            cell_end_thread[t, :] = cell_start[:]
-
-        for t in numba.prange(thread_num):  # pylint: disable=not-an-iterable
-            for i in range(
-                (t + 1) * length // thread_num - 1
-                if t < thread_num - 1
-                else length - 1,
-                t * length // thread_num - 1,
-                -1,
-            ):
-                cell_end_thread[t, cell_idx[cell_id[idx[i]]]] -= 1
-                new_idx[cell_end_thread[t, cell_idx[cell_id[idx[i]]]]] = idx[i]
-
-        cell_start[:] = cell_end_thread[0, :]
+        return _sort_by_cell_id_and_update_cell_start
