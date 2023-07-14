@@ -8,14 +8,11 @@ import numpy as np
 
 
 class Settings(Settings_Shima):
-    def __init__(self, n_sd: Union[int, None] = None, max_t: Optional[int] = None, n_part: Optional[float] = None, evaluate_relaxed_velocity=True, tau=1*si.second):
+    def __init__(self, n_sd: Union[int, None] = None, max_t: Optional[int] = None, n_part: Optional[float] = None, evaluate_relaxed_velocity=True, tau=1*si.second, dt=1*si.second):
         super().__init__()
 
         self.n_sd = n_sd or 2**13
         self.max_t = max_t or 3600
-
-        self.step_size = 50
-        self.steps = np.arange(0, self.max_t+1, self.step_size)
 
         self.X0 = self.formulae.trivia.volume(radius=30.531 * si.micrometres)
 
@@ -30,3 +27,5 @@ class Settings(Settings_Shima):
 
         self.evaluate_relaxed_velocity = evaluate_relaxed_velocity
         self.tau = tau
+
+        self.dt = dt

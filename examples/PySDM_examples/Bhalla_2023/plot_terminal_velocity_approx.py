@@ -3,6 +3,7 @@ Plot Interpolation (Gunn/Kinzer) and Rogers/Yau approximations of
 terminal velocity as a function of droplet radius.
 """
 
+from typing import Type, Union
 import numpy as np
 import matplotlib.pyplot as plt
 from PySDM.physics import si
@@ -17,33 +18,40 @@ LOG_UPPER_BOUND = -2.5
 
 N = 1000
 
-particulator = Particulator(0, CPU(Formulae()))
+def get_approx(radii_arr, particulator=None, approx: Union[Type[RogersYau], Type[Interpolation]]=RogersYau):
+    """
+    Get Rogers Yau approximation of terminal velocity as a function of 
+    droplet radius.
+    """
+    if particulator is None:
+        particulator = Particulator(0, CPU(Formulae()))
 
-interpolation = Interpolation(particulator)
-rogers_yau = RogersYau(particulator=particulator)
+    radii = particulator.Storage.from_ndarray(radii_arr)
 
-radii_arr = np.logspace(LOG_LOWER_BOUND, LOG_UPPER_BOUND, N)
-radii = particulator.Storage.from_ndarray(radii_arr)
+    rogers_yau_output = particulator.Storage.empty(radii_arr.shape, dtype=float)
+    approx(particulator=particulator)(output=rogers_yau_output, radius=radii)
 
-interpolation_output = particulator.Storage.empty((N,), dtype=float)
-rogers_yau_output = particulator.Storage.empty((N,), dtype=float)
-
-interpolation(output=interpolation_output, radius=radii)
-rogers_yau(output=rogers_yau_output, radius=radii)
-
-interpolation_arr = interpolation_output.to_ndarray()
-rogers_yau_arr = rogers_yau_output.to_ndarray()
+    return rogers_yau_output.to_ndarray()
 
 
-plt.plot(radii_arr*si.metres/si.micrometres, rogers_yau_arr,
-         "r-", label="Rogers Yau", alpha=0.5, linewidth=3)
-plt.plot(radii_arr*si.metres/si.micrometres, interpolation_arr,
-         "b-", label="Interpolation", alpha=0.5, linewidth=3)
+if __name__ == "__main__":
+    particulator = Particulator(0, CPU(Formulae()))
 
-plt.xscale("log")
-plt.xlabel("Radius ($\\mu$m)")
-plt.ylabel("Terminal Velocity (m/s)")
+    radii_arr = np.logspace(LOG_LOWER_BOUND, LOG_UPPER_BOUND, N)
 
-plt.legend()
+    interpolation_arr = get_approx(radii_arr, particulator=particulator, approx=Interpolation)
+    rogers_yau_arr = get_approx(radii_arr, particulator=particulator, approx=RogersYau)
+
+
+    plt.plot(radii_arr*si.metres/si.micrometres, rogers_yau_arr,
+             "r-", label="Rogers Yau", alpha=0.5, linewidth=3)
+    plt.plot(radii_arr*si.metres/si.micrometres, interpolation_arr,
+             "b-", label="Interpolation", alpha=0.5, linewidth=3)
+
+    plt.xscale("log")
+    plt.xlabel("Radius ($\\mu$m)")
+    plt.ylabel("Terminal Velocity (m/s)")
+
+    plt.legend()
 
 plt.show()
