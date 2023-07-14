@@ -26,7 +26,37 @@ class Storage(StorageBase):
         self.blockspergrid = (math.ceil(self.shape[0] / self.threadsperblock[0]),)
 
     def __getitem__(self, item):
-        pass
+        dim = len(self.shape)
+        if isinstance(item, slice):
+            step = item.step or 1
+            if step != 1:
+                raise NotImplementedError("step != 1")
+            start = item.start or 0
+            if dim == 1:
+                stop = item.stop or len(self)
+                result_data = self.data[item]
+                result_shape = (stop - start,)
+            elif dim == 2:
+                stop = item.stop or self.shape[0]
+                result_data = self.data[item]
+                result_shape = (stop - start, self.shape[1])
+            else:
+                raise NotImplementedError(
+                    "Only 2 or less dimensions array is supported."
+                )
+            if stop > self.data.shape[0]:
+                raise IndexError(
+                    f"requested a slice ({start}:{stop}) of Storage"
+                    f" with first dim of length {self.data.shape[0]}"
+                )
+            result = Storage(StorageSignature(result_data, result_shape, self.dtype))
+        elif isinstance(item, tuple) and dim == 2 and isinstance(item[1], slice):
+            result = Storage(
+                StorageSignature(self.data[item[0]], (*self.shape[1:],), self.dtype)
+            )
+        else:
+            result = self.data[item]
+        return result
 
     def __setitem__(self, key, value):
         if hasattr(value, "data"):
@@ -184,7 +214,19 @@ class Storage(StorageBase):
 
     @staticmethod
     def _get_empty_data(shape, dtype):
-        pass
+        if dtype in (float, Storage.FLOAT):
+            data = cuda.device_array(shape, dtype=Storage.FLOAT)
+            dtype = Storage.FLOAT
+        elif dtype in (int, Storage.INT):
+            data = cuda.device_array(shape, dtype=Storage.INT)
+            dtype = Storage.INT
+        elif dtype in (bool, Storage.BOOL):
+            data = cuda.device_array(shape, dtype=Storage.BOOL)
+            dtype = Storage.BOOL
+        else:
+            raise NotImplementedError()
+
+        return StorageSignature(data, shape, dtype)
 
     @staticmethod
     def empty(shape, dtype):
@@ -251,7 +293,8 @@ class Storage(StorageBase):
         return res
 
     def upload(self, data):
-        np.copyto(self.data, data, casting="safe")
+        # cuda.to_device(data, to=self.data)
+        self.data = cuda.to_device(data)
 
     def fill(self, other):
         if isinstance(other, Storage):
