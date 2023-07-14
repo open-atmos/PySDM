@@ -187,12 +187,64 @@ class Storage(StorageBase):
             output[pos] /= other[pos]
 
     def __imod__(self, other):
-        impl.row_modulo(self.data, other.data)
+        if hasattr(other, "data"):
+            Storage.__inner_imod_element_wise__[self.blockspergrid, self.threadsperblock](self.data, other.data)
+        else:
+            Storage.__inner_imod_element__[self.blockspergrid, self.threadsperblock](self.data, other)
+
         return self
 
+    @staticmethod
+    @cuda.jit
+    def __inner_imod_element__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] %= other
+
+    @staticmethod
+    @cuda.jit
+    def __inner_imod_element_wise__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] %= other[pos]
+
     def __ipow__(self, other):
-        impl.power(self.data, other)
+        if hasattr(other, "data"):
+            Storage.__inner_ipow_element_wise__[self.blockspergrid, self.threadsperblock](self.data, other.data)
+        else:
+            Storage.__inner_ipow_element__[self.blockspergrid, self.threadsperblock](self.data, other)
+
         return self
+
+    @staticmethod
+    @cuda.jit
+    def __inner_ipow_element__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] = pow(output[pos], other)
+
+    @staticmethod
+    @cuda.jit
+    def __inner_ipow_element_wise__(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] = pow(output[pos], other[pos])
 
     def __bool__(self):
         if len(self) == 1:

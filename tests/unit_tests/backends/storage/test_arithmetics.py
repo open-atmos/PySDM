@@ -89,3 +89,45 @@ class TestArithmetics:  # pylint: disable=too-few-public-methods
 
         # Assert
         np.testing.assert_array_equal(a.to_ndarray(), expected)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "a, b, expected",
+        [
+            ([5], 2, [1]),
+            ([5], [2], [1]),
+        ],
+    )
+    def test_modulo(backend_class, a, b, expected):
+        # Arrange
+        backend = backend_class()
+        a = backend.Storage.from_ndarray(np.asarray(a))
+        if hasattr(b, "__len__"):
+            b = backend.Storage.from_ndarray(np.asarray(b))
+
+        # Act
+        a %= b
+
+        # Assert
+        np.testing.assert_array_equal(a.to_ndarray(), expected)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "a, b, expected",
+        [
+            ([5], 2, [25]),
+            ([4.0], [1.5], [8.0]),
+        ],
+    )
+    def test_pow(backend_class, a, b, expected):
+        # Arrange
+        backend = backend_class()
+        a = backend.Storage.from_ndarray(np.asarray(a))
+        if hasattr(b, "__len__"):
+            b = backend.Storage.from_ndarray(np.asarray(b))
+
+        # Act
+        a **= b
+
+        # Assert
+        np.testing.assert_array_equal(a.to_ndarray(), expected)
