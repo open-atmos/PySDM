@@ -111,7 +111,19 @@ class Storage(StorageBase):
 
     @staticmethod
     def _get_empty_data(shape, dtype):
-        pass
+        if dtype in (float, Storage.FLOAT):
+            data = cuda.device_array(shape, dtype=Storage.FLOAT)
+            dtype = Storage.FLOAT
+        elif dtype in (int, Storage.INT):
+            data = cuda.device_array(shape, dtype=Storage.INT)
+            dtype = Storage.INT
+        elif dtype in (bool, Storage.BOOL):
+            data = cuda.device_array(shape, dtype=Storage.BOOL)
+            dtype = Storage.BOOL
+        else:
+            raise NotImplementedError()
+
+        return StorageSignature(data, shape, dtype)
 
     @staticmethod
     def empty(shape, dtype):
