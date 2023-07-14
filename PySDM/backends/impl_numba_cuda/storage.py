@@ -19,6 +19,12 @@ class Storage(StorageBase):
     INT = np.int64
     BOOL = np.bool_
 
+    def __init__(self, signature):
+        super().__init__(signature)
+
+        self.threadsperblock = (128,)
+        self.blockspergrid = (math.ceil(self.shape[0] / self.threadsperblock[0]),)
+
     def __getitem__(self, item):
         pass
 
@@ -31,9 +37,22 @@ class Storage(StorageBase):
 
     def __iadd__(self, other):
         if hasattr(other, "data"):
-            threadsperblock = (32,)
-            blockspergrid = (math.ceil(other.shape[0] / threadsperblock[0]),)
-            Storage.__inner_iadd_element_wise[threadsperblock, blockspergrid](self.data, other.data)
+            Storage.__inner_iadd_element_wise[self.threadsperblock, self.blockspergrid](self.data, other.data)
+        else:
+            Storage.__inner_iadd_element[self.threadsperblock, self.blockspergrid](self.data, other)
+
+        return self
+
+    @staticmethod
+    @cuda.jit
+    def __inner_iadd_element(output, other):
+        tx = cuda.threadIdx.x
+        bw = cuda.blockDim.x
+        bi = cuda.blockIdx.x
+        pos = tx + bw * bi
+
+        if pos < len(output):  # Check array boundaries
+            output[pos] += other
 
     @staticmethod
     @cuda.jit
@@ -43,7 +62,7 @@ class Storage(StorageBase):
         bi = cuda.blockIdx.x
         pos = tx + bw * bi
 
-        if pos < len(other):  # Check array boundaries
+        if pos < len(output):  # Check array boundaries
             output[pos] += other[pos]
 
     def __isub__(self, other):
