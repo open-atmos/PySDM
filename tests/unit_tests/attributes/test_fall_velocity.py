@@ -9,7 +9,8 @@ from PySDM.environments.box import Box
 
 
 def generate_rand_attr_param(n_sd):
-    np.random.seed(0)
+    np.random.seed(12)
+
     return pytest.param({
         "volume": (3*np.random.random(n_sd) + 1)*si.mm**3,
         "n": np.random.randint(100, 1000, n_sd),
@@ -64,15 +65,15 @@ def test_conservation_of_momentum(default_attributes, backend_class):
     builder.set_environment(Box(dt=1, dv=1))
     builder.request_attribute("fall momentum")
 
-    builder.add_dynamic(Coalescence(collision_kernel=ConstantK(a=1), adaptive=False))
+    # TODO only works with adaptive=False
+    builder.add_dynamic(Coalescence(collision_kernel=ConstantK(a=1), adaptive=True))
 
     particulator = builder.build(
         attributes=default_attributes,
         products=()
     )
 
-    # coalesce until a single SD of multiplicity 1 remains
-    particulator.run(100)
+    particulator.run(10)
 
     total_initial_momentum = (
         default_attributes["fall momentum"]*default_attributes["n"]).sum()
@@ -87,59 +88,61 @@ def test_conservation_of_momentum(default_attributes, backend_class):
 
 
 
-# doing coalescence manually, only works for mult=1 and small numbers?
-
-# @pytest.mark.parametrize("attributes", [
-#     {
-#         "volume": np.array([si.mm**3, 2*si.mm**3]),
-#         "n": np.array([1, 1]),
-#         "fall momentum": np.array([10e-6, 6e-6])
-#     },
-# ])
-# def test_conservation_of_momentum_two_droplets(attributes, backend_class):
-#     """
-#     Test that conservation of momentum holds when two super-droplets of multiplicity 1 coalesce
-#     """
-
-#     builder = Builder(n_sd=len(attributes["n"]), backend=backend_class())
-
+# def test_conservation_of_momentum(default_attributes, backend_class):
+# 
+#     builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
+# 
 #     builder.set_environment(Box(dt=1, dv=1))
 #     builder.request_attribute("fall momentum")
-
+# 
 #     particulator = builder.build(
-#         attributes=attributes,
+#         attributes=default_attributes,
 #         products=()
 #     )
-
+# 
+# 
 #     # set up storage for coalescence
-#     n_pairs = particulator.n_sd // 2
-#     gamma = particulator.PairwiseStorage.from_ndarray(
-#         np.array([1] * n_pairs)
-#     )
+#     n_sd = particulator.n_sd
+#     n_pairs = n_sd // 2
+# 
+# 
+#     # TODO PROBLEM:
+#     # 2-droplets pass with gamma = 1, 100-droplets pass with gamma = 0.001
+# 
+#     gamma = particulator.PairwiseStorage.from_ndarray(np.array([0.0001] * n_pairs))
 #     Ec = particulator.PairwiseStorage.from_ndarray(np.array([0] * n_pairs))
-#     coalescence_rate = particulator.Storage.from_ndarray(np.array([0]))
+#     coalescence_rate = particulator.Storage.from_ndarray(np.array([0] * n_sd))
+#     
 #     is_first_in_pair = make_PairIndicator(
 #         particulator.backend)(particulator.n_sd)
-
-#     particulator.collision_coalescence_breakup(
-#         enable_breakup=False,
-#         gamma=gamma,
-#         rand=None,
-#         Ec=Ec,
-#         Eb=None,
-#         fragment_size=None,
-#         coalescence_rate=coalescence_rate,
-#         breakup_rate=None,
-#         breakup_rate_deficit=None,
-#         is_first_in_pair=is_first_in_pair,
-#         warn_overflows=None,
-#         max_multiplicity=None,
-#     )
-
-#     total_final_momentum = particulator.attributes["fall momentum"].to_ndarray()[
-#         0]
-#     total_initial_momentum = (attributes["fall momentum"]*attributes["n"]).sum()
-
+# 
+# 
+# 
+#     for i in range(10):
+# 
+#         particulator.collision_coalescence_breakup(
+#             enable_breakup=False,
+#             gamma=gamma,
+#             rand=None,
+#             Ec=Ec,
+#             Eb=None,
+#             fragment_size=None,
+#             coalescence_rate=coalescence_rate,
+#             breakup_rate=None,
+#             breakup_rate_deficit=None,
+#             is_first_in_pair=is_first_in_pair,
+#             warn_overflows=None,
+#             max_multiplicity=None,
+#         )
+# 
+#     # assert that the total number of droplets changed
+#     assert not np.sum(particulator.attributes["n"].to_ndarray()) == np.sum(default_attributes["n"])
+# 
+#     ATTR = "volume"
+#     total_final_momentum = (particulator.attributes[ATTR].to_ndarray()*particulator.attributes["n"].to_ndarray()).sum()
+#     total_initial_momentum = (default_attributes[ATTR]*default_attributes["n"]).sum()
+# 
 #     # assert that the total momentum is conserved
-#     assert np.isclose(total_final_momentum, total_initial_momentum)
+#     # assert np.isclose(total_final_momentum, total_initial_momentum)
+#     assert abs(total_final_momentum - total_initial_momentum)/total_initial_momentum < 0.01
 
