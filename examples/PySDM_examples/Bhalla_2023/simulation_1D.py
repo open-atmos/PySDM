@@ -1,22 +1,22 @@
 from collections import namedtuple
-from IPython.display import display, HTML
-from PySDM.products.collision import CollisionRatePerGridbox
-from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumColors
-from PySDM_examples.Shipway_and_Hill_2012.plot import plot
-from PySDM_examples.Shipway_and_Hill_2012.simulation import Simulation as Simulation_Shipway
-from matplotlib import animation
-
-import numpy as np
-import matplotlib.pyplot as plt
 from typing import Optional, Union
 
-from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
+import matplotlib.pyplot as plt
+import numpy as np
+from IPython.display import HTML, display
+from matplotlib import animation
 from open_atmos_jupyter_utils import show_plot
-from PySDM import Builder
-from PySDM.dynamics.relaxed_velocity import RelaxedVelocity
-from PySDM.initialisation import init_fall_momenta
+from PySDM_examples.Bhalla_2023.logging_observers import Progress
+from PySDM_examples.Bhalla_2023.settings_1D import Settings
+from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumColors
+from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
+from PySDM_examples.Shipway_and_Hill_2012.plot import plot
+from PySDM_examples.Shipway_and_Hill_2012.simulation import (
+    Simulation as Simulation_Shipway,
+)
 
 import PySDM.products as PySDM_products
+from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics import (
     AmbientThermodynamics,
@@ -25,16 +25,14 @@ from PySDM.dynamics import (
     Displacement,
     EulerianAdvection,
 )
-
 from PySDM.dynamics.collisions.collision_kernels import Geometric
+from PySDM.dynamics.relaxed_velocity import RelaxedVelocity
 from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
+from PySDM.initialisation import init_fall_momenta
 from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
-
-from PySDM_examples.Bhalla_2023.logging_observers import Progress
-from PySDM_examples.Bhalla_2023.settings_1D import Settings
-
 from PySDM.physics import si
+from PySDM.products.collision import CollisionRatePerGridbox
 
 
 class Simulation(Simulation_Shipway):
@@ -79,12 +77,9 @@ class Simulation(Simulation_Shipway):
             nz=settings.nz,
             dt=settings.dt,
             mpdata_settings=settings.mpdata_settings,
-            advector_of_t=lambda t: settings.rho_times_w(
-                t) * settings.dt / settings.dz,
-            advectee_of_zZ_at_t0=lambda zZ: settings.qv(
-                zZ_to_z_above_reservoir(zZ)),
-            g_factor_of_zZ=lambda zZ: settings.rhod(
-                zZ_to_z_above_reservoir(zZ)),
+            advector_of_t=lambda t: settings.rho_times_w(t) * settings.dt / settings.dz,
+            advectee_of_zZ_at_t0=lambda zZ: settings.qv(zZ_to_z_above_reservoir(zZ)),
+            g_factor_of_zZ=lambda zZ: settings.rhod(zZ_to_z_above_reservoir(zZ)),
         )
 
         _extra_nz = settings.particle_reservoir_depth // settings.dz
@@ -114,7 +109,7 @@ class Simulation(Simulation_Shipway):
             precipitation_counting_level_index=int(
                 settings.particle_reservoir_depth / settings.dz
             ),
-            relax_velocity=settings.evaluate_relaxed_velocity
+            relax_velocity=settings.evaluate_relaxed_velocity,
         )
         self.builder.add_dynamic(displacement)
         self.attributes = self.env.init_attributes(
@@ -130,7 +125,8 @@ class Simulation(Simulation_Shipway):
             self.builder.add_dynamic(relaxed_velocity)
 
             self.attributes["fall momentum"] = init_fall_momenta(
-                self.attributes["volume"], self.builder.formulae.constants.rho_w)
+                self.attributes["volume"], self.builder.formulae.constants.rho_w
+            )
 
             self.builder.request_attribute("fall velocity")
 
@@ -177,7 +173,7 @@ class Simulation(Simulation_Shipway):
             #     name="rain averaged terminal velocity",
             #     radius_range=settings.rain_water_radius_range,
             # ),
-            PySDM_products.WallTime()
+            PySDM_products.WallTime(),
         ]
         if settings.precip:
             # self.products.append(
@@ -197,8 +193,11 @@ class Simulation(Simulation_Shipway):
             # )
             pass
 
-        self.products.append(PySDM_products.NumberSizeSpectrum(
-            self.settings.r_bins_edges, name="number concentration"))
+        self.products.append(
+            PySDM_products.NumberSizeSpectrum(
+                self.settings.r_bins_edges, name="number concentration"
+            )
+        )
 
         self.products.append(
             PySDM_products.RadiusBinnedNumberAveragedTerminalVelocity(
@@ -213,9 +212,11 @@ class Simulation(Simulation_Shipway):
         )
 
         if self.settings.evaluate_relaxed_velocity:
-            self.products.append(PySDM_products.RadiusBinnedNumberAveragedFallVelocity(
-                self.settings.r_bins_edges, name="fall_vel"
-            ))
+            self.products.append(
+                PySDM_products.RadiusBinnedNumberAveragedFallVelocity(
+                    self.settings.r_bins_edges, name="fall_vel"
+                )
+            )
 
         self.particulator = self.builder.build(
             attributes=self.attributes, products=self.products
@@ -227,7 +228,7 @@ class Simulation(Simulation_Shipway):
             "cell origin": [],
             "position in cell": [],
             "radius": [],
-            "n": []
+            "n": [],
         }
 
         self.output_attributes["terminal velocity"] = []
@@ -237,13 +238,11 @@ class Simulation(Simulation_Shipway):
         self.output_products = {}
         for k, v in self.particulator.products.items():
             if len(v.shape) == 1:
-                self.output_products[k] = np.zeros(
-                    (self.mesh.grid[-1], self.nt + 1))
+                self.output_products[k] = np.zeros((self.mesh.grid[-1], self.nt + 1))
             elif len(v.shape) == 2:
                 number_of_time_sections = len(self.save_spec_and_attr_times)
                 self.output_products[k] = np.zeros(
-                    (self.mesh.grid[-1], self.number_of_bins,
-                     number_of_time_sections)
+                    (self.mesh.grid[-1], self.number_of_bins, number_of_time_sections)
                 )
 
     @staticmethod
@@ -251,7 +250,9 @@ class Simulation(Simulation_Shipway):
         builder.add_dynamic(
             Coalescence(
                 collision_kernel=Geometric(
-                    collection_efficiency=1, relax_velocity=settings.evaluate_relaxed_velocity),
+                    collection_efficiency=1,
+                    relax_velocity=settings.evaluate_relaxed_velocity,
+                ),
                 adaptive=settings.coalescence_adaptive,
             )
         )
@@ -304,7 +305,7 @@ class Simulation(Simulation_Shipway):
 
         return output_results
 
-    def get_plt_name(self, plot_var: str)->str:
+    def get_plt_name(self, plot_var: str) -> str:
         res = f"1D {plot_var} relax_vel={self.settings.evaluate_relaxed_velocity}"
         if self.settings.evaluate_relaxed_velocity:
             res += f" tau={self.settings.tau}s"
@@ -319,65 +320,95 @@ class Simulation(Simulation_Shipway):
         prod = self.output_products[product_name][:, :, index]
         if product_name == "terminal_vel" or product_name == "fall_vel":
             num = self.output_products["number concentration"][:, :, index]
-            weighted_sum = np.sum(prod*num, axis=0)
+            weighted_sum = np.sum(prod * num, axis=0)
             total_num = np.sum(num, axis=0)
-            return np.divide(weighted_sum, total_num, out=np.zeros_like(weighted_sum), where=total_num!=0)
+            return np.divide(
+                weighted_sum,
+                total_num,
+                out=np.zeros_like(weighted_sum),
+                where=total_num != 0,
+            )
         elif product_name == "dv/dlnr":
             return np.sum(prod, axis=0)
         else:
             raise ValueError("no total spectrum behavior specified")
 
-
-    def _plot_vs_lnr_single(self, index: int, product_name: str, y_scale: float, colors: SpectrumColors, set_to=None):
+    def _plot_vs_lnr_single(
+        self,
+        index: int,
+        product_name: str,
+        y_scale: float,
+        colors: SpectrumColors,
+        set_to=None,
+    ):
         X = np.linspace(1, 100, 50)
-        Y = X*0.05
+        Y = X * 0.05
         if set_to is not None:
-            set_to.set_data(self.settings.r_bins_edges[:-
-                                                       1] * si.metres / si.micrometres,
-                            self.get_total_spectrum(product_name, index) * y_scale)
+            set_to.set_data(
+                self.settings.r_bins_edges[:-1] * si.metres / si.micrometres,
+                self.get_total_spectrum(product_name, index) * y_scale,
+            )
             set_to.set_label(f"t = {self.settings.save_spec_and_attr_times[index]}s")
-            set_to.set_color(colors(
-                self.settings.save_spec_and_attr_times[index] /
-                (self.settings.t_max)
-            ))
+            set_to.set_color(
+                colors(
+                    self.settings.save_spec_and_attr_times[index]
+                    / (self.settings.t_max)
+                )
+            )
             return set_to
 
         else:
             return plt.step(
-                self.settings.r_bins_edges[:-
-                                           1] * si.metres / si.micrometres,
+                self.settings.r_bins_edges[:-1] * si.metres / si.micrometres,
                 self.get_total_spectrum(product_name, index) * y_scale,
                 where="post",
                 label=f"t = {self.settings.save_spec_and_attr_times[index]}s",
                 color=colors(
-                    self.settings.save_spec_and_attr_times[index] /
-                    (self.settings.t_max)
+                    self.settings.save_spec_and_attr_times[index]
+                    / (self.settings.t_max)
                 ),
             )
 
-    def plot_vs_lnr_animation(self, product_name: str, y_scale: float = 1, y_label: Optional[str] = None, num_fixed: int = 4, show=True):
+    def plot_vs_lnr_animation(
+        self,
+        product_name: str,
+        y_scale: float = 1,
+        y_label: Optional[str] = None,
+        num_fixed: int = 4,
+        show=True,
+    ):
         assert self.done
 
         plt_colors = SpectrumColors()
 
         fig = plt.figure()
-        graph, = self._plot_vs_lnr_single(0, product_name, y_scale, plt_colors)
+        (graph,) = self._plot_vs_lnr_single(0, product_name, y_scale, plt_colors)
 
         stamp_steps = np.linspace(
-            0, len(self.settings.save_spec_and_attr_times)-1, num_fixed)
+            0, len(self.settings.save_spec_and_attr_times) - 1, num_fixed
+        )
         for i in stamp_steps:
-            new_graph, = self._plot_vs_lnr_single(
-                int(i), product_name, y_scale, plt_colors)
+            (new_graph,) = self._plot_vs_lnr_single(
+                int(i), product_name, y_scale, plt_colors
+            )
             new_graph.set_alpha(0.5)
 
         def animate(i):
-            update_list = [self._plot_vs_lnr_single(
-                i, product_name, y_scale, plt_colors, set_to=graph), plt.legend()]
+            update_list = [
+                self._plot_vs_lnr_single(
+                    i, product_name, y_scale, plt_colors, set_to=graph
+                ),
+                plt.legend(),
+            ]
 
             return update_list
 
-        anim = animation.FuncAnimation(fig, animate,
-                                       frames=len(self.settings.save_spec_and_attr_times), interval=50)
+        anim = animation.FuncAnimation(
+            fig,
+            animate,
+            frames=len(self.settings.save_spec_and_attr_times),
+            interval=50,
+        )
 
         plt_name = self.get_plt_name(product_name.replace("/", "_"))
 
@@ -403,20 +434,31 @@ class Simulation(Simulation_Shipway):
                 plt.show()
 
 
-def generate_plots(evaluate_relaxed_velocity=True, tau=100*si.seconds):
-    settings = Settings(times_to_save=np.array(
-        [0, 1000, 2000, 3000]), evaluate_relaxed_velocity=evaluate_relaxed_velocity, tau=tau)
+def generate_plots(evaluate_relaxed_velocity=True, tau=100 * si.seconds):
+    settings = Settings(
+        times_to_save=np.array([0, 1000, 2000, 3000]),
+        evaluate_relaxed_velocity=evaluate_relaxed_velocity,
+        tau=tau,
+    )
     simulation = Simulation(settings)
     results = simulation.run()
     products = results.products
-    plot(var="qc", qlabel="$q_c$ [g/kg]", fname=simulation.get_plt_name("q_c")+".pdf",
-         output=products)
-    plot(var='qr', qlabel='$q_r$ [g/kg]', fname=simulation.get_plt_name("q_r")+".pdf",
-             output=products)
+    plot(
+        var="qc",
+        qlabel="$q_c$ [g/kg]",
+        fname=simulation.get_plt_name("q_c") + ".pdf",
+        output=products,
+    )
+    plot(
+        var="qr",
+        qlabel="$q_r$ [g/kg]",
+        fname=simulation.get_plt_name("q_r") + ".pdf",
+        output=products,
+    )
 
 
 if __name__ == "__main__":
     generate_plots(evaluate_relaxed_velocity=False)
-    generate_plots(evaluate_relaxed_velocity=True, tau=1*si.seconds)
-    generate_plots(evaluate_relaxed_velocity=True, tau=10*si.seconds)
-    generate_plots(evaluate_relaxed_velocity=True, tau=100*si.seconds)
+    generate_plots(evaluate_relaxed_velocity=True, tau=1 * si.seconds)
+    generate_plots(evaluate_relaxed_velocity=True, tau=10 * si.seconds)
+    generate_plots(evaluate_relaxed_velocity=True, tau=100 * si.seconds)

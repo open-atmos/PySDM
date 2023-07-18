@@ -1,14 +1,22 @@
-from typing import Union, Optional
+from typing import Optional, Union
+
+import numpy as np
 from PySDM_examples.Shima_et_al_2009.settings import Settings as Settings_Shima
 
-from PySDM.dynamics.collisions.collision_kernels import Golovin, Geometric
-
+from PySDM.dynamics.collisions.collision_kernels import Geometric, Golovin
 from PySDM.physics import si
-import numpy as np
 
 
 class Settings(Settings_Shima):
-    def __init__(self, n_sd: Union[int, None] = None, max_t: Optional[int] = None, n_part: Optional[float] = None, evaluate_relaxed_velocity=True, tau=1*si.second, dt=1*si.second):
+    def __init__(
+        self,
+        n_sd: Union[int, None] = None,
+        max_t: Optional[int] = None,
+        n_part: Optional[float] = None,
+        evaluate_relaxed_velocity=True,
+        tau=1 * si.second,
+        dt=1 * si.second,
+    ):
         super().__init__()
 
         self.n_sd = n_sd or 2**13
@@ -17,7 +25,9 @@ class Settings(Settings_Shima):
         self.X0 = self.formulae.trivia.volume(radius=30.531 * si.micrometres)
 
         # self.kernel: Union[Golovin, Geometric] = Golovin(b=1.5e3 / si.second)
-        self.kernel: Union[Golovin, Geometric] = Geometric(relax_velocity=evaluate_relaxed_velocity)
+        self.kernel: Union[Golovin, Geometric] = Geometric(
+            relax_velocity=evaluate_relaxed_velocity
+        )
 
         self.radius_bins_edges = np.logspace(
             np.log10(10 * si.um), np.log10(5e4 * si.um), num=128, endpoint=True

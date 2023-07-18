@@ -1,16 +1,30 @@
-import pytest
 import numpy as np
+import pytest
+
 from PySDM.builder import Builder
 from PySDM.dynamics import RelaxedVelocity
-from PySDM.physics import si
 from PySDM.environments.box import Box
+from PySDM.physics import si
 
-@pytest.fixture(params=(
-    pytest.param({
-            "n": np.array([1, 2, 3, 4]),
-            "volume": np.array([1*si.mm**3, 0.1*si.mm**3, 1*si.mm**3, 0.05*si.mm**3])
-        }, id=""),
-))
+
+@pytest.fixture(
+    params=(
+        pytest.param(
+            {
+                "n": np.array([1, 2, 3, 4]),
+                "volume": np.array(
+                    [
+                        1 * si.mm**3,
+                        0.1 * si.mm**3,
+                        1 * si.mm**3,
+                        0.05 * si.mm**3,
+                    ]
+                ),
+            },
+            id="",
+        ),
+    )
+)
 def default_attributes(request):
     return request.param
 
@@ -21,7 +35,7 @@ def test_small_timescale(default_attributes, backend_class):
     the velocity should quickly approach the terminal velocity
     """
 
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class()) 
+    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -32,14 +46,15 @@ def test_small_timescale(default_attributes, backend_class):
 
     default_attributes["fall momentum"] = np.zeros_like(default_attributes["n"])
 
-    particulator = builder.build(
-        attributes= default_attributes,
-        products=()
-    )
+    particulator = builder.build(attributes=default_attributes, products=())
 
     particulator.run(1)
 
-    assert np.allclose(particulator.attributes["fall velocity"].to_ndarray(), particulator.attributes["terminal velocity"].to_ndarray())
+    assert np.allclose(
+        particulator.attributes["fall velocity"].to_ndarray(),
+        particulator.attributes["terminal velocity"].to_ndarray(),
+    )
+
 
 def test_large_timescale(default_attributes, backend_class):
     """
@@ -47,7 +62,7 @@ def test_large_timescale(default_attributes, backend_class):
     the velocity should remain 0
     """
 
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class()) 
+    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -58,14 +73,14 @@ def test_large_timescale(default_attributes, backend_class):
 
     default_attributes["fall momentum"] = np.zeros_like(default_attributes["n"])
 
-    particulator = builder.build(
-        attributes= default_attributes,
-        products=()
-    )
+    particulator = builder.build(attributes=default_attributes, products=())
 
     particulator.run(100)
 
-    assert np.allclose(particulator.attributes["fall velocity"].to_ndarray(), np.zeros_like(default_attributes["n"]))
+    assert np.allclose(
+        particulator.attributes["fall velocity"].to_ndarray(),
+        np.zeros_like(default_attributes["n"]),
+    )
 
 
 def test_behavior(default_attributes, backend_class):
@@ -73,7 +88,7 @@ def test_behavior(default_attributes, backend_class):
     The fall velocity should approach the terminal velocity exponentially
     """
 
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class()) 
+    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -84,21 +99,25 @@ def test_behavior(default_attributes, backend_class):
 
     default_attributes["fall momentum"] = np.zeros_like(default_attributes["n"])
 
-    particulator = builder.build(
-        attributes= default_attributes,
-        products=()
+    particulator = builder.build(attributes=default_attributes, products=())
+
+    particulator.run(1)
+    delta_v1 = (
+        particulator.attributes["terminal velocity"].to_ndarray()
+        - particulator.attributes["fall velocity"].to_ndarray()
     )
 
     particulator.run(1)
-    delta_v1 = particulator.attributes["terminal velocity"].to_ndarray() - particulator.attributes["fall velocity"].to_ndarray() 
+    delta_v2 = (
+        particulator.attributes["terminal velocity"].to_ndarray()
+        - particulator.attributes["fall velocity"].to_ndarray()
+    )
 
     particulator.run(1)
-    delta_v2 = particulator.attributes["terminal velocity"].to_ndarray() - particulator.attributes["fall velocity"].to_ndarray() 
-
-    particulator.run(1)
-    delta_v3 = particulator.attributes["terminal velocity"].to_ndarray() - particulator.attributes["fall velocity"].to_ndarray() 
+    delta_v3 = (
+        particulator.attributes["terminal velocity"].to_ndarray()
+        - particulator.attributes["fall velocity"].to_ndarray()
+    )
 
     # for an exponential decay, the ratio should be constant using constant timesteps
-    assert np.allclose(delta_v1/delta_v2, delta_v2/delta_v3)
-
-
+    assert np.allclose(delta_v1 / delta_v2, delta_v2 / delta_v3)

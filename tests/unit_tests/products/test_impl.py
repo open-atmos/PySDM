@@ -23,8 +23,8 @@ from PySDM.products import (
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
     ParticleVolumeVersusRadiusLogarithmSpectrum,
-    RadiusBinnedNumberAveragedTerminalVelocity,
     RadiusBinnedNumberAveragedFallVelocity,
+    RadiusBinnedNumberAveragedTerminalVelocity,
     TotalDryMassMixingRatio,
 )
 from PySDM.products.impl.product import Product

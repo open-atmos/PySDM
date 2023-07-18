@@ -1,16 +1,18 @@
 """
-Plot Interpolation (Gunn/Kinzer) and Rogers/Yau approximations of 
+Plot Interpolation (Gunn/Kinzer) and Rogers/Yau approximations of
 terminal velocity as a function of droplet radius.
 """
 
 from typing import Type, Union
-import numpy as np
+
 import matplotlib.pyplot as plt
-from PySDM.physics import si
+import numpy as np
+
 from PySDM.backends import CPU
 from PySDM.dynamics.terminal_velocity import Interpolation, RogersYau
 from PySDM.formulae import Formulae
 from PySDM.particulator import Particulator
+from PySDM.physics import si
 
 # radius values of 10**BOUND m
 LOG_LOWER_BOUND = -8
@@ -18,9 +20,14 @@ LOG_UPPER_BOUND = -2.5
 
 N = 1000
 
-def get_approx(radii_arr, particulator=None, approx: Union[Type[RogersYau], Type[Interpolation]]=RogersYau):
+
+def get_approx(
+    radii_arr,
+    particulator=None,
+    approx: Union[Type[RogersYau], Type[Interpolation]] = RogersYau,
+):
     """
-    Get Rogers Yau approximation of terminal velocity as a function of 
+    Get Rogers Yau approximation of terminal velocity as a function of
     droplet radius.
     """
     if particulator is None:
@@ -39,14 +46,27 @@ if __name__ == "__main__":
 
     radii_arr = np.logspace(LOG_LOWER_BOUND, LOG_UPPER_BOUND, N)
 
-    interpolation_arr = get_approx(radii_arr, particulator=particulator, approx=Interpolation)
+    interpolation_arr = get_approx(
+        radii_arr, particulator=particulator, approx=Interpolation
+    )
     rogers_yau_arr = get_approx(radii_arr, particulator=particulator, approx=RogersYau)
 
-
-    plt.plot(radii_arr*si.metres/si.micrometres, rogers_yau_arr,
-             "r-", label="Rogers Yau", alpha=0.5, linewidth=3)
-    plt.plot(radii_arr*si.metres/si.micrometres, interpolation_arr,
-             "b-", label="Interpolation", alpha=0.5, linewidth=3)
+    plt.plot(
+        radii_arr * si.metres / si.micrometres,
+        rogers_yau_arr,
+        "r-",
+        label="Rogers Yau",
+        alpha=0.5,
+        linewidth=3,
+    )
+    plt.plot(
+        radii_arr * si.metres / si.micrometres,
+        interpolation_arr,
+        "b-",
+        label="Interpolation",
+        alpha=0.5,
+        linewidth=3,
+    )
 
     plt.xscale("log")
     plt.xlabel("Radius ($\\mu$m)")
