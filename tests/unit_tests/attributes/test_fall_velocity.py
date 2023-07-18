@@ -53,8 +53,7 @@ def test_fall_velocity_calculation(default_attributes, backend_class):
         particulator.attributes["fall velocity"].to_ndarray(),
         particulator.attributes["fall momentum"].to_ndarray() /
         (particulator.formulae.constants.rho_w *
-         particulator.attributes["volume"].to_ndarray())
-    )
+         particulator.attributes["volume"].to_ndarray()))
 
 
 def test_conservation_of_momentum(default_attributes, backend_class):
