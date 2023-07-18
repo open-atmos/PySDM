@@ -1,11 +1,17 @@
 import numpy as np
+
 from PySDM.backends import CPU
 from PySDM.dynamics.terminal_velocity import Interpolation, RogersYau
 from PySDM.formulae import Formulae
 from PySDM.particulator import Particulator
 
 
-def init_fall_momenta(volume: np.ndarray, rho_w: float, zero: bool = False, terminal_velocity_approx = RogersYau):
+def init_fall_momenta(
+    volume: np.ndarray,
+    rho_w: float,
+    zero: bool = False,
+    terminal_velocity_approx=RogersYau,
+):
     """
     Calculate default values of the FallMomentum attribute
     (needed when using FallVelocity attribute)
@@ -31,4 +37,4 @@ def init_fall_momenta(volume: np.ndarray, rho_w: float, zero: bool = False, term
 
     approximation(output=output, radius=radii)
 
-    return output.to_ndarray() * volume * rho_w 
+    return output.to_ndarray() * volume * rho_w

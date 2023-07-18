@@ -20,7 +20,7 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         precipitation_counting_level_index: int = 0,
         adaptive=DEFAULTS.adaptive,
         rtol=DEFAULTS.rtol,
-        relax_velocity=False
+        relax_velocity=False,
     ):
         self.particulator = None
         self.enable_sedimentation = enable_sedimentation

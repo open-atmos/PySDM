@@ -1,10 +1,12 @@
-import numpy as np
 from logging import warning
+
+import numpy as np
+
 from PySDM.particulator import Particulator
 
 
 class Observer:
-    def notify(self)->None:
+    def notify(self) -> None:
         raise NotImplementedError
 
 
@@ -37,12 +39,11 @@ class WarnVelocityDiff(Logger):
     def notify(self) -> None:
         fall_vel = self.particulator.attributes["fall velocity"].to_ndarray()
 
-        terminal_vel = self.particulator.attributes["terminal velocity"].to_ndarray(
-        )
+        terminal_vel = self.particulator.attributes["terminal velocity"].to_ndarray()
 
-        rms_error = np.sqrt(np.mean((fall_vel - terminal_vel)**2))
+        rms_error = np.sqrt(np.mean((fall_vel - terminal_vel) ** 2))
 
         if rms_error > self.threshold:
-            warning(f"The difference in fall velocity and terminal velocity is too high ({rms_error:.1e} > {self.threshold:.1e})")
-
-
+            warning(
+                f"The difference in fall velocity and terminal velocity is too high ({rms_error:.1e} > {self.threshold:.1e})"
+            )
