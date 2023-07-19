@@ -1,6 +1,3 @@
-"""
-TODO: Add explaination here
-"""
 from collections import namedtuple
 
 import numpy as np
@@ -8,8 +5,6 @@ import numpy as np
 from PySDM.attributes.impl.attribute import Attribute
 from PySDM.particulator import Particulator
 from PySDM.physics import si
-
-DEFAULTS = namedtuple("_", ("rtol", "adaptive"))(rtol=1e-2, adaptive=True)
 
 
 class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
@@ -37,7 +32,7 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         self.tmp_data.product(self.terminal_vel_attr.get(), self.volume_attr.get())
         self.tmp_data *= self.rho_w
         self.tmp_data -= self.fall_momentum_attr.get()
-        self.tmp_data *= 1 - np.exp(-self.particulator.dt / self.tau)
+        self.tmp_data *= float(1 - np.exp(-self.particulator.dt / self.tau))
 
         self.fall_momentum_attr.data += self.tmp_data
 
