@@ -28,7 +28,7 @@ class Simulation(BasicSimulation):
         builder.set_environment(env)
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
-        for attribute in ('critical supersaturation','equilibrium supersaturation'):
+        for attribute in ('critical supersaturation','equilibrium supersaturation', 'critical volume'):
             builder.request_attribute(attribute)
 
         volume = env.mass_of_dry_air / settings.initial_air_density
@@ -62,7 +62,8 @@ class Simulation(BasicSimulation):
             "volume": tuple([] for _ in range(self.particulator.n_sd)),
             "dry volume": tuple([] for _ in range(self.particulator.n_sd)),
             "critical supersaturation": tuple([] for _ in range(self.particulator.n_sd)),
-            "equilibrium supersaturation": tuple([] for _ in range(self.particulator.n_sd))
+            "equilibrium supersaturation": tuple([] for _ in range(self.particulator.n_sd)),
+            "critical volume": tuple([] for _ in range(self.particulator.n_sd)),
         }
         self.settings = settings
 
