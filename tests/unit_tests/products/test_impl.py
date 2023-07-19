@@ -23,7 +23,6 @@ from PySDM.products import (
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
     ParticleVolumeVersusRadiusLogarithmSpectrum,
-    RadiusBinnedNumberAveragedFallVelocity,
     RadiusBinnedNumberAveragedTerminalVelocity,
     TotalDryMassMixingRatio,
 )
@@ -41,7 +40,6 @@ _ARGUMENTS = {
     ParticleSizeSpectrumPerVolume: {"radius_bins_edges": (0, np.inf)},
     ParticleVolumeVersusRadiusLogarithmSpectrum: {"radius_bins_edges": (0, np.inf)},
     RadiusBinnedNumberAveragedTerminalVelocity: {"radius_bin_edges": (0, np.inf)},
-    RadiusBinnedNumberAveragedFallVelocity: {"radius_bin_edges": (0, np.inf)},
     FlowVelocityComponent: {"component": 0},
     FrozenParticleConcentration: {"count_unactivated": True, "count_activated": True},
     FrozenParticleSpecificConcentration: {

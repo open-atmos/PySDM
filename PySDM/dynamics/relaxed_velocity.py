@@ -1,10 +1,7 @@
-from collections import namedtuple
-
 import numpy as np
 
 from PySDM.attributes.impl.attribute import Attribute
 from PySDM.particulator import Particulator
-from PySDM.physics import si
 
 
 class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
