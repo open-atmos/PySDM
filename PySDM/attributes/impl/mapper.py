@@ -26,6 +26,7 @@ from PySDM.attributes.physics import (
     WetToCriticalVolumeRatio,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
+from PySDM.attributes.physics.equilibrium_supersaturation import EquilibriumSupersaturation
 from PySDM.attributes.physics.dry_volume import (
     DryVolume,
     DryVolumeDynamic,
@@ -93,6 +94,7 @@ attributes = {
     "freezing temperature": lambda _, __: FreezingTemperature,
     "immersed surface area": lambda _, __: ImmersedSurfaceArea,
     "critical supersaturation": lambda _, __: CriticalSupersaturation,
+    "equilibrium supersaturation": lambda _, __: EquilibriumSupersaturation,
     "wet to critical volume ratio": lambda _, __: WetToCriticalVolumeRatio,
 }
 
