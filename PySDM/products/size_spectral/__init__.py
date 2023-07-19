@@ -16,9 +16,6 @@ from .particle_size_spectrum import (
 from .particle_volume_versus_radius_logarithm_spectrum import (
     ParticleVolumeVersusRadiusLogarithmSpectrum,
 )
-from .radius_binned_number_averaged_fall_velocity import (
-    RadiusBinnedNumberAveragedFallVelocity,
-)
 from .radius_binned_number_averaged_terminal_velocity import (
     RadiusBinnedNumberAveragedTerminalVelocity,
 )
