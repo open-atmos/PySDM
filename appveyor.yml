@@ -30,7 +30,7 @@ install:
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
   
   - ps: |
-      iex "$env:PYTHON -m pip install -e .[tests]"
+      iex "$env:PYTHON -m pip install --prefer-binary -e .[tests]"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
 test_script:
