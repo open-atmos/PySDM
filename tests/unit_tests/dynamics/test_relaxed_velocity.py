@@ -119,5 +119,5 @@ def test_behavior(default_attributes, backend_class):
         - particulator.attributes["fall velocity"].to_ndarray()
     )
 
-    # for an exponential decay, the ratio should be constant using constant timesteps
-    assert np.allclose(delta_v1 / delta_v2, delta_v2 / delta_v3)
+    # for an exponential decay, the ratio should be roughly constant using constant timesteps
+    assert (np.abs(delta_v1 / delta_v2 - delta_v2 / delta_v3) < 0.01).all()

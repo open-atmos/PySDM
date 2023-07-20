@@ -10,7 +10,7 @@ def init_fall_momenta(
     volume: np.ndarray,
     rho_w: float,
     zero: bool = False,
-    terminal_velocity_approx=RogersYau,
+    terminal_velocity_approx=Interpolation,
 ):
     """
     Calculate default values of the FallMomentum attribute
