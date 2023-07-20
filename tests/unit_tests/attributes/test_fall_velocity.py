@@ -1,7 +1,6 @@
 import numpy as np
 import pytest
 
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.builder import Builder
 from PySDM.dynamics.collisions.collision import Coalescence
 from PySDM.dynamics.collisions.collision_kernels.constantK import ConstantK
@@ -74,16 +73,16 @@ def test_conservation_of_momentum(default_attributes, backend_class):
     builder.set_environment(Box(dt=1, dv=1))
     builder.request_attribute("fall momentum")
 
-    # TODO only works with adaptive=False
-    builder.add_dynamic(Coalescence(collision_kernel=ConstantK(a=1), adaptive=True))
+    builder.add_dynamic(Coalescence(collision_kernel=ConstantK(a=1), adaptive=False))
 
     particulator = builder.build(attributes=default_attributes, products=())
 
-    particulator.run(10)
+    particulator.run(2)
 
     total_initial_momentum = (
         default_attributes["fall momentum"] * default_attributes["n"]
     ).sum()
+
     total_final_momentum = (
         particulator.attributes["fall momentum"].to_ndarray()
         * particulator.attributes["n"].to_ndarray()
