@@ -1,3 +1,7 @@
+"""
+Attributes for tracking droplet velocity
+"""
+
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
