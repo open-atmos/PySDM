@@ -1,3 +1,7 @@
+"""
+Test RelaxedVelocity dynamic
+"""
+
 import numpy as np
 import pytest
 
@@ -29,7 +33,9 @@ def default_attributes(request):
     return request.param
 
 
-def test_small_timescale(default_attributes, backend_class):
+def test_small_timescale(
+    default_attributes, backend_class
+):  # pylint: disable=redefined-outer-name
     """
     When the fall velocity is initialized to 0 and tau is very small,
     the velocity should quickly approach the terminal velocity
@@ -56,7 +62,9 @@ def test_small_timescale(default_attributes, backend_class):
     )
 
 
-def test_large_timescale(default_attributes, backend_class):
+def test_large_timescale(
+    default_attributes, backend_class
+):  # pylint: disable=redefined-outer-name
     """
     When the fall velocity is initialized to 0 and tau is very large,
     the velocity should remain 0
@@ -83,7 +91,9 @@ def test_large_timescale(default_attributes, backend_class):
     )
 
 
-def test_behavior(default_attributes, backend_class):
+def test_behavior(
+    default_attributes, backend_class
+):  # pylint: disable=redefined-outer-name
     """
     The fall velocity should approach the terminal velocity exponentially
     """

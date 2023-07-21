@@ -1,3 +1,7 @@
+"""
+A dynamic which relaxes FallVelocity towards the terminal velocity
+"""
+
 from math import exp
 
 from PySDM.attributes.impl.attribute import Attribute
@@ -11,6 +15,13 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
 
     def __init__(self, tau):
         self.tau: float = tau
+
+        self.particulator = None
+        self.fall_momentum_attr = None
+        self.terminal_vel_attr = None
+        self.volume_attr = None
+        self.rho_w = None
+        self.tmp_data = None
 
     def register(self, builder):
         self.particulator: Particulator = builder.particulator

@@ -1,3 +1,7 @@
+"""
+Test initialization of FallMomentum
+"""
+
 import numpy as np
 import pytest
 
@@ -30,7 +34,9 @@ def params(request):
     return request.param
 
 
-def test_init_to_terminal_velocity(params, backend_class):
+def test_init_to_terminal_velocity(
+    params, backend_class
+):  # pylint: disable=redefined-outer-name
     """
     Fall momenta correctly initialized to the terminal velocity * mass.
     """
@@ -53,7 +59,7 @@ def test_init_to_terminal_velocity(params, backend_class):
     )
 
 
-def test_init_to_zero(params):
+def test_init_to_zero(params):  # pylint: disable=redefined-outer-name
     """
     Fall momenta correctly initialized to zero.
     """

@@ -1,7 +1,11 @@
+"""
+Initialize the FallMomentum of droplets
+"""
+
 import numpy as np
 
 from PySDM.backends import CPU
-from PySDM.dynamics.terminal_velocity import Interpolation, RogersYau
+from PySDM.dynamics.terminal_velocity import Interpolation
 from PySDM.formulae import Formulae
 from PySDM.particulator import Particulator
 

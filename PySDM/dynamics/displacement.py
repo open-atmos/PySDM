@@ -21,7 +21,7 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         adaptive=DEFAULTS.adaptive,
         rtol=DEFAULTS.rtol,
         relax_velocity=False,
-    ):
+    ):  # pylint: disable=too-many-arguments
         self.particulator = None
         self.enable_sedimentation = enable_sedimentation
         self.dimension = None

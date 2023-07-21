@@ -1,3 +1,7 @@
+"""
+Test FallVelocity and FallMomentum attributes
+"""
+
 import numpy as np
 import pytest
 
@@ -46,7 +50,9 @@ def default_attributes(request):
     return request.param
 
 
-def test_fall_velocity_calculation(default_attributes, backend_class):
+def test_fall_velocity_calculation(
+    default_attributes, backend_class
+):  # pylint: disable=redefined-outer-name
     """
     Test that fall velocity is the momentum divided by the mass.
     """
@@ -65,7 +71,9 @@ def test_fall_velocity_calculation(default_attributes, backend_class):
     )
 
 
-def test_conservation_of_momentum(default_attributes, backend_class):
+def test_conservation_of_momentum(
+    default_attributes, backend_class
+):  # pylint: disable=redefined-outer-name
     """
     Test that conservation of momentum holds when many super-droplets coalesce
     """
@@ -89,7 +97,7 @@ def test_conservation_of_momentum(default_attributes, backend_class):
     ).sum()
 
     # assert that the total number of droplets changed
-    assert not np.sum(particulator.attributes["n"].to_ndarray()) == np.sum(
+    assert np.sum(particulator.attributes["n"].to_ndarray()) != np.sum(
         default_attributes["n"]
     )
 
