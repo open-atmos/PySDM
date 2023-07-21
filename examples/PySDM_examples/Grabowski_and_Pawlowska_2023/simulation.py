@@ -43,7 +43,7 @@ class Simulation(BasicSimulation):
             attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
             attributes["kappa times dry volume"] = np.append(
                 attributes["kappa times dry volume"], v_dry * kappa
-            )
+                )
             attributes["kappa"] = np.append(attributes["kappa"], kappa)
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
