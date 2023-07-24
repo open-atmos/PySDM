@@ -99,6 +99,64 @@ Alternatively, one can also install the examples package from pypi.org by
 using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
 only the supporting .py files).
 
+## Submodule organization
+```mermaid
+mindmap
+  root(PySDM)
+    Builder
+    Formulae
+    Particulator
+    (attributess)
+      (physics)
+        DryVolume: ExtensiveAttribute
+        Kappa: DerivedAttribute
+        ...
+      (...)
+    (backends)
+      CPU=Numba
+      GPU=ThrustRTC
+      ...
+    (dynamics)
+      AqueousChemistry
+      Collision
+      Condensation
+      ...
+    (environments)
+      Box
+      Parcel
+      ...
+    (exporters)
+    (initialisation)
+      (spectra)
+        Lognormal
+        Exponential
+        ...
+      (sampling)
+        (spectral_sampling)
+          ConstantMultiplicity
+          UniformRandom
+          Logarithmic
+          ...
+      (...)
+    (physics)
+      (hygroscopicity)
+        KappaKoehler
+        KappaKoehlerLeadingTerms
+      (condensation_coordinate)
+        Volume
+        VolumeLogarithm
+      (...)
+    (products)
+      (size_spectral)
+        EffectiveRadius
+        WaterMixingRatio
+        ...
+      (ambient_thermodynamics)
+        AmbientRelativeHumidity
+        ...
+      (...)
+```
+
 ## Hello-world coalescence example in Python, Julia and Matlab
 
 In order to depict the PySDM API with a practical example, the following
@@ -317,6 +375,67 @@ pyplot.savefig('readme.png')
 The resultant plot (generated with the Python code) looks as follows:
 
 ![plot](https://github.com/open-atmos/PySDM/releases/download/tip/readme.png)
+
+The component submodules used to create this simulation are visualized below:
+```mermaid
+ graph
+    COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
+    BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
+    ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
+    N_SD["n_sd :int"] -->|passed as arg to| BUILDER_INIT
+    BUILDER_INSTANCE -..-|has a method| BUILDER_SET_ENV(["Builder.set_environment()"])
+    BUILDER_INIT(["Builder.__init__()"]) ----->|instantiates| BUILDER_INSTANCE
+    BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
+    ENV_INIT(["Box.__init__()"]) --->|instantiates| ENV
+    DT[dt :float] ----->|passed as arg to| ENV_INIT
+    DV[dv :float] ----->|passed as arg to| ENV_INIT
+    ENV[":Box"] -->|passed as arg to| BUILDER_SET_ENV
+    B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
+    KERNEL_INIT -->|instantiates| KERNEL
+    KERNEL[collision_kernel: Golovin] -->|passed as arg to| COAL_INIT(["Coalesncence.__init__()"])
+    COAL_INIT -->|instantiates| COAL
+    PRODUCTS[products: list] ----->|passed as arg to| BUILDER_BUILD
+    NORM_FACTOR[norm_factor: float]-->|passed as arg to| EXP_INIT
+    SCALE[scale: float]-->|passed as arg to| EXP_INIT
+    EXP_INIT(["Exponential.__init__()"]) -->|instantiates| IS
+    IS["initial_spectrum :Exponential"] -->|passed as arg to| CM_INIT
+    CM_INIT(["ConstantMultiplicity.__init__()"]) -->|instantiates| CM_INSTANCE
+    CM_INSTANCE[":ConstantMultiplicity"] -.-|has a method| SAMPLE
+    SAMPLE(["ConstantMultiplicity.sample()"]) -->|returns| n
+    SAMPLE -->|returns| volume
+    n -->|added as element of| ATTRIBUTES
+    PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_RUN(["Particulator.run()"])
+    volume -->|added as element of| ATTRIBUTES
+    BUILDER_BUILD -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
+    PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
+    BACKEND_INSTANCE["backend :CPU"] -->|passed as arg to| BUILDER_INIT
+    PRODUCTS -.-|accessible via| PARTICULATOR_PROD
+    NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES 
+    EDGES[radius_bins_edges: np.ndarray] -->|passed as arg to| SPECTRUM_INIT
+    SPECTRUM_INIT["ParticleVolumeVersusRadiusLogarithmSpectrum.__init__()"] -->|instantiates| SPECTRUM
+    SPECTRUM[":ParticleVolumeVersusRadiusLogarithmSpectrum"] -->|added as element of| PRODUCTS
+
+    click COAL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html"
+    click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click BUILDER_SET_ENV "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
+    click ENV "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
+    click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
+    click KERNEL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
+    click EXP_INIT "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/index.html"
+    click IS "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/index.html"
+    click CM_INIT "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
+    click CM_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
+    click SAMPLE "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
+    click PARTICULATOR_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/particulator.html"
+    click BACKEND_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/backends/numba.html"
+    click BUILDER_BUILD "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click NP_LOGSPACE "https://numpy.org/doc/stable/reference/generated/numpy.logspace.html"
+    click SPECTRUM_INIT "https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_volume_versus_radius_logarithm_spectrum.html"
+    click SPECTRUM "https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_volume_versus_radius_logarithm_spectrum.html"
+```
 
 ## Hello-world condensation example in Python, Julia and Matlab
 
