@@ -1,5 +1,5 @@
 """
-Test initialization of FallMomentum
+Test initialization of RelativeFallMomentum
 """
 
 import numpy as np
