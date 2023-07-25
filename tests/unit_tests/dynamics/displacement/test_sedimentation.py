@@ -24,7 +24,7 @@ class TestSedimentation:  # pylint: disable=too-few-public-methods
         )
 
         particulator.attributes._ParticleAttributes__attributes[
-            "terminal velocity"
+            "relative fall velocity"
         ] = ConstantTerminalVelocity(particulator.backend, particulator)
         assert sut.precipitation_in_last_step == 0
 
