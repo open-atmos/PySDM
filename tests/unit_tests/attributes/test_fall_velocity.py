@@ -5,6 +5,7 @@ Test FallVelocity and FallMomentum attributes
 import numpy as np
 import pytest
 
+from PySDM.attributes.physics import RelativeFallVelocity, TerminalVelocity
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence, RelaxedVelocity
 from PySDM.dynamics.collisions.collision_kernels.constantK import ConstantK
@@ -85,7 +86,13 @@ def test_conservation_of_momentum(
     """
     builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
     builder.set_environment(Box(dt=1, dv=1))
+
+    # add and remove relaxed velocity to prevent warning
+    builder.add_dynamic(RelaxedVelocity(tau=1))
+
     builder.request_attribute("relative fall momentum")
+
+    builder.particulator.dynamics.pop("RelaxedVelocity")
 
     builder.add_dynamic(Coalescence(collision_kernel=ConstantK(a=1), adaptive=False))
 
@@ -109,3 +116,26 @@ def test_conservation_of_momentum(
 
     # assert that the total momentum is conserved
     assert np.isclose(total_final_momentum, total_initial_momentum)
+
+
+def test_attribute_selection(backend_class):
+    """
+    Test that the correct velocity attribute is selected by the mapper.
+    RelativeFallVelocity should only be selected when RelaxedVelocity dynamic exists.
+    """
+    builder_no_relax = Builder(n_sd=1, backend=backend_class())
+    builder_no_relax.set_environment(Box(dt=1, dv=1))
+    builder_no_relax.request_attribute("relative fall velocity")
+
+    # with no RelaxedVelocity, the builder should use TerminalVelocity
+    assert isinstance(
+        builder_no_relax.req_attr["relative fall velocity"], TerminalVelocity
+    )
+
+    builder = Builder(n_sd=1, backend=backend_class())
+    builder.set_environment(Box(dt=1, dv=1))
+    builder.add_dynamic(RelaxedVelocity(tau=1))
+    builder.request_attribute("relative fall velocity")
+
+    # with RelaxedVelocity, the builder should use RelativeFallVelocity
+    assert isinstance(builder.req_attr["relative fall velocity"], RelativeFallVelocity)
