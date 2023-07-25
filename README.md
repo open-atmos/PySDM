@@ -102,31 +102,33 @@ only the supporting .py files).
 ## Submodule organization
 ```mermaid
 mindmap
-  root(PySDM)
+  root((PySDM))
     Builder
     Formulae
     Particulator
-    (attributess)
+    ((attributes))
       (physics)
         DryVolume: ExtensiveAttribute
         Kappa: DerivedAttribute
         ...
+      (chemistry)
+        Acidity
+        ...
       (...)
-    (backends)
-      CPU=Numba
-      GPU=ThrustRTC
-      ...
-    (dynamics)
+    ((backends))
+      CPU
+      GPU
+    ((dynamics))
       AqueousChemistry
       Collision
       Condensation
       ...
-    (environments)
+    ((environments))
       Box
       Parcel
+      Kinematic2D
       ...
-    (exporters)
-    (initialisation)
+    ((initialisation))
       (spectra)
         Lognormal
         Exponential
@@ -137,16 +139,17 @@ mindmap
           UniformRandom
           Logarithmic
           ...
+        (...)  
       (...)
-    (physics)
+    ((physics))
       (hygroscopicity)
         KappaKoehler
-        KappaKoehlerLeadingTerms
+        ...
       (condensation_coordinate)
         Volume
         VolumeLogarithm
       (...)
-    (products)
+    ((products))
       (size_spectral)
         EffectiveRadius
         WaterMixingRatio
