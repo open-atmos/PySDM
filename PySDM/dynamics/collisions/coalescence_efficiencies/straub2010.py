@@ -7,19 +7,17 @@ import numpy as np
 
 
 class Straub2010Ec:
-    def __init__(self, relax_velocity=False):
+    def __init__(self):
         self.particulator = None
         self.pair_tmp = None
         self.arrays = {}
         self.const = None
-        self.relax_velocity = relax_velocity
-        self.vel_attr = "fall velocity" if relax_velocity else "terminal velocity"
 
     def register(self, builder):
         self.particulator = builder.particulator
         self.const = self.particulator.formulae.constants
         builder.request_attribute("volume")
-        builder.request_attribute(self.vel_attr)
+        builder.request_attribute("relative fall velocity")
         for key in ("Sc", "tmp", "tmp2", "We"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
@@ -32,7 +30,7 @@ class Straub2010Ec:
         self.arrays["tmp"] *= 2
 
         self.arrays["tmp2"].distance(
-            self.particulator.attributes[self.vel_attr], is_first_in_pair
+            self.particulator.attributes["relative fall velocity"], is_first_in_pair
         )
         self.arrays["tmp2"] **= 2
         self.arrays["We"].multiply(

@@ -47,17 +47,19 @@ def test_small_timescale(
 
     builder.add_dynamic(RelaxedVelocity(tau=1e-12))
 
-    builder.request_attribute("fall velocity")
+    builder.request_attribute("relative fall velocity")
     builder.request_attribute("terminal velocity")
 
-    default_attributes["fall momentum"] = np.zeros_like(default_attributes["n"])
+    default_attributes["relative fall momentum"] = np.zeros_like(
+        default_attributes["n"]
+    )
 
     particulator = builder.build(attributes=default_attributes, products=())
 
     particulator.run(1)
 
     assert np.allclose(
-        particulator.attributes["fall velocity"].to_ndarray(),
+        particulator.attributes["relative fall velocity"].to_ndarray(),
         particulator.attributes["terminal velocity"].to_ndarray(),
     )
 
@@ -76,17 +78,19 @@ def test_large_timescale(
 
     builder.add_dynamic(RelaxedVelocity(tau=1e12))
 
-    builder.request_attribute("fall velocity")
+    builder.request_attribute("relative fall velocity")
     builder.request_attribute("terminal velocity")
 
-    default_attributes["fall momentum"] = np.zeros_like(default_attributes["n"])
+    default_attributes["relative fall momentum"] = np.zeros_like(
+        default_attributes["n"]
+    )
 
     particulator = builder.build(attributes=default_attributes, products=())
 
     particulator.run(100)
 
     assert np.allclose(
-        particulator.attributes["fall velocity"].to_ndarray(),
+        particulator.attributes["relative fall velocity"].to_ndarray(),
         np.zeros_like(default_attributes["n"]),
     )
 
@@ -104,29 +108,31 @@ def test_behavior(
 
     builder.add_dynamic(RelaxedVelocity(tau=0.5))
 
-    builder.request_attribute("fall velocity")
+    builder.request_attribute("relative fall velocity")
     builder.request_attribute("terminal velocity")
 
-    default_attributes["fall momentum"] = np.zeros_like(default_attributes["n"])
+    default_attributes["relative fall momentum"] = np.zeros_like(
+        default_attributes["n"]
+    )
 
     particulator = builder.build(attributes=default_attributes, products=())
 
     particulator.run(1)
     delta_v1 = (
         particulator.attributes["terminal velocity"].to_ndarray()
-        - particulator.attributes["fall velocity"].to_ndarray()
+        - particulator.attributes["relative fall velocity"].to_ndarray()
     )
 
     particulator.run(1)
     delta_v2 = (
         particulator.attributes["terminal velocity"].to_ndarray()
-        - particulator.attributes["fall velocity"].to_ndarray()
+        - particulator.attributes["relative fall velocity"].to_ndarray()
     )
 
     particulator.run(1)
     delta_v3 = (
         particulator.attributes["terminal velocity"].to_ndarray()
-        - particulator.attributes["fall velocity"].to_ndarray()
+        - particulator.attributes["relative fall velocity"].to_ndarray()
     )
 
     # for an exponential decay, the ratio should be roughly constant using constant timesteps

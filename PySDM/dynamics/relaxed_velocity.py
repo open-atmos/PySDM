@@ -26,7 +26,9 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     def register(self, builder):
         self.particulator: Particulator = builder.particulator
 
-        self.fall_momentum_attr: Attribute = builder.get_attribute("fall momentum")
+        self.fall_momentum_attr: Attribute = builder.get_attribute(
+            "relative fall momentum"
+        )
         self.terminal_vel_attr: Attribute = builder.get_attribute("terminal velocity")
         self.volume_attr: Attribute = builder.get_attribute("volume")
 
@@ -44,4 +46,4 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
 
         self.fall_momentum_attr.data += self.tmp_data
 
-        self.particulator.attributes.mark_updated("fall momentum")
+        self.particulator.attributes.mark_updated("relative fall momentum")
