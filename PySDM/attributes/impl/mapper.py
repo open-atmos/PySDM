@@ -19,12 +19,12 @@ from PySDM.attributes.physics import (
     Heat,
     Multiplicities,
     Radius,
-    RelativeFallMomentum,
     RelativeFallVelocity,
     Temperature,
     TerminalVelocity,
     Volume,
     WetToCriticalVolumeRatio,
+    get_relative_fall_momentum,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.attributes.physics.dry_volume import (
@@ -61,7 +61,7 @@ attributes = {
     "area": lambda _, __: Area,
     "dry radius": lambda _, __: DryRadius,
     "terminal velocity": lambda _, __: TerminalVelocity,
-    "relative fall momentum": lambda _, __: RelativeFallMomentum,
+    "relative fall momentum": lambda dynamics, __: get_relative_fall_momentum(dynamics),
     "relative fall velocity": lambda dynamics, __: (
         RelativeFallVelocity if "RelaxedVelocity" in dynamics else TerminalVelocity
     ),

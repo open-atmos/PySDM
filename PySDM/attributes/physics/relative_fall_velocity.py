@@ -2,6 +2,8 @@
 Attributes for tracking droplet velocity
 """
 
+import warnings
+
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
@@ -9,6 +11,22 @@ from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 class RelativeFallMomentum(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name="relative fall momentum", dtype=float)
+
+
+# could eventually make an attribute that calculates momentum
+# from terminal velocity instead when no RelaxedVelocity
+# dynamic is present
+def get_relative_fall_momentum(dynamics):
+    """
+    Returns fall momentum and throws warning if
+    there is no RelaxedVelocity dynamic.
+    """
+    if "RelaxedVelocity" not in dynamics:
+        warnings.warn(
+            "Relative fall momentum attribute requested but no RelaxedVelocity dynamic exists."
+        )
+
+    return RelativeFallMomentum
 
 
 class RelativeFallVelocity(DerivedAttribute):
