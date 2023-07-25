@@ -12,7 +12,7 @@ from PySDM.particulator import Particulator
 
 def init_fall_momenta(
     volume: np.ndarray,
-    rho_w: float,
+    rho_w: float,  # TODO #798 - we plan to use masses instead of volumes soon
     zero: bool = False,
     terminal_velocity_approx=Interpolation,
 ):
