@@ -40,7 +40,7 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
 
     def __call__(self):
         self.tmp_data.product(self.terminal_vel_attr.get(), self.volume_attr.get())
-        self.tmp_data *= self.rho_w
+        self.tmp_data *= self.rho_w  # TODO #798 - we plan to use masses instead of volumes soon
         self.tmp_data -= self.fall_momentum_attr.get()
         self.tmp_data *= 1 - exp(-self.particulator.dt / self.tau)
 
