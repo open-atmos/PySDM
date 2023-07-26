@@ -204,7 +204,12 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             rhod,
             qt,
         )
-        if dthd_dt == 0 and dqv_dt == 0 and drhod_dt == 0 and (_odesys(0, y0, *args)[idx_x:] == 0).all():
+        if (
+            dthd_dt == 0
+            and dqv_dt == 0
+            and drhod_dt == 0
+            and (_odesys(0, y0, *args)[idx_x:] == 0).all()
+        ):
             y1 = y0
         else:
             integ = scipy.integrate.solve_ivp(
