@@ -24,7 +24,6 @@ from PySDM.attributes.physics import (
     TerminalVelocity,
     Volume,
     WetToCriticalVolumeRatio,
-    get_relative_fall_momentum,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.attributes.physics.dry_volume import (
@@ -34,6 +33,7 @@ from PySDM.attributes.physics.dry_volume import (
     OrganicFraction,
 )
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
+from PySDM.attributes.physics.relative_fall_velocity import RelativeFallMomentum
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.physics.surface_tension import Constant
 
@@ -61,7 +61,11 @@ attributes = {
     "area": lambda _, __: Area,
     "dry radius": lambda _, __: DryRadius,
     "terminal velocity": lambda _, __: TerminalVelocity,
-    "relative fall momentum": lambda dynamics, __: get_relative_fall_momentum(dynamics),
+    "relative fall momentum": lambda dynamics, __: (
+        RelativeFallMomentum
+        if "RelaxedVelocity" in dynamics
+        else make_dummy_attribute_factory("relative fall momentum")
+    ),
     "relative fall velocity": lambda dynamics, __: (
         RelativeFallVelocity if "RelaxedVelocity" in dynamics else TerminalVelocity
     ),
