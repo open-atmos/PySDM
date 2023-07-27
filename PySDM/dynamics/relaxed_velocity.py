@@ -1,5 +1,6 @@
 """
-A dynamic which relaxes `PySDM.attributes.physics.RelativeFallVelocity` 
+A dynamic which relaxes
+`PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity`
 towards the terminal velocity
 """
 
