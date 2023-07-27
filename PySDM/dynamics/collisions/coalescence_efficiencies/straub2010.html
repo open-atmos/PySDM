@@ -46,7 +46,7 @@ class Straub2010Ec:
         self.particulator = builder.particulator
         self.const = self.particulator.formulae.constants
         builder.request_attribute(&#34;volume&#34;)
-        builder.request_attribute(&#34;terminal velocity&#34;)
+        builder.request_attribute(&#34;relative fall velocity&#34;)
         for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
@@ -59,7 +59,7 @@ class Straub2010Ec:
         self.arrays[&#34;tmp&#34;] *= 2
 
         self.arrays[&#34;tmp2&#34;].distance(
-            self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
+            self.particulator.attributes[&#34;relative fall velocity&#34;], is_first_in_pair
         )
         self.arrays[&#34;tmp2&#34;] **= 2
         self.arrays[&#34;We&#34;].multiply(
@@ -107,7 +107,7 @@ class Straub2010Ec:
         self.particulator = builder.particulator
         self.const = self.particulator.formulae.constants
         builder.request_attribute(&#34;volume&#34;)
-        builder.request_attribute(&#34;terminal velocity&#34;)
+        builder.request_attribute(&#34;relative fall velocity&#34;)
         for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
@@ -120,7 +120,7 @@ class Straub2010Ec:
         self.arrays[&#34;tmp&#34;] *= 2
 
         self.arrays[&#34;tmp2&#34;].distance(
-            self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
+            self.particulator.attributes[&#34;relative fall velocity&#34;], is_first_in_pair
         )
         self.arrays[&#34;tmp2&#34;] **= 2
         self.arrays[&#34;We&#34;].multiply(
@@ -153,7 +153,7 @@ class Straub2010Ec:
     self.particulator = builder.particulator
     self.const = self.particulator.formulae.constants
     builder.request_attribute(&#34;volume&#34;)
-    builder.request_attribute(&#34;terminal velocity&#34;)
+    builder.request_attribute(&#34;relative fall velocity&#34;)
     for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
         self.arrays[key] = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float

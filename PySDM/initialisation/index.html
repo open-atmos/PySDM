@@ -34,7 +34,8 @@ initialisation logic, particle size spectra, sampling methods and
 wet radii equilibration
 &#34;&#34;&#34;
 from .discretise_multiplicities import discretise_multiplicities
-from .equilibrate_wet_radii import equilibrate_wet_radii</code></pre>
+from .equilibrate_wet_radii import equilibrate_wet_radii
+from .init_fall_momenta import init_fall_momenta</code></pre>
 </details>
 </section>
 <section>
@@ -57,6 +58,11 @@ and functions for computing bulk properties of the aerosol like kappa</p></div>
 <dd>
 <div class="desc"><p>commons (incl. <code><a title="PySDM.initialisation.impl.spectrum.Spectrum" href="impl/spectrum.html#PySDM.initialisation.impl.spectrum.Spectrum">Spectrum</a></code> base class)
 not intended to be imported from user code</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.initialisation.init_fall_momenta" href="init_fall_momenta.html">PySDM.initialisation.init_fall_momenta</a></code></dt>
+<dd>
+<div class="desc"><p>Initialize the <code><a title="PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum" href="../attributes/physics/relative_fall_velocity.html#PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum">RelativeFallMomentum</a></code>
+of droplets</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.initialisation.sampling" href="sampling/index.html">PySDM.initialisation.sampling</a></code></dt>
 <dd>
@@ -93,6 +99,7 @@ probability density functions (based on SciPy.stats logic)</p></div>
 <li><code><a title="PySDM.initialisation.discretise_multiplicities" href="discretise_multiplicities.html">PySDM.initialisation.discretise_multiplicities</a></code></li>
 <li><code><a title="PySDM.initialisation.equilibrate_wet_radii" href="equilibrate_wet_radii.html">PySDM.initialisation.equilibrate_wet_radii</a></code></li>
 <li><code><a title="PySDM.initialisation.impl" href="impl/index.html">PySDM.initialisation.impl</a></code></li>
+<li><code><a title="PySDM.initialisation.init_fall_momenta" href="init_fall_momenta.html">PySDM.initialisation.init_fall_momenta</a></code></li>
 <li><code><a title="PySDM.initialisation.sampling" href="sampling/index.html">PySDM.initialisation.sampling</a></code></li>
 <li><code><a title="PySDM.initialisation.spectra" href="spectra/index.html">PySDM.initialisation.spectra</a></code></li>
 </ul>

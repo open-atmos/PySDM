@@ -42,7 +42,8 @@ from PySDM.dynamics.collisions import Breakup, Coalescence, Collision
 from PySDM.dynamics.condensation import Condensation
 from PySDM.dynamics.displacement import Displacement
 from PySDM.dynamics.eulerian_advection import EulerianAdvection
-from PySDM.dynamics.freezing import Freezing</code></pre>
+from PySDM.dynamics.freezing import Freezing
+from PySDM.dynamics.relaxed_velocity import RelaxedVelocity</code></pre>
 </details>
 </section>
 <section>
@@ -83,6 +84,12 @@ with implicit-in-particle-size integration and adaptive timestepping</p></div>
 <dd>
 <div class="desc"><p>stuff not intended to be imported from user code</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.dynamics.relaxed_velocity" href="relaxed_velocity.html">PySDM.dynamics.relaxed_velocity</a></code></dt>
+<dd>
+<div class="desc"><p>A dynamic which relaxes
+<code><a title="PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity" href="../attributes/physics/relative_fall_velocity.html#PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity">RelativeFallVelocity</a></code>
+towards the terminal velocity</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.dynamics.terminal_velocity" href="terminal_velocity/index.html">PySDM.dynamics.terminal_velocity</a></code></dt>
 <dd>
 <div class="desc"><p>particle terminal velocity formulae</p></div>
@@ -117,6 +124,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p></div>
 <li><code><a title="PySDM.dynamics.eulerian_advection" href="eulerian_advection.html">PySDM.dynamics.eulerian_advection</a></code></li>
 <li><code><a title="PySDM.dynamics.freezing" href="freezing.html">PySDM.dynamics.freezing</a></code></li>
 <li><code><a title="PySDM.dynamics.impl" href="impl/index.html">PySDM.dynamics.impl</a></code></li>
+<li><code><a title="PySDM.dynamics.relaxed_velocity" href="relaxed_velocity.html">PySDM.dynamics.relaxed_velocity</a></code></li>
 <li><code><a title="PySDM.dynamics.terminal_velocity" href="terminal_velocity/index.html">PySDM.dynamics.terminal_velocity</a></code></li>
 </ul>
 </li>

@@ -31,6 +31,8 @@ for do-nothing attributes</p>
 </summary>
 <pre><code class="python">&#34;&#34;&#34; logic around `PySDM.attributes.impl.dummy_attribute.DummyAttribute` - parent class
 for do-nothing attributes &#34;&#34;&#34;
+import warnings
+
 import numpy as np
 
 from .attribute import Attribute
@@ -48,9 +50,14 @@ class DummyAttribute(Attribute):
         return self.data
 
 
-def make_dummy_attribute_factory(name):
+def make_dummy_attribute_factory(name, warn=False):
     def _factory(builder):
         return DummyAttribute(builder, name=name)
+
+    if warn:
+        warnings.warn(
+            f&#34;dummy implementation used for requested attribute named &#39;{name}&#39;&#34;
+        )
 
     return _factory</code></pre>
 </details>
@@ -63,7 +70,7 @@ def make_dummy_attribute_factory(name):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="PySDM.attributes.impl.dummy_attribute.make_dummy_attribute_factory"><code class="name flex">
-<span>def <span class="ident">make_dummy_attribute_factory</span></span>(<span>name)</span>
+<span>def <span class="ident">make_dummy_attribute_factory</span></span>(<span>name, warn=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -71,9 +78,14 @@ def make_dummy_attribute_factory(name):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def make_dummy_attribute_factory(name):
+<pre><code class="python">def make_dummy_attribute_factory(name, warn=False):
     def _factory(builder):
         return DummyAttribute(builder, name=name)
+
+    if warn:
+        warnings.warn(
+            f&#34;dummy implementation used for requested attribute named &#39;{name}&#39;&#34;
+        )
 
     return _factory</code></pre>
 </details>

@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.collision_kernels.impl.gravitational API documentation</title>
-<meta name="description" content="common parent class for gravitational collision kernels" />
+<title>PySDM.dynamics.relaxed_velocity API documentation</title>
+<meta name="description" content="A dynamic which relaxes
+`PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity`
+towards the terminal velocity" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,29 +21,69 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.collision_kernels.impl.gravitational</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.relaxed_velocity</code></h1>
 </header>
 <section id="section-intro">
-<p>common parent class for gravitational collision kernels</p>
+<p>A dynamic which relaxes
+<code><a title="PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity" href="../attributes/physics/relative_fall_velocity.html#PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity">RelativeFallVelocity</a></code>
+towards the terminal velocity</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34; common parent class for gravitational collision kernels &#34;&#34;&#34;
+<pre><code class="python">&#34;&#34;&#34;
+A dynamic which relaxes
+`PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity`
+towards the terminal velocity
+&#34;&#34;&#34;
+
+from math import exp
+
+from PySDM.attributes.impl.attribute import Attribute
+from PySDM.particulator import Particulator
 
 
-class Gravitational:  # pylint: disable=too-few-public-methods
-    def __init__(self):
+class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
+    &#34;&#34;&#34;
+    A dynamic which updates the fall momentum according to a relaxation timescale `tau`
+    &#34;&#34;&#34;
+
+    def __init__(self, tau):
+        self.tau: float = tau
+
         self.particulator = None
-        self.pair_tmp = None
+        self.fall_momentum_attr = None
+        self.terminal_vel_attr = None
+        self.volume_attr = None
+        self.rho_w = None  # TODO #798 - we plan to use masses instead of volumes soon
+        self.tmp_data = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;relative fall velocity&#34;)
-        self.pair_tmp = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )</code></pre>
+        self.particulator: Particulator = builder.particulator
+
+        self.fall_momentum_attr: Attribute = builder.get_attribute(
+            &#34;relative fall momentum&#34;
+        )
+        self.terminal_vel_attr: Attribute = builder.get_attribute(&#34;terminal velocity&#34;)
+        self.volume_attr: Attribute = builder.get_attribute(&#34;volume&#34;)
+
+        self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
+
+        self.tmp_data = self.particulator.Storage.empty(
+            (self.particulator.n_sd,), dtype=float
+        )
+
+    def __call__(self):
+        self.tmp_data.product(self.terminal_vel_attr.get(), self.volume_attr.get())
+        self.tmp_data *= (
+            self.rho_w  # TODO #798
+        )  # TODO #798 - we plan to use masses instead of volumes soon
+        self.tmp_data -= self.fall_momentum_attr.get()
+        self.tmp_data *= 1 - exp(-self.particulator.dt / self.tau)
+
+        self.fall_momentum_attr.data += self.tmp_data
+
+        self.particulator.attributes.mark_updated(&#34;relative fall momentum&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -53,36 +95,61 @@ class Gravitational:  # pylint: disable=too-few-public-methods
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational"><code class="flex name class">
-<span>class <span class="ident">Gravitational</span></span>
+<dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity"><code class="flex name class">
+<span>class <span class="ident">RelaxedVelocity</span></span>
+<span>(</span><span>tau)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>A dynamic which updates the fall momentum according to a relaxation timescale <code>tau</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Gravitational:  # pylint: disable=too-few-public-methods
-    def __init__(self):
+<pre><code class="python">class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
+    &#34;&#34;&#34;
+    A dynamic which updates the fall momentum according to a relaxation timescale `tau`
+    &#34;&#34;&#34;
+
+    def __init__(self, tau):
+        self.tau: float = tau
+
         self.particulator = None
-        self.pair_tmp = None
+        self.fall_momentum_attr = None
+        self.terminal_vel_attr = None
+        self.volume_attr = None
+        self.rho_w = None  # TODO #798 - we plan to use masses instead of volumes soon
+        self.tmp_data = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;relative fall velocity&#34;)
-        self.pair_tmp = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )</code></pre>
+        self.particulator: Particulator = builder.particulator
+
+        self.fall_momentum_attr: Attribute = builder.get_attribute(
+            &#34;relative fall momentum&#34;
+        )
+        self.terminal_vel_attr: Attribute = builder.get_attribute(&#34;terminal velocity&#34;)
+        self.volume_attr: Attribute = builder.get_attribute(&#34;volume&#34;)
+
+        self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
+
+        self.tmp_data = self.particulator.Storage.empty(
+            (self.particulator.n_sd,), dtype=float
+        )
+
+    def __call__(self):
+        self.tmp_data.product(self.terminal_vel_attr.get(), self.volume_attr.get())
+        self.tmp_data *= (
+            self.rho_w  # TODO #798
+        )  # TODO #798 - we plan to use masses instead of volumes soon
+        self.tmp_data -= self.fall_momentum_attr.get()
+        self.tmp_data *= 1 - exp(-self.particulator.dt / self.tau)
+
+        self.fall_momentum_attr.data += self.tmp_data
+
+        self.particulator.attributes.mark_updated(&#34;relative fall momentum&#34;)</code></pre>
 </details>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="PySDM.dynamics.collisions.collision_kernels.geometric.Geometric" href="../geometric.html#PySDM.dynamics.collisions.collision_kernels.geometric.Geometric">Geometric</a></li>
-<li><a title="PySDM.dynamics.collisions.collision_kernels.impl.parameterized.Parameterized" href="parameterized.html#PySDM.dynamics.collisions.collision_kernels.impl.parameterized.Parameterized">Parameterized</a></li>
-</ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational.register"><code class="name flex">
+<dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
@@ -92,11 +159,18 @@ class Gravitational:  # pylint: disable=too-few-public-methods
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.particulator = builder.particulator
-    builder.request_attribute(&#34;radius&#34;)
-    builder.request_attribute(&#34;relative fall velocity&#34;)
-    self.pair_tmp = self.particulator.PairwiseStorage.empty(
-        self.particulator.n_sd // 2, dtype=float
+    self.particulator: Particulator = builder.particulator
+
+    self.fall_momentum_attr: Attribute = builder.get_attribute(
+        &#34;relative fall momentum&#34;
+    )
+    self.terminal_vel_attr: Attribute = builder.get_attribute(&#34;terminal velocity&#34;)
+    self.volume_attr: Attribute = builder.get_attribute(&#34;volume&#34;)
+
+    self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
+
+    self.tmp_data = self.particulator.Storage.empty(
+        (self.particulator.n_sd,), dtype=float
     )</code></pre>
 </details>
 </dd>
@@ -113,15 +187,15 @@ class Gravitational:  # pylint: disable=too-few-public-methods
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.impl" href="index.html">PySDM.dynamics.collisions.collision_kernels.impl</a></code></li>
+<li><code><a title="PySDM.dynamics" href="index.html">PySDM.dynamics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational" href="#PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational">Gravitational</a></code></h4>
+<h4><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity">RelaxedVelocity</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational.register" href="#PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational.register">register</a></code></li>
+<li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register">register</a></code></li>
 </ul>
 </li>
 </ul>
