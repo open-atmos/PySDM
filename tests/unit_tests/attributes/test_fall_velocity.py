@@ -1,5 +1,6 @@
 """
-Test RelativeFallVelocity and RelativeFallMomentum attributes
+Test `PySDM.attributes.physics.RelativeFallVelocity` 
+and `PySDM.attributes.physics.RelativeFallMomentum` attributes
 """
 
 import numpy as np
@@ -119,7 +120,8 @@ def test_conservation_of_momentum(default_attributes, backend_class):
 def test_attribute_selection(backend_class):
     """
     Test that the correct velocity attribute is selected by the mapper.
-    RelativeFallVelocity should only be selected when RelaxedVelocity dynamic exists.
+    `PySDM.attributes.physics.RelativeFallVelocity` should only be selected 
+    when `PySDM.dynamics.RelaxedVelocity` dynamic exists.
     """
     builder_no_relax = Builder(n_sd=1, backend=backend_class())
     builder_no_relax.set_environment(Box(dt=1, dv=1))

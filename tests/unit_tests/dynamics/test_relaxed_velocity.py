@@ -1,5 +1,5 @@
 """
-Test RelaxedVelocity dynamic
+Test `PySDM.dynamics.RelaxedVelocity` dynamic
 """
 
 import numpy as np
