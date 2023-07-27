@@ -22,7 +22,7 @@ class LowList1982Nf:
         self.const = self.particulator.formulae.constants
         builder.request_attribute("radius")
         builder.request_attribute("volume")
-        builder.request_attribute("terminal velocity")
+        builder.request_attribute("relative fall velocity")
         for key in ("Sc", "St", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
@@ -64,7 +64,7 @@ class LowList1982Nf:
 
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["tmp2"].distance(
-            self.particulator.attributes["terminal velocity"], is_first_in_pair
+            self.particulator.attributes["relative fall velocity"], is_first_in_pair
         )
         self.arrays["tmp2"] **= 2
         self.arrays["CKE"].multiply(
