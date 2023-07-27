@@ -1,5 +1,6 @@
 """
-Initialize the `PySDM.attributes.physics.RelativeFallMomentum` of droplets
+Initialize the `PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum`
+of droplets
 """
 
 import numpy as np
@@ -17,8 +18,10 @@ def init_fall_momenta(
     terminal_velocity_approx=Interpolation,
 ):
     """
-    Calculate default values of the `PySDM.attributes.physics.RelativeFallMomentum` attribute
-    (needed when using `PySDM.attributes.physics.RelativeFallVelocity` attribute)
+    Calculate default values of the
+    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum` attribute
+    (needed when using
+    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity` attribute)
 
     Parameters:
         - volume: a numpy array of superdroplet volumes
