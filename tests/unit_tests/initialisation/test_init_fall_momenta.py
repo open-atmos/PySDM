@@ -25,7 +25,7 @@ from PySDM.physics import si
                         0.05 * si.mm**3,
                     ]
                 ),
-                "rho_w": 1000,
+                "rho_w": 1000,  # TODO #798 - we plan to use masses instead of volumes soon
             },
             id="",
         ),
