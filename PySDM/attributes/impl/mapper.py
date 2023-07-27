@@ -19,6 +19,7 @@ from PySDM.attributes.physics import (
     Heat,
     Multiplicities,
     Radius,
+    RelativeFallVelocity,
     Temperature,
     TerminalVelocity,
     Volume,
@@ -32,6 +33,7 @@ from PySDM.attributes.physics.dry_volume import (
     OrganicFraction,
 )
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
+from PySDM.attributes.physics.relative_fall_velocity import RelativeFallMomentum
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.physics.surface_tension import Constant
 
@@ -59,6 +61,14 @@ attributes = {
     "area": lambda _, __: Area,
     "dry radius": lambda _, __: DryRadius,
     "terminal velocity": lambda _, __: TerminalVelocity,
+    "relative fall momentum": lambda dynamics, __: (
+        RelativeFallMomentum
+        if "RelaxedVelocity" in dynamics
+        else make_dummy_attribute_factory("relative fall momentum")
+    ),
+    "relative fall velocity": lambda dynamics, __: (
+        RelativeFallVelocity if "RelaxedVelocity" in dynamics else TerminalVelocity
+    ),
     "cell id": lambda _, __: CellID,
     "cell origin": lambda _, __: CellOrigin,
     "cooling rate": lambda _, __: CoolingRate,
