@@ -64,7 +64,9 @@ attributes = {
     "relative fall momentum": lambda dynamics, __: (
         RelativeFallMomentum
         if "RelaxedVelocity" in dynamics
-        else make_dummy_attribute_factory("relative fall momentum")
+        else make_dummy_attribute_factory("relative fall momentum", warn=True)
+        # note: could eventually make an attribute that calculates momentum
+        # from terminal velocity instead when no RelaxedVelocity dynamic is present
     ),
     "relative fall velocity": lambda dynamics, __: (
         RelativeFallVelocity if "RelaxedVelocity" in dynamics else TerminalVelocity

@@ -9,11 +9,7 @@ from .dry_volume import DryVolume
 from .heat import Heat
 from .multiplicities import Multiplicities
 from .radius import Radius
-from .relative_fall_velocity import (
-    RelativeFallMomentum,
-    RelativeFallVelocity,
-    get_relative_fall_momentum,
-)
+from .relative_fall_velocity import RelativeFallMomentum, RelativeFallVelocity
 from .temperature import Temperature
 from .terminal_velocity import TerminalVelocity
 from .volume import Volume
