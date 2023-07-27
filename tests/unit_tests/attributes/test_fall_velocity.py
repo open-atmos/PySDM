@@ -1,5 +1,5 @@
 """
-Test FallVelocity and FallMomentum attributes
+Test RelativeFallVelocity and RelativeFallMomentum attributes
 """
 
 import numpy as np
