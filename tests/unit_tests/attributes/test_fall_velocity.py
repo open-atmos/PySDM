@@ -27,6 +27,7 @@ def generate_rand_attr_param(n_sd):
 
 
 @pytest.fixture(
+    name="default_attributes",
     params=(
         pytest.param(
             {
@@ -45,15 +46,13 @@ def generate_rand_attr_param(n_sd):
             id="fixed(n_sd=3)",
         ),
         generate_rand_attr_param(n_sd=100),
-    )
+    ),
 )
-def default_attributes(request):
+def default_attributes_fixture(request):
     return request.param
 
 
-def test_fall_velocity_calculation(
-    default_attributes, backend_class
-):  # pylint: disable=redefined-outer-name
+def test_fall_velocity_calculation(default_attributes, backend_class):
     """
     Test that fall velocity is the momentum divided by the mass.
     """
@@ -78,9 +77,7 @@ def test_fall_velocity_calculation(
     )
 
 
-def test_conservation_of_momentum(
-    default_attributes, backend_class
-):  # pylint: disable=redefined-outer-name
+def test_conservation_of_momentum(default_attributes, backend_class):
     """
     Test that conservation of momentum holds when many super-droplets coalesce
     """

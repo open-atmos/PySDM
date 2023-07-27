@@ -12,6 +12,7 @@ from PySDM.physics import si
 
 
 @pytest.fixture(
+    name="params",
     params=(
         pytest.param(
             {
@@ -28,15 +29,13 @@ from PySDM.physics import si
             },
             id="",
         ),
-    )
+    ),
 )
-def params(request):
+def params_fixture(request):
     return request.param
 
 
-def test_init_to_terminal_velocity(
-    params, backend_class
-):  # pylint: disable=redefined-outer-name
+def test_init_to_terminal_velocity(params, backend_class):
     """
     Fall momenta correctly initialized to the terminal velocity * mass.
     """
@@ -59,7 +58,7 @@ def test_init_to_terminal_velocity(
     )
 
 
-def test_init_to_zero(params):  # pylint: disable=redefined-outer-name
+def test_init_to_zero(params):
     """
     Fall momenta correctly initialized to zero.
     """
