@@ -1,5 +1,5 @@
 """
-Test initialization of RelativeFallMomentum
+Test initialization of `PySDM.attributes.physics.RelativeFallMomentum`
 """
 
 import numpy as np
