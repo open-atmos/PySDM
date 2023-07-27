@@ -1,5 +1,6 @@
 """
-A dynamic which relaxes `PySDM.attributes.physics.RelativeFallVelocity` towards the terminal velocity
+A dynamic which relaxes `PySDM.attributes.physics.RelativeFallVelocity` 
+towards the terminal velocity
 """
 
 from math import exp
