@@ -1,5 +1,5 @@
 """
-Initialize the FallMomentum of droplets
+Initialize the RelativeFallMomentum of droplets
 """
 
 import numpy as np
@@ -17,8 +17,8 @@ def init_fall_momenta(
     terminal_velocity_approx=Interpolation,
 ):
     """
-    Calculate default values of the FallMomentum attribute
-    (needed when using FallVelocity attribute)
+    Calculate default values of the RelativeFallMomentum attribute
+    (needed when using RelativeFallVelocity attribute)
 
     Parameters:
         - volume: a numpy array of superdroplet volumes

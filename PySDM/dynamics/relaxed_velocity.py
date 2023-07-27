@@ -1,5 +1,5 @@
 """
-A dynamic which relaxes FallVelocity towards the terminal velocity
+A dynamic which relaxes RelativeFallVelocity towards the terminal velocity
 """
 
 from math import exp
