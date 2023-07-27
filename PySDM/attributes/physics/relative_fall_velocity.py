@@ -15,7 +15,7 @@ class RelativeFallVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.momentum = builder.get_attribute("relative fall momentum")
         self.volume = builder.get_attribute("volume")
-        self.rho_w = builder.formulae.constants.rho_w
+        self.rho_w = builder.formulae.constants.rho_w  # TODO #798
 
         super().__init__(
             builder,
@@ -25,4 +25,4 @@ class RelativeFallVelocity(DerivedAttribute):
 
     def recalculate(self):
         self.data.ratio(self.momentum.get(), self.volume.get())
-        self.data[:] *= 1 / self.rho_w
+        self.data[:] *= 1 / self.rho_w  # TODO #798
