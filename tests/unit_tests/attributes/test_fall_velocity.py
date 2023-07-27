@@ -139,3 +139,9 @@ def test_attribute_selection(backend_class):
 
     # with RelaxedVelocity, the builder should use RelativeFallVelocity
     assert isinstance(builder.req_attr["relative fall velocity"], RelativeFallVelocity)
+
+    # requesting momentum with no dynamic issues a warning
+    builder = Builder(n_sd=1, backend=backend_class())
+    builder.set_environment(Box(dt=1, dv=1))
+    with pytest.warns(UserWarning):
+        builder.request_attribute("relative fall momentum")
