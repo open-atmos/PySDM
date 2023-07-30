@@ -45,8 +45,10 @@ class Settings:
         return self.formulae.state_variable_triplet.rho_of_rhod_qv(
             rhod=self.formulae.trivia.p_d(
                 self.initial_pressure, self.initial_vapour_mixing_ratio
-            ) / self.initial_temperature / self.formulae.constants.Rd,
-            qv=self.initial_vapour_mixing_ratio
+            )
+            / self.initial_temperature
+            / self.formulae.constants.Rd,
+            qv=self.initial_vapour_mixing_ratio,
         )
 
     @property
