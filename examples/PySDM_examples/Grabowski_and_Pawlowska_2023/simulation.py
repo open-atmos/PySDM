@@ -36,8 +36,8 @@ class Simulation(BasicSimulation):
             k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "n","kappa")
         }
         for i, (kappa, spectrum) in enumerate(settings.aerosol_modes_by_kappa.items()):
-            #sampling = ConstantMultiplicity(spectrum)
-            sampling = Logarithmic(spectrum)
+            sampling = ConstantMultiplicity(spectrum)
+            #sampling = Logarithmic(spectrum)
             r_dry, n_per_volume = sampling.sample(settings.n_sd_per_mode[i])
             v_dry = settings.formulae.trivia.volume(radius=r_dry)
             attributes["n"] = np.append(attributes["n"], n_per_volume*volume)
