@@ -42,15 +42,14 @@ class Settings:
 
     @property
     def initial_air_density(self):
-        const = self.formulae.constants
-        dry_air_density = (
-            self.formulae.trivia.p_d(
+        return self.formulae.state_variable_triplet.rho_of_rhod_qv(
+            rhod=self.formulae.trivia.p_d(
                 self.initial_pressure, self.initial_vapour_mixing_ratio
             )
             / self.initial_temperature
-            / const.Rd
+            / self.formulae.constants.Rd,
+            qv=self.initial_vapour_mixing_ratio,
         )
-        return dry_air_density * (1 + self.initial_vapour_mixing_ratio)
 
     @property
     def nt(self) -> int:
