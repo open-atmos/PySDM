@@ -131,6 +131,13 @@ class TestFreezingMethods:
         # Act
         output = {}
 
+        formulae = Formulae(
+            heterogeneous_ice_nucleation_rate="Constant",
+            constants={"J_HET": rate / immersed_surface_area},
+            seed=seed,
+        )
+        products = (IceWaterContent(name="qi"),)
+
         for case in cases:
             n_sd = int(number_of_real_droplets // case["N"])
             assert n_sd == number_of_real_droplets / case["N"]
@@ -139,11 +146,6 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
-            formulae = Formulae(
-                heterogeneous_ice_nucleation_rate="Constant",
-                constants={"J_HET": rate / immersed_surface_area},
-                seed=seed,
-            )
             builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
             env = Box(dt=case["dt"], dv=d_v)
             builder.set_environment(env)
@@ -153,7 +155,6 @@ class TestFreezingMethods:
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
                 "volume": np.full(n_sd, vol),
             }
-            products = (IceWaterContent(name="qi"),)
             particulator = builder.build(attributes=attributes, products=products)
             env["RH"] = 1.0001
             env["a_w_ice"] = np.nan
@@ -208,6 +209,6 @@ def _plot_fit(fit_x, fit_y, low, hgh, total_time):
     pyplot.yscale("log")
     pyplot.ylim(fit_y[-1], fit_y[0])
     pyplot.xlim(None, total_time)
-    pyplot.xlabel("time")
+    pyplot.xlabel("time [s]")
     pyplot.ylabel("unfrozen fraction")
     pyplot.grid()
