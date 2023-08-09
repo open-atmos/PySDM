@@ -18,9 +18,15 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     Should be added first in order to ensure the correct attributes are selected.
     """
 
-    def __init__(self, c: float = 8):
-        # default value of c is a very rough estimate
+    def __init__(self, c: float = 8, constant: bool = False):
+        """
+        Parameters:
+            - constant: use a constant relaxation timescale for all droplets
+            - c: relaxation timescale if `constant`, otherwise the proportionality constant
+        """
+        # the default value of c is a very rough estimate
         self.c: float = c
+        self.constant = constant
 
         self.particulator = None
         self.fall_momentum_attr = None
@@ -38,7 +44,10 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         Calculates the relaxation timescale.
         """
         # TODO: this should be done with backend storage functions if possible
-        output[:] = self.c * np.sqrt(radius_storage.to_ndarray())
+        if not self.constant:
+            output[:] = self.c * np.sqrt(radius_storage.to_ndarray())
+        else:
+            output.fill(self.c)
 
     def calculate_scale_factor(self, output, tau_storage):
         # TODO: this should be done with backend storage functions if possible
