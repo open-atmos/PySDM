@@ -120,7 +120,7 @@ def make_freezing_spec_plot(
                 y=qi.squeeze(),
                 text=f"                      {multiplier}x median A",
                 va="bottom",
-                color='black',
+                color="black",
                 axes=prim,
             )
     title = f"$σ_g$=exp({np.log(surf_spec.s_geom):.3g})"
