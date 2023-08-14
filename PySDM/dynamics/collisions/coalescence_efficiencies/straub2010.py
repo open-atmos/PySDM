@@ -17,7 +17,7 @@ class Straub2010Ec:
         self.particulator = builder.particulator
         self.const = self.particulator.formulae.constants
         builder.request_attribute("volume")
-        builder.request_attribute("terminal velocity")
+        builder.request_attribute("relative fall velocity")
         for key in ("Sc", "tmp", "tmp2", "We"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
@@ -30,7 +30,7 @@ class Straub2010Ec:
         self.arrays["tmp"] *= 2
 
         self.arrays["tmp2"].distance(
-            self.particulator.attributes["terminal velocity"], is_first_in_pair
+            self.particulator.attributes["relative fall velocity"], is_first_in_pair
         )
         self.arrays["tmp2"] **= 2
         self.arrays["We"].multiply(

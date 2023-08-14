@@ -132,7 +132,7 @@ jobs:
             python-version: "3.7"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
         with:
@@ -229,7 +229,7 @@ jobs:
       - run: pip install -r tests/devops_tests/requirements.txt
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not run_notebooks" tests/devops_tests
+        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
 
   dist:
     strategy:

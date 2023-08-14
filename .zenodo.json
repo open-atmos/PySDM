@@ -3,7 +3,7 @@
   "description": "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab",
   "creators": [
     {
-      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "affiliation": "AGH University of Krakow, Kraków, Poland",
       "name": "Arabas, Sylwester",
       "orcid": "0000-0003-2361-0082"
     },
@@ -16,6 +16,10 @@
       "affiliation": "Jagiellonian University, Kraków, Poland",
       "name": "Bartman, Piotr",
       "orcid": "0000-0003-0265-6428"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Bhalla, Brady"
     },
     {
       "affiliation": "Jagiellonian University, Kraków, Poland",

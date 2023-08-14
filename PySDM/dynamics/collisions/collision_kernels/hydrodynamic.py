@@ -8,4 +8,6 @@ from PySDM.dynamics.collisions.collision_kernels.impl.parameterized import Param
 
 class Hydrodynamic(Parameterized):  # pylint: disable=too-few-public-methods
     def __init__(self):
-        super().__init__((1, 1, -27, 1.65, -58, 1.9, 15, 1.13, 16.7, 1, 0.004, 4, 8))
+        super().__init__(
+            (1, 1, -27, 1.65, -58, 1.9, 15, 1.13, 16.7, 1, 0.004, 4, 8),
+        )
