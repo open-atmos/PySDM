@@ -3,7 +3,7 @@ import matplotlib
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.deJong_Mackay_2022 import Settings0D, run_box_breakup
+from PySDM_examples.deJong_Mackay_et_al_2023 import Settings0D, run_box_breakup
 
 from PySDM.backends import CPU, GPU
 from PySDM.dynamics.collisions.breakup_fragmentations import Straub2010Nf

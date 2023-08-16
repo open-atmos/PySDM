@@ -31,7 +31,7 @@ TEST_SUITES = {
         "Singer_Ward",
     ],
     "coagulation": ["Bartman_et_al_2021", "Berry_1967", "Shima_et_al_2009"],
-    "breakup": ["Bieli_et_al_2022", "deJong_Mackay_2022", "Srivastava_1982"],
+    "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process": [
         "Morrison_and_Grabowski_2007",
         "Arabas_et_al_2015",
