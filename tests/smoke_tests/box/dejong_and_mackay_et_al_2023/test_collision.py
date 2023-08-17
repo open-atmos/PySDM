@@ -2,7 +2,7 @@
 import os
 
 from matplotlib import pyplot
-from PySDM_examples.deJong_Mackay_2022 import (
+from PySDM_examples.deJong_Mackay_et_al_2023 import (
     Settings0D,
     run_box_breakup,
     run_box_NObreakup,

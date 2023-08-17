@@ -1,8 +1,8 @@
 import pickle as pkl
 
 import numpy as np
-from PySDM_examples.deJong_Mackay_2022.settings_0D import Settings0D
-from PySDM_examples.deJong_Mackay_2022.simulation_0D import run_box_breakup
+from PySDM_examples.deJong_Mackay_et_al_2023.settings_0D import Settings0D
+from PySDM_examples.deJong_Mackay_et_al_2023.simulation_0D import run_box_breakup
 
 from PySDM.dynamics.collisions.breakup_fragmentations import Straub2010Nf
 from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
