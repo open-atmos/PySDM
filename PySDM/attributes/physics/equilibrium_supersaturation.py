@@ -31,5 +31,9 @@ class EquilibriumSupersaturation(DerivedAttribute):
         )
 
         self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
-            self.r_wet.data.data, T=temperature, kp=self.kappa.data.data, rd3=rd3, sgm=sgm
+            self.r_wet.data.data,
+            T=temperature,
+            kp=self.kappa.data.data,
+            rd3=rd3,
+            sgm=sgm,
         )

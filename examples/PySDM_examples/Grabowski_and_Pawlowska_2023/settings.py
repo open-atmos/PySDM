@@ -12,7 +12,7 @@ class Settings:
     def __init__(
         self,
         dt: float,
-        #dz: float,
+        # dz: float,
         n_sd_per_mode: tuple,
         aerosol_modes_by_kappa: Dict[float, Spectrum],
         vertical_velocity: float,
@@ -38,7 +38,7 @@ class Settings:
         )
         self.initial_vapour_mixing_ratio = const.eps * pv0 / (initial_pressure - pv0)
         self.t_max = displacement / vertical_velocity
-        self.timestep = dt #dz / vertical_velocity
+        self.timestep = dt  # dz / vertical_velocity
         self.output_interval = self.timestep
 
     @property

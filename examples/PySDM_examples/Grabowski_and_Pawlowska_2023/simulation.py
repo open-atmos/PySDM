@@ -7,7 +7,10 @@ from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
-from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity, Logarithmic
+from PySDM.initialisation.sampling.spectral_sampling import (
+    ConstantMultiplicity,
+    Logarithmic,
+)
 from PySDM.physics import si
 
 
@@ -21,31 +24,38 @@ class Simulation(BasicSimulation):
             q0=settings.initial_vapour_mixing_ratio,
             T0=settings.initial_temperature,
             w=settings.vertical_velocity,
-            mass_of_dry_air=44*si.kg,
+            mass_of_dry_air=44 * si.kg,
         )
         n_sd = sum(settings.n_sd_per_mode)
         builder = Builder(n_sd=n_sd, backend=CPU(formulae=settings.formulae))
         builder.set_environment(env)
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
-        for attribute in ('critical supersaturation','equilibrium supersaturation', 'critical volume'):
+        for attribute in (
+            "critical supersaturation",
+            "equilibrium supersaturation",
+            "critical volume",
+        ):
             builder.request_attribute(attribute)
 
         volume = env.mass_of_dry_air / settings.initial_air_density
         attributes = {
-            k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "n","kappa")
+            k: np.empty(0)
+            for k in ("dry volume", "kappa times dry volume", "n", "kappa")
         }
         for i, (kappa, spectrum) in enumerate(settings.aerosol_modes_by_kappa.items()):
             sampling = ConstantMultiplicity(spectrum)
-            #sampling = Logarithmic(spectrum)
+            # sampling = Logarithmic(spectrum)
             r_dry, n_per_volume = sampling.sample(settings.n_sd_per_mode[i])
             v_dry = settings.formulae.trivia.volume(radius=r_dry)
-            attributes["n"] = np.append(attributes["n"], n_per_volume*volume)
+            attributes["n"] = np.append(attributes["n"], n_per_volume * volume)
             attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
             attributes["kappa times dry volume"] = np.append(
                 attributes["kappa times dry volume"], v_dry * kappa
-                )
-            attributes["kappa"] = np.append(attributes["kappa"], np.full(settings.n_sd_per_mode[i],kappa))
+            )
+            attributes["kappa"] = np.append(
+                attributes["kappa"], np.full(settings.n_sd_per_mode[i], kappa)
+            )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
             environment=env,
@@ -62,10 +72,14 @@ class Simulation(BasicSimulation):
         self.output_attributes = {
             "volume": tuple([] for _ in range(self.particulator.n_sd)),
             "dry volume": tuple([] for _ in range(self.particulator.n_sd)),
-            "critical supersaturation": tuple([] for _ in range(self.particulator.n_sd)),
-            "equilibrium supersaturation": tuple([] for _ in range(self.particulator.n_sd)),
+            "critical supersaturation": tuple(
+                [] for _ in range(self.particulator.n_sd)
+            ),
+            "equilibrium supersaturation": tuple(
+                [] for _ in range(self.particulator.n_sd)
+            ),
             "critical volume": tuple([] for _ in range(self.particulator.n_sd)),
-            "n": tuple([] for _ in range(self.particulator.n_sd))
+            "n": tuple([] for _ in range(self.particulator.n_sd)),
         }
         self.settings = settings
 

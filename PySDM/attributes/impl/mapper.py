@@ -26,12 +26,14 @@ from PySDM.attributes.physics import (
     WetToCriticalVolumeRatio,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
-from PySDM.attributes.physics.equilibrium_supersaturation import EquilibriumSupersaturation
 from PySDM.attributes.physics.dry_volume import (
     DryVolume,
     DryVolumeDynamic,
     DryVolumeOrganic,
     OrganicFraction,
+)
+from PySDM.attributes.physics.equilibrium_supersaturation import (
+    EquilibriumSupersaturation,
 )
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
 from PySDM.attributes.physics.relative_fall_velocity import RelativeFallMomentum

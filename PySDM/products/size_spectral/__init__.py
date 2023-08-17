@@ -8,9 +8,13 @@ from .arbitrary_moment import (
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
 from .mean_radius_activated import ActivatedMeanRadius
+from .mean_volume_radius import MeanVolumeRadius
 from .number_size_spectrum import NumberSizeSpectrum
 from .particle_concentration import ParticleConcentration, ParticleSpecificConcentration
-from .particle_concentration_activated import ActivatedParticleConcentration, ActivatedParticleSpecificConcentration
+from .particle_concentration_activated import (
+    ActivatedParticleConcentration,
+    ActivatedParticleSpecificConcentration,
+)
 from .particle_size_spectrum import (
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
