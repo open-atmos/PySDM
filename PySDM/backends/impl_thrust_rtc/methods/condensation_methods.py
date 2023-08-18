@@ -28,6 +28,7 @@ class CondensationMethods(
         self.T: Optional[StorageBase] = None
         self.dthd_dt_pred: Optional[StorageBase] = None
         self.dqv_dt_pred: Optional[StorageBase] = None
+        self.drhod_dt_pred: Optional[StorageBase] = None
         self.rhod_mean: Optional[StorageBase] = None
         self.vars: Optional[Dict[str, StorageBase]] = None
         const = self.formulae.constants
@@ -211,6 +212,7 @@ class CondensationMethods(
             (
                 "dthd_dt_pred",
                 "dqv_dt_pred",
+                "drhod_dt_pred",
                 "rhod_mean",
                 "pthd",
                 "thd",
@@ -225,6 +227,7 @@ class CondensationMethods(
             """
             dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
             dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
+            drhod_dt_pred[i] = (prhod[i] - rhod[i]) / dt;
             rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
             RH_max[i] = 0;
         """,
@@ -235,7 +238,7 @@ class CondensationMethods(
                 *CondensationMethods.keys,
                 "dthd_dt_pred",
                 "dqv_dt_pred",
-                "rhod_mean",
+                "drhod_dt_pred",
                 "thd",
                 "qv",
                 "rhod",
@@ -246,11 +249,12 @@ class CondensationMethods(
             f"""
             thd[i] += dt * dthd_dt_pred[i] / 2;
             qv[i] += dt * dqv_dt_pred[i] / 2;
+            rhod[i] += dt * drhod_dt_pred[i] / 2;
 
             T[i] = {phys.state_variable_triplet.T.c_inline(
-                rhod='rhod_mean[i]', thd='thd[i]')};
+                rhod='rhod[i]', thd='thd[i]')};
             p[i] = {phys.state_variable_triplet.p.c_inline(
-                rhod='rhod_mean[i]', T='T[i]', qv='qv[i]')};
+                rhod='rhod[i]', T='T[i]', qv='qv[i]')};
             pv[i] = {phys.state_variable_triplet.pv.c_inline(
                 p='p[i]', qv='qv[i]')};
             lv[i] = {phys.latent_heat.lv.c_inline(
@@ -274,6 +278,7 @@ class CondensationMethods(
             (
                 "dthd_dt_pred",
                 "dqv_dt_pred",
+                "drhod_dt_pred",
                 "rhod_mean",
                 "thd",
                 "qv",
@@ -290,10 +295,11 @@ class CondensationMethods(
             auto dml_dt = (ml_new[i] - ml_old[i]) / dt;
             auto dqv_dt_corr = - dml_dt / (rhod_mean[i] * dv_mean);
             auto dthd_dt_corr = {phys.state_variable_triplet.dthd_dt.c_inline(
-                rhod='rhod_mean[i]', thd='thd[i]', T='T[i]', dqv_dt='dqv_dt_corr', lv='lv[i]')};
+                rhod='rhod[i]', thd='thd[i]', T='T[i]', dqv_dt='dqv_dt_corr', lv='lv[i]')};
 
             thd[i] += dt * (dthd_dt_pred[i] / 2 + dthd_dt_corr);
             qv[i] += dt * (dqv_dt_pred[i] / 2 + dqv_dt_corr);
+            rhod[i] += dt * drhod_dt_pred[i] / 2;
             ml_old[i] = ml_new[i];
         """.replace(
                 "real_type", self._get_c_type()
@@ -351,6 +357,7 @@ class CondensationMethods(
             (
                 self.dthd_dt_pred.data,
                 self.dqv_dt_pred.data,
+                self.drhod_dt_pred.data,
                 self.rhod_mean.data,
                 pthd.data,
                 thd.data,
@@ -373,7 +380,7 @@ class CondensationMethods(
                     *self.vars.values(),
                     self.dthd_dt_pred.data,
                     self.dqv_dt_pred.data,
-                    self.rhod_mean.data,
+                    self.drhod_dt_pred.data,
                     pthd.data,
                     pqv.data,
                     rhod.data,
@@ -402,6 +409,7 @@ class CondensationMethods(
                 (
                     self.dthd_dt_pred.data,
                     self.dqv_dt_pred.data,
+                    self.drhod_dt_pred.data,
                     self.rhod_mean.data,
                     pthd.data,
                     pqv.data,
@@ -431,12 +439,10 @@ class CondensationMethods(
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters
-        self.ml_old = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
-        self.ml_new = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
-        self.T = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
-        self.dthd_dt_pred = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
-        self.dqv_dt_pred = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
-        self.rhod_mean = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
+        for attr in (
+            "ml_old", "ml_new", "T", "dthd_dt_pred", "dqv_dt_pred", "drhod_dt_pred", "rhod_mean"
+        ):
+            setattr(self, attr, self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype()))
         self.vars = {
             key: self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype()).data
             for key in CondensationMethods.keys
