@@ -115,7 +115,7 @@ class TestFig1:
         )
 
         # act
-        peaks = signal.find_peaks(RH_eq)
+        peaks, _ = signal.find_peaks(RH_eq)
 
         # assert
         assert np.argmax(RH_eq) == (np.abs(R_WET - maximum_x)).argmin()
