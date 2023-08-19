@@ -38,7 +38,7 @@ from warnings import warn
 
 from PySDM.backends.impl_thrust_rtc.test_helpers.flag import fakeThrustRTC
 
-if not fakeThrustRTC:  # TODO #325: move to GPU backend ctor
+if not fakeThrustRTC:
     try:
         # noinspection PyUnresolvedReferences
         import ThrustRTC as trtc  # pylint: disable=unused-import

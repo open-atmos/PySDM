@@ -526,14 +526,14 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             Impl.divide_if_not_zero(self, divisor)
             return self
 
-        def fill(self, value):
-            if isinstance(value, Storage):
-                trtc.Copy(value.data, self.data)
+        def fill(self, other):
+            if isinstance(other, Storage):
+                trtc.Copy(other.data, self.data)
             else:
-                if isinstance(value, int):
-                    dvalue = trtc.DVInt64(value)
-                elif isinstance(value, float):
-                    dvalue = BACKEND._get_floating_point(value)
+                if isinstance(other, int):
+                    dvalue = trtc.DVInt64(other)
+                elif isinstance(other, float):
+                    dvalue = BACKEND._get_floating_point(other)
                 else:
                     raise TypeError(&#34;Only Storage, int and float are supported.&#34;)
                 trtc.Fill(self.data, dvalue)
@@ -1042,14 +1042,14 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             Impl.divide_if_not_zero(self, divisor)
             return self
 
-        def fill(self, value):
-            if isinstance(value, Storage):
-                trtc.Copy(value.data, self.data)
+        def fill(self, other):
+            if isinstance(other, Storage):
+                trtc.Copy(other.data, self.data)
             else:
-                if isinstance(value, int):
-                    dvalue = trtc.DVInt64(value)
-                elif isinstance(value, float):
-                    dvalue = BACKEND._get_floating_point(value)
+                if isinstance(other, int):
+                    dvalue = trtc.DVInt64(other)
+                elif isinstance(other, float):
+                    dvalue = BACKEND._get_floating_point(other)
                 else:
                     raise TypeError(&#34;Only Storage, int and float are supported.&#34;)
                 trtc.Fill(self.data, dvalue)

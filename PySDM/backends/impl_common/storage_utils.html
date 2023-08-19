@@ -85,6 +85,10 @@ class StorageBase:
     def upload(self, data):
         raise NotImplementedError()
 
+    @abstractmethod
+    def fill(self, other):
+        raise NotImplementedError()
+
 
 def get_data_from_ndarray(array, storage_class: Type[StorageBase], copy_fun):
     if str(array.dtype).startswith(&#34;int&#34;):
@@ -204,6 +208,10 @@ def empty(shape, dtype, storage_class: Type[StorageBase]):
 
     @abstractmethod
     def upload(self, data):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def fill(self, other):
         raise NotImplementedError()</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -212,6 +220,20 @@ def empty(shape, dtype, storage_class: Type[StorageBase]):
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.backends.impl_common.storage_utils.StorageBase.fill"><code class="name flex">
+<span>def <span class="ident">fill</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def fill(self, other):
+    raise NotImplementedError()</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_common.storage_utils.StorageBase.to_ndarray"><code class="name flex">
 <span>def <span class="ident">to_ndarray</span></span>(<span>self)</span>
 </code></dt>
@@ -301,6 +323,7 @@ def urand(self, generator):
 <li>
 <h4><code><a title="PySDM.backends.impl_common.storage_utils.StorageBase" href="#PySDM.backends.impl_common.storage_utils.StorageBase">StorageBase</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.backends.impl_common.storage_utils.StorageBase.fill" href="#PySDM.backends.impl_common.storage_utils.StorageBase.fill">fill</a></code></li>
 <li><code><a title="PySDM.backends.impl_common.storage_utils.StorageBase.to_ndarray" href="#PySDM.backends.impl_common.storage_utils.StorageBase.to_ndarray">to_ndarray</a></code></li>
 <li><code><a title="PySDM.backends.impl_common.storage_utils.StorageBase.upload" href="#PySDM.backends.impl_common.storage_utils.StorageBase.upload">upload</a></code></li>
 <li><code><a title="PySDM.backends.impl_common.storage_utils.StorageBase.urand" href="#PySDM.backends.impl_common.storage_utils.StorageBase.urand">urand</a></code></li>
