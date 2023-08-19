@@ -55,14 +55,14 @@ class Simulation:
         if self.settings.processes["condensation"]:
             kwargs = {}
             if not self.settings.condensation_adaptive:
-                kwargs["substeps"]=self.settings.condensation_substeps,
+                kwargs["substeps"] = (self.settings.condensation_substeps,)
             condensation = Condensation(
                 rtol_x=self.settings.condensation_rtol_x,
                 rtol_thd=self.settings.condensation_rtol_thd,
                 adaptive=self.settings.condensation_adaptive,
                 dt_cond_range=self.settings.condensation_dt_cond_range,
                 schedule=self.settings.condensation_schedule,
-                **kwargs
+                **kwargs,
             )
             builder.add_dynamic(condensation)
         displacement = None
