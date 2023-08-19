@@ -17,7 +17,7 @@ class TestParcelSanityChecks:
     @staticmethod
     @pytest.mark.parametrize("backend_class", (
         CPU,
-        pytest.param(GPU, marks=pytest.mark.xfail(strict=True))
+        pytest.param(GPU, marks=pytest.mark.xfail(strict=True))  # TODO #1117 (works with CUDA!)
     ))
     def test_noisy_supersaturation_profiles(
         backend_class, plot=False
