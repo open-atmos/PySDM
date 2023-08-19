@@ -1,9 +1,10 @@
 """ test based on the README parcel snippet """
-
+import pytest
 from matplotlib import pyplot
 from scipy import signal
 
 from PySDM import Builder, Formulae, products
+from PySDM.backends import CPU, GPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
@@ -12,6 +13,13 @@ from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
 
 
+@pytest.mark.parametrize(
+    "backend_class",
+    (
+        CPU,
+        pytest.param(GPU, marks=pytest.mark.xfail(strict=True)),
+    ),  # TODO #1117 (works on GPU, fails with FakeThrust)
+)
 def test_parcel_hello_world(
     backend_class, plot=False
 ):  # pylint: disable=too-many-locals
