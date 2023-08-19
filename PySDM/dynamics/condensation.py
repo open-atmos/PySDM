@@ -30,7 +30,9 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         update_thd: bool = True,
     ):
         if adaptive and substeps != 1:
-            raise ValueError("if specifying substeps count manually, adaptivity must be disabled")
+            raise ValueError(
+                "if specifying substeps count manually, adaptivity must be disabled"
+            )
 
         self.particulator = None
         self.enable = True

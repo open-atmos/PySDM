@@ -3,26 +3,31 @@ import pytest
 from matplotlib import pyplot
 from scipy import signal
 
-from PySDM import Formulae, products, Builder
+from PySDM import Builder, Formulae, products
 from PySDM.backends import CPU, GPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
+from PySDM.environments import Parcel
 from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra import Lognormal
-from PySDM.environments import Parcel
 from PySDM.physics import si
 
 
 class TestParcelSanityChecks:
     @staticmethod
-    @pytest.mark.parametrize("backend_class", (
-        CPU,
-        pytest.param(GPU, marks=pytest.mark.xfail(strict=True))  # TODO #1117 (works with CUDA!)
-    ))
+    @pytest.mark.parametrize(
+        "backend_class",
+        (
+            CPU,
+            pytest.param(
+                GPU, marks=pytest.mark.xfail(strict=True)
+            ),  # TODO #1117 (works with CUDA!)
+        ),
+    )
     def test_noisy_supersaturation_profiles(
         backend_class, plot=False
     ):  # pylint: disable=too-many-locals
-        """ cases found using the README parcel snippet """
+        """cases found using the README parcel snippet"""
         # arrange
         env = Parcel(
             dt=0.25 * si.s,
@@ -45,14 +50,18 @@ class TestParcelSanityChecks:
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
 
-        r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+        r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(
+            n_sd
+        )
         v_dry = formulae.trivia.volume(radius=r_dry)
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry
         )
 
         attributes = {
-            "n": discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
+            "n": discretise_multiplicities(
+                specific_concentration * env.mass_of_dry_air
+            ),
             "dry volume": v_dry,
             "kappa times dry volume": kappa * v_dry,
             "volume": formulae.trivia.volume(radius=r_wet),
@@ -62,11 +71,15 @@ class TestParcelSanityChecks:
             attributes,
             products=(
                 products.PeakSupersaturation(name="S_max", unit="%"),
-                products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
+                products.EffectiveRadius(
+                    name="r_eff", unit="um", radius_range=cloud_range
+                ),
                 products.ParticleConcentration(
                     name="n_c_cm3", unit="cm^-3", radius_range=cloud_range
                 ),
-                products.WaterMixingRatio(name="ql", unit="g/kg", radius_range=cloud_range),
+                products.WaterMixingRatio(
+                    name="ql", unit="g/kg", radius_range=cloud_range
+                ),
                 products.ParcelDisplacement(name="z"),
             ),
         )
@@ -107,33 +120,35 @@ class TestParcelSanityChecks:
     @pytest.mark.parametrize("update_thd", (True, False))
     @pytest.mark.parametrize("substeps", (1, 2))
     def test_how_condensation_modifies_args(backend_class, update_thd, substeps):
-        """ asserting that condensation modifies env thd and qv only, not rhod """
+        """asserting that condensation modifies env thd and qv only, not rhod"""
         # arrange
         builder = Builder(n_sd=10, backend=backend_class())
-        builder.set_environment(Parcel(
-            dt=1 * si.s,
-            mass_of_dry_air=1 * si.mg,
-            p0=1000 * si.hPa,
-            q0=22.2 * si.g/si.kg,
-            T0=300 * si.K,
-            w=1 * si.m/si.s
-        ))
+        builder.set_environment(
+            Parcel(
+                dt=1 * si.s,
+                mass_of_dry_air=1 * si.mg,
+                p0=1000 * si.hPa,
+                q0=22.2 * si.g / si.kg,
+                T0=300 * si.K,
+                w=1 * si.m / si.s,
+            )
+        )
         builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation(
-            update_thd=update_thd,
-            substeps=substeps,
-            adaptive=False,
-        ))
+        builder.add_dynamic(
+            Condensation(
+                update_thd=update_thd,
+                substeps=substeps,
+                adaptive=False,
+            )
+        )
         particulator = builder.build(
             products=(),
             attributes=builder.particulator.environment.init_attributes(
-                kappa=1,
-                r_dry=.25 * si.um,
-                n_in_dv=1000
-            )
+                kappa=1, r_dry=0.25 * si.um, n_in_dv=1000
+            ),
         )
 
-        particulator.dynamics['AmbientThermodynamics']()
+        particulator.dynamics["AmbientThermodynamics"]()
 
         cell_id = 0
         env = particulator.environment
@@ -146,7 +161,7 @@ class TestParcelSanityChecks:
         env_qv_old = env["qv"][cell_id]
 
         # act
-        particulator.dynamics['Condensation']()
+        particulator.dynamics["Condensation"]()
 
         # assert
         assert env_rhod_old == env["rhod"]
