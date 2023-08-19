@@ -61,4 +61,4 @@ class TestCoolingRate:
         cr = particulator.products["cooling rate"].get()
 
         # assert
-        np.testing.assert_allclose(actual=cr, desired=dT / dt)
+        np.testing.assert_allclose(actual=cr, desired=-dT / dt)

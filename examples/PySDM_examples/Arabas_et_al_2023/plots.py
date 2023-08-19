@@ -1,8 +1,8 @@
 import matplotlib
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.UIUC_2021.curved_text import CurvedText
-from PySDM_examples.UIUC_2021.frozen_fraction import FrozenFraction
+from PySDM_examples.Arabas_et_al_2023.curved_text import CurvedText
+from PySDM_examples.Arabas_et_al_2023.frozen_fraction import FrozenFraction
 
 from PySDM.physics import si
 
@@ -97,7 +97,7 @@ def make_freezing_spec_plot(
     twin.set_ylabel("frozen fraction")
 
     T = np.linspace(max(datum["T"]), min(datum["T"]))
-    for multiplier, color in {0.1: "orange", 1: "red", 10: "brown"}.items():
+    for multiplier, color in {0.1: "yellow", 1: "brown", 10: "orange"}.items():
         qi = (
             ff.ff2qi(
                 formulae.freezing_temperature_spectrum.cdf(
@@ -109,7 +109,7 @@ def make_freezing_spec_plot(
         prim.plot(
             T,
             qi,
-            label="" if multiplier != 1 else "singular CDF for median surface",
+            label="" if multiplier != 1 else "singular CDFs for median surface",
             linewidth=2.5,
             color=color,
             linestyle="--",
@@ -118,9 +118,9 @@ def make_freezing_spec_plot(
             _ = CurvedText(
                 x=T.squeeze(),
                 y=qi.squeeze(),
-                text=f"              {multiplier}x median A",
+                text=f"                      {multiplier}x median A",
                 va="bottom",
-                color=color,
+                color="black",
                 axes=prim,
             )
     title = f"$σ_g$=exp({np.log(surf_spec.s_geom):.3g})"
