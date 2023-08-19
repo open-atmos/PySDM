@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM_examples.UIUC_2021.plots API documentation</title>
+<title>PySDM_examples.Arabas_et_al_2023.plots API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM_examples.UIUC_2021.plots</code></h1>
+<h1 class="title">Module <code>PySDM_examples.Arabas_et_al_2023.plots</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -29,8 +29,8 @@
 <pre><code class="python">import matplotlib
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.UIUC_2021.curved_text import CurvedText
-from PySDM_examples.UIUC_2021.frozen_fraction import FrozenFraction
+from PySDM_examples.Arabas_et_al_2023.curved_text import CurvedText
+from PySDM_examples.Arabas_et_al_2023.frozen_fraction import FrozenFraction
 
 from PySDM.physics import si
 
@@ -125,7 +125,7 @@ def make_freezing_spec_plot(
     twin.set_ylabel(&#34;frozen fraction&#34;)
 
     T = np.linspace(max(datum[&#34;T&#34;]), min(datum[&#34;T&#34;]))
-    for multiplier, color in {0.1: &#34;orange&#34;, 1: &#34;red&#34;, 10: &#34;brown&#34;}.items():
+    for multiplier, color in {0.1: &#34;yellow&#34;, 1: &#34;brown&#34;, 10: &#34;orange&#34;}.items():
         qi = (
             ff.ff2qi(
                 formulae.freezing_temperature_spectrum.cdf(
@@ -137,7 +137,7 @@ def make_freezing_spec_plot(
         prim.plot(
             T,
             qi,
-            label=&#34;&#34; if multiplier != 1 else &#34;singular CDF for median surface&#34;,
+            label=&#34;&#34; if multiplier != 1 else &#34;singular CDFs for median surface&#34;,
             linewidth=2.5,
             color=color,
             linestyle=&#34;--&#34;,
@@ -146,9 +146,9 @@ def make_freezing_spec_plot(
             _ = CurvedText(
                 x=T.squeeze(),
                 y=qi.squeeze(),
-                text=f&#34;              {multiplier}x median A&#34;,
+                text=f&#34;                      {multiplier}x median A&#34;,
                 va=&#34;bottom&#34;,
-                color=color,
+                color=&#34;black&#34;,
                 axes=prim,
             )
     title = f&#34;$σ_g$=exp({np.log(surf_spec.s_geom):.3g})&#34;
@@ -210,7 +210,7 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM_examples.UIUC_2021.plots.make_freezing_spec_plot"><code class="name flex">
+<dt id="PySDM_examples.Arabas_et_al_2023.plots.make_freezing_spec_plot"><code class="name flex">
 <span>def <span class="ident">make_freezing_spec_plot</span></span>(<span>data, formulae, volume, droplet_volume, total_particle_number, surf_spec, cooling_rate_K_min=None)</span>
 </code></dt>
 <dd>
@@ -258,7 +258,7 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
     twin.set_ylabel(&#34;frozen fraction&#34;)
 
     T = np.linspace(max(datum[&#34;T&#34;]), min(datum[&#34;T&#34;]))
-    for multiplier, color in {0.1: &#34;orange&#34;, 1: &#34;red&#34;, 10: &#34;brown&#34;}.items():
+    for multiplier, color in {0.1: &#34;yellow&#34;, 1: &#34;brown&#34;, 10: &#34;orange&#34;}.items():
         qi = (
             ff.ff2qi(
                 formulae.freezing_temperature_spectrum.cdf(
@@ -270,7 +270,7 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
         prim.plot(
             T,
             qi,
-            label=&#34;&#34; if multiplier != 1 else &#34;singular CDF for median surface&#34;,
+            label=&#34;&#34; if multiplier != 1 else &#34;singular CDFs for median surface&#34;,
             linewidth=2.5,
             color=color,
             linestyle=&#34;--&#34;,
@@ -279,9 +279,9 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
             _ = CurvedText(
                 x=T.squeeze(),
                 y=qi.squeeze(),
-                text=f&#34;              {multiplier}x median A&#34;,
+                text=f&#34;                      {multiplier}x median A&#34;,
                 va=&#34;bottom&#34;,
-                color=color,
+                color=&#34;black&#34;,
                 axes=prim,
             )
     title = f&#34;$σ_g$=exp({np.log(surf_spec.s_geom):.3g})&#34;
@@ -295,7 +295,7 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
     prim.grid()</code></pre>
 </details>
 </dd>
-<dt id="PySDM_examples.UIUC_2021.plots.make_pdf_plot"><code class="name flex">
+<dt id="PySDM_examples.Arabas_et_al_2023.plots.make_pdf_plot"><code class="name flex">
 <span>def <span class="ident">make_pdf_plot</span></span>(<span>A_spec, Shima_T_fz, A_range, T_range)</span>
 </code></dt>
 <dd>
@@ -345,7 +345,7 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
     pyplot.grid()</code></pre>
 </details>
 </dd>
-<dt id="PySDM_examples.UIUC_2021.plots.make_sampling_plot"><code class="name flex">
+<dt id="PySDM_examples.Arabas_et_al_2023.plots.make_sampling_plot"><code class="name flex">
 <span>def <span class="ident">make_sampling_plot</span></span>(<span>data)</span>
 </code></dt>
 <dd>
@@ -371,7 +371,7 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
         axs[row, col].set_ylabel(&#34;n&#34;)</code></pre>
 </details>
 </dd>
-<dt id="PySDM_examples.UIUC_2021.plots.make_temperature_plot"><code class="name flex">
+<dt id="PySDM_examples.Arabas_et_al_2023.plots.make_temperature_plot"><code class="name flex">
 <span>def <span class="ident">make_temperature_plot</span></span>(<span>data)</span>
 </code></dt>
 <dd>
@@ -423,15 +423,15 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM_examples.UIUC_2021" href="index.html">PySDM_examples.UIUC_2021</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023" href="index.html">PySDM_examples.Arabas_et_al_2023</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM_examples.UIUC_2021.plots.make_freezing_spec_plot" href="#PySDM_examples.UIUC_2021.plots.make_freezing_spec_plot">make_freezing_spec_plot</a></code></li>
-<li><code><a title="PySDM_examples.UIUC_2021.plots.make_pdf_plot" href="#PySDM_examples.UIUC_2021.plots.make_pdf_plot">make_pdf_plot</a></code></li>
-<li><code><a title="PySDM_examples.UIUC_2021.plots.make_sampling_plot" href="#PySDM_examples.UIUC_2021.plots.make_sampling_plot">make_sampling_plot</a></code></li>
-<li><code><a title="PySDM_examples.UIUC_2021.plots.make_temperature_plot" href="#PySDM_examples.UIUC_2021.plots.make_temperature_plot">make_temperature_plot</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_freezing_spec_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_freezing_spec_plot">make_freezing_spec_plot</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_pdf_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_pdf_plot">make_pdf_plot</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_sampling_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_sampling_plot">make_sampling_plot</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_temperature_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_temperature_plot">make_temperature_plot</a></code></li>
 </ul>
 </li>
 </ul>

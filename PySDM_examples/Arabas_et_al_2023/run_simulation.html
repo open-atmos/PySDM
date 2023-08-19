@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM_examples.UIUC_2021.commons API documentation</title>
-<meta name="description" content="ABIFM and INAS parameters and other constants" />
+<title>PySDM_examples.Arabas_et_al_2023.run_simulation API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,37 +19,47 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM_examples.UIUC_2021.commons</code></h1>
+<h1 class="title">Module <code>PySDM_examples.Arabas_et_al_2023.run_simulation</code></h1>
 </header>
 <section id="section-intro">
-<p>ABIFM and INAS parameters and other constants</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34; ABIFM and INAS parameters and other constants &#34;&#34;&#34;
+<pre><code class="python">import numpy as np
 
-from PySDM import Formulae
-from PySDM.physics import si
 
-FREEZING_CONSTANTS = {
-    &#34;dust&#34;: {
-        &#34;NIEMAND_A&#34;: -0.517,
-        &#34;NIEMAND_B&#34;: 8.934,
-        &#34;ABIFM_M&#34;: 22.62,
-        &#34;ABIFM_C&#34;: -1.35,
-    },
-    &#34;illite&#34;: {&#34;ABIFM_M&#34;: 54.48, &#34;ABIFM_C&#34;: -10.67},
-}
+def update_thermo(particulator, T):
+    env = particulator.environment
+    svp = particulator.formulae.saturation_vapour_pressure
+    const = particulator.formulae.constants
 
-COOLING_RATES = (3.75 * si.K / si.min, 0.75 * si.K / si.min, 0.15 * si.K / si.min)
+    env[&#34;T&#34;] = T
+    env[&#34;a_w_ice&#34;] = svp.ice_Celsius(T - const.T0) / svp.pvs_Celsius(T - const.T0)
 
-BEST_FIT_LN_S_GEOM = 0.25
 
-LOGNORMAL_MODE_SURF_A = Formulae().trivia.sphere_surface(diameter=0.74 * si.um)
-LOGNORMAL_SGM_G = 2.55
-
-TEMP_RANGE = (250 * si.K, 230 * si.K)</code></pre>
+def run_simulation(particulator, temperature_profile, n_steps):
+    output = {
+        &#34;products&#34;: {k: [] for k in particulator.products.keys()},
+        &#34;attributes&#34;: [],
+    }
+    for step in range(n_steps + 1):
+        if step != 0:
+            update_thermo(
+                particulator, T=temperature_profile((step - 0.5) * particulator.dt)
+            )
+            particulator.run(step - particulator.n_steps)
+            update_thermo(particulator, T=temperature_profile(step * particulator.dt))
+            output[&#34;frozen&#34;].append(particulator.attributes[&#34;volume&#34;].to_ndarray() &lt; 0)
+        else:
+            output[&#34;spectrum&#34;] = {}
+            output[&#34;frozen&#34;] = [np.full(particulator.n_sd, False)]
+            for k in (&#34;n&#34;, &#34;freezing temperature&#34;, &#34;immersed surface area&#34;):
+                if k in particulator.attributes:
+                    output[&#34;spectrum&#34;][k] = particulator.attributes[k].to_ndarray()
+        for k, v in particulator.products.items():
+            output[&#34;products&#34;][k].append(v.get() + 0)
+    return output</code></pre>
 </details>
 </section>
 <section>
@@ -57,6 +67,60 @@ TEMP_RANGE = (250 * si.K, 230 * si.K)</code></pre>
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PySDM_examples.Arabas_et_al_2023.run_simulation.run_simulation"><code class="name flex">
+<span>def <span class="ident">run_simulation</span></span>(<span>particulator, temperature_profile, n_steps)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run_simulation(particulator, temperature_profile, n_steps):
+    output = {
+        &#34;products&#34;: {k: [] for k in particulator.products.keys()},
+        &#34;attributes&#34;: [],
+    }
+    for step in range(n_steps + 1):
+        if step != 0:
+            update_thermo(
+                particulator, T=temperature_profile((step - 0.5) * particulator.dt)
+            )
+            particulator.run(step - particulator.n_steps)
+            update_thermo(particulator, T=temperature_profile(step * particulator.dt))
+            output[&#34;frozen&#34;].append(particulator.attributes[&#34;volume&#34;].to_ndarray() &lt; 0)
+        else:
+            output[&#34;spectrum&#34;] = {}
+            output[&#34;frozen&#34;] = [np.full(particulator.n_sd, False)]
+            for k in (&#34;n&#34;, &#34;freezing temperature&#34;, &#34;immersed surface area&#34;):
+                if k in particulator.attributes:
+                    output[&#34;spectrum&#34;][k] = particulator.attributes[k].to_ndarray()
+        for k, v in particulator.products.items():
+            output[&#34;products&#34;][k].append(v.get() + 0)
+    return output</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Arabas_et_al_2023.run_simulation.update_thermo"><code class="name flex">
+<span>def <span class="ident">update_thermo</span></span>(<span>particulator, T)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_thermo(particulator, T):
+    env = particulator.environment
+    svp = particulator.formulae.saturation_vapour_pressure
+    const = particulator.formulae.constants
+
+    env[&#34;T&#34;] = T
+    env[&#34;a_w_ice&#34;] = svp.ice_Celsius(T - const.T0) / svp.pvs_Celsius(T - const.T0)</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -69,7 +133,13 @@ TEMP_RANGE = (250 * si.K, 230 * si.K)</code></pre>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM_examples.UIUC_2021" href="index.html">PySDM_examples.UIUC_2021</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023" href="index.html">PySDM_examples.Arabas_et_al_2023</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.run_simulation.run_simulation" href="#PySDM_examples.Arabas_et_al_2023.run_simulation.run_simulation">run_simulation</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.run_simulation.update_thermo" href="#PySDM_examples.Arabas_et_al_2023.run_simulation.update_thermo">update_thermo</a></code></li>
 </ul>
 </li>
 </ul>
