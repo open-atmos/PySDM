@@ -123,8 +123,7 @@ class CondensationMethods(BackendMethods):
                 dthd_dt = (pthd[cell_id] - thd[cell_id]) / timestep
                 dqv_dt = (pqv[cell_id] - qv[cell_id]) / timestep
                 drhod_dt = (prhod[cell_id] - rhod[cell_id]) / timestep
-                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
-                md = rhod_mean * dv_mean
+                md = (prhod[cell_id] + rhod[cell_id]) / 2 * dv_mean
 
                 (
                     success_in_cell,
