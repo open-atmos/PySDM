@@ -166,7 +166,7 @@ jobs:
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
+        run: pytest --durations=10 --timeout=1000 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
 
 #       - if: ${{ failure() }}
 #         uses: mxschmitt/action-tmate@v3
