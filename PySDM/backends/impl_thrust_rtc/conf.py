@@ -36,4 +36,4 @@ else:
 NICE_THRUST_FLAGS = {
     "wait": False,
     "debug_print": False,
-}  # TODO #325: move to GPU backend ctor
+}  # TODO #1120: move to GPU backend ctor
