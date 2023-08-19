@@ -56,6 +56,10 @@ class StorageBase:
     def upload(self, data):
         raise NotImplementedError()
 
+    @abstractmethod
+    def fill(self, other):
+        raise NotImplementedError()
+
 
 def get_data_from_ndarray(array, storage_class: Type[StorageBase], copy_fun):
     if str(array.dtype).startswith("int"):
