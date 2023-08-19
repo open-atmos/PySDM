@@ -102,7 +102,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
-        """ Updates droplet volumes by simulating condensation driven by prior changes
+        """Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
           the dry-air density (theta and qv should not be changed by other dynamics).
