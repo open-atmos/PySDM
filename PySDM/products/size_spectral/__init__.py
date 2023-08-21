@@ -5,6 +5,7 @@ from .arbitrary_moment import (
     VolumeFirstMoment,
     ZerothMoment,
 )
+from .size_standard_deviation import RadiusStandardDeviation, AreaStandardDeviation, VolumeStandardDeviation
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
 from .mean_radius_activated import ActivatedMeanRadius
