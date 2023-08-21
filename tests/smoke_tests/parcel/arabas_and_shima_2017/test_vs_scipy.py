@@ -7,7 +7,7 @@ from PySDM_examples.Bartman_2020_MasterThesis.fig_5_SCIPY_VS_ADAPTIVE import (
 )
 
 rtols = (1e-2,)
-schemes = ("CPU", "SciPy") # ,'GPU')  # TODO #588
+schemes = ("CPU", "SciPy")  # ,'GPU')  # TODO #588
 setups_num = len(setups)
 
 
