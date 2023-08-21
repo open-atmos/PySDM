@@ -122,8 +122,8 @@ class CondensationMethods(BackendMethods):
 
                 dthd_dt = (pthd[cell_id] - thd[cell_id]) / timestep
                 dqv_dt = (pqv[cell_id] - qv[cell_id]) / timestep
-                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
-                md = rhod_mean * dv_mean
+                drhod_dt = (prhod[cell_id] - rhod[cell_id]) / timestep
+                md = (prhod[cell_id] + rhod[cell_id]) / 2 * dv_mean
 
                 (
                     success_in_cell,
@@ -144,10 +144,11 @@ class CondensationMethods(BackendMethods):
                     f_org,
                     thd[cell_id],
                     qv[cell_id],
+                    rhod[cell_id],
                     dthd_dt,
                     dqv_dt,
+                    drhod_dt,
                     md,
-                    rhod_mean,
                     rtol_x,
                     rtol_thd,
                     timestep,
@@ -260,10 +261,11 @@ class CondensationMethods(BackendMethods):
             f_org,
             thd,
             qv,
+            rhod,
             dthd_dt_pred,
             dqv_dt_pred,
+            drhod_dt,
             m_d,
-            rhod_mean,
             rtol_x,
             timestep,
             n_substeps,
@@ -278,9 +280,10 @@ class CondensationMethods(BackendMethods):
                 # note: no example yet showing that the trapezoidal scheme brings any improvement
                 thd += timestep * dthd_dt_pred / 2
                 qv += timestep * dqv_dt_pred / 2
+                rhod += timestep * drhod_dt / 2
 
-                T = phys_T(rhod_mean, thd)
-                p = phys_p(rhod_mean, T, qv)
+                T = phys_T(rhod, thd)
+                p = phys_p(rhod, T, qv)
                 pv = phys_pv(p, qv)
                 lv = phys_lv(T)
                 pvs = phys_pvs_C(T - const.T0)
@@ -315,11 +318,12 @@ class CondensationMethods(BackendMethods):
                 dml_dt = (ml_new - ml_old) / timestep
                 dqv_dt_corr = -dml_dt / m_d
                 dthd_dt_corr = phys_dthd_dt(
-                    rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv
+                    rhod=rhod, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv
                 )
 
                 thd += timestep * (dthd_dt_pred / 2 + dthd_dt_corr)
                 qv += timestep * (dqv_dt_pred / 2 + dqv_dt_corr)
+                rhod += timestep * drhod_dt / 2
                 ml_old = ml_new
                 count_activating += n_activating
                 count_deactivating += n_deactivating
@@ -661,10 +665,11 @@ class CondensationMethods(BackendMethods):
             f_org,
             thd,
             qv,
+            rhod,
             dthd_dt,
             dqv_dt,
+            drhod_dt,
             m_d,
-            rhod_mean,
             rtol_x,
             rtol_thd,
             timestep,
@@ -680,10 +685,11 @@ class CondensationMethods(BackendMethods):
                 f_org,
                 thd,
                 qv,
+                rhod,
                 dthd_dt,
                 dqv_dt,
+                drhod_dt,
                 m_d,
-                rhod_mean,
                 rtol_x,
             )
             success = True

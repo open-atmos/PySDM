@@ -102,6 +102,14 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+        """Updates droplet volumes by simulating condensation driven by prior changes
+          in environment thermodynamic state, updates the environment state.
+        In the case of parcel environment, condensation is driven solely by changes in
+          the dry-air density (theta and qv should not be changed by other dynamics).
+        In the case of prescribed-flow/kinematic environments, the dry-air density is
+          constant in time throughout the simulation.
+        This function should only change environment's `thd` and `qv` (and not `rhod`).
+        """
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -129,6 +137,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes["cell id"],
         )
+        self.attributes.mark_updated("volume")
 
     def collision_coalescence_breakup(
         self,

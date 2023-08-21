@@ -20,7 +20,7 @@ from PySDM.physics import si
     "rtol_thd",
     (
         pytest.param(1e-6, marks=pytest.mark.xfail(strict=True)),
-        pytest.param(1e-7, marks=pytest.mark.xfail(strict=True)),
+        1e-7,
         1e-8,
         1e-9,
     ),

@@ -53,13 +53,16 @@ class Simulation:
         if self.settings.processes["fluid advection"]:
             builder.add_dynamic(AmbientThermodynamics())
         if self.settings.processes["condensation"]:
+            kwargs = {}
+            if not self.settings.condensation_adaptive:
+                kwargs["substeps"] = (self.settings.condensation_substeps,)
             condensation = Condensation(
                 rtol_x=self.settings.condensation_rtol_x,
                 rtol_thd=self.settings.condensation_rtol_thd,
                 adaptive=self.settings.condensation_adaptive,
-                substeps=self.settings.condensation_substeps,
                 dt_cond_range=self.settings.condensation_dt_cond_range,
                 schedule=self.settings.condensation_schedule,
+                **kwargs,
             )
             builder.add_dynamic(condensation)
         displacement = None
