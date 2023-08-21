@@ -5,7 +5,6 @@ from .arbitrary_moment import (
     VolumeFirstMoment,
     ZerothMoment,
 )
-from .size_standard_deviation import RadiusStandardDeviation, AreaStandardDeviation, VolumeStandardDeviation
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
 from .mean_radius_activated import ActivatedMeanRadius
@@ -25,6 +24,11 @@ from .particle_volume_versus_radius_logarithm_spectrum import (
 )
 from .radius_binned_number_averaged_terminal_velocity import (
     RadiusBinnedNumberAveragedTerminalVelocity,
+)
+from .size_standard_deviation import (
+    AreaStandardDeviation,
+    RadiusStandardDeviation,
+    VolumeStandardDeviation,
 )
 from .total_particle_concentration import TotalParticleConcentration
 from .total_particle_specific_concentration import TotalParticleSpecificConcentration
