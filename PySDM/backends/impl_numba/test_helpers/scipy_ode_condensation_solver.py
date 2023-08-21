@@ -15,7 +15,7 @@ from PySDM.physics.constants_defaults import PI_4_3, T0, rho_w
 
 idx_thd = 0
 idx_x = 1
-rtol = 1e-6
+rtol = 1e-5
 
 
 def patch_particulator(particulator):
