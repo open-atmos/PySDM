@@ -131,6 +131,14 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+        &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
+          in environment thermodynamic state, updates the environment state.
+        In the case of parcel environment, condensation is driven solely by changes in
+          the dry-air density (theta and qv should not be changed by other dynamics).
+        In the case of prescribed-flow/kinematic environments, the dry-air density is
+          constant in time throughout the simulation.
+        This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+        &#34;&#34;&#34;
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -158,6 +166,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes[&#34;cell id&#34;],
         )
+        self.attributes.mark_updated(&#34;volume&#34;)
 
     def collision_coalescence_breakup(
         self,
@@ -564,6 +573,14 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+        &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
+          in environment thermodynamic state, updates the environment state.
+        In the case of parcel environment, condensation is driven solely by changes in
+          the dry-air density (theta and qv should not be changed by other dynamics).
+        In the case of prescribed-flow/kinematic environments, the dry-air density is
+          constant in time throughout the simulation.
+        This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+        &#34;&#34;&#34;
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -591,6 +608,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes[&#34;cell id&#34;],
         )
+        self.attributes.mark_updated(&#34;volume&#34;)
 
     def collision_coalescence_breakup(
         self,
@@ -1101,12 +1119,26 @@ def n_sd(self) -&gt; int:
 <span>def <span class="ident">condensation</span></span>(<span>self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Updates droplet volumes by simulating condensation driven by prior changes
+in environment thermodynamic state, updates the environment state.
+In the case of parcel environment, condensation is driven solely by changes in
+the dry-air density (theta and qv should not be changed by other dynamics).
+In the case of prescribed-flow/kinematic environments, the dry-air density is
+constant in time throughout the simulation.
+This function should only change environment's <code>thd</code> and <code>qv</code> (and not <code>rhod</code>).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
+      in environment thermodynamic state, updates the environment state.
+    In the case of parcel environment, condensation is driven solely by changes in
+      the dry-air density (theta and qv should not be changed by other dynamics).
+    In the case of prescribed-flow/kinematic environments, the dry-air density is
+      constant in time throughout the simulation.
+    This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+    &#34;&#34;&#34;
     self.backend.condensation(
         solver=self.condensation_solver,
         n_cell=self.mesh.n_cell,
@@ -1133,7 +1165,8 @@ def n_sd(self) -&gt; int:
         RH_max=RH_max,
         success=success,
         cell_id=self.attributes[&#34;cell id&#34;],
-    )</code></pre>
+    )
+    self.attributes.mark_updated(&#34;volume&#34;)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.dissolution"><code class="name flex">

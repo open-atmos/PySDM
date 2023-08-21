@@ -60,6 +60,11 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         max_iters: int = 16,
         update_thd: bool = True,
     ):
+        if adaptive and substeps != 1:
+            raise ValueError(
+                &#34;if specifying substeps count manually, adaptivity must be disabled&#34;
+            )
+
         self.particulator = None
         self.enable = True
 
@@ -150,8 +155,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
                     self.counters[&#34;n_substeps&#34;][:] = np.minimum(
                         self.counters[&#34;n_substeps&#34;][:],
                         int(self.particulator.dt / self.dt_cond_range[0]),
-                    )
-            self.particulator.attributes.mark_updated(&#34;volume&#34;)</code></pre>
+                    )</code></pre>
 </details>
 </section>
 <section>
@@ -186,6 +190,11 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         max_iters: int = 16,
         update_thd: bool = True,
     ):
+        if adaptive and substeps != 1:
+            raise ValueError(
+                &#34;if specifying substeps count manually, adaptivity must be disabled&#34;
+            )
+
         self.particulator = None
         self.enable = True
 
@@ -276,8 +285,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
                     self.counters[&#34;n_substeps&#34;][:] = np.minimum(
                         self.counters[&#34;n_substeps&#34;][:],
                         int(self.particulator.dt / self.dt_cond_range[0]),
-                    )
-            self.particulator.attributes.mark_updated(&#34;volume&#34;)</code></pre>
+                    )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>

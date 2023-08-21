@@ -46,7 +46,7 @@ from PySDM.physics.constants_defaults import PI_4_3, T0, rho_w
 
 idx_thd = 0
 idx_x = 1
-rtol = 1e-4
+rtol = 1e-6
 
 
 def patch_particulator(particulator):
@@ -133,7 +133,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         dot_thd,
         dot_qv,
         m_d_mean,
-        rhod_mean,
+        rhod,
         pvs,
         lv,
     ):
@@ -160,18 +160,19 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
                 ),
             )
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * rho_w / m_d_mean
-        dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
+        dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod, thd, T, dqv_dt, lv)
 
     @numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
     def _odesys(  # pylint: disable=too-many-arguments,too-many-locals
-        t, y, kappa, f_org, dry_volume, n, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt
+        t, y, kappa, f_org, dry_volume, n, dthd_dt, dqv_dt, drhod_dt, m_d_mean, rhod, qt
     ):
         thd = y[idx_thd]
         x = y[idx_x:]
 
         qv = qt + dqv_dt * t - _ql(n, x, m_d_mean)
-        T = phys_T(rhod_mean, thd)
-        p = phys_p(rhod_mean, T, qv)
+        rhod += drhod_dt * t
+        T = phys_T(rhod, thd)
+        p = phys_p(rhod, T, qv)
         pv = phys_pv(p, qv)
         pvs = pvs_C(T - T0)
         RH = pv / pvs
@@ -191,7 +192,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             dthd_dt,
             dqv_dt,
             m_d_mean,
-            rhod_mean,
+            rhod,
             pvs,
             lv(T),
         )
@@ -207,10 +208,11 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         f_org,
         thd,
         qv,
+        rhod,
         dthd_dt,
         dqv_dt,
+        drhod_dt,
         m_d_mean,
-        rhod_mean,
         __,
         ___,
         dt,
@@ -228,11 +230,17 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             n[cell_idx],
             dthd_dt,
             dqv_dt,
+            drhod_dt,
             m_d_mean,
-            rhod_mean,
+            rhod,
             qt,
         )
-        if dthd_dt == 0 and dqv_dt == 0 and (_odesys(0, y0, *args)[idx_x] == 0).all():
+        if (
+            dthd_dt == 0
+            and dqv_dt == 0
+            and drhod_dt == 0
+            and (_odesys(0, y0, *args)[idx_x:] == 0).all()
+        ):
             y1 = y0
         else:
             integ = scipy.integrate.solve_ivp(
