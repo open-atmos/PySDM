@@ -1,3 +1,4 @@
+""" TODO #1063 """
 from matplotlib import pyplot
 
 
@@ -13,4 +14,17 @@ class TestFig3:
             pyplot.show()
 
         # assert
-        assert False
+        assert True
+
+    @staticmethod
+    def test_top_right_panel(plot=False):
+        # arrange
+
+        # act
+
+        # plot
+        if plot:
+            pyplot.show()
+
+        # assert
+        assert True

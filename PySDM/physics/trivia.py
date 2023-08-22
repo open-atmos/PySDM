@@ -6,7 +6,7 @@ Various (hopefully) undebatable formulae
 import numpy as np
 
 
-class Trivia:
+class Trivia:  # pylint: disable=too-many-public-methods
     def __init__(self, _):
         pass
 
