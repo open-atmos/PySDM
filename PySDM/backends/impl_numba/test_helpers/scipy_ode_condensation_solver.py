@@ -32,7 +32,7 @@ def _condensation(
     func(
         solver=particulator.condensation_solver,
         n_threads=1,
-        n_cell=particmulator.mesh.n_cell,
+        n_cell=particulator.mesh.n_cell,
         cell_start_arg=particulator.attributes.cell_start.data,
         v=particulator.attributes["volume"].data,
         v_cr=None,
