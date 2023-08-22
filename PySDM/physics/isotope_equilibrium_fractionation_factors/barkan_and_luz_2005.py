@@ -9,5 +9,5 @@ class BarkanAndLuz2005:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def alpha_l_17O(const, alpha_l_18O):
+    def alpha_l_17O(const, _, alpha_l_18O):
         return alpha_l_18O**const.BARKAN_AND_LUZ_2005_EXPONENT

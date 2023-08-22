@@ -39,3 +39,15 @@ class TestTrivia:
         # assert
         diff = np.abs(params - 0.2253)
         np.testing.assert_array_less(diff, 1e-3)
+
+    @staticmethod
+    def test_isotopic_enrichment_to_delta_SMOW():
+        # arrange
+        formulae = Formulae()
+        ARBITRARY_VALUE = 44
+
+        # act
+        delta = formulae.trivia.isotopic_enrichment_to_delta_SMOW(ARBITRARY_VALUE, 0)
+
+        # assert
+        assert delta == ARBITRARY_VALUE
