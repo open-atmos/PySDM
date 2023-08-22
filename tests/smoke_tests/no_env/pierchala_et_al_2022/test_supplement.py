@@ -1,3 +1,4 @@
+""" tests for consistency of values taken from the Supplement """
 import numpy as np
 from PySDM_examples.Pierchala_et_al_2022.commons import deltas_0_SMOW
 
@@ -5,6 +6,7 @@ from PySDM import Formulae
 
 
 def test_cracow_water_excesses():
+    """ checking if d-excess and 17O-excess values match those computed from deltas """
     # arrange
     formulae = Formulae(isotope_meteoric_water_line_excess="PierchalaEtAl2022")
     sut = formulae.isotope_meteoric_water_line_excess
