@@ -5,7 +5,7 @@
 from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
-# Krakow tap water isotopic composition from the Supplement 
+# Krakow tap water isotopic composition from the Supplement
 deltas_0_SMOW = {
     "2H": -62.01 * const.PER_MILLE,
     "18O": -8.711 * const.PER_MILLE,
