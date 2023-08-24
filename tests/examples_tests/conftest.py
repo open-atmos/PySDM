@@ -77,7 +77,9 @@ def pytest_generate_tests(metafunc):
         notebook_paths = findfiles(pysdm_examples_abs_path, r".*\.(ipynb)$")
         selected_paths = get_selected_test_paths(suite_name, notebook_paths)
         metafunc.parametrize(
-            "notebook_filename", selected_paths, ids=[str(path) for path in selected_paths]
+            "notebook_filename",
+            selected_paths,
+            ids=[str(path) for path in selected_paths],
         )
 
     if "example_filename" in metafunc.fixturenames:
@@ -87,5 +89,7 @@ def pytest_generate_tests(metafunc):
         )
         selected_paths = get_selected_test_paths(suite_name, examples_paths)
         metafunc.parametrize(
-            "example_filename", selected_paths, ids=[str(path) for path in selected_paths]
+            "example_filename",
+            selected_paths,
+            ids=[str(path) for path in selected_paths],
         )
