@@ -3,7 +3,7 @@ import pathlib
 
 import yaml
 
-from .conftest import TEST_SUITES, findfiles, get_selected_test_suites
+from .conftest import TEST_SUITES, findfiles, get_selected_test_paths
 
 
 def test_all_cases_in_testsuites():
@@ -25,7 +25,7 @@ def test_all_cases_in_testsuites():
     selected_paths_set = set()
     for suite_name in TEST_SUITES:
         selected_paths_set.update(
-            map(str, get_selected_test_suites(suite_name, all_files))
+            map(str, get_selected_test_paths(suite_name, all_files))
         )
 
     assert len(all_files) > 0
