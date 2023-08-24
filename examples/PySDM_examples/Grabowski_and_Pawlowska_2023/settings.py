@@ -1,30 +1,54 @@
-from typing import Dict
-
 import numpy as np
 from pystrict import strict
 
 from PySDM import Formulae
-from PySDM.initialisation.impl.spectrum import Spectrum
+from PySDM.initialisation.spectra import Lognormal, Sum
+from PySDM.physics import si
 
 
 @strict
 class Settings:
     def __init__(
         self,
-        dt: float,
-        # dz: float,
-        n_sd_per_mode: tuple,
-        aerosol_modes_by_kappa: Dict[float, Spectrum],
+        *,
+        aerosol: str,
         vertical_velocity: float,
-        initial_temperature: float,
-        initial_pressure: float,
-        initial_relative_humidity: float,
-        displacement: float,
-        formulae: Formulae,
+        dt: float = 0.1 * si.s,
+        n_sd_per_mode: tuple = (200,),
+        initial_temperature: float = 283 * si.K,
+        initial_pressure: float = 900 * si.mbar,
+        initial_relative_humidity: float = 0.97,
+        displacement: float = 1000 * si.m,
+        mass_accommodation_coefficient: float = 0.3,
     ):
-        self.formulae = formulae
+        self.formulae = Formulae(constants={"MAC": mass_accommodation_coefficient})
         self.n_sd_per_mode = n_sd_per_mode
-        self.aerosol_modes_by_kappa = aerosol_modes_by_kappa
+        self.aerosol_modes_by_kappa = {
+            "pristine": {
+                1.28: Sum(
+                    (
+                        Lognormal(
+                            norm_factor=125 / si.cm**3, m_mode=11 * si.nm, s_geom=1.2
+                        ),
+                        Lognormal(
+                            norm_factor=65 / si.cm**3, m_mode=60 * si.nm, s_geom=1.7
+                        ),
+                    )
+                )
+            },
+            "polluted": {
+                1.28: Sum(
+                    (
+                        Lognormal(
+                            norm_factor=160 / si.cm**3, m_mode=29 * si.nm, s_geom=1.36
+                        ),
+                        Lognormal(
+                            norm_factor=380 / si.cm**3, m_mode=71 * si.nm, s_geom=1.57
+                        ),
+                    )
+                )
+            },
+        }[aerosol]
 
         const = self.formulae.constants
         self.vertical_velocity = vertical_velocity
@@ -32,7 +56,7 @@ class Settings:
         self.initial_temperature = initial_temperature
         pv0 = (
             initial_relative_humidity
-            * formulae.saturation_vapour_pressure.pvs_Celsius(
+            * self.formulae.saturation_vapour_pressure.pvs_Celsius(
                 initial_temperature - const.T0
             )
         )
