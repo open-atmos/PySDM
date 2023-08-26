@@ -312,9 +312,11 @@ class CondensationMethods(
             ),
         )
 
-    def calculate_m_l(self, ml, v, n, cell_id):
+    def calculate_m_l(self, ml, v, multiplicity, cell_id):
         ml[:] = 0
-        self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
+        self.__calculate_m_l.launch_n(
+            len(n), (ml.data, v.data, multiplicity.data, cell_id.data)
+        )
 
     # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)

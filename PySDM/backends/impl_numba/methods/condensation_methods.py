@@ -23,7 +23,7 @@ class CondensationMethods(BackendMethods):
         cell_start_arg,
         v,
         v_cr,
-        n,
+        multiplicity,
         vdry,
         idx,
         rhod,
@@ -52,7 +52,7 @@ class CondensationMethods(BackendMethods):
             cell_start_arg=cell_start_arg.data,
             v=v.data,
             v_cr=v_cr.data,
-            n=n.data,
+            multiplicity=multiplicity.data,
             vdry=vdry.data,
             idx=idx.data,
             rhod=rhod.data,
@@ -86,7 +86,7 @@ class CondensationMethods(BackendMethods):
         cell_start_arg,
         v,
         v_cr,
-        n,
+        multiplicity,
         vdry,
         idx,
         rhod,
@@ -137,7 +137,7 @@ class CondensationMethods(BackendMethods):
                 ) = solver(
                     v,
                     v_cr,
-                    n,
+                    multiplicity,
                     vdry,
                     idx[cell_start:cell_end],
                     kappa,
@@ -254,7 +254,7 @@ class CondensationMethods(BackendMethods):
         def step_impl(  # pylint: disable=too-many-arguments,too-many-locals
             v,
             v_cr,
-            n,
+            multiplicity,
             vdry,
             cell_idx,
             kappa,
@@ -272,7 +272,7 @@ class CondensationMethods(BackendMethods):
             fake,
         ):
             timestep /= n_substeps
-            ml_old = calculate_ml_old(v, n, cell_idx)
+            ml_old = calculate_ml_old(v, multiplicity, cell_idx)
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
             success = True
@@ -304,7 +304,7 @@ class CondensationMethods(BackendMethods):
                     RH,
                     v,
                     v_cr,
-                    n,
+                    multiplicity,
                     vdry,
                     cell_idx,
                     kappa,
@@ -398,7 +398,7 @@ class CondensationMethods(BackendMethods):
             RH,
             v,
             v_cr,
-            n,
+            multiplicity,
             vdry,
             cell_idx,
             kappa,
@@ -510,14 +510,14 @@ class CondensationMethods(BackendMethods):
                         x_new = x_old
 
                 v_new = volume_of_x(x_new)
-                result += n[drop] * v_new * const.rho_w
+                result += multiplicity[drop] * v_new * const.rho_w
                 if not fake:
                     if v_new > v_cr[drop] and v_new > v[drop]:
-                        n_activated_and_growing += n[drop]
+                        n_activated_and_growing += multiplicity[drop]
                     if v_new > v_cr[drop] > v[drop]:
-                        n_activating += n[drop]
+                        n_activating += multiplicity[drop]
                     if v_new < v_cr[drop] < v[drop]:
-                        n_deactivating += n[drop]
+                        n_deactivating += multiplicity[drop]
                     v[drop] = v_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
             return result, success, n_activating, n_deactivating, n_ripening
@@ -658,7 +658,7 @@ class CondensationMethods(BackendMethods):
         def solve(  # pylint: disable=too-many-arguments
             v,
             v_cr,
-            n,
+            multiplicity,
             vdry,
             cell_idx,
             kappa,
@@ -678,7 +678,7 @@ class CondensationMethods(BackendMethods):
             args = (
                 v,
                 v_cr,
-                n,
+                multiplicity,
                 vdry,
                 cell_idx,
                 kappa,
