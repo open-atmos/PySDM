@@ -33,7 +33,10 @@ class MomentsMethods(ThrustRTCBackendMethods):
             if (min_x <= x_attr[i] && x_attr[i] < max_x) {
                 atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(multiplicity[i]));
                 for (auto k = 0; k < n_ranks; k+=1) {
-                    auto value = multiplicity[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k]));
+                    auto value = multiplicity[i] * pow(
+                        (real_type)(attr_data[i]),
+                        (real_type)(ranks[k])
+                    );
                     atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], value);
                }
             }
