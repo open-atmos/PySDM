@@ -141,14 +141,14 @@ class TestSDMSingleCell:
         assert np.sum(
             state["multiplicity"].to_ndarray() * state["volume"].to_ndarray()
         ) == np.sum(n_2 * v_2)
-        assert np.sum(state["multiplcity"].to_ndarray()) == np.sum(
+        assert np.sum(state["multiplicity"].to_ndarray()) == np.sum(
             n_2
         ) - gamma * np.amin(n_2)
         assert (
             np.amax(state["volume"].to_ndarray())
             == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
         )
-        assert np.amax(state["multiplcity"].to_ndarray()) == max(
+        assert np.amax(state["multiplicity"].to_ndarray()) == max(
             np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2)
         )
 
@@ -179,9 +179,9 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        assert np.amin(particulator.attributes["multiplcity"].to_ndarray()) >= 0
+        assert np.amin(particulator.attributes["multiplicity"].to_ndarray()) >= 0
         assert np.sum(
-            particulator.attributes["multiplcity"].to_ndarray()
+            particulator.attributes["multiplicity"].to_ndarray()
             * particulator.attributes["volume"].to_ndarray()
         ) == np.sum(n * v)
 
@@ -197,7 +197,7 @@ class TestSDMSingleCell:
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, rand.to_ndarray() > 0.5, odd_zeros=True
         )
-        attributes = {"multiplcity": n, "volume": v}
+        attributes = {"multiplicity": n, "volume": v}
         particulator.build(attributes)
 
         # Act
