@@ -172,7 +172,7 @@ class TestSDMSingleCell:
             Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair, out=out)
 
         sut.compute_gamma = _compute_gamma
-        attributes = {"mutliplicity": n, "volume": v}
+        attributes = {"multiplicity": n, "volume": v}
         particulator.build(attributes)
 
         # Act
