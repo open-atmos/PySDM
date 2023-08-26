@@ -69,7 +69,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 "cell_origin",
                 "position_in_cell",
                 "volume",
-                "n",
+                "multiplicity",
                 "rainfall",
             ),
             "i",

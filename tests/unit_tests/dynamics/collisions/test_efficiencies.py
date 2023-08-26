@@ -37,7 +37,9 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
         sut = efficiency
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
@@ -89,7 +91,10 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
                     sut.register(builder)
                     builder.set_environment(Box(dv=None, dt=None))
                     _ = builder.build(
-                        attributes={"volume": volume, "n": np.ones_like(volume)}
+                        attributes={
+                            "volume": volume,
+                            "multiplicity": np.ones_like(volume),
+                        }
                     )
 
                     _PairwiseStorage = builder.particulator.PairwiseStorage

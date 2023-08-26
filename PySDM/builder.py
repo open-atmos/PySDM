@@ -23,7 +23,7 @@ class Builder:
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
-            "n": Multiplicities(self),
+            "multiplicity": Multiplicities(self),
             "volume": Volume(self),
             "cell id": CellID(self),
         }
@@ -95,9 +95,11 @@ class Builder:
                     **self.condensation_params,
                 )
             )
-        attributes["n"] = int_caster(attributes["n"])
+        attributes["multiplicity"] = int_caster(attributes["multiplicity"])
         if self.particulator.mesh.dimension == 0:
-            attributes["cell id"] = np.zeros_like(attributes["n"], dtype=np.int64)
+            attributes["cell id"] = np.zeros_like(
+                attributes["multiplicity"], dtype=np.int64
+            )
         self.particulator.attributes = ParticleAttributesFactory.attributes(
             self.particulator, self.req_attr, attributes
         )

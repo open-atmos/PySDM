@@ -21,7 +21,7 @@ def test_critical_supersaturation():
     env["T"] = T
     particulator = builder.build(
         attributes={
-            "n": np.ones(n_sd),
+            "multiplicity": np.ones(n_sd),
             "volume": np.linspace(0.01, 10, n_sd) * si.um**3,
             "dry volume": vdry,
             "kappa times dry volume": 0.9 * vdry,

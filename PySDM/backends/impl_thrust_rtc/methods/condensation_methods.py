@@ -36,10 +36,10 @@ class CondensationMethods(
         const = self.formulae.constants
 
         self.__calculate_m_l = trtc.For(
-            ("ml", "v", "n", "cell_id"),
+            ("ml", "v", "multiplicity", "cell_id"),
             "i",
             f"""
-            atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w});
+            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * v[i] * {const.rho_w});
         """.replace(
                 "real_type", self._get_c_type()
             ),

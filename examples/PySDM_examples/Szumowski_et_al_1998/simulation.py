@@ -189,7 +189,7 @@ class Simulation:
                     if name == freezing_attribute:
                         attributes[name][orig] = array
                         attributes[name][copy] = 0
-                    elif name == "n":
+                    elif name == "multiplicity":
                         attributes[name][orig] = array * self.settings.freezing_inp_frac
                         attributes[name][copy] = array * (
                             1 - self.settings.freezing_inp_frac

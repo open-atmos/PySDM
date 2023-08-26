@@ -36,7 +36,7 @@ def _condensation(
         cell_start_arg=particulator.attributes.cell_start.data,
         v=particulator.attributes["volume"].data,
         v_cr=None,
-        n=particulator.attributes["n"].data,
+        multiplicity=particulator.attributes["multiplicity"].data,
         vdry=particulator.attributes["dry volume"].data,
         idx=particulator.attributes._ParticleAttributes__idx.data,
         rhod=particulator.environment["rhod"].data,
@@ -170,7 +170,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
     def solve(  # pylint: disable=too-many-arguments,too-many-locals
         v,
         _,
-        n,
+        multiplicity,
         vdry,
         cell_idx,
         kappa,
@@ -191,12 +191,12 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         y0 = np.empty(n_sd_in_cell + idx_x)
         y0[idx_thd] = thd
         y0[idx_x:] = x(v[cell_idx])
-        qt = qv + _ql(n[cell_idx], y0[idx_x:], m_d_mean)
+        qt = qv + _ql(multiplicity[cell_idx], y0[idx_x:], m_d_mean)
         args = (
             kappa[cell_idx],
             f_org[cell_idx],
             vdry[cell_idx],
-            n[cell_idx],
+            multiplicity[cell_idx],
             dthd_dt,
             dqv_dt,
             drhod_dt,
@@ -228,7 +228,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         m_new = 0
         for i in range(n_sd_in_cell):
             v_new = volume(y1[idx_x + i])
-            m_new += n[cell_idx[i]] * v_new * rho_w
+            m_new += multiplicity[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
         return integ.success, qt - m_new / m_d_mean, y1[idx_thd], 1, 1, 1, 1, np.nan

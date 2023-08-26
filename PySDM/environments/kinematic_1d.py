@@ -66,7 +66,7 @@ class Kinematic1D(Moist):
             cell_id = attributes["cell id"]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes["n"] = n_per_kg * rhod[cell_id] * domain_volume
+        attributes["multiplicity"] = n_per_kg * rhod[cell_id] * domain_volume
         attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes

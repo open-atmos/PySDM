@@ -59,7 +59,7 @@ class TestParcelSanityChecks:
         )
 
         attributes = {
-            "n": discretise_multiplicities(
+            "multiplicity": discretise_multiplicities(
                 specific_concentration * env.mass_of_dry_air
             ),
             "dry volume": v_dry,

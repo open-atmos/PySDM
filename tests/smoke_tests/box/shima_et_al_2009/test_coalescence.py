@@ -20,12 +20,12 @@ def check(*, n_part, dv, n_sd, rho, attributes, step):
     # multiplicities
     if step == 0:
         np.testing.assert_approx_equal(
-            np.amin(attributes["n"]), np.amax(attributes["n"]), 1
+            np.amin(attributes["multiplicity"]), np.amax(attributes["multiplicity"]), 1
         )
-        np.testing.assert_approx_equal(attributes["n"][0], check_ksi, 1)
+        np.testing.assert_approx_equal(attributes["multiplicity"][0], check_ksi, 1)
 
     # liquid water content
-    LWC = rho * np.dot(attributes["n"], attributes["volume"]) / dv
+    LWC = rho * np.dot(attributes["multiplicity"], attributes["volume"]) / dv
     np.testing.assert_approx_equal(LWC, check_lwc, 3)
 
 
@@ -53,7 +53,9 @@ def test_coalescence(backend_class, croupier, adaptive):
     builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
-    attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum).sample(n_sd)
+    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
+        spectrum
+    ).sample(n_sd)
     builder.add_dynamic(
         Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive)
     )

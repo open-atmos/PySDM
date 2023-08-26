@@ -42,7 +42,9 @@ class Simulation:
                         ZerothMoment(name=SimProducts.PySDM.total_numer.name),
                     ),
                     attributes={
-                        "n": np.full(n_sd, self.settings.total_number_0 / n_sd),
+                        "multiplicity": np.full(
+                            n_sd, self.settings.total_number_0 / n_sd
+                        ),
                         "volume": np.full(
                             n_sd,
                             self.settings.total_volume / self.settings.total_number_0,

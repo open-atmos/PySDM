@@ -163,7 +163,7 @@ class Simulation:
             "cell origin": [],
             "position in cell": [],
             "radius": [],
-            "n": [],
+            "multiplicity": [],
         }
         self.output_products = {}
         for k, v in self.particulator.products.items():

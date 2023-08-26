@@ -11,7 +11,7 @@ from PySDM.physics.constants_defaults import rho_w
 
 def liquid_water_mixing_ratio(simulation: Simulation):
     droplet_volume = simulation.particulator.attributes["volume"].to_ndarray()[0]
-    droplet_number = simulation.particulator.attributes["n"].to_ndarray()[0]
+    droplet_number = simulation.particulator.attributes["multiplicity"].to_ndarray()[0]
     droplet_mass = droplet_number * droplet_volume * rho_w
     env = simulation.particulator.environment
     return droplet_mass / env.mass_of_dry_air
