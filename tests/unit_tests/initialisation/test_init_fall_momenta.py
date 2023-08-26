@@ -45,7 +45,7 @@ def test_init_to_terminal_velocity(params, backend_class):
     builder.set_environment(Box(dt=1, dv=1))
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
-        attributes={"multipliticy": params["multiplicity"], "volume": params["volume"]},
+        attributes={"multiplicity": params["multiplicity"], "volume": params["volume"]},
         products=(),
     )
 
