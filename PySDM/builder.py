@@ -2,6 +2,7 @@
 The Builder class handling creation of  `PySDM.particulator.Particulator` instances
 """
 import inspect
+import warnings
 
 import numpy as np
 
@@ -77,6 +78,14 @@ class Builder:
         int_caster=discretise_multiplicities,
     ):
         assert self.particulator.environment is not None
+
+        if "n" in attributes and "multiplicity" not in attributes:
+            attributes["multiplicity"] = attributes["n"]
+            del attributes["n"]
+            warnings.warn(
+                'renaming attributes["n"] to attributes["multiplicity"]',
+                DeprecationWarning,
+            )
 
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
