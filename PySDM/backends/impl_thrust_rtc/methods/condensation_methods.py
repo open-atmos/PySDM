@@ -397,7 +397,7 @@ class CondensationMethods(
                 ),
             )
             self.__update_volume.launch_n(
-                len(n),
+                len(multiplicity),
                 (
                     v.data,
                     vdry.data,
