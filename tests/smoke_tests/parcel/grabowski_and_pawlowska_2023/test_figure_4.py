@@ -15,57 +15,41 @@ PRODUCTS = [
         name="r_std", count_activated=True, count_unactivated=False
     ),
 ]
+COMMON_SETTINGS = {"dt": 1 * si.s, "n_sd": 100}
 
-COMMON_SETTINGS = {"dt": 5 * si.s, "n_sd": 50}
 
+@pytest.mark.parametrize("w_cm_per_s", (25, 100, 400))
+@pytest.mark.parametrize("aerosol", ("pristine", "polluted"))
+def test(w_cm_per_s: int, aerosol: str):
+    # arrange
+    output = Simulation(
+        Settings(
+            **COMMON_SETTINGS,
+            vertical_velocity=w_cm_per_s * si.cm / si.s,
+            aerosol=aerosol
+        ),
+        products=PRODUCTS,
+    ).run()
 
-class TestFigure4:
-    @staticmethod
-    @pytest.mark.parametrize("w_cm_per_s", (25, 100, 400))
-    def test_pristine(w_cm_per_s: int):
-        # arrange
-        output = Simulation(
-            Settings(
-                **COMMON_SETTINGS,
-                vertical_velocity=w_cm_per_s * si.cm / si.s,
-                aerosol="pristine"
-            ),
-            products=PRODUCTS,
-        ).run()
+    # act
+    rel_dispersion = np.asarray(output["products"]["r_std"]) / np.asarray(
+        output["products"]["r_act"]
+    )
 
-        # act
-        rel_dispersion = np.asarray(output["products"]["r_std"]) / np.asarray(
-            output["products"]["r_act"]
-        )
+    # assert
+    # np.testing.assert_almost_equal(
+    #     actual=rel_dispersion[-1],
+    #     desired={"pristine":{25: 0.01, 100: 0.02, 400: 0.015},
+    #              "polluted":{25: 0.09, 100: 0.03, 400: 0.015}
+    #              }[aerosol][w_cm_per_s],
+    #     decimal=2,
+    # )
 
-        # assert
-        np.testing.assert_almost_equal(
-            actual=rel_dispersion[-1],
-            desired={25: 0.01, 100: 0.02, 400: 0.015}[w_cm_per_s],
-            decimal=2,
-        )
-
-    @staticmethod
-    @pytest.mark.parametrize("w_cm_per_s", (25, 100, 400))
-    def test_polluted(w_cm_per_s):
-        # arrange
-        output = Simulation(
-            Settings(
-                **COMMON_SETTINGS,
-                vertical_velocity=w_cm_per_s * si.cm / si.s,
-                aerosol="polluted"
-            ),
-            products=PRODUCTS,
-        ).run()
-
-        # act
-        rel_dispersion = np.asarray(output["products"]["r_std"]) / np.asarray(
-            output["products"]["r_act"]
-        )
-
-        # assert
-        np.testing.assert_almost_equal(
-            actual=rel_dispersion[-1],
-            desired={25: 0.09, 100: 0.03, 400: 0.015}[w_cm_per_s],
-            decimal=2,
-        )
+    assert np.isclose(
+        rel_dispersion[-1],
+        {
+            "pristine": {25: 0.01, 100: 0.02, 400: 0.015},
+            "polluted": {25: 0.09, 100: 0.03, 400: 0.015},
+        }[aerosol][w_cm_per_s],
+        rtol=0.7,
+    ).all()

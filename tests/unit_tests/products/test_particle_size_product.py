@@ -56,7 +56,6 @@ def area_std(r, n, mask):
     return std
 
 
-@staticmethod
 @pytest.mark.parametrize(
     "r,n",
     (
