@@ -1,3 +1,7 @@
+"""
+test against values read from plots in Grabowski and Pawlowska paper
+"""
+
 import numpy as np
 import pytest
 from PySDM_examples.Grabowski_and_Pawlowska_2023 import Settings, Simulation
