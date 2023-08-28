@@ -1,3 +1,5 @@
+import numpy as np
+import pytest
 from PySDM_examples.Grabowski_and_Pawlowska_2023 import Settings, Simulation
 
 from PySDM.physics import si
@@ -10,10 +12,7 @@ PRODUCTS = [
     ),
 ]
 
-COMMON_SETTINGS = {"dt": 5 * si.s, "n_sd": 20}
-
-import numpy as np
-import pytest
+COMMON_SETTINGS = {"dt": 5 * si.s, "n_sd": 50}
 
 
 class TestFigure4:
@@ -31,11 +30,9 @@ class TestFigure4:
         ).run()
 
         # act
-        rel_dispersion = {
-            key: np.asarray(output["products"]["r_std"])
-            / np.asarray(output["products"]["r_act"])
-            for key in output.keys()
-        }
+        rel_dispersion = np.asarray(output["products"]["r_std"]) / np.asarray(
+            output["products"]["r_act"]
+        )
 
         # assert
         np.testing.assert_almost_equal(
@@ -58,11 +55,9 @@ class TestFigure4:
         ).run()
 
         # act
-        rel_dispersion = {
-            key: np.asarray(output[key]["products"]["r_std"])
-            / np.asarray(output[key]["products"]["r_act"])
-            for key in output.keys()
-        }
+        rel_dispersion = np.asarray(output["products"]["r_std"]) / np.asarray(
+            output["products"]["r_act"]
+        )
 
         # assert
         np.testing.assert_almost_equal(

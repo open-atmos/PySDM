@@ -14,6 +14,9 @@ from PySDM.products import (
 )
 
 TRIVIA = Formulae().trivia
+NAME = "tested product"
+KAPPA = 1
+CELL_ID = 0
 
 
 def radius_std(r, n, mask):
@@ -73,6 +76,7 @@ def area_std(r, n, mask):
         (MeanVolumeRadius, r_vol_mean),
     ),
 )
+# pylint: disable=too-many-arguments
 def test_particle_size_product(
     backend_class,
     r,
@@ -83,12 +87,9 @@ def test_particle_size_product(
     validation_fun,
 ):
     # arrange
-    name = "tested product"
     builder = Builder(n_sd=len(n), backend=backend_class(double_precision=True))
-
     volume = builder.formulae.trivia.volume(np.asarray(r))
     dry_volume = np.full_like(volume, (0.01 * si.um) ** 3)
-    kappa = 1
 
     builder.set_environment(Box(dt=np.nan, dv=np.nan))
     builder.request_attribute("critical volume")
@@ -98,11 +99,11 @@ def test_particle_size_product(
             "volume": volume,
             "dry volume": dry_volume,
             "dry volume organic": np.full_like(r, 0),
-            "kappa times dry volume": kappa * dry_volume,
+            "kappa times dry volume": KAPPA * dry_volume,
         },
         products=(
             product_class(
-                name=name,
+                name=NAME,
                 count_activated=count_activated,
                 count_unactivated=count_unactivated,
             ),
@@ -124,8 +125,7 @@ def test_particle_size_product(
     expected = validation_fun(np.asarray(r), np.asarray(n), mask)
 
     # act
-    cell_id = 0
-    actual = particulator.products[name].get()[cell_id]
+    actual = particulator.products[NAME].get()[CELL_ID]
 
     # assert
     np.testing.assert_almost_equal(actual, expected, decimal=10)
