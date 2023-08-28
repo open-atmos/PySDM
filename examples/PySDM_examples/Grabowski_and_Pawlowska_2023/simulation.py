@@ -22,7 +22,7 @@ class Simulation(BasicSimulation):
         scipy_solver=False,
         rtol_thd=1e-10,
         rtol_x=1e-10,
-        sampling_class=ConstantMultiplicity
+        sampling_class=ConstantMultiplicity,
     ):
         env = Parcel(
             dt=settings.timestep,

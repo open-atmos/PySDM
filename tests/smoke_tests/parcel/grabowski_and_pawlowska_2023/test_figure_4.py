@@ -10,13 +10,11 @@ PRODUCTS = [
     ),
 ]
 
-COMMON_SETTINGS = {
-    "dt":5*si.s,
-    "n_sd": 20
-}
+COMMON_SETTINGS = {"dt": 5 * si.s, "n_sd": 20}
 
 import numpy as np
 import pytest
+
 
 class TestFigure4:
     @staticmethod
@@ -26,26 +24,24 @@ class TestFigure4:
         output = Simulation(
             Settings(
                 **COMMON_SETTINGS,
-                vertical_velocity=w_cm_per_s * si.cm / si.s, aerosol="pristine"
+                vertical_velocity=w_cm_per_s * si.cm / si.s,
+                aerosol="pristine"
             ),
             products=PRODUCTS,
         ).run()
 
         # act
         rel_dispersion = {
-            key: np.asarray(output["products"]["r_std"]) / np.asarray(output["products"]["r_act"])
+            key: np.asarray(output["products"]["r_std"])
+            / np.asarray(output["products"]["r_act"])
             for key in output.keys()
         }
 
         # assert
         np.testing.assert_almost_equal(
             actual=rel_dispersion[-1],
-            desired={
-                25: 0.01,
-                100: 0.02,
-                400: 0.015
-            }[w_cm_per_s],
-            decimal=2
+            desired={25: 0.01, 100: 0.02, 400: 0.015}[w_cm_per_s],
+            decimal=2,
         )
 
     @staticmethod
@@ -55,24 +51,22 @@ class TestFigure4:
         output = Simulation(
             Settings(
                 **COMMON_SETTINGS,
-                vertical_velocity=w_cm_per_s * si.cm / si.s, aerosol="polluted"
+                vertical_velocity=w_cm_per_s * si.cm / si.s,
+                aerosol="polluted"
             ),
             products=PRODUCTS,
         ).run()
 
         # act
         rel_dispersion = {
-            key: np.asarray(output[key]["products"]["r_std"]) / np.asarray(output[key]["products"]["r_act"])
+            key: np.asarray(output[key]["products"]["r_std"])
+            / np.asarray(output[key]["products"]["r_act"])
             for key in output.keys()
         }
 
         # assert
         np.testing.assert_almost_equal(
             actual=rel_dispersion[-1],
-            desired={
-                25: 0.09,
-                100: 0.03,
-                400: .015
-            }[w_cm_per_s],
-            decimal=2
+            desired={25: 0.09, 100: 0.03, 400: 0.015}[w_cm_per_s],
+            decimal=2,
         )
