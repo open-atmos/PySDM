@@ -62,7 +62,7 @@ class Settings:
         )
         self.initial_vapour_mixing_ratio = const.eps * pv0 / (initial_pressure - pv0)
         self.t_max = displacement / vertical_velocity
-        self.timestep = dt  # dz / vertical_velocity
+        self.timestep = dt
         self.output_interval = self.timestep
 
     @property
