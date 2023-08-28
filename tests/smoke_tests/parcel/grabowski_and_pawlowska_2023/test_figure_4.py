@@ -9,9 +9,14 @@ PRODUCTS = [
         name="r_std", count_activated=True, count_unactivated=False
     ),
 ]
+
+COMMON_SETTINGS = {
+    "dt":5*si.s,
+    "n_sd": 20
+}
+
 import numpy as np
 import pytest
-
 
 class TestFigure4:
     @staticmethod
@@ -20,6 +25,7 @@ class TestFigure4:
         # arrange
         output = Simulation(
             Settings(
+                **COMMON_SETTINGS,
                 vertical_velocity=w_cm_per_s * si.cm / si.s, aerosol="pristine"
             ),
             products=PRODUCTS,
@@ -48,6 +54,7 @@ class TestFigure4:
         # arrange
         output = Simulation(
             Settings(
+                **COMMON_SETTINGS,
                 vertical_velocity=w_cm_per_s * si.cm / si.s, aerosol="polluted"
             ),
             products=PRODUCTS,

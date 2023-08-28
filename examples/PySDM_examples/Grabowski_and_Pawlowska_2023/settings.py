@@ -13,8 +13,8 @@ class Settings:
         *,
         aerosol: str,
         vertical_velocity: float,
-        dt: float = 0.1 * si.s,
-        n_sd_per_mode: tuple = (200,),
+        dt: float,
+        n_sd: int,
         initial_temperature: float = 283 * si.K,
         initial_pressure: float = 900 * si.mbar,
         initial_relative_humidity: float = 0.97,
@@ -22,7 +22,7 @@ class Settings:
         mass_accommodation_coefficient: float = 0.3,
     ):
         self.formulae = Formulae(constants={"MAC": mass_accommodation_coefficient})
-        self.n_sd_per_mode = n_sd_per_mode
+        self.n_sd = n_sd
         self.aerosol_modes_by_kappa = {
             "pristine": {
                 1.28: Sum(

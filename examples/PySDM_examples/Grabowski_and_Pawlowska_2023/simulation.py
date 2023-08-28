@@ -16,7 +16,13 @@ from PySDM.physics import si
 
 class Simulation(BasicSimulation):
     def __init__(
-        self, settings, products=None, scipy_solver=False, rtol_thd=1e-10, rtol_x=1e-10
+        self,
+        settings,
+        products=None,
+        scipy_solver=False,
+        rtol_thd=1e-10,
+        rtol_x=1e-10,
+        sampling_class=ConstantMultiplicity
     ):
         env = Parcel(
             dt=settings.timestep,
@@ -26,8 +32,7 @@ class Simulation(BasicSimulation):
             w=settings.vertical_velocity,
             mass_of_dry_air=44 * si.kg,
         )
-        n_sd = sum(settings.n_sd_per_mode)
-        builder = Builder(n_sd=n_sd, backend=CPU(formulae=settings.formulae))
+        builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
         builder.set_environment(env)
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
@@ -43,19 +48,21 @@ class Simulation(BasicSimulation):
             k: np.empty(0)
             for k in ("dry volume", "kappa times dry volume", "n", "kappa")
         }
-        for i, (kappa, spectrum) in enumerate(settings.aerosol_modes_by_kappa.items()):
-            sampling = ConstantMultiplicity(spectrum)
-            # sampling = Logarithmic(spectrum)
-            r_dry, n_per_volume = sampling.sample(settings.n_sd_per_mode[i])
-            v_dry = settings.formulae.trivia.volume(radius=r_dry)
-            attributes["n"] = np.append(attributes["n"], n_per_volume * volume)
-            attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
-            attributes["kappa times dry volume"] = np.append(
-                attributes["kappa times dry volume"], v_dry * kappa
-            )
-            attributes["kappa"] = np.append(
-                attributes["kappa"], np.full(settings.n_sd_per_mode[i], kappa)
-            )
+
+        assert len(settings.aerosol_modes_by_kappa.keys()) == 1
+        kappa = tuple(settings.aerosol_modes_by_kappa.keys())[0]
+        spectrum = settings.aerosol_modes_by_kappa[kappa]
+
+        r_dry, n_per_volume = sampling_class(spectrum).sample(settings.n_sd)
+        v_dry = settings.formulae.trivia.volume(radius=r_dry)
+        attributes["n"] = np.append(attributes["n"], n_per_volume * volume)
+        attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
+        attributes["kappa times dry volume"] = np.append(
+            attributes["kappa times dry volume"], v_dry * kappa
+        )
+        attributes["kappa"] = np.append(
+            attributes["kappa"], np.full(settings.n_sd, kappa)
+        )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
             environment=env,
