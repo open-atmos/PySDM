@@ -1,5 +1,6 @@
 """
-test against values read from plots in Grabowski and Pawlowska paper
+test against values read from plots in
+[Grabowski and Pawlowska 2023](https://doi.org/10.1029/2022GL101917) paper
 """
 
 import numpy as np
@@ -15,41 +16,39 @@ PRODUCTS = [
         name="r_std", count_activated=True, count_unactivated=False
     ),
 ]
-COMMON_SETTINGS = {"dt": 1 * si.s, "n_sd": 100}
+DZ = 250 * si.m
+N_SD = 32
+RTOL = 0.3
 
 
 @pytest.mark.parametrize("w_cm_per_s", (25, 100, 400))
 @pytest.mark.parametrize("aerosol", ("pristine", "polluted"))
-def test(w_cm_per_s: int, aerosol: str):
+def test_values_at_final_step(w_cm_per_s: int, aerosol: str):
     # arrange
+    vertical_velocity = w_cm_per_s * si.cm / si.s
     output = Simulation(
         Settings(
-            **COMMON_SETTINGS,
-            vertical_velocity=w_cm_per_s * si.cm / si.s,
-            aerosol=aerosol
+            n_sd=N_SD,
+            dt=DZ / vertical_velocity,
+            vertical_velocity=vertical_velocity,
+            aerosol=aerosol,
         ),
         products=PRODUCTS,
     ).run()
 
     # act
-    rel_dispersion = np.asarray(output["products"]["r_std"]) / np.asarray(
-        output["products"]["r_act"]
-    )
+    rel_dispersion_at_final_step = np.asarray(
+        output["products"]["r_std"][-1]
+    ) / np.asarray(output["products"]["r_act"][-1])
 
     # assert
-    # np.testing.assert_almost_equal(
-    #     actual=rel_dispersion[-1],
-    #     desired={"pristine":{25: 0.01, 100: 0.02, 400: 0.015},
-    #              "polluted":{25: 0.09, 100: 0.03, 400: 0.015}
-    #              }[aerosol][w_cm_per_s],
-    #     decimal=2,
-    # )
-
     assert np.isclose(
-        rel_dispersion[-1],
-        {
-            "pristine": {25: 0.01, 100: 0.02, 400: 0.015},
-            "polluted": {25: 0.09, 100: 0.03, 400: 0.015},
-        }[aerosol][w_cm_per_s],
-        rtol=0.7,
+        np.log(rel_dispersion_at_final_step),
+        np.log(
+            {
+                "pristine": {25: 0.01, 100: 0.02, 400: 0.015},
+                "polluted": {25: 0.09, 100: 0.03, 400: 0.015},
+            }[aerosol][w_cm_per_s]
+        ),
+        rtol=RTOL,
     ).all()

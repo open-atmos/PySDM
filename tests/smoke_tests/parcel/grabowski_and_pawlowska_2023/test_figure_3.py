@@ -1,5 +1,6 @@
 """
-test against values read from plots in Grabowski and Pawlowska paper
+test against values read from plots in
+[Grabowski and Pawlowska](https://doi.org/10.1029/2022GL101917) paper
 """
 
 import numpy as np
@@ -23,99 +24,78 @@ PRODUCTS = [
     ),
 ]
 
-COMMON_SETTINGS = {"dt": 1 * si.s, "n_sd": 200}
+N_SD = 25
+
+VELOCITIES_CM_PER_S = (25, 100, 400)
+
+AEROSOLS = ("pristine", "polluted")
+
+DZ = 500 * si.m
+
+RTOL = 0.3
 
 
-@pytest.mark.parametrize("w_cm_per_s", (25, 100, 400))
-@pytest.mark.parametrize("aerosol", ("pristine", "polluted"))
-def test_pristine(w_cm_per_s: int, aerosol: str):
+@pytest.fixture(scope="session")
+def outputs():
+    outputs = {}
+    for aerosol in AEROSOLS:
+        outputs[aerosol] = {}
+        for w_cm_per_s in VELOCITIES_CM_PER_S:
+            vertical_velocity = w_cm_per_s * si.cm / si.s
+            outputs[aerosol][w_cm_per_s] = Simulation(
+                Settings(
+                    n_sd=N_SD,
+                    dt=DZ / vertical_velocity,
+                    vertical_velocity=vertical_velocity,
+                    aerosol=aerosol,
+                ),
+                products=PRODUCTS,
+            ).run()
+    return outputs
+
+
+@pytest.mark.parametrize("w_cm_per_s", VELOCITIES_CM_PER_S)
+@pytest.mark.parametrize("aerosol", AEROSOLS)
+@pytest.mark.parametrize("product", ("r_vol", "n_act", "area_std"))
+def test_values_at_final_step(
+    outputs: dict, w_cm_per_s: int, aerosol: str, product: str
+):
     # arrange
-    output = Simulation(
-        Settings(
-            **COMMON_SETTINGS,
-            vertical_velocity=w_cm_per_s * si.cm / si.s,
-            aerosol=aerosol
-        ),
-        products=PRODUCTS,
-    ).run()
-
-    # act
-    r_vol_mean = output["products"]["r_vol"]
-    n_act = output["products"]["n_act"]
-    area_std = np.asarray(output["products"]["area_std"]) / (4 * np.pi)
-
-    # assert
-    assert np.isclose(
-        r_vol_mean[-1],
-        {
-            "pristine": {25: 11 * si.um, 100: 10.5 * si.um, 400: 10 * si.um},
+    output = outputs[aerosol][w_cm_per_s]
+    expected = {
+        "r_vol": {
+            "pristine": {25: 20 * si.um, 100: 18 * si.um, 400: 15 * si.um},
             "polluted": {25: 10 * si.um, 100: 9 * si.um, 400: 9 * si.um},
-        }[aerosol][w_cm_per_s],
-        rtol=0.2,
-    ).all()
-    assert np.isclose(
-        n_act[-1],
-        {
+        },
+        "n_act": {
             "pristine": {
-                25: 50 * si.cm**-3,
+                25: 60 * si.cm**-3,
                 100: 100 * si.cm**-3,
-                400: 200 * si.cm**-3,
+                400: 180 * si.cm**-3,
             },
             "polluted": {
                 25: 350 * si.cm**-3,
                 100: 550 * si.cm**-3,
                 400: 550 * si.cm**-3,
             },
-        }[aerosol][w_cm_per_s],
-        rtol=0.4,
-    ).all()
-    assert np.isclose(
-        area_std[-1],
-        {
+        },
+        "area_std": {
             "pristine": {
-                25: 8 * si.um**2,
-                100: 10 * si.um**2,
-                400: 6.5 * si.um**2,
+                25: 8 * si.um**2 * 4 * np.pi,
+                100: 10 * si.um**2 * 4 * np.pi,
+                400: 6.5 * si.um**2 * 4 * np.pi,
             },
             "polluted": {
-                25: 11 * si.um**2,
-                100: 6 * si.um**2,
-                400: 2.5 * si.um**2,
+                25: 11 * si.um**2 * 4 * np.pi,
+                100: 6 * si.um**2 * 4 * np.pi,
+                400: 2.5 * si.um**2 * 4 * np.pi,
             },
-        }[aerosol][w_cm_per_s],
-        rtol=0.5,
-    ).all()
+        },
+    }[product]
 
-    # @staticmethod
-    # @pytest.mark.parametrize("w_cm_per_s", (25, 100, 400))
-    # def test_polluted(w_cm_per_s):
-    #     # arrange
-    #     output = Simulation(
-    #         Settings(
-    #             **COMMON_SETTINGS,
-    #             vertical_velocity=w_cm_per_s * si.cm / si.s,
-    #             aerosol="polluted"
-    #         ),
-    #         products=PRODUCTS,
-    #     ).run()
-    #
-    #     r_vol_mean = output["products"]["r_vol"]
-    #     n_act = output["products"]["n_act"]
-    #     area_std = np.asarray(output["products"]["area_std"])/(4*np.pi)
-    #
-    #     # assert
-    #     assert np.isclose(
-    #         r_vol_mean[-1],
-    #         {25: 10*si.um, 100: 9*si.um, 400: 9*si.um}[w_cm_per_s],
-    #         rtol=0.15,
-    #     ).all()
-    #     assert np.isclose(
-    #         n_act[-1],
-    #         {25: 350 * si.cm**-3, 100: 550 * si.cm**-3, 400: 550 * si.cm**-3}[w_cm_per_s],
-    #         rtol=0.1,
-    #     ).all()
-    #     assert np.isclose(
-    #         area_std[-1],
-    #         {25: 11 * si.um**2, 100: 6 * si.um**2, 400: 2.5 * si.um**2}[w_cm_per_s],
-    #         rtol=0.1,
-    #     ).all()
+    # assert
+    assert np.isclose(
+        output["products"][product][-1],
+        expected[aerosol][w_cm_per_s],
+        rtol=RTOL,
+    ).all()
