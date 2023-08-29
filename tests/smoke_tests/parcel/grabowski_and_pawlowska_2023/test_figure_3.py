@@ -35,8 +35,8 @@ DZ = 500 * si.m
 RTOL = 0.3
 
 
-@pytest.fixture(scope="session")
-def outputs():
+@pytest.fixture(scope="session", name="outputs")
+def outputs_fixture():
     outputs = {}
     for aerosol in AEROSOLS:
         outputs[aerosol] = {}
