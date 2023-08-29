@@ -239,12 +239,14 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.particulator.attributes.cell_idx,
             self.particulator.attributes["cell id"],
         )
-        self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
+        self.particulator.sort_within_pair_by_attr(
+            is_first_in_pair, attr_name="multiplicity"
+        )
 
     def compute_probabilities_of_collision(self, is_first_in_pair, out):
         """eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)"""
         self.collision_kernel(self.kernel_temp, is_first_in_pair)
-        out.max(self.particulator.attributes["n"], is_first_in_pair)
+        out.max(self.particulator.attributes["multiplicity"], is_first_in_pair)
         out *= self.kernel_temp
         self.particulator.normalize(out, self.norm_factor_temp)
 
@@ -259,7 +261,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         if self.adaptive:
             self.particulator.backend.scale_prob_for_adaptive_sdm_gamma(
                 prob=prob,
-                n=self.particulator.attributes["n"],
+                multiplicity=self.particulator.attributes["multiplicity"],
                 cell_id=self.particulator.attributes["cell id"],
                 dt_left=self.dt_left,
                 dt=self.particulator.dt,
@@ -276,7 +278,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.particulator.backend.compute_gamma(
             prob=prob,
             rand=rand,
-            multiplicity=self.particulator.attributes["n"],
+            multiplicity=self.particulator.attributes["multiplicity"],
             cell_id=self.particulator.attributes["cell id"],
             collision_rate_deficit=self.collision_rate_deficit,
             collision_rate=self.collision_rate,

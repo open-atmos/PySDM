@@ -228,7 +228,7 @@ class CollisionsMethods(
             param_names=(
                 "prob",
                 "idx",
-                "n",
+                "multiplicity",
                 "cell_id",
                 "dt",
                 "is_first_in_pair",
@@ -245,7 +245,7 @@ class CollisionsMethods(
                 if (skip_pair) {{
                     return;
                 }}
-                auto prop = (int64_t)(n[j] / n[k]);
+                auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
                 auto dt_optimal = dt * prop / prob[i];
                 auto cid = cell_id[j];
                 static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), "");
@@ -680,7 +680,7 @@ class CollisionsMethods(
         self,
         *,
         prob,
-        n,
+        multiplicity,
         cell_id,
         dt_left,
         dt,
@@ -698,11 +698,11 @@ class CollisionsMethods(
             n=len(dt_left), args=(dt_todo, dt_left.data, d_dt_max)
         )
         self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
-            n=len(n) // 2,
+            n=len(multiplicity) // 2,
             args=(
                 prob.data,
-                n.idx.data,
-                n.data,
+                multiplicity.idx.data,
+                multiplicity.data,
                 cell_id.data,
                 d_dt,
                 is_first_in_pair.indicator.data,
@@ -710,10 +710,10 @@ class CollisionsMethods(
             ),
         )
         self.__scale_prob_for_adaptive_sdm_gamma_body_3.launch_n(
-            n=len(n) // 2,
+            n=len(multiplicity) // 2,
             args=(
                 prob.data,
-                n.idx.data,
+                multiplicity.idx.data,
                 cell_id.data,
                 d_dt,
                 is_first_in_pair.indicator.data,

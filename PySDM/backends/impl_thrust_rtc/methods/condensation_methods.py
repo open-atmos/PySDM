@@ -36,10 +36,10 @@ class CondensationMethods(
         const = self.formulae.constants
 
         self.__calculate_m_l = trtc.For(
-            ("ml", "v", "n", "cell_id"),
+            ("ml", "v", "multiplicity", "cell_id"),
             "i",
             f"""
-            atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w});
+            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * v[i] * {const.rho_w});
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -312,9 +312,11 @@ class CondensationMethods(
             ),
         )
 
-    def calculate_m_l(self, ml, v, n, cell_id):
+    def calculate_m_l(self, ml, v, multiplicity, cell_id):
         ml[:] = 0
-        self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
+        self.__calculate_m_l.launch_n(
+            len(multiplicity), (ml.data, v.data, multiplicity.data, cell_id.data)
+        )
 
     # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -326,7 +328,7 @@ class CondensationMethods(
         cell_start_arg,
         v,
         v_cr,
-        n,
+        multiplicity,
         vdry,
         idx,
         rhod,
@@ -377,7 +379,7 @@ class CondensationMethods(
             ),
         )
         timestep /= n_substeps
-        self.calculate_m_l(self.ml_old, v, n, cell_id)
+        self.calculate_m_l(self.ml_old, v, multiplicity, cell_id)
 
         for _ in range(n_substeps):
             self.__pre.launch_n(
@@ -395,7 +397,7 @@ class CondensationMethods(
                 ),
             )
             self.__update_volume.launch_n(
-                len(n),
+                len(multiplicity),
                 (
                     v.data,
                     vdry.data,
@@ -409,7 +411,7 @@ class CondensationMethods(
                     cell_id.data,
                 ),
             )
-            self.calculate_m_l(self.ml_new, v, n, cell_id)
+            self.calculate_m_l(self.ml_new, v, multiplicity, cell_id)
             self.__post.launch_n(
                 n_cell,
                 (

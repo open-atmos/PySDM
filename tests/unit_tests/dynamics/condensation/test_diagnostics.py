@@ -59,7 +59,7 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
         builder.add_dynamic(Condensation(max_iters=max_iters))
         self.particulator = builder.build(
             attributes={
-                "n": np.full(n_sd, multiplicity),
+                "multiplicity": np.full(n_sd, multiplicity),
                 "volume": np.full(n_sd, wet_radius),
                 "dry volume": np.full(n_sd, dry_volume),
                 "kappa times dry volume": np.ones(n_sd),

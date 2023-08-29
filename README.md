@@ -188,7 +188,7 @@ Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
 ```
 </details>
 <details>
@@ -205,7 +205,7 @@ initial_spectrum = Exponential(pyargs(...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
 tmp = ConstantMultiplicity(initial_spectrum).sample(int32(n_sd));
-attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
+attributes = py.dict(pyargs('volume', tmp{1}, 'multiplicity', tmp{2}));
 ```
 </details>
 <details open>
@@ -219,7 +219,7 @@ from PySDM.initialisation.spectra.exponential import Exponential
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
 ```
 </details>
 
@@ -505,7 +505,7 @@ v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = Dict()
-attributes["n"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
+attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
 attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
@@ -593,7 +593,7 @@ r_wet = equilibrate_wet_radii(pyargs(...
 ));
 
 attributes = py.dict(pyargs( ...
-    'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
+    'multiplicity', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
     'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
@@ -688,7 +688,7 @@ v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = {
-  'n': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
+  'multiplicity': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
   'dry volume': v_dry,
   'kappa times dry volume': kappa * v_dry,
   'volume': formulae.trivia.volume(radius=r_wet)

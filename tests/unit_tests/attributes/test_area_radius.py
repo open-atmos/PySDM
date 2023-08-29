@@ -14,7 +14,7 @@ def test_radius(volume):
     builder.set_environment(Box(dt=None, dv=None))
     builder.request_attribute("radius")
     particulator = builder.build(
-        attributes={"volume": [volume], "n": np.ones_like(volume)}
+        attributes={"volume": [volume], "multiplicity": np.ones_like(volume)}
     )
 
     # act
@@ -32,7 +32,7 @@ def test_area(volume):
     builder.set_environment(Box(dt=None, dv=None))
     builder.request_attribute("area")
     particulator = builder.build(
-        attributes={"volume": [volume], "n": np.ones_like(volume)}
+        attributes={"volume": [volume], "multiplicity": np.ones_like(volume)}
     )
 
     # act

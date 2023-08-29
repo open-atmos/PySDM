@@ -20,7 +20,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "max_x",
                 "moment_0",
                 "cell_id",
-                "n",
+                "multiplicity",
                 "n_ranks",
                 "moments",
                 "ranks",
@@ -31,9 +31,12 @@ class MomentsMethods(ThrustRTCBackendMethods):
             """
             auto i = idx[fake_i];
             if (min_x <= x_attr[i] && x_attr[i] < max_x) {
-                atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(n[i]));
+                atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(multiplicity[i]));
                 for (auto k = 0; k < n_ranks; k+=1) {
-                    auto value = n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k]));
+                    auto value = multiplicity[i] * pow(
+                        (real_type)(attr_data[i]),
+                        (real_type)(ranks[k])
+                    );
                     atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], value);
                }
             }
@@ -64,7 +67,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "x_attr",
                 "moment_0",
                 "cell_id",
-                "n",
+                "multiplicity",
                 "x_bins",
                 "n_bins",
                 "moments",
@@ -77,9 +80,12 @@ class MomentsMethods(ThrustRTCBackendMethods):
             auto i = idx[fake_i];
             for (auto k = 0; k < n_bins; k+=1) {
                 if (x_bins[k] <= x_attr[i] and x_attr[i] < x_bins[k + 1]) {
-                    atomicAdd((real_type*)&moment_0[n_cell * k + cell_id[i]], (real_type)(n[i]));
-                    auto value = n[i] * pow((real_type)(attr_data[i]), (real_type)(rank));
-                    atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], value);
+                    atomicAdd(
+                        (real_type*)&moment_0[n_cell * k + cell_id[i]],
+                        (real_type)(multiplicity[i])
+                    );
+                    auto val = multiplicity[i] * pow((real_type)(attr_data[i]), (real_type)(rank));
+                    atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], val);
                     break;
                 }
             }

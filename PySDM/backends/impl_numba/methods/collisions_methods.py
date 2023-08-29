@@ -610,7 +610,7 @@ class CollisionsMethods(BackendMethods):
         self,
         *,
         prob,
-        n,
+        multiplicity,
         cell_id,
         dt_left,
         dt,
@@ -621,9 +621,9 @@ class CollisionsMethods(BackendMethods):
     ):
         return self.__scale_prob_for_adaptive_sdm_gamma_body(
             prob.data,
-            n.idx.data,
-            len(n),
-            n.data,
+            multiplicity.idx.data,
+            len(multiplicity),
+            multiplicity.data,
             cell_id.data,
             dt_left.data,
             dt,

@@ -83,7 +83,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         attributes = {}
         attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
         attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
-        attributes["n"] = n_in_dv
+        attributes["multiplicity"] = n_in_dv
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
             environment=self,

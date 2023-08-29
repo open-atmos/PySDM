@@ -23,7 +23,7 @@ class TestMaths:
         T = np.full_like(v, 300.0)
         n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)
-        attribute = {"n": n, "volume": v, "temperature": T, "heat": T * v}
+        attribute = {"multiplicity": n, "volume": v, "temperature": T, "heat": T * v}
         particulator.build(attribute)
 
         true_mean, true_var = spectrum.stats(moments="mv")
@@ -83,7 +83,7 @@ class TestMaths:
         T = np.full_like(v, 300.0)
         n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)
-        attribute = {"n": n, "volume": v, "temperature": T, "heat": T * v}
+        attribute = {"multiplicity": n, "volume": v, "temperature": T, "heat": T * v}
         particulator.build(attribute)
 
         v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)
