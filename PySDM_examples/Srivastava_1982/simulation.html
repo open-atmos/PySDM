@@ -70,7 +70,9 @@ class Simulation:
                         ZerothMoment(name=SimProducts.PySDM.total_numer.name),
                     ),
                     attributes={
-                        &#34;n&#34;: np.full(n_sd, self.settings.total_number_0 / n_sd),
+                        &#34;multiplicity&#34;: np.full(
+                            n_sd, self.settings.total_number_0 / n_sd
+                        ),
                         &#34;volume&#34;: np.full(
                             n_sd,
                             self.settings.total_volume / self.settings.total_number_0,
@@ -156,7 +158,9 @@ class Simulation:
                         ZerothMoment(name=SimProducts.PySDM.total_numer.name),
                     ),
                     attributes={
-                        &#34;n&#34;: np.full(n_sd, self.settings.total_number_0 / n_sd),
+                        &#34;multiplicity&#34;: np.full(
+                            n_sd, self.settings.total_number_0 / n_sd
+                        ),
                         &#34;volume&#34;: np.full(
                             n_sd,
                             self.settings.total_volume / self.settings.total_number_0,
@@ -222,7 +226,9 @@ class Simulation:
                     ZerothMoment(name=SimProducts.PySDM.total_numer.name),
                 ),
                 attributes={
-                    &#34;n&#34;: np.full(n_sd, self.settings.total_number_0 / n_sd),
+                    &#34;multiplicity&#34;: np.full(
+                        n_sd, self.settings.total_number_0 / n_sd
+                    ),
                     &#34;volume&#34;: np.full(
                         n_sd,
                         self.settings.total_volume / self.settings.total_number_0,

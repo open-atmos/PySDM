@@ -217,7 +217,7 @@ class Simulation:
                     if name == freezing_attribute:
                         attributes[name][orig] = array
                         attributes[name][copy] = 0
-                    elif name == &#34;n&#34;:
+                    elif name == &#34;multiplicity&#34;:
                         attributes[name][orig] = array * self.settings.freezing_inp_frac
                         attributes[name][copy] = array * (
                             1 - self.settings.freezing_inp_frac
@@ -450,7 +450,7 @@ class Simulation:
                     if name == freezing_attribute:
                         attributes[name][orig] = array
                         attributes[name][copy] = 0
-                    elif name == &#34;n&#34;:
+                    elif name == &#34;multiplicity&#34;:
                         attributes[name][orig] = array * self.settings.freezing_inp_frac
                         attributes[name][copy] = array * (
                             1 - self.settings.freezing_inp_frac
@@ -677,7 +677,7 @@ def products(self):
                 if name == freezing_attribute:
                     attributes[name][orig] = array
                     attributes[name][copy] = 0
-                elif name == &#34;n&#34;:
+                elif name == &#34;multiplicity&#34;:
                     attributes[name][orig] = array * self.settings.freezing_inp_frac
                     attributes[name][copy] = array * (
                         1 - self.settings.freezing_inp_frac

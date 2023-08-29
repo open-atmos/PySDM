@@ -639,7 +639,7 @@ class CollisionsMethods(BackendMethods):
         self,
         *,
         prob,
-        n,
+        multiplicity,
         cell_id,
         dt_left,
         dt,
@@ -650,9 +650,9 @@ class CollisionsMethods(BackendMethods):
     ):
         return self.__scale_prob_for_adaptive_sdm_gamma_body(
             prob.data,
-            n.idx.data,
-            len(n),
-            n.data,
+            multiplicity.idx.data,
+            len(multiplicity),
+            multiplicity.data,
             cell_id.data,
             dt_left.data,
             dt,
@@ -1926,7 +1926,7 @@ def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
         self,
         *,
         prob,
-        n,
+        multiplicity,
         cell_id,
         dt_left,
         dt,
@@ -1937,9 +1937,9 @@ def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
     ):
         return self.__scale_prob_for_adaptive_sdm_gamma_body(
             prob.data,
-            n.idx.data,
-            len(n),
-            n.data,
+            multiplicity.idx.data,
+            len(multiplicity),
+            multiplicity.data,
             cell_id.data,
             dt_left.data,
             dt,
@@ -2943,7 +2943,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma"><code class="name flex">
-<span>def <span class="ident">scale_prob_for_adaptive_sdm_gamma</span></span>(<span>self, *, prob, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min)</span>
+<span>def <span class="ident">scale_prob_for_adaptive_sdm_gamma</span></span>(<span>self, *, prob, multiplicity, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2955,7 +2955,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     self,
     *,
     prob,
-    n,
+    multiplicity,
     cell_id,
     dt_left,
     dt,
@@ -2966,9 +2966,9 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 ):
     return self.__scale_prob_for_adaptive_sdm_gamma_body(
         prob.data,
-        n.idx.data,
-        len(n),
-        n.data,
+        multiplicity.idx.data,
+        len(multiplicity),
+        multiplicity.data,
         cell_id.data,
         dt_left.data,
         dt,

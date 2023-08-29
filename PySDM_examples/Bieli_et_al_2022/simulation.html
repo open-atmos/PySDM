@@ -42,7 +42,7 @@ def make_core(settings, coal_eff):
     builder.set_environment(env)
     env[&#34;rhod&#34;] = 1.0
     attributes = {}
-    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = ConstantMultiplicity(
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
         settings.spectrum
     ).sample(settings.n_sd)
     collision = Collision(
@@ -84,7 +84,7 @@ def make_core(settings, coal_eff):
     builder.set_environment(env)
     env[&#34;rhod&#34;] = 1.0
     attributes = {}
-    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = ConstantMultiplicity(
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
         settings.spectrum
     ).sample(settings.n_sd)
     collision = Collision(

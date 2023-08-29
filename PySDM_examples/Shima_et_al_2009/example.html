@@ -46,7 +46,7 @@ def run(settings, backend=CPU, observers=()):
     builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
-    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = sampling.sample(settings.n_sd)
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = sampling.sample(settings.n_sd)
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
     )
@@ -153,7 +153,7 @@ if __name__ == &#34;__main__&#34;:
     builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
-    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = sampling.sample(settings.n_sd)
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = sampling.sample(settings.n_sd)
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
     )

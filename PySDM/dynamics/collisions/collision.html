@@ -278,12 +278,14 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.particulator.attributes.cell_idx,
             self.particulator.attributes[&#34;cell id&#34;],
         )
-        self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name=&#34;n&#34;)
+        self.particulator.sort_within_pair_by_attr(
+            is_first_in_pair, attr_name=&#34;multiplicity&#34;
+        )
 
     def compute_probabilities_of_collision(self, is_first_in_pair, out):
         &#34;&#34;&#34;eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)&#34;&#34;&#34;
         self.collision_kernel(self.kernel_temp, is_first_in_pair)
-        out.max(self.particulator.attributes[&#34;n&#34;], is_first_in_pair)
+        out.max(self.particulator.attributes[&#34;multiplicity&#34;], is_first_in_pair)
         out *= self.kernel_temp
         self.particulator.normalize(out, self.norm_factor_temp)
 
@@ -298,7 +300,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         if self.adaptive:
             self.particulator.backend.scale_prob_for_adaptive_sdm_gamma(
                 prob=prob,
-                n=self.particulator.attributes[&#34;n&#34;],
+                multiplicity=self.particulator.attributes[&#34;multiplicity&#34;],
                 cell_id=self.particulator.attributes[&#34;cell id&#34;],
                 dt_left=self.dt_left,
                 dt=self.particulator.dt,
@@ -315,7 +317,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.particulator.backend.compute_gamma(
             prob=prob,
             rand=rand,
-            multiplicity=self.particulator.attributes[&#34;n&#34;],
+            multiplicity=self.particulator.attributes[&#34;multiplicity&#34;],
             cell_id=self.particulator.attributes[&#34;cell id&#34;],
             collision_rate_deficit=self.collision_rate_deficit,
             collision_rate=self.collision_rate,
@@ -707,12 +709,14 @@ class Breakup(Collision):
             self.particulator.attributes.cell_idx,
             self.particulator.attributes[&#34;cell id&#34;],
         )
-        self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name=&#34;n&#34;)
+        self.particulator.sort_within_pair_by_attr(
+            is_first_in_pair, attr_name=&#34;multiplicity&#34;
+        )
 
     def compute_probabilities_of_collision(self, is_first_in_pair, out):
         &#34;&#34;&#34;eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)&#34;&#34;&#34;
         self.collision_kernel(self.kernel_temp, is_first_in_pair)
-        out.max(self.particulator.attributes[&#34;n&#34;], is_first_in_pair)
+        out.max(self.particulator.attributes[&#34;multiplicity&#34;], is_first_in_pair)
         out *= self.kernel_temp
         self.particulator.normalize(out, self.norm_factor_temp)
 
@@ -727,7 +731,7 @@ class Breakup(Collision):
         if self.adaptive:
             self.particulator.backend.scale_prob_for_adaptive_sdm_gamma(
                 prob=prob,
-                n=self.particulator.attributes[&#34;n&#34;],
+                multiplicity=self.particulator.attributes[&#34;multiplicity&#34;],
                 cell_id=self.particulator.attributes[&#34;cell id&#34;],
                 dt_left=self.dt_left,
                 dt=self.particulator.dt,
@@ -744,7 +748,7 @@ class Breakup(Collision):
         self.particulator.backend.compute_gamma(
             prob=prob,
             rand=rand,
-            multiplicity=self.particulator.attributes[&#34;n&#34;],
+            multiplicity=self.particulator.attributes[&#34;multiplicity&#34;],
             cell_id=self.particulator.attributes[&#34;cell id&#34;],
             collision_rate_deficit=self.collision_rate_deficit,
             collision_rate=self.collision_rate,
@@ -778,7 +782,7 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
     if self.adaptive:
         self.particulator.backend.scale_prob_for_adaptive_sdm_gamma(
             prob=prob,
-            n=self.particulator.attributes[&#34;n&#34;],
+            multiplicity=self.particulator.attributes[&#34;multiplicity&#34;],
             cell_id=self.particulator.attributes[&#34;cell id&#34;],
             dt_left=self.dt_left,
             dt=self.particulator.dt,
@@ -795,7 +799,7 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
     self.particulator.backend.compute_gamma(
         prob=prob,
         rand=rand,
-        multiplicity=self.particulator.attributes[&#34;n&#34;],
+        multiplicity=self.particulator.attributes[&#34;multiplicity&#34;],
         cell_id=self.particulator.attributes[&#34;cell id&#34;],
         collision_rate_deficit=self.collision_rate_deficit,
         collision_rate=self.collision_rate,
@@ -829,7 +833,7 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
 <pre><code class="python">def compute_probabilities_of_collision(self, is_first_in_pair, out):
     &#34;&#34;&#34;eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)&#34;&#34;&#34;
     self.collision_kernel(self.kernel_temp, is_first_in_pair)
-    out.max(self.particulator.attributes[&#34;n&#34;], is_first_in_pair)
+    out.max(self.particulator.attributes[&#34;multiplicity&#34;], is_first_in_pair)
     out *= self.kernel_temp
     self.particulator.normalize(out, self.norm_factor_temp)</code></pre>
 </details>
@@ -985,7 +989,9 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
         self.particulator.attributes.cell_idx,
         self.particulator.attributes[&#34;cell id&#34;],
     )
-    self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name=&#34;n&#34;)</code></pre>
+    self.particulator.sort_within_pair_by_attr(
+        is_first_in_pair, attr_name=&#34;multiplicity&#34;
+    )</code></pre>
 </details>
 </dd>
 </dl>

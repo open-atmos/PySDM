@@ -58,7 +58,10 @@ class Box:
 
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}
-        attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = spectral_discretisation.sample(
+        (
+            attributes[&#34;volume&#34;],
+            attributes[&#34;multiplicity&#34;],
+        ) = spectral_discretisation.sample(
             backend=self.particulator.backend, n_sd=self.particulator.n_sd
         )
         return attributes</code></pre>
@@ -106,7 +109,10 @@ class Box:
 
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}
-        attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = spectral_discretisation.sample(
+        (
+            attributes[&#34;volume&#34;],
+            attributes[&#34;multiplicity&#34;],
+        ) = spectral_discretisation.sample(
             backend=self.particulator.backend, n_sd=self.particulator.n_sd
         )
         return attributes</code></pre>
@@ -124,7 +130,10 @@ class Box:
 </summary>
 <pre><code class="python">def init_attributes(self, *, spectral_discretisation):
     attributes = {}
-    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = spectral_discretisation.sample(
+    (
+        attributes[&#34;volume&#34;],
+        attributes[&#34;multiplicity&#34;],
+    ) = spectral_discretisation.sample(
         backend=self.particulator.backend, n_sd=self.particulator.n_sd
     )
     return attributes</code></pre>

@@ -75,7 +75,7 @@ class Simulation(BasicSimulation):
         )
 
         attributes = {
-            &#34;n&#34;: ccn_conc_float * air_volume,
+            &#34;multiplicity&#34;: ccn_conc_float * air_volume,
             &#34;dry volume&#34;: dry_volume,
             &#34;kappa times dry volume&#34;: settings.kappa * dry_volume,
             &#34;volume&#34;: None,
@@ -96,7 +96,7 @@ class Simulation(BasicSimulation):
                     np.full(
                         settings.in_sampling_n,
                         data[-1]
-                        if attribute != &#34;n&#34;
+                        if attribute != &#34;multiplicity&#34;
                         else data[-1] / settings.in_sampling_n,
                     ),
                 )
@@ -169,7 +169,7 @@ class Simulation(BasicSimulation):
         )
 
         attributes = {
-            &#34;n&#34;: ccn_conc_float * air_volume,
+            &#34;multiplicity&#34;: ccn_conc_float * air_volume,
             &#34;dry volume&#34;: dry_volume,
             &#34;kappa times dry volume&#34;: settings.kappa * dry_volume,
             &#34;volume&#34;: None,
@@ -190,7 +190,7 @@ class Simulation(BasicSimulation):
                     np.full(
                         settings.in_sampling_n,
                         data[-1]
-                        if attribute != &#34;n&#34;
+                        if attribute != &#34;multiplicity&#34;
                         else data[-1] / settings.in_sampling_n,
                     ),
                 )

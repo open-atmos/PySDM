@@ -61,11 +61,13 @@ def run_box_breakup(
     env[&#34;rhod&#34;] = 1.0
     attributes = {}
     if sample_in_radius:
-        diams, attributes[&#34;n&#34;] = Logarithmic(settings.spectrum).sample(settings.n_sd)
+        diams, attributes[&#34;multiplicity&#34;] = Logarithmic(settings.spectrum).sample(
+            settings.n_sd
+        )
         radii = diams / 2
         attributes[&#34;volume&#34;] = Formulae().trivia.volume(radius=radii)
     else:
-        attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = ConstantMultiplicity(
+        attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
             settings.spectrum
         ).sample(settings.n_sd)
     breakup = Collision(
@@ -120,7 +122,7 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     builder.set_environment(env)
     env[&#34;rhod&#34;] = 1.0
     attributes = {}
-    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = ConstantMultiplicity(
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
         settings.spectrum
     ).sample(settings.n_sd)
     coal = Coalescence(
@@ -178,7 +180,7 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     builder.set_environment(env)
     env[&#34;rhod&#34;] = 1.0
     attributes = {}
-    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = ConstantMultiplicity(
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
         settings.spectrum
     ).sample(settings.n_sd)
     coal = Coalescence(
@@ -232,11 +234,13 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     env[&#34;rhod&#34;] = 1.0
     attributes = {}
     if sample_in_radius:
-        diams, attributes[&#34;n&#34;] = Logarithmic(settings.spectrum).sample(settings.n_sd)
+        diams, attributes[&#34;multiplicity&#34;] = Logarithmic(settings.spectrum).sample(
+            settings.n_sd
+        )
         radii = diams / 2
         attributes[&#34;volume&#34;] = Formulae().trivia.volume(radius=radii)
     else:
-        attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = ConstantMultiplicity(
+        attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
             settings.spectrum
         ).sample(settings.n_sd)
     breakup = Collision(

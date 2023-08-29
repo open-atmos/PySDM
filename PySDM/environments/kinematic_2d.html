@@ -110,7 +110,7 @@ class Kinematic2D(Moist):
             cell_id = attributes[&#34;cell id&#34;]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes[&#34;n&#34;] = n_per_kg * rhod[cell_id] * domain_volume
+        attributes[&#34;multiplicity&#34;] = n_per_kg * rhod[cell_id] * domain_volume
         attributes[&#34;volume&#34;] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
@@ -212,7 +212,7 @@ class Kinematic2D(Moist):
             cell_id = attributes[&#34;cell id&#34;]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes[&#34;n&#34;] = n_per_kg * rhod[cell_id] * domain_volume
+        attributes[&#34;multiplicity&#34;] = n_per_kg * rhod[cell_id] * domain_volume
         attributes[&#34;volume&#34;] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
@@ -335,7 +335,7 @@ def dv(self):
         cell_id = attributes[&#34;cell id&#34;]
         domain_volume = np.prod(np.array(self.mesh.size))
 
-    attributes[&#34;n&#34;] = n_per_kg * rhod[cell_id] * domain_volume
+    attributes[&#34;multiplicity&#34;] = n_per_kg * rhod[cell_id] * domain_volume
     attributes[&#34;volume&#34;] = self.formulae.trivia.volume(radius=r_wet)
 
     return attributes</code></pre>

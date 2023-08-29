@@ -102,10 +102,10 @@ class ParticleAttributesFactory:
         )
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
 
-        n = req_attr[&#34;n&#34;]
+        n = req_attr[&#34;multiplicity&#34;]
         n.allocate(idx)
-        n.init(attributes[&#34;n&#34;])
-        req_attr[&#34;n&#34;].data = particulator.IndexedStorage.indexed(idx, n.data)
+        n.init(attributes[&#34;multiplicity&#34;])
+        req_attr[&#34;multiplicity&#34;].data = particulator.IndexedStorage.indexed(idx, n.data)
         cell_id = req_attr[&#34;cell id&#34;]
         cell_id.allocate(idx)
         cell_id.init(attributes[&#34;cell id&#34;])
@@ -233,10 +233,10 @@ class ParticleAttributesFactory:
         )
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
 
-        n = req_attr[&#34;n&#34;]
+        n = req_attr[&#34;multiplicity&#34;]
         n.allocate(idx)
-        n.init(attributes[&#34;n&#34;])
-        req_attr[&#34;n&#34;].data = particulator.IndexedStorage.indexed(idx, n.data)
+        n.init(attributes[&#34;multiplicity&#34;])
+        req_attr[&#34;multiplicity&#34;].data = particulator.IndexedStorage.indexed(idx, n.data)
         cell_id = req_attr[&#34;cell id&#34;]
         cell_id.allocate(idx)
         cell_id.init(attributes[&#34;cell id&#34;])
@@ -355,10 +355,10 @@ def attributes(particulator, req_attr, attributes):
     )
     helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
 
-    n = req_attr[&#34;n&#34;]
+    n = req_attr[&#34;multiplicity&#34;]
     n.allocate(idx)
-    n.init(attributes[&#34;n&#34;])
-    req_attr[&#34;n&#34;].data = particulator.IndexedStorage.indexed(idx, n.data)
+    n.init(attributes[&#34;multiplicity&#34;])
+    req_attr[&#34;multiplicity&#34;].data = particulator.IndexedStorage.indexed(idx, n.data)
     cell_id = req_attr[&#34;cell id&#34;]
     cell_id.allocate(idx)
     cell_id.init(attributes[&#34;cell id&#34;])

@@ -33,6 +33,7 @@
 The Builder class handling creation of  `PySDM.particulator.Particulator` instances
 &#34;&#34;&#34;
 import inspect
+import warnings
 
 import numpy as np
 
@@ -54,7 +55,7 @@ class Builder:
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
-            &#34;n&#34;: Multiplicities(self),
+            &#34;multiplicity&#34;: Multiplicities(self),
             &#34;volume&#34;: Volume(self),
             &#34;cell id&#34;: CellID(self),
         }
@@ -109,6 +110,14 @@ class Builder:
     ):
         assert self.particulator.environment is not None
 
+        if &#34;n&#34; in attributes and &#34;multiplicity&#34; not in attributes:
+            attributes[&#34;multiplicity&#34;] = attributes[&#34;n&#34;]
+            del attributes[&#34;n&#34;]
+            warnings.warn(
+                &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
+                DeprecationWarning,
+            )
+
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
 
@@ -126,9 +135,11 @@ class Builder:
                     **self.condensation_params,
                 )
             )
-        attributes[&#34;n&#34;] = int_caster(attributes[&#34;n&#34;])
+        attributes[&#34;multiplicity&#34;] = int_caster(attributes[&#34;multiplicity&#34;])
         if self.particulator.mesh.dimension == 0:
-            attributes[&#34;cell id&#34;] = np.zeros_like(attributes[&#34;n&#34;], dtype=np.int64)
+            attributes[&#34;cell id&#34;] = np.zeros_like(
+                attributes[&#34;multiplicity&#34;], dtype=np.int64
+            )
         self.particulator.attributes = ParticleAttributesFactory.attributes(
             self.particulator, self.req_attr, attributes
         )
@@ -185,7 +196,7 @@ def get_key(dynamic):
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
-            &#34;n&#34;: Multiplicities(self),
+            &#34;multiplicity&#34;: Multiplicities(self),
             &#34;volume&#34;: Volume(self),
             &#34;cell id&#34;: CellID(self),
         }
@@ -240,6 +251,14 @@ def get_key(dynamic):
     ):
         assert self.particulator.environment is not None
 
+        if &#34;n&#34; in attributes and &#34;multiplicity&#34; not in attributes:
+            attributes[&#34;multiplicity&#34;] = attributes[&#34;n&#34;]
+            del attributes[&#34;n&#34;]
+            warnings.warn(
+                &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
+                DeprecationWarning,
+            )
+
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
 
@@ -257,9 +276,11 @@ def get_key(dynamic):
                     **self.condensation_params,
                 )
             )
-        attributes[&#34;n&#34;] = int_caster(attributes[&#34;n&#34;])
+        attributes[&#34;multiplicity&#34;] = int_caster(attributes[&#34;multiplicity&#34;])
         if self.particulator.mesh.dimension == 0:
-            attributes[&#34;cell id&#34;] = np.zeros_like(attributes[&#34;n&#34;], dtype=np.int64)
+            attributes[&#34;cell id&#34;] = np.zeros_like(
+                attributes[&#34;multiplicity&#34;], dtype=np.int64
+            )
         self.particulator.attributes = ParticleAttributesFactory.attributes(
             self.particulator, self.req_attr, attributes
         )
@@ -305,6 +326,14 @@ def get_key(dynamic):
 ):
     assert self.particulator.environment is not None
 
+    if &#34;n&#34; in attributes and &#34;multiplicity&#34; not in attributes:
+        attributes[&#34;multiplicity&#34;] = attributes[&#34;n&#34;]
+        del attributes[&#34;n&#34;]
+        warnings.warn(
+            &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
+            DeprecationWarning,
+        )
+
     for dynamic in self.particulator.dynamics.values():
         dynamic.register(self)
 
@@ -322,9 +351,11 @@ def get_key(dynamic):
                 **self.condensation_params,
             )
         )
-    attributes[&#34;n&#34;] = int_caster(attributes[&#34;n&#34;])
+    attributes[&#34;multiplicity&#34;] = int_caster(attributes[&#34;multiplicity&#34;])
     if self.particulator.mesh.dimension == 0:
-        attributes[&#34;cell id&#34;] = np.zeros_like(attributes[&#34;n&#34;], dtype=np.int64)
+        attributes[&#34;cell id&#34;] = np.zeros_like(
+            attributes[&#34;multiplicity&#34;], dtype=np.int64
+        )
     self.particulator.attributes = ParticleAttributesFactory.attributes(
         self.particulator, self.req_attr, attributes
     )

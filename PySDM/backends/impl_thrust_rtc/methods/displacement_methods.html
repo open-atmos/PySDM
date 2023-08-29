@@ -98,7 +98,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 &#34;cell_origin&#34;,
                 &#34;position_in_cell&#34;,
                 &#34;volume&#34;,
-                &#34;n&#34;,
+                &#34;multiplicity&#34;,
                 &#34;rainfall&#34;,
             ),
             &#34;i&#34;,
@@ -106,7 +106,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             auto origin = cell_origin[n_sd * (n_dims-1) + idx[i]];
             auto pic = position_in_cell[n_sd * (n_dims-1) + idx[i]];
             if (origin + pic &lt; 0) {
-                atomicAdd((real_type*) &amp;rainfall[0], n[idx[i]] * volume[idx[i]]);
+                atomicAdd((real_type*) &amp;rainfall[0], multiplicity[idx[i]] * volume[idx[i]]);
                 idx[i] = n_sd;
                 healthy[0] = 0;
             }
@@ -158,7 +158,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         trtc.Fill(rainfall, self._get_floating_point(0))
         self.__flag_precipitated_body.launch_n(
             length,
-            [
+            (
                 idx.data,
                 n_sd,
                 n_dims,
@@ -168,7 +168,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 volume.data,
                 multiplicity.data,
                 rainfall,
-            ],
+            ),
         )
         return rainfall.to_host()[0]
 
@@ -258,7 +258,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 &#34;cell_origin&#34;,
                 &#34;position_in_cell&#34;,
                 &#34;volume&#34;,
-                &#34;n&#34;,
+                &#34;multiplicity&#34;,
                 &#34;rainfall&#34;,
             ),
             &#34;i&#34;,
@@ -266,7 +266,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             auto origin = cell_origin[n_sd * (n_dims-1) + idx[i]];
             auto pic = position_in_cell[n_sd * (n_dims-1) + idx[i]];
             if (origin + pic &lt; 0) {
-                atomicAdd((real_type*) &amp;rainfall[0], n[idx[i]] * volume[idx[i]]);
+                atomicAdd((real_type*) &amp;rainfall[0], multiplicity[idx[i]] * volume[idx[i]]);
                 idx[i] = n_sd;
                 healthy[0] = 0;
             }
@@ -318,7 +318,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         trtc.Fill(rainfall, self._get_floating_point(0))
         self.__flag_precipitated_body.launch_n(
             length,
-            [
+            (
                 idx.data,
                 n_sd,
                 n_dims,
@@ -328,7 +328,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 volume.data,
                 multiplicity.data,
                 rainfall,
-            ],
+            ),
         )
         return rainfall.to_host()[0]
 

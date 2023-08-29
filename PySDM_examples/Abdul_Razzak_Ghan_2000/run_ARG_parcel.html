@@ -78,14 +78,16 @@ def run_parcel(
     builder.add_dynamic(Condensation())
     builder.request_attribute(&#34;critical supersaturation&#34;)
 
-    attributes = {k: np.empty(0) for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;n&#34;)}
+    attributes = {
+        k: np.empty(0) for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;multiplicity&#34;)
+    }
     for i, mode in enumerate(aerosol.modes):
         kappa, spectrum = mode[&#34;kappa&#34;][&#34;CompressedFilmOvadnevaite&#34;], mode[&#34;spectrum&#34;]
         r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
         v_dry = builder.formulae.trivia.volume(radius=r_dry)
         specific_concentration = concentration / builder.formulae.constants.rho_STP
-        attributes[&#34;n&#34;] = np.append(
-            attributes[&#34;n&#34;], specific_concentration * env.mass_of_dry_air
+        attributes[&#34;multiplicity&#34;] = np.append(
+            attributes[&#34;multiplicity&#34;], specific_concentration * env.mass_of_dry_air
         )
         attributes[&#34;dry volume&#34;] = np.append(attributes[&#34;dry volume&#34;], v_dry)
         attributes[&#34;kappa times dry volume&#34;] = np.append(
@@ -104,7 +106,7 @@ def run_parcel(
 
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {
-        &#34;n&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;multiplicity&#34;: tuple([] for _ in range(particulator.n_sd)),
         &#34;volume&#34;: tuple([] for _ in range(particulator.n_sd)),
         &#34;critical volume&#34;: tuple([] for _ in range(particulator.n_sd)),
         &#34;critical supersaturation&#34;: tuple([] for _ in range(particulator.n_sd)),
@@ -130,10 +132,10 @@ def run_parcel(
         for i, volume in enumerate(output_attributes[&#34;volume&#34;]):
             if j * n_sd_per_mode &lt;= i &lt; (j + 1) * n_sd_per_mode:
                 if output_attributes[&#34;critical supersaturation&#34;][i][-1] &lt; RHmax:
-                    activated_drops_j_S += output_attributes[&#34;n&#34;][i][-1]
+                    activated_drops_j_S += output_attributes[&#34;multiplicity&#34;][i][-1]
                 if output_attributes[&#34;critical volume&#34;][i][-1] &lt; volume[-1]:
-                    activated_drops_j_V += output_attributes[&#34;n&#34;][i][-1]
-        Nj = np.asarray(output_attributes[&#34;n&#34;])[
+                    activated_drops_j_V += output_attributes[&#34;multiplicity&#34;][i][-1]
+        Nj = np.asarray(output_attributes[&#34;multiplicity&#34;])[
             j * n_sd_per_mode : (j + 1) * n_sd_per_mode, -1
         ]
         max_multiplicity_j = np.max(Nj)
@@ -215,14 +217,16 @@ def run_parcel(
     builder.add_dynamic(Condensation())
     builder.request_attribute(&#34;critical supersaturation&#34;)
 
-    attributes = {k: np.empty(0) for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;n&#34;)}
+    attributes = {
+        k: np.empty(0) for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;multiplicity&#34;)
+    }
     for i, mode in enumerate(aerosol.modes):
         kappa, spectrum = mode[&#34;kappa&#34;][&#34;CompressedFilmOvadnevaite&#34;], mode[&#34;spectrum&#34;]
         r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
         v_dry = builder.formulae.trivia.volume(radius=r_dry)
         specific_concentration = concentration / builder.formulae.constants.rho_STP
-        attributes[&#34;n&#34;] = np.append(
-            attributes[&#34;n&#34;], specific_concentration * env.mass_of_dry_air
+        attributes[&#34;multiplicity&#34;] = np.append(
+            attributes[&#34;multiplicity&#34;], specific_concentration * env.mass_of_dry_air
         )
         attributes[&#34;dry volume&#34;] = np.append(attributes[&#34;dry volume&#34;], v_dry)
         attributes[&#34;kappa times dry volume&#34;] = np.append(
@@ -241,7 +245,7 @@ def run_parcel(
 
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {
-        &#34;n&#34;: tuple([] for _ in range(particulator.n_sd)),
+        &#34;multiplicity&#34;: tuple([] for _ in range(particulator.n_sd)),
         &#34;volume&#34;: tuple([] for _ in range(particulator.n_sd)),
         &#34;critical volume&#34;: tuple([] for _ in range(particulator.n_sd)),
         &#34;critical supersaturation&#34;: tuple([] for _ in range(particulator.n_sd)),
@@ -267,10 +271,10 @@ def run_parcel(
         for i, volume in enumerate(output_attributes[&#34;volume&#34;]):
             if j * n_sd_per_mode &lt;= i &lt; (j + 1) * n_sd_per_mode:
                 if output_attributes[&#34;critical supersaturation&#34;][i][-1] &lt; RHmax:
-                    activated_drops_j_S += output_attributes[&#34;n&#34;][i][-1]
+                    activated_drops_j_S += output_attributes[&#34;multiplicity&#34;][i][-1]
                 if output_attributes[&#34;critical volume&#34;][i][-1] &lt; volume[-1]:
-                    activated_drops_j_V += output_attributes[&#34;n&#34;][i][-1]
-        Nj = np.asarray(output_attributes[&#34;n&#34;])[
+                    activated_drops_j_V += output_attributes[&#34;multiplicity&#34;][i][-1]
+        Nj = np.asarray(output_attributes[&#34;multiplicity&#34;])[
             j * n_sd_per_mode : (j + 1) * n_sd_per_mode, -1
         ]
         max_multiplicity_j = np.max(Nj)

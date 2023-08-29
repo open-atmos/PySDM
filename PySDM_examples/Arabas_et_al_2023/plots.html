@@ -39,23 +39,6 @@ colors = {True: &#34;black&#34;, False: &#34;teal&#34;}
 qi_unit = si.g / si.m**3
 
 
-def make_sampling_plot(data):
-    ensemble_n = len(data) // 2
-    _, axs = pyplot.subplots(nrows=ensemble_n, ncols=2)  # , constrained_layout=True)
-    for i, v in enumerate(data):
-        row = i % ensemble_n
-        col = i // ensemble_n
-        if &#34;freezing temperature&#34; in v[&#34;spectrum&#34;]:
-            x = v[&#34;spectrum&#34;][&#34;freezing temperature&#34;]
-            axs[row, col].set_xlabel(&#34;$T_{fz}$&#34;)
-            axs[row, col].invert_xaxis()
-        else:
-            x = v[&#34;spectrum&#34;][&#34;immersed surface area&#34;]
-            axs[row, col].set_xlabel(&#34;$A$&#34;)
-        axs[row, col].stem(x, v[&#34;spectrum&#34;][&#34;n&#34;])
-        axs[row, col].set_ylabel(&#34;n&#34;)
-
-
 def make_temperature_plot(data):
     pyplot.xlabel(&#34;time [s]&#34;)
 
@@ -345,32 +328,6 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
     pyplot.grid()</code></pre>
 </details>
 </dd>
-<dt id="PySDM_examples.Arabas_et_al_2023.plots.make_sampling_plot"><code class="name flex">
-<span>def <span class="ident">make_sampling_plot</span></span>(<span>data)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def make_sampling_plot(data):
-    ensemble_n = len(data) // 2
-    _, axs = pyplot.subplots(nrows=ensemble_n, ncols=2)  # , constrained_layout=True)
-    for i, v in enumerate(data):
-        row = i % ensemble_n
-        col = i // ensemble_n
-        if &#34;freezing temperature&#34; in v[&#34;spectrum&#34;]:
-            x = v[&#34;spectrum&#34;][&#34;freezing temperature&#34;]
-            axs[row, col].set_xlabel(&#34;$T_{fz}$&#34;)
-            axs[row, col].invert_xaxis()
-        else:
-            x = v[&#34;spectrum&#34;][&#34;immersed surface area&#34;]
-            axs[row, col].set_xlabel(&#34;$A$&#34;)
-        axs[row, col].stem(x, v[&#34;spectrum&#34;][&#34;n&#34;])
-        axs[row, col].set_ylabel(&#34;n&#34;)</code></pre>
-</details>
-</dd>
 <dt id="PySDM_examples.Arabas_et_al_2023.plots.make_temperature_plot"><code class="name flex">
 <span>def <span class="ident">make_temperature_plot</span></span>(<span>data)</span>
 </code></dt>
@@ -430,7 +387,6 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
 <ul class="">
 <li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_freezing_spec_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_freezing_spec_plot">make_freezing_spec_plot</a></code></li>
 <li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_pdf_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_pdf_plot">make_pdf_plot</a></code></li>
-<li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_sampling_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_sampling_plot">make_sampling_plot</a></code></li>
 <li><code><a title="PySDM_examples.Arabas_et_al_2023.plots.make_temperature_plot" href="#PySDM_examples.Arabas_et_al_2023.plots.make_temperature_plot">make_temperature_plot</a></code></li>
 </ul>
 </li>
