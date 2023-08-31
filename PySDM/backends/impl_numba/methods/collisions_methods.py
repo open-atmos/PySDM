@@ -99,14 +99,15 @@ def get_new_multiplicities_and_update_attributes(
         attributes[a, k] += take_from_j * attributes[a, j]
         attributes[a, k] /= new_mult_k
 
-    if multiplicity[j] == take_from_j:
+    if multiplicity[j] > take_from_j:
+        nj = multiplicity[j] - take_from_j
+        nk = new_mult_k
+
+    else:  # take_from_j == multiplicity[j]
         nj = new_mult_k / 2
         nk = nj
         for a in range(len(attributes)):
             attributes[a, j] = attributes[a, k]
-    else:  # take_from_j < multiplicity[j]
-        nj = multiplicity[j] - take_from_j
-        nk = new_mult_k
     return nj, nk
 
 

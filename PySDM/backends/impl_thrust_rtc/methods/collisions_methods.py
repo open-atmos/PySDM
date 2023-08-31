@@ -131,6 +131,10 @@ struct Commons {
     } else {
         nj[0] = new_mult_k / 2;
         nk[0] = nj[0];
+
+        for (auto a = 0; a < n_attr; a += 1) {
+            attributes[a + j] = attributes[a + k];
+        }
     }
   }
 
@@ -144,12 +148,6 @@ struct Commons {
     real_type take_from_j,
     int64_t n_attr
   ) {
-    if (multiplicity[j] <= take_from_j) {
-        for (auto a = 0; a < n_attr; a += 1) {
-            attributes[a + j] = attributes[a + k];
-        }
-    }
-
     multiplicity[j] = max((int64_t)(round(nj)), (int64_t)(1));
     multiplicity[k] = max((int64_t)(round(nk)), (int64_t)(1));
     auto factor_j = nj / multiplicity[j];
