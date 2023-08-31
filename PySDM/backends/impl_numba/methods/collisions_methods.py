@@ -59,7 +59,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def compute_multiplicities_transfer(
+def compute_transfer_multiplicities(
     gamma, j, k, multiplicity, volume, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
@@ -145,7 +145,7 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     warn_overflows,
     volume,
 ):  # breakup0 guarantees take_from_j <= multiplicity[j]
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = compute_multiplicities_transfer(
+    take_from_j, new_mult_k, gamma_j_k, overflow_flag = compute_transfer_multiplicities(
         gamma[i],
         j,
         k,
@@ -210,7 +210,7 @@ def break_up_while(
                 new_mult_k,
                 gamma_j_k,
                 overflow_flag,
-            ) = compute_multiplicities_transfer(
+            ) = compute_transfer_multiplicities(
                 gamma_deficit,
                 j,
                 k,
