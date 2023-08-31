@@ -107,7 +107,7 @@ struct Commons {
     return gamma_j_k;
   }
 
-  static __device__ void update_mult_attributes(
+  static __device__ void update_multiplicity_and_attributes(
     int64_t j,
     int64_t k,
     VectorView<real_type> attributes,
@@ -134,7 +134,7 @@ struct Commons {
     }
   }
 
-  static __device__ void breakup_fun2(
+  static __device__ void round_multiplicities_to_ints(
     int64_t j,
     int64_t k,
     real_type nj,
@@ -194,7 +194,7 @@ struct Commons {
     real_type nj[1] = {}; // float
     real_type nk[1] = {}; // float
 
-    Commons::update_mult_attributes(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
+    Commons::update_multiplicity_and_attributes(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
 
     atomicAdd(
         (unsigned long long int*)&breakup_rate[cid],
@@ -204,7 +204,7 @@ struct Commons {
         (unsigned long long int*)&breakup_rate_deficit[cid],
         (unsigned long long int)(gamma_deficit * multiplicity[k])
     );
-    Commons::round_mults_to_ints(j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr);
+    Commons::round_multiplicities_to_ints(j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr);
   }
 };
 """
