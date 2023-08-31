@@ -35,7 +35,7 @@ def coalescence_and_breakup_eq13(
     )
 
     x = np.arange(n_steps + 1, dtype=float)
-    sim_products = simulation.run(x, seeds=seeds)
+    sim_products = simulation.run_convergence_analysis(x, seeds=seeds)
 
     secondary_products = get_pysdm_secondary_products(
         products=sim_products, total_volume=settings.total_volume

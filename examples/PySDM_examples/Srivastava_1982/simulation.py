@@ -17,39 +17,43 @@ class Simulation:
             for n_sd in self.settings.n_sds
         }
 
-    def run(self, x, seeds):
+    def build(self, n_sd, seed, products):
+        builder = Builder(
+            backend=self.settings.backend_class(
+                formulae=Formulae(
+                    constants={"rho_w": self.settings.rho},
+                    fragmentation_function="ConstantSize",
+                    seed=seed,
+                )
+            ),
+            n_sd=n_sd,
+        )
+        builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
+        builder.add_dynamic(self.collision_dynamic)
+        particulator = builder.build(
+            products=products,
+            attributes={
+                "multiplicity": np.full(n_sd, self.settings.total_number_0 / n_sd),
+                "volume": np.full(
+                    n_sd,
+                    self.settings.total_volume / self.settings.total_number_0,
+                ),
+            },
+        )
+        return particulator
+
+    def run_convergence_analysis(self, x, seeds):
         for n_sd in self.settings.n_sds:
             for seed in seeds:
-                builder = Builder(
-                    backend=self.settings.backend_class(
-                        formulae=Formulae(
-                            constants={"rho_w": self.settings.rho},
-                            fragmentation_function="ConstantSize",
-                            seed=seed,
-                        )
+                products = (
+                    SuperDropletCountPerGridbox(
+                        name=SimProducts.PySDM.super_particle_count.name
                     ),
-                    n_sd=n_sd,
+                    VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
+                    ZerothMoment(name=SimProducts.PySDM.total_numer.name),
                 )
-                builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
-                builder.add_dynamic(self.collision_dynamic)
-                particulator = builder.build(
-                    products=(
-                        SuperDropletCountPerGridbox(
-                            name=SimProducts.PySDM.super_particle_count.name
-                        ),
-                        VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
-                        ZerothMoment(name=SimProducts.PySDM.total_numer.name),
-                    ),
-                    attributes={
-                        "multiplicity": np.full(
-                            n_sd, self.settings.total_number_0 / n_sd
-                        ),
-                        "volume": np.full(
-                            n_sd,
-                            self.settings.total_volume / self.settings.total_number_0,
-                        ),
-                    },
-                )
+
+                particulator = self.build(n_sd, seed, products)
 
                 for prod in self.settings.prods:
                     self.simulation_res[n_sd][prod][seed] = np.full(
