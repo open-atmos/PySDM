@@ -1,5 +1,5 @@
 """
-mean volume radius of particles within a grid cell, for activated, unactivated of both
+mean volume radius of particles within a grid cell, for activated, unactivated or both
 """
 
 from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct

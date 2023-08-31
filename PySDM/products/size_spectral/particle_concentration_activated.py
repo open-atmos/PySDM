@@ -1,6 +1,6 @@
 """
 concentration of particles within a grid cell (either per-volume of per-mass-of-dry air),
- activated, unactivated of both
+ activated, unactivated or both
 """
 
 from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct
