@@ -70,7 +70,7 @@ struct Commons {
       return false;
   }
 
-  static __device__ auto compute_multiplicities_transfer(
+  static __device__ auto compute_transfer_multiplicities(
     real_type gamma,
     int64_t j,
     int64_t k,
@@ -176,7 +176,7 @@ struct Commons {
   ) {
     real_type take_from_j[1] = {}; // float
     real_type new_mult_k[1] = {}; // float
-    auto gamma_j_k = Commons::compute_multiplicities_transfer(
+    auto gamma_j_k = Commons::compute_transfer_multiplicities(
         gamma[i],
         j,
         k,
