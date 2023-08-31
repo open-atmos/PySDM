@@ -31,8 +31,7 @@ VELOCITIES_CM_PER_S = (25, 100, 400)
 AEROSOLS = ("pristine", "polluted")
 
 DZ = 500 * si.m
-
-RTOL = 0.3
+RTOL = 0.05
 
 
 @pytest.fixture(scope="session", name="outputs")
@@ -57,8 +56,11 @@ def outputs_fixture():
 @pytest.mark.parametrize("w_cm_per_s", VELOCITIES_CM_PER_S)
 @pytest.mark.parametrize("aerosol", AEROSOLS)
 @pytest.mark.parametrize("product", ("r_vol", "n_act", "area_std"))
+@pytest.mark.parametrize(
+    "rtol", (RTOL, pytest.param(RTOL / 500, marks=pytest.mark.xfail(strict=True)))
+)
 def test_values_at_final_step(
-    outputs: dict, w_cm_per_s: int, aerosol: str, product: str
+    outputs: dict, w_cm_per_s: int, aerosol: str, product: str, rtol: float
 ):
     # arrange
     output = outputs[aerosol][w_cm_per_s]
@@ -95,7 +97,8 @@ def test_values_at_final_step(
 
     # assert
     assert np.isclose(
-        output["products"][product][-1],
-        expected[aerosol][w_cm_per_s],
-        rtol=RTOL,
+        np.log(output["products"][product][-1]),
+        np.log(expected[aerosol][w_cm_per_s]),
+        rtol=rtol,
+        atol=0,
     ).all()

@@ -51,4 +51,5 @@ def test_values_at_final_step(w_cm_per_s: int, aerosol: str):
             }[aerosol][w_cm_per_s]
         ),
         rtol=RTOL,
+        atol=0,
     ).all()
