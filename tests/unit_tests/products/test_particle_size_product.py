@@ -94,7 +94,7 @@ def test_particle_size_product(
     builder.request_attribute("critical volume")
     particulator = builder.build(
         attributes={
-            "n": np.asarray(n),
+            "multiplicity": np.asarray(n),
             "volume": volume,
             "dry volume": dry_volume,
             "dry volume organic": np.full_like(r, 0),
