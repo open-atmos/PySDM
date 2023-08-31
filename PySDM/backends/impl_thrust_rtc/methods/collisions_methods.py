@@ -107,7 +107,7 @@ struct Commons {
     return gamma_j_k;
   }
 
-  static __device__ void update_multiplicity_and_attributes(
+  static __device__ void update_multiplicities_and_attributes(
     int64_t j,
     int64_t k,
     VectorView<real_type> attributes,
@@ -194,7 +194,7 @@ struct Commons {
     real_type nj[1] = {}; // float
     real_type nk[1] = {}; // float
 
-    Commons::update_multiplicity_and_attributes(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
+    Commons::update_multiplicities_and_attributes(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
 
     atomicAdd(
         (unsigned long long int*)&breakup_rate[cid],
