@@ -79,14 +79,14 @@ struct Commons {
     real_type fragment_size_i,
     int64_t max_multiplicity,
 
-    real_type *take_from_j,
-    real_type *new_mult_k
+    real_type &take_from_j,
+    real_type &new_mult_k
   ) {
     real_type gamma_j_k = 0;
     real_type take_from_j_test = multiplicity[k];
-    take_from_j[0] = 0;
+    take_from_j = 0;
     real_type new_mult_k_test = ((volume[j] + volume[k]) / fragment_size_i * multiplicity[k]);
-    new_mult_k[0] = multiplicity[k];
+    new_mult_k = multiplicity[k];
 
     for (auto m = 0; m < (int64_t) (gamma); m += 1) {
         if (new_mult_k_test > max_multiplicity) {
@@ -97,8 +97,8 @@ struct Commons {
             break;
         }
 
-        take_from_j[0] = take_from_j_test;
-        new_mult_k[0] = new_mult_k_test;
+        take_from_j = take_from_j_test;
+        new_mult_k = new_mult_k_test;
         gamma_j_k = m + 1;
 
         take_from_j_test += new_mult_k_test;
@@ -116,8 +116,8 @@ struct Commons {
     real_type new_mult_k,
     int64_t n_attr,
 
-    real_type *nj,
-    real_type *nk
+    real_type &nj,
+    real_type &nk
   ) {
     for (auto a = 0; a < n_attr; a +=1) {
         attributes[a + k] *= multiplicity[k];
@@ -126,11 +126,11 @@ struct Commons {
     }
 
     if (multiplicity[j] > take_from_j) {
-        nj[0] = multiplicity[j] - take_from_j;
-        nk[0] = new_mult_k;
+        nj = multiplicity[j] - take_from_j;
+        nk = new_mult_k;
     } else {
-        nj[0] = new_mult_k / 2;
-        nk[0] = nj[0];
+        nj = new_mult_k / 2;
+        nk = nj;
 
         for (auto a = 0; a < n_attr; a += 1) {
             attributes[a + j] = attributes[a + k];
@@ -174,8 +174,8 @@ struct Commons {
     int64_t n_sd,
     int64_t n_attr
   ) {
-    real_type take_from_j[1] = {}; // float
-    real_type new_mult_k[1] = {}; // float
+    real_type take_from_j; // float
+    real_type new_mult_k; // float
     auto gamma_j_k = Commons::compute_multiplicities_transfer(
         gamma[i],
         j,
@@ -189,11 +189,11 @@ struct Commons {
     );
     auto gamma_deficit = gamma[i] - gamma_j_k;
 
-    real_type nj[1] = {}; // float
-    real_type nk[1] = {}; // float
+    real_type nj; // float
+    real_type nk; // float
 
     Commons::get_new_multiplicities_and_update_attributes(
-        j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk
+        j, k, attributes, multiplicity, take_from_j, new_mult_k, n_attr, nj, nk
     );
 
     atomicAdd(
@@ -205,7 +205,7 @@ struct Commons {
         (unsigned long long int)(gamma_deficit * multiplicity[k])
     );
     Commons::round_multiplicities_to_ints_and_update_attributes(
-        j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr
+        j, k, nj, nk, attributes, multiplicity, take_from_j, n_attr
     );
   }
 };
