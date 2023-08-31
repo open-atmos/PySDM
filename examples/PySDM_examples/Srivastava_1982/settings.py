@@ -1,3 +1,4 @@
+from PySDM.backends import CPU
 from PySDM.physics import constants_defaults
 
 DUMMY_FRAG_MASS = -1
@@ -56,7 +57,10 @@ class Settings:
         srivastava_beta=None,
         frag_mass=DUMMY_FRAG_MASS,
         rho=constants_defaults.rho_w,
+        backend_class=CPU,
     ):
+        self.backend_class = backend_class
+
         self.rho = rho
         self.total_number_0 = total_number
         self.total_volume = self.total_number_0 * drop_mass_0 / self.rho

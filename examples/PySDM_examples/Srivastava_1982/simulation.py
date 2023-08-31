@@ -2,7 +2,6 @@ import numpy as np
 from PySDM_examples.Srivastava_1982.settings import SimProducts
 
 from PySDM import Builder, Formulae
-from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.products import SuperDropletCountPerGridbox, VolumeFirstMoment, ZerothMoment
 
@@ -22,7 +21,7 @@ class Simulation:
         for n_sd in self.settings.n_sds:
             for seed in seeds:
                 builder = Builder(
-                    backend=CPU(
+                    backend=self.settings.backend_class(
                         formulae=Formulae(
                             constants={"rho_w": self.settings.rho},
                             fragmentation_function="ConstantSize",
