@@ -61,6 +61,9 @@ from PySDM.attributes.physics.dry_volume import (
     DryVolumeOrganic,
     OrganicFraction,
 )
+from PySDM.attributes.physics.equilibrium_supersaturation import (
+    EquilibriumSupersaturation,
+)
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
 from PySDM.attributes.physics.relative_fall_velocity import RelativeFallMomentum
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
@@ -122,6 +125,7 @@ attributes = {
     &#34;freezing temperature&#34;: lambda _, __: FreezingTemperature,
     &#34;immersed surface area&#34;: lambda _, __: ImmersedSurfaceArea,
     &#34;critical supersaturation&#34;: lambda _, __: CriticalSupersaturation,
+    &#34;equilibrium supersaturation&#34;: lambda _, __: EquilibriumSupersaturation,
     &#34;wet to critical volume ratio&#34;: lambda _, __: WetToCriticalVolumeRatio,
 }
 

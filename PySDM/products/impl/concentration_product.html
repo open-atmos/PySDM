@@ -39,6 +39,10 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 class ConcentrationProduct(MomentProduct):
     def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
+        &#34;&#34;&#34;
+        `stp` toggles expressing the concentration in terms of standard temperature
+        and pressure conditions (ground level of the ICAO standard atmosphere, zero humidity)
+        &#34;&#34;&#34;
         super().__init__(unit=unit, name=name)
         self.specific = specific
         self.stp = stp
@@ -84,13 +88,19 @@ class ConcentrationProduct(MomentProduct):
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+inheritance.</p>
+<p><code>stp</code> toggles expressing the concentration in terms of standard temperature
+and pressure conditions (ground level of the ICAO standard atmosphere, zero humidity)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ConcentrationProduct(MomentProduct):
     def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
+        &#34;&#34;&#34;
+        `stp` toggles expressing the concentration in terms of standard temperature
+        and pressure conditions (ground level of the ICAO standard atmosphere, zero humidity)
+        &#34;&#34;&#34;
         super().__init__(unit=unit, name=name)
         self.specific = specific
         self.stp = stp
@@ -131,6 +141,7 @@ inheritance.</p></div>
 <li><a title="PySDM.products.freezing.frozen_particle_concentration.FrozenParticleConcentration" href="../freezing/frozen_particle_concentration.html#PySDM.products.freezing.frozen_particle_concentration.FrozenParticleConcentration">FrozenParticleConcentration</a></li>
 <li><a title="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration" href="../freezing/ice_nuclei_concentration.html#PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration">IceNucleiConcentration</a></li>
 <li><a title="PySDM.products.size_spectral.particle_concentration.ParticleConcentration" href="../size_spectral/particle_concentration.html#PySDM.products.size_spectral.particle_concentration.ParticleConcentration">ParticleConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration" href="../size_spectral/particle_concentration_activated.html#PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration">ActivatedParticleConcentration</a></li>
 <li><a title="PySDM.products.size_spectral.total_particle_concentration.TotalParticleConcentration" href="../size_spectral/total_particle_concentration.html#PySDM.products.size_spectral.total_particle_concentration.TotalParticleConcentration">TotalParticleConcentration</a></li>
 <li><a title="PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration" href="../size_spectral/total_particle_specific_concentration.html#PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration">TotalParticleSpecificConcentration</a></li>
 </ul>

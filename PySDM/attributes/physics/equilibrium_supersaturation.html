@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM_examples.utils.basic_simulation API documentation</title>
-<meta name="description" content="" />
+<title>PySDM.attributes.physics.equilibrium_supersaturation API documentation</title>
+<meta name="description" content="kappa-Koehler equilibrium supersaturation calculated for actual environment temperature" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,34 +19,53 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM_examples.utils.basic_simulation</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.physics.equilibrium_supersaturation</code></h1>
 </header>
 <section id="section-intro">
+<p>kappa-Koehler equilibrium supersaturation calculated for actual environment temperature</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">&#34;&#34;&#34;
+kappa-Koehler equilibrium supersaturation calculated for actual environment temperature
+&#34;&#34;&#34;
+from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
-class BasicSimulation:
-    def __init__(self, particulator):
-        self.particulator = particulator
+class EquilibriumSupersaturation(DerivedAttribute):
+    def __init__(self, builder):
+        self.r_wet = builder.get_attribute(&#34;radius&#34;)
+        self.v_wet = builder.get_attribute(&#34;volume&#34;)
+        self.v_dry = builder.get_attribute(&#34;dry volume&#34;)
+        self.kappa = builder.get_attribute(&#34;kappa&#34;)
+        self.f_org = builder.get_attribute(&#34;dry volume organic fraction&#34;)
 
-    def _save(self, output):
-        for k, v in self.particulator.products.items():
-            value = v.get()
-            if isinstance(value, np.ndarray) and value.shape[0] == 1:
-                value = value[0]
-            output[k].append(value)
+        super().__init__(
+            builder=builder,
+            name=&#34;equilibrium supersaturation&#34;,
+            dependencies=(self.kappa, self.v_dry, self.f_org, self.r_wet),
+        )
 
-    def _run(self, nt, steps_per_output_interval):
-        output = {k: [] for k in self.particulator.products}
-        self._save(output)
-        for _ in range(0, nt + 1, steps_per_output_interval):
-            self.particulator.run(steps=steps_per_output_interval)
-            self._save(output)
-        return output</code></pre>
+    def recalculate(self):
+        if len(self.particulator.environment[&#34;T&#34;]) != 1:
+            raise NotImplementedError()
+        temperature = self.particulator.environment[&#34;T&#34;][0]
+        rd3 = self.v_dry.data.data / self.formulae.constants.PI_4_3
+        sgm = self.formulae.surface_tension.sigma(
+            temperature,
+            self.v_wet.data.data,
+            self.v_dry.data.data,
+            self.f_org.data.data,
+        )
+
+        self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
+            self.r_wet.data.data,
+            T=temperature,
+            kp=self.kappa.data.data,
+            rd3=rd3,
+            sgm=sgm,
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -58,9 +77,9 @@ class BasicSimulation:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM_examples.utils.basic_simulation.BasicSimulation"><code class="flex name class">
-<span>class <span class="ident">BasicSimulation</span></span>
-<span>(</span><span>particulator)</span>
+<dt id="PySDM.attributes.physics.equilibrium_supersaturation.EquilibriumSupersaturation"><code class="flex name class">
+<span>class <span class="ident">EquilibriumSupersaturation</span></span>
+<span>(</span><span>builder)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -68,33 +87,78 @@ class BasicSimulation:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class BasicSimulation:
-    def __init__(self, particulator):
-        self.particulator = particulator
+<pre><code class="python">class EquilibriumSupersaturation(DerivedAttribute):
+    def __init__(self, builder):
+        self.r_wet = builder.get_attribute(&#34;radius&#34;)
+        self.v_wet = builder.get_attribute(&#34;volume&#34;)
+        self.v_dry = builder.get_attribute(&#34;dry volume&#34;)
+        self.kappa = builder.get_attribute(&#34;kappa&#34;)
+        self.f_org = builder.get_attribute(&#34;dry volume organic fraction&#34;)
 
-    def _save(self, output):
-        for k, v in self.particulator.products.items():
-            value = v.get()
-            if isinstance(value, np.ndarray) and value.shape[0] == 1:
-                value = value[0]
-            output[k].append(value)
+        super().__init__(
+            builder=builder,
+            name=&#34;equilibrium supersaturation&#34;,
+            dependencies=(self.kappa, self.v_dry, self.f_org, self.r_wet),
+        )
 
-    def _run(self, nt, steps_per_output_interval):
-        output = {k: [] for k in self.particulator.products}
-        self._save(output)
-        for _ in range(0, nt + 1, steps_per_output_interval):
-            self.particulator.run(steps=steps_per_output_interval)
-            self._save(output)
-        return output</code></pre>
+    def recalculate(self):
+        if len(self.particulator.environment[&#34;T&#34;]) != 1:
+            raise NotImplementedError()
+        temperature = self.particulator.environment[&#34;T&#34;][0]
+        rd3 = self.v_dry.data.data / self.formulae.constants.PI_4_3
+        sgm = self.formulae.surface_tension.sigma(
+            temperature,
+            self.v_wet.data.data,
+            self.v_dry.data.data,
+            self.f_org.data.data,
+        )
+
+        self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
+            self.r_wet.data.data,
+            T=temperature,
+            kp=self.kappa.data.data,
+            rd3=rd3,
+            sgm=sgm,
+        )</code></pre>
 </details>
-<h3>Subclasses</h3>
+<h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM_examples.Grabowski_and_Pawlowska_2023.simulation.Simulation" href="../Grabowski_and_Pawlowska_2023/simulation.html#PySDM_examples.Grabowski_and_Pawlowska_2023.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Kreidenweis_et_al_2003.simulation.Simulation" href="../Kreidenweis_et_al_2003/simulation.html#PySDM_examples.Kreidenweis_et_al_2003.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Lowe_et_al_2019.simulation.Simulation" href="../Lowe_et_al_2019/simulation.html#PySDM_examples.Lowe_et_al_2019.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Niedermeier_et_al_2014.simulation.Simulation" href="../Niedermeier_et_al_2014/simulation.html#PySDM_examples.Niedermeier_et_al_2014.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Pyrcel.simulation.Simulation" href="../Pyrcel/simulation.html#PySDM_examples.Pyrcel.simulation.Simulation">Simulation</a></li>
+<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.attributes.physics.equilibrium_supersaturation.EquilibriumSupersaturation.recalculate"><code class="name flex">
+<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recalculate(self):
+    if len(self.particulator.environment[&#34;T&#34;]) != 1:
+        raise NotImplementedError()
+    temperature = self.particulator.environment[&#34;T&#34;][0]
+    rd3 = self.v_dry.data.data / self.formulae.constants.PI_4_3
+    sgm = self.formulae.surface_tension.sigma(
+        temperature,
+        self.v_wet.data.data,
+        self.v_dry.data.data,
+        self.f_org.data.data,
+    )
+
+    self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
+        self.r_wet.data.data,
+        T=temperature,
+        kp=self.kappa.data.data,
+        rd3=rd3,
+        sgm=sgm,
+    )</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -107,13 +171,16 @@ class BasicSimulation:
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM_examples.utils" href="index.html">PySDM_examples.utils</a></code></li>
+<li><code><a title="PySDM.attributes.physics" href="index.html">PySDM.attributes.physics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM_examples.utils.basic_simulation.BasicSimulation" href="#PySDM_examples.utils.basic_simulation.BasicSimulation">BasicSimulation</a></code></h4>
+<h4><code><a title="PySDM.attributes.physics.equilibrium_supersaturation.EquilibriumSupersaturation" href="#PySDM.attributes.physics.equilibrium_supersaturation.EquilibriumSupersaturation">EquilibriumSupersaturation</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.attributes.physics.equilibrium_supersaturation.EquilibriumSupersaturation.recalculate" href="#PySDM.attributes.physics.equilibrium_supersaturation.EquilibriumSupersaturation.recalculate">recalculate</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

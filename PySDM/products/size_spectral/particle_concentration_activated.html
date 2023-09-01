@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.freezing.ice_nuclei_concentration API documentation</title>
-<meta name="description" content="immersed ice nucleus concentration (both within frozen and unfrozen particles)" />
+<title>PySDM.products.size_spectral.particle_concentration_activated API documentation</title>
+<meta name="description" content="concentration of particles within a grid cell (either per-volume of per-mass-of-dry air),
+activated, unactivated or both" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,52 +20,61 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.freezing.ice_nuclei_concentration</code></h1>
+<h1 class="title">Module <code>PySDM.products.size_spectral.particle_concentration_activated</code></h1>
 </header>
 <section id="section-intro">
-<p>immersed ice nucleus concentration (both within frozen and unfrozen particles)</p>
+<p>concentration of particles within a grid cell (either per-volume of per-mass-of-dry air),
+activated, unactivated or both</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-immersed ice nucleus concentration (both within frozen and unfrozen particles)
+concentration of particles within a grid cell (either per-volume of per-mass-of-dry air),
+ activated, unactivated or both
 &#34;&#34;&#34;
-import numpy as np
 
+from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct
 from PySDM.products.impl.concentration_product import ConcentrationProduct
 
 
-class IceNucleiConcentration(ConcentrationProduct):
-    def __init__(self, unit=&#34;m^-3&#34;, name=None, __specific=False, stp=False):
-        super().__init__(unit=unit, name=name, specific=__specific, stp=stp)
-        self.__nonzero_filter_range = (
-            np.finfo(float).tiny,  # pylint: disable=no-member
-            np.inf,
+class ActivatedParticleConcentration(ConcentrationProduct, _ActivationFilteredProduct):
+    # pylint: disable=too-many-arguments
+    def __init__(
+        self,
+        *,
+        count_unactivated: bool,
+        count_activated: bool,
+        specific=False,
+        stp=False,
+        name=None,
+        unit=&#34;m^-3&#34;,
+    ):
+        ConcentrationProduct.__init__(
+            self, name=name, unit=unit, specific=specific, stp=stp
         )
-        self.__filter_attr = None
+        _ActivationFilteredProduct.__init__(
+            self, count_activated=count_activated, count_unactivated=count_unactivated
+        )
 
     def register(self, builder):
-        super().register(builder)
-        singular = builder.particulator.dynamics[&#34;Freezing&#34;].singular
-        self.__filter_attr = {
-            True: &#34;freezing temperature&#34;,
-            False: &#34;immersed surface area&#34;,
-        }[singular]
+        for base_class in (_ActivationFilteredProduct, ConcentrationProduct):
+            base_class.register(self, builder)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(
-            attr=&#34;volume&#34;,
-            rank=0,
-            filter_attr=self.__filter_attr,
-            filter_range=self.__nonzero_filter_range,
-        )
-        return super()._impl(**kwargs)
+        _ActivationFilteredProduct.impl(self, attr=&#34;volume&#34;, rank=0)
+        return ConcentrationProduct._impl(self, **kwargs)
 
 
-class SpecificIceNucleiConcentration(IceNucleiConcentration):
-    def __init__(self, unit=&#34;kg^-1&#34;, name=None, __specific=True):
-        super().__init__(unit=unit, name=name)</code></pre>
+class ActivatedParticleSpecificConcentration(ActivatedParticleConcentration):
+    def __init__(self, count_unactivated, count_activated, name=None, unit=&#34;kg^-1&#34;):
+        super().__init__(
+            count_unactivated=count_unactivated,
+            count_activated=count_activated,
+            specific=True,
+            name=name,
+            unit=unit,
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -76,9 +86,9 @@ class SpecificIceNucleiConcentration(IceNucleiConcentration):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration"><code class="flex name class">
-<span>class <span class="ident">IceNucleiConcentration</span></span>
-<span>(</span><span>unit='m^-3', name=None, stp=False)</span>
+<dt id="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration"><code class="flex name class">
+<span>class <span class="ident">ActivatedParticleConcentration</span></span>
+<span>(</span><span>*, count_unactivated: bool, count_activated: bool, specific=False, stp=False, name=None, unit='m^-3')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -89,31 +99,32 @@ and pressure conditions (ground level of the ICAO standard atmosphere, zero humi
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class IceNucleiConcentration(ConcentrationProduct):
-    def __init__(self, unit=&#34;m^-3&#34;, name=None, __specific=False, stp=False):
-        super().__init__(unit=unit, name=name, specific=__specific, stp=stp)
-        self.__nonzero_filter_range = (
-            np.finfo(float).tiny,  # pylint: disable=no-member
-            np.inf,
+<pre><code class="python">class ActivatedParticleConcentration(ConcentrationProduct, _ActivationFilteredProduct):
+    # pylint: disable=too-many-arguments
+    def __init__(
+        self,
+        *,
+        count_unactivated: bool,
+        count_activated: bool,
+        specific=False,
+        stp=False,
+        name=None,
+        unit=&#34;m^-3&#34;,
+    ):
+        ConcentrationProduct.__init__(
+            self, name=name, unit=unit, specific=specific, stp=stp
         )
-        self.__filter_attr = None
+        _ActivationFilteredProduct.__init__(
+            self, count_activated=count_activated, count_unactivated=count_unactivated
+        )
 
     def register(self, builder):
-        super().register(builder)
-        singular = builder.particulator.dynamics[&#34;Freezing&#34;].singular
-        self.__filter_attr = {
-            True: &#34;freezing temperature&#34;,
-            False: &#34;immersed surface area&#34;,
-        }[singular]
+        for base_class in (_ActivationFilteredProduct, ConcentrationProduct):
+            base_class.register(self, builder)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(
-            attr=&#34;volume&#34;,
-            rank=0,
-            filter_attr=self.__filter_attr,
-            filter_range=self.__nonzero_filter_range,
-        )
-        return super()._impl(**kwargs)</code></pre>
+        _ActivationFilteredProduct.impl(self, attr=&#34;volume&#34;, rank=0)
+        return ConcentrationProduct._impl(self, **kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -121,10 +132,11 @@ and pressure conditions (ground level of the ICAO standard atmosphere, zero humi
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
+<li>PySDM.products.impl.activation_filtered_product._ActivationFilteredProduct</li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.freezing.ice_nuclei_concentration.SpecificIceNucleiConcentration" href="#PySDM.products.freezing.ice_nuclei_concentration.SpecificIceNucleiConcentration">SpecificIceNucleiConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleSpecificConcentration" href="#PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleSpecificConcentration">ActivatedParticleSpecificConcentration</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -135,9 +147,9 @@ and pressure conditions (ground level of the ICAO standard atmosphere, zero humi
 </li>
 </ul>
 </dd>
-<dt id="PySDM.products.freezing.ice_nuclei_concentration.SpecificIceNucleiConcentration"><code class="flex name class">
-<span>class <span class="ident">SpecificIceNucleiConcentration</span></span>
-<span>(</span><span>unit='kg^-1', name=None)</span>
+<dt id="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleSpecificConcentration"><code class="flex name class">
+<span>class <span class="ident">ActivatedParticleSpecificConcentration</span></span>
+<span>(</span><span>count_unactivated, count_activated, name=None, unit='kg^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -148,23 +160,30 @@ and pressure conditions (ground level of the ICAO standard atmosphere, zero humi
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SpecificIceNucleiConcentration(IceNucleiConcentration):
-    def __init__(self, unit=&#34;kg^-1&#34;, name=None, __specific=True):
-        super().__init__(unit=unit, name=name)</code></pre>
+<pre><code class="python">class ActivatedParticleSpecificConcentration(ActivatedParticleConcentration):
+    def __init__(self, count_unactivated, count_activated, name=None, unit=&#34;kg^-1&#34;):
+        super().__init__(
+            count_unactivated=count_unactivated,
+            count_activated=count_activated,
+            specific=True,
+            name=name,
+            unit=unit,
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration" href="#PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration">IceNucleiConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration" href="#PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration">ActivatedParticleConcentration</a></li>
 <li><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></li>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
+<li>PySDM.products.impl.activation_filtered_product._ActivationFilteredProduct</li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration" href="#PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration">IceNucleiConcentration</a></b></code>:
+<li><code><b><a title="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration" href="#PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration">ActivatedParticleConcentration</a></b></code>:
 <ul class="hlist">
-<li><code><a title="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
 </ul>
 </li>
 </ul>
@@ -180,16 +199,16 @@ and pressure conditions (ground level of the ICAO standard atmosphere, zero humi
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.freezing" href="index.html">PySDM.products.freezing</a></code></li>
+<li><code><a title="PySDM.products.size_spectral" href="index.html">PySDM.products.size_spectral</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration" href="#PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration">IceNucleiConcentration</a></code></h4>
+<h4><code><a title="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration" href="#PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleConcentration">ActivatedParticleConcentration</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.products.freezing.ice_nuclei_concentration.SpecificIceNucleiConcentration" href="#PySDM.products.freezing.ice_nuclei_concentration.SpecificIceNucleiConcentration">SpecificIceNucleiConcentration</a></code></h4>
+<h4><code><a title="PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleSpecificConcentration" href="#PySDM.products.size_spectral.particle_concentration_activated.ActivatedParticleSpecificConcentration">ActivatedParticleSpecificConcentration</a></code></h4>
 </li>
 </ul>
 </li>

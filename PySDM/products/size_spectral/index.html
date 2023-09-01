@@ -36,8 +36,14 @@ from .arbitrary_moment import (
 )
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
+from .mean_radius_activated import ActivatedMeanRadius
+from .mean_volume_radius import MeanVolumeRadius
 from .number_size_spectrum import NumberSizeSpectrum
 from .particle_concentration import ParticleConcentration, ParticleSpecificConcentration
+from .particle_concentration_activated import (
+    ActivatedParticleConcentration,
+    ActivatedParticleSpecificConcentration,
+)
 from .particle_size_spectrum import (
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
@@ -47,6 +53,11 @@ from .particle_volume_versus_radius_logarithm_spectrum import (
 )
 from .radius_binned_number_averaged_terminal_velocity import (
     RadiusBinnedNumberAveragedTerminalVelocity,
+)
+from .size_standard_deviation import (
+    AreaStandardDeviation,
+    RadiusStandardDeviation,
+    VolumeStandardDeviation,
 )
 from .total_particle_concentration import TotalParticleConcentration
 from .total_particle_specific_concentration import TotalParticleSpecificConcentration
@@ -69,6 +80,14 @@ optionally restricted to a given size range)</p></div>
 <dd>
 <div class="desc"><p>mean radius of particles within a grid cell (optionally restricted to a given size range)</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.products.size_spectral.mean_radius_activated" href="mean_radius_activated.html">PySDM.products.size_spectral.mean_radius_activated</a></code></dt>
+<dd>
+<div class="desc"><p>mean radius of particles within a grid cell, for activated, unactivated or both</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.products.size_spectral.mean_volume_radius" href="mean_volume_radius.html">PySDM.products.size_spectral.mean_volume_radius</a></code></dt>
+<dd>
+<div class="desc"><p>mean volume radius of particles within a grid cell, for activated, unactivated or both</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral.number_size_spectrum" href="number_size_spectrum.html">PySDM.products.size_spectral.number_size_spectrum</a></code></dt>
 <dd>
 <div class="desc"><p>n(V) particle volume spectrum per volume of air,
@@ -78,6 +97,11 @@ i.e. number of particles per volume of air having in the size range bin</p></div
 <dd>
 <div class="desc"><p>concentration of particles within a grid cell (either per-volume of per-mass-of-dry air,
 optionally restricted to a given size range)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.products.size_spectral.particle_concentration_activated" href="particle_concentration_activated.html">PySDM.products.size_spectral.particle_concentration_activated</a></code></dt>
+<dd>
+<div class="desc"><p>concentration of particles within a grid cell (either per-volume of per-mass-of-dry air),
+activated, unactivated or both</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral.particle_size_spectrum" href="particle_size_spectrum.html">PySDM.products.size_spectral.particle_size_spectrum</a></code></dt>
 <dd>
@@ -91,6 +115,11 @@ i.e. volume of particles per volume of air having in the size range …</p></div
 <dt><code class="name"><a title="PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity" href="radius_binned_number_averaged_terminal_velocity.html">PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity</a></code></dt>
 <dd>
 <div class="desc"><p>Provides radius bin-resolved average terminal velocity (average is particle-number weighted)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.products.size_spectral.size_standard_deviation" href="size_standard_deviation.html">PySDM.products.size_spectral.size_standard_deviation</a></code></dt>
+<dd>
+<div class="desc"><p>standard deviation of radius/area/volume of particles within a grid cell,
+for activated, unactivated or both</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral.total_particle_concentration" href="total_particle_concentration.html">PySDM.products.size_spectral.total_particle_concentration</a></code></dt>
 <dd>
@@ -130,11 +159,15 @@ i.e. volume of particles per volume of air having in the size range …</p></div
 <li><code><a title="PySDM.products.size_spectral.arbitrary_moment" href="arbitrary_moment.html">PySDM.products.size_spectral.arbitrary_moment</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.effective_radius" href="effective_radius.html">PySDM.products.size_spectral.effective_radius</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.mean_radius" href="mean_radius.html">PySDM.products.size_spectral.mean_radius</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.mean_radius_activated" href="mean_radius_activated.html">PySDM.products.size_spectral.mean_radius_activated</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.mean_volume_radius" href="mean_volume_radius.html">PySDM.products.size_spectral.mean_volume_radius</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.number_size_spectrum" href="number_size_spectrum.html">PySDM.products.size_spectral.number_size_spectrum</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.particle_concentration" href="particle_concentration.html">PySDM.products.size_spectral.particle_concentration</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.particle_concentration_activated" href="particle_concentration_activated.html">PySDM.products.size_spectral.particle_concentration_activated</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.particle_size_spectrum" href="particle_size_spectrum.html">PySDM.products.size_spectral.particle_size_spectrum</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum" href="particle_volume_versus_radius_logarithm_spectrum.html">PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity" href="radius_binned_number_averaged_terminal_velocity.html">PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.size_standard_deviation" href="size_standard_deviation.html">PySDM.products.size_spectral.size_standard_deviation</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.total_particle_concentration" href="total_particle_concentration.html">PySDM.products.size_spectral.total_particle_concentration</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.total_particle_specific_concentration" href="total_particle_specific_concentration.html">PySDM.products.size_spectral.total_particle_specific_concentration</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.water_mixing_ratio" href="water_mixing_ratio.html">PySDM.products.size_spectral.water_mixing_ratio</a></code></li>
