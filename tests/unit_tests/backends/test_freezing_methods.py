@@ -34,7 +34,7 @@ class TestFreezingMethods:
         particulator = builder.build(
             products=(IceWaterContent(),),
             attributes={
-                "n": np.ones(builder.particulator.n_sd),
+                "multiplicity": np.ones(builder.particulator.n_sd),
                 "volume": -1 * np.ones(builder.particulator.n_sd) * si.um**3,
                 **(
                     {"freezing temperature": np.full(builder.particulator.n_sd, -1)}
@@ -77,7 +77,7 @@ class TestFreezingMethods:
         builder.set_environment(env)
         builder.add_dynamic(Freezing(singular=True))
         attributes = {
-            "n": np.full(n_sd, multiplicity),
+            "multiplicity": np.full(n_sd, multiplicity),
             "freezing temperature": np.full(n_sd, T_fz),
             "volume": np.full(n_sd, vol),
         }
@@ -151,7 +151,7 @@ class TestFreezingMethods:
             builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
-                "n": np.full(n_sd, int(case["N"])),
+                "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
                 "volume": np.full(n_sd, vol),
             }

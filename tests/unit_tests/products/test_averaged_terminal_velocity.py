@@ -20,7 +20,7 @@ u = np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565]
 class TestAveragedTerminalVelocity:
     @staticmethod
     def _make_particulator(attributes: dict, weighting="volume"):
-        builder = Builder(n_sd=len(attributes["n"]), backend=CPU())
+        builder = Builder(n_sd=len(attributes["multiplicity"]), backend=CPU())
         env = Box(dt=dt, dv=np.nan)
         builder.set_environment(env)
         env["T"] = T
@@ -35,7 +35,7 @@ class TestAveragedTerminalVelocity:
         vol = 4 / 3 * np.pi * 500**3 * si.um**3
         particulator = self._make_particulator(
             attributes={
-                "n": np.ones(n_sd),
+                "multiplicity": np.ones(n_sd),
                 "volume": np.full(n_sd, vol),
             }
         )
@@ -51,7 +51,7 @@ class TestAveragedTerminalVelocity:
         vol = 4 / 3 * np.pi * r**3
         particulator = self._make_particulator(
             attributes={
-                "n": np.ones(len(r)),
+                "multiplicity": np.ones(len(r)),
                 "volume": vol,
             },
             weighting="number",
@@ -68,7 +68,7 @@ class TestAveragedTerminalVelocity:
         vol = 4 / 3 * np.pi * r**3
         particulator = self._make_particulator(
             attributes={
-                "n": np.ones(len(r)),
+                "multiplicity": np.ones(len(r)),
                 "volume": vol,
             },
             weighting="volume",

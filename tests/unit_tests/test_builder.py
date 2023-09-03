@@ -16,7 +16,8 @@ class TestBuilder:
 
         # act
         particulator = builder.build(
-            products=(), attributes={k: np.asarray([0]) for k in ("n", "volume")}
+            products=(),
+            attributes={k: np.asarray([0]) for k in ("multiplicity", "volume")},
         )
 
         # assert
@@ -38,7 +39,12 @@ class TestBuilder:
             products=(),
             attributes={
                 k: np.asarray([1])
-                for k in ("n", "volume", "dry volume", "kappa times dry volume")
+                for k in (
+                    "multiplicity",
+                    "volume",
+                    "dry volume",
+                    "kappa times dry volume",
+                )
             },
         )
         env["T"] = np.nan
@@ -59,6 +65,7 @@ class TestBuilder:
         assert (
             "Condensation"
             not in builder.build(
-                products=(), attributes={k: np.asarray([0]) for k in ("n", "volume")}
+                products=(),
+                attributes={k: np.asarray([0]) for k in ("multiplicity", "volume")},
             ).dynamics
         )

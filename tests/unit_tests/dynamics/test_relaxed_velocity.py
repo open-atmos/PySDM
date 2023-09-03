@@ -16,7 +16,7 @@ from PySDM.physics import si
     params=(
         pytest.param(
             {
-                "n": np.array([1, 2, 3, 4]),
+                "multiplicity": np.array([1, 2, 3, 4]),
                 "volume": np.array(
                     [
                         1 * si.mm**3,
@@ -40,7 +40,9 @@ def test_small_timescale(default_attributes, backend_class):
     the velocity should quickly approach the terminal velocity
     """
 
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
+    builder = Builder(
+        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+    )
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -50,7 +52,7 @@ def test_small_timescale(default_attributes, backend_class):
     builder.request_attribute("terminal velocity")
 
     default_attributes["relative fall momentum"] = np.zeros_like(
-        default_attributes["n"]
+        default_attributes["multiplicity"]
     )
 
     particulator = builder.build(attributes=default_attributes, products=())
@@ -69,7 +71,9 @@ def test_large_timescale(default_attributes, backend_class):
     the velocity should remain 0
     """
 
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
+    builder = Builder(
+        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+    )
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -79,7 +83,7 @@ def test_large_timescale(default_attributes, backend_class):
     builder.request_attribute("terminal velocity")
 
     default_attributes["relative fall momentum"] = np.zeros_like(
-        default_attributes["n"]
+        default_attributes["multiplicity"]
     )
 
     particulator = builder.build(attributes=default_attributes, products=())
@@ -88,7 +92,7 @@ def test_large_timescale(default_attributes, backend_class):
 
     assert np.allclose(
         particulator.attributes["relative fall velocity"].to_ndarray(),
-        np.zeros_like(default_attributes["n"]),
+        np.zeros_like(default_attributes["multiplicity"]),
     )
 
 
@@ -97,7 +101,9 @@ def test_behavior(default_attributes, backend_class):
     The fall velocity should approach the terminal velocity exponentially
     """
 
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
+    builder = Builder(
+        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+    )
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -107,7 +113,7 @@ def test_behavior(default_attributes, backend_class):
     builder.request_attribute("terminal velocity")
 
     default_attributes["relative fall momentum"] = np.zeros_like(
-        default_attributes["n"]
+        default_attributes["multiplicity"]
     )
 
     particulator = builder.build(attributes=default_attributes, products=())

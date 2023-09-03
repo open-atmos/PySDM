@@ -41,7 +41,7 @@ from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.physics.surface_tension import Constant
 
 attributes = {
-    "n": lambda _, __: Multiplicities,
+    "multiplicity": lambda _, __: Multiplicities,
     "volume": lambda _, __: Volume,
     "dry volume organic": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic")

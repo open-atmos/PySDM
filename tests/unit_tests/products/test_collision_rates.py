@@ -87,7 +87,7 @@ class TestCollisionProducts:
 
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=products,
@@ -147,7 +147,7 @@ class TestCollisionProducts:
 
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=(CollisionRateDeficitPerGridbox(name="crd"),),
@@ -193,7 +193,7 @@ class TestCollisionProducts:
 
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=(
@@ -244,7 +244,7 @@ class TestCollisionProducts:
 
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=(
@@ -299,7 +299,7 @@ class TestCollisionProducts:
 
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=products,

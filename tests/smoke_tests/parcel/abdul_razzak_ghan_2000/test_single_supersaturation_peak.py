@@ -68,7 +68,7 @@ def test_single_supersaturation_peak(
     )
     specific_concentration = concentration / builder.formulae.constants.rho_STP
     attributes = {
-        "n": specific_concentration * env.mass_of_dry_air,
+        "multiplicity": specific_concentration * env.mass_of_dry_air,
         "dry volume": v_dry,
         "kappa times dry volume": kappa * v_dry,
         "volume": builder.formulae.trivia.volume(radius=r_wet),

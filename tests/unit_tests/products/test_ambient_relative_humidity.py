@@ -25,7 +25,7 @@ def test_ambient_relative_humidity(backend_class):
         w=np.nan,
     )
     builder.set_environment(env)
-    attributes = {"n": np.ones(n_sd), "volume": np.ones(n_sd)}
+    attributes = {"multiplicity": np.ones(n_sd), "volume": np.ones(n_sd)}
     particulator = builder.build(
         attributes=attributes,
         products=(

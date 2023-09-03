@@ -178,7 +178,7 @@ class TestCollisionMethods:
         # Act
         backend.scale_prob_for_adaptive_sdm_gamma(
             prob=_gamma,
-            n=_n,
+            multiplicity=_n,
             cell_id=_cell_id,
             dt_left=_dt_left,
             dt=dt,

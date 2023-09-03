@@ -11,23 +11,6 @@ colors = {True: "black", False: "teal"}
 qi_unit = si.g / si.m**3
 
 
-def make_sampling_plot(data):
-    ensemble_n = len(data) // 2
-    _, axs = pyplot.subplots(nrows=ensemble_n, ncols=2)  # , constrained_layout=True)
-    for i, v in enumerate(data):
-        row = i % ensemble_n
-        col = i // ensemble_n
-        if "freezing temperature" in v["spectrum"]:
-            x = v["spectrum"]["freezing temperature"]
-            axs[row, col].set_xlabel("$T_{fz}$")
-            axs[row, col].invert_xaxis()
-        else:
-            x = v["spectrum"]["immersed surface area"]
-            axs[row, col].set_xlabel("$A$")
-        axs[row, col].stem(x, v["spectrum"]["n"])
-        axs[row, col].set_ylabel("n")
-
-
 def make_temperature_plot(data):
     pyplot.xlabel("time [s]")
 

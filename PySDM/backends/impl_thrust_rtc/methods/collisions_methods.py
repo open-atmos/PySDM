@@ -70,7 +70,7 @@ struct Commons {
       return false;
   }
 
-  static __device__ auto breakup_fun0(
+  static __device__ auto compute_transfer_multiplicities(
     real_type gamma,
     int64_t j,
     int64_t k,
@@ -107,7 +107,7 @@ struct Commons {
     return gamma_j_k;
   }
 
-  static __device__ void breakup_fun1(
+  static __device__ void get_new_multiplicities_and_update_attributes(
     int64_t j,
     int64_t k,
     VectorView<real_type> attributes,
@@ -131,10 +131,14 @@ struct Commons {
     } else {
         nj[0] = new_mult_k / 2;
         nk[0] = nj[0];
+
+        for (auto a = 0; a < n_attr; a += 1) {
+            attributes[a + j] = attributes[a + k];
+        }
     }
   }
 
-  static __device__ void breakup_fun2(
+  static __device__ void round_multiplicities_to_ints_and_update_attributes(
     int64_t j,
     int64_t k,
     real_type nj,
@@ -144,12 +148,6 @@ struct Commons {
     real_type take_from_j,
     int64_t n_attr
   ) {
-    if (multiplicity[j] <= take_from_j) {
-        for (auto a = 0; a < n_attr; a += 1) {
-            attributes[a + j] = attributes[a + k];
-        }
-    }
-
     multiplicity[j] = max((int64_t)(round(nj)), (int64_t)(1));
     multiplicity[k] = max((int64_t)(round(nk)), (int64_t)(1));
     auto factor_j = nj / multiplicity[j];
@@ -178,7 +176,7 @@ struct Commons {
   ) {
     real_type take_from_j[1] = {}; // float
     real_type new_mult_k[1] = {}; // float
-    auto gamma_j_k = Commons::breakup_fun0(
+    auto gamma_j_k = Commons::compute_transfer_multiplicities(
         gamma[i],
         j,
         k,
@@ -194,7 +192,9 @@ struct Commons {
     real_type nj[1] = {}; // float
     real_type nk[1] = {}; // float
 
-    Commons::breakup_fun1(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
+    Commons::get_new_multiplicities_and_update_attributes(
+        j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk
+    );
 
     atomicAdd(
         (unsigned long long int*)&breakup_rate[cid],
@@ -204,7 +204,9 @@ struct Commons {
         (unsigned long long int*)&breakup_rate_deficit[cid],
         (unsigned long long int)(gamma_deficit * multiplicity[k])
     );
-    Commons::breakup_fun2(j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr);
+    Commons::round_multiplicities_to_ints_and_update_attributes(
+        j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr
+    );
   }
 };
 """
@@ -228,7 +230,7 @@ class CollisionsMethods(
             param_names=(
                 "prob",
                 "idx",
-                "n",
+                "multiplicity",
                 "cell_id",
                 "dt",
                 "is_first_in_pair",
@@ -245,7 +247,7 @@ class CollisionsMethods(
                 if (skip_pair) {{
                     return;
                 }}
-                auto prop = (int64_t)(n[j] / n[k]);
+                auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
                 auto dt_optimal = dt * prop / prob[i];
                 auto cid = cell_id[j];
                 static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), "");
@@ -680,7 +682,7 @@ class CollisionsMethods(
         self,
         *,
         prob,
-        n,
+        multiplicity,
         cell_id,
         dt_left,
         dt,
@@ -698,11 +700,11 @@ class CollisionsMethods(
             n=len(dt_left), args=(dt_todo, dt_left.data, d_dt_max)
         )
         self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
-            n=len(n) // 2,
+            n=len(multiplicity) // 2,
             args=(
                 prob.data,
-                n.idx.data,
-                n.data,
+                multiplicity.idx.data,
+                multiplicity.data,
                 cell_id.data,
                 d_dt,
                 is_first_in_pair.indicator.data,
@@ -710,10 +712,10 @@ class CollisionsMethods(
             ),
         )
         self.__scale_prob_for_adaptive_sdm_gamma_body_3.launch_n(
-            n=len(n) // 2,
+            n=len(multiplicity) // 2,
             args=(
                 prob.data,
-                n.idx.data,
+                multiplicity.idx.data,
                 cell_id.data,
                 d_dt,
                 is_first_in_pair.indicator.data,

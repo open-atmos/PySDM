@@ -30,7 +30,7 @@ def test_courant_product(courant_field):
     builder.add_dynamic(Displacement())
     particulator = builder.build(
         attributes={
-            "n": np.ones(n_sd),
+            "multiplicity": np.ones(n_sd),
             "volume": np.ones(n_sd),
             "cell id": np.zeros(n_sd, dtype=int),
         },
