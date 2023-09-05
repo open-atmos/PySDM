@@ -20,6 +20,8 @@ class Settings:
         initial_relative_humidity: float = 0.97,
         displacement: float = 1000 * si.m,
         mass_accommodation_coefficient: float = 0.3,
+        rtol_thd: float = 1e-8,
+        rtol_x: float = 1e-8
     ):
         self.formulae = Formulae(constants={"MAC": mass_accommodation_coefficient})
         self.n_sd = n_sd
@@ -64,6 +66,8 @@ class Settings:
         self.t_max = displacement / vertical_velocity
         self.timestep = dt
         self.output_interval = self.timestep
+        self.rtol_thd = rtol_thd
+        self.rtol_x = rtol_x
 
     @property
     def initial_air_density(self):
