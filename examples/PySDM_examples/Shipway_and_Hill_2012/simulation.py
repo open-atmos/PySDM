@@ -54,7 +54,9 @@ class Simulation:
             dt=settings.dt,
             mpdata_settings=settings.mpdata_settings,
             advector_of_t=lambda t: settings.rho_times_w(t) * settings.dt / settings.dz,
-            advectee_of_zZ_at_t0=lambda zZ: settings.qv(zZ_to_z_above_reservoir(zZ)),
+            advectee_of_zZ_at_t0=lambda zZ: settings.water_vapour_mixing_ratio(
+                zZ_to_z_above_reservoir(zZ)
+            ),
             g_factor_of_zZ=lambda zZ: settings.rhod(zZ_to_z_above_reservoir(zZ)),
         )
 
@@ -98,7 +100,9 @@ class Simulation:
             PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
             PySDM_products.AmbientPressure(name="p"),
             PySDM_products.AmbientTemperature(name="T"),
-            PySDM_products.AmbientWaterVapourMixingRatio(name="qv"),
+            PySDM_products.AmbientWaterVapourMixingRatio(
+                name="water_vapour_mixing_ratio"
+            ),
             PySDM_products.WaterMixingRatio(
                 name="qc", unit="g/kg", radius_range=settings.cloud_water_radius_range
             ),

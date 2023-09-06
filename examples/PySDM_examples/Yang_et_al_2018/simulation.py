@@ -27,7 +27,7 @@ class Simulation:
                 dt=dt_output / self.n_substeps,
                 mass_of_dry_air=settings.mass_of_dry_air,
                 p0=settings.p0,
-                q0=settings.q0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
                 T0=settings.T0,
                 w=settings.w,
                 z0=settings.z0,
@@ -77,7 +77,7 @@ class Simulation:
         volume = _sp.attributes["volume"].to_ndarray()
         output["r"].append(self.formulae.trivia.radius(volume=volume))
         output["S"].append(_sp.environment["RH"][cell_id] - 1)
-        for key in ("qv", "T", "z", "t"):
+        for key in ("water_vapour_mixing_ratio", "T", "z", "t"):
             output[key].append(_sp.environment[key][cell_id])
         for key in (
             "dt_cond_max",
@@ -96,7 +96,7 @@ class Simulation:
                 "S",
                 "z",
                 "t",
-                "qv",
+                "water_vapour_mixing_ratio",
                 "T",
                 "r_bins_values",
                 "dt_cond_max",

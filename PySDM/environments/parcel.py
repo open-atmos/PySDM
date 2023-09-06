@@ -18,7 +18,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         dt,
         mass_of_dry_air: float,
         p0: float,
-        q0: float,
+        initial_water_vapour_mixing_ratio: float,
         T0: float,
         w: [float, callable],
         z0: float = 0,
@@ -29,7 +29,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         )
 
         self.p0 = p0
-        self.q0 = q0
+        self.initial_water_vapour_mixing_ratio = initial_water_vapour_mixing_ratio
         self.T0 = T0
         self.z0 = z0
         self.mass_of_dry_air = mass_of_dry_air
@@ -37,7 +37,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self.w = w if callable(w) else lambda _: w
 
         self.formulae = None
-        self.dql = None
+        self.delta_liquid_water_mixing_ratio = None
         self.params = None
 
     @property
@@ -49,7 +49,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
 
     def register(self, builder):
         self.formulae = builder.particulator.formulae
-        pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
+        pd0 = self.formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
         rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             rhod0, self.mass_of_dry_air
@@ -57,8 +57,14 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
 
         Moist.register(self, builder)
 
-        params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
-        self["qv"][:] = params[0]
+        params = (
+            self.initial_water_vapour_mixing_ratio,
+            self.formulae.trivia.th_std(pd0, self.T0),
+            rhod0,
+            self.z0,
+            0,
+        )
+        self["water_vapour_mixing_ratio"][:] = params[0]
         self["thd"][:] = params[1]
         self["rhod"][:] = params[2]
         self["z"][:] = params[3]
@@ -100,12 +106,22 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         t = self["t"][0]
 
         dz_dt = self.w(t + dt / 2)  # "mid-point"
-        qv = self["qv"][0] - self.dql / 2
+        water_vapour_mixing_ratio = (
+            self["water_vapour_mixing_ratio"][0]
+            - self.delta_liquid_water_mixing_ratio / 2
+        )
 
-        dql_dz = self.dql / dz_dt / dt
+        d_liquid_water_mixing_ratio__dz = (
+            self.delta_liquid_water_mixing_ratio / dz_dt / dt
+        )
         lv = self.formulae.latent_heat.lv(T)
         drho_dz = self.formulae.hydrostatics.drho_dz(
-            self.formulae.constants.g_std, p, T, qv, lv, dql_dz=dql_dz
+            self.formulae.constants.g_std,
+            p,
+            T,
+            water_vapour_mixing_ratio,
+            lv,
+            d_liquid_water_mixing_ratio__dz=d_liquid_water_mixing_ratio__dz,
         )
         drhod_dz = drho_dz
 
@@ -122,11 +138,14 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def get_thd(self):
         return self["thd"]
 
-    def get_qv(self):
-        return self["qv"]
+    def get_water_vapour_mixing_ratio(self):
+        return self["water_vapour_mixing_ratio"]
 
     def sync_parcel_vars(self):
-        self.dql = self._tmp["qv"][0] - self["qv"][0]
+        self.delta_liquid_water_mixing_ratio = (
+            self._tmp["water_vapour_mixing_ratio"][0]
+            - self["water_vapour_mixing_ratio"][0]
+        )
         for var in self.variables:
             self._tmp[var][:] = self[var][:]
 

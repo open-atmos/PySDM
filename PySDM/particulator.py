@@ -94,7 +94,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             # input
             rhod=self.environment.get_predicted("rhod"),
             thd=self.environment.get_predicted("thd"),
-            qv=self.environment.get_predicted("qv"),
+            water_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
             # output
             T=self.environment.get_predicted("T"),
             p=self.environment.get_predicted("p"),
@@ -105,10 +107,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         """Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
-          the dry-air density (theta and qv should not be changed by other dynamics).
+          the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+          by other dynamics).
         In the case of prescribed-flow/kinematic environments, the dry-air density is
           constant in time throughout the simulation.
-        This function should only change environment's `thd` and `qv` (and not `rhod`).
+        This function should only change environment's `thd` and `water_vapour_mixing_ratio`
+          (and not `rhod`).
         """
         self.backend.condensation(
             solver=self.condensation_solver,
@@ -120,11 +124,13 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             idx=self.attributes._ParticleAttributes__idx,
             rhod=self.environment["rhod"],
             thd=self.environment["thd"],
-            qv=self.environment["qv"],
+            water_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
             dv=self.environment.dv,
             prhod=self.environment.get_predicted("rhod"),
             pthd=self.environment.get_predicted("thd"),
-            pqv=self.environment.get_predicted("qv"),
+            predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
             kappa=self.attributes["kappa"],
             f_org=self.attributes["dry volume organic fraction"],
             rtol_x=rtol_x,

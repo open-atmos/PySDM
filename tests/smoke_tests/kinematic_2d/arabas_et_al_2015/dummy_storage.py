@@ -12,5 +12,7 @@ class DummyStorage:
     def save(
         self, data: np.ndarray, step: int, name: str
     ):  # pylint: disable=unused-argument
-        if name == "qv_env":
-            self.profiles.append({"qv_env": np.mean(data, axis=0)})
+        if name == "water_vapour_mixing_ratio_env":
+            self.profiles.append(
+                {"water_vapour_mixing_ratio_env": np.mean(data, axis=0)}
+            )

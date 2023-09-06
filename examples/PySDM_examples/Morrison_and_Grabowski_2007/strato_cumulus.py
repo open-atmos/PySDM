@@ -8,7 +8,7 @@ class StratoCumulus(Common):
     def __init__(self, formulae, rhod_w_max: float):
         super().__init__(formulae)
         self.th_std0 = 289 * si.kelvins
-        self.qv0 = 7.5 * si.grams / si.kilogram
+        self.initial_water_vapour_mixing_ratio = 7.5 * si.grams / si.kilogram
         self.p0 = 1015 * si.hectopascals
         self.rhod_w_max = rhod_w_max
 
@@ -19,12 +19,14 @@ class StratoCumulus(Common):
         )
 
     def rhod_of_zZ(self, zZ):
-        p = self.formulae.hydrostatics.p_of_z_assuming_const_th_and_qv(
+        p = self.formulae.hydrostatics.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
             self.formulae.constants.g_std,
             self.p0,
             self.th_std0,
-            self.qv0,
+            self.initial_water_vapour_mixing_ratio,
             z=zZ * self.size[-1],
         )
-        rhod = self.formulae.state_variable_triplet.rho_d(p, self.qv0, self.th_std0)
+        rhod = self.formulae.state_variable_triplet.rho_d(
+            p, self.initial_water_vapour_mixing_ratio, self.th_std0
+        )
         return rhod

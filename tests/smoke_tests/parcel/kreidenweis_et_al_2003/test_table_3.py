@@ -86,14 +86,17 @@ class TestTable3:
         np.testing.assert_allclose(output["p"][-1], 939 * si.mbar, rtol=0.005)
         np.testing.assert_allclose(output["T"][-1], 284.2 * si.K, rtol=0.005)
         np.testing.assert_allclose(
-            settings.formulae.state_variable_triplet.rho_of_rhod_qv(
-                rhod=output["rhod"][-1], qv=output["qv"][-1] * si.g / si.kg
+            settings.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio(
+                rhod=output["rhod"][-1],
+                water_vapour_mixing_ratio=output["water_vapour_mixing_ratio"][-1]
+                * si.g
+                / si.kg,
             ),
             1.15 * si.kg / si.m**3,
             rtol=0.005,
         )
-        assert output["ql"][-2] < 0.00055
-        assert output["ql"][-1] > 0.0004
+        assert output["liquid water mixing ratio"][-2] < 0.00055
+        assert output["liquid water mixing ratio"][-1] > 0.0004
         assert output["RH"][-1] > 100
         assert output["RH"][-8] < 100
 
@@ -108,4 +111,6 @@ class TestTable3:
 
         # Assert
         np.testing.assert_allclose(output["z"][-1], (1.2 + 0.1) * si.km, rtol=0.005)
-        np.testing.assert_allclose(output["ql"][-1], 2.17, rtol=0.02)
+        np.testing.assert_allclose(
+            output["liquid water mixing ratio"][-1], 2.17, rtol=0.02
+        )

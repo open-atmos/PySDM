@@ -28,7 +28,7 @@ def run_parcel(
     dt=2 * si.s,
 ):
     products = (
-        PySDM_products.WaterMixingRatio(unit="g/kg", name="ql"),
+        PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid water mixing ratio"),
         PySDM_products.PeakSupersaturation(name="S max"),
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.ParcelDisplacement(name="z"),
@@ -37,9 +37,15 @@ def run_parcel(
     formulae = Formulae()
     const = formulae.constants
     pv0 = RH0 * formulae.saturation_vapour_pressure.pvs_Celsius(T0 - const.T0)
-    q0 = const.eps * pv0 / (p0 - pv0)
 
-    env = Parcel(dt=dt, mass_of_dry_air=mass_of_dry_air, p0=p0, q0=q0, w=w, T0=T0)
+    env = Parcel(
+        dt=dt,
+        mass_of_dry_air=mass_of_dry_air,
+        p0=p0,
+        initial_water_vapour_mixing_ratio=const.eps * pv0 / (p0 - pv0),
+        w=w,
+        T0=T0,
+    )
 
     aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
     n_sd = n_sd_per_mode * len(aerosol.modes)

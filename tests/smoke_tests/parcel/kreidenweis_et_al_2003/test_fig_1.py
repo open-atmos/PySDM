@@ -25,7 +25,7 @@ class TestFig1:
     def test_a(example_output, plot=False):
         # Plot
         if plot:
-            name = "ql"
+            name = "liquid water mixing ratio"
             pyplot.plot(
                 example_output[name], np.asarray(example_output["t"]) - Z_CB * si.s
             )
@@ -34,7 +34,7 @@ class TestFig1:
             pyplot.show()
 
         # Assert
-        assert (np.diff(example_output["ql"]) >= 0).all()
+        assert (np.diff(example_output["liquid water mixing ratio"]) >= 0).all()
 
     @staticmethod
     # pylint: disable=redefined-outer-name

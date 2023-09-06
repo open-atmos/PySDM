@@ -45,7 +45,7 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
         "RH",
         "peak supersaturation",
         "T",
-        "qv",
+        "water_vapour_mixing_ratio",
         "p",
         "qc",
         "ripening",

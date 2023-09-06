@@ -39,9 +39,11 @@ class TestInitialisation:
 
     @staticmethod
     @pytest.mark.parametrize("settings_idx", range(len(setups)))
-    def test_qv_initialisation(settings_idx):
+    def test_water_vapour_mixing_ratio_initialisation(settings_idx):
         setup = setups[settings_idx]
-        TestInitialisation.simulation_test("qv", setup.q0, setup)
+        TestInitialisation.simulation_test(
+            "water_vapour_mixing_ratio", setup.initial_water_vapour_mixing_ratio, setup
+        )
 
     @staticmethod
     @pytest.mark.parametrize("settings_idx", range(len(setups)))

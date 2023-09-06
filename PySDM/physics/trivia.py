@@ -67,8 +67,8 @@ class Trivia:
         return mixing_ratio / (specific_gravity + mixing_ratio)
 
     @staticmethod
-    def p_d(const, p, qv):
-        return p * (1 - 1 / (1 + const.eps / qv))
+    def p_d(const, p, water_vapour_mixing_ratio):
+        return p * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
 
     @staticmethod
     def th_std(const, p, T):

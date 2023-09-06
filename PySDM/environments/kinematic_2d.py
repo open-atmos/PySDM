@@ -89,9 +89,11 @@ class Kinematic2D(Moist):
             self.particulator.dynamics["EulerianAdvection"].solvers["th"].advectee.get()
         )
 
-    def get_qv(self):
+    def get_water_vapour_mixing_ratio(self):
         return (
-            self.particulator.dynamics["EulerianAdvection"].solvers["qv"].advectee.get()
+            self.particulator.dynamics["EulerianAdvection"]
+            .solvers["water_vapour_mixing_ratio"]
+            .advectee.get()
         )
 
     def sync(self):
