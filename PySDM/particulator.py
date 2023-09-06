@@ -111,8 +111,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
           by other dynamics).
         In the case of prescribed-flow/kinematic environments, the dry-air density is
           constant in time throughout the simulation.
-        This function should only change environment's `thd` and `water_vapour_mixing_ratio`
-          (and not `rhod`).
+        This function should only change environment's predicted `thd` and
+          `water_vapour_mixing_ratio` (and not `rhod`).
         """
         self.backend.condensation(
             solver=self.condensation_solver,

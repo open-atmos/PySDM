@@ -24,7 +24,7 @@ class Simulation:
                 dt=dt_output / self.n_substeps,
                 mass_of_dry_air=settings.mass_of_dry_air,
                 p0=settings.p0,
-                q0=settings.q0,
+                initial_water_vapour_mixing_ratio=settings.q0,
                 T0=settings.T0,
                 w=settings.w,
             )

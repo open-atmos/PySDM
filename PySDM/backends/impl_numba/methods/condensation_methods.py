@@ -333,7 +333,7 @@ class CondensationMethods(BackendMethods):
                 )
 
                 thd += timestep * (dthd_dt_pred / 2 + dthd_dt_corr)
-                d_water_vapour_mixing_ratio__dt_predicted += timestep * (
+                water_vapour_mixing_ratio += timestep * (
                     d_water_vapour_mixing_ratio__dt_predicted / 2
                     + d_water_vapour_mixing_ratio__dt_corrected
                 )
