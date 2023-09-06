@@ -111,17 +111,15 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             - self.delta_liquid_water_mixing_ratio / 2
         )
 
-        d_liquid_water_mixing_ratio__dz = (
-            self.delta_liquid_water_mixing_ratio / dz_dt / dt
-        )
-        lv = self.formulae.latent_heat.lv(T)
         drho_dz = self.formulae.hydrostatics.drho_dz(
-            self.formulae.constants.g_std,
-            p,
-            T,
-            water_vapour_mixing_ratio,
-            lv,
-            d_liquid_water_mixing_ratio__dz=d_liquid_water_mixing_ratio__dz,
+            g=self.formulae.constants.g_std,
+            p=p,
+            T=T,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio,
+            lv=self.formulae.latent_heat.lv(T),
+            d_liquid_water_mixing_ratio__dz=(
+                self.delta_liquid_water_mixing_ratio / dz_dt / dt
+            ),
         )
         drhod_dz = drho_dz
 

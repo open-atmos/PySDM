@@ -314,7 +314,7 @@ class CondensationMethods(
             )};
             pthd[i] += dt * (dthd_dt_pred[i] / 2 + dthd_dt_corr);
             predicted_water_vapour_mixing_ratio[i] += dt * (
-                d_water_vapour_mixing_ratio__dt_predicted[i] / 2 + 
+                d_water_vapour_mixing_ratio__dt_predicted[i] / 2 +
                 d_water_vapour_mixing_ratio__dt_corrected
             );
             rhod_copy[i] += dt * drhod_dt_pred[i] / 2;

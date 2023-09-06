@@ -123,7 +123,7 @@ class TestParcelSanityChecks:
     @pytest.mark.parametrize("substeps", (1, 2))
     def test_how_condensation_modifies_args(backend_class, update_thd, substeps):
         """asserting that condensation modifies env thd and water_vapour_mixing_ratio only,
-         not rhod"""
+        not rhod"""
         # arrange
         builder = Builder(n_sd=10, backend=backend_class())
         builder.set_environment(
