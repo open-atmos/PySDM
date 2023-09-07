@@ -56,7 +56,9 @@ class Settings:
         self.z_half = 150 * si.metres
 
         pvs = self.formulae.saturation_vapour_pressure.pvs_Celsius(self.T0 - const.T0)
-        self.q0 = const.eps / (self.p0 / self.RH0 / pvs - 1)
+        self.initial_water_vapour_mixing_ratio = const.eps / (
+            self.p0 / self.RH0 / pvs - 1
+        )
         self.w_avg = w_avg
         self.r_dry = r_dry
         self.N_STP = N_STP
@@ -147,7 +149,9 @@ class Settings:
         self.z_half = 150 * si.metres
 
         pvs = self.formulae.saturation_vapour_pressure.pvs_Celsius(self.T0 - const.T0)
-        self.q0 = const.eps / (self.p0 / self.RH0 / pvs - 1)
+        self.initial_water_vapour_mixing_ratio = const.eps / (
+            self.p0 / self.RH0 / pvs - 1
+        )
         self.w_avg = w_avg
         self.r_dry = r_dry
         self.N_STP = N_STP

@@ -73,11 +73,15 @@ class PhysicsMethods(BackendMethods):
         self.critical_volume_body = critical_volume
 
         @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
-        def temperature_pressure_RH_body(*, rhod, thd, qv, T, p, RH):
+        def temperature_pressure_RH_body(
+            *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
+        ):
             for i in prange(T.shape[0]):  # pylint: disable=not-an-iterable
                 T[i] = phys_T(rhod[i], thd[i])
-                p[i] = phys_p(rhod[i], T[i], qv[i])
-                RH[i] = phys_pv(p[i], qv[i]) / pvs_C(T[i] - const.T0)
+                p[i] = phys_p(rhod[i], T[i], water_vapour_mixing_ratio[i])
+                RH[i] = phys_pv(p[i], water_vapour_mixing_ratio[i]) / pvs_C(
+                    T[i] - const.T0
+                )
 
         self.temperature_pressure_RH_body = temperature_pressure_RH_body
 
@@ -94,18 +98,27 @@ class PhysicsMethods(BackendMethods):
         self.terminal_velocity_body = terminal_velocity_body
 
         @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
-        def a_w_ice_body(*, T_in, p_in, RH_in, qv_in, a_w_ice_out):
+        def a_w_ice_body(
+            *, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out
+        ):
             for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
                 pvi = pvi_C(T_in[i] - const.T0)
-                pv = phys_pv(p_in[i], qv_in[i])
+                pv = phys_pv(p_in[i], water_vapour_mixing_ratio_in[i])
                 pvs = pv / RH_in[i]
                 a_w_ice_out[i] = pvi / pvs
 
         self.a_w_ice_body = a_w_ice_body
 
-    def temperature_pressure_RH(self, *, rhod, thd, qv, T, p, RH):
+    def temperature_pressure_RH(
+        self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
+    ):
         self.temperature_pressure_RH_body(
-            rhod=rhod.data, thd=thd.data, qv=qv.data, T=T.data, p=p.data, RH=RH.data
+            rhod=rhod.data,
+            thd=thd.data,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio.data,
+            T=T.data,
+            p=p.data,
+            RH=RH.data,
         )
 
     def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
@@ -127,12 +140,12 @@ class PhysicsMethods(BackendMethods):
             cell=cell.data,
         )
 
-    def a_w_ice(self, *, T, p, RH, qv, a_w_ice):
+    def a_w_ice(self, *, T, p, RH, water_vapour_mixing_ratio, a_w_ice):
         self.a_w_ice_body(
             T_in=T.data,
             p_in=p.data,
             RH_in=RH.data,
-            qv_in=qv.data,
+            water_vapour_mixing_ratio_in=water_vapour_mixing_ratio.data,
             a_w_ice_out=a_w_ice.data,
         )</code></pre>
 </details>
@@ -191,11 +204,15 @@ class PhysicsMethods(BackendMethods):
         self.critical_volume_body = critical_volume
 
         @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
-        def temperature_pressure_RH_body(*, rhod, thd, qv, T, p, RH):
+        def temperature_pressure_RH_body(
+            *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
+        ):
             for i in prange(T.shape[0]):  # pylint: disable=not-an-iterable
                 T[i] = phys_T(rhod[i], thd[i])
-                p[i] = phys_p(rhod[i], T[i], qv[i])
-                RH[i] = phys_pv(p[i], qv[i]) / pvs_C(T[i] - const.T0)
+                p[i] = phys_p(rhod[i], T[i], water_vapour_mixing_ratio[i])
+                RH[i] = phys_pv(p[i], water_vapour_mixing_ratio[i]) / pvs_C(
+                    T[i] - const.T0
+                )
 
         self.temperature_pressure_RH_body = temperature_pressure_RH_body
 
@@ -212,18 +229,27 @@ class PhysicsMethods(BackendMethods):
         self.terminal_velocity_body = terminal_velocity_body
 
         @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
-        def a_w_ice_body(*, T_in, p_in, RH_in, qv_in, a_w_ice_out):
+        def a_w_ice_body(
+            *, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out
+        ):
             for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
                 pvi = pvi_C(T_in[i] - const.T0)
-                pv = phys_pv(p_in[i], qv_in[i])
+                pv = phys_pv(p_in[i], water_vapour_mixing_ratio_in[i])
                 pvs = pv / RH_in[i]
                 a_w_ice_out[i] = pvi / pvs
 
         self.a_w_ice_body = a_w_ice_body
 
-    def temperature_pressure_RH(self, *, rhod, thd, qv, T, p, RH):
+    def temperature_pressure_RH(
+        self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
+    ):
         self.temperature_pressure_RH_body(
-            rhod=rhod.data, thd=thd.data, qv=qv.data, T=T.data, p=p.data, RH=RH.data
+            rhod=rhod.data,
+            thd=thd.data,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio.data,
+            T=T.data,
+            p=p.data,
+            RH=RH.data,
         )
 
     def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
@@ -245,12 +271,12 @@ class PhysicsMethods(BackendMethods):
             cell=cell.data,
         )
 
-    def a_w_ice(self, *, T, p, RH, qv, a_w_ice):
+    def a_w_ice(self, *, T, p, RH, water_vapour_mixing_ratio, a_w_ice):
         self.a_w_ice_body(
             T_in=T.data,
             p_in=p.data,
             RH_in=RH.data,
-            qv_in=qv.data,
+            water_vapour_mixing_ratio_in=water_vapour_mixing_ratio.data,
             a_w_ice_out=a_w_ice.data,
         )</code></pre>
 </details>
@@ -265,7 +291,7 @@ class PhysicsMethods(BackendMethods):
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.a_w_ice"><code class="name flex">
-<span>def <span class="ident">a_w_ice</span></span>(<span>self, *, T, p, RH, qv, a_w_ice)</span>
+<span>def <span class="ident">a_w_ice</span></span>(<span>self, *, T, p, RH, water_vapour_mixing_ratio, a_w_ice)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -273,12 +299,12 @@ class PhysicsMethods(BackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def a_w_ice(self, *, T, p, RH, qv, a_w_ice):
+<pre><code class="python">def a_w_ice(self, *, T, p, RH, water_vapour_mixing_ratio, a_w_ice):
     self.a_w_ice_body(
         T_in=T.data,
         p_in=p.data,
         RH_in=RH.data,
-        qv_in=qv.data,
+        water_vapour_mixing_ratio_in=water_vapour_mixing_ratio.data,
         a_w_ice_out=a_w_ice.data,
     )</code></pre>
 </details>
@@ -318,7 +344,7 @@ class PhysicsMethods(BackendMethods):
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods.temperature_pressure_RH"><code class="name flex">
-<span>def <span class="ident">temperature_pressure_RH</span></span>(<span>self, *, rhod, thd, qv, T, p, RH)</span>
+<span>def <span class="ident">temperature_pressure_RH</span></span>(<span>self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -326,9 +352,16 @@ class PhysicsMethods(BackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def temperature_pressure_RH(self, *, rhod, thd, qv, T, p, RH):
+<pre><code class="python">def temperature_pressure_RH(
+    self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
+):
     self.temperature_pressure_RH_body(
-        rhod=rhod.data, thd=thd.data, qv=qv.data, T=T.data, p=p.data, RH=RH.data
+        rhod=rhod.data,
+        thd=thd.data,
+        water_vapour_mixing_ratio=water_vapour_mixing_ratio.data,
+        T=T.data,
+        p=p.data,
+        RH=RH.data,
     )</code></pre>
 </details>
 </dd>

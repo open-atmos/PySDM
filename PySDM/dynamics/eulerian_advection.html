@@ -41,8 +41,10 @@ class EulerianAdvection:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.environment.get_predicted(&#34;qv&#34;).download(
-            self.particulator.environment.get_qv(), reshape=True
+        self.particulator.environment.get_predicted(
+            &#34;water_vapour_mixing_ratio&#34;
+        ).download(
+            self.particulator.environment.get_water_vapour_mixing_ratio(), reshape=True
         )
         self.particulator.environment.get_predicted(&#34;thd&#34;).download(
             self.particulator.environment.get_thd(), reshape=True
@@ -78,8 +80,10 @@ class EulerianAdvection:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.environment.get_predicted(&#34;qv&#34;).download(
-            self.particulator.environment.get_qv(), reshape=True
+        self.particulator.environment.get_predicted(
+            &#34;water_vapour_mixing_ratio&#34;
+        ).download(
+            self.particulator.environment.get_water_vapour_mixing_ratio(), reshape=True
         )
         self.particulator.environment.get_predicted(&#34;thd&#34;).download(
             self.particulator.environment.get_thd(), reshape=True

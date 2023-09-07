@@ -69,7 +69,7 @@ class Settings:
         self.p0 = 950 * si.mbar
         self.T0 = 285.2 * si.K
         pv0 = 0.95 * self.formulae.saturation_vapour_pressure.pvs_Celsius(self.T0 - T0)
-        self.q0 = const.eps * pv0 / (self.p0 - pv0)
+        self.initial_water_vapour_mixing_ratio = const.eps * pv0 / (self.p0 - pv0)
         self.kappa = 0.61
 
         self.cloud_radius_range = (0.5 * si.micrometre, 25 * si.micrometre)
@@ -172,7 +172,7 @@ class Settings:
         self.p0 = 950 * si.mbar
         self.T0 = 285.2 * si.K
         pv0 = 0.95 * self.formulae.saturation_vapour_pressure.pvs_Celsius(self.T0 - T0)
-        self.q0 = const.eps * pv0 / (self.p0 - pv0)
+        self.initial_water_vapour_mixing_ratio = const.eps * pv0 / (self.p0 - pv0)
         self.kappa = 0.61
 
         self.cloud_radius_range = (0.5 * si.micrometre, 25 * si.micrometre)

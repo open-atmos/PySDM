@@ -147,7 +147,7 @@ class Common:
         self.simulation_time = None
         self.grid = None
         self.p0 = None
-        self.qv0 = None
+        self.initial_water_vapour_mixing_ratio = None
         self.th_std0 = None
         self.size = None
 
@@ -173,13 +173,15 @@ class Common:
 
     @property
     def initial_vapour_mixing_ratio_profile(self):
-        return np.full(self.grid[-1], self.qv0)
+        return np.full(self.grid[-1], self.initial_water_vapour_mixing_ratio)
 
     @property
     def initial_dry_potential_temperature_profile(self):
         return np.full(
             self.grid[-1],
-            self.formulae.state_variable_triplet.th_dry(self.th_std0, self.qv0),
+            self.formulae.state_variable_triplet.th_dry(
+                self.th_std0, self.initial_water_vapour_mixing_ratio
+            ),
         )</code></pre>
 </details>
 </section>
@@ -306,7 +308,7 @@ class Common:
         self.simulation_time = None
         self.grid = None
         self.p0 = None
-        self.qv0 = None
+        self.initial_water_vapour_mixing_ratio = None
         self.th_std0 = None
         self.size = None
 
@@ -332,13 +334,15 @@ class Common:
 
     @property
     def initial_vapour_mixing_ratio_profile(self):
-        return np.full(self.grid[-1], self.qv0)
+        return np.full(self.grid[-1], self.initial_water_vapour_mixing_ratio)
 
     @property
     def initial_dry_potential_temperature_profile(self):
         return np.full(
             self.grid[-1],
-            self.formulae.state_variable_triplet.th_dry(self.th_std0, self.qv0),
+            self.formulae.state_variable_triplet.th_dry(
+                self.th_std0, self.initial_water_vapour_mixing_ratio
+            ),
         )</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -359,7 +363,9 @@ class Common:
 def initial_dry_potential_temperature_profile(self):
     return np.full(
         self.grid[-1],
-        self.formulae.state_variable_triplet.th_dry(self.th_std0, self.qv0),
+        self.formulae.state_variable_triplet.th_dry(
+            self.th_std0, self.initial_water_vapour_mixing_ratio
+        ),
     )</code></pre>
 </details>
 </dd>
@@ -372,7 +378,7 @@ def initial_dry_potential_temperature_profile(self):
 </summary>
 <pre><code class="python">@property
 def initial_vapour_mixing_ratio_profile(self):
-    return np.full(self.grid[-1], self.qv0)</code></pre>
+    return np.full(self.grid[-1], self.initial_water_vapour_mixing_ratio)</code></pre>
 </details>
 </dd>
 <dt id="PySDM_examples.Morrison_and_Grabowski_2007.common.Common.n_sd"><code class="name">var <span class="ident">n_sd</span></code></dt>

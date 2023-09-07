@@ -56,7 +56,7 @@ class Kinematic1D(Moist):
         self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
         self._tmp[&#34;rhod&#34;] = rhod
 
-    def get_qv(self) -&gt; np.ndarray:
+    def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
         return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers.advectee.get()
 
     def get_thd(self) -&gt; np.ndarray:
@@ -140,7 +140,7 @@ class Kinematic1D(Moist):
         self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
         self._tmp[&#34;rhod&#34;] = rhod
 
-    def get_qv(self) -&gt; np.ndarray:
+    def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
         return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers.advectee.get()
 
     def get_thd(self) -&gt; np.ndarray:
@@ -211,19 +211,6 @@ def dv(self):
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.environments.kinematic_1d.Kinematic1D.get_qv"><code class="name flex">
-<span>def <span class="ident">get_qv</span></span>(<span>self) ‑> numpy.ndarray</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_qv(self) -&gt; np.ndarray:
-    return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers.advectee.get()</code></pre>
-</details>
-</dd>
 <dt id="PySDM.environments.kinematic_1d.Kinematic1D.get_thd"><code class="name flex">
 <span>def <span class="ident">get_thd</span></span>(<span>self) ‑> numpy.ndarray</span>
 </code></dt>
@@ -235,6 +222,19 @@ def dv(self):
 </summary>
 <pre><code class="python">def get_thd(self) -&gt; np.ndarray:
     return self.thd0</code></pre>
+</details>
+</dd>
+<dt id="PySDM.environments.kinematic_1d.Kinematic1D.get_water_vapour_mixing_ratio"><code class="name flex">
+<span>def <span class="ident">get_water_vapour_mixing_ratio</span></span>(<span>self) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
+    return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers.advectee.get()</code></pre>
 </details>
 </dd>
 <dt id="PySDM.environments.kinematic_1d.Kinematic1D.init_attributes"><code class="name flex">
@@ -326,8 +326,8 @@ def dv(self):
 <h4><code><a title="PySDM.environments.kinematic_1d.Kinematic1D" href="#PySDM.environments.kinematic_1d.Kinematic1D">Kinematic1D</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.dv" href="#PySDM.environments.kinematic_1d.Kinematic1D.dv">dv</a></code></li>
-<li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.get_qv" href="#PySDM.environments.kinematic_1d.Kinematic1D.get_qv">get_qv</a></code></li>
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.get_thd" href="#PySDM.environments.kinematic_1d.Kinematic1D.get_thd">get_thd</a></code></li>
+<li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.get_water_vapour_mixing_ratio" href="#PySDM.environments.kinematic_1d.Kinematic1D.get_water_vapour_mixing_ratio">get_water_vapour_mixing_ratio</a></code></li>
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.init_attributes" href="#PySDM.environments.kinematic_1d.Kinematic1D.init_attributes">init_attributes</a></code></li>
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.register" href="#PySDM.environments.kinematic_1d.Kinematic1D.register">register</a></code></li>
 </ul>

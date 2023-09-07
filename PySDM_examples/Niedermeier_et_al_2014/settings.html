@@ -72,7 +72,7 @@ class Settings:
         return self.initial_relative_humidity * pvs
 
     @property
-    def q0(self):
+    def initial_water_vapour_mixing_ratio(self):
         pv0 = self.pv0
         return self.formulae.constants.eps * pv0 / (self.p0 - pv0)
 
@@ -83,7 +83,7 @@ class Settings:
     @property
     def rhod0(self):
         rho_v = self.pv0 / self.formulae.constants.Rv / self.T0
-        return rho_v / self.q0</code></pre>
+        return rho_v / self.initial_water_vapour_mixing_ratio</code></pre>
 </details>
 </section>
 <section>
@@ -142,7 +142,7 @@ class Settings:
         return self.initial_relative_humidity * pvs
 
     @property
-    def q0(self):
+    def initial_water_vapour_mixing_ratio(self):
         pv0 = self.pv0
         return self.formulae.constants.eps * pv0 / (self.p0 - pv0)
 
@@ -153,7 +153,7 @@ class Settings:
     @property
     def rhod0(self):
         rho_v = self.pv0 / self.formulae.constants.Rv / self.T0
-        return rho_v / self.q0</code></pre>
+        return rho_v / self.initial_water_vapour_mixing_ratio</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -167,6 +167,19 @@ class Settings:
 <pre><code class="python">@property
 def T0(self):
     return self.initial_temperature</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.initial_water_vapour_mixing_ratio"><code class="name">var <span class="ident">initial_water_vapour_mixing_ratio</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def initial_water_vapour_mixing_ratio(self):
+    pv0 = self.pv0
+    return self.formulae.constants.eps * pv0 / (self.p0 - pv0)</code></pre>
 </details>
 </dd>
 <dt id="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.p0"><code class="name">var <span class="ident">p0</span></code></dt>
@@ -194,19 +207,6 @@ def pv0(self):
     return self.initial_relative_humidity * pvs</code></pre>
 </details>
 </dd>
-<dt id="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.q0"><code class="name">var <span class="ident">q0</span></code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def q0(self):
-    pv0 = self.pv0
-    return self.formulae.constants.eps * pv0 / (self.p0 - pv0)</code></pre>
-</details>
-</dd>
 <dt id="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.rhod0"><code class="name">var <span class="ident">rhod0</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -217,7 +217,7 @@ def q0(self):
 <pre><code class="python">@property
 def rhod0(self):
     rho_v = self.pv0 / self.formulae.constants.Rv / self.T0
-    return rho_v / self.q0</code></pre>
+    return rho_v / self.initial_water_vapour_mixing_ratio</code></pre>
 </details>
 </dd>
 </dl>
@@ -242,9 +242,9 @@ def rhod0(self):
 <h4><code><a title="PySDM_examples.Niedermeier_et_al_2014.settings.Settings" href="#PySDM_examples.Niedermeier_et_al_2014.settings.Settings">Settings</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.T0" href="#PySDM_examples.Niedermeier_et_al_2014.settings.Settings.T0">T0</a></code></li>
+<li><code><a title="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.initial_water_vapour_mixing_ratio" href="#PySDM_examples.Niedermeier_et_al_2014.settings.Settings.initial_water_vapour_mixing_ratio">initial_water_vapour_mixing_ratio</a></code></li>
 <li><code><a title="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.p0" href="#PySDM_examples.Niedermeier_et_al_2014.settings.Settings.p0">p0</a></code></li>
 <li><code><a title="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.pv0" href="#PySDM_examples.Niedermeier_et_al_2014.settings.Settings.pv0">pv0</a></code></li>
-<li><code><a title="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.q0" href="#PySDM_examples.Niedermeier_et_al_2014.settings.Settings.q0">q0</a></code></li>
 <li><code><a title="PySDM_examples.Niedermeier_et_al_2014.settings.Settings.rhod0" href="#PySDM_examples.Niedermeier_et_al_2014.settings.Settings.rhod0">rhod0</a></code></li>
 </ul>
 </li>

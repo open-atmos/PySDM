@@ -37,7 +37,7 @@ import numpy as np
 
 class Moist:
     def __init__(self, dt, mesh, variables, mixed_phase=False):
-        variables += [&#34;qv&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
+        variables += [&#34;water_vapour_mixing_ratio&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
         if mixed_phase:
             variables += [&#34;a_w_ice&#34;]
         self.particulator = None
@@ -72,13 +72,13 @@ class Moist:
 
     def sync(self):
         target = self._tmp
-        target[&#34;qv&#34;].ravel(self.get_qv())
+        target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
         target[&#34;thd&#34;].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
             rhod=target[&#34;rhod&#34;],
             thd=target[&#34;thd&#34;],
-            qv=target[&#34;qv&#34;],
+            water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
             T=target[&#34;T&#34;],
             p=target[&#34;p&#34;],
             RH=target[&#34;RH&#34;],
@@ -88,13 +88,13 @@ class Moist:
                 T=target[&#34;T&#34;],
                 p=target[&#34;p&#34;],
                 RH=target[&#34;RH&#34;],
-                qv=target[&#34;qv&#34;],
+                water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
                 a_w_ice=target[&#34;a_w_ice&#34;],
             )
         self._values[&#34;predicted&#34;] = target
 
     @abstractmethod
-    def get_qv(self) -&gt; np.ndarray:
+    def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
         raise NotImplementedError()
 
     @abstractmethod
@@ -131,7 +131,7 @@ class Moist:
 </summary>
 <pre><code class="python">class Moist:
     def __init__(self, dt, mesh, variables, mixed_phase=False):
-        variables += [&#34;qv&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
+        variables += [&#34;water_vapour_mixing_ratio&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
         if mixed_phase:
             variables += [&#34;a_w_ice&#34;]
         self.particulator = None
@@ -166,13 +166,13 @@ class Moist:
 
     def sync(self):
         target = self._tmp
-        target[&#34;qv&#34;].ravel(self.get_qv())
+        target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
         target[&#34;thd&#34;].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
             rhod=target[&#34;rhod&#34;],
             thd=target[&#34;thd&#34;],
-            qv=target[&#34;qv&#34;],
+            water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
             T=target[&#34;T&#34;],
             p=target[&#34;p&#34;],
             RH=target[&#34;RH&#34;],
@@ -182,13 +182,13 @@ class Moist:
                 T=target[&#34;T&#34;],
                 p=target[&#34;p&#34;],
                 RH=target[&#34;RH&#34;],
-                qv=target[&#34;qv&#34;],
+                water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
                 a_w_ice=target[&#34;a_w_ice&#34;],
             )
         self._values[&#34;predicted&#34;] = target
 
     @abstractmethod
-    def get_qv(self) -&gt; np.ndarray:
+    def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
         raise NotImplementedError()
 
     @abstractmethod
@@ -229,20 +229,6 @@ class Moist:
     return self._values[&#34;predicted&#34;][index]</code></pre>
 </details>
 </dd>
-<dt id="PySDM.environments.impl.moist.Moist.get_qv"><code class="name flex">
-<span>def <span class="ident">get_qv</span></span>(<span>self) ‑> numpy.ndarray</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def get_qv(self) -&gt; np.ndarray:
-    raise NotImplementedError()</code></pre>
-</details>
-</dd>
 <dt id="PySDM.environments.impl.moist.Moist.get_thd"><code class="name flex">
 <span>def <span class="ident">get_thd</span></span>(<span>self) ‑> numpy.ndarray</span>
 </code></dt>
@@ -254,6 +240,20 @@ def get_qv(self) -&gt; np.ndarray:
 </summary>
 <pre><code class="python">@abstractmethod
 def get_thd(self) -&gt; np.ndarray:
+    raise NotImplementedError()</code></pre>
+</details>
+</dd>
+<dt id="PySDM.environments.impl.moist.Moist.get_water_vapour_mixing_ratio"><code class="name flex">
+<span>def <span class="ident">get_water_vapour_mixing_ratio</span></span>(<span>self) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
     raise NotImplementedError()</code></pre>
 </details>
 </dd>
@@ -302,13 +302,13 @@ def get_thd(self) -&gt; np.ndarray:
 </summary>
 <pre><code class="python">def sync(self):
     target = self._tmp
-    target[&#34;qv&#34;].ravel(self.get_qv())
+    target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
     target[&#34;thd&#34;].ravel(self.get_thd())
 
     self.particulator.backend.temperature_pressure_RH(
         rhod=target[&#34;rhod&#34;],
         thd=target[&#34;thd&#34;],
-        qv=target[&#34;qv&#34;],
+        water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
         T=target[&#34;T&#34;],
         p=target[&#34;p&#34;],
         RH=target[&#34;RH&#34;],
@@ -318,7 +318,7 @@ def get_thd(self) -&gt; np.ndarray:
             T=target[&#34;T&#34;],
             p=target[&#34;p&#34;],
             RH=target[&#34;RH&#34;],
-            qv=target[&#34;qv&#34;],
+            water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
             a_w_ice=target[&#34;a_w_ice&#34;],
         )
     self._values[&#34;predicted&#34;] = target</code></pre>
@@ -344,10 +344,10 @@ def get_thd(self) -&gt; np.ndarray:
 <ul>
 <li>
 <h4><code><a title="PySDM.environments.impl.moist.Moist" href="#PySDM.environments.impl.moist.Moist">Moist</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="PySDM.environments.impl.moist.Moist.get_predicted" href="#PySDM.environments.impl.moist.Moist.get_predicted">get_predicted</a></code></li>
-<li><code><a title="PySDM.environments.impl.moist.Moist.get_qv" href="#PySDM.environments.impl.moist.Moist.get_qv">get_qv</a></code></li>
 <li><code><a title="PySDM.environments.impl.moist.Moist.get_thd" href="#PySDM.environments.impl.moist.Moist.get_thd">get_thd</a></code></li>
+<li><code><a title="PySDM.environments.impl.moist.Moist.get_water_vapour_mixing_ratio" href="#PySDM.environments.impl.moist.Moist.get_water_vapour_mixing_ratio">get_water_vapour_mixing_ratio</a></code></li>
 <li><code><a title="PySDM.environments.impl.moist.Moist.notify" href="#PySDM.environments.impl.moist.Moist.notify">notify</a></code></li>
 <li><code><a title="PySDM.environments.impl.moist.Moist.register" href="#PySDM.environments.impl.moist.Moist.register">register</a></code></li>
 <li><code><a title="PySDM.environments.impl.moist.Moist.sync" href="#PySDM.environments.impl.moist.Moist.sync">sync</a></code></li>

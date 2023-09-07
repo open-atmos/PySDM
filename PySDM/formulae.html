@@ -65,7 +65,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         diffusion_kinetics: str = &#34;FuchsSutugin&#34;,
         diffusion_thermics: str = &#34;Neglect&#34;,
         ventilation: str = &#34;Neglect&#34;,
-        state_variable_triplet: str = &#34;RhodThdQv&#34;,
+        state_variable_triplet: str = &#34;LibcloudphPlusPlus&#34;,
         particle_advection: str = &#34;ImplicitInSpace&#34;,
         hydrostatics: str = &#34;Default&#34;,
         freezing_temperature_spectrum: str = &#34;Null&#34;,
@@ -152,7 +152,9 @@ def _formula(func, constants, dimensional_analysis, **kw):
             return partial(func, constants)
         return func
 
-    source = &#34;class _:\n&#34; + &#34;\n&#34;.join(inspect.getsourcelines(func)[0])
+    source = &#34;class _:\n&#34; + &#34;&#34;.join(inspect.getsourcelines(func)[0])
+    source = re.sub(r&#34;\(\n\s+&#34;, &#34;(&#34;, source)
+    source = re.sub(r&#34;\n\s+\):&#34;, &#34;):&#34;, source)
     loc = {}
     for arg_name in special_params:
         source = source.replace(
@@ -290,7 +292,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
 <dl>
 <dt id="PySDM.formulae.Formulae"><code class="flex name class">
 <span>class <span class="ident">Formulae</span></span>
-<span>(</span><span>*, constants: Optional[dict] = None, seed: int = None, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'RhodThdQv', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null', fragmentation_function: str = 'AlwaysN', handle_all_breakups: bool = False)</span>
+<span>(</span><span>*, constants: Optional[dict] = None, seed: int = None, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'LibcloudphPlusPlus', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null', fragmentation_function: str = 'AlwaysN', handle_all_breakups: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -314,7 +316,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         diffusion_kinetics: str = &#34;FuchsSutugin&#34;,
         diffusion_thermics: str = &#34;Neglect&#34;,
         ventilation: str = &#34;Neglect&#34;,
-        state_variable_triplet: str = &#34;RhodThdQv&#34;,
+        state_variable_triplet: str = &#34;LibcloudphPlusPlus&#34;,
         particle_advection: str = &#34;ImplicitInSpace&#34;,
         hydrostatics: str = &#34;Default&#34;,
         freezing_temperature_spectrum: str = &#34;Null&#34;,

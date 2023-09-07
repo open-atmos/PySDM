@@ -97,8 +97,8 @@ class Trivia:
         return mixing_ratio / (specific_gravity + mixing_ratio)
 
     @staticmethod
-    def p_d(const, p, qv):
-        return p * (1 - 1 / (1 + const.eps / qv))
+    def p_d(const, p, water_vapour_mixing_ratio):
+        return p * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
 
     @staticmethod
     def th_std(const, p, T):
@@ -209,8 +209,8 @@ class Trivia:
         return mixing_ratio / (specific_gravity + mixing_ratio)
 
     @staticmethod
-    def p_d(const, p, qv):
-        return p * (1 - 1 / (1 + const.eps / qv))
+    def p_d(const, p, water_vapour_mixing_ratio):
+        return p * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
 
     @staticmethod
     def th_std(const, p, T):
@@ -381,7 +381,7 @@ def pH2H(pH):
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.p_d"><code class="name flex">
-<span>def <span class="ident">p_d</span></span>(<span>const, p, qv)</span>
+<span>def <span class="ident">p_d</span></span>(<span>const, p, water_vapour_mixing_ratio)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -390,8 +390,8 @@ def pH2H(pH):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p_d(const, p, qv):
-    return p * (1 - 1 / (1 + const.eps / qv))</code></pre>
+def p_d(const, p, water_vapour_mixing_ratio):
+    return p * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.radius"><code class="name flex">

@@ -89,7 +89,7 @@ class Settings:
         pv0 = 0.999 * self.formulae.saturation_vapour_pressure.pvs_Celsius(
             self.T0 - const.T0
         )
-        self.q0 = const.eps * pv0 / (self.p0 - pv0)
+        self.initial_water_vapour_mixing_ratio = const.eps * pv0 / (self.p0 - pv0)
 
         self.cloud_radius_range = (0.5 * si.micrometre, np.inf)
 
@@ -102,8 +102,12 @@ class Settings:
     @property
     def rho0(self):
         const = self.formulae.constants
-        rhod0 = self.formulae.trivia.p_d(self.p0, self.q0) / self.T0 / const.Rd
-        return rhod0 * (1 + self.q0)
+        rhod0 = (
+            self.formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
+            / self.T0
+            / const.Rd
+        )
+        return rhod0 * (1 + self.initial_water_vapour_mixing_ratio)
 
     @property
     def nt(self) -&gt; int:
@@ -193,7 +197,7 @@ class Settings:
         pv0 = 0.999 * self.formulae.saturation_vapour_pressure.pvs_Celsius(
             self.T0 - const.T0
         )
-        self.q0 = const.eps * pv0 / (self.p0 - pv0)
+        self.initial_water_vapour_mixing_ratio = const.eps * pv0 / (self.p0 - pv0)
 
         self.cloud_radius_range = (0.5 * si.micrometre, np.inf)
 
@@ -206,8 +210,12 @@ class Settings:
     @property
     def rho0(self):
         const = self.formulae.constants
-        rhod0 = self.formulae.trivia.p_d(self.p0, self.q0) / self.T0 / const.Rd
-        return rhod0 * (1 + self.q0)
+        rhod0 = (
+            self.formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
+            / self.T0
+            / const.Rd
+        )
+        return rhod0 * (1 + self.initial_water_vapour_mixing_ratio)
 
     @property
     def nt(self) -&gt; int:
@@ -263,8 +271,12 @@ def output_steps(self) -&gt; np.ndarray:
 <pre><code class="python">@property
 def rho0(self):
     const = self.formulae.constants
-    rhod0 = self.formulae.trivia.p_d(self.p0, self.q0) / self.T0 / const.Rd
-    return rhod0 * (1 + self.q0)</code></pre>
+    rhod0 = (
+        self.formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
+        / self.T0
+        / const.Rd
+    )
+    return rhod0 * (1 + self.initial_water_vapour_mixing_ratio)</code></pre>
 </details>
 </dd>
 <dt id="PySDM_examples.Lowe_et_al_2019.settings.Settings.steps_per_output_interval"><code class="name">var <span class="ident">steps_per_output_interval</span> : int</code></dt>

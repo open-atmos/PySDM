@@ -123,7 +123,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             # input
             rhod=self.environment.get_predicted(&#34;rhod&#34;),
             thd=self.environment.get_predicted(&#34;thd&#34;),
-            qv=self.environment.get_predicted(&#34;qv&#34;),
+            water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             # output
             T=self.environment.get_predicted(&#34;T&#34;),
             p=self.environment.get_predicted(&#34;p&#34;),
@@ -134,10 +136,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
-          the dry-air density (theta and qv should not be changed by other dynamics).
+          the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+          by other dynamics).
         In the case of prescribed-flow/kinematic environments, the dry-air density is
           constant in time throughout the simulation.
-        This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+        This function should only change environment&#39;s predicted `thd` and
+          `water_vapour_mixing_ratio` (and not `rhod`).
         &#34;&#34;&#34;
         self.backend.condensation(
             solver=self.condensation_solver,
@@ -149,11 +153,13 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             idx=self.attributes._ParticleAttributes__idx,
             rhod=self.environment[&#34;rhod&#34;],
             thd=self.environment[&#34;thd&#34;],
-            qv=self.environment[&#34;qv&#34;],
+            water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
             dv=self.environment.dv,
             prhod=self.environment.get_predicted(&#34;rhod&#34;),
             pthd=self.environment.get_predicted(&#34;thd&#34;),
-            pqv=self.environment.get_predicted(&#34;qv&#34;),
+            predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             kappa=self.attributes[&#34;kappa&#34;],
             f_org=self.attributes[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
@@ -565,7 +571,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             # input
             rhod=self.environment.get_predicted(&#34;rhod&#34;),
             thd=self.environment.get_predicted(&#34;thd&#34;),
-            qv=self.environment.get_predicted(&#34;qv&#34;),
+            water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             # output
             T=self.environment.get_predicted(&#34;T&#34;),
             p=self.environment.get_predicted(&#34;p&#34;),
@@ -576,10 +584,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
-          the dry-air density (theta and qv should not be changed by other dynamics).
+          the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+          by other dynamics).
         In the case of prescribed-flow/kinematic environments, the dry-air density is
           constant in time throughout the simulation.
-        This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+        This function should only change environment&#39;s predicted `thd` and
+          `water_vapour_mixing_ratio` (and not `rhod`).
         &#34;&#34;&#34;
         self.backend.condensation(
             solver=self.condensation_solver,
@@ -591,11 +601,13 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             idx=self.attributes._ParticleAttributes__idx,
             rhod=self.environment[&#34;rhod&#34;],
             thd=self.environment[&#34;thd&#34;],
-            qv=self.environment[&#34;qv&#34;],
+            water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
             dv=self.environment.dv,
             prhod=self.environment.get_predicted(&#34;rhod&#34;),
             pthd=self.environment.get_predicted(&#34;thd&#34;),
-            pqv=self.environment.get_predicted(&#34;qv&#34;),
+            predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             kappa=self.attributes[&#34;kappa&#34;],
             f_org=self.attributes[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
@@ -1122,10 +1134,12 @@ def n_sd(self) -&gt; int:
 <div class="desc"><p>Updates droplet volumes by simulating condensation driven by prior changes
 in environment thermodynamic state, updates the environment state.
 In the case of parcel environment, condensation is driven solely by changes in
-the dry-air density (theta and qv should not be changed by other dynamics).
+the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+by other dynamics).
 In the case of prescribed-flow/kinematic environments, the dry-air density is
 constant in time throughout the simulation.
-This function should only change environment's <code>thd</code> and <code>qv</code> (and not <code>rhod</code>).</p></div>
+This function should only change environment's predicted <code>thd</code> and
+<code>water_vapour_mixing_ratio</code> (and not <code>rhod</code>).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1134,10 +1148,12 @@ This function should only change environment's <code>thd</code> and <code>qv</co
     &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
       in environment thermodynamic state, updates the environment state.
     In the case of parcel environment, condensation is driven solely by changes in
-      the dry-air density (theta and qv should not be changed by other dynamics).
+      the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+      by other dynamics).
     In the case of prescribed-flow/kinematic environments, the dry-air density is
       constant in time throughout the simulation.
-    This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+    This function should only change environment&#39;s predicted `thd` and
+      `water_vapour_mixing_ratio` (and not `rhod`).
     &#34;&#34;&#34;
     self.backend.condensation(
         solver=self.condensation_solver,
@@ -1149,11 +1165,13 @@ This function should only change environment's <code>thd</code> and <code>qv</co
         idx=self.attributes._ParticleAttributes__idx,
         rhod=self.environment[&#34;rhod&#34;],
         thd=self.environment[&#34;thd&#34;],
-        qv=self.environment[&#34;qv&#34;],
+        water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
         dv=self.environment.dv,
         prhod=self.environment.get_predicted(&#34;rhod&#34;),
         pthd=self.environment.get_predicted(&#34;thd&#34;),
-        pqv=self.environment.get_predicted(&#34;qv&#34;),
+        predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+            &#34;water_vapour_mixing_ratio&#34;
+        ),
         kappa=self.attributes[&#34;kappa&#34;],
         f_org=self.attributes[&#34;dry volume organic fraction&#34;],
         rtol_x=rtol_x,
@@ -1511,7 +1529,9 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
         # input
         rhod=self.environment.get_predicted(&#34;rhod&#34;),
         thd=self.environment.get_predicted(&#34;thd&#34;),
-        qv=self.environment.get_predicted(&#34;qv&#34;),
+        water_vapour_mixing_ratio=self.environment.get_predicted(
+            &#34;water_vapour_mixing_ratio&#34;
+        ),
         # output
         T=self.environment.get_predicted(&#34;T&#34;),
         p=self.environment.get_predicted(&#34;p&#34;),

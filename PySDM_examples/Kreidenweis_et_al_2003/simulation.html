@@ -44,7 +44,7 @@ class Simulation(BasicSimulation):
             dt=settings.dt,
             mass_of_dry_air=settings.mass_of_dry_air,
             p0=settings.p0,
-            q0=settings.q0,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.T0,
             w=settings.w,
         )
@@ -76,13 +76,19 @@ class Simulation(BasicSimulation):
         products = products or (
             PySDM_products.AmbientRelativeHumidity(name=&#34;RH&#34;, unit=&#34;%&#34;),
             PySDM_products.WaterMixingRatio(
-                name=&#34;ql&#34;, radius_range=[1 * si.um, np.inf], unit=&#34;g/kg&#34;
+                name=&#34;liquid water mixing ratio&#34;,
+                radius_range=[1 * si.um, np.inf],
+                unit=&#34;g/kg&#34;,
             ),
             PySDM_products.ParcelDisplacement(name=&#34;z&#34;),
             PySDM_products.AmbientPressure(name=&#34;p&#34;),
             PySDM_products.AmbientTemperature(name=&#34;T&#34;),
             PySDM_products.AmbientDryAirDensity(name=&#34;rhod&#34;),
-            PySDM_products.AmbientWaterVapourMixingRatio(name=&#34;qv&#34;, unit=&#34;g/kg&#34;),
+            PySDM_products.AmbientWaterVapourMixingRatio(
+                name=&#34;water vapour mixing ratio&#34;,
+                var=&#34;water_vapour_mixing_ratio&#34;,
+                unit=&#34;g/kg&#34;,
+            ),
             PySDM_products.Time(name=&#34;t&#34;),
             *(
                 PySDM_products.AqueousMoleFraction(
@@ -168,7 +174,7 @@ class Simulation(BasicSimulation):
             dt=settings.dt,
             mass_of_dry_air=settings.mass_of_dry_air,
             p0=settings.p0,
-            q0=settings.q0,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.T0,
             w=settings.w,
         )
@@ -200,13 +206,19 @@ class Simulation(BasicSimulation):
         products = products or (
             PySDM_products.AmbientRelativeHumidity(name=&#34;RH&#34;, unit=&#34;%&#34;),
             PySDM_products.WaterMixingRatio(
-                name=&#34;ql&#34;, radius_range=[1 * si.um, np.inf], unit=&#34;g/kg&#34;
+                name=&#34;liquid water mixing ratio&#34;,
+                radius_range=[1 * si.um, np.inf],
+                unit=&#34;g/kg&#34;,
             ),
             PySDM_products.ParcelDisplacement(name=&#34;z&#34;),
             PySDM_products.AmbientPressure(name=&#34;p&#34;),
             PySDM_products.AmbientTemperature(name=&#34;T&#34;),
             PySDM_products.AmbientDryAirDensity(name=&#34;rhod&#34;),
-            PySDM_products.AmbientWaterVapourMixingRatio(name=&#34;qv&#34;, unit=&#34;g/kg&#34;),
+            PySDM_products.AmbientWaterVapourMixingRatio(
+                name=&#34;water vapour mixing ratio&#34;,
+                var=&#34;water_vapour_mixing_ratio&#34;,
+                unit=&#34;g/kg&#34;,
+            ),
             PySDM_products.Time(name=&#34;t&#34;),
             *(
                 PySDM_products.AqueousMoleFraction(

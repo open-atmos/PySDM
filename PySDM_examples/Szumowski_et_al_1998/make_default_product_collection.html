@@ -54,9 +54,12 @@ def make_default_product_collection(settings):
         PySDM_products.ParticleConcentration(
             name=&#34;n_c_cm3&#34;, unit=&#34;cm^-3&#34;, radius_range=cloud_range
         ),
-        PySDM_products.WaterMixingRatio(name=&#34;qc&#34;, radius_range=cloud_range),
         PySDM_products.WaterMixingRatio(
-            name=&#34;qr&#34;, radius_range=(settings.drizzle_radius_threshold, np.inf)
+            name=&#34;cloud water mixing ratio&#34;, radius_range=cloud_range
+        ),
+        PySDM_products.WaterMixingRatio(
+            name=&#34;rain water mixing ratio&#34;,
+            radius_range=(settings.drizzle_radius_threshold, np.inf),
         ),
         PySDM_products.ParticleConcentration(
             name=&#34;drizzle concentration&#34;,
@@ -73,7 +76,9 @@ def make_default_product_collection(settings):
         PySDM_products.AmbientRelativeHumidity(name=&#34;RH_env&#34;, var=&#34;RH&#34;),
         PySDM_products.AmbientPressure(name=&#34;p_env&#34;, var=&#34;p&#34;),
         PySDM_products.AmbientTemperature(name=&#34;T_env&#34;, var=&#34;T&#34;),
-        PySDM_products.AmbientWaterVapourMixingRatio(name=&#34;qv_env&#34;, var=&#34;qv&#34;),
+        PySDM_products.AmbientWaterVapourMixingRatio(
+            name=&#34;water_vapour_mixing_ratio_env&#34;, var=&#34;water_vapour_mixing_ratio&#34;
+        ),
         PySDM_products.AmbientDryAirDensity(name=&#34;rhod_env&#34;, var=&#34;rhod&#34;),
         PySDM_products.AmbientDryAirPotentialTemperature(name=&#34;thd_env&#34;, var=&#34;thd&#34;),
         PySDM_products.CPUTime(),
@@ -164,9 +169,12 @@ def make_default_product_collection(settings):
         PySDM_products.ParticleConcentration(
             name=&#34;n_c_cm3&#34;, unit=&#34;cm^-3&#34;, radius_range=cloud_range
         ),
-        PySDM_products.WaterMixingRatio(name=&#34;qc&#34;, radius_range=cloud_range),
         PySDM_products.WaterMixingRatio(
-            name=&#34;qr&#34;, radius_range=(settings.drizzle_radius_threshold, np.inf)
+            name=&#34;cloud water mixing ratio&#34;, radius_range=cloud_range
+        ),
+        PySDM_products.WaterMixingRatio(
+            name=&#34;rain water mixing ratio&#34;,
+            radius_range=(settings.drizzle_radius_threshold, np.inf),
         ),
         PySDM_products.ParticleConcentration(
             name=&#34;drizzle concentration&#34;,
@@ -183,7 +191,9 @@ def make_default_product_collection(settings):
         PySDM_products.AmbientRelativeHumidity(name=&#34;RH_env&#34;, var=&#34;RH&#34;),
         PySDM_products.AmbientPressure(name=&#34;p_env&#34;, var=&#34;p&#34;),
         PySDM_products.AmbientTemperature(name=&#34;T_env&#34;, var=&#34;T&#34;),
-        PySDM_products.AmbientWaterVapourMixingRatio(name=&#34;qv_env&#34;, var=&#34;qv&#34;),
+        PySDM_products.AmbientWaterVapourMixingRatio(
+            name=&#34;water_vapour_mixing_ratio_env&#34;, var=&#34;water_vapour_mixing_ratio&#34;
+        ),
         PySDM_products.AmbientDryAirDensity(name=&#34;rhod_env&#34;, var=&#34;rhod&#34;),
         PySDM_products.AmbientDryAirPotentialTemperature(name=&#34;thd_env&#34;, var=&#34;thd&#34;),
         PySDM_products.CPUTime(),

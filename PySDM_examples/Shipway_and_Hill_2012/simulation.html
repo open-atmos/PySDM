@@ -82,7 +82,9 @@ class Simulation:
             dt=settings.dt,
             mpdata_settings=settings.mpdata_settings,
             advector_of_t=lambda t: settings.rho_times_w(t) * settings.dt / settings.dz,
-            advectee_of_zZ_at_t0=lambda zZ: settings.qv(zZ_to_z_above_reservoir(zZ)),
+            advectee_of_zZ_at_t0=lambda zZ: settings.water_vapour_mixing_ratio(
+                zZ_to_z_above_reservoir(zZ)
+            ),
             g_factor_of_zZ=lambda zZ: settings.rhod(zZ_to_z_above_reservoir(zZ)),
         )
 
@@ -126,12 +128,18 @@ class Simulation:
             PySDM_products.AmbientRelativeHumidity(name=&#34;RH&#34;, unit=&#34;%&#34;),
             PySDM_products.AmbientPressure(name=&#34;p&#34;),
             PySDM_products.AmbientTemperature(name=&#34;T&#34;),
-            PySDM_products.AmbientWaterVapourMixingRatio(name=&#34;qv&#34;),
-            PySDM_products.WaterMixingRatio(
-                name=&#34;qc&#34;, unit=&#34;g/kg&#34;, radius_range=settings.cloud_water_radius_range
+            PySDM_products.AmbientWaterVapourMixingRatio(
+                name=&#34;water_vapour_mixing_ratio&#34;
             ),
             PySDM_products.WaterMixingRatio(
-                name=&#34;qr&#34;, unit=&#34;g/kg&#34;, radius_range=settings.rain_water_radius_range
+                name=&#34;cloud water mixing ratio&#34;,
+                unit=&#34;g/kg&#34;,
+                radius_range=settings.cloud_water_radius_range,
+            ),
+            PySDM_products.WaterMixingRatio(
+                name=&#34;rain water mixing ratio&#34;,
+                unit=&#34;g/kg&#34;,
+                radius_range=settings.rain_water_radius_range,
             ),
             PySDM_products.AmbientDryAirDensity(name=&#34;rhod&#34;),
             PySDM_products.AmbientDryAirPotentialTemperature(name=&#34;thd&#34;),
@@ -331,7 +339,9 @@ class Simulation:
             dt=settings.dt,
             mpdata_settings=settings.mpdata_settings,
             advector_of_t=lambda t: settings.rho_times_w(t) * settings.dt / settings.dz,
-            advectee_of_zZ_at_t0=lambda zZ: settings.qv(zZ_to_z_above_reservoir(zZ)),
+            advectee_of_zZ_at_t0=lambda zZ: settings.water_vapour_mixing_ratio(
+                zZ_to_z_above_reservoir(zZ)
+            ),
             g_factor_of_zZ=lambda zZ: settings.rhod(zZ_to_z_above_reservoir(zZ)),
         )
 
@@ -375,12 +385,18 @@ class Simulation:
             PySDM_products.AmbientRelativeHumidity(name=&#34;RH&#34;, unit=&#34;%&#34;),
             PySDM_products.AmbientPressure(name=&#34;p&#34;),
             PySDM_products.AmbientTemperature(name=&#34;T&#34;),
-            PySDM_products.AmbientWaterVapourMixingRatio(name=&#34;qv&#34;),
-            PySDM_products.WaterMixingRatio(
-                name=&#34;qc&#34;, unit=&#34;g/kg&#34;, radius_range=settings.cloud_water_radius_range
+            PySDM_products.AmbientWaterVapourMixingRatio(
+                name=&#34;water_vapour_mixing_ratio&#34;
             ),
             PySDM_products.WaterMixingRatio(
-                name=&#34;qr&#34;, unit=&#34;g/kg&#34;, radius_range=settings.rain_water_radius_range
+                name=&#34;cloud water mixing ratio&#34;,
+                unit=&#34;g/kg&#34;,
+                radius_range=settings.cloud_water_radius_range,
+            ),
+            PySDM_products.WaterMixingRatio(
+                name=&#34;rain water mixing ratio&#34;,
+                unit=&#34;g/kg&#34;,
+                radius_range=settings.rain_water_radius_range,
             ),
             PySDM_products.AmbientDryAirDensity(name=&#34;rhod&#34;),
             PySDM_products.AmbientDryAirPotentialTemperature(name=&#34;thd&#34;),

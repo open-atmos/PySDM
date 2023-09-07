@@ -39,17 +39,30 @@ class Default:
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def drho_dz(const, g, p, T, qv, lv, dql_dz=0):
-        Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-        cp = const.c_pv / (1 / qv + 1) + const.c_pd / (1 + qv)
+    def drho_dz(
+        const, g, p, T, water_vapour_mixing_ratio, lv, d_liquid_water_mixing_ratio__dz=0
+    ):
+        Rq = const.Rv / (1 / water_vapour_mixing_ratio + 1) + const.Rd / (
+            1 + water_vapour_mixing_ratio
+        )
+        cp = const.c_pv / (1 / water_vapour_mixing_ratio + 1) + const.c_pd / (
+            1 + water_vapour_mixing_ratio
+        )
         rho = p / Rq / T
-        return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq
+        return (
+            g / T * rho * (Rq / cp - 1)
+            - p * lv / cp / T**2 * d_liquid_water_mixing_ratio__dz
+        ) / Rq
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def p_of_z_assuming_const_th_and_qv(const, g, p0, thstd, qv, z):
+    def p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+        const, g, p0, thstd, water_vapour_mixing_ratio, z
+    ):
         z0 = 0
-        Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
+        Rq = const.Rv / (1 / water_vapour_mixing_ratio + 1) + const.Rd / (
+            1 + water_vapour_mixing_ratio
+        )
         arg = (
             np.power(p0 / const.p1000, const.Rd_over_c_pd)
             - (z - z0) * const.Rd_over_c_pd * g / thstd / Rq
@@ -82,17 +95,30 @@ class Default:
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def drho_dz(const, g, p, T, qv, lv, dql_dz=0):
-        Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-        cp = const.c_pv / (1 / qv + 1) + const.c_pd / (1 + qv)
+    def drho_dz(
+        const, g, p, T, water_vapour_mixing_ratio, lv, d_liquid_water_mixing_ratio__dz=0
+    ):
+        Rq = const.Rv / (1 / water_vapour_mixing_ratio + 1) + const.Rd / (
+            1 + water_vapour_mixing_ratio
+        )
+        cp = const.c_pv / (1 / water_vapour_mixing_ratio + 1) + const.c_pd / (
+            1 + water_vapour_mixing_ratio
+        )
         rho = p / Rq / T
-        return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq
+        return (
+            g / T * rho * (Rq / cp - 1)
+            - p * lv / cp / T**2 * d_liquid_water_mixing_ratio__dz
+        ) / Rq
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def p_of_z_assuming_const_th_and_qv(const, g, p0, thstd, qv, z):
+    def p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+        const, g, p0, thstd, water_vapour_mixing_ratio, z
+    ):
         z0 = 0
-        Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
+        Rq = const.Rv / (1 / water_vapour_mixing_ratio + 1) + const.Rd / (
+            1 + water_vapour_mixing_ratio
+        )
         arg = (
             np.power(p0 / const.p1000, const.Rd_over_c_pd)
             - (z - z0) * const.Rd_over_c_pd * g / thstd / Rq
@@ -102,7 +128,7 @@ class Default:
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.hydrostatics.default.Default.drho_dz"><code class="name flex">
-<span>def <span class="ident">drho_dz</span></span>(<span>const, g, p, T, qv, lv, dql_dz=0)</span>
+<span>def <span class="ident">drho_dz</span></span>(<span>const, g, p, T, water_vapour_mixing_ratio, lv, d_liquid_water_mixing_ratio__dz=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -111,15 +137,24 @@ class Default:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def drho_dz(const, g, p, T, qv, lv, dql_dz=0):
-    Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-    cp = const.c_pv / (1 / qv + 1) + const.c_pd / (1 + qv)
+def drho_dz(
+    const, g, p, T, water_vapour_mixing_ratio, lv, d_liquid_water_mixing_ratio__dz=0
+):
+    Rq = const.Rv / (1 / water_vapour_mixing_ratio + 1) + const.Rd / (
+        1 + water_vapour_mixing_ratio
+    )
+    cp = const.c_pv / (1 / water_vapour_mixing_ratio + 1) + const.c_pd / (
+        1 + water_vapour_mixing_ratio
+    )
     rho = p / Rq / T
-    return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq</code></pre>
+    return (
+        g / T * rho * (Rq / cp - 1)
+        - p * lv / cp / T**2 * d_liquid_water_mixing_ratio__dz
+    ) / Rq</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.hydrostatics.default.Default.p_of_z_assuming_const_th_and_qv"><code class="name flex">
-<span>def <span class="ident">p_of_z_assuming_const_th_and_qv</span></span>(<span>const, g, p0, thstd, qv, z)</span>
+<dt id="PySDM.physics.hydrostatics.default.Default.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio"><code class="name flex">
+<span>def <span class="ident">p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio</span></span>(<span>const, g, p0, thstd, water_vapour_mixing_ratio, z)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -128,9 +163,13 @@ def drho_dz(const, g, p, T, qv, lv, dql_dz=0):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p_of_z_assuming_const_th_and_qv(const, g, p0, thstd, qv, z):
+def p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+    const, g, p0, thstd, water_vapour_mixing_ratio, z
+):
     z0 = 0
-    Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
+    Rq = const.Rv / (1 / water_vapour_mixing_ratio + 1) + const.Rd / (
+        1 + water_vapour_mixing_ratio
+    )
     arg = (
         np.power(p0 / const.p1000, const.Rd_over_c_pd)
         - (z - z0) * const.Rd_over_c_pd * g / thstd / Rq
@@ -162,7 +201,7 @@ def p_of_z_assuming_const_th_and_qv(const, g, p0, thstd, qv, z):
 <h4><code><a title="PySDM.physics.hydrostatics.default.Default" href="#PySDM.physics.hydrostatics.default.Default">Default</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.physics.hydrostatics.default.Default.drho_dz" href="#PySDM.physics.hydrostatics.default.Default.drho_dz">drho_dz</a></code></li>
-<li><code><a title="PySDM.physics.hydrostatics.default.Default.p_of_z_assuming_const_th_and_qv" href="#PySDM.physics.hydrostatics.default.Default.p_of_z_assuming_const_th_and_qv">p_of_z_assuming_const_th_and_qv</a></code></li>
+<li><code><a title="PySDM.physics.hydrostatics.default.Default.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio" href="#PySDM.physics.hydrostatics.default.Default.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio">p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio</a></code></li>
 </ul>
 </li>
 </ul>

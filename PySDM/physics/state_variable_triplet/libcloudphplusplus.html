@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.state_variable_triplet.rhod_thd_qv API documentation</title>
+<title>PySDM.physics.state_variable_triplet.libcloudphplusplus API documentation</title>
 <meta name="description" content="dry-air density / dry-air potential temperature / water vapour mixing ratio triplet
 (as in libcloudph++)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -20,7 +20,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.state_variable_triplet.rhod_thd_qv</code></h1>
+<h1 class="title">Module <code>PySDM.physics.state_variable_triplet.libcloudphplusplus</code></h1>
 </header>
 <section id="section-intro">
 <p>dry-air density / dry-air potential temperature / water vapour mixing ratio triplet
@@ -36,7 +36,7 @@ dry-air density / dry-air potential temperature / water vapour mixing ratio trip
 import numpy as np
 
 
-class RhodThdQv:
+class LibcloudphPlusPlus:
     def __init__(self, _):
         pass
 
@@ -50,33 +50,43 @@ class RhodThdQv:
 
     # A15 in libcloudph++ 1.0 paper
     @staticmethod
-    def p(const, rhod, T, qv):
-        return rhod * (1 + qv) * (const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)) * T
+    def p(const, rhod, T, water_vapour_mixing_ratio):
+        return (
+            rhod
+            * (1 + water_vapour_mixing_ratio)
+            * (
+                const.Rv / (1 / water_vapour_mixing_ratio + 1)
+                + const.Rd / (1 + water_vapour_mixing_ratio)
+            )
+            * T
+        )
 
     @staticmethod
-    def pv(const, p, qv):
-        return p * qv / (qv + const.eps)
+    def pv(const, p, water_vapour_mixing_ratio):
+        return p * water_vapour_mixing_ratio / (water_vapour_mixing_ratio + const.eps)
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
-        return -lv * dqv_dt / const.c_pd / T * thd * rhod
+    def dthd_dt(const, rhod, thd, T, d_water_vapour_mixing_ratio__dt, lv):
+        return -lv * d_water_vapour_mixing_ratio__dt / const.c_pd / T * thd * rhod
 
     @staticmethod
-    def th_dry(const, th_std, qv):
-        return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
+    def th_dry(const, th_std, water_vapour_mixing_ratio):
+        return th_std * np.power(
+            1 + water_vapour_mixing_ratio / const.eps, const.Rd / const.c_pd
+        )
 
     @staticmethod
-    def rho_d(const, p, qv, theta_std):
+    def rho_d(const, p, water_vapour_mixing_ratio, theta_std):
         return (
             p
-            * (1 - 1 / (1 + const.eps / qv))
+            * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
             / (np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std)
         )
 
     @staticmethod
-    def rho_of_rhod_qv(rhod, qv):
-        return rhod * (1 + qv)
+    def rho_of_rhod_and_water_vapour_mixing_ratio(rhod, water_vapour_mixing_ratio):
+        return rhod * (1 + water_vapour_mixing_ratio)
 
     @staticmethod
     def rhod_of_pd_T(const, pd, T):
@@ -92,8 +102,8 @@ class RhodThdQv:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv"><code class="flex name class">
-<span>class <span class="ident">RhodThdQv</span></span>
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus"><code class="flex name class">
+<span>class <span class="ident">LibcloudphPlusPlus</span></span>
 <span>(</span><span>_)</span>
 </code></dt>
 <dd>
@@ -102,7 +112,7 @@ class RhodThdQv:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class RhodThdQv:
+<pre><code class="python">class LibcloudphPlusPlus:
     def __init__(self, _):
         pass
 
@@ -116,33 +126,43 @@ class RhodThdQv:
 
     # A15 in libcloudph++ 1.0 paper
     @staticmethod
-    def p(const, rhod, T, qv):
-        return rhod * (1 + qv) * (const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)) * T
+    def p(const, rhod, T, water_vapour_mixing_ratio):
+        return (
+            rhod
+            * (1 + water_vapour_mixing_ratio)
+            * (
+                const.Rv / (1 / water_vapour_mixing_ratio + 1)
+                + const.Rd / (1 + water_vapour_mixing_ratio)
+            )
+            * T
+        )
 
     @staticmethod
-    def pv(const, p, qv):
-        return p * qv / (qv + const.eps)
+    def pv(const, p, water_vapour_mixing_ratio):
+        return p * water_vapour_mixing_ratio / (water_vapour_mixing_ratio + const.eps)
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
-        return -lv * dqv_dt / const.c_pd / T * thd * rhod
+    def dthd_dt(const, rhod, thd, T, d_water_vapour_mixing_ratio__dt, lv):
+        return -lv * d_water_vapour_mixing_ratio__dt / const.c_pd / T * thd * rhod
 
     @staticmethod
-    def th_dry(const, th_std, qv):
-        return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
+    def th_dry(const, th_std, water_vapour_mixing_ratio):
+        return th_std * np.power(
+            1 + water_vapour_mixing_ratio / const.eps, const.Rd / const.c_pd
+        )
 
     @staticmethod
-    def rho_d(const, p, qv, theta_std):
+    def rho_d(const, p, water_vapour_mixing_ratio, theta_std):
         return (
             p
-            * (1 - 1 / (1 + const.eps / qv))
+            * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
             / (np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std)
         )
 
     @staticmethod
-    def rho_of_rhod_qv(rhod, qv):
-        return rhod * (1 + qv)
+    def rho_of_rhod_and_water_vapour_mixing_ratio(rhod, water_vapour_mixing_ratio):
+        return rhod * (1 + water_vapour_mixing_ratio)
 
     @staticmethod
     def rhod_of_pd_T(const, pd, T):
@@ -150,7 +170,7 @@ class RhodThdQv:
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.T"><code class="name flex">
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.T"><code class="name flex">
 <span>def <span class="ident">T</span></span>(<span>const, rhod, thd)</span>
 </code></dt>
 <dd>
@@ -167,8 +187,8 @@ def T(const, rhod, thd):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.dthd_dt"><code class="name flex">
-<span>def <span class="ident">dthd_dt</span></span>(<span>const, rhod, thd, T, dqv_dt, lv)</span>
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.dthd_dt"><code class="name flex">
+<span>def <span class="ident">dthd_dt</span></span>(<span>const, rhod, thd, T, d_water_vapour_mixing_ratio__dt, lv)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -177,12 +197,12 @@ def T(const, rhod, thd):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
-    return -lv * dqv_dt / const.c_pd / T * thd * rhod</code></pre>
+def dthd_dt(const, rhod, thd, T, d_water_vapour_mixing_ratio__dt, lv):
+    return -lv * d_water_vapour_mixing_ratio__dt / const.c_pd / T * thd * rhod</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.p"><code class="name flex">
-<span>def <span class="ident">p</span></span>(<span>const, rhod, T, qv)</span>
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.p"><code class="name flex">
+<span>def <span class="ident">p</span></span>(<span>const, rhod, T, water_vapour_mixing_ratio)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -191,12 +211,20 @@ def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p(const, rhod, T, qv):
-    return rhod * (1 + qv) * (const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)) * T</code></pre>
+def p(const, rhod, T, water_vapour_mixing_ratio):
+    return (
+        rhod
+        * (1 + water_vapour_mixing_ratio)
+        * (
+            const.Rv / (1 / water_vapour_mixing_ratio + 1)
+            + const.Rd / (1 + water_vapour_mixing_ratio)
+        )
+        * T
+    )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.pv"><code class="name flex">
-<span>def <span class="ident">pv</span></span>(<span>const, p, qv)</span>
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.pv"><code class="name flex">
+<span>def <span class="ident">pv</span></span>(<span>const, p, water_vapour_mixing_ratio)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -205,12 +233,12 @@ def p(const, rhod, T, qv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def pv(const, p, qv):
-    return p * qv / (qv + const.eps)</code></pre>
+def pv(const, p, water_vapour_mixing_ratio):
+    return p * water_vapour_mixing_ratio / (water_vapour_mixing_ratio + const.eps)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rho_d"><code class="name flex">
-<span>def <span class="ident">rho_d</span></span>(<span>const, p, qv, theta_std)</span>
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rho_d"><code class="name flex">
+<span>def <span class="ident">rho_d</span></span>(<span>const, p, water_vapour_mixing_ratio, theta_std)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -219,16 +247,16 @@ def pv(const, p, qv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def rho_d(const, p, qv, theta_std):
+def rho_d(const, p, water_vapour_mixing_ratio, theta_std):
     return (
         p
-        * (1 - 1 / (1 + const.eps / qv))
+        * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
         / (np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std)
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rho_of_rhod_qv"><code class="name flex">
-<span>def <span class="ident">rho_of_rhod_qv</span></span>(<span>rhod, qv)</span>
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rho_of_rhod_and_water_vapour_mixing_ratio"><code class="name flex">
+<span>def <span class="ident">rho_of_rhod_and_water_vapour_mixing_ratio</span></span>(<span>rhod, water_vapour_mixing_ratio)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -237,11 +265,11 @@ def rho_d(const, p, qv, theta_std):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def rho_of_rhod_qv(rhod, qv):
-    return rhod * (1 + qv)</code></pre>
+def rho_of_rhod_and_water_vapour_mixing_ratio(rhod, water_vapour_mixing_ratio):
+    return rhod * (1 + water_vapour_mixing_ratio)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rhod_of_pd_T"><code class="name flex">
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rhod_of_pd_T"><code class="name flex">
 <span>def <span class="ident">rhod_of_pd_T</span></span>(<span>const, pd, T)</span>
 </code></dt>
 <dd>
@@ -255,8 +283,8 @@ def rhod_of_pd_T(const, pd, T):
     return pd / const.Rd / T</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.th_dry"><code class="name flex">
-<span>def <span class="ident">th_dry</span></span>(<span>const, th_std, qv)</span>
+<dt id="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.th_dry"><code class="name flex">
+<span>def <span class="ident">th_dry</span></span>(<span>const, th_std, water_vapour_mixing_ratio)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -265,8 +293,10 @@ def rhod_of_pd_T(const, pd, T):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def th_dry(const, th_std, qv):
-    return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)</code></pre>
+def th_dry(const, th_std, water_vapour_mixing_ratio):
+    return th_std * np.power(
+        1 + water_vapour_mixing_ratio / const.eps, const.Rd / const.c_pd
+    )</code></pre>
 </details>
 </dd>
 </dl>
@@ -288,16 +318,16 @@ def th_dry(const, th_std, qv):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv">RhodThdQv</a></code></h4>
-<ul class="two-column">
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.T" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.T">T</a></code></li>
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.dthd_dt" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.dthd_dt">dthd_dt</a></code></li>
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.p" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.p">p</a></code></li>
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.pv" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.pv">pv</a></code></li>
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rho_d" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rho_d">rho_d</a></code></li>
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rho_of_rhod_qv" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rho_of_rhod_qv">rho_of_rhod_qv</a></code></li>
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rhod_of_pd_T" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rhod_of_pd_T">rhod_of_pd_T</a></code></li>
-<li><code><a title="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.th_dry" href="#PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.th_dry">th_dry</a></code></li>
+<h4><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus">LibcloudphPlusPlus</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.T" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.T">T</a></code></li>
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.dthd_dt" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.dthd_dt">dthd_dt</a></code></li>
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.p" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.p">p</a></code></li>
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.pv" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.pv">pv</a></code></li>
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rho_d" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rho_d">rho_d</a></code></li>
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rho_of_rhod_and_water_vapour_mixing_ratio" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rho_of_rhod_and_water_vapour_mixing_ratio">rho_of_rhod_and_water_vapour_mixing_ratio</a></code></li>
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rhod_of_pd_T" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.rhod_of_pd_T">rhod_of_pd_T</a></code></li>
+<li><code><a title="PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.th_dry" href="#PySDM.physics.state_variable_triplet.libcloudphplusplus.LibcloudphPlusPlus.th_dry">th_dry</a></code></li>
 </ul>
 </li>
 </ul>

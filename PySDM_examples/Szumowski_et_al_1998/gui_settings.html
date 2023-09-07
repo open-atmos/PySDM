@@ -55,8 +55,11 @@ class GUISettings:
         self.ui_dth0 = FloatSlider(
             description=&#34;$\\Delta\\theta_0$ [K]&#34;, value=0, min=-15, max=15
         )
-        self.ui_dqv0 = FloatSlider(
-            description=&#34;$\\Delta q_{v0}$ [g/kg]&#34;, value=0, min=-6, max=6
+        self.ui_delta_initial_water_vapour_mixing_ratio = FloatSlider(
+            description=&#34;$\\Delta initial_water_vapour_mixing_ratio$ [g/kg]&#34;,
+            value=0,
+            min=-6,
+            max=6,
         )
         self.ui_rhod_w_max = FloatSlider(
             description=&#34;$\\rho_d w_{max}$&#34;,
@@ -234,7 +237,11 @@ class GUISettings:
 
     @property
     def initial_vapour_mixing_ratio_profile(self):
-        return np.full(self.grid[-1], self.__settings.qv0 + self.ui_dqv0.value / 1000)
+        return np.full(
+            self.grid[-1],
+            self.__settings.initial_water_vapour_mixing_ratio
+            + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
+        )
 
     @property
     def initial_dry_potential_temperature_profile(self):
@@ -242,7 +249,8 @@ class GUISettings:
             self.grid[-1],
             self.formulae.state_variable_triplet.th_dry(
                 self.__settings.th_std0 + self.ui_dth0.value,
-                self.__settings.qv0 + self.ui_dqv0.value / 1000,
+                self.__settings.initial_water_vapour_mixing_ratio
+                + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
             ),
         )
 
@@ -384,7 +392,7 @@ class GUISettings:
                 VBox(
                     [
                         self.ui_dth0,
-                        self.ui_dqv0,
+                        self.ui_delta_initial_water_vapour_mixing_ratio,
                         self.ui_kappa,
                         self.ui_rhod_w_max,
                         *self.ui_freezing.values(),
@@ -483,8 +491,11 @@ def set_visibility(widget, visible):
         self.ui_dth0 = FloatSlider(
             description=&#34;$\\Delta\\theta_0$ [K]&#34;, value=0, min=-15, max=15
         )
-        self.ui_dqv0 = FloatSlider(
-            description=&#34;$\\Delta q_{v0}$ [g/kg]&#34;, value=0, min=-6, max=6
+        self.ui_delta_initial_water_vapour_mixing_ratio = FloatSlider(
+            description=&#34;$\\Delta initial_water_vapour_mixing_ratio$ [g/kg]&#34;,
+            value=0,
+            min=-6,
+            max=6,
         )
         self.ui_rhod_w_max = FloatSlider(
             description=&#34;$\\rho_d w_{max}$&#34;,
@@ -662,7 +673,11 @@ def set_visibility(widget, visible):
 
     @property
     def initial_vapour_mixing_ratio_profile(self):
-        return np.full(self.grid[-1], self.__settings.qv0 + self.ui_dqv0.value / 1000)
+        return np.full(
+            self.grid[-1],
+            self.__settings.initial_water_vapour_mixing_ratio
+            + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
+        )
 
     @property
     def initial_dry_potential_temperature_profile(self):
@@ -670,7 +685,8 @@ def set_visibility(widget, visible):
             self.grid[-1],
             self.formulae.state_variable_triplet.th_dry(
                 self.__settings.th_std0 + self.ui_dth0.value,
-                self.__settings.qv0 + self.ui_dqv0.value / 1000,
+                self.__settings.initial_water_vapour_mixing_ratio
+                + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
             ),
         )
 
@@ -812,7 +828,7 @@ def set_visibility(widget, visible):
                 VBox(
                     [
                         self.ui_dth0,
-                        self.ui_dqv0,
+                        self.ui_delta_initial_water_vapour_mixing_ratio,
                         self.ui_kappa,
                         self.ui_rhod_w_max,
                         *self.ui_freezing.values(),
@@ -1038,7 +1054,8 @@ def initial_dry_potential_temperature_profile(self):
         self.grid[-1],
         self.formulae.state_variable_triplet.th_dry(
             self.__settings.th_std0 + self.ui_dth0.value,
-            self.__settings.qv0 + self.ui_dqv0.value / 1000,
+            self.__settings.initial_water_vapour_mixing_ratio
+            + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
         ),
     )</code></pre>
 </details>
@@ -1052,7 +1069,11 @@ def initial_dry_potential_temperature_profile(self):
 </summary>
 <pre><code class="python">@property
 def initial_vapour_mixing_ratio_profile(self):
-    return np.full(self.grid[-1], self.__settings.qv0 + self.ui_dqv0.value / 1000)</code></pre>
+    return np.full(
+        self.grid[-1],
+        self.__settings.initial_water_vapour_mixing_ratio
+        + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM_examples.Szumowski_et_al_1998.gui_settings.GUISettings.kappa"><code class="name">var <span class="ident">kappa</span></code></dt>
@@ -1244,7 +1265,7 @@ def steps_per_output_interval(self) -&gt; int:
             VBox(
                 [
                     self.ui_dth0,
-                    self.ui_dqv0,
+                    self.ui_delta_initial_water_vapour_mixing_ratio,
                     self.ui_kappa,
                     self.ui_rhod_w_max,
                     *self.ui_freezing.values(),

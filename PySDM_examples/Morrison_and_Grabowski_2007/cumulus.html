@@ -66,7 +66,7 @@ class Cumulus(Common):
         )
         rhod_of_z = self.__rhod_of_z(T_of_z, p_of_z, q_of_z, z_of_p, z_points_both)
         self.rhod = interp1d(z_points_both / self.size[-1], rhod_of_z)
-        self.qv0 = q_of_z(z_points_scalar)
+        self.initial_water_vapour_mixing_ratio = q_of_z(z_points_scalar)
         self.th_std0 = self.formulae.trivia.th_std(
             p_of_z(z_points_scalar), T_of_z(z_points_scalar)
         )
@@ -214,7 +214,7 @@ class Cumulus(Common):
         )
         rhod_of_z = self.__rhod_of_z(T_of_z, p_of_z, q_of_z, z_of_p, z_points_both)
         self.rhod = interp1d(z_points_both / self.size[-1], rhod_of_z)
-        self.qv0 = q_of_z(z_points_scalar)
+        self.initial_water_vapour_mixing_ratio = q_of_z(z_points_scalar)
         self.th_std0 = self.formulae.trivia.th_std(
             p_of_z(z_points_scalar), T_of_z(z_points_scalar)
         )

@@ -103,7 +103,7 @@ class Simulation:
         if self.settings.processes[&#34;fluid advection&#34;]:
             initial_profiles = {
                 &#34;th&#34;: self.settings.initial_dry_potential_temperature_profile,
-                &#34;qv&#34;: self.settings.initial_vapour_mixing_ratio_profile,
+                &#34;water_vapour_mixing_ratio&#34;: self.settings.initial_vapour_mixing_ratio_profile,
             }
             advectees = dict(
                 (
@@ -336,7 +336,7 @@ class Simulation:
         if self.settings.processes[&#34;fluid advection&#34;]:
             initial_profiles = {
                 &#34;th&#34;: self.settings.initial_dry_potential_temperature_profile,
-                &#34;qv&#34;: self.settings.initial_vapour_mixing_ratio_profile,
+                &#34;water_vapour_mixing_ratio&#34;: self.settings.initial_vapour_mixing_ratio_profile,
             }
             advectees = dict(
                 (
@@ -563,7 +563,7 @@ def products(self):
     if self.settings.processes[&#34;fluid advection&#34;]:
         initial_profiles = {
             &#34;th&#34;: self.settings.initial_dry_potential_temperature_profile,
-            &#34;qv&#34;: self.settings.initial_vapour_mixing_ratio_profile,
+            &#34;water_vapour_mixing_ratio&#34;: self.settings.initial_vapour_mixing_ratio_profile,
         }
         advectees = dict(
             (
