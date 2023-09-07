@@ -8,7 +8,7 @@ from PySDM.environments import Box
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling.spatial_sampling import Pseudorandom
 
-from .__parametrisation__ import get_dummy_particulator_and_coalescence
+from .conftest import get_dummy_particulator_and_coalescence
 
 
 class TestSDMMultiCell:  # pylint: disable=too-few-public-methods

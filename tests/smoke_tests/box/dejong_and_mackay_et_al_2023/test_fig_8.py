@@ -11,7 +11,6 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
 from PySDM.physics import si
 
 
-# pylint: disable=redefined-outer-name
 @pytest.mark.parametrize(
     "backend_class",
     (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987

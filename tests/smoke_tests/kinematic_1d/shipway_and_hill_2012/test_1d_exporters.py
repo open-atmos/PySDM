@@ -1,4 +1,4 @@
-# pylint: disable = missing-module-docstring,missing-class-docstring,missing-function-docstring,redefined-outer-name
+# pylint: disable = missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
 import platform
 from tempfile import TemporaryDirectory
@@ -13,8 +13,8 @@ from PySDM.exporters import NetCDFExporter_1d, VTKExporter_1d, readNetCDF_1d
 from PySDM.physics import si
 
 
-@pytest.fixture
-def simulation_1d():
+@pytest.fixture(name="simulation_1d")
+def simulation_1d_fixture():
     n_sd_per_gridbox = 16
     settings = Settings(
         n_sd_per_gridbox=n_sd_per_gridbox,

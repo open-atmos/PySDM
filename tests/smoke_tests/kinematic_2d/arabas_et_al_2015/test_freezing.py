@@ -17,7 +17,6 @@ from .dummy_storage import DummyStorage
         pytest.param(True, id="singular: True"),
     ),
 )
-# pylint: disable=redefined-outer-name
 def test_freezing(singular):
     # Arrange
     settings = Settings(

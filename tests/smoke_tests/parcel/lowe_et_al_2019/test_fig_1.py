@@ -45,7 +45,7 @@ class TestFig1:
             (aerosol.AerosolNascent(), 500 * si.nm),
         ),
     )
-    # pylint: disable=redefined-outer-name,unused-argument
+    # pylint: disable=unused-argument
     def test_kink_location(constants, aerosol, cutoff):
         # arrange
         formulae = Formulae(
@@ -94,7 +94,6 @@ class TestFig1:
             ),
         ),
     )
-    # pylint: disable=redefined-outer-name,unused-argument
     def test_koehler_maxima(
         *, constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal
     ):
