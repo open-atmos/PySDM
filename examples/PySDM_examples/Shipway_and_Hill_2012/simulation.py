@@ -104,10 +104,10 @@ class Simulation:
                 name="water_vapour_mixing_ratio"
             ),
             PySDM_products.WaterMixingRatio(
-                name="qc", unit="g/kg", radius_range=settings.cloud_water_radius_range
+                name="cloud water mixing ratio", unit="g/kg", radius_range=settings.cloud_water_radius_range
             ),
             PySDM_products.WaterMixingRatio(
-                name="qr", unit="g/kg", radius_range=settings.rain_water_radius_range
+                name="rain water mixing ratio", unit="g/kg", radius_range=settings.rain_water_radius_range
             ),
             PySDM_products.AmbientDryAirDensity(name="rhod"),
             PySDM_products.AmbientDryAirPotentialTemperature(name="thd"),

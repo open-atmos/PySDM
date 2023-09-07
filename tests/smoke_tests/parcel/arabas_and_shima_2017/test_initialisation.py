@@ -27,7 +27,7 @@ class TestInitialisation:
     @pytest.mark.parametrize("settings_idx", range(len(setups)))
     def test_RH_initialisation(settings_idx):
         setup = setups[settings_idx]
-        pv0 = setup.p0 / (1 + CONST.eps / setup.q0)
+        pv0 = setup.p0 / (1 + CONST.eps / setup.initial_water_vapour_mixing_ratio)
         pvs = setup.formulae.saturation_vapour_pressure.pvs_Celsius(setup.T0 - CONST.T0)
         TestInitialisation.simulation_test("RH", pv0 / pvs, setup)
 
@@ -49,7 +49,7 @@ class TestInitialisation:
     @pytest.mark.parametrize("settings_idx", range(len(setups)))
     def test_rhod_initialisation(settings_idx):
         setup = setups[settings_idx]
-        pv0 = setup.p0 / (1 + CONST.eps / setup.q0)
+        pv0 = setup.p0 / (1 + CONST.eps / setup.initial_water_vapour_mixing_ratio)
         pd0 = setup.p0 - pv0
         rhod0 = pd0 / CONST.Rd / setup.T0
         TestInitialisation.simulation_test("rhod", rhod0, setup)
@@ -58,7 +58,7 @@ class TestInitialisation:
     @pytest.mark.parametrize("settings_idx", range(len(setups)))
     def test_thd_initialisation(settings_idx):
         setup = setups[settings_idx]
-        pv0 = setup.p0 / (1 + CONST.eps / setup.q0)
+        pv0 = setup.p0 / (1 + CONST.eps / setup.initial_water_vapour_mixing_ratio)
         pd0 = setup.p0 - pv0
         phys = Formulae().trivia
         thd0 = phys.th_std(pd0, setup.T0)

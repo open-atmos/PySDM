@@ -48,14 +48,14 @@ class Simulation(BasicSimulation):
         products = products or (
             PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
             PySDM_products.WaterMixingRatio(
-                name="ql", radius_range=[1 * si.um, np.inf], unit="g/kg"
+                name="liquid water mixing ratio", radius_range=[1 * si.um, np.inf], unit="g/kg"
             ),
             PySDM_products.ParcelDisplacement(name="z"),
             PySDM_products.AmbientPressure(name="p"),
             PySDM_products.AmbientTemperature(name="T"),
             PySDM_products.AmbientDryAirDensity(name="rhod"),
             PySDM_products.AmbientWaterVapourMixingRatio(
-                name="water_vapour_mixing_ratio", unit="g/kg"
+                name="water vapour mixing ratio", unit="g/kg"
             ),
             PySDM_products.Time(name="t"),
             *(
