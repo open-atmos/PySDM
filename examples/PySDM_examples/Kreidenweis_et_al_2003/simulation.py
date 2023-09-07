@@ -59,7 +59,7 @@ class Simulation(BasicSimulation):
             PySDM_products.AmbientWaterVapourMixingRatio(
                 name="water vapour mixing ratio",
                 var="water_vapour_mixing_ratio",
-                unit="g/kg"
+                unit="g/kg",
             ),
             PySDM_products.Time(name="t"),
             *(

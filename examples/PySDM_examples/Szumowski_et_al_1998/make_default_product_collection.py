@@ -27,12 +27,11 @@ def make_default_product_collection(settings):
             name="n_c_cm3", unit="cm^-3", radius_range=cloud_range
         ),
         PySDM_products.WaterMixingRatio(
-            name="cloud water mixing ratio",
-            radius_range=cloud_range
+            name="cloud water mixing ratio", radius_range=cloud_range
         ),
         PySDM_products.WaterMixingRatio(
             name="rain water mixing ratio",
-            radius_range=(settings.drizzle_radius_threshold, np.inf)
+            radius_range=(settings.drizzle_radius_threshold, np.inf),
         ),
         PySDM_products.ParticleConcentration(
             name="drizzle concentration",
