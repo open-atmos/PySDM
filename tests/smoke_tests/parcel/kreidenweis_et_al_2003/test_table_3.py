@@ -88,7 +88,7 @@ class TestTable3:
         np.testing.assert_allclose(
             settings.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio(
                 rhod=output["rhod"][-1],
-                water_vapour_mixing_ratio=output["water_vapour_mixing_ratio"][-1]
+                water_vapour_mixing_ratio=output["water vapour mixing ratio"][-1]
                 * si.g
                 / si.kg,
             ),

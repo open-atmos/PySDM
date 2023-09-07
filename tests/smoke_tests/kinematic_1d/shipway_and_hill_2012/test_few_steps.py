@@ -47,7 +47,7 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
         "T",
         "water_vapour_mixing_ratio",
         "p",
-        "qc",
+        "cloud water mixing ratio",
         "ripening",
         "activating",
         "deactivating",
@@ -75,8 +75,8 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
     assert 0.5 * n_sd_per_gridbox < max(sd_prof) < 1.5 * n_sd_per_gridbox
 
     assert 0.01 < max(mean_profile_over_last_steps("peak supersaturation")) < 0.1
-    assert min(mean_profile_over_last_steps("qc")) < 1e-10
-    assert 0.1 < max(mean_profile_over_last_steps("qc")) < 0.15
+    assert min(mean_profile_over_last_steps("cloud water mixing ratio")) < 1e-10
+    assert 0.1 < max(mean_profile_over_last_steps("cloud water mixing ratio")) < 0.15
     assert max(mean_profile_over_last_steps("activating")) == 0
     assert max(mean_profile_over_last_steps("ripening")) > 0
     assert max(mean_profile_over_last_steps("deactivating")) > 0
@@ -108,8 +108,8 @@ def test_fixed_thd():
     assert 0.5 * n_sd_per_gridbox < max(sd_prof) < 1.5 * n_sd_per_gridbox
 
     assert 0.01 < max(mean_profile_over_last_steps("peak supersaturation")) < 0.1
-    assert min(mean_profile_over_last_steps("qc")) < 1e-10
-    assert 0.5 < max(mean_profile_over_last_steps("qc")) < 0.75
+    assert min(mean_profile_over_last_steps("cloud water mixing ratio")) < 1e-10
+    assert 0.5 < max(mean_profile_over_last_steps("cloud water mixing ratio")) < 0.75
     assert max(mean_profile_over_last_steps("activating")) == 0
 
     assert sum(np.amin(output["thd"], axis=1)) == sum(np.amax(output["thd"], axis=1))
