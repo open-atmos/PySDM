@@ -35,7 +35,10 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     settings.n_output = 50
     settings.coord = coord
     simulation = Simulation(settings, GPU if scheme == "GPU" else CPU)
-    qt0 = settings.q0 + liquid_water_mixing_ratio(simulation)
+    initial_total_water_mixing_ratio = (
+        settings.initial_water_vapour_mixing_ratio
+        + liquid_water_mixing_ratio(simulation)
+    )
 
     if scheme == "SciPy":
         scipy_ode_condensation_solver.patch_particulator(simulation.particulator)
@@ -45,10 +48,13 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     output = simulation.run()
 
     # Assert
-    ql = liquid_water_mixing_ratio(simulation)
-    qt = simulation.particulator.environment["qv"].to_ndarray() + ql
+    total_water_mixing_ratio = simulation.particulator.environment[
+        "water_vapour_mixing_ratio"
+    ].to_ndarray() + liquid_water_mixing_ratio(simulation)
     significant = 6 if scheme == "GPU" else 14  # TODO #540
-    np.testing.assert_approx_equal(qt, qt0, significant)
+    np.testing.assert_approx_equal(
+        total_water_mixing_ratio, initial_total_water_mixing_ratio, significant
+    )
     if scheme != "SciPy":
         assert simulation.particulator.products["S_max"].get() >= output["S"][-1]
 

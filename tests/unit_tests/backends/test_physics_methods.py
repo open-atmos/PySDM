@@ -12,14 +12,23 @@ class TestPhysicsMethods:  # pylint: disable=too-few-public-methods
         sut = backend.temperature_pressure_RH
         rhod = backend.Storage.from_ndarray(np.asarray((1, 1.1)))
         thd = backend.Storage.from_ndarray(np.asarray((300.0, 301)))
-        qv = backend.Storage.from_ndarray(np.asarray((0.01, 0.02)))
+        water_vapour_mixing_ratio = backend.Storage.from_ndarray(
+            np.asarray((0.01, 0.02))
+        )
 
-        T = backend.Storage.from_ndarray(np.zeros_like(qv))
-        p = backend.Storage.from_ndarray(np.zeros_like(qv))
-        RH = backend.Storage.from_ndarray(np.zeros_like(qv))
+        T = backend.Storage.from_ndarray(np.zeros_like(water_vapour_mixing_ratio))
+        p = backend.Storage.from_ndarray(np.zeros_like(water_vapour_mixing_ratio))
+        RH = backend.Storage.from_ndarray(np.zeros_like(water_vapour_mixing_ratio))
 
         # Act
-        sut(rhod=rhod, thd=thd, qv=qv, T=T, p=p, RH=RH)
+        sut(
+            rhod=rhod,
+            thd=thd,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio,
+            T=T,
+            p=p,
+            RH=RH,
+        )
 
         # Assert
         assert 282 * si.K < T.amin() < 283 * si.K

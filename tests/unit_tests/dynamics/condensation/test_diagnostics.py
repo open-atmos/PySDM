@@ -12,13 +12,20 @@ from PySDM.impl.mesh import Mesh
 
 
 class _TestEnv:
-    def __init__(self, *, dt, dv, rhod, thd, qv, T, p, RH):
+    def __init__(self, *, dt, dv, rhod, thd, water_vapour_mixing_ratio, T, p, RH):
         self.mesh = Mesh.mesh_0d()
         self.full = None
         self.particulator = None
         self.dt = dt
         self.dv = dv
-        self.env = {"rhod": rhod, "thd": thd, "qv": qv, "T": T, "p": p, "RH": RH}
+        self.env = {
+            "rhod": rhod,
+            "thd": thd,
+            "water_vapour_mixing_ratio": water_vapour_mixing_ratio,
+            "T": T,
+            "p": p,
+            "RH": RH,
+        }
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -45,7 +52,7 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
         dv=np.nan,
         rhod=np.nan,
         thd=np.nan,
-        qv=np.nan,
+        water_vapour_mixing_ratio=np.nan,
         T=np.nan,
         p=np.nan,
         RH=np.nan,
@@ -54,7 +61,16 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
     ):
         builder = Builder(n_sd=n_sd, backend=backend())
         builder.set_environment(
-            _TestEnv(dt=dt, dv=dv, rhod=rhod, thd=thd, qv=qv, T=T, p=p, RH=RH)
+            _TestEnv(
+                dt=dt,
+                dv=dv,
+                rhod=rhod,
+                thd=thd,
+                water_vapour_mixing_ratio=water_vapour_mixing_ratio,
+                T=T,
+                p=p,
+                RH=RH,
+            )
         )
         builder.add_dynamic(Condensation(max_iters=max_iters))
         self.particulator = builder.build(
@@ -94,7 +110,7 @@ class TestDiagnostics:  # pylint: disable=too-few-public-methods
             backend=backend,
             dt=1,
             T=1,
-            qv=1,
+            water_vapour_mixing_ratio=1,
             dv=1,
             rhod=1,
             thd=1.0,

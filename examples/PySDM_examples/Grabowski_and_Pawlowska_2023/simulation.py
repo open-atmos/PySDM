@@ -22,7 +22,7 @@ class Simulation(BasicSimulation):
         env = Parcel(
             dt=settings.timestep,
             p0=settings.initial_pressure,
-            q0=settings.initial_vapour_mixing_ratio,
+            initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
             T0=settings.initial_temperature,
             w=settings.vertical_velocity,
             mass_of_dry_air=44 * si.kg,

@@ -44,7 +44,7 @@ class Settings:
         return self.initial_relative_humidity * pvs
 
     @property
-    def q0(self):
+    def initial_water_vapour_mixing_ratio(self):
         pv0 = self.pv0
         return self.formulae.constants.eps * pv0 / (self.p0 - pv0)
 
@@ -55,4 +55,4 @@ class Settings:
     @property
     def rhod0(self):
         rho_v = self.pv0 / self.formulae.constants.Rv / self.T0
-        return rho_v / self.q0
+        return rho_v / self.initial_water_vapour_mixing_ratio
