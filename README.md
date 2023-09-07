@@ -483,7 +483,7 @@ env = Parcel(
     dt=.25 * si.s,
     mass_of_dry_air=1e3 * si.kg,
     p0=1122 * si.hPa,
-    q0=20 * si.g / si.kg,
+    initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
     T0=300 * si.K,
     w= 2.5 * si.m / si.s
 )
@@ -514,7 +514,7 @@ particulator = builder.build(attributes, products=[
     products.PeakSupersaturation(name="S_max", unit="%"),
     products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
     products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
-    products.WaterMixingRatio(name="ql", unit="g/kg", radius_range=cloud_range),
+    products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
     products.ParcelDisplacement(name="z")
 ])
     
@@ -565,7 +565,7 @@ env = Parcel(pyargs( ...
     'dt', .25 * si.s, ...
     'mass_of_dry_air', 1e3 * si.kg, ...
     'p0', 1122 * si.hPa, ...
-    'q0', 20 * si.g / si.kg, ...
+    'initial_water_vapour_mixing_ratio', 20 * si.g / si.kg, ...
     'T0', 300 * si.K, ...
     'w', 2.5 * si.m / si.s ...
 ));
@@ -603,7 +603,7 @@ particulator = builder.build(attributes, py.list({ ...
     products.PeakSupersaturation(pyargs('name', 'S_max', 'unit', '%')), ...
     products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
     products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
-    products.WaterMixingRatio(pyargs('name', 'ql', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
+    products.WaterMixingRatio(pyargs('name', 'liquid water mixing ratio', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
     products.ParcelDisplacement(pyargs('name', 'z')) ...
 }));
 
@@ -666,7 +666,7 @@ env = Parcel(
   dt=.25 * si.s,
   mass_of_dry_air=1e3 * si.kg,
   p0=1122 * si.hPa,
-  q0=20 * si.g / si.kg,
+  initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
   T0=300 * si.K,
   w=2.5 * si.m / si.s
 )
@@ -698,7 +698,7 @@ particulator = builder.build(attributes, products=[
   products.PeakSupersaturation(name='S_max', unit='%'),
   products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
   products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
-  products.WaterMixingRatio(name='ql', unit='g/kg', radius_range=cloud_range),
+  products.WaterMixingRatio(name='liquid water mixing ratio', unit='g/kg', radius_range=cloud_range),
   products.ParcelDisplacement(name='z')
 ])
 

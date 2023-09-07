@@ -27,7 +27,7 @@ class CondensationMethods(
         self.ml_new: Optional[StorageBase] = None
         self.T: Optional[StorageBase] = None
         self.dthd_dt_pred: Optional[StorageBase] = None
-        self.dqv_dt_pred: Optional[StorageBase] = None
+        self.d_water_vapour_mixing_ratio__dt_predicted: Optional[StorageBase] = None
         self.drhod_dt_pred: Optional[StorageBase] = None
         self.rhod_copy: Optional[StorageBase] = None
         self.m_d: Optional[StorageBase] = None
@@ -213,13 +213,13 @@ class CondensationMethods(
         self.__pre_for = trtc.For(
             (
                 "dthd_dt_pred",
-                "dqv_dt_pred",
+                "d_water_vapour_mixing_ratio__dt_predicted",
                 "drhod_dt_pred",
                 "m_d",
                 "pthd",
                 "thd",
-                "pqv",
-                "qv",
+                "predicted_water_vapour_mixing_ratio",
+                "water_vapour_mixing_ratio",
                 "prhod",
                 "rhod",
                 "dt",
@@ -229,13 +229,15 @@ class CondensationMethods(
             "i",
             """
             dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
-            dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
+            d_water_vapour_mixing_ratio__dt_predicted[i] = (
+                predicted_water_vapour_mixing_ratio[i] - water_vapour_mixing_ratio[i]
+            ) / dt;
             drhod_dt_pred[i] = (prhod[i] - rhod[i]) / dt;
 
             m_d[i] = (prhod[i] + rhod[i]) / 2 * dv;
 
             pthd[i] = thd[i];
-            pqv[i] = qv[i];
+            predicted_water_vapour_mixing_ratio[i] = water_vapour_mixing_ratio[i];
 
             RH_max[i] = 0;
         """,
@@ -245,10 +247,10 @@ class CondensationMethods(
             (
                 *CondensationMethods.keys,
                 "dthd_dt_pred",
-                "dqv_dt_pred",
+                "d_water_vapour_mixing_ratio__dt_predicted",
                 "drhod_dt_pred",
                 "pthd",
-                "pqv",
+                "predicted_water_vapour_mixing_ratio",
                 "rhod_copy",
                 "dt",
                 "RH_max",
@@ -256,15 +258,19 @@ class CondensationMethods(
             "i",
             f"""
             pthd[i] += dt * dthd_dt_pred[i] / 2;
-            pqv[i] += dt * dqv_dt_pred[i] / 2;
+            predicted_water_vapour_mixing_ratio[i] += (
+                dt * d_water_vapour_mixing_ratio__dt_predicted[i] / 2
+            );
             rhod_copy[i] += dt * drhod_dt_pred[i] / 2;
 
             T[i] = {phys.state_variable_triplet.T.c_inline(
                 rhod='rhod_copy[i]', thd='pthd[i]')};
             p[i] = {phys.state_variable_triplet.p.c_inline(
-                rhod='rhod_copy[i]', T='T[i]', qv='pqv[i]')};
+                rhod='rhod_copy[i]', T='T[i]',
+                water_vapour_mixing_ratio='predicted_water_vapour_mixing_ratio[i]'
+            )};
             pv[i] = {phys.state_variable_triplet.pv.c_inline(
-                p='p[i]', qv='pqv[i]')};
+                p='p[i]', water_vapour_mixing_ratio='predicted_water_vapour_mixing_ratio[i]')};
             lv[i] = {phys.latent_heat.lv.c_inline(
                 T='T[i]')};
             pvs[i] = {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
@@ -285,10 +291,10 @@ class CondensationMethods(
         self.__post = trtc.For(
             (
                 "dthd_dt_pred",
-                "dqv_dt_pred",
+                "d_water_vapour_mixing_ratio__dt_predicted",
                 "drhod_dt_pred",
                 "pthd",
-                "pqv",
+                "predicted_water_vapour_mixing_ratio",
                 "rhod_copy",
                 "dt",
                 "ml_new",
@@ -300,11 +306,17 @@ class CondensationMethods(
             "i",
             f"""
             auto dml_dt = (ml_new[i] - ml_old[i]) / dt;
-            auto dqv_dt_corr = - dml_dt / m_d[i];
+            auto d_water_vapour_mixing_ratio__dt_corrected = - dml_dt / m_d[i];
             auto dthd_dt_corr = {phys.state_variable_triplet.dthd_dt.c_inline(
-                rhod='rhod_copy[i]', thd='pthd[i]', T='T[i]', dqv_dt='dqv_dt_corr', lv='lv[i]')};
+                rhod='rhod_copy[i]', thd='pthd[i]', T='T[i]',
+                d_water_vapour_mixing_ratio__dt='d_water_vapour_mixing_ratio__dt_corrected',
+                lv='lv[i]'
+            )};
             pthd[i] += dt * (dthd_dt_pred[i] / 2 + dthd_dt_corr);
-            pqv[i] += dt * (dqv_dt_pred[i] / 2 + dqv_dt_corr);
+            predicted_water_vapour_mixing_ratio[i] += dt * (
+                d_water_vapour_mixing_ratio__dt_predicted[i] / 2 +
+                d_water_vapour_mixing_ratio__dt_corrected
+            );
             rhod_copy[i] += dt * drhod_dt_pred[i] / 2;
             ml_old[i] = ml_new[i];
         """.replace(
@@ -333,11 +345,11 @@ class CondensationMethods(
         idx,
         rhod,
         thd,
-        qv,
+        water_vapour_mixing_ratio,
         dv,
         prhod,
         pthd,
-        pqv,
+        predicted_water_vapour_mixing_ratio,
         kappa,
         f_org,
         rtol_x,
@@ -364,13 +376,13 @@ class CondensationMethods(
             n_cell,
             (
                 self.dthd_dt_pred.data,
-                self.dqv_dt_pred.data,
+                self.d_water_vapour_mixing_ratio__dt_predicted.data,
                 self.drhod_dt_pred.data,
                 self.m_d.data,
                 pthd.data,
                 thd.data,
-                pqv.data,
-                qv.data,
+                predicted_water_vapour_mixing_ratio.data,
+                water_vapour_mixing_ratio.data,
                 prhod.data,
                 self.rhod_copy.data,
                 dvfloat(timestep),
@@ -387,10 +399,10 @@ class CondensationMethods(
                 (
                     *self.vars_data.values(),
                     self.dthd_dt_pred.data,
-                    self.dqv_dt_pred.data,
+                    self.d_water_vapour_mixing_ratio__dt_predicted.data,
                     self.drhod_dt_pred.data,
                     pthd.data,
-                    pqv.data,
+                    predicted_water_vapour_mixing_ratio.data,
                     self.rhod_copy.data,
                     dvfloat(timestep),
                     RH_max.data,
@@ -416,10 +428,10 @@ class CondensationMethods(
                 n_cell,
                 (
                     self.dthd_dt_pred.data,
-                    self.dqv_dt_pred.data,
+                    self.d_water_vapour_mixing_ratio__dt_predicted.data,
                     self.drhod_dt_pred.data,
                     pthd.data,
-                    pqv.data,
+                    predicted_water_vapour_mixing_ratio.data,
                     self.rhod_copy.data,
                     dvfloat(timestep),
                     self.ml_new.data,
@@ -451,7 +463,7 @@ class CondensationMethods(
             "ml_new",
             "T",
             "dthd_dt_pred",
-            "dqv_dt_pred",
+            "d_water_vapour_mixing_ratio__dt_predicted",
             "drhod_dt_pred",
             "m_d",
             "rhod_copy",

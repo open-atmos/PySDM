@@ -75,7 +75,7 @@ class Simulation:
         if self.settings.processes["fluid advection"]:
             initial_profiles = {
                 "th": self.settings.initial_dry_potential_temperature_profile,
-                "qv": self.settings.initial_vapour_mixing_ratio_profile,
+                "water_vapour_mixing_ratio": self.settings.initial_vapour_mixing_ratio_profile,
             }
             advectees = dict(
                 (

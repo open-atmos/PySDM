@@ -33,7 +33,7 @@ def test_single_supersaturation_peak(
 ):  # pylint: disable=too-many-locals
     # arrange
     products = (
-        PySDM_products.WaterMixingRatio(unit="g/kg", name="ql"),
+        PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid water mixing ratio"),
         PySDM_products.PeakSupersaturation(name="S max"),
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.ParcelDisplacement(name="z"),
@@ -42,7 +42,7 @@ def test_single_supersaturation_peak(
         dt=2 * si.s,
         mass_of_dry_air=1e3 * si.kg,
         p0=1000 * si.hPa,
-        q0=22.76 * si.g / si.kg,
+        initial_water_vapour_mixing_ratio=22.76 * si.g / si.kg,
         w=0.5 * si.m / si.s,
         T0=300 * si.K,
     )

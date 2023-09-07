@@ -22,7 +22,7 @@ class Simulation(BasicSimulation):
                 dt=settings.timestep,
                 p0=settings.p0,
                 T0=settings.T0,
-                q0=settings.q0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
                 mass_of_dry_air=settings.mass_of_dry_air,
                 w=settings.vertical_velocity,
                 mixed_phase=True,

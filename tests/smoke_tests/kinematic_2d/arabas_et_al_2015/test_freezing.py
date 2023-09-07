@@ -49,7 +49,7 @@ def test_freezing(singular):
 
     settings.freezing_singular = singular
     settings.th_std0 -= 35 * si.K
-    settings.qv0 -= 7.15 * si.g / si.kg
+    settings.initial_water_vapour_mixing_ratio -= 7.15 * si.g / si.kg
 
     storage = DummyStorage()
     simulation = Simulation(settings, storage, SpinUp=SpinUp, backend_class=CPU)

@@ -36,9 +36,9 @@ class TestInitialCondition:  # pylint: disable=too-few-public-methods
 
         # Plot
         if plot:
-            for var in ("RH", "T", "qv", "p"):
+            for var in ("RH", "T", "water_vapour_mixing_ratio", "p"):
                 pyplot.plot(output[var][:], output["z"], linestyle="--", marker="o")
-                if var == "qv":
+                if var == "water_vapour_mixing_ratio":
                     for value in (0.015, 0.0138, 0.0024):
                         pyplot.axvline(value)
                 pyplot.ylabel("Z [m]")

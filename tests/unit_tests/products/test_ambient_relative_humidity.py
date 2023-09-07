@@ -20,7 +20,7 @@ def test_ambient_relative_humidity(backend_class):
         mixed_phase=True,
         mass_of_dry_air=np.nan,
         p0=1000 * si.hPa,
-        q0=1 * si.g / si.kg,
+        initial_water_vapour_mixing_ratio=1 * si.g / si.kg,
         T0=260 * si.K,
         w=np.nan,
     )

@@ -25,7 +25,7 @@ class Kinematic1D(Moist):
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
 
-    def get_qv(self) -> np.ndarray:
+    def get_water_vapour_mixing_ratio(self) -> np.ndarray:
         return self.particulator.dynamics["EulerianAdvection"].solvers.advectee.get()
 
     def get_thd(self) -> np.ndarray:

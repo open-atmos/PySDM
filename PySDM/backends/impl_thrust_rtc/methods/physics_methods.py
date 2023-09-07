@@ -14,15 +14,18 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         phys = self.formulae
 
         self._temperature_pressure_RH_body = trtc.For(
-            ("rhod", "thd", "qv", "T", "p", "RH"),
+            ("rhod", "thd", "water_vapour_mixing_ratio", "T", "p", "RH"),
             "i",
             f"""
             T[i] = {phys.state_variable_triplet.T.c_inline(
                 rhod="rhod[i]", thd="thd[i]")};
             p[i] = {phys.state_variable_triplet.p.c_inline(
-                rhod="rhod[i]", T="T[i]", qv="qv[i]")};
+                rhod="rhod[i]",
+                T="T[i]",
+                water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
+            )};
             RH[i] = {phys.state_variable_triplet.pv.c_inline(
-                p="p[i]", qv="qv[i]"
+                p="p[i]", water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
             )} / {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
                 T="T[i] - const.T0"
             )};
@@ -96,9 +99,19 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def temperature_pressure_RH(self, *, rhod, thd, qv, T, p, RH):
+    def temperature_pressure_RH(
+        self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
+    ):
         self._temperature_pressure_RH_body.launch_n(
-            T.shape[0], (rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
+            T.shape[0],
+            (
+                rhod.data,
+                thd.data,
+                water_vapour_mixing_ratio.data,
+                T.data,
+                p.data,
+                RH.data,
+            ),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

@@ -8,7 +8,7 @@ import numpy as np
 
 class Moist:
     def __init__(self, dt, mesh, variables, mixed_phase=False):
-        variables += ["qv", "thd", "T", "p", "RH"]
+        variables += ["water_vapour_mixing_ratio", "thd", "T", "p", "RH"]
         if mixed_phase:
             variables += ["a_w_ice"]
         self.particulator = None
@@ -43,13 +43,13 @@ class Moist:
 
     def sync(self):
         target = self._tmp
-        target["qv"].ravel(self.get_qv())
+        target["water_vapour_mixing_ratio"].ravel(self.get_water_vapour_mixing_ratio())
         target["thd"].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
             rhod=target["rhod"],
             thd=target["thd"],
-            qv=target["qv"],
+            water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
             T=target["T"],
             p=target["p"],
             RH=target["RH"],
@@ -59,13 +59,13 @@ class Moist:
                 T=target["T"],
                 p=target["p"],
                 RH=target["RH"],
-                qv=target["qv"],
+                water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
                 a_w_ice=target["a_w_ice"],
             )
         self._values["predicted"] = target
 
     @abstractmethod
-    def get_qv(self) -> np.ndarray:
+    def get_water_vapour_mixing_ratio(self) -> np.ndarray:
         raise NotImplementedError()
 
     @abstractmethod
