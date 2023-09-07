@@ -174,7 +174,7 @@ jobs:
 #           limit-access-to-actor: true
 
   examples:
-    needs: [pylint, precommit]
+    needs: [tests]
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
