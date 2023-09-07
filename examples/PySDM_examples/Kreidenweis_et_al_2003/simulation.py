@@ -57,7 +57,9 @@ class Simulation(BasicSimulation):
             PySDM_products.AmbientTemperature(name="T"),
             PySDM_products.AmbientDryAirDensity(name="rhod"),
             PySDM_products.AmbientWaterVapourMixingRatio(
-                name="water vapour mixing ratio", unit="g/kg"
+                name="water vapour mixing ratio",
+                var="water_vapour_mixing_ratio",
+                unit="g/kg"
             ),
             PySDM_products.Time(name="t"),
             *(
