@@ -1,14 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation, aerosol
+from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
+from PySDM_examples.Lowe_et_al_2019 import aerosol as paper_aerosol
 
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.physics import si
-
-from .constants import constants
-
-assert hasattr(constants, "_pytestfixturefunction")
 
 
 class TestFig2:  # pylint: disable=too-few-public-methods
@@ -16,12 +13,30 @@ class TestFig2:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize(
         "aerosol, surface_tension, s_max, s_100m, n_100m",
         (
-            (aerosol.AerosolMarine(), "Constant", 0.271, 0.081, 148),
-            (aerosol.AerosolMarine(), "CompressedFilmOvadnevaite", 0.250, 0.075, 169),
-            (aerosol.AerosolBoreal(), "Constant", 0.182, 0.055, 422),
-            (aerosol.AerosolBoreal(), "CompressedFilmOvadnevaite", 0.137, 0.055, 525),
-            (aerosol.AerosolNascent(), "Constant", 0.407, 0.122, 68),
-            (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", 0.314, 0.076, 166),
+            (paper_aerosol.AerosolMarine(), "Constant", 0.271, 0.081, 148),
+            (
+                paper_aerosol.AerosolMarine(),
+                "CompressedFilmOvadnevaite",
+                0.250,
+                0.075,
+                169,
+            ),
+            (paper_aerosol.AerosolBoreal(), "Constant", 0.182, 0.055, 422),
+            (
+                paper_aerosol.AerosolBoreal(),
+                "CompressedFilmOvadnevaite",
+                0.137,
+                0.055,
+                525,
+            ),
+            (paper_aerosol.AerosolNascent(), "Constant", 0.407, 0.122, 68),
+            (
+                paper_aerosol.AerosolNascent(),
+                "CompressedFilmOvadnevaite",
+                0.314,
+                0.076,
+                166,
+            ),
         ),
     )
     @pytest.mark.xfail(strict=True)  # TODO #604

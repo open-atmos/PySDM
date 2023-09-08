@@ -6,10 +6,6 @@ from PySDM import Formulae
 from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
-from .constants import constants
-
-assert hasattr(constants, "_pytestfixturefunction")
-
 TRIVIA = Formulae().trivia
 R_WET = np.logspace(np.log(150 * si.nm), np.log(3000 * si.nm), base=np.e, num=100)
 R_DRY = 50 * si.nm
