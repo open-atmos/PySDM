@@ -90,9 +90,7 @@ class TestFig1:
             ),
         ),
     )
-    def test_koehler_maxima(
-        *, constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal
-    ):
+    def test_koehler_maxima(*, aerosol, surface_tension, maximum_x, maximum_y, bimodal):
         # arrange
         formulae = Formulae(
             surface_tension=surface_tension,

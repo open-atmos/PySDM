@@ -41,7 +41,7 @@ class TestFig2:  # pylint: disable=too-few-public-methods
     )
     @pytest.mark.xfail(strict=True)  # TODO #604
     def test_peak_supersaturation_and_final_concentration(
-        *, constants, aerosol, surface_tension, s_max, s_100m, n_100m
+        *, aerosol, surface_tension, s_max, s_100m, n_100m
     ):
         # arrange
         dt = 1 * si.s
