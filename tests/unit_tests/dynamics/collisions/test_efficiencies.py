@@ -64,7 +64,7 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
         ],
     )
     def test_efficiency_dist(efficiency, backend_class=CPU, plot=False):
-        # pylint: disable=redefined-outer-name, too-many-locals, unnecessary-lambda-assignment
+        # pylint: disable=too-many-locals, unnecessary-lambda-assignment
         # arrange
         n_per = 20
 

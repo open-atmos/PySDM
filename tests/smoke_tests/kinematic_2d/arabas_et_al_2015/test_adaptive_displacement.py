@@ -22,7 +22,6 @@ from .dummy_storage import DummyStorage
         pytest.param(1e-2),
     ),
 )
-# pylint: disable=redefined-outer-name
 def test_adaptive_displacement(rtol, plot=False):
     # Arrange
     settings = Settings(formulae=Formulae(seed=666))

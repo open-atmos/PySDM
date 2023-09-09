@@ -74,15 +74,15 @@ _ARGUMENTS = {
     params=(
         pytest.param(p[1], id=p[0])
         for p in inspect.getmembers(sys.modules[products.__name__], inspect.isclass)
-    )
+    ),
+    name="product",
 )
-def product(request):
+def product_fixture(request):
     return request.param
 
 
 class TestProducts:
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_instantiate_all(product):
         product(**(_ARGUMENTS[product] if product in _ARGUMENTS else {}))
 

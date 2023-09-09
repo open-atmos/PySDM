@@ -8,24 +8,12 @@ from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Coalescence
 
-from .__parametrisation__ import (
-    T_2,
-    backend_fill,
-    get_dummy_particulator_and_coalescence,
-    n_2,
-    v_2,
-)
-
-assert hasattr(v_2, "_pytestfixturefunction")
-assert hasattr(T_2, "_pytestfixturefunction")
-assert hasattr(n_2, "_pytestfixturefunction")
+from .conftest import backend_fill, get_dummy_particulator_and_coalescence
 
 
 class TestSDMSingleCell:
     @staticmethod
-    def test_single_collision(
-        backend_class, v_2, T_2, n_2
-    ):  # pylint: disable=redefined-outer-name
+    def test_single_collision(backend_class, v_2, T_2, n_2):
         # Arrange
         const = 1.0
         particulator, sut = get_dummy_particulator_and_coalescence(
@@ -114,9 +102,7 @@ class TestSDMSingleCell:
             pytest.param(7),
         ],
     )
-    def test_multi_collision(
-        backend_class, v_2, n_2, p
-    ):  # pylint: disable=redefined-outer-name
+    def test_multi_collision(backend_class, v_2, n_2, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
             backend_class, len(n_2)
