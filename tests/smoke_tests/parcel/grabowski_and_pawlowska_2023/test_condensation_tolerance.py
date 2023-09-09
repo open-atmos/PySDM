@@ -6,6 +6,7 @@ checking if supersaturation has more than one local maximum
 import numpy as np
 import pytest
 from PySDM_examples.Grabowski_and_Pawlowska_2023 import Settings, Simulation
+from PySDM_examples.Grabowski_and_Pawlowska_2023.settings import condensation_tolerance
 from scipy import signal
 
 from PySDM.dynamics import condensation
@@ -20,7 +21,6 @@ N_SD = 25
 DZ = 10 * si.m
 VELOCITIES_CM_PER_S = (25, 100, 400)
 AEROSOLS = ("polluted",)
-condensation_tolerance = condensation.DEFAULTS.rtol_thd / 100
 
 
 @pytest.mark.parametrize(
