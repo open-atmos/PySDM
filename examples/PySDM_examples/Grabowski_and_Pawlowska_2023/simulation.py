@@ -30,7 +30,9 @@ class Simulation(BasicSimulation):
         builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
         builder.set_environment(env)
         builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
+        builder.add_dynamic(
+            Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x)
+        )
         for attribute in (
             "critical supersaturation",
             "equilibrium supersaturation",
