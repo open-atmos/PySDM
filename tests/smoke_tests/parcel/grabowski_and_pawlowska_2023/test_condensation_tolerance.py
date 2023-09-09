@@ -8,6 +8,7 @@ import pytest
 from PySDM_examples.Grabowski_and_Pawlowska_2023 import Settings, Simulation
 from scipy import signal
 
+from PySDM.dynamics import condensation
 from PySDM.physics import si
 from PySDM.products import AmbientRelativeHumidity
 
@@ -19,10 +20,17 @@ N_SD = 25
 DZ = 10 * si.m
 VELOCITIES_CM_PER_S = (25, 100, 400)
 AEROSOLS = ("polluted",)
+condensation_tolerance = condensation.DEFAULTS.rtol_thd / 100
 
 
 @pytest.mark.parametrize(
-    "rtol_cond", (1e-8, pytest.param(1e-6, marks=pytest.mark.xfail(strict=True)))
+    "rtol_cond",
+    (
+        condensation_tolerance,
+        pytest.param(
+            condensation.DEFAULTS.rtol_thd, marks=pytest.mark.xfail(strict=True)
+        ),
+    ),
 )
 @pytest.mark.parametrize("aerosol", AEROSOLS)
 @pytest.mark.parametrize("w_cm_per_s", VELOCITIES_CM_PER_S)

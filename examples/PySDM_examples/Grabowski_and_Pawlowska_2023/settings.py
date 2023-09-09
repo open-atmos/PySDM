@@ -2,8 +2,11 @@ import numpy as np
 from pystrict import strict
 
 from PySDM import Formulae
+from PySDM.dynamics import condensation
 from PySDM.initialisation.spectra import Lognormal, Sum
 from PySDM.physics import si
+
+condensation_tolerance = condensation.DEFAULTS.rtol_thd / 100
 
 
 @strict
@@ -20,8 +23,8 @@ class Settings:
         initial_relative_humidity: float = 0.97,
         displacement: float = 1000 * si.m,
         mass_accommodation_coefficient: float = 0.3,
-        rtol_thd: float = 1e-8,
-        rtol_x: float = 1e-8
+        rtol_thd: float = condensation_tolerance,
+        rtol_x: float = condensation_tolerance
     ):
         self.formulae = Formulae(constants={"MAC": mass_accommodation_coefficient})
         self.n_sd = n_sd
