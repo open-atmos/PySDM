@@ -32,22 +32,22 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         self.fall_momentum_attr = None
         self.terminal_vel_attr = None
         self.volume_attr = None
-        self.radius_attr = None
+        self.sqrt_radius_attr = None
         self.rho_w = None  # TODO #798 - we plan to use masses instead of volumes soon
 
         self.tmp_momentum_diff = None
         self.tmp_tau = None
         self.tmp_scale = None
 
-    def calculate_tau(self, output, radius_storage):
+        self.tmp_tau_init = False
+
+    def calculate_tau(self, output, sqrt_radius_storage):
         """
         Calculates the relaxation timescale.
         """
-        # TODO: this should be done with backend storage functions if possible
+        output.fill(self.c)
         if not self.constant:
-            output[:] = self.c * np.sqrt(radius_storage.to_ndarray())
-        else:
-            output.fill(self.c)
+            output *= sqrt_radius_storage
 
     def calculate_scale_factor(self, output, tau_storage):
         # TODO: this should be done with backend storage functions if possible
@@ -64,7 +64,9 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         )
         self.terminal_vel_attr: Attribute = builder.get_attribute("terminal velocity")
         self.volume_attr: Attribute = builder.get_attribute("volume")
-        self.radius_attr: Attribute = builder.get_attribute("radius")
+        self.sqrt_radius_attr: Attribute = builder.get_attribute(
+            "square root of radius"
+        )
 
         self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
 
@@ -82,7 +84,9 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         )  # TODO #798 - we plan to use masses instead of volumes soon
         self.tmp_momentum_diff -= self.fall_momentum_attr.get()
 
-        self.calculate_tau(self.tmp_tau, self.radius_attr.get())
+        if not self.tmp_tau_init or not self.constant:
+            self.tmp_tau_init = True
+            self.calculate_tau(self.tmp_tau, self.sqrt_radius_attr.get())
 
         self.calculate_scale_factor(self.tmp_scale, self.tmp_tau)
 

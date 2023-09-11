@@ -164,7 +164,7 @@ def test_timescale(
 
     builder.set_environment(Box(dt=1, dv=1))
 
-    radius_attr = builder.get_attribute("radius")
+    sqrt_radius_attr = builder.get_attribute("square root of radius")
 
     dyn = RelaxedVelocity(c=c, constant=constant_timescale)
     builder.add_dynamic(dyn)
@@ -176,11 +176,11 @@ def test_timescale(
     particulator = builder.build(attributes=default_attributes, products=())
 
     tau_storage = particulator.Storage.empty(default_attributes["n"].shape, dtype=float)
-    dyn.calculate_tau(tau_storage, radius_attr.get())
+    dyn.calculate_tau(tau_storage, sqrt_radius_attr.get())
 
     # expected_c should be whatever c was set to in the dynamic
     if not constant_timescale:
-        expected_c = tau_storage.to_ndarray() / np.sqrt(radius_attr.get().to_ndarray())
+        expected_c = tau_storage.to_ndarray() / sqrt_radius_attr.get().to_ndarray()
     else:
         expected_c = tau_storage.to_ndarray()
 
