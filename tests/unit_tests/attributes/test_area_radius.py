@@ -26,6 +26,26 @@ def test_radius(volume):
 
 
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
+def test_sqrt_radius(volume):
+    # arrange
+    builder = Builder(backend=CPU(), n_sd=volume.size)
+    builder.set_environment(Box(dt=None, dv=None))
+    builder.request_attribute("radius")
+    builder.request_attribute("square root of radius")
+    particulator = builder.build(
+        attributes={"volume": [volume], "n": np.ones_like(volume)}
+    )
+
+    # act
+    radius_actual = particulator.attributes["radius"].to_ndarray()
+    sqrt_radius_actual = particulator.attributes["square root of radius"].to_ndarray()
+
+    # assert
+    sqrt_radius_expected = np.sqrt(radius_actual)
+    np.testing.assert_allclose(sqrt_radius_actual, sqrt_radius_expected)
+
+
+@pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
 def test_area(volume):
     # arrange
     builder = Builder(backend=CPU(), n_sd=volume.size)

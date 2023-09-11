@@ -1,6 +1,8 @@
 """
 particle wet radius (calculated from the volume)
 """
+import numpy as np
+
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
@@ -14,3 +16,18 @@ class Radius(DerivedAttribute):
         self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 1 / 3
+
+
+class SquareRootOfRadius(DerivedAttribute):
+    def __init__(self, builder):
+        self.radius = builder.get_attribute("radius")
+
+        super().__init__(
+            builder,
+            name="square root of radius",
+            dependencies=(self.radius,),
+        )
+
+    def recalculate(self):
+        # TODO: this should be done with backend storage functions if possible
+        self.data[:] = np.sqrt(self.radius.get().to_ndarray())
