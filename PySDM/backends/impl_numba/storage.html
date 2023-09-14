@@ -221,7 +221,10 @@ class Storage(StorageBase):
         if isinstance(other, Storage):
             self.data[:] = other.data
         else:
-            self.data[:] = other</code></pre>
+            self.data[:] = other
+
+    def exp(self):
+        self.data[:] = np.exp(self.data)</code></pre>
 </details>
 </section>
 <section>
@@ -423,7 +426,10 @@ class Storage(StorageBase):
         if isinstance(other, Storage):
             self.data[:] = other.data
         else:
-            self.data[:] = other</code></pre>
+            self.data[:] = other
+
+    def exp(self):
+        self.data[:] = np.exp(self.data)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -565,6 +571,19 @@ def from_ndarray(array):
     else:
         data = self.data
     np.copyto(target, data, casting=&#34;safe&#34;)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.storage.Storage.exp"><code class="name flex">
+<span>def <span class="ident">exp</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def exp(self):
+    self.data[:] = np.exp(self.data)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.storage.Storage.fill"><code class="name flex">
@@ -730,6 +749,7 @@ def from_ndarray(array):
 <li><code><a title="PySDM.backends.impl_numba.storage.Storage.divide_if_not_zero" href="#PySDM.backends.impl_numba.storage.Storage.divide_if_not_zero">divide_if_not_zero</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage.Storage.download" href="#PySDM.backends.impl_numba.storage.Storage.download">download</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage.Storage.empty" href="#PySDM.backends.impl_numba.storage.Storage.empty">empty</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.storage.Storage.exp" href="#PySDM.backends.impl_numba.storage.Storage.exp">exp</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage.Storage.fill" href="#PySDM.backends.impl_numba.storage.Storage.fill">fill</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage.Storage.floor" href="#PySDM.backends.impl_numba.storage.Storage.floor">floor</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage.Storage.from_ndarray" href="#PySDM.backends.impl_numba.storage.Storage.from_ndarray">from_ndarray</a></code></li>

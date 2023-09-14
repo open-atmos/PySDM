@@ -42,7 +42,22 @@ class Radius(DerivedAttribute):
     def recalculate(self):
         self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
-        self.data **= 1 / 3</code></pre>
+        self.data **= 1 / 3
+
+
+class SquareRootOfRadius(DerivedAttribute):
+    def __init__(self, builder):
+        self.radius = builder.get_attribute(&#34;radius&#34;)
+
+        super().__init__(
+            builder,
+            name=&#34;square root of radius&#34;,
+            dependencies=(self.radius,),
+        )
+
+    def recalculate(self):
+        self.data.fill(self.radius.data)
+        self.data **= 0.5</code></pre>
 </details>
 </section>
 <section>
@@ -99,6 +114,53 @@ class Radius(DerivedAttribute):
 </dd>
 </dl>
 </dd>
+<dt id="PySDM.attributes.physics.radius.SquareRootOfRadius"><code class="flex name class">
+<span>class <span class="ident">SquareRootOfRadius</span></span>
+<span>(</span><span>builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SquareRootOfRadius(DerivedAttribute):
+    def __init__(self, builder):
+        self.radius = builder.get_attribute(&#34;radius&#34;)
+
+        super().__init__(
+            builder,
+            name=&#34;square root of radius&#34;,
+            dependencies=(self.radius,),
+        )
+
+    def recalculate(self):
+        self.data.fill(self.radius.data)
+        self.data **= 0.5</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.attributes.physics.radius.SquareRootOfRadius.recalculate"><code class="name flex">
+<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recalculate(self):
+    self.data.fill(self.radius.data)
+    self.data **= 0.5</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -119,6 +181,12 @@ class Radius(DerivedAttribute):
 <h4><code><a title="PySDM.attributes.physics.radius.Radius" href="#PySDM.attributes.physics.radius.Radius">Radius</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.attributes.physics.radius.Radius.recalculate" href="#PySDM.attributes.physics.radius.Radius.recalculate">recalculate</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="PySDM.attributes.physics.radius.SquareRootOfRadius" href="#PySDM.attributes.physics.radius.SquareRootOfRadius">SquareRootOfRadius</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.attributes.physics.radius.SquareRootOfRadius.recalculate" href="#PySDM.attributes.physics.radius.SquareRootOfRadius.recalculate">recalculate</a></code></li>
 </ul>
 </li>
 </ul>

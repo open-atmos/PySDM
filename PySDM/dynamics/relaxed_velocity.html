@@ -36,27 +36,58 @@ A dynamic which relaxes
 `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity`
 towards the terminal velocity
 &#34;&#34;&#34;
-
-from math import exp
-
 from PySDM.attributes.impl.attribute import Attribute
 from PySDM.particulator import Particulator
 
 
 class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     &#34;&#34;&#34;
-    A dynamic which updates the fall momentum according to a relaxation timescale `tau`
+    A dynamic which updates the fall momentum according to a relaxation timescale
+    proportional to the sqrt of the droplet radius.
+
+    Should be added first in order to ensure the correct attributes are selected.
     &#34;&#34;&#34;
 
-    def __init__(self, tau):
-        self.tau: float = tau
+    def __init__(self, c: float = 8, constant: bool = False):
+        &#34;&#34;&#34;
+        Parameters:
+            - constant: use a constant relaxation timescale for all droplets
+            - c: relaxation timescale if `constant`, otherwise the proportionality constant
+        &#34;&#34;&#34;
+        # the default value of c is a very rough estimate
+        self.c: float = c
+        self.constant = constant
 
         self.particulator = None
         self.fall_momentum_attr = None
         self.terminal_vel_attr = None
         self.volume_attr = None
+        self.sqrt_radius_attr = None
         self.rho_w = None  # TODO #798 - we plan to use masses instead of volumes soon
-        self.tmp_data = None
+
+        self.tmp_momentum_diff = None
+        self.tmp_tau = None
+        self.tmp_scale = None
+
+        self.tmp_tau_init = False
+
+    def calculate_tau(self, output, sqrt_radius_storage):
+        &#34;&#34;&#34;
+        Calculates the relaxation timescale.
+        &#34;&#34;&#34;
+        output.fill(self.c)
+        if not self.constant:
+            output *= sqrt_radius_storage
+
+    def calculate_scale_factor(self, output, tau_storage):
+        output.fill(-self.particulator.dt)
+        output /= tau_storage
+        output.exp()
+        output *= -1
+        output += 1
+
+    def create_storage(self, n):
+        return self.particulator.Storage.empty((n,), dtype=float)
 
     def register(self, builder):
         self.particulator: Particulator = builder.particulator
@@ -66,23 +97,34 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         )
         self.terminal_vel_attr: Attribute = builder.get_attribute(&#34;terminal velocity&#34;)
         self.volume_attr: Attribute = builder.get_attribute(&#34;volume&#34;)
+        self.sqrt_radius_attr: Attribute = builder.get_attribute(
+            &#34;square root of radius&#34;
+        )
 
         self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
 
-        self.tmp_data = self.particulator.Storage.empty(
-            (self.particulator.n_sd,), dtype=float
-        )
+        self.tmp_momentum_diff = self.create_storage(self.particulator.n_sd)
+        self.tmp_tau = self.create_storage(self.particulator.n_sd)
+        self.tmp_scale = self.create_storage(self.particulator.n_sd)
 
     def __call__(self):
-        self.tmp_data.product(self.terminal_vel_attr.get(), self.volume_attr.get())
-        self.tmp_data *= (
-            self.rho_w  # TODO #798
+        # calculate momentum difference
+        self.tmp_momentum_diff.product(
+            self.terminal_vel_attr.get(), self.volume_attr.get()
+        )
+        self.tmp_momentum_diff *= (
+            self.rho_w
         )  # TODO #798 - we plan to use masses instead of volumes soon
-        self.tmp_data -= self.fall_momentum_attr.get()
-        self.tmp_data *= 1 - exp(-self.particulator.dt / self.tau)
+        self.tmp_momentum_diff -= self.fall_momentum_attr.get()
 
-        self.fall_momentum_attr.data += self.tmp_data
+        if not self.tmp_tau_init or not self.constant:
+            self.tmp_tau_init = True
+            self.calculate_tau(self.tmp_tau, self.sqrt_radius_attr.get())
 
+        self.calculate_scale_factor(self.tmp_scale, self.tmp_tau)
+
+        self.tmp_momentum_diff *= self.tmp_scale
+        self.fall_momentum_attr.data += self.tmp_momentum_diff
         self.particulator.attributes.mark_updated(&#34;relative fall momentum&#34;)</code></pre>
 </details>
 </section>
@@ -97,28 +139,69 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
 <dl>
 <dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity"><code class="flex name class">
 <span>class <span class="ident">RelaxedVelocity</span></span>
-<span>(</span><span>tau)</span>
+<span>(</span><span>c: float = 8, constant: bool = False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A dynamic which updates the fall momentum according to a relaxation timescale <code>tau</code></p></div>
+<div class="desc"><p>A dynamic which updates the fall momentum according to a relaxation timescale
+proportional to the sqrt of the droplet radius.</p>
+<p>Should be added first in order to ensure the correct attributes are selected.</p>
+<h2 id="parameters">Parameters</h2>
+<ul>
+<li>constant: use a constant relaxation timescale for all droplets</li>
+<li>c: relaxation timescale if <code>constant</code>, otherwise the proportionality constant</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     &#34;&#34;&#34;
-    A dynamic which updates the fall momentum according to a relaxation timescale `tau`
+    A dynamic which updates the fall momentum according to a relaxation timescale
+    proportional to the sqrt of the droplet radius.
+
+    Should be added first in order to ensure the correct attributes are selected.
     &#34;&#34;&#34;
 
-    def __init__(self, tau):
-        self.tau: float = tau
+    def __init__(self, c: float = 8, constant: bool = False):
+        &#34;&#34;&#34;
+        Parameters:
+            - constant: use a constant relaxation timescale for all droplets
+            - c: relaxation timescale if `constant`, otherwise the proportionality constant
+        &#34;&#34;&#34;
+        # the default value of c is a very rough estimate
+        self.c: float = c
+        self.constant = constant
 
         self.particulator = None
         self.fall_momentum_attr = None
         self.terminal_vel_attr = None
         self.volume_attr = None
+        self.sqrt_radius_attr = None
         self.rho_w = None  # TODO #798 - we plan to use masses instead of volumes soon
-        self.tmp_data = None
+
+        self.tmp_momentum_diff = None
+        self.tmp_tau = None
+        self.tmp_scale = None
+
+        self.tmp_tau_init = False
+
+    def calculate_tau(self, output, sqrt_radius_storage):
+        &#34;&#34;&#34;
+        Calculates the relaxation timescale.
+        &#34;&#34;&#34;
+        output.fill(self.c)
+        if not self.constant:
+            output *= sqrt_radius_storage
+
+    def calculate_scale_factor(self, output, tau_storage):
+        output.fill(-self.particulator.dt)
+        output /= tau_storage
+        output.exp()
+        output *= -1
+        output += 1
+
+    def create_storage(self, n):
+        return self.particulator.Storage.empty((n,), dtype=float)
 
     def register(self, builder):
         self.particulator: Particulator = builder.particulator
@@ -128,27 +211,86 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         )
         self.terminal_vel_attr: Attribute = builder.get_attribute(&#34;terminal velocity&#34;)
         self.volume_attr: Attribute = builder.get_attribute(&#34;volume&#34;)
+        self.sqrt_radius_attr: Attribute = builder.get_attribute(
+            &#34;square root of radius&#34;
+        )
 
         self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
 
-        self.tmp_data = self.particulator.Storage.empty(
-            (self.particulator.n_sd,), dtype=float
-        )
+        self.tmp_momentum_diff = self.create_storage(self.particulator.n_sd)
+        self.tmp_tau = self.create_storage(self.particulator.n_sd)
+        self.tmp_scale = self.create_storage(self.particulator.n_sd)
 
     def __call__(self):
-        self.tmp_data.product(self.terminal_vel_attr.get(), self.volume_attr.get())
-        self.tmp_data *= (
-            self.rho_w  # TODO #798
+        # calculate momentum difference
+        self.tmp_momentum_diff.product(
+            self.terminal_vel_attr.get(), self.volume_attr.get()
+        )
+        self.tmp_momentum_diff *= (
+            self.rho_w
         )  # TODO #798 - we plan to use masses instead of volumes soon
-        self.tmp_data -= self.fall_momentum_attr.get()
-        self.tmp_data *= 1 - exp(-self.particulator.dt / self.tau)
+        self.tmp_momentum_diff -= self.fall_momentum_attr.get()
 
-        self.fall_momentum_attr.data += self.tmp_data
+        if not self.tmp_tau_init or not self.constant:
+            self.tmp_tau_init = True
+            self.calculate_tau(self.tmp_tau, self.sqrt_radius_attr.get())
 
+        self.calculate_scale_factor(self.tmp_scale, self.tmp_tau)
+
+        self.tmp_momentum_diff *= self.tmp_scale
+        self.fall_momentum_attr.data += self.tmp_momentum_diff
         self.particulator.attributes.mark_updated(&#34;relative fall momentum&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_scale_factor"><code class="name flex">
+<span>def <span class="ident">calculate_scale_factor</span></span>(<span>self, output, tau_storage)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculate_scale_factor(self, output, tau_storage):
+    output.fill(-self.particulator.dt)
+    output /= tau_storage
+    output.exp()
+    output *= -1
+    output += 1</code></pre>
+</details>
+</dd>
+<dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_tau"><code class="name flex">
+<span>def <span class="ident">calculate_tau</span></span>(<span>self, output, sqrt_radius_storage)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the relaxation timescale.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculate_tau(self, output, sqrt_radius_storage):
+    &#34;&#34;&#34;
+    Calculates the relaxation timescale.
+    &#34;&#34;&#34;
+    output.fill(self.c)
+    if not self.constant:
+        output *= sqrt_radius_storage</code></pre>
+</details>
+</dd>
+<dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.create_storage"><code class="name flex">
+<span>def <span class="ident">create_storage</span></span>(<span>self, n)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_storage(self, n):
+    return self.particulator.Storage.empty((n,), dtype=float)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -166,12 +308,15 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     )
     self.terminal_vel_attr: Attribute = builder.get_attribute(&#34;terminal velocity&#34;)
     self.volume_attr: Attribute = builder.get_attribute(&#34;volume&#34;)
+    self.sqrt_radius_attr: Attribute = builder.get_attribute(
+        &#34;square root of radius&#34;
+    )
 
     self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
 
-    self.tmp_data = self.particulator.Storage.empty(
-        (self.particulator.n_sd,), dtype=float
-    )</code></pre>
+    self.tmp_momentum_diff = self.create_storage(self.particulator.n_sd)
+    self.tmp_tau = self.create_storage(self.particulator.n_sd)
+    self.tmp_scale = self.create_storage(self.particulator.n_sd)</code></pre>
 </details>
 </dd>
 </dl>
@@ -195,6 +340,9 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
 <li>
 <h4><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity">RelaxedVelocity</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_scale_factor" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_scale_factor">calculate_scale_factor</a></code></li>
+<li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_tau" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_tau">calculate_tau</a></code></li>
+<li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.create_storage" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.create_storage">create_storage</a></code></li>
 <li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register">register</a></code></li>
 </ul>
 </li>
