@@ -3,9 +3,6 @@ A dynamic which relaxes
 `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity`
 towards the terminal velocity
 """
-
-import numpy as np
-
 from PySDM.attributes.impl.attribute import Attribute
 from PySDM.particulator import Particulator
 

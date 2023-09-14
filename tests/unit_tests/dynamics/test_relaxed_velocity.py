@@ -150,9 +150,7 @@ def test_behavior(default_attributes, constant_timescale, backend_class):
 
 
 @pytest.mark.parametrize("c", [0.1, 10])
-def test_timescale(
-    default_attributes, c, constant_timescale, backend_class
-):  # pylint: disable=redefined-outer-name
+def test_timescale(default_attributes, c, constant_timescale, backend_class):
     """
     The non-constant timescale should be proportional to the sqrt of the radius. The
     proportionality constant should be the parameter for the dynamic.

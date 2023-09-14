@@ -1,8 +1,6 @@
 """
 particle wet radius (calculated from the volume)
 """
-import numpy as np
-
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
