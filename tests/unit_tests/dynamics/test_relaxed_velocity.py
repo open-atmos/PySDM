@@ -160,7 +160,9 @@ def test_timescale(
     The constant timescale should be constant.
     """
 
-    builder = Builder(n_sd=len(default_attributes["multiplicity"]), backend=backend_class())
+    builder = Builder(
+        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+    )
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -175,7 +177,9 @@ def test_timescale(
 
     particulator = builder.build(attributes=default_attributes, products=())
 
-    tau_storage = particulator.Storage.empty(default_attributes["multiplicity"].shape, dtype=float)
+    tau_storage = particulator.Storage.empty(
+        default_attributes["multiplicity"].shape, dtype=float
+    )
     dyn.calculate_tau(tau_storage, sqrt_radius_attr.get())
 
     # expected_c should be whatever c was set to in the dynamic

@@ -29,5 +29,5 @@ class SquareRootOfRadius(DerivedAttribute):
         )
 
     def recalculate(self):
-        self.data[:] = self.radius.data
-        self.data **= .5
+        self.data.fill(self.radius.data)
+        self.data **= 0.5

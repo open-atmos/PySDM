@@ -282,6 +282,19 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 n=(output.shape[0]), args=(Impl.thrust((output, divisor)))
             )
 
+        __exp_body = trtc.For(
+            ("output",),
+            "i",
+            """
+                output[i] = exp(output[i]);
+            """,
+        )
+
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def exp(output):
+            Impl.__exp_body.launch_n(output.shape[0], Impl.thrust((output,)))
+
     class Storage(StorageBase):
         FLOAT = BACKEND._get_np_dtype()
         INT = np.int64
@@ -508,6 +521,10 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 else:
                     raise TypeError("Only Storage, int and float are supported.")
                 trtc.Fill(self.data, dvalue)
+            return self
+
+        def exp(self):
+            Impl.exp(self)
             return self
 
     return Storage

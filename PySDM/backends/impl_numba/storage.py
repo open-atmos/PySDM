@@ -193,3 +193,6 @@ class Storage(StorageBase):
             self.data[:] = other.data
         else:
             self.data[:] = other
+
+    def exp(self):
+        self.data[:] = np.exp(self.data)

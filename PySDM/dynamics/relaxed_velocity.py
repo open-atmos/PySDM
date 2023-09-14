@@ -50,8 +50,11 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
             output *= sqrt_radius_storage
 
     def calculate_scale_factor(self, output, tau_storage):
-        # TODO: this should be done with backend storage functions if possible
-        output[:] = 1 - np.exp(-self.particulator.dt / tau_storage.to_ndarray())
+        output.fill(-self.particulator.dt)
+        output /= tau_storage
+        output.exp()
+        output *= -1
+        output += 1
 
     def create_storage(self, n):
         return self.particulator.Storage.empty((n,), dtype=float)
