@@ -11,6 +11,5 @@ class Radius(DerivedAttribute):
         super().__init__(builder, name="radius", dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 1 / 3
