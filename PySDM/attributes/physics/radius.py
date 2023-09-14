@@ -29,5 +29,5 @@ class SquareRootOfRadius(DerivedAttribute):
         )
 
     def recalculate(self):
-        # TODO: this should be done with backend storage functions if possible
-        self.data[:] = np.sqrt(self.radius.get().to_ndarray())
+        self.data[:] = self.radius.data
+        self.data **= .5
