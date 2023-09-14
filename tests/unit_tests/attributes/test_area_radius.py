@@ -33,7 +33,7 @@ def test_sqrt_radius(volume):
     builder.request_attribute("radius")
     builder.request_attribute("square root of radius")
     particulator = builder.build(
-        attributes={"volume": [volume], "n": np.ones_like(volume)}
+        attributes={"volume": [volume], "multiplicity": np.ones_like(volume)}
     )
 
     # act

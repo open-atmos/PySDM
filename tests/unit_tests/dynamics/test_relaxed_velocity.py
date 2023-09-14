@@ -160,7 +160,7 @@ def test_timescale(
     The constant timescale should be constant.
     """
 
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
+    builder = Builder(n_sd=len(default_attributes["multiplicity"]), backend=backend_class())
 
     builder.set_environment(Box(dt=1, dv=1))
 
@@ -170,12 +170,12 @@ def test_timescale(
     builder.add_dynamic(dyn)
 
     default_attributes["relative fall momentum"] = np.zeros_like(
-        default_attributes["n"]
+        default_attributes["multiplicity"]
     )
 
     particulator = builder.build(attributes=default_attributes, products=())
 
-    tau_storage = particulator.Storage.empty(default_attributes["n"].shape, dtype=float)
+    tau_storage = particulator.Storage.empty(default_attributes["multiplicity"].shape, dtype=float)
     dyn.calculate_tau(tau_storage, sqrt_radius_attr.get())
 
     # expected_c should be whatever c was set to in the dynamic
