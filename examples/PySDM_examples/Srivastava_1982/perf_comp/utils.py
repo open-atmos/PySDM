@@ -35,7 +35,7 @@ def print_all_products(particulator):
 
 
 
-def go_benchmark(setup_sim, n_sds, n_steps, seeds, numba_n_threads=[None], backends=[CPU, GPU]):
+def go_benchmark(setup_sim, n_sds, n_steps, seeds, numba_n_threads=[None], double_precision=True, backends=[CPU, GPU]):
   dt = datetime.now()
   TIMESTAMP = str(dt)
 
@@ -66,7 +66,7 @@ def go_benchmark(setup_sim, n_sds, n_steps, seeds, numba_n_threads=[None], backe
       results[backend_name][n_sd] = {}
 
       for seed in seeds:
-        particulator = setup_sim(n_sd, backend_class, seed)
+        particulator = setup_sim(n_sd, backend_class, seed, double_precision=True)
         particulator.run(steps=1)
 
         t0 = time.time()
@@ -109,7 +109,7 @@ def write_to_file(filename, d):
     json.dump(d, fp)
 
 
-def plot_processed_results(processed_d, show=True, plot_label='', plot_title=None, metric='min'):
+def plot_processed_results(processed_d, show=True, plot_label='', plot_title=None, metric='min', plot_filename=None):
   x = []
   y = []
 
@@ -134,7 +134,7 @@ def plot_processed_results(processed_d, show=True, plot_label='', plot_title=Non
 
     pyplot.plot(x, y, label=backend+plot_label, marker=markers[backend])
 
-  pyplot.legend(bbox_to_anchor =(1.1, 1))
+  pyplot.legend() #bbox_to_anchor =(1.1, 1))
   pyplot.xscale('log', base=2)
   pyplot.yscale('log', base=2)
   pyplot.grid()
@@ -146,7 +146,7 @@ def plot_processed_results(processed_d, show=True, plot_label='', plot_title=Non
     pyplot.title(plot_title)
 
   if show:
-    show_plot()
+    show_plot(filename=plot_filename)
 
 
 def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
