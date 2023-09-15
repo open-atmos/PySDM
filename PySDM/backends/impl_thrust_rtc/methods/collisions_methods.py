@@ -633,22 +633,24 @@ class CollisionsMethods(
 
     @cached_property
     def __straub_mass_remainder(self):
-        return """
+        const = self.formulae.constants
+        return f"""
                 Nr1[i] = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2) / 2);
                 Nr2[i] = Nr2[i] * (pow(mu2, 3) + 3 * mu2 * pow(sigma2, 2));
                 Nr3[i] = Nr3[i] * (pow(mu3, 3) + 3 * mu3 * pow(sigma3, 2));
-                Nr4[i] = v_max[i] * 6.0 / 3.141592654 + pow(ds[i], 3) - Nr1[i] - Nr2[i] - Nr3[i];
-                if (Nr4[i] <= 0.0) {
+                Nr4[i] = v_max[i] * 6 / {const.PI} + pow(ds[i], 3) - Nr1[i] - Nr2[i] - Nr3[i];
+                if (Nr4[i] <= 0.0) {{
                     d34[i] = 0;
                     Nr4[i] = 0;
-                }
-                else {
+                }}
+                else {{
                     d34[i] = exp(log(Nr4[i]) / 3);
-                }
+                }}
         """
 
     @cached_property
     def __straub_fragmentation_body(self):
+        const = self.formulae.constants
         return trtc.For(
             param_names=(
                 "CW",
@@ -699,7 +701,7 @@ class CollisionsMethods(
                     frag_size[i] = d34[i];
                 }}
 
-                frag_size[i] = pow(frag_size[i], 3) * 3.141592654 / 6.0;
+                frag_size[i] = pow(frag_size[i], 3) * {const.PI} / 6;
             """.replace(
                 "real_type", self._get_c_type()
             ),
