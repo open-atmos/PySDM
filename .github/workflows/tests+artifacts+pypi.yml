@@ -125,11 +125,11 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
-        python-version: ["3.7", "3.10"]
+        python-version: ["3.8", "3.10"]
         test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
         exclude:
           - test-suite: "devops_tests"
-            python-version: "3.7"
+            python-version: "3.8"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 60
@@ -148,9 +148,6 @@ jobs:
       # sanity check if we do not depend on something from tests extras
       - run: |
           python -We -c "import PySDM"
-
-      - if: startsWith(matrix.platform, 'macos-') && matrix.python-version == '3.7'
-        run: echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
 
       - run: |
           pip install -e ./examples
@@ -192,8 +189,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: |
           python -m pip install --upgrade --user pip
-      - if: startsWith(matrix.platform, 'macos-') && matrix.python-version == '3.7'
-        run: echo SYSTEM_VERSION_COMPAT=0 >> $GITHUB_ENV
       - run: |
           python -m pip install -e . ./examples
           python -m pip install -r tests/devops_tests/requirements.txt

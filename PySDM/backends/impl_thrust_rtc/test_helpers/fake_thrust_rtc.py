@@ -228,3 +228,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     @staticmethod
     def Set_Verbose(_):  # pylint: disable=invalid-name
         pass
+
+    @staticmethod
+    def Get_PTX_Arch():  # pylint: disable=invalid-name
+        return 666

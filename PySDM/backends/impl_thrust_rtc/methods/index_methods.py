@@ -19,10 +19,9 @@ class IndexMethods(ThrustRTCBackendMethods):
             body="idx[i] = i;",
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def identity_index(idx):
-        IndexMethods.__identity_index_body.launch_n(idx.size(), (idx,))
+    def identity_index(self, idx):
+        self.__identity_index_body.launch_n(idx.size(), (idx,))
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -51,11 +50,10 @@ class IndexMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def shuffle_local(idx, u01, cell_start):
+    def shuffle_local(self, idx, u01, cell_start):
         raise AssertionError("Unpredictable behavior")  # TODO #358
-        IndexMethods.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
+        self.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
             cell_start.size() - 1, [cell_start, u01, idx]
         )
 

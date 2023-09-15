@@ -206,6 +206,8 @@ def _c_inline(fun, return_type=None, constants=None, **args):
             stripped += " "
         source += stripped
     source = source.replace("np.power(", "np.pow(")
+    source = source.replace("np.arctanh(", "atanh(")
+    source = source.replace("np.arcsinh(", "asinh(")
     for pkg in ("np", "math"):
         source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")
