@@ -96,8 +96,12 @@ class TestFreezingMethods:
         )
 
     @staticmethod
+    @pytest.mark.parametrize("double_precision", (True, False))
     # pylint: disable=too-many-locals
-    def test_freeze_time_dependent(backend_class, plot=False):
+    def test_freeze_time_dependent(backend_class, double_precision, plot=False):
+        if backend_class.__name__ == "Numba" and not double_precision:
+            pytest.skip()
+
         # Arrange
         seed = 44
         cases = (
@@ -146,7 +150,12 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
-            builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
+            builder = Builder(
+                n_sd=n_sd,
+                backend=backend_class(
+                    formulae=formulae, double_precision=double_precision
+                ),
+            )
             env = Box(dt=case["dt"], dv=d_v)
             builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))

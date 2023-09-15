@@ -9,8 +9,40 @@ from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
+# https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#atomic-functions
+DOUBLE_ATOMIC_ADD_FOR_COMPUTE_LT_60 = """
+struct Commons {
+    static __device__ double atomicAdd(double* address, double val)
+    {
+        unsigned long long int* address_as_ull =
+                                  (unsigned long long int*)address;
+        unsigned long long int old = *address_as_ull, assumed;
+
+        do {
+            assumed = old;
+            old = atomicCAS(address_as_ull, assumed,
+                            __double_as_longlong(val +
+                                   __longlong_as_double(assumed)));
+
+        // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
+        } while (assumed != old);
+
+        return __longlong_as_double(old);
+    }
+};
+double (*atomicAdd)(double*, double) = &Commons::atomicAdd;
+"""
+
 
 class MomentsMethods(ThrustRTCBackendMethods):
+    def __init__(self, double_precision):
+        ThrustRTCBackendMethods.__init__(self)
+
+        if trtc.Get_PTX_Arch() < 60 and double_precision:
+            self.commons = DOUBLE_ATOMIC_ADD_FOR_COMPUTE_LT_60
+        else:
+            self.commons = ""
+
     @cached_property
     def __moments_body_0(self):
         return trtc.For(
@@ -30,7 +62,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "n_cell",
             ),
             "fake_i",
-            """
+            self.commons
+            + """
             auto i = idx[fake_i];
             if (min_x <= x_attr[i] && x_attr[i] < max_x) {
                 atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(multiplicity[i]));
@@ -82,7 +115,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "n_cell",
             ),
             "fake_i",
-            """
+            self.commons
+            + """
             auto i = idx[fake_i];
             for (auto k = 0; k < n_bins; k+=1) {
                 if (x_bins[k] <= x_attr[i] and x_attr[i] < x_bins[k + 1]) {
