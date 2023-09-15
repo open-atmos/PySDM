@@ -89,10 +89,15 @@ def go_benchmark(
       for seed in seeds:
 
         gc.collect()
+
+        print()
+        print('prod before')
+        particulator = setup_sim(n_sd, backend_class, seed, double_precision=double_precision, total_number=total_number)
+        print_all_products(particulator)
         
-        particulator = setup_sim(n_sd, backend_class, seed, double_precision=True)
         particulator.run(steps=1)
 
+        print()
         print('start')
 
         t0 = time.time()
