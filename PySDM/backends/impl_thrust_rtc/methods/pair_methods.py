@@ -1,6 +1,8 @@
 """
 GPU implementation of pairwise operations backend methods
 """
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -9,15 +11,17 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class PairMethods(ThrustRTCBackendMethods):
-    __distance_pair_body = trtc.For(
-        param_names=("data_out", "data_in", "is_first_in_pair"),
-        name_iter="i",
-        body="""
+    @cached_property
+    def __distance_pair_body(self):
+        return trtc.For(
+            param_names=("data_out", "data_in", "is_first_in_pair"),
+            name_iter="i",
+            body="""
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
         }
         """,
-    )
+        )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -28,20 +32,22 @@ class PairMethods(ThrustRTCBackendMethods):
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
         )
 
-    __find_pairs_body = trtc.For(
-        param_names=("cell_start", "perm_cell_id", "is_first_in_pair", "length"),
-        name_iter="i",
-        body="""
-        if (i < length -1) {
-            auto is_in_same_cell = perm_cell_id[i] == perm_cell_id[i + 1];
-            auto is_even_index = (i - cell_start[perm_cell_id[i]]) % 2 == 0;
+    @cached_property
+    def __find_pairs_body(self):
+        return trtc.For(
+            param_names=("cell_start", "perm_cell_id", "is_first_in_pair", "length"),
+            name_iter="i",
+            body="""
+            if (i < length -1) {
+                auto is_in_same_cell = perm_cell_id[i] == perm_cell_id[i + 1];
+                auto is_even_index = (i - cell_start[perm_cell_id[i]]) % 2 == 0;
 
-            is_first_in_pair[i] = is_in_same_cell && is_even_index;
-        } else {
-            is_first_in_pair[i] = false;
-        }
-        """,
-    )
+                is_first_in_pair[i] = is_in_same_cell && is_even_index;
+            } else {
+                is_first_in_pair[i] = false;
+            }
+            """,
+        )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -59,15 +65,17 @@ class PairMethods(ThrustRTCBackendMethods):
             ),
         )
 
-    __max_pair_body = trtc.For(
-        param_names=("data_out", "perm_in", "is_first_in_pair"),
-        name_iter="i",
-        body="""
-        if (is_first_in_pair[i]) {
-            data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);
-        }
-        """,
-    )
+    @cached_property
+    def __max_pair_body(self):
+        return trtc.For(
+            param_names=("data_out", "perm_in", "is_first_in_pair"),
+            name_iter="i",
+            body="""
+            if (is_first_in_pair[i]) {
+                data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);
+            }
+            """,
+        )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -78,22 +86,24 @@ class PairMethods(ThrustRTCBackendMethods):
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
         )
 
-    __sort_pair_body = trtc.For(
-        param_names=("data_out", "data_in", "is_first_in_pair"),
-        name_iter="i",
-        body="""
-        if (is_first_in_pair[i]) {
-            if (data_in[i] < data_in[i + 1]) {
-                data_out[i] = data_in[i + 1];
-                data_out[i + 1] = data_in[i];
+    @cached_property
+    def __sort_pair_body(self):
+        return trtc.For(
+            param_names=("data_out", "data_in", "is_first_in_pair"),
+            name_iter="i",
+            body="""
+            if (is_first_in_pair[i]) {
+                if (data_in[i] < data_in[i + 1]) {
+                    data_out[i] = data_in[i + 1];
+                    data_out[i + 1] = data_in[i];
+                }
+                else {
+                    data_out[i] = data_in[i];
+                    data_out[i + 1] = data_in[i + 1];
+                }
             }
-            else {
-                data_out[i] = data_in[i];
-                data_out[i + 1] = data_in[i + 1];
-            }
-        }
-        """,
-    )
+            """,
+        )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -105,19 +115,21 @@ class PairMethods(ThrustRTCBackendMethods):
                 len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data]
             )
 
-    __sort_within_pair_by_attr_body = trtc.For(
-        param_names=("idx", "is_first_in_pair", "attr"),
-        name_iter="i",
-        body="""
-        if (is_first_in_pair[i]) {
-            if (attr[idx[i]] < attr[idx[i + 1]]) {
-                auto tmp = idx[i];
-                idx[i] = idx[i + 1];
-                idx[i + 1] = tmp;
+    @cached_property
+    def __sort_within_pair_by_attr_body(self):
+        return trtc.For(
+            param_names=("idx", "is_first_in_pair", "attr"),
+            name_iter="i",
+            body="""
+            if (is_first_in_pair[i]) {
+                if (attr[idx[i]] < attr[idx[i + 1]]) {
+                    auto tmp = idx[i];
+                    idx[i] = idx[i + 1];
+                    idx[i + 1] = tmp;
+                }
             }
-        }
-        """,
-    )
+            """,
+        )
 
     @staticmethod
     def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
@@ -127,15 +139,17 @@ class PairMethods(ThrustRTCBackendMethods):
             len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data]
         )
 
-    __sum_pair_body = trtc.For(
-        param_names=("data_out", "perm_in", "is_first_in_pair"),
-        name_iter="i",
-        body="""
-        if (is_first_in_pair[i]) {
-            data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
-        }
-        """,
-    )
+    @cached_property
+    def __sum_pair_body(self):
+        return trtc.For(
+            param_names=("data_out", "perm_in", "is_first_in_pair"),
+            name_iter="i",
+            body="""
+            if (is_first_in_pair[i]) {
+                data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
+            }
+            """,
+        )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -147,20 +161,22 @@ class PairMethods(ThrustRTCBackendMethods):
             args=(data_out.data, perm_in, is_first_in_pair.indicator.data),
         )
 
-    __min_pair_body = trtc.For(
-        param_names=(
-            "data_out",
-            "data_in",
-            "is_first_in_pair",
-            "idx",
-        ),
-        name_iter="i",
-        body="""
-        if (is_first_in_pair[i]) {
-            data_out[(int64_t)(i/2)] = min(data_in[idx[i]], data_in[idx[i + 1]]);
-        }
-        """,
-    )
+    @cached_property
+    def __min_pair_body(self):
+        return trtc.For(
+            param_names=(
+                "data_out",
+                "data_in",
+                "is_first_in_pair",
+                "idx",
+            ),
+            name_iter="i",
+            body="""
+            if (is_first_in_pair[i]) {
+                data_out[(int64_t)(i/2)] = min(data_in[idx[i]], data_in[idx[i + 1]]);
+            }
+            """,
+        )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -176,20 +192,22 @@ class PairMethods(ThrustRTCBackendMethods):
             ),
         )
 
-    __multiply_pair_body = trtc.For(
-        param_names=(
-            "data_out",
-            "data_in",
-            "is_first_in_pair",
-            "idx",
-        ),
-        name_iter="i",
-        body="""
-        if (is_first_in_pair[i]) {
-            data_out[(int64_t)(i/2)] = data_in[idx[i]] * data_in[idx[i + 1]];
-        }
-        """,
-    )
+    @cached_property
+    def __multiply_pair_body(self):
+        return trtc.For(
+            param_names=(
+                "data_out",
+                "data_in",
+                "is_first_in_pair",
+                "idx",
+            ),
+            name_iter="i",
+            body="""
+            if (is_first_in_pair[i]) {
+                data_out[(int64_t)(i/2)] = data_in[idx[i]] * data_in[idx[i + 1]];
+            }
+            """,
+        )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)

@@ -1,6 +1,8 @@
 """
 GPU implementation of backend methods for particle collisions
 """
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -215,10 +217,9 @@ struct Commons {
 class CollisionsMethods(
     ThrustRTCBackendMethods
 ):  # pylint: disable=too-many-instance-attributes
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-
-        self.__scale_prob_for_adaptive_sdm_gamma_body_1 = trtc.For(
+    @cached_property
+    def __scale_prob_for_adaptive_sdm_gamma_body_1(self):
+        return trtc.For(
             param_names=("dt_todo", "dt_left", "dt_max"),
             name_iter="cid",
             body="""
@@ -226,7 +227,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.__scale_prob_for_adaptive_sdm_gamma_body_2 = trtc.For(
+    @cached_property
+    def __scale_prob_for_adaptive_sdm_gamma_body_2(self):
+        return trtc.For(
             param_names=(
                 "prob",
                 "idx",
@@ -257,7 +260,9 @@ class CollisionsMethods(
             ),
         )
 
-        self.__scale_prob_for_adaptive_sdm_gamma_body_3 = trtc.For(
+    @cached_property
+    def __scale_prob_for_adaptive_sdm_gamma_body_3(self):
+        return trtc.For(
             param_names=("prob", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
             name_iter="i",
             body=f"""
@@ -276,7 +281,9 @@ class CollisionsMethods(
             ),
         )
 
-        self.__scale_prob_for_adaptive_sdm_gamma_body_4 = trtc.For(
+    @cached_property
+    def __scale_prob_for_adaptive_sdm_gamma_body_4(self):
+        return trtc.For(
             param_names=("dt_left", "dt_todo", "stats_n_substep"),
             name_iter="cid",
             body="""
@@ -287,7 +294,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.___sort_by_cell_id_and_update_cell_start_body = trtc.For(
+    @cached_property
+    def __sort_by_cell_id_and_update_cell_start_body(self):
+        return trtc.For(
             param_names=("cell_id", "cell_start", "idx"),
             name_iter="i",
             body="""
@@ -304,7 +313,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.__collision_coalescence_body = trtc.For(
+    @cached_property
+    def __collision_coalescence_body(self):
+        return trtc.For(
             param_names=(
                 "multiplicity",
                 "idx",
@@ -337,7 +348,9 @@ class CollisionsMethods(
             ),
         )
 
-        self.__collision_coalescence_breakup_body = trtc.For(
+    @cached_property
+    def __collision_coalescence_breakup_body(self):
+        return trtc.For(
             param_names=(
                 "multiplicity",
                 "idx",
@@ -410,7 +423,9 @@ class CollisionsMethods(
             ),
         )
 
-        self.__compute_gamma_body = trtc.For(
+    @cached_property
+    def __compute_gamma_body(self):
+        return trtc.For(
             param_names=(
                 "prob",
                 "rand",
@@ -454,7 +469,9 @@ class CollisionsMethods(
             ),
         )
 
-        self.__normalize_body_0 = trtc.For(
+    @cached_property
+    def __normalize_body_0(self):
+        return trtc.For(
             param_names=("cell_start", "norm_factor", "dt_div_dv"),
             name_iter="i",
             body="""
@@ -469,7 +486,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.__normalize_body_1 = trtc.For(
+    @cached_property
+    def __normalize_body_1(self):
+        return trtc.For(
             param_names=("prob", "cell_id", "norm_factor"),
             name_iter="i",
             body="""
@@ -477,7 +496,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.__remove_zero_n_or_flagged_body = trtc.For(
+    @cached_property
+    def __remove_zero_n_or_flagged_body(self):
+        return trtc.For(
             param_names=("data", "idx", "n_sd"),
             name_iter="i",
             body="""
@@ -487,7 +508,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.__cell_id_body = trtc.For(
+    @cached_property
+    def __cell_id_body(self):
+        return trtc.For(
             param_names=("cell_id", "cell_origin", "strides", "n_dims", "size"),
             name_iter="i",
             body="""
@@ -498,7 +521,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.__exp_fragmentation_body = trtc.For(
+    @cached_property
+    def __exp_fragmentation_body(self):
+        return trtc.For(
             param_names=("scale", "frag_size", "rand", "tol"),
             name_iter="i",
             body="""
@@ -506,7 +531,9 @@ class CollisionsMethods(
             """,
         )
 
-        self.__fragmentation_limiters_body = trtc.For(
+    @cached_property
+    def __fragmentation_limiters_body(self):
+        return trtc.For(
             param_names=(
                 "n_fragment",
                 "frag_size",
@@ -534,20 +561,23 @@ class CollisionsMethods(
             """,
         )
 
-        if self.formulae.fragmentation_function.__name__ == "Gaussian":
-            self.__gauss_fragmentation_body = trtc.For(
-                param_names=("mu", "sigma", "frag_size", "rand"),
-                name_iter="i",
-                body=f"""
-                frag_size[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
-                    c="rand[i]"
-                )};
-                """.replace(
-                    "real_type", self._get_c_type()
-                ),
-            )
+    @cached_property
+    def __gauss_fragmentation_body(self):
+        return trtc.For(
+            param_names=("mu", "sigma", "frag_size", "rand"),
+            name_iter="i",
+            body=f"""
+            frag_size[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
+                c="rand[i]"
+            )};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
 
-        self.__slams_fragmentation_body = trtc.For(
+    @cached_property
+    def __slams_fragmentation_body(self):
+        return trtc.For(
             param_names=("n_fragment", "frag_size", "x_plus_y", "probs", "rand"),
             name_iter="i",
             body="""
@@ -565,23 +595,26 @@ class CollisionsMethods(
             """,
         )
 
-        if self.formulae.fragmentation_function.__name__ == "Feingold1988Frag":
-            self.__feingold1988_fragmentation_body = trtc.For(
-                param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
-                name_iter="i",
-                body=f"""
-                frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
-                    scale="scale",
-                    rand="rand[i]",
-                    x_plus_y="x_plus_y[i]",
-                    fragtol="fragtol"
-                )};
-                """.replace(
-                    "real_type", self._get_c_type()
-                ),
-            )
+    @cached_property
+    def __feingold1988_fragmentation_body(self):
+        return trtc.For(
+            param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
+            name_iter="i",
+            body=f"""
+            frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
+                scale="scale",
+                rand="rand[i]",
+                x_plus_y="x_plus_y[i]",
+                fragtol="fragtol"
+            )};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
 
-        self.__straub_Nr_body = """
+    @cached_property
+    def __straub_Nr_body(self):
+        return """
                 if (gam[i] * CW[i] >= 7.0) {
                     Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);
                 }
@@ -598,7 +631,9 @@ class CollisionsMethods(
                 Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
         """
 
-        self.__straub_mass_remainder = """
+    @cached_property
+    def __straub_mass_remainder(self):
+        return """
                 Nr1[i] = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.0) / 2);
                 Nr2[i] = Nr2[i] * (pow(mu2, 3.0) + 3 * mu2 * pow(sigma2, 2.0));
                 Nr3[i] = Nr3[i] * (pow(mu3, 3.0) + 3 * mu3 * pow(sigma3, 2.0));
@@ -612,62 +647,63 @@ class CollisionsMethods(
                 }
         """
 
-        if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
-            self.__straub_fragmentation_body = trtc.For(
-                param_names=(
-                    "CW",
-                    "gam",
-                    "ds",
-                    "frag_size",
-                    "v_max",
-                    "rand",
-                    "Nr1",
-                    "Nr2",
-                    "Nr3",
-                    "Nr4",
-                    "Nrt",
-                    "d34",
-                ),
-                name_iter="i",
-                body=f"""
-                {self.__straub_Nr_body}
-                auto sigma1 = {self.formulae.fragmentation_function.params_sigma1.c_inline(CW="CW[i]")};
-                auto mu1 = {self.formulae.fragmentation_function.params_mu1.c_inline(sigma1="sigma1")};
-                auto sigma2 = {self.formulae.fragmentation_function.params_sigma2.c_inline(CW="CW[i]")};
-                auto mu2 = {self.formulae.fragmentation_function.params_mu2.c_inline(ds="ds[i]")};
-                auto sigma3 = {self.formulae.fragmentation_function.params_sigma3.c_inline(CW="CW[i]")};
-                auto mu3 = {self.formulae.fragmentation_function.params_mu3.c_inline(ds="ds[i]")};
-                {self.__straub_mass_remainder}
-                Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
+    @cached_property
+    def __straub_fragmentation_body(self):
+        return trtc.For(
+            param_names=(
+                "CW",
+                "gam",
+                "ds",
+                "frag_size",
+                "v_max",
+                "rand",
+                "Nr1",
+                "Nr2",
+                "Nr3",
+                "Nr4",
+                "Nrt",
+                "d34",
+            ),
+            name_iter="i",
+            body=f"""
+            {self.__straub_Nr_body}
+            auto sigma1 = {self.formulae.fragmentation_function.params_sigma1.c_inline(CW="CW[i]")};
+            auto mu1 = {self.formulae.fragmentation_function.params_mu1.c_inline(sigma1="sigma1")};
+            auto sigma2 = {self.formulae.fragmentation_function.params_sigma2.c_inline(CW="CW[i]")};
+            auto mu2 = {self.formulae.fragmentation_function.params_mu2.c_inline(ds="ds[i]")};
+            auto sigma3 = {self.formulae.fragmentation_function.params_sigma3.c_inline(CW="CW[i]")};
+            auto mu3 = {self.formulae.fragmentation_function.params_mu3.c_inline(ds="ds[i]")};
+            {self.__straub_mass_remainder}
+            Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
-                if (rand[i] < Nr1[i] / Nrt[i]) {{
-                    auto X = rand[i] * Nrt[i] / Nr1[i];
-                    auto lnarg = mu1 + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
-                        c="X"
-                    )};
-                    frag_size[i] = exp(lnarg);
-                }}
-                else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                    auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
-                    frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
-                        c="X"
-                    )};
-                }}
-                else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                    auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
-                    frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
-                        c="X"
-                    )};
-                }}
-                else {{
-                    frag_size[i] = d34[i];
-                }}
+            if (rand[i] < Nr1[i] / Nrt[i]) {{
+                auto X = rand[i] * Nrt[i] / Nr1[i];
+                auto lnarg = mu1 + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
+                    c="X"
+                )};
+                frag_size[i] = exp(lnarg);
+            }}
+            else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
+                frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
+                    c="X"
+                )};
+            }}
+            else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
+                frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
+                    c="X"
+                )};
+            }}
+            else {{
+                frag_size[i] = d34[i];
+            }}
 
-                frag_size[i] = pow(frag_size[i], 3.0) * 3.141592654 / 6.0
-                """.replace(
-                    "real_type", self._get_c_type()
-                ),
-            )
+            frag_size[i] = pow(frag_size[i], 3.0) * 3.141592654 / 6.0
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_end(self, dt_left, cell_start):
@@ -900,10 +936,10 @@ class CollisionsMethods(
         #   was here before (but cause huge slowdown of otherwise correct code)
         #      max_cell_id = max(cell_id.to_ndarray())
         #      assert max_cell_id == 0
-        #   no handling of cell_idx in ___sort_by_cell_id_and_update_cell_start_body yet
+        #   no handling of cell_idx in __sort_by_cell_id_and_update_cell_start_body yet
         trtc.Fill(cell_start.data, trtc.DVInt64(len(idx)))
         if len(idx) > 1:
-            self.___sort_by_cell_id_and_update_cell_start_body.launch_n(
+            self.__sort_by_cell_id_and_update_cell_start_body.launch_n(
                 n=len(idx) - 1, args=(cell_id.data, cell_start.data, idx.data)
             )
 

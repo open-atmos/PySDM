@@ -64,7 +64,7 @@ def test_fall_velocity_calculation(default_attributes, backend_class):
 
     # needed to use relative fall velocity instead of terminal
     # velocity behind the scenes
-    builder.add_dynamic(RelaxedVelocity(tau=1))
+    builder.add_dynamic(RelaxedVelocity())
 
     builder.request_attribute("relative fall velocity")
 
@@ -91,7 +91,7 @@ def test_conservation_of_momentum(default_attributes, backend_class):
     builder.set_environment(Box(dt=1, dv=1))
 
     # add and remove relaxed velocity to prevent warning
-    builder.add_dynamic(RelaxedVelocity(tau=1))
+    builder.add_dynamic(RelaxedVelocity())
 
     builder.request_attribute("relative fall momentum")
 
@@ -139,7 +139,7 @@ def test_attribute_selection(backend_class):
 
     builder = Builder(n_sd=1, backend=backend_class())
     builder.set_environment(Box(dt=1, dv=1))
-    builder.add_dynamic(RelaxedVelocity(tau=1))
+    builder.add_dynamic(RelaxedVelocity())
     builder.request_attribute("relative fall velocity")
 
     # with RelaxedVelocity, the builder should use RelativeFallVelocity

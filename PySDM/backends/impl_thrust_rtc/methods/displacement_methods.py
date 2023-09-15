@@ -1,6 +1,8 @@
 """
 GPU implementation of backend methods for particle displacement (advection and sedimentation)
 """
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -9,9 +11,9 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class DisplacementMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        self.__calculate_displacement_body = {
+    @cached_property
+    def __calculate_displacement_body(self):
+        return {
             n_dims: trtc.For(
                 param_names=(
                     "dim",
@@ -60,7 +62,9 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             for n_dims in (1, 2, 3)
         }
 
-        self.__flag_precipitated_body = trtc.For(
+    @cached_property
+    def __flag_precipitated_body(self):
+        return trtc.For(
             (
                 "idx",
                 "n_sd",

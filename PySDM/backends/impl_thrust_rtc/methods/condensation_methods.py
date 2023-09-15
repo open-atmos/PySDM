@@ -1,6 +1,7 @@
 """
 GPU implementation of backend methods for water condensation/evaporation
 """
+from functools import cached_property
 from typing import Dict, Optional
 
 from PySDM.backends.impl_common.storage_utils import StorageBase
@@ -11,15 +12,45 @@ from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
+ARGS_VARS = (
+    "x_old",
+    "dt",
+    "kappa",
+    "f_org",
+    "rd3",
+    "_T",
+    "_RH",
+    "_lv",
+    "_pvs",
+    "Dr",
+    "Kr",
+)
+
+
+def args(arg):
+    return f"args[{ARGS_VARS.index(arg)}]"
+
 
 class CondensationMethods(
     ThrustRTCBackendMethods
 ):  # pylint: disable=too-many-instance-attributes
     keys = ("T", "p", "pv", "lv", "pvs", "RH", "DTp", "lambdaK", "lambdaD")
 
+    @cached_property
+    def __calculate_m_l(self):
+        const = self.formulae.constants
+        return trtc.For(
+            ("ml", "v", "multiplicity", "cell_id"),
+            "i",
+            f"""
+            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * v[i] * {const.rho_w});
+        """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
     def __init__(self):
         ThrustRTCBackendMethods.__init__(self)
-        phys = self.formulae
         self.RH_rtol = None
         self.adaptive = None
         self.max_iters = None
@@ -33,36 +64,12 @@ class CondensationMethods(
         self.m_d: Optional[StorageBase] = None
         self.vars: Optional[Dict[str, StorageBase]] = None
         self.vars_data: Optional[Dict] = None
-        const = self.formulae.constants
 
-        self.__calculate_m_l = trtc.For(
-            ("ml", "v", "multiplicity", "cell_id"),
-            "i",
-            f"""
-            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * v[i] * {const.rho_w});
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
-        )
-
-        args_vars = (
-            "x_old",
-            "dt",
-            "kappa",
-            "f_org",
-            "rd3",
-            "_T",
-            "_RH",
-            "_lv",
-            "_pvs",
-            "Dr",
-            "Kr",
-        )
-
-        def args(arg):
-            return f"args[{args_vars.index(arg)}]"
-
-        self.__update_volume = trtc.For(
+    @cached_property
+    def __update_volume(self):
+        phys = self.formulae
+        const = phys.constants
+        return trtc.For(
             (
                 "v",
                 "vdry",
@@ -158,7 +165,7 @@ class CondensationMethods(
             }}
             real_type kappa = _kappa[i];
             real_type f_org = _f_org[i];
-            real_type args[] = {{{','.join(args_vars)}}}; // array
+            real_type args[] = {{{','.join(ARGS_VARS)}}}; // array
 
             if (dx_old == 0) {{
                 x_new = x_old;
@@ -210,7 +217,9 @@ class CondensationMethods(
             ),
         )
 
-        self.__pre_for = trtc.For(
+    @cached_property
+    def __pre_for(self):
+        return trtc.For(
             (
                 "dthd_dt_pred",
                 "d_water_vapour_mixing_ratio__dt_predicted",
@@ -243,7 +252,10 @@ class CondensationMethods(
         """,
         )
 
-        self.__pre = trtc.For(
+    @cached_property
+    def __pre(self):
+        phys = self.formulae
+        return trtc.For(
             (
                 *CondensationMethods.keys,
                 "dthd_dt_pred",
@@ -288,7 +300,10 @@ class CondensationMethods(
             ),
         )
 
-        self.__post = trtc.For(
+    @cached_property
+    def __post(self):
+        phys = self.formulae
+        return trtc.For(
             (
                 "dthd_dt_pred",
                 "d_water_vapour_mixing_ratio__dt_predicted",
