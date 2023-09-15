@@ -544,7 +544,7 @@ class CollisionsMethods(
             ),
             name_iter="i",
             body="""
-            frag_size[i] = min(frag_size[i], x_plus_y[i])
+            frag_size[i] = min(frag_size[i], x_plus_y[i]);
 
             if (nfmax_is_not_none) {
                 if (x_plus_y[i] / frag_size[i] > nfmax) {
@@ -634,11 +634,11 @@ class CollisionsMethods(
     @cached_property
     def __straub_mass_remainder(self):
         return """
-                Nr1[i] = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.0) / 2);
-                Nr2[i] = Nr2[i] * (pow(mu2, 3.0) + 3 * mu2 * pow(sigma2, 2.0));
-                Nr3[i] = Nr3[i] * (pow(mu3, 3.0) + 3 * mu3 * pow(sigma3, 2.0));
-                Nr4[i] = v_max[i] * 6.0 / 3.141592654 + pow(ds[i], 3.0) - Nr1[i] - Nr2[i] - Nr3[i];
-                if Nr4[i] <= 0.0 {
+                Nr1[i] = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2) / 2);
+                Nr2[i] = Nr2[i] * (pow(mu2, 3) + 3 * mu2 * pow(sigma2, 2));
+                Nr3[i] = Nr3[i] * (pow(mu3, 3) + 3 * mu3 * pow(sigma3, 2));
+                Nr4[i] = v_max[i] * 6.0 / 3.141592654 + pow(ds[i], 3) - Nr1[i] - Nr2[i] - Nr3[i];
+                if (Nr4[i] <= 0.0) {
                     d34[i] = 0;
                     Nr4[i] = 0;
                 }
@@ -666,40 +666,40 @@ class CollisionsMethods(
             ),
             name_iter="i",
             body=f"""
-            {self.__straub_Nr_body}
-            auto sigma1 = {self.formulae.fragmentation_function.params_sigma1.c_inline(CW="CW[i]")};
-            auto mu1 = {self.formulae.fragmentation_function.params_mu1.c_inline(sigma1="sigma1")};
-            auto sigma2 = {self.formulae.fragmentation_function.params_sigma2.c_inline(CW="CW[i]")};
-            auto mu2 = {self.formulae.fragmentation_function.params_mu2.c_inline(ds="ds[i]")};
-            auto sigma3 = {self.formulae.fragmentation_function.params_sigma3.c_inline(CW="CW[i]")};
-            auto mu3 = {self.formulae.fragmentation_function.params_mu3.c_inline(ds="ds[i]")};
-            {self.__straub_mass_remainder}
-            Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
+                {self.__straub_Nr_body}
+                auto sigma1 = {self.formulae.fragmentation_function.params_sigma1.c_inline(CW="CW[i]")};
+                auto mu1 = {self.formulae.fragmentation_function.params_mu1.c_inline(sigma1="sigma1")};
+                auto sigma2 = {self.formulae.fragmentation_function.params_sigma2.c_inline(CW="CW[i]")};
+                auto mu2 = {self.formulae.fragmentation_function.params_mu2.c_inline(ds="ds[i]")};
+                auto sigma3 = {self.formulae.fragmentation_function.params_sigma3.c_inline(CW="CW[i]")};
+                auto mu3 = {self.formulae.fragmentation_function.params_mu3.c_inline(ds="ds[i]")};
+                {self.__straub_mass_remainder}
+                Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
 
-            if (rand[i] < Nr1[i] / Nrt[i]) {{
-                auto X = rand[i] * Nrt[i] / Nr1[i];
-                auto lnarg = mu1 + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
-                    c="X"
-                )};
-                frag_size[i] = exp(lnarg);
-            }}
-            else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
-                frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
-                    c="X"
-                )};
-            }}
-            else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
-                frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
-                    c="X"
-                )};
-            }}
-            else {{
-                frag_size[i] = d34[i];
-            }}
+                if (rand[i] < Nr1[i] / Nrt[i]) {{
+                    auto X = rand[i] * Nrt[i] / Nr1[i];
+                    auto lnarg = mu1 + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
+                        c="X"
+                    )};
+                    frag_size[i] = exp(lnarg);
+                }}
+                else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                    auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
+                    frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
+                        c="X"
+                    )};
+                }}
+                else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                    auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
+                    frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
+                        c="X"
+                    )};
+                }}
+                else {{
+                    frag_size[i] = d34[i];
+                }}
 
-            frag_size[i] = pow(frag_size[i], 3.0) * 3.141592654 / 6.0
+                frag_size[i] = pow(frag_size[i], 3) * 3.141592654 / 6.0;
             """.replace(
                 "real_type", self._get_c_type()
             ),
