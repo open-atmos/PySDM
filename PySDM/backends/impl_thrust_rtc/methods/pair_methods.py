@@ -23,12 +23,11 @@ class PairMethods(ThrustRTCBackendMethods):
         """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def distance_pair(data_out, data_in, is_first_in_pair, idx):
+    def distance_pair(self, data_out, data_in, is_first_in_pair, idx):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        PairMethods.__distance_pair_body.launch_n(
+        self.__distance_pair_body.launch_n(
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
         )
 
@@ -49,13 +48,12 @@ class PairMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     # TODO #330 handle cell_idx (_ below)
-    def find_pairs(cell_start, is_first_in_pair, cell_id, _, idx):
+    def find_pairs(self, cell_start, is_first_in_pair, cell_id, _, idx):
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))
-        PairMethods.__find_pairs_body.launch_n(
+        self.__find_pairs_body.launch_n(
             n=len(idx),
             args=(
                 cell_start.data,
@@ -77,12 +75,11 @@ class PairMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def max_pair(data_out, data_in, is_first_in_pair, idx):
+    def max_pair(self, data_out, data_in, is_first_in_pair, idx):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        PairMethods.__max_pair_body.launch_n(
+        self.__max_pair_body.launch_n(
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
         )
 
@@ -105,13 +102,12 @@ class PairMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def sort_pair(data_out, data_in, is_first_in_pair, idx):
+    def sort_pair(self, data_out, data_in, is_first_in_pair, idx):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         if len(idx) > 1:
-            PairMethods.__sort_pair_body.launch_n(
+            self.__sort_pair_body.launch_n(
                 len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data]
             )
 
@@ -131,11 +127,10 @@ class PairMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
-    def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
+    def sort_within_pair_by_attr(self, idx, is_first_in_pair, attr):
         if len(idx) < 2:
             return
-        PairMethods.__sort_within_pair_by_attr_body.launch_n(
+        self.__sort_within_pair_by_attr_body.launch_n(
             len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data]
         )
 
@@ -151,12 +146,11 @@ class PairMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def sum_pair(data_out, data_in, is_first_in_pair, idx):
+    def sum_pair(self, data_out, data_in, is_first_in_pair, idx):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        PairMethods.__sum_pair_body.launch_n(
+        self.__sum_pair_body.launch_n(
             n=len(idx),
             args=(data_out.data, perm_in, is_first_in_pair.indicator.data),
         )
@@ -178,11 +172,10 @@ class PairMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def min_pair(data_out, data_in, is_first_in_pair, idx):
+    def min_pair(self, data_out, data_in, is_first_in_pair, idx):
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        PairMethods.__min_pair_body.launch_n(
+        self.__min_pair_body.launch_n(
             n=len(idx),
             args=(
                 data_out.data,
@@ -209,11 +202,10 @@ class PairMethods(ThrustRTCBackendMethods):
             """,
         )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
+    def multiply_pair(self, data_out, data_in, is_first_in_pair, idx):
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        PairMethods.__multiply_pair_body.launch_n(
+        self.__multiply_pair_body.launch_n(
             n=len(idx),
             args=(
                 data_out.data,
