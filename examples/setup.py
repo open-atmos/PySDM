@@ -27,7 +27,7 @@ setup(
         "PyMPDATA",
         "open-atmos-jupyter-utils",
         "pystrict",
-        "matplotlib",
+        "matplotlib" + "<3.8.0" if CI else "", # TODO #1142
         "joblib",
         "ipywidgets",
         "seaborn",
