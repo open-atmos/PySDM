@@ -22,7 +22,7 @@ from .utils import ProductsNames
 dt = 1 * si.s
 dv = 1 * si.m**3
 drop_mass_0=1 * si.g
-total_number=1e12
+TOTAL_NUMBER=1e12
 
 NO_BOUNCE = ConstEb(1)
 
@@ -55,12 +55,15 @@ def setup_simulation(settings, n_sd, seed, double_precision=True):
   return particulator
 
 
-def setup_coalescence_only_sim(n_sd, backend_class, seed, double_precision=True):
+def setup_coalescence_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None):
 
   title = "fig_coalescence-only"
   c = 0.5e-6 / si.s
   beta = 1e-15 / si.s
   frag_mass = -1 * si.g
+
+  if not total_number:
+    total_number=TOTAL_NUMBER
 
   settings = Settings(
       srivastava_c=c,
@@ -76,11 +79,14 @@ def setup_coalescence_only_sim(n_sd, backend_class, seed, double_precision=True)
 
   return setup_simulation(settings, n_sd, seed, double_precision)
 
-def setup_breakup_only_sim(n_sd, backend_class, seed, double_precision=True):
+def setup_breakup_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None):
   title = "fig_breakup-only"
   c =  1e-15 / si.s
   beta = 1e-9 / si.s
   frag_mass = 0.25 * si.g
+
+  if not total_number:
+    total_number=TOTAL_NUMBER
 
   settings = Settings(
       srivastava_c=c,
@@ -96,11 +102,14 @@ def setup_breakup_only_sim(n_sd, backend_class, seed, double_precision=True):
   return setup_simulation(settings, n_sd, seed, double_precision)
     
 
-def setup_coalescence_breakup_sim(n_sd, backend_class, seed, double_precision=True):
+def setup_coalescence_breakup_sim(n_sd, backend_class, seed, double_precision=True, total_number=None):
   title = "fig_coalescence-breakup"
   c =  0.5e-6 / si.s
   beta = 1e-9 / si.s
   frag_mass = 0.25 * si.g
+
+  if not total_number:
+    total_number=TOTAL_NUMBER
 
   settings = Settings(
       srivastava_c=c,

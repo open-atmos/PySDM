@@ -17,6 +17,7 @@ from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import ConstantSize
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
+import gc
 
 import time
 
@@ -34,10 +35,28 @@ def print_all_products(particulator):
   print(ProductsNames.super_particle_count, particulator.products[ProductsNames.super_particle_count].get())
 
 
+def get_prod_dict(particulator):
+  d = {
+    ProductsNames.total_number: list(particulator.products[ProductsNames.total_number].get()),
+    ProductsNames.total_volume: list(particulator.products[ProductsNames.total_volume].get()),
+    ProductsNames.super_particle_count: list(particulator.products[ProductsNames.super_particle_count].get())
+  }
 
-def go_benchmark(setup_sim, n_sds, n_steps, seeds, numba_n_threads=[None], double_precision=True, backends=[CPU, GPU]):
-  dt = datetime.now()
-  TIMESTAMP = str(dt)
+  return d
+
+
+
+def go_benchmark(
+  setup_sim, n_sds, n_steps, seeds, 
+  numba_n_threads=[None], 
+  double_precision=True, 
+  general_filename=None,
+  total_number=None, 
+  backends=[CPU, GPU]
+):
+  TIMESTAMP = str(datetime.now()).replace(' ', '_')
+
+  products = {}
 
   results = {}
 
@@ -56,6 +75,7 @@ def go_benchmark(setup_sim, n_sds, n_steps, seeds, numba_n_threads=[None], doubl
       
 
     results[backend_name] = {}
+    products[backend_name] = {}
 
     print('\n', 'before')
 
@@ -64,10 +84,16 @@ def go_benchmark(setup_sim, n_sds, n_steps, seeds, numba_n_threads=[None], doubl
       print(backend_name, n_sd)
       print()
       results[backend_name][n_sd] = {}
+      products[backend_name][n_sd] = {}
 
       for seed in seeds:
+
+        gc.collect()
+        
         particulator = setup_sim(n_sd, backend_class, seed, double_precision=True)
         particulator.run(steps=1)
+
+        print('start')
 
         t0 = time.time()
         particulator.run(steps=n_steps)
@@ -79,6 +105,14 @@ def go_benchmark(setup_sim, n_sds, n_steps, seeds, numba_n_threads=[None], doubl
         print_all_products(particulator)
 
         results[backend_name][n_sd][seed] = elapsed_time_per_timestep
+        products[backend_name][n_sd][seed] = get_prod_dict(particulator)
+
+        gc.collect()
+        del particulator
+        gc.collect()
+
+  if general_filename:
+    write_to_file(filename=f"{general_filename}-products", d=products)
 
   return results
 
@@ -103,7 +137,7 @@ def process_results(res_d):
 
 
 def write_to_file(filename, d):
-  assert not os.path.isfile(filename)
+  assert not os.path.isfile(filename), filename
 
   with open(filename, "w") as fp:
     json.dump(d, fp)
