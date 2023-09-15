@@ -1,6 +1,7 @@
 """
 GPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 """
+from functools import cached_property
 
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
@@ -10,11 +11,10 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class FreezingMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
+    @cached_property
+    def freeze_time_dependent_body(self):
         const = self.formulae.constants
-
-        self.freeze_time_dependent_body = trtc.For(
+        return trtc.For(
             param_names=(
                 "rand",
                 "immersed_surface_area",
@@ -55,7 +55,10 @@ class FreezingMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.freeze_singular_body = trtc.For(
+    @cached_property
+    def freeze_singular_body(self):
+        const = self.formulae.constants
+        return trtc.For(
             param_names=(
                 "freezing_temperature",
                 "wet_volume",

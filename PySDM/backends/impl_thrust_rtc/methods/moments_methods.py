@@ -1,6 +1,8 @@
 """
 GPU implementation of moment calculation backend methods
 """
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -9,9 +11,9 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class MomentsMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        self.__moments_body_0 = trtc.For(
+    @cached_property
+    def __moments_body_0(self):
+        return trtc.For(
             (
                 "idx",
                 "min_x",
@@ -45,7 +47,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__moments_body_1 = trtc.For(
+    @cached_property
+    def __moments_body_1(self):
+        return trtc.For(
             ("n_ranks", "moments", "moment_0", "n_cell"),
             "c_id",
             """
@@ -60,7 +64,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         """,
         )
 
-        self.__spectrum_moments_body_0 = trtc.For(
+    @cached_property
+    def __spectrum_moments_body_0(self):
+        return trtc.For(
             (
                 "idx",
                 "attr_data",
@@ -94,7 +100,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__spectrum_moments_body_1 = trtc.For(
+    @cached_property
+    def __spectrum_moments_body_1(self):
+        return trtc.For(
             ("n_bins", "moments", "moment_0", "n_cell"),
             "i",
             """
