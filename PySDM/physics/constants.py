@@ -30,6 +30,7 @@ LN_2 = np.log(2)
 TWO = 2
 THREE = 3
 FOUR = 4
+TWELVE = 12
 ONE_THIRD = 1 / 3
 TWO_THIRDS = 2 / 3
 ONE_AND_A_HALF = 3 / 2

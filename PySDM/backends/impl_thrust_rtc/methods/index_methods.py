@@ -1,6 +1,8 @@
 """
 GPU implementation of shuffling and sorting backend methods
 """
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -9,16 +11,17 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class IndexMethods(ThrustRTCBackendMethods):
-    __identity_index_body = trtc.For(
-        param_names=("idx",),
-        name_iter="i",
-        body="idx[i] = i;",
-    )
+    @cached_property
+    def __identity_index_body(self):
+        return trtc.For(
+            param_names=("idx",),
+            name_iter="i",
+            body="idx[i] = i;",
+        )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def identity_index(idx):
-        IndexMethods.__identity_index_body.launch_n(idx.size(), (idx,))
+    def identity_index(self, idx):
+        self.__identity_index_body.launch_n(idx.size(), (idx,))
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -32,24 +35,25 @@ class IndexMethods(ThrustRTCBackendMethods):
 
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
-    __shuffle_local_body = trtc.For(
-        param_names=("cell_start", "u01", "idx"),
-        name_iter="i",
-        body="""
-        for (auto k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {
-            auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
-            auto tmp = idx[k];
-            idx[k] = idx[j];
-            idx[j] = tmp;
-        }
-        """,
-    )
+    @cached_property
+    def __shuffle_local_body(self):
+        return trtc.For(
+            param_names=("cell_start", "u01", "idx"),
+            name_iter="i",
+            body="""
+            for (auto k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {
+                auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
+                auto tmp = idx[k];
+                idx[k] = idx[j];
+                idx[j] = tmp;
+            }
+            """,
+        )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def shuffle_local(idx, u01, cell_start):
+    def shuffle_local(self, idx, u01, cell_start):
         raise AssertionError("Unpredictable behavior")  # TODO #358
-        IndexMethods.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
+        self.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
             cell_start.size() - 1, [cell_start, u01, idx]
         )
 

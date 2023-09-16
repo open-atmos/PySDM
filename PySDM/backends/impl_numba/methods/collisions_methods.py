@@ -304,6 +304,7 @@ class CollisionsMethods(BackendMethods):
         BackendMethods.__init__(self)
 
         _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def __collision_coalescence_breakup_body(
@@ -431,7 +432,7 @@ class CollisionsMethods(BackendMethods):
                         else:
                             frag_size[i] = d34[i]
 
-                    frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
+                    frag_size[i] = frag_size[i] ** 3 * const.PI / 6
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
@@ -452,7 +453,7 @@ class CollisionsMethods(BackendMethods):
                     len(frag_size)
                 ):
                     if dl[i] <= 0.4e-3:
-                        frag_size[i] = dcoal[i] ** 3 * 3.1415 / 6
+                        frag_size[i] = dcoal[i] ** 3 * const.PI / 6
                     elif ds[i] == 0.0 or dl[i] == 0.0:
                         frag_size[i] = 1e-18
                     else:
@@ -525,7 +526,7 @@ class CollisionsMethods(BackendMethods):
                         frag_size[i] = (
                             frag_size[i] * 0.01
                         )  # diameter in cm; convert to m
-                        frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
+                        frag_size[i] = frag_size[i] ** 3 * const.PI / 6
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
