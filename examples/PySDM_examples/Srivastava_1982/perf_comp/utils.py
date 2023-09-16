@@ -20,7 +20,7 @@ from PySDM.dynamics.collisions.collision_kernels import ConstantK
 import gc
 
 import time
-
+    
 
 
 class ProductsNames:
@@ -45,13 +45,38 @@ def get_prod_dict(particulator):
   return d
 
 
+def measure_time_for_each_step(particulator, n_steps):
+    particulator.run(steps=1)
+    
+    res = []
+    for _ in range(n_steps):
+        t0 = time.time()
+        particulator.run(steps=1)
+        t1 = time.time()
+
+        res.append(t1 - t0)
+
+    return res
+
+
+def measure_time_per_timestep(particulator, n_steps):
+    particulator.run(steps=1)
+    
+    t0 = time.time()
+    particulator.run(steps=n_steps)
+    t1 = time.time()
+
+    return (t1 - t0) / n_steps
+
 
 def go_benchmark(
   setup_sim, n_sds, n_steps, seeds, 
   numba_n_threads=[None], 
   double_precision=True, 
   general_filename=None,
-  total_number=None, 
+  total_number=None,
+  dv=None,
+  time_measurement_fun=measure_time_per_timestep,
   backends=[CPU, GPU]
 ):
   TIMESTAMP = str(datetime.now()).replace(' ', '_')
@@ -90,26 +115,24 @@ def go_benchmark(
 
         gc.collect()
 
+        
+        particulator = setup_sim(n_sd, backend_class, seed, double_precision=double_precision, total_number=total_number, dv=dv)
+
         print()
         print('prod before')
-        particulator = setup_sim(n_sd, backend_class, seed, double_precision=double_precision, total_number=total_number)
         print_all_products(particulator)
         
-        particulator.run(steps=1)
+        # particulator.run(steps=1)
 
         print()
         print('start')
 
-        t0 = time.time()
-        particulator.run(steps=n_steps)
-        t1 = time.time()
-
-        elapsed_time_per_timestep = (t1 - t0) / n_steps
+        elapsed_time = time_measurement_fun(particulator, n_steps)
 
         print('\n', 'after')
         print_all_products(particulator)
 
-        results[backend_name][n_sd][seed] = elapsed_time_per_timestep
+        results[backend_name][n_sd][seed] = elapsed_time
         products[backend_name][n_sd][seed] = get_prod_dict(particulator)
 
         gc.collect()
@@ -122,7 +145,7 @@ def go_benchmark(
   return results
 
 
-def process_results(res_d):
+def process_results(res_d, axis=None):
   processed_d = {}
   for backend in res_d.keys():
     processed_d[backend] = {}
@@ -133,10 +156,10 @@ def process_results(res_d):
       vals = res_d[backend][n_sd].values()
       vals = np.array(list(vals))
 
-      processed_d[backend][n_sd]['mean'] = np.mean(vals)
-      processed_d[backend][n_sd]['std'] = np.std(vals)
-      processed_d[backend][n_sd]['max'] = np.amax(vals)
-      processed_d[backend][n_sd]['min'] = np.amin(vals)
+      processed_d[backend][n_sd]['mean'] = np.mean(vals, axis=axis)
+      processed_d[backend][n_sd]['std'] = np.std(vals, axis=axis)
+      processed_d[backend][n_sd]['max'] = np.amax(vals, axis=axis)
+      processed_d[backend][n_sd]['min'] = np.amin(vals, axis=axis)
 
   return processed_d
 
@@ -148,27 +171,46 @@ def write_to_file(filename, d):
     json.dump(d, fp)
 
 
+def __plot_get_n_sd_list(backends, processed_d):
+    x = []
+    
+    for backend in backends:
+        for n_sd in processed_d[backend].keys():
+          if n_sd not in x:
+            x.append(n_sd)
+        
+    x.sort()
+    return x
+
+def __plot_get_sorted_backend_list(processed_d):
+    backends = list(processed_d.keys())
+    
+    backends.sort()
+    backends.sort(key=lambda x: int(x[6:]) if 'Numba_' in x else 100**10)
+
+    return backends
+
+
+def __plot_get_backend_markers(backends):
+    markers = {backend: 'o' if 'Numba' in backend else 'x' for backend in backends}
+    return markers
+
+
+
 def plot_processed_results(processed_d, show=True, plot_label='', plot_title=None, metric='min', plot_filename=None):
-  x = []
+  backends = __plot_get_sorted_backend_list(processed_d)
+
+  markers = __plot_get_backend_markers(backends)
+
+  x = __plot_get_n_sd_list(backends, processed_d)
+
   y = []
-
-  backends = list(processed_d.keys())
-  backends.sort()
-  backends.sort(key=lambda x: int(x[6:]) if 'Numba_' in x else 100**10)
-
-  markers = {backend: 'o' if 'Numba' in backend else 'x' for backend in backends}
-
-  for backend in backends:
-    for n_sd in processed_d[backend].keys():
-      if n_sd not in x:
-        x.append(n_sd)
-
-  x.sort()
 
   for backend in backends:
     y = []
     for n_sd in x:
       v = processed_d[backend][n_sd][metric]
+      assert type(v) == int or float, 'must be scalar'
       y.append(v)
 
     pyplot.plot(x, y, label=backend+plot_label, marker=markers[backend])
@@ -185,7 +227,10 @@ def plot_processed_results(processed_d, show=True, plot_label='', plot_title=Non
     pyplot.title(plot_title)
 
   if show:
-    show_plot(filename=plot_filename)
+    if plot_filename:
+      show_plot(filename=plot_filename)
+    else:
+      pyplot.show()  
 
 
 def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
@@ -194,3 +239,40 @@ def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
   plot_processed_results(coal_break_d, plot_label='-cb', show=False)
 
   show_plot()
+
+
+
+def plot_time_per_step(processed_d, n_sd, show=True, plot_label='', plot_title=None, metric='mean', plot_filename=None, step_from_to=None):
+  backends = __plot_get_sorted_backend_list(processed_d)
+
+  markers = __plot_get_backend_markers(backends)
+
+  for backend in backends:
+
+    y = processed_d[backend][n_sd][metric]
+    x = np.arange(len(y))
+      
+    if step_from_to is not None:
+      x = x[step_from_to[0]:step_from_to[1]]
+      y = y[step_from_to[0]:step_from_to[1]]
+
+    pyplot.plot(x, y, label=backend+plot_label, marker=markers[backend])
+
+  pyplot.legend() #bbox_to_anchor =(1.1, 1))
+  pyplot.grid()
+  pyplot.xticks(x)
+  pyplot.xlabel("number of super-droplets")
+  pyplot.ylabel("wall time per timestep [s]")
+
+  if plot_title:
+    pyplot.title(plot_title + f'(n_sd: {n_sd})')
+
+
+  if show:
+    if plot_filename:
+      show_plot(filename=plot_filename)
+    else:
+      pyplot.show()
+
+
+

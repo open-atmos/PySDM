@@ -5,6 +5,7 @@ from PySDM.physics import si
 from PySDM_examples.Srivastava_1982 import coalescence_and_breakup_eq13, Settings
 from open_atmos_jupyter_utils import show_plot
 
+
 import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Srivastava_1982.simulation import Simulation
@@ -20,11 +21,44 @@ from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from .utils import ProductsNames
 
 dt = 1 * si.s
-dv = 1 * si.m**3
+DV = 1 * si.m**3
 drop_mass_0=1 * si.g
+
 TOTAL_NUMBER=1e12
 
 NO_BOUNCE = ConstEb(1)
+
+
+def make_settings(n_sd, total_number, dv, c, beta, frag_mass, backend_class):
+
+  if total_number is None:
+    total_number=TOTAL_NUMBER
+  elif callable(total_number):
+    total_number=total_number(n_sd)
+  
+  if total_number is None:
+    dv = DV
+  elif callable(dv):
+    dv=dv(n_sd)
+
+  print()
+  print('== Settings ==')
+  print('n_sd', n_sd)
+  print('total_number', total_number)
+  print('dv', dv)
+  print()
+    
+  return Settings(
+    srivastava_c=c,
+    srivastava_beta=beta,
+    frag_mass=frag_mass,
+    drop_mass_0=drop_mass_0,
+    dt=dt,
+    dv=dv,
+    n_sds=(),
+    total_number=total_number,
+    backend_class=backend_class,
+  )
 
 
 def setup_simulation(settings, n_sd, seed, double_precision=True):
@@ -55,71 +89,34 @@ def setup_simulation(settings, n_sd, seed, double_precision=True):
   return particulator
 
 
-def setup_coalescence_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None):
+def setup_coalescence_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None, dv=None):
 
   title = "fig_coalescence-only"
   c = 0.5e-6 / si.s
   beta = 1e-15 / si.s
   frag_mass = -1 * si.g
 
-  if not total_number:
-    total_number=TOTAL_NUMBER
-
-  settings = Settings(
-      srivastava_c=c,
-      srivastava_beta=beta,
-      frag_mass=frag_mass,
-      drop_mass_0=drop_mass_0,
-      dt=dt,
-      dv=dv,
-      n_sds=(),
-      total_number=total_number,
-      backend_class=backend_class,
-  )
+  settings=make_settings(n_sd, total_number, dv, c, beta, frag_mass, backend_class)
 
   return setup_simulation(settings, n_sd, seed, double_precision)
 
-def setup_breakup_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None):
+def setup_breakup_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None, dv=None):
   title = "fig_breakup-only"
   c =  1e-15 / si.s
   beta = 1e-9 / si.s
   frag_mass = 0.25 * si.g
 
-  if not total_number:
-    total_number=TOTAL_NUMBER
+  settings=make_settings(n_sd, total_number, dv, c, beta, frag_mass, backend_class)
 
-  settings = Settings(
-      srivastava_c=c,
-      srivastava_beta=beta,
-      frag_mass=frag_mass,
-      drop_mass_0=drop_mass_0,
-      dt=dt,
-      dv=dv,
-      n_sds=(),
-      total_number=total_number,
-      backend_class=backend_class,
-  )
   return setup_simulation(settings, n_sd, seed, double_precision)
     
 
-def setup_coalescence_breakup_sim(n_sd, backend_class, seed, double_precision=True, total_number=None):
+def setup_coalescence_breakup_sim(n_sd, backend_class, seed, double_precision=True, total_number=None, dv=None):
   title = "fig_coalescence-breakup"
   c =  0.5e-6 / si.s
   beta = 1e-9 / si.s
   frag_mass = 0.25 * si.g
 
-  if not total_number:
-    total_number=TOTAL_NUMBER
+  settings=make_settings(n_sd, total_number, dv, c, beta, frag_mass, backend_class)
 
-  settings = Settings(
-      srivastava_c=c,
-      srivastava_beta=beta,
-      frag_mass=frag_mass,
-      drop_mass_0=drop_mass_0,
-      dt=dt,
-      dv=dv,
-      n_sds=(),
-      total_number=total_number,
-      backend_class=backend_class,
-  )
   return setup_simulation(settings, n_sd, seed, double_precision)
