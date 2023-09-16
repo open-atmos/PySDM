@@ -30,6 +30,8 @@
 <pre><code class="python">&#34;&#34;&#34;
 GPU implementation of shuffling and sorting backend methods
 &#34;&#34;&#34;
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -38,16 +40,17 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class IndexMethods(ThrustRTCBackendMethods):
-    __identity_index_body = trtc.For(
-        param_names=(&#34;idx&#34;,),
-        name_iter=&#34;i&#34;,
-        body=&#34;idx[i] = i;&#34;,
-    )
+    @cached_property
+    def __identity_index_body(self):
+        return trtc.For(
+            param_names=(&#34;idx&#34;,),
+            name_iter=&#34;i&#34;,
+            body=&#34;idx[i] = i;&#34;,
+        )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def identity_index(idx):
-        IndexMethods.__identity_index_body.launch_n(idx.size(), (idx,))
+    def identity_index(self, idx):
+        self.__identity_index_body.launch_n(idx.size(), (idx,))
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -61,24 +64,25 @@ class IndexMethods(ThrustRTCBackendMethods):
 
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
-    __shuffle_local_body = trtc.For(
-        param_names=(&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;),
-        name_iter=&#34;i&#34;,
-        body=&#34;&#34;&#34;
-        for (auto k = cell_start[i+1]-1; k &gt; cell_start[i]; k -= 1) {
-            auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
-            auto tmp = idx[k];
-            idx[k] = idx[j];
-            idx[j] = tmp;
-        }
-        &#34;&#34;&#34;,
-    )
+    @cached_property
+    def __shuffle_local_body(self):
+        return trtc.For(
+            param_names=(&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;),
+            name_iter=&#34;i&#34;,
+            body=&#34;&#34;&#34;
+            for (auto k = cell_start[i+1]-1; k &gt; cell_start[i]; k -= 1) {
+                auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
+                auto tmp = idx[k];
+                idx[k] = idx[j];
+                idx[j] = tmp;
+            }
+            &#34;&#34;&#34;,
+        )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def shuffle_local(idx, u01, cell_start):
+    def shuffle_local(self, idx, u01, cell_start):
         raise AssertionError(&#34;Unpredictable behavior&#34;)  # TODO #358
-        IndexMethods.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
+        self.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
             cell_start.size() - 1, [cell_start, u01, idx]
         )
 
@@ -108,16 +112,17 @@ class IndexMethods(ThrustRTCBackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class IndexMethods(ThrustRTCBackendMethods):
-    __identity_index_body = trtc.For(
-        param_names=(&#34;idx&#34;,),
-        name_iter=&#34;i&#34;,
-        body=&#34;idx[i] = i;&#34;,
-    )
+    @cached_property
+    def __identity_index_body(self):
+        return trtc.For(
+            param_names=(&#34;idx&#34;,),
+            name_iter=&#34;i&#34;,
+            body=&#34;idx[i] = i;&#34;,
+        )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def identity_index(idx):
-        IndexMethods.__identity_index_body.launch_n(idx.size(), (idx,))
+    def identity_index(self, idx):
+        self.__identity_index_body.launch_n(idx.size(), (idx,))
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -131,24 +136,25 @@ class IndexMethods(ThrustRTCBackendMethods):
 
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
-    __shuffle_local_body = trtc.For(
-        param_names=(&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;),
-        name_iter=&#34;i&#34;,
-        body=&#34;&#34;&#34;
-        for (auto k = cell_start[i+1]-1; k &gt; cell_start[i]; k -= 1) {
-            auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
-            auto tmp = idx[k];
-            idx[k] = idx[j];
-            idx[j] = tmp;
-        }
-        &#34;&#34;&#34;,
-    )
+    @cached_property
+    def __shuffle_local_body(self):
+        return trtc.For(
+            param_names=(&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;),
+            name_iter=&#34;i&#34;,
+            body=&#34;&#34;&#34;
+            for (auto k = cell_start[i+1]-1; k &gt; cell_start[i]; k -= 1) {
+                auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
+                auto tmp = idx[k];
+                idx[k] = idx[j];
+                idx[j] = tmp;
+            }
+            &#34;&#34;&#34;,
+        )
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def shuffle_local(idx, u01, cell_start):
+    def shuffle_local(self, idx, u01, cell_start):
         raise AssertionError(&#34;Unpredictable behavior&#34;)  # TODO #358
-        IndexMethods.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
+        self.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
             cell_start.size() - 1, [cell_start, u01, idx]
         )
 
@@ -169,24 +175,6 @@ class IndexMethods(ThrustRTCBackendMethods):
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods.identity_index"><code class="name flex">
-<span>def <span class="ident">identity_index</span></span>(<span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods.shuffle_global"><code class="name flex">
 <span>def <span class="ident">shuffle_global</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
@@ -205,8 +193,8 @@ class IndexMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods.shuffle_local"><code class="name flex">
-<span>def <span class="ident">shuffle_local</span></span>(<span>*args, **kwargs)</span>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods.sort_by_key"><code class="name flex">
+<span>def <span class="ident">sort_by_key</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -223,8 +211,29 @@ class IndexMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods.sort_by_key"><code class="name flex">
-<span>def <span class="ident">sort_by_key</span></span>(<span>*args, **kwargs)</span>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods.identity_index"><code class="name flex">
+<span>def <span class="ident">identity_index</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods.shuffle_local"><code class="name flex">
+<span>def <span class="ident">shuffle_local</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>

@@ -30,17 +30,51 @@
 <pre><code class="python">&#34;&#34;&#34;
 GPU implementation of moment calculation backend methods
 &#34;&#34;&#34;
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
+# https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#atomic-functions
+DOUBLE_ATOMIC_ADD_FOR_COMPUTE_LT_60 = &#34;&#34;&#34;
+struct Commons {
+    static __device__ double atomicAdd(double* address, double val)
+    {
+        unsigned long long int* address_as_ull =
+                                  (unsigned long long int*)address;
+        unsigned long long int old = *address_as_ull, assumed;
+
+        do {
+            assumed = old;
+            old = atomicCAS(address_as_ull, assumed,
+                            __double_as_longlong(val +
+                                   __longlong_as_double(assumed)));
+
+        // Note: uses integer comparison to avoid hang in case of NaN (since NaN != NaN)
+        } while (assumed != old);
+
+        return __longlong_as_double(old);
+    }
+};
+double (*atomicAdd)(double*, double) = &amp;Commons::atomicAdd;
+&#34;&#34;&#34;
+
 
 class MomentsMethods(ThrustRTCBackendMethods):
-    def __init__(self):
+    def __init__(self, double_precision):
         ThrustRTCBackendMethods.__init__(self)
-        self.__moments_body_0 = trtc.For(
+
+        if trtc.Get_PTX_Arch() &lt; 60 and double_precision:
+            self.commons = DOUBLE_ATOMIC_ADD_FOR_COMPUTE_LT_60
+        else:
+            self.commons = &#34;&#34;
+
+    @cached_property
+    def __moments_body_0(self):
+        return trtc.For(
             (
                 &#34;idx&#34;,
                 &#34;min_x&#34;,
@@ -57,7 +91,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 &#34;n_cell&#34;,
             ),
             &#34;fake_i&#34;,
-            &#34;&#34;&#34;
+            self.commons
+            + &#34;&#34;&#34;
             auto i = idx[fake_i];
             if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
                 atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(multiplicity[i]));
@@ -74,7 +109,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__moments_body_1 = trtc.For(
+    @cached_property
+    def __moments_body_1(self):
+        return trtc.For(
             (&#34;n_ranks&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;c_id&#34;,
             &#34;&#34;&#34;
@@ -89,7 +126,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         &#34;&#34;&#34;,
         )
 
-        self.__spectrum_moments_body_0 = trtc.For(
+    @cached_property
+    def __spectrum_moments_body_0(self):
+        return trtc.For(
             (
                 &#34;idx&#34;,
                 &#34;attr_data&#34;,
@@ -105,7 +144,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 &#34;n_cell&#34;,
             ),
             &#34;fake_i&#34;,
-            &#34;&#34;&#34;
+            self.commons
+            + &#34;&#34;&#34;
             auto i = idx[fake_i];
             for (auto k = 0; k &lt; n_bins; k+=1) {
                 if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {
@@ -123,7 +163,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__spectrum_moments_body_1 = trtc.For(
+    @cached_property
+    def __spectrum_moments_body_1(self):
+        return trtc.For(
             (&#34;n_bins&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;i&#34;,
             &#34;&#34;&#34;
@@ -271,6 +313,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
 <dl>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods"><code class="flex name class">
 <span>class <span class="ident">MomentsMethods</span></span>
+<span>(</span><span>double_precision)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -279,9 +322,17 @@ class MomentsMethods(ThrustRTCBackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MomentsMethods(ThrustRTCBackendMethods):
-    def __init__(self):
+    def __init__(self, double_precision):
         ThrustRTCBackendMethods.__init__(self)
-        self.__moments_body_0 = trtc.For(
+
+        if trtc.Get_PTX_Arch() &lt; 60 and double_precision:
+            self.commons = DOUBLE_ATOMIC_ADD_FOR_COMPUTE_LT_60
+        else:
+            self.commons = &#34;&#34;
+
+    @cached_property
+    def __moments_body_0(self):
+        return trtc.For(
             (
                 &#34;idx&#34;,
                 &#34;min_x&#34;,
@@ -298,7 +349,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 &#34;n_cell&#34;,
             ),
             &#34;fake_i&#34;,
-            &#34;&#34;&#34;
+            self.commons
+            + &#34;&#34;&#34;
             auto i = idx[fake_i];
             if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
                 atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(multiplicity[i]));
@@ -315,7 +367,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__moments_body_1 = trtc.For(
+    @cached_property
+    def __moments_body_1(self):
+        return trtc.For(
             (&#34;n_ranks&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;c_id&#34;,
             &#34;&#34;&#34;
@@ -330,7 +384,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         &#34;&#34;&#34;,
         )
 
-        self.__spectrum_moments_body_0 = trtc.For(
+    @cached_property
+    def __spectrum_moments_body_0(self):
+        return trtc.For(
             (
                 &#34;idx&#34;,
                 &#34;attr_data&#34;,
@@ -346,7 +402,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 &#34;n_cell&#34;,
             ),
             &#34;fake_i&#34;,
-            &#34;&#34;&#34;
+            self.commons
+            + &#34;&#34;&#34;
             auto i = idx[fake_i];
             for (auto k = 0; k &lt; n_bins; k+=1) {
                 if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {
@@ -364,7 +421,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__spectrum_moments_body_1 = trtc.For(
+    @cached_property
+    def __spectrum_moments_body_1(self):
+        return trtc.For(
             (&#34;n_bins&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;i&#34;,
             &#34;&#34;&#34;

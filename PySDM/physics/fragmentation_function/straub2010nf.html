@@ -60,7 +60,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def params_sigma2(const, CW):
-        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(12)
+        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(const.TWELVE)
 
     @staticmethod
     def params_mu2(const, ds):  # pylint: disable=unused-argument
@@ -68,7 +68,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def params_sigma3(const, CW):
-        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(12)
+        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(const.TWELVE)
 
     @staticmethod
     def params_mu3(ds):
@@ -119,7 +119,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def params_sigma2(const, CW):
-        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(12)
+        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(const.TWELVE)
 
     @staticmethod
     def params_mu2(const, ds):  # pylint: disable=unused-argument
@@ -127,7 +127,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def params_sigma3(const, CW):
-        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(12)
+        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(const.TWELVE)
 
     @staticmethod
     def params_mu3(ds):
@@ -213,7 +213,7 @@ def params_sigma1(const, CW):
 </summary>
 <pre><code class="python">@staticmethod
 def params_sigma2(const, CW):
-    return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(12)</code></pre>
+    return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(const.TWELVE)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.fragmentation_function.straub2010nf.Straub2010Nf.params_sigma3"><code class="name flex">
@@ -227,7 +227,7 @@ def params_sigma2(const, CW):
 </summary>
 <pre><code class="python">@staticmethod
 def params_sigma3(const, CW):
-    return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(12)</code></pre>
+    return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(const.TWELVE)</code></pre>
 </details>
 </dd>
 </dl>

@@ -30,6 +30,8 @@
 <pre><code class="python">&#34;&#34;&#34;
 GPU implementation of backend methods wrapping basic physics formulae
 &#34;&#34;&#34;
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -38,24 +40,22 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class PhysicsMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        phys = self.formulae
-
-        self._temperature_pressure_RH_body = trtc.For(
+    @cached_property
+    def _temperature_pressure_RH_body(self):
+        return trtc.For(
             (&#34;rhod&#34;, &#34;thd&#34;, &#34;water_vapour_mixing_ratio&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;),
             &#34;i&#34;,
             f&#34;&#34;&#34;
-            T[i] = {phys.state_variable_triplet.T.c_inline(
+            T[i] = {self.formulae.state_variable_triplet.T.c_inline(
                 rhod=&#34;rhod[i]&#34;, thd=&#34;thd[i]&#34;)};
-            p[i] = {phys.state_variable_triplet.p.c_inline(
+            p[i] = {self.formulae.state_variable_triplet.p.c_inline(
                 rhod=&#34;rhod[i]&#34;,
                 T=&#34;T[i]&#34;,
                 water_vapour_mixing_ratio=&#34;water_vapour_mixing_ratio[i]&#34;
             )};
-            RH[i] = {phys.state_variable_triplet.pv.c_inline(
+            RH[i] = {self.formulae.state_variable_triplet.pv.c_inline(
                 p=&#34;p[i]&#34;, water_vapour_mixing_ratio=&#34;water_vapour_mixing_ratio[i]&#34;
-            )} / {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
+            )} / {self.formulae.saturation_vapour_pressure.pvs_Celsius.c_inline(
                 T=&#34;T[i] - const.T0&#34;
             )};
             &#34;&#34;&#34;.replace(
@@ -63,36 +63,42 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__explicit_euler_body = trtc.For(
+    @cached_property
+    def __explicit_euler_body(self):
+        return trtc.For(
             (&#34;y&#34;, &#34;dt&#34;, &#34;dy_dt&#34;),
             &#34;i&#34;,
             f&#34;&#34;&#34;
-            y[i] = {phys.trivia.explicit_euler.c_inline(y=&#34;y[i]&#34;, dt=&#34;dt&#34;, dy_dt=&#34;dy_dt&#34;)};
+            y[i] = {self.formulae.trivia.explicit_euler.c_inline(y=&#34;y[i]&#34;, dt=&#34;dt&#34;, dy_dt=&#34;dy_dt&#34;)};
         &#34;&#34;&#34;.replace(
                 &#34;real_type&#34;, self._get_c_type()
             ),
         )
 
-        self.__critical_volume_body = trtc.For(
+    @cached_property
+    def __critical_volume_body(self):
+        return trtc.For(
             (&#34;v_cr&#34;, &#34;kappa&#34;, &#34;f_org&#34;, &#34;v_dry&#34;, &#34;v_wet&#34;, &#34;T&#34;, &#34;cell&#34;),
             &#34;i&#34;,
             f&#34;&#34;&#34;
-            auto sigma = {phys.surface_tension.sigma.c_inline(
+            auto sigma = {self.formulae.surface_tension.sigma.c_inline(
                 T=&#34;T[cell[i]]&#34;, v_wet=&#34;v_wet[i]&#34;, v_dry=&#34;v_dry[i]&#34;, f_org=&#34;f_org[i]&#34;
             )};
-            auto r_cr = {phys.hygroscopicity.r_cr.c_inline(
+            auto r_cr = {self.formulae.hygroscopicity.r_cr.c_inline(
                 kp=&#34;kappa[i]&#34;,
                 rd3=&#34;v_dry[i] / const.PI_4_3&#34;,
                 T=&#34;T[cell[i]]&#34;,
                 sgm=&#34;sigma&#34;
             )};
-            v_cr[i] = {phys.trivia.volume.c_inline(radius=&#34;r_cr&#34;)};
+            v_cr[i] = {self.formulae.trivia.volume.c_inline(radius=&#34;r_cr&#34;)};
         &#34;&#34;&#34;.replace(
                 &#34;real_type&#34;, self._get_c_type()
             ),
         )
 
-        self.__terminal_velocity_body = trtc.For(
+    @cached_property
+    def __terminal_velocity_body(self):
+        return trtc.For(
             (&#34;values&#34;, &#34;radius&#34;, &#34;k1&#34;, &#34;k2&#34;, &#34;k3&#34;, &#34;r1&#34;, &#34;r2&#34;),
             &#34;i&#34;,
             &#34;&#34;&#34;
@@ -180,24 +186,22 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PhysicsMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        phys = self.formulae
-
-        self._temperature_pressure_RH_body = trtc.For(
+    @cached_property
+    def _temperature_pressure_RH_body(self):
+        return trtc.For(
             (&#34;rhod&#34;, &#34;thd&#34;, &#34;water_vapour_mixing_ratio&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;),
             &#34;i&#34;,
             f&#34;&#34;&#34;
-            T[i] = {phys.state_variable_triplet.T.c_inline(
+            T[i] = {self.formulae.state_variable_triplet.T.c_inline(
                 rhod=&#34;rhod[i]&#34;, thd=&#34;thd[i]&#34;)};
-            p[i] = {phys.state_variable_triplet.p.c_inline(
+            p[i] = {self.formulae.state_variable_triplet.p.c_inline(
                 rhod=&#34;rhod[i]&#34;,
                 T=&#34;T[i]&#34;,
                 water_vapour_mixing_ratio=&#34;water_vapour_mixing_ratio[i]&#34;
             )};
-            RH[i] = {phys.state_variable_triplet.pv.c_inline(
+            RH[i] = {self.formulae.state_variable_triplet.pv.c_inline(
                 p=&#34;p[i]&#34;, water_vapour_mixing_ratio=&#34;water_vapour_mixing_ratio[i]&#34;
-            )} / {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
+            )} / {self.formulae.saturation_vapour_pressure.pvs_Celsius.c_inline(
                 T=&#34;T[i] - const.T0&#34;
             )};
             &#34;&#34;&#34;.replace(
@@ -205,36 +209,42 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__explicit_euler_body = trtc.For(
+    @cached_property
+    def __explicit_euler_body(self):
+        return trtc.For(
             (&#34;y&#34;, &#34;dt&#34;, &#34;dy_dt&#34;),
             &#34;i&#34;,
             f&#34;&#34;&#34;
-            y[i] = {phys.trivia.explicit_euler.c_inline(y=&#34;y[i]&#34;, dt=&#34;dt&#34;, dy_dt=&#34;dy_dt&#34;)};
+            y[i] = {self.formulae.trivia.explicit_euler.c_inline(y=&#34;y[i]&#34;, dt=&#34;dt&#34;, dy_dt=&#34;dy_dt&#34;)};
         &#34;&#34;&#34;.replace(
                 &#34;real_type&#34;, self._get_c_type()
             ),
         )
 
-        self.__critical_volume_body = trtc.For(
+    @cached_property
+    def __critical_volume_body(self):
+        return trtc.For(
             (&#34;v_cr&#34;, &#34;kappa&#34;, &#34;f_org&#34;, &#34;v_dry&#34;, &#34;v_wet&#34;, &#34;T&#34;, &#34;cell&#34;),
             &#34;i&#34;,
             f&#34;&#34;&#34;
-            auto sigma = {phys.surface_tension.sigma.c_inline(
+            auto sigma = {self.formulae.surface_tension.sigma.c_inline(
                 T=&#34;T[cell[i]]&#34;, v_wet=&#34;v_wet[i]&#34;, v_dry=&#34;v_dry[i]&#34;, f_org=&#34;f_org[i]&#34;
             )};
-            auto r_cr = {phys.hygroscopicity.r_cr.c_inline(
+            auto r_cr = {self.formulae.hygroscopicity.r_cr.c_inline(
                 kp=&#34;kappa[i]&#34;,
                 rd3=&#34;v_dry[i] / const.PI_4_3&#34;,
                 T=&#34;T[cell[i]]&#34;,
                 sgm=&#34;sigma&#34;
             )};
-            v_cr[i] = {phys.trivia.volume.c_inline(radius=&#34;r_cr&#34;)};
+            v_cr[i] = {self.formulae.trivia.volume.c_inline(radius=&#34;r_cr&#34;)};
         &#34;&#34;&#34;.replace(
                 &#34;real_type&#34;, self._get_c_type()
             ),
         )
 
-        self.__terminal_velocity_body = trtc.For(
+    @cached_property
+    def __terminal_velocity_body(self):
+        return trtc.For(
             (&#34;values&#34;, &#34;radius&#34;, &#34;k1&#34;, &#34;k2&#34;, &#34;k3&#34;, &#34;r1&#34;, &#34;r2&#34;),
             &#34;i&#34;,
             &#34;&#34;&#34;

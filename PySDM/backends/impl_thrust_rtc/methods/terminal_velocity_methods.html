@@ -30,6 +30,8 @@
 <pre><code class="python">&#34;&#34;&#34;
 GPU implementation of backend methods for terminal velocities
 &#34;&#34;&#34;
+from functools import cached_property
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
@@ -38,9 +40,9 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class TerminalVelocityMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        self.__linear_collection_efficiency_body = trtc.For(
+    @cached_property
+    def __linear_collection_efficiency_body(self):
+        return trtc.For(
             (
                 &#34;A&#34;,
                 &#34;B&#34;,
@@ -94,8 +96,10 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
             ),
         )
 
+    @cached_property
+    def __interpolation_body(self):
         # TODO #599 r&lt;0
-        self.__interpolation_body = trtc.For(
+        return trtc.For(
             (&#34;output&#34;, &#34;radius&#34;, &#34;factor&#34;, &#34;a&#34;, &#34;b&#34;),
             &#34;i&#34;,
             &#34;&#34;&#34;
@@ -176,9 +180,9 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TerminalVelocityMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        self.__linear_collection_efficiency_body = trtc.For(
+    @cached_property
+    def __linear_collection_efficiency_body(self):
+        return trtc.For(
             (
                 &#34;A&#34;,
                 &#34;B&#34;,
@@ -232,8 +236,10 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
             ),
         )
 
+    @cached_property
+    def __interpolation_body(self):
         # TODO #599 r&lt;0
-        self.__interpolation_body = trtc.For(
+        return trtc.For(
             (&#34;output&#34;, &#34;radius&#34;, &#34;factor&#34;, &#34;a&#34;, &#34;b&#34;),
             &#34;i&#34;,
             &#34;&#34;&#34;

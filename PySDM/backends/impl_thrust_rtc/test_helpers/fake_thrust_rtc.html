@@ -259,7 +259,11 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def Set_Verbose(_):  # pylint: disable=invalid-name
-        pass</code></pre>
+        pass
+
+    @staticmethod
+    def Get_PTX_Arch():  # pylint: disable=invalid-name
+        return 666</code></pre>
 </details>
 </section>
 <section>
@@ -494,7 +498,11 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def Set_Verbose(_):  # pylint: disable=invalid-name
-        pass</code></pre>
+        pass
+
+    @staticmethod
+    def Get_PTX_Arch():  # pylint: disable=invalid-name
+        return 666</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -657,6 +665,20 @@ def Find(vector: DVVector, value):  # pylint: disable=invalid-name
         if vector[i] == value.ndarray:
             return i
     return None</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Get_PTX_Arch"><code class="name flex">
+<span>def <span class="ident">Get_PTX_Arch</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def Get_PTX_Arch():  # pylint: disable=invalid-name
+    return 666</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Max_Element"><code class="name flex">
@@ -932,6 +954,7 @@ def device_vector_from_numpy(ndarray):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Fill" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Fill">Fill</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Find" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Find">Find</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.For" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.For">For</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Get_PTX_Arch" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Get_PTX_Arch">Get_PTX_Arch</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Max_Element" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Max_Element">Max_Element</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Maximum" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Maximum">Maximum</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Min_Element" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Min_Element">Min_Element</a></code></li>
