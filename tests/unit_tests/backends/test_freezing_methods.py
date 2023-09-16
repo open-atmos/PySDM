@@ -100,7 +100,7 @@ class TestFreezingMethods:
     # pylint: disable=too-many-locals
     def test_freeze_time_dependent(backend_class, double_precision, plot=False):
         if backend_class.__name__ == "Numba" and not double_precision:
-            pytest.skip()
+            pytest.skip()  # TODO #1144
 
         # Arrange
         seed = 44

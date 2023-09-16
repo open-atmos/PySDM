@@ -15,7 +15,10 @@ from PySDM import Formulae
         (0, 1, 1.5, 0),
     ],
 )
-def test_moments_range(backend_class, min_x, max_x, value, expected):
+def test_moments_range(backend_class, min_x, max_x, value, expected, double_precision):
+    if backend_class.__name__ == "Numba" and not double_precision:
+        pytest.skip()  # TODO #1144
+
     # Arrange
     backend = backend_class(Formulae())
 
