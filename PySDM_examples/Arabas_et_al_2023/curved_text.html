@@ -218,15 +218,14 @@ added to the handles of a legend.</p>
 <p>agg_filter: a filter function, which takes a (m, n, 3) float array and a dpi value, and returns a (m, n, 3) array and two offsets from the bottom left corner of the image
 alpha: scalar or None
 animated: bool
-antialiased: bool
 backgroundcolor: color
 bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
 clip_box: unknown
 clip_on: unknown
 clip_path: unknown
 color or c: color
-figure: <code>~matplotlib.figure.Figure</code>
-fontfamily or family or fontname: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
+figure: <code>.Figure</code>
+fontfamily or family: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
 fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
 fontsize or size: float or {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}
 fontstretch or stretch: {a numeric value in range 0-1000, 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded'}
@@ -242,7 +241,7 @@ math_fontfamily: str
 mouseover: bool
 multialignment or ma: {'left', 'right', 'center'}
 parse_math: bool
-path_effects: list of <code>.AbstractPathEffect</code>
+path_effects: <code>.AbstractPathEffect</code>
 picker: None or bool or float or callable
 position: (float, float)
 rasterized: bool
@@ -251,7 +250,7 @@ rotation_mode: {None, 'default', 'anchor'}
 sketch_params: (scale: float, length: float, randomness: float)
 snap: bool or None
 text: object
-transform: <code>~matplotlib.transforms.Transform</code>
+transform: <code>.Transform</code>
 transform_rotates_text: bool
 url: str
 usetex: bool or None
@@ -450,7 +449,7 @@ angles of self.__Characters.</p></div>
 </details>
 </dd>
 <dt id="PySDM_examples.Arabas_et_al_2023.curved_text.CurvedText.set"><code class="name flex">
-<span>def <span class="ident">set</span></span>(<span>self, *, agg_filter=&lt;UNSET&gt;, alpha=&lt;UNSET&gt;, animated=&lt;UNSET&gt;, antialiased=&lt;UNSET&gt;, backgroundcolor=&lt;UNSET&gt;, bbox=&lt;UNSET&gt;, clip_box=&lt;UNSET&gt;, clip_on=&lt;UNSET&gt;, clip_path=&lt;UNSET&gt;, color=&lt;UNSET&gt;, fontfamily=&lt;UNSET&gt;, fontproperties=&lt;UNSET&gt;, fontsize=&lt;UNSET&gt;, fontstretch=&lt;UNSET&gt;, fontstyle=&lt;UNSET&gt;, fontvariant=&lt;UNSET&gt;, fontweight=&lt;UNSET&gt;, gid=&lt;UNSET&gt;, horizontalalignment=&lt;UNSET&gt;, in_layout=&lt;UNSET&gt;, label=&lt;UNSET&gt;, linespacing=&lt;UNSET&gt;, math_fontfamily=&lt;UNSET&gt;, mouseover=&lt;UNSET&gt;, multialignment=&lt;UNSET&gt;, parse_math=&lt;UNSET&gt;, path_effects=&lt;UNSET&gt;, picker=&lt;UNSET&gt;, position=&lt;UNSET&gt;, rasterized=&lt;UNSET&gt;, rotation=&lt;UNSET&gt;, rotation_mode=&lt;UNSET&gt;, sketch_params=&lt;UNSET&gt;, snap=&lt;UNSET&gt;, text=&lt;UNSET&gt;, transform=&lt;UNSET&gt;, transform_rotates_text=&lt;UNSET&gt;, url=&lt;UNSET&gt;, usetex=&lt;UNSET&gt;, verticalalignment=&lt;UNSET&gt;, visible=&lt;UNSET&gt;, wrap=&lt;UNSET&gt;, x=&lt;UNSET&gt;, y=&lt;UNSET&gt;, zorder=&lt;UNSET&gt;)</span>
+<span>def <span class="ident">set</span></span>(<span>self, *, agg_filter=&lt;UNSET&gt;, alpha=&lt;UNSET&gt;, animated=&lt;UNSET&gt;, backgroundcolor=&lt;UNSET&gt;, bbox=&lt;UNSET&gt;, clip_box=&lt;UNSET&gt;, clip_on=&lt;UNSET&gt;, clip_path=&lt;UNSET&gt;, color=&lt;UNSET&gt;, fontfamily=&lt;UNSET&gt;, fontproperties=&lt;UNSET&gt;, fontsize=&lt;UNSET&gt;, fontstretch=&lt;UNSET&gt;, fontstyle=&lt;UNSET&gt;, fontvariant=&lt;UNSET&gt;, fontweight=&lt;UNSET&gt;, gid=&lt;UNSET&gt;, horizontalalignment=&lt;UNSET&gt;, in_layout=&lt;UNSET&gt;, label=&lt;UNSET&gt;, linespacing=&lt;UNSET&gt;, math_fontfamily=&lt;UNSET&gt;, mouseover=&lt;UNSET&gt;, multialignment=&lt;UNSET&gt;, parse_math=&lt;UNSET&gt;, path_effects=&lt;UNSET&gt;, picker=&lt;UNSET&gt;, position=&lt;UNSET&gt;, rasterized=&lt;UNSET&gt;, rotation=&lt;UNSET&gt;, rotation_mode=&lt;UNSET&gt;, sketch_params=&lt;UNSET&gt;, snap=&lt;UNSET&gt;, text=&lt;UNSET&gt;, transform=&lt;UNSET&gt;, transform_rotates_text=&lt;UNSET&gt;, url=&lt;UNSET&gt;, usetex=&lt;UNSET&gt;, verticalalignment=&lt;UNSET&gt;, visible=&lt;UNSET&gt;, wrap=&lt;UNSET&gt;, x=&lt;UNSET&gt;, y=&lt;UNSET&gt;, zorder=&lt;UNSET&gt;)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Set multiple properties at once.</p>
@@ -459,15 +458,14 @@ angles of self.__Characters.</p></div>
 <p>agg_filter: a filter function, which takes a (m, n, 3) float array and a dpi value, and returns a (m, n, 3) array and two offsets from the bottom left corner of the image
 alpha: scalar or None
 animated: bool
-antialiased: bool
 backgroundcolor: color
 bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
-clip_box: <code>~matplotlib.transforms.BboxBase</code> or None
+clip_box: <code>.Bbox</code>
 clip_on: bool
 clip_path: Patch or (Path, Transform) or None
 color or c: color
-figure: <code>~matplotlib.figure.Figure</code>
-fontfamily or family or fontname: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
+figure: <code>.Figure</code>
+fontfamily or family: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
 fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
 fontsize or size: float or {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}
 fontstretch or stretch: {a numeric value in range 0-1000, 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded'}
@@ -483,7 +481,7 @@ math_fontfamily: str
 mouseover: bool
 multialignment or ma: {'left', 'right', 'center'}
 parse_math: bool
-path_effects: list of <code>.AbstractPathEffect</code>
+path_effects: <code>.AbstractPathEffect</code>
 picker: None or bool or float or callable
 position: (float, float)
 rasterized: bool
@@ -492,7 +490,7 @@ rotation_mode: {None, 'default', 'anchor'}
 sketch_params: (scale: float, length: float, randomness: float)
 snap: bool or None
 text: object
-transform: <code>~matplotlib.transforms.Transform</code>
+transform: <code>.Transform</code>
 transform_rotates_text: bool
 url: str
 usetex: bool or None
