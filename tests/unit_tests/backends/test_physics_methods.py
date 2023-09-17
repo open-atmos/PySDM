@@ -1,16 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-import pytest
 
 from PySDM.physics import si
 
 
 class TestPhysicsMethods:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def test_temperature_pressure_RH(backend_class, double_precision):
-        if backend_class.__name__ == "Numba" and not double_precision:
-            pytest.skip()  # TODO #1144
-
+    def test_temperature_pressure_RH(backend_class):
         # Arrange
         backend = backend_class()
         sut = backend.temperature_pressure_RH

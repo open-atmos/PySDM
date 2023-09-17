@@ -67,12 +67,7 @@ class TestCollisionMethods:
             ((4, 5, 4.5, 3, 0.1), (0, 1, 2, 3, 4, 5), 5),
         ),
     )
-    def test_adaptive_sdm_end(
-        backend_class, dt_left, cell_start, expected, double_precision
-    ):
-        if backend_class.__name__ == "Numba" and not double_precision:
-            pytest.skip()  # TODO #1144
-
+    def test_adaptive_sdm_end(backend_class, dt_left, cell_start, expected):
         # Arrange
         backend = backend_class()
         dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
@@ -166,11 +161,7 @@ class TestCollisionMethods:
         is_first_in_pair,
         expected_dt_left,
         expected_n_substep,
-        double_precision,
     ):
-        if backend_class.__name__ == "Numba" and not double_precision:
-            pytest.skip()  # TODO #1144
-
         # Arrange
         backend = backend_class()
         _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
@@ -217,10 +208,7 @@ class TestCollisionMethods:
         "backend_class, scheme",
         ((CPU, "counting_sort"), (CPU, "counting_sort_parallel"), (GPU, "default")),
     )
-    def test_cell_caretaker(backend_class, scheme, double_precision):
-        if backend_class.__name__ == "Numba" and not double_precision:
-            pytest.skip()  # TODO #1144
-
+    def test_cell_caretaker(backend_class, scheme):
         # Arrange
         backend = backend_class()
         idx = [0, 3, 2, 4]

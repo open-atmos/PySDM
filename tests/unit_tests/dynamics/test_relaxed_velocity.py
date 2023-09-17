@@ -42,19 +42,14 @@ def constant_timescale_fixture(request):
     return request.param
 
 
-def test_small_timescale(
-    default_attributes, constant_timescale, backend_class, double_precision
-):
+def test_small_timescale(default_attributes, constant_timescale, backend_class):
     """
     When the fall velocity is initialized to 0 and relaxation is very quick,
     the velocity should quickly approach the terminal velocity
     """
-    if backend_class.__name__ == "Numba" and not double_precision:
-        pytest.skip()  # TODO #1144
-
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_class(double_precision=double_precision),
+        backend=backend_class(),
     )
 
     builder.set_environment(Box(dt=1, dv=1))

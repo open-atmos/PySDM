@@ -11,8 +11,8 @@ from ...dummy_particulator import DummyParticulator
 
 @pytest.mark.parametrize("croupier", ["local", "global"])
 def test_final_state(croupier, backend_class):
-    if backend_class is ThrustRTC:
-        return  # TODO #330
+    if issubclass(backend_class, ThrustRTC):
+        pytest.skip()  # TODO #330
 
     # Arrange
     n_part = 100000
