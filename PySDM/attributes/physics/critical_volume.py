@@ -39,5 +39,4 @@ class WetToCriticalVolumeRatio(DerivedAttribute):
         )
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.ratio(self.volume.get(), self.critical_volume.get())
