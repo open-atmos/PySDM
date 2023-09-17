@@ -68,7 +68,6 @@ class WetToCriticalVolumeRatio(DerivedAttribute):
         )
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.ratio(self.volume.get(), self.critical_volume.get())</code></pre>
 </details>
 </section>
@@ -165,7 +164,6 @@ class WetToCriticalVolumeRatio(DerivedAttribute):
         )
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.ratio(self.volume.get(), self.critical_volume.get())</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -185,7 +183,6 @@ class WetToCriticalVolumeRatio(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    self.data.idx = self.volume.data.idx
     self.data.ratio(self.volume.get(), self.critical_volume.get())</code></pre>
 </details>
 </dd>

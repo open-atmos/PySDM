@@ -40,7 +40,6 @@ class Area(DerivedAttribute):
         super().__init__(builder, name=&#34;area&#34;, dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 2 / 3
         self.data *= self.formulae.constants.PI_4_3 * 3</code></pre>
@@ -72,7 +71,6 @@ class Area(DerivedAttribute):
         super().__init__(builder, name=&#34;area&#34;, dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 2 / 3
         self.data *= self.formulae.constants.PI_4_3 * 3</code></pre>
@@ -94,7 +92,6 @@ class Area(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    self.data.idx = self.volume.data.idx
     self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
     self.data **= 2 / 3
     self.data *= self.formulae.constants.PI_4_3 * 3</code></pre>

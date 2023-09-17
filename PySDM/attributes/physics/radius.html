@@ -40,7 +40,6 @@ class Radius(DerivedAttribute):
         super().__init__(builder, name=&#34;radius&#34;, dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 1 / 3
 
@@ -86,7 +85,6 @@ class SquareRootOfRadius(DerivedAttribute):
         super().__init__(builder, name=&#34;radius&#34;, dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 1 / 3</code></pre>
 </details>
@@ -107,7 +105,6 @@ class SquareRootOfRadius(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    self.data.idx = self.volume.data.idx
     self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
     self.data **= 1 / 3</code></pre>
 </details>

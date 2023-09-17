@@ -43,7 +43,6 @@ class IntensiveAttribute(DerivedAttribute):
         super().__init__(builder, name, dependencies=(self.volume, self.base))
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.ratio(self.base.get(), self.volume.get())</code></pre>
 </details>
 </section>
@@ -73,7 +72,6 @@ class IntensiveAttribute(DerivedAttribute):
         super().__init__(builder, name, dependencies=(self.volume, self.base))
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.ratio(self.base.get(), self.volume.get())</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -98,7 +96,6 @@ class IntensiveAttribute(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    self.data.idx = self.volume.data.idx
     self.data.ratio(self.base.get(), self.volume.get())</code></pre>
 </details>
 </dd>
