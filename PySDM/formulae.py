@@ -42,6 +42,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
+        particle_shape_and_density: str = "LiquidSphere",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -61,6 +62,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
         self.fragmentation_function = fragmentation_function
+        self.particle_shape_and_density = particle_shape_and_density
         components = tuple(i for i in dir(self) if not i.startswith("__"))
 
         constants_defaults = {

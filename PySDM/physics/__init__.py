@@ -22,5 +22,6 @@ from . import (
     surface_tension,
     trivia,
     ventilation,
+    particle_shape_and_density,
 )
 from .constants import si
