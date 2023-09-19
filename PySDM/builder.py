@@ -8,14 +8,15 @@ import numpy as np
 
 from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.numerics.cell_id import CellID
+from PySDM.attributes.physics import WaterMass
 from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.physics.volume import Volume
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
     discretise_multiplicities,
 )
 from PySDM.particulator import Particulator
+from PySDM.physics.particle_shape_and_density import LiquidSphere
 
 
 class Builder:
@@ -25,7 +26,7 @@ class Builder:
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
             "multiplicity": Multiplicities(self),
-            "volume": Volume(self),
+            "water mass": WaterMass(self),
             "cell id": CellID(self),
         }
         self.aerosol_radius_threshold = 0
@@ -86,6 +87,17 @@ class Builder:
                 'renaming attributes["n"] to attributes["multiplicity"]',
                 DeprecationWarning,
             )
+
+        if "volume" in attributes and "water mass" not in attributes:
+            assert (
+                self.particulator.formulae.particle_shape_and_density is LiquidSphere
+            ), "only liquid spheres are supported"
+            attributes[
+                "water mass"
+            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                attributes["volume"]
+            )
+            del attributes["volume"]
 
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
