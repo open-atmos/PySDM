@@ -9,7 +9,7 @@ from PySDM.attributes.impl import DerivedAttribute
 class Volume(DerivedAttribute):
     def __init__(self, builder):
         self.water_mass = builder.get_attribute("water mass")
-        super().__init__(builder, name="volume")
+        super().__init__(builder, name="volume", dependencies=(self.water_mass,))
 
     def recalculate(self):
         self.data.product(self.water_mass.get(), 1 / self.formulae.constants.rho_w)
