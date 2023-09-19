@@ -90,7 +90,7 @@ class Builder:
 
         if "volume" in attributes and "water mass" not in attributes:
             assert (
-                self.particulator.formulae.particle_shape_and_density is LiquidSphere
+                 self.particulator.formulae.particle_shape_and_density.__name__ == LiquidSphere.__name__
             ), "only liquid spheres are supported"
             attributes[
                 "water mass"
