@@ -22,6 +22,7 @@ class CondensationMethods(BackendMethods):
         n_cell,
         cell_start_arg,
         v,
+        water_mass,
         v_cr,
         multiplicity,
         vdry,
@@ -410,7 +411,7 @@ class CondensationMethods(BackendMethods):
             T,
             p,
             RH,
-            v,
+            m,
             v_cr,
             multiplicity,
             vdry,
@@ -431,13 +432,14 @@ class CondensationMethods(BackendMethods):
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
-                if v[drop] < 0:
+                v_drop = m[drop] / const.rho_w
+                if v_drop < 0:
                     continue
-                x_old = x(v[drop])
-                r_old = radius(v[drop])
+                x_old = x(v_drop)
+                r_old = radius(v_drop)
                 x_insane = x(vdry[drop] / 100)
                 rd3 = vdry[drop] / const.PI_4_3
-                sgm = phys_sigma(T, v[drop], vdry[drop], f_org[drop])
+                sgm = phys_sigma(T, v_drop, vdry[drop], f_org[drop])
                 RH_eq = phys_RH_eq(r_old, T, kappa[drop], rd3, sgm)
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
                     Dr = phys_dk_D(DTp, r_old, lambdaD)
@@ -526,13 +528,13 @@ class CondensationMethods(BackendMethods):
                 v_new = volume_of_x(x_new)
                 result += multiplicity[drop] * v_new * const.rho_w
                 if not fake:
-                    if v_new > v_cr[drop] and v_new > v[drop]:
+                    if v_new > v_cr[drop] and v_new > v_drop:
                         n_activated_and_growing += multiplicity[drop]
-                    if v_new > v_cr[drop] > v[drop]:
+                    if v_new > v_cr[drop] > v_drop:
                         n_activating += multiplicity[drop]
-                    if v_new < v_cr[drop] < v[drop]:
+                    if v_new < v_cr[drop] < v_drop:
                         n_deactivating += multiplicity[drop]
-                    v[drop] = v_new
+                    m[drop] = v_new * const.rho_w
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
             return result, success, n_activating, n_deactivating, n_ripening
 

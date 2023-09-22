@@ -118,7 +118,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            v=self.attributes["volume"],
+            v=self.attributes["volume"],  # TODO: remove
+            water_mass=self.attributes["water mass"],
             multiplicity=self.attributes["multiplicity"],
             vdry=self.attributes["dry volume"],
             idx=self.attributes._ParticleAttributes__idx,
@@ -143,7 +144,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes["cell id"],
         )
-        self.attributes.mark_updated("volume")
+        self.attributes.mark_updated("water mass")
 
     def collision_coalescence_breakup(
         self,
