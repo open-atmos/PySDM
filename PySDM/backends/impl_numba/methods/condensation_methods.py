@@ -52,6 +52,7 @@ class CondensationMethods(BackendMethods):
             n_cell=n_cell,
             cell_start_arg=cell_start_arg.data,
             v=v.data,
+            water_mass=water_mass.data,
             v_cr=v_cr.data,
             multiplicity=multiplicity.data,
             vdry=vdry.data,
@@ -86,6 +87,7 @@ class CondensationMethods(BackendMethods):
         n_cell,
         cell_start_arg,
         v,
+        water_mass,
         v_cr,
         multiplicity,
         vdry,
@@ -140,6 +142,7 @@ class CondensationMethods(BackendMethods):
                     RH_max_in_cell,
                 ) = solver(
                     v,
+                    water_mass,
                     v_cr,
                     multiplicity,
                     vdry,
@@ -259,6 +262,7 @@ class CondensationMethods(BackendMethods):
         @numba.njit(**jit_flags)
         def step_impl(  # pylint: disable=too-many-arguments,too-many-locals
             v,
+            water_mass,
             v_cr,
             multiplicity,
             vdry,
@@ -311,6 +315,7 @@ class CondensationMethods(BackendMethods):
                     p,
                     RH,
                     v,
+                    water_mass,
                     v_cr,
                     multiplicity,
                     vdry,
@@ -411,7 +416,8 @@ class CondensationMethods(BackendMethods):
             T,
             p,
             RH,
-            m,
+            v,
+            water_mass,
             v_cr,
             multiplicity,
             vdry,
@@ -432,7 +438,7 @@ class CondensationMethods(BackendMethods):
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
-                v_drop = m[drop] / const.rho_w
+                v_drop = v[drop]  # TODO / const.rho_w
                 if v_drop < 0:
                     continue
                 x_old = x(v_drop)
@@ -534,7 +540,8 @@ class CondensationMethods(BackendMethods):
                         n_activating += multiplicity[drop]
                     if v_new < v_cr[drop] < v_drop:
                         n_deactivating += multiplicity[drop]
-                    m[drop] = v_new * const.rho_w
+                    water_mass[drop] = v_new * const.rho_w
+                    v[drop] = v_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
             return result, success, n_activating, n_deactivating, n_ripening
 
@@ -673,6 +680,7 @@ class CondensationMethods(BackendMethods):
         @numba.njit(**jit_flags)
         def solve(  # pylint: disable=too-many-arguments
             v,
+            water_mass,
             v_cr,
             multiplicity,
             vdry,
@@ -693,6 +701,7 @@ class CondensationMethods(BackendMethods):
         ):
             args = (
                 v,
+                water_mass,
                 v_cr,
                 multiplicity,
                 vdry,
