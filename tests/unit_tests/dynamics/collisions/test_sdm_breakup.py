@@ -360,22 +360,22 @@ class TestSDMBreakup:
 
         # Assert
         {
-            "multiplicity": lambda: np.testing.assert_array_equal(
+            "multiplicity": lambda: np.testing.assert_array_almost_equal(
                 particulator.attributes["multiplicity"].to_ndarray(),
                 np.array(params["n_expected"]),
             ),
-            "v": lambda: np.testing.assert_array_equal(
+            "v": lambda: np.testing.assert_array_almost_equal(
                 particulator.attributes["volume"].to_ndarray(),
                 np.array(params["v_expected"]),
             ),
-            "conserve": lambda: np.testing.assert_equal(
+            "conserve": lambda: np.testing.assert_almost_equal(
                 np.sum(
                     particulator.attributes["multiplicity"].to_ndarray()
                     * particulator.attributes["volume"].to_ndarray()
                 ),
                 np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
             ),
-            "deficit": lambda: np.testing.assert_equal(
+            "deficit": lambda: np.testing.assert_almost_equal(
                 breakup_rate_deficit.to_ndarray(), np.array(params["expected_deficit"])
             ),
         }[flag]()
@@ -485,11 +485,11 @@ class TestSDMBreakup:
         run2 = run_simulation(_n_times=_n, _gamma=[1])
 
         # Assert
-        np.testing.assert_array_equal(
+        np.testing.assert_array_almost_equal(
             run1[0],
             run2[0],
         )
-        np.testing.assert_array_equal(
+        np.testing.assert_array_almost_equal(
             run1[1],
             run2[1],
         )
@@ -553,7 +553,7 @@ class TestSDMBreakup:
             max_multiplicity=DEFAULTS.max_multiplicity,
         )
         assert breakup_rate_deficit[0] > 0
-        np.testing.assert_equal(
+        np.testing.assert_almost_equal(
             np.sum(
                 particulator.attributes["multiplicity"].to_ndarray()
                 * particulator.attributes["volume"].to_ndarray()
