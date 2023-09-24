@@ -19,3 +19,7 @@ class Volume:
     @staticmethod
     def x(_, volume):
         return volume
+
+    @staticmethod
+    def mass(const, x):
+        return const.rho_w * x

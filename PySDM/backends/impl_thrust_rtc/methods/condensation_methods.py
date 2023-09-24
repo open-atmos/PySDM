@@ -72,6 +72,7 @@ class CondensationMethods(
         return trtc.For(
             (
                 "v",
+                "water_mass",
                 "vdry",
                 *CondensationMethods.keys,
                 "_kappa",
@@ -212,6 +213,7 @@ class CondensationMethods(
                 }}
             }}
             v[i] = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
+            water_mass[i] = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -354,6 +356,7 @@ class CondensationMethods(
         n_cell,
         cell_start_arg,
         v,
+        water_mass,
         v_cr,
         multiplicity,
         vdry,
@@ -427,6 +430,7 @@ class CondensationMethods(
                 len(multiplicity),
                 (
                     v.data,
+                    water_mass.data,
                     vdry.data,
                     *self.vars_data.values(),
                     kappa.data,

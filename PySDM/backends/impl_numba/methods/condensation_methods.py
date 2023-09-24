@@ -438,7 +438,7 @@ class CondensationMethods(BackendMethods):
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
-                v_drop = v[drop]  # TODO / const.rho_w
+                v_drop = v[drop]  # TODO #798 / const.rho_w
                 if v_drop < 0:
                     continue
                 x_old = x(v_drop)
