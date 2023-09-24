@@ -8,7 +8,7 @@ from .dummy_environment import DummyEnvironment
 
 class DummyParticulator(Builder, Particulator):
     def __init__(self, backend_class, n_sd=0, formulae=None, grid=None):
-        backend = backend_class(formulae)
+        backend = backend_class(formulae, double_precision=True)
         Builder.__init__(self, n_sd, backend)
         Particulator.__init__(self, n_sd, backend)
         self.particulator = self
