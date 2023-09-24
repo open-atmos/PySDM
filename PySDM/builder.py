@@ -99,6 +99,7 @@ class Builder:
                 attributes["volume"]
             )
             del attributes["volume"]
+            self.request_attribute("volume")
 
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
