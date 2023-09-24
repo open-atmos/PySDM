@@ -193,9 +193,9 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         return dy_dt
 
     def solve(  # pylint: disable=too-many-arguments,too-many-locals
-        v,
-        water_mass,
         _,
+        water_mass,
+        __,
         multiplicity,
         vdry,
         cell_idx,
@@ -208,15 +208,15 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         d_water_vapour_mixing_ratio__dt,
         drhod_dt,
         m_d_mean,
-        __,
         ___,
-        dt,
         ____,
+        dt,
+        _____,
     ):
         n_sd_in_cell = len(cell_idx)
         y0 = np.empty(n_sd_in_cell + idx_x)
         y0[idx_thd] = thd
-        y0[idx_x:] = x(v[cell_idx])
+        y0[idx_x:] = x(water_mass[cell_idx] / rho_w)
         total_water_mixing_ratio = (
             water_vapour_mixing_ratio
             + _liquid_water_mixing_ratio(multiplicity[cell_idx], y0[idx_x:], m_d_mean)
@@ -258,7 +258,6 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         for i in range(n_sd_in_cell):
             v_new = volume(y1[idx_x + i])
             m_new += multiplicity[cell_idx[i]] * v_new * rho_w
-            v[cell_idx[i]] = v_new
             water_mass[cell_idx[i]] = v_new * rho_w
 
         return (
