@@ -35,6 +35,7 @@ def _condensation(
         n_cell=particulator.mesh.n_cell,
         cell_start_arg=particulator.attributes.cell_start.data,
         v=particulator.attributes["volume"].data,
+        water_mass=particulator.attributes["water mass"].data,
         v_cr=None,
         multiplicity=particulator.attributes["multiplicity"].data,
         vdry=particulator.attributes["dry volume"].data,
@@ -193,6 +194,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 
     def solve(  # pylint: disable=too-many-arguments,too-many-locals
         v,
+        water_mass,
         _,
         multiplicity,
         vdry,
@@ -257,6 +259,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             v_new = volume(y1[idx_x + i])
             m_new += multiplicity[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
+            water_mass[cell_idx[i]] = v_new * rho_w
 
         return (
             integ.success,
