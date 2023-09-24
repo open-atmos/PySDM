@@ -13,7 +13,6 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 class FreezingMethods(ThrustRTCBackendMethods):
     @cached_property
     def freeze_time_dependent_body(self):
-        const = self.formulae.constants
         return trtc.For(
             param_names=(
                 "rand",
@@ -57,7 +56,6 @@ class FreezingMethods(ThrustRTCBackendMethods):
 
     @cached_property
     def freeze_singular_body(self):
-        const = self.formulae.constants
         return trtc.For(
             param_names=(
                 "freezing_temperature",
