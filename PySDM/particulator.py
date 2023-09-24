@@ -313,9 +313,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name="volume",
+        attr_name="water mass",
         attr_range=(-np.inf, np.inf),
-        weighting_attribute="volume",
+        weighting_attribute="water mass",
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
@@ -370,8 +370,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         attr,
         rank,
         attr_bins,
-        attr_name="volume",
-        weighting_attribute="volume",
+        attr_name="water mass",
+        weighting_attribute="water mass",
         weighting_rank=0,
     ):
         attr_data = self.attributes[attr]
