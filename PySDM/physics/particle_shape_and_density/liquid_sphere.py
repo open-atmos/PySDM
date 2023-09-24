@@ -1,6 +1,7 @@
 """
 spherical particles with constant density of water
 """
+import numpy as np
 
 
 class LiquidSphere:
@@ -18,3 +19,7 @@ class LiquidSphere:
     @staticmethod
     def volume_to_mass(const, volume):
         return const.rho_w * volume
+
+    @staticmethod
+    def radius_to_mass(const, radius):
+        return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)
