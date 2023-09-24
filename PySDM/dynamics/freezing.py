@@ -54,7 +54,7 @@ class Freezing:
                     freezing_temperature=self.particulator.attributes[
                         "freezing temperature"
                     ],
-                    wet_volume=self.particulator.attributes["volume"],
+                    water_mass=self.particulator.attributes["water mass"],
                 ),
                 temperature=self.particulator.environment["T"],
                 relative_humidity=self.particulator.environment["RH"],
@@ -69,7 +69,7 @@ class Freezing:
                     immersed_surface_area=self.particulator.attributes[
                         "immersed surface area"
                     ],
-                    wet_volume=self.particulator.attributes["volume"],
+                    water_mass=self.particulator.attributes["water mass"],
                 ),
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes["cell id"],
@@ -85,6 +85,6 @@ class Freezing:
                 thaw=self.thaw,
             )
 
-        self.particulator.attributes.mark_updated("volume")
+        self.particulator.attributes.mark_updated("water mass")
         if self.record_freezing_temperature:
             self.particulator.attributes.mark_updated("freezing temperature")
