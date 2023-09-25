@@ -36,7 +36,7 @@ def make_settings(n_sd, total_number, dv, c, beta, frag_mass, backend_class):
   elif callable(total_number):
     total_number=total_number(n_sd)
   
-  if total_number is None:
+  if dv is None:
     dv = DV
   elif callable(dv):
     dv=dv(n_sd)
