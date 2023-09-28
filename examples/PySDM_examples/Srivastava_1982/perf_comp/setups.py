@@ -1,23 +1,13 @@
-import os
-from datetime import datetime
-import json
 from PySDM.physics import si
-from PySDM_examples.Srivastava_1982 import coalescence_and_breakup_eq13, Settings
-from open_atmos_jupyter_utils import show_plot
-
-
-import numpy as np
-from matplotlib import pyplot
-from PySDM_examples.Srivastava_1982.simulation import Simulation
-import numba
-
 from PySDM.products import SuperDropletCountPerGridbox, VolumeFirstMoment, ZerothMoment
-from PySDM.backends import GPU, CPU
 from PySDM.dynamics import Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import ConstantSize
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
+from PySDM_examples.Srivastava_1982 import Settings
+from PySDM_examples.Srivastava_1982.simulation import Simulation
+
 from .utils import ProductsNames
 
 dt = 1 * si.s
@@ -90,8 +80,6 @@ def setup_simulation(settings, n_sd, seed, double_precision=True):
 
 
 def setup_coalescence_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None, dv=None):
-
-  title = "fig_coalescence-only"
   c = 0.5e-6 / si.s
   beta = 1e-15 / si.s
   frag_mass = -1 * si.g
@@ -101,7 +89,6 @@ def setup_coalescence_only_sim(n_sd, backend_class, seed, double_precision=True,
   return setup_simulation(settings, n_sd, seed, double_precision)
 
 def setup_breakup_only_sim(n_sd, backend_class, seed, double_precision=True, total_number=None, dv=None):
-  title = "fig_breakup-only"
   c =  1e-15 / si.s
   beta = 1e-9 / si.s
   frag_mass = 0.25 * si.g
@@ -112,7 +99,6 @@ def setup_breakup_only_sim(n_sd, backend_class, seed, double_precision=True, tot
     
 
 def setup_coalescence_breakup_sim(n_sd, backend_class, seed, double_precision=True, total_number=None, dv=None):
-  title = "fig_coalescence-breakup"
   c =  0.5e-6 / si.s
   beta = 1e-9 / si.s
   frag_mass = 0.25 * si.g

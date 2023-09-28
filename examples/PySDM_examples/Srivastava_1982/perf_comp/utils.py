@@ -1,27 +1,14 @@
 import os
-from datetime import datetime
 import json
-from PySDM.physics import si
-from PySDM_examples.Srivastava_1982 import coalescence_and_breakup_eq13, Settings
-from open_atmos_jupyter_utils import show_plot
-
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Srivastava_1982.simulation import Simulation
 import numba
-
-from PySDM.products import SuperDropletCountPerGridbox, VolumeFirstMoment, ZerothMoment
-from PySDM.backends import GPU, CPU
-from PySDM.dynamics import Collision
-from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import ConstantSize
-from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.dynamics.collisions.collision_kernels import ConstantK
 import gc
-
 import time
-    
 
+from open_atmos_jupyter_utils import show_plot
+from PySDM.backends import GPU, CPU
+    
 
 class ProductsNames:
   super_particle_count = "super_particle_count"
@@ -73,14 +60,12 @@ def go_benchmark(
   setup_sim, n_sds, n_steps, seeds, 
   numba_n_threads=[None], 
   double_precision=True, 
-  general_filename=None,
+  sim_run_filename=None,
   total_number=None,
   dv=None,
   time_measurement_fun=measure_time_per_timestep,
   backends=[CPU, GPU]
 ):
-  TIMESTAMP = str(datetime.now()).replace(' ', '_')
-
   products = {}
 
   results = {}
@@ -97,17 +82,17 @@ def go_benchmark(
     if n_threads:
       numba.set_num_threads(n_threads)
       backend_name += "_" + str(numba.get_num_threads())
-      
 
     results[backend_name] = {}
     products[backend_name] = {}
 
-    print('\n', 'before')
+    print()
+    print('before')
 
     for n_sd in n_sds:
-      print()
+      print('\n')
       print(backend_name, n_sd)
-      print()
+
       results[backend_name][n_sd] = {}
       products[backend_name][n_sd] = {}
 
@@ -115,21 +100,19 @@ def go_benchmark(
 
         gc.collect()
 
-        
         particulator = setup_sim(n_sd, backend_class, seed, double_precision=double_precision, total_number=total_number, dv=dv)
 
         print()
-        print('prod before')
+        print('products before simulation')
         print_all_products(particulator)
-        
-        # particulator.run(steps=1)
 
         print()
-        print('start')
+        print('start simulation')
 
         elapsed_time = time_measurement_fun(particulator, n_steps)
 
-        print('\n', 'after')
+        print()
+        print('products after simulation')
         print_all_products(particulator)
 
         results[backend_name][n_sd][seed] = elapsed_time
@@ -139,8 +122,8 @@ def go_benchmark(
         del particulator
         gc.collect()
 
-  if general_filename:
-    write_to_file(filename=f"{general_filename}-products", d=products)
+  if sim_run_filename:
+    write_to_file(filename=f"{sim_run_filename}-products", d=products)
 
   return results
 
@@ -171,38 +154,43 @@ def write_to_file(filename, d):
     json.dump(d, fp)
 
 
-def __plot_get_n_sd_list(backends, processed_d):
-    x = []
+class PlottingHelpers:
+  @staticmethod
+  def get_backend_markers(backends):
+      markers = {backend: 'o' if 'Numba' in backend else 'x' for backend in backends}
+      return markers
+
+  @staticmethod
+  def get_sorted_backend_list(processed_d):
+    backends = list(processed_d.keys())
+      
+    backends.sort()
+    backends.sort(key=lambda x: int(x[6:]) if 'Numba_' in x else 100**10)
     
-    for backend in backends:
-        for n_sd in processed_d[backend].keys():
-          if n_sd not in x:
-            x.append(n_sd)
+    return backends
+
+  @staticmethod
+  def get_n_sd_list(backends, processed_d):
+    x = []
         
+    for backend in backends:
+      for n_sd in processed_d[backend].keys():
+        if n_sd not in x:
+          x.append(n_sd)
+            
     x.sort()
     return x
 
-def __plot_get_sorted_backend_list(processed_d):
-    backends = list(processed_d.keys())
-    
-    backends.sort()
-    backends.sort(key=lambda x: int(x[6:]) if 'Numba_' in x else 100**10)
 
-    return backends
+def plot_processed_results(
+    processed_d, show=True, plot_label='', plot_title=None, metric='min', plot_filename=None, markers=None, colors=None
+):
+  backends = PlottingHelpers.get_sorted_backend_list(processed_d)
 
+  if markers is None:
+    markers = PlottingHelpers.get_backend_markers(backends)
 
-def __plot_get_backend_markers(backends):
-    markers = {backend: 'o' if 'Numba' in backend else 'x' for backend in backends}
-    return markers
-
-
-
-def plot_processed_results(processed_d, show=True, plot_label='', plot_title=None, metric='min', plot_filename=None):
-  backends = __plot_get_sorted_backend_list(processed_d)
-
-  markers = __plot_get_backend_markers(backends)
-
-  x = __plot_get_n_sd_list(backends, processed_d)
+  x = PlottingHelpers.get_n_sd_list(backends, processed_d)
 
   y = []
 
@@ -213,11 +201,16 @@ def plot_processed_results(processed_d, show=True, plot_label='', plot_title=Non
       assert type(v) == int or float, 'must be scalar'
       y.append(v)
 
-    pyplot.plot(x, y, label=backend+plot_label, marker=markers[backend])
+    if colors:
+        pyplot.plot(x, y, label=backend+plot_label, marker=markers[backend], color=colors[backend], linewidth=2)
+    else:
+        pyplot.plot(x, y, label=backend+plot_label, marker=markers[backend], linewidth=2)
 
   pyplot.legend() #bbox_to_anchor =(1.1, 1))
   pyplot.xscale('log', base=2)
   pyplot.yscale('log', base=2)
+  pyplot.ylim(bottom=2**-15, top=2**3)
+
   pyplot.grid()
   pyplot.xticks(x)
   pyplot.xlabel("number of super-droplets")
@@ -230,7 +223,7 @@ def plot_processed_results(processed_d, show=True, plot_label='', plot_title=Non
     if plot_filename:
       show_plot(filename=plot_filename)
     else:
-      pyplot.show()  
+      pyplot.show() 
 
 
 def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
@@ -241,11 +234,10 @@ def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
   show_plot()
 
 
-
 def plot_time_per_step(processed_d, n_sd, show=True, plot_label='', plot_title=None, metric='mean', plot_filename=None, step_from_to=None):
-  backends = __plot_get_sorted_backend_list(processed_d)
+  backends = PlottingHelpers.get_sorted_backend_list(processed_d)
 
-  markers = __plot_get_backend_markers(backends)
+  markers = PlottingHelpers.get_backend_markers(backends)
 
   for backend in backends:
 
