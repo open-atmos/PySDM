@@ -7,7 +7,9 @@ from PySDM.products import SuperDropletCountPerGridbox, VolumeFirstMoment, Zerot
 
 
 class Simulation:
-    def __init__(self, n_steps, settings, collision_dynamic=None, double_precision=True):
+    def __init__(
+        self, n_steps, settings, collision_dynamic=None, double_precision=True
+    ):
         self.collision_dynamic = collision_dynamic
         self.settings = settings
         self.n_steps = n_steps
