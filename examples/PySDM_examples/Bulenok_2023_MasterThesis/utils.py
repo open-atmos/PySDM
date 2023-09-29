@@ -77,21 +77,20 @@ def go_benchmark(
     n_sds,
     n_steps,
     seeds,
-    numba_n_threads=[None],
+    numba_n_threads=None,
     double_precision=True,
     sim_run_filename=None,
     total_number=None,
     dv=None,
     time_measurement_fun=measure_time_per_timestep,
-    backends=[CPU, GPU],
+    backends=(CPU, GPU),
 ):
     products = {}
-
     results = {}
 
-    cpu_backends_configs = [(CPU, i) for i in numba_n_threads]
     backend_configs = []
     if CPU in backends:
+        cpu_backends_configs = [(CPU, i) for i in numba_n_threads]
         backend_configs = [*backend_configs, *cpu_backends_configs]
     if GPU in backends:
         backend_configs.append((GPU, None))
@@ -175,7 +174,7 @@ def process_results(res_d, axis=None):
 def write_to_file(filename, d):
     assert not os.path.isfile(filename), filename
 
-    with open(filename, "w") as fp:
+    with open(filename, "w", encoding="utf-8") as fp:
         json.dump(d, fp)
 
 
@@ -224,13 +223,11 @@ def plot_processed_results(
 
     x = PlottingHelpers.get_n_sd_list(backends, processed_d)
 
-    y = []
-
     for backend in backends:
         y = []
         for n_sd in x:
             v = processed_d[backend][n_sd][metric]
-            assert type(v) == int or float, "must be scalar"
+            assert isinstance(v, (float, int)), "must be scalar"
             y.append(v)
 
         if colors:
