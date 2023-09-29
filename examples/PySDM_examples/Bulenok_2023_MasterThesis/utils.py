@@ -247,7 +247,7 @@ def plot_processed_results(
                 x, y, label=backend + plot_label, marker=markers[backend], linewidth=2
             )
 
-    pyplot.legend()  # bbox_to_anchor =(1.1, 1))
+    pyplot.legend()
     pyplot.xscale("log", base=2)
     pyplot.yscale("log", base=2)
     pyplot.ylim(bottom=2**-15, top=2**3)
@@ -299,7 +299,7 @@ def plot_time_per_step(
 
         pyplot.plot(x, y, label=backend + plot_label, marker=markers[backend])
 
-    pyplot.legend()  # bbox_to_anchor =(1.1, 1))
+    pyplot.legend()
     pyplot.grid()
     pyplot.xticks(x)
     pyplot.xlabel("number of super-droplets")
