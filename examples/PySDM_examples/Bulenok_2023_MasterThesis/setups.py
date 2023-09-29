@@ -1,6 +1,6 @@
 from PySDM_examples.Srivastava_1982 import Settings
 from PySDM_examples.Srivastava_1982.simulation import Simulation
-from utils import ProductsNames
+from PySDM_examples.Bulenok_2023_MasterThesis.utils import ProductsNames
 
 from PySDM.dynamics import Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
