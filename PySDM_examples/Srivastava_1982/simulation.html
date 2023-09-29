@@ -30,55 +30,63 @@
 from PySDM_examples.Srivastava_1982.settings import SimProducts
 
 from PySDM import Builder, Formulae
-from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.products import SuperDropletCountPerGridbox, VolumeFirstMoment, ZerothMoment
 
 
 class Simulation:
-    def __init__(self, n_steps, settings, collision_dynamic=None):
+    def __init__(
+        self, n_steps, settings, collision_dynamic=None, double_precision=True
+    ):
         self.collision_dynamic = collision_dynamic
         self.settings = settings
         self.n_steps = n_steps
+
+        self.double_precision = double_precision
 
         self.simulation_res = {
             n_sd: {prod: {} for prod in self.settings.prods}
             for n_sd in self.settings.n_sds
         }
 
-    def run(self, x, seeds):
+    def build(self, n_sd, seed, products):
+        builder = Builder(
+            backend=self.settings.backend_class(
+                formulae=Formulae(
+                    constants={&#34;rho_w&#34;: self.settings.rho},
+                    fragmentation_function=&#34;ConstantSize&#34;,
+                    seed=seed,
+                ),
+                double_precision=self.double_precision,
+            ),
+            n_sd=n_sd,
+        )
+        builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
+        builder.add_dynamic(self.collision_dynamic)
+        particulator = builder.build(
+            products=products,
+            attributes={
+                &#34;multiplicity&#34;: np.full(n_sd, self.settings.total_number_0 / n_sd),
+                &#34;volume&#34;: np.full(
+                    n_sd,
+                    self.settings.total_volume / self.settings.total_number_0,
+                ),
+            },
+        )
+        return particulator
+
+    def run_convergence_analysis(self, x, seeds):
         for n_sd in self.settings.n_sds:
             for seed in seeds:
-                builder = Builder(
-                    backend=CPU(
-                        formulae=Formulae(
-                            constants={&#34;rho_w&#34;: self.settings.rho},
-                            fragmentation_function=&#34;ConstantSize&#34;,
-                            seed=seed,
-                        )
+                products = (
+                    SuperDropletCountPerGridbox(
+                        name=SimProducts.PySDM.super_particle_count.name
                     ),
-                    n_sd=n_sd,
+                    VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
+                    ZerothMoment(name=SimProducts.PySDM.total_numer.name),
                 )
-                builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
-                builder.add_dynamic(self.collision_dynamic)
-                particulator = builder.build(
-                    products=(
-                        SuperDropletCountPerGridbox(
-                            name=SimProducts.PySDM.super_particle_count.name
-                        ),
-                        VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
-                        ZerothMoment(name=SimProducts.PySDM.total_numer.name),
-                    ),
-                    attributes={
-                        &#34;multiplicity&#34;: np.full(
-                            n_sd, self.settings.total_number_0 / n_sd
-                        ),
-                        &#34;volume&#34;: np.full(
-                            n_sd,
-                            self.settings.total_volume / self.settings.total_number_0,
-                        ),
-                    },
-                )
+
+                particulator = self.build(n_sd, seed, products)
 
                 for prod in self.settings.prods:
                     self.simulation_res[n_sd][prod][seed] = np.full(
@@ -115,7 +123,7 @@ class Simulation:
 <dl>
 <dt id="PySDM_examples.Srivastava_1982.simulation.Simulation"><code class="flex name class">
 <span>class <span class="ident">Simulation</span></span>
-<span>(</span><span>n_steps, settings, collision_dynamic=None)</span>
+<span>(</span><span>n_steps, settings, collision_dynamic=None, double_precision=True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -124,49 +132,58 @@ class Simulation:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Simulation:
-    def __init__(self, n_steps, settings, collision_dynamic=None):
+    def __init__(
+        self, n_steps, settings, collision_dynamic=None, double_precision=True
+    ):
         self.collision_dynamic = collision_dynamic
         self.settings = settings
         self.n_steps = n_steps
+
+        self.double_precision = double_precision
 
         self.simulation_res = {
             n_sd: {prod: {} for prod in self.settings.prods}
             for n_sd in self.settings.n_sds
         }
 
-    def run(self, x, seeds):
+    def build(self, n_sd, seed, products):
+        builder = Builder(
+            backend=self.settings.backend_class(
+                formulae=Formulae(
+                    constants={&#34;rho_w&#34;: self.settings.rho},
+                    fragmentation_function=&#34;ConstantSize&#34;,
+                    seed=seed,
+                ),
+                double_precision=self.double_precision,
+            ),
+            n_sd=n_sd,
+        )
+        builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
+        builder.add_dynamic(self.collision_dynamic)
+        particulator = builder.build(
+            products=products,
+            attributes={
+                &#34;multiplicity&#34;: np.full(n_sd, self.settings.total_number_0 / n_sd),
+                &#34;volume&#34;: np.full(
+                    n_sd,
+                    self.settings.total_volume / self.settings.total_number_0,
+                ),
+            },
+        )
+        return particulator
+
+    def run_convergence_analysis(self, x, seeds):
         for n_sd in self.settings.n_sds:
             for seed in seeds:
-                builder = Builder(
-                    backend=CPU(
-                        formulae=Formulae(
-                            constants={&#34;rho_w&#34;: self.settings.rho},
-                            fragmentation_function=&#34;ConstantSize&#34;,
-                            seed=seed,
-                        )
+                products = (
+                    SuperDropletCountPerGridbox(
+                        name=SimProducts.PySDM.super_particle_count.name
                     ),
-                    n_sd=n_sd,
+                    VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
+                    ZerothMoment(name=SimProducts.PySDM.total_numer.name),
                 )
-                builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
-                builder.add_dynamic(self.collision_dynamic)
-                particulator = builder.build(
-                    products=(
-                        SuperDropletCountPerGridbox(
-                            name=SimProducts.PySDM.super_particle_count.name
-                        ),
-                        VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
-                        ZerothMoment(name=SimProducts.PySDM.total_numer.name),
-                    ),
-                    attributes={
-                        &#34;multiplicity&#34;: np.full(
-                            n_sd, self.settings.total_number_0 / n_sd
-                        ),
-                        &#34;volume&#34;: np.full(
-                            n_sd,
-                            self.settings.total_volume / self.settings.total_number_0,
-                        ),
-                    },
-                )
+
+                particulator = self.build(n_sd, seed, products)
 
                 for prod in self.settings.prods:
                     self.simulation_res[n_sd][prod][seed] = np.full(
@@ -193,8 +210,8 @@ class Simulation:
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM_examples.Srivastava_1982.simulation.Simulation.run"><code class="name flex">
-<span>def <span class="ident">run</span></span>(<span>self, x, seeds)</span>
+<dt id="PySDM_examples.Srivastava_1982.simulation.Simulation.build"><code class="name flex">
+<span>def <span class="ident">build</span></span>(<span>self, n_sd, seed, products)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -202,39 +219,54 @@ class Simulation:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def run(self, x, seeds):
+<pre><code class="python">def build(self, n_sd, seed, products):
+    builder = Builder(
+        backend=self.settings.backend_class(
+            formulae=Formulae(
+                constants={&#34;rho_w&#34;: self.settings.rho},
+                fragmentation_function=&#34;ConstantSize&#34;,
+                seed=seed,
+            ),
+            double_precision=self.double_precision,
+        ),
+        n_sd=n_sd,
+    )
+    builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
+    builder.add_dynamic(self.collision_dynamic)
+    particulator = builder.build(
+        products=products,
+        attributes={
+            &#34;multiplicity&#34;: np.full(n_sd, self.settings.total_number_0 / n_sd),
+            &#34;volume&#34;: np.full(
+                n_sd,
+                self.settings.total_volume / self.settings.total_number_0,
+            ),
+        },
+    )
+    return particulator</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Srivastava_1982.simulation.Simulation.run_convergence_analysis"><code class="name flex">
+<span>def <span class="ident">run_convergence_analysis</span></span>(<span>self, x, seeds)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run_convergence_analysis(self, x, seeds):
     for n_sd in self.settings.n_sds:
         for seed in seeds:
-            builder = Builder(
-                backend=CPU(
-                    formulae=Formulae(
-                        constants={&#34;rho_w&#34;: self.settings.rho},
-                        fragmentation_function=&#34;ConstantSize&#34;,
-                        seed=seed,
-                    )
+            products = (
+                SuperDropletCountPerGridbox(
+                    name=SimProducts.PySDM.super_particle_count.name
                 ),
-                n_sd=n_sd,
+                VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
+                ZerothMoment(name=SimProducts.PySDM.total_numer.name),
             )
-            builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
-            builder.add_dynamic(self.collision_dynamic)
-            particulator = builder.build(
-                products=(
-                    SuperDropletCountPerGridbox(
-                        name=SimProducts.PySDM.super_particle_count.name
-                    ),
-                    VolumeFirstMoment(name=SimProducts.PySDM.total_volume.name),
-                    ZerothMoment(name=SimProducts.PySDM.total_numer.name),
-                ),
-                attributes={
-                    &#34;multiplicity&#34;: np.full(
-                        n_sd, self.settings.total_number_0 / n_sd
-                    ),
-                    &#34;volume&#34;: np.full(
-                        n_sd,
-                        self.settings.total_volume / self.settings.total_number_0,
-                    ),
-                },
-            )
+
+            particulator = self.build(n_sd, seed, products)
 
             for prod in self.settings.prods:
                 self.simulation_res[n_sd][prod][seed] = np.full(
@@ -281,7 +313,8 @@ class Simulation:
 <li>
 <h4><code><a title="PySDM_examples.Srivastava_1982.simulation.Simulation" href="#PySDM_examples.Srivastava_1982.simulation.Simulation">Simulation</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM_examples.Srivastava_1982.simulation.Simulation.run" href="#PySDM_examples.Srivastava_1982.simulation.Simulation.run">run</a></code></li>
+<li><code><a title="PySDM_examples.Srivastava_1982.simulation.Simulation.build" href="#PySDM_examples.Srivastava_1982.simulation.Simulation.build">build</a></code></li>
+<li><code><a title="PySDM_examples.Srivastava_1982.simulation.Simulation.run_convergence_analysis" href="#PySDM_examples.Srivastava_1982.simulation.Simulation.run_convergence_analysis">run_convergence_analysis</a></code></li>
 </ul>
 </li>
 </ul>

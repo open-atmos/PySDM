@@ -26,7 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.physics import constants_defaults
+<pre><code class="python">from PySDM.backends import CPU
+from PySDM.physics import constants_defaults
 
 DUMMY_FRAG_MASS = -1
 
@@ -84,7 +85,10 @@ class Settings:
         srivastava_beta=None,
         frag_mass=DUMMY_FRAG_MASS,
         rho=constants_defaults.rho_w,
+        backend_class=CPU,
     ):
+        self.backend_class = backend_class
+
         self.rho = rho
         self.total_number_0 = total_number
         self.total_volume = self.total_number_0 * drop_mass_0 / self.rho
@@ -114,7 +118,7 @@ class Settings:
 <dl>
 <dt id="PySDM_examples.Srivastava_1982.settings.Settings"><code class="flex name class">
 <span>class <span class="ident">Settings</span></span>
-<span>(</span><span>*, n_sds, dt, dv, total_number, drop_mass_0, srivastava_c, srivastava_beta=None, frag_mass=-1, rho=999.9999999999998)</span>
+<span>(</span><span>*, n_sds, dt, dv, total_number, drop_mass_0, srivastava_c, srivastava_beta=None, frag_mass=-1, rho=999.9999999999998, backend_class=PySDM.backends.numba.Numba)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>interprets parameters from Srivastava 1982 in PySDM context</p></div>
@@ -137,7 +141,10 @@ class Settings:
         srivastava_beta=None,
         frag_mass=DUMMY_FRAG_MASS,
         rho=constants_defaults.rho_w,
+        backend_class=CPU,
     ):
+        self.backend_class = backend_class
+
         self.rho = rho
         self.total_number_0 = total_number
         self.total_volume = self.total_number_0 * drop_mass_0 / self.rho
