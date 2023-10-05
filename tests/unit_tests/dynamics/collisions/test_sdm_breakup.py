@@ -25,8 +25,8 @@ def volume_to_mass(particulator, volume):
         return list(
             map(particulator.formulae.particle_shape_and_density.volume_to_mass, volume)
         )
-    else:
-        raise NotImplementedError
+
+    raise NotImplementedError
 
 
 class TestSDMBreakup:
@@ -393,7 +393,7 @@ class TestSDMBreakup:
 
         # Assert
         {
-            "multiplicity": lambda: np.testing.assert_array_almost_equal(
+            "multiplicity": lambda: np.testing.assert_array_equal(
                 particulator.attributes["multiplicity"].to_ndarray(),
                 np.array(params["n_expected"]),
             ),
