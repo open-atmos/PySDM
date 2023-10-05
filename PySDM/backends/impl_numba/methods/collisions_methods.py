@@ -60,13 +60,15 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def compute_transfer_multiplicities(
-    gamma, j, k, multiplicity, volume, fragment_size_i, max_multiplicity
+    gamma, j, k, multiplicity, particle_mass, fragment_mass_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
     gamma_j_k = 0
     take_from_j_test = multiplicity[k]
     take_from_j = 0
-    new_mult_k_test = ((volume[j] + volume[k]) / fragment_size_i) * multiplicity[k]
+    new_mult_k_test = (
+        (particle_mass[j] + particle_mass[k]) / fragment_mass_i
+    ) * multiplicity[k]
     new_mult_k = multiplicity[k]
     for m in range(int(gamma)):
         # check for overflow of multiplicity
@@ -84,7 +86,7 @@ def compute_transfer_multiplicities(
 
         take_from_j_test += new_mult_k_test
         new_mult_k_test = (
-            new_mult_k_test * (volume[j] / fragment_size_i) + new_mult_k_test
+            new_mult_k_test * (particle_mass[j] / fragment_mass_i) + new_mult_k_test
         )
 
     return take_from_j, new_mult_k, gamma_j_k, overflow_flag
@@ -138,20 +140,20 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     multiplicity,
     gamma,
     attributes,
-    fragment_size,
+    fragment_mass,
     max_multiplicity,
     breakup_rate,
     breakup_rate_deficit,
     warn_overflows,
-    volume,
+    particle_mass,
 ):  # breakup0 guarantees take_from_j <= multiplicity[j]
     take_from_j, new_mult_k, gamma_j_k, overflow_flag = compute_transfer_multiplicities(
         gamma[i],
         j,
         k,
         multiplicity,
-        volume,
-        fragment_size[i],
+        particle_mass,
+        fragment_mass[i],
         max_multiplicity,
     )
     gamma_deficit = gamma[i] - gamma_j_k
@@ -181,19 +183,23 @@ def break_up_while(
     multiplicity,
     gamma,
     attributes,
-    fragment_size,
+    fragment_mass,
     max_multiplicity,
     breakup_rate,
     breakup_rate_deficit,
     warn_overflows,
-    volume,
+    particle_mass,
 ):  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
     gamma_deficit = gamma[i]
     overflow_flag = False
     while gamma_deficit > 0:
         if multiplicity[k] == multiplicity[j]:
             take_from_j = multiplicity[j]
-            new_mult_k = (volume[j] + volume[k]) / fragment_size[i] * multiplicity[k]
+            new_mult_k = (
+                (particle_mass[j] + particle_mass[k])
+                / fragment_mass[i]
+                * multiplicity[k]
+            )
 
             # check for overflow
             if new_mult_k > max_multiplicity:
@@ -215,8 +221,8 @@ def break_up_while(
                 j,
                 k,
                 multiplicity,
-                volume,
-                fragment_size[i],
+                particle_mass,
+                fragment_mass[i],
                 max_multiplicity,
             )
 
@@ -317,7 +323,7 @@ class CollisionsMethods(BackendMethods):
             rand,
             Ec,
             Eb,
-            fragment_size,
+            fragment_mass,
             healthy,
             cell_id,
             coalescence_rate,
@@ -326,7 +332,7 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair,
             max_multiplicity,
             warn_overflows,
-            volume,
+            particle_mass,
         ):
             # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
             for i in numba.prange(length // 2):
@@ -357,12 +363,12 @@ class CollisionsMethods(BackendMethods):
                         multiplicity,
                         gamma,
                         attributes,
-                        fragment_size,
+                        fragment_mass,
                         max_multiplicity,
                         breakup_rate,
                         breakup_rate_deficit,
                         warn_overflows,
-                        volume,
+                        particle_mass,
                     )
                 flag_zero_multiplicity(j, k, multiplicity, healthy)
 
@@ -706,7 +712,7 @@ class CollisionsMethods(BackendMethods):
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         healthy,
         cell_id,
         coalescence_rate,
@@ -714,7 +720,7 @@ class CollisionsMethods(BackendMethods):
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
-        volume,
+        particle_mass,
         max_multiplicity,
     ):
         # pylint: disable=too-many-locals
@@ -727,7 +733,7 @@ class CollisionsMethods(BackendMethods):
             rand=rand.data,
             Ec=Ec.data,
             Eb=Eb.data,
-            fragment_size=fragment_size.data,
+            fragment_mass=fragment_mass.data,
             healthy=healthy.data,
             cell_id=cell_id.data,
             coalescence_rate=coalescence_rate.data,
@@ -736,7 +742,7 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair=is_first_in_pair.indicator.data,
             max_multiplicity=max_multiplicity,
             warn_overflows=warn_overflows,
-            volume=volume.data,
+            particle_mass=particle_mass.data,
         )
 
     @staticmethod

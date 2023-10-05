@@ -154,7 +154,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         coalescence_rate,
         breakup_rate,
         breakup_rate_deficit,
@@ -177,7 +177,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 rand=rand,
                 Ec=Ec,
                 Eb=Eb,
-                fragment_size=fragment_size,
+                fragment_mass=fragment_mass,
                 healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
@@ -185,7 +185,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
-                volume=self.attributes["volume"],
+                particle_mass=self.attributes["water mass"],
                 max_multiplicity=max_multiplicity,
             )
         else:

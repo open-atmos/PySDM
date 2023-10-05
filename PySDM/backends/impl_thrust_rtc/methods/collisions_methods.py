@@ -77,8 +77,8 @@ struct Commons {
     int64_t j,
     int64_t k,
     VectorView<int64_t> multiplicity,
-    VectorView<real_type> volume,
-    real_type fragment_size_i,
+    VectorView<real_type> particle_mass,
+    real_type fragment_mass_i,
     int64_t max_multiplicity,
 
     real_type *take_from_j,
@@ -87,7 +87,7 @@ struct Commons {
     real_type gamma_j_k = 0;
     real_type take_from_j_test = multiplicity[k];
     take_from_j[0] = 0;
-    real_type new_mult_k_test = ((volume[j] + volume[k]) / fragment_size_i * multiplicity[k]);
+    real_type new_mult_k_test = ((particle_mass[j] + particle_mass[k]) / fragment_mass_i * multiplicity[k]);
     new_mult_k[0] = multiplicity[k];
 
     for (auto m = 0; m < (int64_t) (gamma); m += 1) {
@@ -104,7 +104,7 @@ struct Commons {
         gamma_j_k = m + 1;
 
         take_from_j_test += new_mult_k_test;
-        new_mult_k_test = new_mult_k_test * (volume[j] / fragment_size_i) + new_mult_k_test;
+        new_mult_k_test = new_mult_k_test * (particle_mass[j] / fragment_mass_i) + new_mult_k_test;
     }
     return gamma_j_k;
   }
@@ -168,11 +168,11 @@ struct Commons {
     VectorView<int64_t> multiplicity,
     VectorView<real_type> gamma,
     VectorView<real_type> attributes,
-    VectorView<real_type> fragment_size,
+    VectorView<real_type> fragment_mass,
     int64_t max_multiplicity,
     VectorView<int64_t> breakup_rate,
     VectorView<int64_t> breakup_rate_deficit,
-    VectorView<real_type> volume,
+    VectorView<real_type> particle_mass,
     int64_t n_sd,
     int64_t n_attr
   ) {
@@ -183,8 +183,8 @@ struct Commons {
         j,
         k,
         multiplicity,
-        volume,
-        fragment_size[i],
+        particle_mass,
+        fragment_mass[i],
         max_multiplicity,
         take_from_j,
         new_mult_k
@@ -359,7 +359,7 @@ class CollisionsMethods(
                 "rand",
                 "Ec",
                 "Eb",
-                "fragment_size",
+                "fragment_mass",
                 "healthy",
                 "cell_id",
                 "coalescence_rate",
@@ -367,7 +367,7 @@ class CollisionsMethods(
                 "breakup_rate_deficit",
                 "is_first_in_pair",
                 "max_multiplicity",
-                "volume",
+                "particle_mass",
                 "n_sd",
                 "n_attr",
             ),
@@ -407,11 +407,11 @@ class CollisionsMethods(
                     multiplicity,
                     gamma,
                     attributes,
-                    fragment_size,
+                    fragment_mass,
                     max_multiplicity,
                     breakup_rate,
                     breakup_rate_deficit,
-                    volume,
+                    particle_mass,
                     n_sd,
                     n_attr
                 );
@@ -824,7 +824,7 @@ class CollisionsMethods(
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         healthy,
         cell_id,
         coalescence_rate,
@@ -832,7 +832,7 @@ class CollisionsMethods(
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
-        volume,
+        particle_mass,
         max_multiplicity,
     ):
         if warn_overflows:
@@ -851,7 +851,7 @@ class CollisionsMethods(
                 rand.data,
                 Ec.data,
                 Eb.data,
-                fragment_size.data,
+                fragment_mass.data,
                 healthy.data,
                 cell_id.data,
                 coalescence_rate.data,
@@ -859,7 +859,7 @@ class CollisionsMethods(
                 breakup_rate_deficit.data,
                 is_first_in_pair.indicator.data,
                 trtc.DVInt64(max_multiplicity),
-                volume.data,
+                particle_mass.data,
                 n_sd,
                 n_attr,
             ),
