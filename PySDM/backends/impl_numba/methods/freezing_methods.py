@@ -16,7 +16,6 @@ from ...impl_numba import conf
 class FreezingMethods(BackendMethods):
     def __init__(self):
         BackendMethods.__init__(self)
-        const = self.formulae.constants
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
         frozen_and_above_freezing_point = (
             self.formulae.trivia.frozen_and_above_freezing_point
