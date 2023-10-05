@@ -16,7 +16,7 @@ TRIVIA = Formulae().trivia
 
 @strict
 class Settings0D:
-    X0 = TRIVIA.volume(radius=30.531 * si.micrometres) * constants_defaults.rho_w
+    X0 = TRIVIA.volume(radius=30.531 * si.micrometres)
 
     def __init__(
         self,
