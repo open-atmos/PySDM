@@ -8,13 +8,13 @@ from PySDM.backends import CPU
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, ExponFrag
+from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponential
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision import DEFAULTS, Collision
 from PySDM.dynamics.collisions.collision_kernels import ConstantK, Geometric
 from PySDM.environments import Box
+from PySDM.initialisation import spectra
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.initialisation.spectra import Exponential
 from PySDM.physics import si
 from PySDM.physics.trivia import Trivia
 from PySDM.products.size_spectral import ParticleVolumeVersusRadiusLogarithmSpectrum
@@ -794,14 +794,14 @@ class TestSDMBreakup:
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
-        spectrum = Exponential(norm_factor=norm_factor, scale=X0)
+        spectrum = spectra.Exponential(norm_factor=norm_factor, scale=X0)
         attributes = {}
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             spectrum
         ).sample(n_sd)
 
         mu = Trivia.volume(const, radius=100 * si.um)
-        fragmentation = ExponFrag(scale=mu)
+        fragmentation = Exponential(scale=mu)
         kernel = Geometric()
         coal_eff = ConstEc(Ec=0.01)
         break_eff = ConstEb(Eb=1.0)

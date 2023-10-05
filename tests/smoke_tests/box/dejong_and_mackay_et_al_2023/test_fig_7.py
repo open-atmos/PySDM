@@ -6,9 +6,9 @@ from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_et_al_2023 import Settings0D, run_box_breakup
 
 from PySDM.backends import CPU, GPU
-from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, ExponFrag
+from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponential
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.physics.constants import si
+from PySDM.physics import constants_defaults, si
 
 CMAP = matplotlib.cm.get_cmap("viridis")
 N_SD = 2**12
@@ -118,8 +118,10 @@ class TestFig4:
         data_x[lbl], data_y[lbl] = res.x, res.y
         for i, mu_val in enumerate(mu_vals):
             settings = Settings0D(
-                fragmentation=ExponFrag(
-                    scale=mu_val, vmin=(1 * si.um) ** 3, nfmax=None
+                fragmentation=Exponential(
+                    scale=mu_val,
+                    mass_min=(1 * si.um) ** 3 * constants_defaults.rho_w,
+                    nfmax=None,
                 ),
                 warn_overflows=False,
                 seed=44,

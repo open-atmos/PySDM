@@ -1,12 +1,12 @@
 from pystrict import strict
 
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import Feingold1988Frag
+from PySDM.dynamics.collisions.breakup_fragmentations import Feingold1988
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.formulae import Formulae
 from PySDM.initialisation.spectra import Gamma
-from PySDM.physics.constants import si
+from PySDM.physics import si
 from PySDM.physics.constants_defaults import rho_w
 
 
@@ -25,13 +25,13 @@ class Settings:
         self._steps = list(range(60))
         self.kernel = Golovin(b=2000 * si.cm**3 / si.g / si.s * rho_w)
         self.coal_effs = [ConstEc(Ec=0.8), ConstEc(Ec=0.9), ConstEc(Ec=1.0)]
-        self.vmin = 1.0 * si.um**3
+        self.mass_min = 1.0 * si.um**3 * rho_w
         self.nfmax = 10
         self.fragtol = 1e-3
-        self.fragmentation = Feingold1988Frag(
+        self.fragmentation = Feingold1988(
             scale=self.k * self.theta,
             fragtol=self.fragtol,
-            vmin=self.vmin,
+            mass_min=self.mass_min,
             nfmax=self.nfmax,
         )
         self.break_eff = ConstEb(1.0)

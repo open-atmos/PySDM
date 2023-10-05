@@ -1,34 +1,34 @@
 """
-P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes
+P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are masses
 """
 
 
 class Gaussian:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
+    def __init__(self, mu, sigma, mass_min=0.0, nfmax=None):
         self.particulator = None
         self.mu = mu
         self.sigma = sigma
-        self.vmin = vmin
+        self.mass_min = mass_min
         self.nfmax = nfmax
-        self.sum_of_volumes = None
+        self.sum_of_masses = None
 
     def register(self, builder):
         self.particulator = builder.particulator
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+        self.sum_of_masses = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
-        self.sum_of_volumes.sum(
-            self.particulator.attributes["volume"], is_first_in_pair
+    def __call__(self, nf, frag_mass, u01, is_first_in_pair):
+        self.sum_of_masses.sum(
+            self.particulator.attributes["water mass"], is_first_in_pair
         )
         self.particulator.backend.gauss_fragmentation(
             n_fragment=nf,
             mu=self.mu,
             sigma=self.sigma,
-            frag_size=frag_size,
-            x_plus_y=self.sum_of_volumes,
+            frag_mass=frag_mass,
+            x_plus_y=self.sum_of_masses,
             rand=u01,
-            vmin=self.vmin,
+            mass_min=self.mass_min,
             nfmax=self.nfmax,
         )

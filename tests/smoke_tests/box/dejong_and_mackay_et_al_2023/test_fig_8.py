@@ -8,7 +8,7 @@ from PySDM_examples.deJong_Mackay_et_al_2023 import Settings0D, run_box_breakup
 from PySDM.backends import CPU, GPU
 from PySDM.dynamics.collisions.breakup_fragmentations import Straub2010Nf
 from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
-from PySDM.physics import si
+from PySDM.physics import constants_defaults, si
 
 
 @pytest.mark.parametrize(
@@ -18,7 +18,9 @@ from PySDM.physics import si
 def test_fig_5(backend_class, plot=False):
     # arrange
     settings = Settings0D(
-        fragmentation=Straub2010Nf(vmin=Settings0D.X0 * 1e-3, nfmax=10),
+        fragmentation=Straub2010Nf(
+            mass_min=Settings0D.X0 * 1e-3 * constants_defaults.rho_w, nfmax=10
+        ),
         seed=44,
         warn_overflows=False,
     )

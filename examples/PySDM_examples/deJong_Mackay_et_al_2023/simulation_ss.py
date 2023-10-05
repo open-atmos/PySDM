@@ -7,7 +7,7 @@ from PySDM_examples.deJong_Mackay_et_al_2023.simulation_0D import run_box_breaku
 from PySDM.dynamics.collisions.breakup_fragmentations import Straub2010Nf
 from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
 from PySDM.initialisation.spectra import Exponential
-from PySDM.physics import si
+from PySDM.physics import constants_defaults, si
 
 
 def run_to_steady_state(parameterization, n_sd, steps, nruns=1, dt=1 * si.s):
@@ -27,7 +27,8 @@ def run_to_steady_state(parameterization, n_sd, steps, nruns=1, dt=1 * si.s):
             settings = Settings0D(
                 seed=7 ** (irun + 1),
                 fragmentation=Straub2010Nf(
-                    vmin=(0.01 * si.mm) ** 3 * np.pi / 6, nfmax=10000
+                    mass_min=(0.01 * si.mm) ** 3 * np.pi / 6 * constants_defaults.rho_w,
+                    nfmax=10000,
                 ),
             )
             settings.coal_eff = Straub2010Ec()

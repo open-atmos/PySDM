@@ -1,11 +1,18 @@
 """
 TODO #744
 """
+import warnings
+
 from .always_n import AlwaysN
-from .constant_size import ConstantSize
-from .exponential import ExponFrag
-from .feingold1988 import Feingold1988Frag
+from .constant_mass import ConstantMass
+from .exponential import Exponential
+from .feingold1988 import Feingold1988
 from .gaussian import Gaussian
 from .lowlist82 import LowList1982Nf
 from .slams import SLAMS
 from .straub2010 import Straub2010Nf
+
+
+class ExponFrag(Exponential):
+    def __init_subclass__(self):
+        warnings.warn("Class has been renamed", DeprecationWarning)

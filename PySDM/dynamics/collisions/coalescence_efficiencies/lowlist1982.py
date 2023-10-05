@@ -8,14 +8,14 @@ from PySDM.physics.constants import si
 
 class LowList1982Ec:
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, vmin=0.0, nfmax=None):
+    def __init__(self, mass_min=0.0, nfmax=None):
         self.particulator = None
-        self.vmin = vmin
+        self.mass_min = mass_min
         self.nfmax = nfmax
         self.arrays = {}
         self.ll82_tmp = {}
         self.max_size = None
-        self.sum_of_volumes = None
+        self.sum_of_masses = None
         self.const = None
 
     def register(self, builder):
@@ -23,12 +23,12 @@ class LowList1982Ec:
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+        self.sum_of_masses = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute("radius")
-        builder.request_attribute("volume")
+        builder.request_attribute("water mass")
         builder.request_attribute("relative fall velocity")
         for key in ("Sc", "St", "dS", "tmp", "tmp2", "CKE", "Et", "ds", "dl"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -36,9 +36,9 @@ class LowList1982Ec:
             )
 
     def __call__(self, output, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes["volume"], is_first_in_pair)
-        self.sum_of_volumes.sum(
-            self.particulator.attributes["volume"], is_first_in_pair
+        self.max_size.max(self.particulator.attributes["water mass"], is_first_in_pair)
+        self.sum_of_masses.sum(
+            self.particulator.attributes["water mass"], is_first_in_pair
         )
         self.arrays["ds"].min(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["ds"] *= 2
@@ -46,7 +46,9 @@ class LowList1982Ec:
         self.arrays["dl"] *= 2
 
         # compute the surface energy, CKE
-        self.arrays["Sc"].sum(self.particulator.attributes["volume"], is_first_in_pair)
+        self.arrays["Sc"].sum(
+            self.particulator.attributes["water mass"], is_first_in_pair
+        )
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
@@ -62,13 +64,15 @@ class LowList1982Ec:
         self.arrays["dS"].fill(self.arrays["St"])
         self.arrays["dS"] -= self.arrays["Sc"]
 
-        self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
+        self.arrays["tmp"].sum(
+            self.particulator.attributes["water mass"], is_first_in_pair
+        )
         self.arrays["tmp2"].distance(
             self.particulator.attributes["relative fall velocity"], is_first_in_pair
         )
         self.arrays["tmp2"] **= 2
         self.arrays["CKE"].multiply(
-            self.particulator.attributes["volume"], is_first_in_pair
+            self.particulator.attributes["water mass"], is_first_in_pair
         )
         self.arrays["CKE"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["CKE"] *= self.arrays["tmp2"]

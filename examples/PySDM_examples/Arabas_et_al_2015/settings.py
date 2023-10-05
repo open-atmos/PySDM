@@ -7,7 +7,7 @@ from PySDM import Formulae
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import Gaussian
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.physics import si
+from PySDM.physics import constants_defaults, si
 
 
 class Settings(StratoCumulus):
@@ -47,7 +47,9 @@ class Settings(StratoCumulus):
         mu_r = 10 * si.um
         mu = 4 / 3 * np.pi * mu_r**3
         sigma = mu / 2.5
-        vmin = mu / 1000
+        mass_min = mu / 1000 * constants_defaults.rho_w
         self.coalescence_efficiency = ConstEc(Ec=0.95)
         self.breakup_efficiency = ConstEb(Eb=1.0)
-        self.breakup_fragmentation = Gaussian(mu=mu, sigma=sigma, vmin=vmin, nfmax=10)
+        self.breakup_fragmentation = Gaussian(
+            mu=mu, sigma=sigma, mass_min=mass_min, nfmax=10
+        )

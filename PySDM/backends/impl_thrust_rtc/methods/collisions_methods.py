@@ -524,10 +524,10 @@ class CollisionsMethods(
     @cached_property
     def __exp_fragmentation_body(self):
         return trtc.For(
-            param_names=("scale", "frag_size", "rand", "tol"),
+            param_names=("scale", "frag_mass", "rand", "tol"),
             name_iter="i",
             body="""
-            frag_size[i] = -scale * log(max(1 - rand[i], tol));
+            frag_mass[i] = -scale * log(max(1 - rand[i], tol));
             """,
         )
 
@@ -536,38 +536,38 @@ class CollisionsMethods(
         return trtc.For(
             param_names=(
                 "n_fragment",
-                "frag_size",
+                "frag_mass",
                 "x_plus_y",
-                "vmin",
+                "mass_min",
                 "nfmax",
                 "nfmax_is_not_none",
             ),
             name_iter="i",
             body="""
-            frag_size[i] = min(frag_size[i], x_plus_y[i]);
+            frag_mass[i] = min(frag_mass[i], x_plus_y[i]);
 
             if (nfmax_is_not_none) {
-                if (x_plus_y[i] / frag_size[i] > nfmax) {
-                    frag_size[i] = x_plus_y[i] / nfmax;
+                if (x_plus_y[i] / frag_mass[i] > nfmax) {
+                    frag_mass[i] = x_plus_y[i] / nfmax;
                 }
             }
-            else if (frag_size[i] < vmin) {
-                frag_size[i] = x_plus_y[i];
+            else if (frag_mass[i] < mass_min) {
+                frag_mass[i] = x_plus_y[i];
             }
-            else if (frag_size[i] == 0.0) {
-                frag_size[i] = x_plus_y[i];
+            else if (frag_mass[i] == 0.0) {
+                frag_mass[i] = x_plus_y[i];
             }
-            n_fragment[i] = x_plus_y[i] / frag_size[i];
+            n_fragment[i] = x_plus_y[i] / frag_mass[i];
             """,
         )
 
     @cached_property
     def __gauss_fragmentation_body(self):
         return trtc.For(
-            param_names=("mu", "sigma", "frag_size", "rand"),
+            param_names=("mu", "sigma", "frag_mass", "rand"),
             name_iter="i",
             body=f"""
-            frag_size[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
+            frag_mass[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
                 c="rand[i]"
             )};
             """.replace(
@@ -578,7 +578,7 @@ class CollisionsMethods(
     @cached_property
     def __slams_fragmentation_body(self):
         return trtc.For(
-            param_names=("n_fragment", "frag_size", "x_plus_y", "probs", "rand"),
+            param_names=("n_fragment", "frag_mass", "x_plus_y", "probs", "rand"),
             name_iter="i",
             body="""
             probs[i] = 0.0;
@@ -591,17 +591,17 @@ class CollisionsMethods(
                     break;
                 }
             }
-            frag_size[i] = x_plus_y[i] / n_fragment[i];
+            frag_mass[i] = x_plus_y[i] / n_fragment[i];
             """,
         )
 
     @cached_property
     def __feingold1988_fragmentation_body(self):
         return trtc.For(
-            param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
+            param_names=("scale", "frag_mass", "x_plus_y", "rand", "fragtol"),
             name_iter="i",
             body=f"""
-            frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
+            frag_mass[i] = {self.formulae.fragmentation_function.frag_mass.c_inline(
                 scale="scale",
                 rand="rand[i]",
                 x_plus_y="x_plus_y[i]",
@@ -656,7 +656,7 @@ class CollisionsMethods(
                 "CW",
                 "gam",
                 "ds",
-                "frag_size",
+                "frag_mass",
                 "v_max",
                 "rand",
                 "Nr1",
@@ -683,25 +683,25 @@ class CollisionsMethods(
                     auto lnarg = mu1 + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
-                    frag_size[i] = exp(lnarg);
+                    frag_mass[i] = exp(lnarg);
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
-                    frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
+                    frag_mass[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
                 }}
                 else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
-                    frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
+                    frag_mass[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
                 }}
                 else {{
-                    frag_size[i] = d34[i];
+                    frag_mass[i] = d34[i];
                 }}
 
-                frag_size[i] = pow(frag_size[i], 3) * {const.PI} / 6;
+                frag_mass[i] = pow(frag_mass[i], 3) * {const.PI} / 6;
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -950,68 +950,68 @@ class CollisionsMethods(
         *,
         n_fragment,
         scale,
-        frag_size,
+        frag_mass,
         x_plus_y,
         rand,
-        vmin,
+        mass_min,
         nfmax,
         tol=1e-5,
     ):
         self.__exp_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 self._get_floating_point(scale),
-                frag_size.data,
+                frag_mass.data,
                 rand.data,
                 self._get_floating_point(tol),
             ),
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_mass.data,
                 x_plus_y.data,
-                self._get_floating_point(vmin),
+                self._get_floating_point(mass_min),
                 self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
         )
 
     def gauss_fragmentation(
-        self, *, n_fragment, mu, sigma, frag_size, x_plus_y, rand, vmin, nfmax
+        self, *, n_fragment, mu, sigma, frag_mass, x_plus_y, rand, mass_min, nfmax
     ):
         self.__gauss_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 self._get_floating_point(mu),
                 self._get_floating_point(sigma),
-                frag_size.data,
+                frag_mass.data,
                 rand.data,
             ),
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_mass.data,
                 x_plus_y.data,
-                self._get_floating_point(vmin),
+                self._get_floating_point(mass_min),
                 self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
         )
 
     def slams_fragmentation(
-        self, n_fragment, frag_size, x_plus_y, probs, rand, vmin, nfmax
+        self, n_fragment, frag_mass, x_plus_y, probs, rand, mass_min, nfmax
     ):  # pylint: disable=too-many-arguments
         self.__slams_fragmentation_body.launch_n(
             n=(len(n_fragment)),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_mass.data,
                 x_plus_y.data,
                 probs.data,
                 rand.data,
@@ -1019,12 +1019,12 @@ class CollisionsMethods(
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_mass.data,
                 x_plus_y.data,
-                self._get_floating_point(vmin),
+                self._get_floating_point(mass_min),
                 self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
@@ -1035,18 +1035,18 @@ class CollisionsMethods(
         *,
         n_fragment,
         scale,
-        frag_size,
+        frag_mass,
         x_plus_y,
         rand,
         fragtol,
-        vmin,
+        mass_min,
         nfmax,
     ):
         self.__feingold1988_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 self._get_floating_point(scale),
-                frag_size.data,
+                frag_mass.data,
                 x_plus_y.data,
                 rand.data,
                 self._get_floating_point(fragtol),
@@ -1054,12 +1054,12 @@ class CollisionsMethods(
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_mass.data,
                 x_plus_y.data,
-                self._get_floating_point(vmin),
+                self._get_floating_point(mass_min),
                 self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
@@ -1073,11 +1073,11 @@ class CollisionsMethods(
         CW,
         gam,
         ds,
-        frag_size,
+        frag_mass,
         v_max,
         x_plus_y,
         rand,
-        vmin,
+        mass_min,
         nfmax,
         Nr1,
         Nr2,
@@ -1087,12 +1087,12 @@ class CollisionsMethods(
         d34,
     ):
         self.__straub_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 CW.data,
                 gam.data,
                 ds.data,
-                frag_size.data,
+                frag_mass.data,
                 v_max.data,
                 rand.data,
                 Nr1.data,
@@ -1105,12 +1105,12 @@ class CollisionsMethods(
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_mass),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_mass.data,
                 x_plus_y.data,
-                self._get_floating_point(vmin),
+                self._get_floating_point(mass_min),
                 self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),

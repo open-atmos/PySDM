@@ -3,6 +3,6 @@ Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.exponentia
 """
 
 
-class ExponFrag:  # pylint: disable=too-few-public-methods
+class Exponential:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
