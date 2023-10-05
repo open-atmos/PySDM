@@ -13,6 +13,6 @@ from .slams import SLAMS
 from .straub2010 import Straub2010Nf
 
 
-class ExponFrag(Exponential):
-    def __init_subclass__(self):
+class ExponFrag(Exponential):  # pylint: disable=too-few-public-methods
+    def __init_subclass__(cls):
         warnings.warn("Class has been renamed", DeprecationWarning)
