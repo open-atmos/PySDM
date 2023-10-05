@@ -27,7 +27,7 @@ setup(
         "numba" + ("==0.56.4" if CI else ">=0.51.2"),
         "numpy" + ("==1.21.6" if CI else ""),
         "Pint" + ("==0.17" if CI else ""),
-        "chempy" + ("==0.7.10" if CI else ""),
+        "chempy" + ("==0.8.3" if CI else ""),
         "scipy" + ("==1.7.3" if CI else ""),
         "pyevtk" + ("==1.2.0" if CI else ""),
     ],
