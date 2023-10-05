@@ -26,7 +26,7 @@ class FreezingMethods(BackendMethods):
             **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
         )
         def _freeze(water_mass, i):
-            water_mass[i] = -1 * water_mass[i] * const.rho_w / const.rho_i
+            water_mass[i] = -1 * water_mass[i]
             # TODO #599: change thd (latent heat)!
 
         @numba.njit(
