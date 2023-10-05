@@ -301,7 +301,7 @@ class TestSDMBreakup:
                 "v_expected": [2, 4],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "frag_size": [4],
+                "frag_volume": [4],
             },
             {
                 "gamma": [1.0],
@@ -311,7 +311,7 @@ class TestSDMBreakup:
                 "v_expected": [2, 4],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "frag_size": [4],
+                "frag_volume": [4],
             },
             {
                 "gamma": [3.0],
@@ -321,7 +321,7 @@ class TestSDMBreakup:
                 "v_expected": [2, 4],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "frag_size": [4],
+                "frag_volume": [4],
             },
             {
                 "gamma": [0.0],
@@ -331,7 +331,7 @@ class TestSDMBreakup:
                 "v_expected": [2, 6],
                 "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
-                "frag_size": [4],
+                "frag_volume": [4],
             },
         ],
     )
