@@ -9,14 +9,14 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import Berry1967
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.formulae import Formulae
 from PySDM.initialisation import spectra
-from PySDM.physics.constants import si
+from PySDM.physics import constants_defaults, si
 
 TRIVIA = Formulae().trivia
 
 
 @strict
 class Settings0D:
-    X0 = TRIVIA.volume(radius=30.531 * si.micrometres)
+    X0 = TRIVIA.volume(radius=30.531 * si.micrometres) * constants_defaults.rho_w
 
     def __init__(
         self,
@@ -26,7 +26,9 @@ class Settings0D:
     ):
         self.n_sd = 2**10
         self.n_part = 100 / si.cm**3
-        self.frag_scale = TRIVIA.volume(radius=100 * si.micrometres)
+        self.frag_scale = (
+            TRIVIA.volume(radius=100 * si.micrometres) * constants_defaults.rho_w
+        )
         self.dv = 1 * si.m**3
         self.norm_factor = self.n_part * self.dv
         self.rho = 1000 * si.kilogram / si.metre**3
