@@ -46,7 +46,9 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         -rate * immersed_surface_area[i] * timestep
                     );
                     if (rand[i] < prob) {{
-                        water_mass[i] = -1 * water_mass[i];
+                        water_mass[i] = -1 * water_mass[i] * (
+                            {self.formulae.constants.rho_w} / {self.formulae.constants.rho_i}
+                        );
                     }}
                 }}
             """.replace(
@@ -81,7 +83,9 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         relative_humidity="relative_humidity[cell[i]]"
                     )} && temperature[cell[i]] <= freezing_temperature[i]
                 ) {{
-                    water_mass[i] = -1 * water_mass[i];
+                    water_mass[i] = -1 * water_mass[i] * (
+                        {self.formulae.constants.rho_w} / {self.formulae.constants.rho_i}
+                    );
                 }}
             """.replace(
                 "real_type", self._get_c_type()

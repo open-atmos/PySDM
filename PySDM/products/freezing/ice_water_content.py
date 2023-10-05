@@ -22,7 +22,12 @@ class IceWaterContent(MomentProduct):
         )
         conc = self.buffer
 
-        result[:] *= -1 * conc / self.particulator.mesh.dv
+        result[:] *= (
+            -self.formulae.constants.rho_i
+            * conc
+            / self.particulator.mesh.dv
+            / self.formulae.constants.rho_w
+        )
 
         if self.specific:
             self._download_to_buffer(self.particulator.environment["rhod"])
