@@ -8,7 +8,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import Exponential
 from PySDM.dynamics.collisions.coalescence_efficiencies import Berry1967
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.formulae import Formulae
-from PySDM.initialisation.spectra import Exponential
+from PySDM.initialisation import spectra
 from PySDM.physics.constants import si
 
 TRIVIA = Formulae().trivia
@@ -40,7 +40,7 @@ class Settings0D:
         self.fragmentation = fragmentation or Exponential(scale=self.frag_scale)
         self.mass_min = 0.0
         self.break_eff = ConstEb(1.0)  # no "bouncing"
-        self.spectrum = Exponential(norm_factor=self.norm_factor, scale=self.X0)
+        self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)
         self.radius_bins_edges = np.logspace(
             np.log10(0.01 * si.um), np.log10(5000 * si.um), num=64, endpoint=True
         )
