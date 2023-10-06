@@ -342,7 +342,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(n_sd, backend_class(double_precision=True))
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
