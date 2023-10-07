@@ -21,7 +21,7 @@ N_SD = 2**10
     "backend_class",
     (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
 )
-def test_fig_3_reduced_resolution(backend_class, plot=False):
+def test_fig_6_reduced_resolution(backend_class, plot=False):
     # arrange
     settings = Settings0D(fragmentation=AlwaysN(n=8, mass_min=MASS_MIN), seed=44)
     settings.n_sd = N_SD

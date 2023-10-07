@@ -21,13 +21,13 @@ def bins_edges(num):
     )
 
 
-class TestFig4:
+class TestFig7:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
         (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
     )
-    def test_fig_4a(backend_class, plot=False):
+    def test_fig_7a(backend_class, plot=False):
         # arrange
         settings0 = Settings0D(seed=44)
         settings0.n_sd = N_SD
@@ -102,13 +102,13 @@ class TestFig4:
             )
 
     @staticmethod
-    def test_fig_4b(backend_class, plot=False):  # pylint: disable=too-many-locals
+    def test_fig_7b(backend_class, plot=False):  # pylint: disable=too-many-locals
         # arrange
         settings0 = Settings0D()
         settings0.n_sd = N_SD
         settings0.radius_bins_edges = bins_edges(64)
-        x_0 = Settings0D.X0
-        mu_vals = [4 * x_0, x_0, x_0 / 4]
+        x_0_mass = Settings0D.X0 * constants_defaults.rho_w
+        mu_vals = [4 * x_0_mass, x_0_mass, x_0_mass / 4]
         data_x = {}
         data_y = {}
 
@@ -130,7 +130,7 @@ class TestFig4:
             settings.n_sd = settings0.n_sd
             settings.radius_bins_edges = settings0.radius_bins_edges
             settings.coal_eff = ConstEc(Ec=0.95)
-            lbl = r"$\mu$ = " + str(round(mu_val / x_0, 2)) + "X$_0$"
+            lbl = r"$\mu$ = " + str(round(mu_val / x_0_mass, 2)) + "X$_0$"
             res = run_box_breakup(settings, [120], backend_class)
             data_x[lbl], data_y[lbl] = res.x, res.y
 
@@ -143,7 +143,7 @@ class TestFig4:
             label=lbl,
         )
         for i, mu_val in enumerate(mu_vals):
-            lbl = r"$\mu$ = " + str(round(mu_val / x_0, 2)) + "X$_0$"
+            lbl = r"$\mu$ = " + str(round(mu_val / x_0_mass, 2)) + "X$_0$"
             pyplot.step(
                 data_x[lbl],
                 data_y[lbl][0] * settings.rho,

@@ -15,7 +15,7 @@ from PySDM.physics import constants_defaults, si
     "backend_class",
     (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
 )
-def test_fig_5(backend_class, plot=False):
+def test_fig_8(backend_class, plot=False):
     # arrange
     settings = Settings0D(
         fragmentation=Straub2010Nf(
