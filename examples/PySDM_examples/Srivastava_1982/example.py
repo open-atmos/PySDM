@@ -29,7 +29,7 @@ def coalescence_and_breakup_eq13(
             collision_kernel=ConstantK(a=collision_rate),
             coalescence_efficiency=ConstEc(settings.srivastava_c / collision_rate),
             breakup_efficiency=NO_BOUNCE,
-            fragmentation_function=ConstantMass(c=settings.frag_mass / settings.rho),
+            fragmentation_function=ConstantMass(c=settings.frag_mass),
             warn_overflows=warn_overflows,
         ),
     )
