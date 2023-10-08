@@ -24,7 +24,7 @@ class MeanRadius(MomentProduct):
                 self.formulae.trivia.volume(self.radius_range[0]),
                 self.formulae.trivia.volume(self.radius_range[1]),
             ),
-            filter_attr="volume"
+            filter_attr="volume",
         )
         self.buffer[:] /= self.formulae.constants.PI_4_3 ** (1 / 3)
         return self.buffer
