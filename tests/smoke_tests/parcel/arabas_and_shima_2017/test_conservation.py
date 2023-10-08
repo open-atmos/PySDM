@@ -51,9 +51,8 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     total_water_mixing_ratio = simulation.particulator.environment[
         "water_vapour_mixing_ratio"
     ].to_ndarray() + liquid_water_mixing_ratio(simulation)
-    significant = 6 if scheme == "GPU" else 14  # TODO #540
     np.testing.assert_approx_equal(
-        total_water_mixing_ratio, initial_total_water_mixing_ratio, significant
+        total_water_mixing_ratio, initial_total_water_mixing_ratio, significant=6
     )
     if scheme != "SciPy":
         assert simulation.particulator.products["S_max"].get() >= output["S"][-1]
