@@ -6,15 +6,14 @@ from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 
 from PySDM.backends import CPU, GPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
-from PySDM.physics.constants_defaults import rho_w
 
 
 def liquid_water_mixing_ratio(simulation: Simulation):
-    droplet_volume = simulation.particulator.attributes["volume"].to_ndarray()[0]
+    droplet_mass = simulation.particulator.attributes["water mass"].to_ndarray()[0]
     droplet_number = simulation.particulator.attributes["multiplicity"].to_ndarray()[0]
-    droplet_mass = droplet_number * droplet_volume * rho_w
+    mass_of_all_droplets = droplet_number * droplet_mass
     env = simulation.particulator.environment
-    return droplet_mass / env.mass_of_dry_air
+    return mass_of_all_droplets / env.mass_of_dry_air
 
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
