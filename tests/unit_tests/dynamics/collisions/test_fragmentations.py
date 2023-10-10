@@ -77,6 +77,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         np.testing.assert_array_less([0.99], nf.to_ndarray())
         np.testing.assert_array_less([0.0], frag_mass.to_ndarray())
 
+        np.testing.assert_approx_equal(
+            nf[0] * frag_mass[0], np.sum(volume) * constants_defaults.rho_w
+        )
+
     @staticmethod
     @pytest.mark.parametrize(
         "fragmentation_fn",
@@ -190,6 +194,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             [(6661.0 + 440.0) * si.um**3 * constants_defaults.rho_w],
         )
 
+        np.testing.assert_approx_equal(
+            nf[0] * frag_mass[0], np.sum(volume) * constants_defaults.rho_w
+        )
+
     @staticmethod
     @pytest.mark.parametrize(
         "fragmentation_fn",
@@ -241,6 +249,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         np.testing.assert_array_less(nf.to_ndarray(), [2.0 + 1e-6])
         np.testing.assert_array_less(
             [((6660.0 + 440.0) / 2 - 1) * si.um**3], frag_mass.to_ndarray()
+        )
+
+        np.testing.assert_approx_equal(
+            nf[0] * frag_mass[0], np.sum(volume) * constants_defaults.rho_w
         )
 
     @staticmethod
@@ -315,6 +327,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             # Assert
             np.testing.assert_array_less([0.99], nf.to_ndarray())
             np.testing.assert_array_less([0.0], frag_mass.to_ndarray())
+
+            np.testing.assert_approx_equal(
+                nf[0] * frag_mass[0], np.sum(volume) * constants_defaults.rho_w
+            )
 
         res = np.asarray(sorted(res, key=lambda x: x[1], reverse=True))
 
