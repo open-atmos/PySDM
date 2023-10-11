@@ -18,7 +18,7 @@ class Simulation(BasicSimulation):
         env = Parcel(
             dt=settings.timestep,
             p0=settings.initial_pressure,
-            q0=settings.initial_vapour_mixing_ratio,
+            initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
             T0=settings.initial_temperature,
             w=settings.vertical_velocity,
             mass_of_dry_air=44 * si.kg,
@@ -66,7 +66,7 @@ class Simulation(BasicSimulation):
         for attribute in attributes.values():
             assert attribute.shape[0] == self.particulator.n_sd
         np.testing.assert_approx_equal(
-            sum(attributes["n"]) / volume,
+            sum(attributes["multiplicity"]) / volume,
             sum(
                 mode.norm_factor
                 for mode in self.settings.aerosol_modes_by_kappa.values()
