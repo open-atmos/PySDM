@@ -11,6 +11,20 @@ class Radius(DerivedAttribute):
         super().__init__(builder, name="radius", dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.product(self.volume.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 1 / 3
+
+
+class SquareRootOfRadius(DerivedAttribute):
+    def __init__(self, builder):
+        self.radius = builder.get_attribute("radius")
+
+        super().__init__(
+            builder,
+            name="square root of radius",
+            dependencies=(self.radius,),
+        )
+
+    def recalculate(self):
+        self.data.fill(self.radius.data)
+        self.data **= 0.5

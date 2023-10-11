@@ -17,7 +17,6 @@ BINS = 32
 N_SD = 2**10
 
 
-# pylint: disable=redefined-outer-name
 @pytest.mark.parametrize(
     "backend_class",
     (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987

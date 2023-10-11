@@ -22,7 +22,7 @@ class TestCoolingRate:
         env["T"] = T
         return builder.build(
             attributes={
-                "n": np.ones(n_sd),
+                "multiplicity": np.ones(n_sd),
                 "volume": np.linspace(0.01, 10, n_sd) * si.um**3,
             },
             products=(CoolingRate(),),

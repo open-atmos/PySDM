@@ -36,10 +36,10 @@ class TestMultiplicities:
         # act
         particulator = builder.build(
             attributes={
-                "n": np.full((n_sd,), value),
+                "multiplicity": np.full((n_sd,), value),
                 "volume": np.full((n_sd,), np.nan),
             }
         )
 
         # assert
-        assert particulator.attributes["n"].data[:] == [value]
+        assert particulator.attributes["multiplicity"].to_ndarray() == [value]

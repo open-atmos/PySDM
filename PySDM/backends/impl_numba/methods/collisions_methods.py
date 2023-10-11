@@ -59,7 +59,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup0_compute_mult_transfer(
+def compute_transfer_multiplicities(
     gamma, j, k, multiplicity, volume, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
@@ -91,7 +91,7 @@ def breakup0_compute_mult_transfer(
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup1_update_mult_attributes(
+def get_new_multiplicities_and_update_attributes(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
     for a in range(len(attributes)):
@@ -99,19 +99,20 @@ def breakup1_update_mult_attributes(
         attributes[a, k] += take_from_j * attributes[a, j]
         attributes[a, k] /= new_mult_k
 
-    if multiplicity[j] == take_from_j:
+    if multiplicity[j] > take_from_j:
+        nj = multiplicity[j] - take_from_j
+        nk = new_mult_k
+
+    else:  # take_from_j == multiplicity[j]
         nj = new_mult_k / 2
         nk = nj
         for a in range(len(attributes)):
             attributes[a, j] = attributes[a, k]
-    else:  # take_from_j < multiplicity[j]
-        nj = multiplicity[j] - take_from_j
-        nk = new_mult_k
     return nj, nk
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup2_round_mults_to_ints(
+def round_multiplicities_to_ints_and_update_attributes(
     j,
     k,
     nj,
@@ -144,7 +145,7 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     warn_overflows,
     volume,
 ):  # breakup0 guarantees take_from_j <= multiplicity[j]
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup0_compute_mult_transfer(
+    take_from_j, new_mult_k, gamma_j_k, overflow_flag = compute_transfer_multiplicities(
         gamma[i],
         j,
         k,
@@ -156,7 +157,7 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     gamma_deficit = gamma[i] - gamma_j_k
 
     # breakup1 also handles new_n[j] == 0 case via splitting
-    nj, nk = breakup1_update_mult_attributes(
+    nj, nk = get_new_multiplicities_and_update_attributes(
         j, k, attributes, multiplicity, take_from_j, new_mult_k
     )
 
@@ -164,7 +165,9 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
     # breakup2 also guarantees that no multiplicities are set to 0
-    breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
+    round_multiplicities_to_ints_and_update_attributes(
+        j, k, nj, nk, attributes, multiplicity
+    )
     if overflow_flag and warn_overflows:
         warn("overflow", __file__)
 
@@ -207,7 +210,7 @@ def break_up_while(
                 new_mult_k,
                 gamma_j_k,
                 overflow_flag,
-            ) = breakup0_compute_mult_transfer(
+            ) = compute_transfer_multiplicities(
                 gamma_deficit,
                 j,
                 k,
@@ -217,13 +220,15 @@ def break_up_while(
                 max_multiplicity,
             )
 
-        nj, nk = breakup1_update_mult_attributes(
+        nj, nk = get_new_multiplicities_and_update_attributes(
             j, k, attributes, multiplicity, take_from_j, new_mult_k
         )
 
         atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
         gamma_deficit -= gamma_j_k
-        breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
+        round_multiplicities_to_ints_and_update_attributes(
+            j, k, nj, nk, attributes, multiplicity
+        )
 
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
@@ -299,6 +304,7 @@ class CollisionsMethods(BackendMethods):
         BackendMethods.__init__(self)
 
         _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def __collision_coalescence_breakup_body(
@@ -426,7 +432,7 @@ class CollisionsMethods(BackendMethods):
                         else:
                             frag_size[i] = d34[i]
 
-                    frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
+                    frag_size[i] = frag_size[i] ** 3 * const.PI / 6
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
@@ -447,7 +453,7 @@ class CollisionsMethods(BackendMethods):
                     len(frag_size)
                 ):
                     if dl[i] <= 0.4e-3:
-                        frag_size[i] = dcoal[i] ** 3 * 3.1415 / 6
+                        frag_size[i] = dcoal[i] ** 3 * const.PI / 6
                     elif ds[i] == 0.0 or dl[i] == 0.0:
                         frag_size[i] = 1e-18
                     else:
@@ -520,7 +526,7 @@ class CollisionsMethods(BackendMethods):
                         frag_size[i] = (
                             frag_size[i] * 0.01
                         )  # diameter in cm; convert to m
-                        frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
+                        frag_size[i] = frag_size[i] ** 3 * const.PI / 6
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
@@ -610,7 +616,7 @@ class CollisionsMethods(BackendMethods):
         self,
         *,
         prob,
-        n,
+        multiplicity,
         cell_id,
         dt_left,
         dt,
@@ -621,9 +627,9 @@ class CollisionsMethods(BackendMethods):
     ):
         return self.__scale_prob_for_adaptive_sdm_gamma_body(
             prob.data,
-            n.idx.data,
-            len(n),
-            n.data,
+            multiplicity.idx.data,
+            len(multiplicity),
+            multiplicity.data,
             cell_id.data,
             dt_left.data,
             dt,

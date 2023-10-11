@@ -25,7 +25,9 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
             self.mesh = Mesh(grid, size)
             if halo is not None:
                 self.halo = halo
-                self.qv = np.empty((grid[0] + 2 * halo, grid[1] + 2 * halo))
+                self.water_vapour_mixing_ratio = np.empty(
+                    (grid[0] + 2 * halo, grid[1] + 2 * halo)
+                )
                 self.thd = np.empty((grid[0] + 2 * halo, grid[1] + 2 * halo))
                 self.pred = {}
                 self.step_counter = 0
@@ -34,7 +36,7 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
     def register(self, particulator):
         self.particulator = particulator
         if hasattr(self, "halo"):
-            self.pred["qv"] = particulator.backend.Storage.empty(
+            self.pred["water_vapour_mixing_ratio"] = particulator.backend.Storage.empty(
                 self.mesh.n_cell, dtype=float
             )
             self.pred["thd"] = particulator.backend.Storage.empty(
@@ -47,10 +49,10 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
     def get_predicted(self, key):
         return self.pred[key]
 
-    def get_qv(self):
+    def get_water_vapour_mixing_ratio(self):
         if self.halo is not None:
             halo = int(self.halo)
-            return self.qv[halo:-halo, halo:-halo]
+            return self.water_vapour_mixing_ratio[halo:-halo, halo:-halo]
         raise ValueError()
 
     def get_thd(self):

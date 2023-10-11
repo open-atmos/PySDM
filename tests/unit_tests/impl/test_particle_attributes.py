@@ -34,7 +34,7 @@ class TestParticleAttributes:
     def test_housekeeping(backend_class, volume, multiplicity):
         # Arrange
         particulator = DummyParticulator(backend_class, n_sd=len(multiplicity))
-        attributes = {"n": multiplicity, "volume": volume}
+        attributes = {"multiplicity": multiplicity, "volume": volume}
         particulator.build(attributes, int_caster=np.int64)
         sut = particulator.attributes
         sut.healthy = False
@@ -45,10 +45,10 @@ class TestParticleAttributes:
 
         # Assert
         assert sut.super_droplet_count == (multiplicity != 0).sum()
-        assert sut["n"].to_ndarray().sum() == multiplicity.sum()
-        assert (sut["volume"].to_ndarray() * sut["n"].to_ndarray()).sum() == (
-            volume * multiplicity
-        ).sum()
+        assert sut["multiplicity"].to_ndarray().sum() == multiplicity.sum()
+        assert (
+            sut["volume"].to_ndarray() * sut["multiplicity"].to_ndarray()
+        ).sum() == (volume * multiplicity).sum()
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -82,10 +82,10 @@ class TestParticleAttributes:
         particulator = DummyParticulator(backend_cls, n_sd=n_sd)
         n_cell = max(cells) + 1
         particulator.environment.mesh.n_cell = n_cell
-        particulator.build(attributes={"n": np.ones(n_sd)})
+        particulator.build(attributes={"multiplicity": np.ones(n_sd)})
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
-        sut._ParticleAttributes__attributes["n"].data = make_indexed_storage(
+        sut._ParticleAttributes__attributes["multiplicity"].data = make_indexed_storage(
             particulator.backend, multiplicity, sut._ParticleAttributes__idx
         )
         sut._ParticleAttributes__attributes["cell id"].data = make_indexed_storage(
@@ -133,7 +133,7 @@ class TestParticleAttributes:
         cell_origin[1, droplet_id] = 0.2
         cell_id[droplet_id] = -1
         attribute = {
-            "n": multiplicity,
+            "multiplicity": multiplicity,
             "cell id": cell_id,
             "cell origin": cell_origin,
             "position in cell": position_in_cell,
@@ -247,7 +247,7 @@ class TestParticleAttributes:
         for i in range(particulator.environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
-        particulator.build(attributes={"n": np.ones(n_sd)})
+        particulator.build(attributes={"multiplicity": np.ones(n_sd)})
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
         idx_length = len(sut._ParticleAttributes__idx)

@@ -34,7 +34,7 @@ class TestFreezingMethods:
         particulator = builder.build(
             products=(IceWaterContent(),),
             attributes={
-                "n": np.ones(builder.particulator.n_sd),
+                "multiplicity": np.ones(builder.particulator.n_sd),
                 "volume": -1 * np.ones(builder.particulator.n_sd) * si.um**3,
                 **(
                     {"freezing temperature": np.full(builder.particulator.n_sd, -1)}
@@ -77,7 +77,7 @@ class TestFreezingMethods:
         builder.set_environment(env)
         builder.add_dynamic(Freezing(singular=True))
         attributes = {
-            "n": np.full(n_sd, multiplicity),
+            "multiplicity": np.full(n_sd, multiplicity),
             "freezing temperature": np.full(n_sd, T_fz),
             "volume": np.full(n_sd, vol),
         }
@@ -96,8 +96,12 @@ class TestFreezingMethods:
         )
 
     @staticmethod
+    @pytest.mark.parametrize("double_precision", (True, False))
     # pylint: disable=too-many-locals
-    def test_freeze_time_dependent(backend_class, plot=False):
+    def test_freeze_time_dependent(backend_class, double_precision, plot=False):
+        if backend_class.__name__ == "Numba" and not double_precision:
+            pytest.skip()
+
         # Arrange
         seed = 44
         cases = (
@@ -146,12 +150,17 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
-            builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
+            builder = Builder(
+                n_sd=n_sd,
+                backend=backend_class(
+                    formulae=formulae, double_precision=double_precision
+                ),
+            )
             env = Box(dt=case["dt"], dv=d_v)
             builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
-                "n": np.full(n_sd, int(case["N"])),
+                "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
                 "volume": np.full(n_sd, vol),
             }

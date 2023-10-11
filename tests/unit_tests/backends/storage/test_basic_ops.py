@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 
-class TestArithmetics:  # pylint: disable=too-few-public-methods
+class TestBasicOps:
     @staticmethod
     @pytest.mark.parametrize(
         "output, addend, expected",
@@ -24,3 +24,23 @@ class TestArithmetics:  # pylint: disable=too-few-public-methods
 
         # Assert
         np.testing.assert_array_equal(output.to_ndarray(), expected)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "data",
+        (
+            [1.0],
+            [2.0, 3, 4],
+            [-1, np.nan, np.inf],
+        ),
+    )
+    def test_exp(backend_class, data):
+        # Arrange
+        backend = backend_class(double_precision=True)
+        output = backend.Storage.from_ndarray(np.asarray(data))
+
+        # Act
+        output.exp()
+
+        # Assert
+        np.testing.assert_array_equal(output.to_ndarray(), np.exp(data))

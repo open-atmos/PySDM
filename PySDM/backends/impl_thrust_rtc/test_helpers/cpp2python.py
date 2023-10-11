@@ -190,7 +190,7 @@ def to_numba(name, args, iter_var, body):
         f"""
 def make(self):
     import numpy as np
-    from numpy import floor, ceil, exp, log, power, sqrt, arctanh, sinh, arcsinh
+    from numpy import floor, ceil, exp, log, power, sqrt, arctanh as atanh, sinh, arcsinh as asinh
     import numba
 
     @numba.njit(parallel=False, {JIT_OPTS})

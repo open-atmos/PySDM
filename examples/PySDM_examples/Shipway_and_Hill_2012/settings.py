@@ -80,7 +80,7 @@ class Settings:
             fill_value="extrapolate",
         )
 
-        self.qv = interp1d(
+        self.water_vapour_mixing_ratio = interp1d(
             (-max(self.particle_reservoir_depth, 1), 0, 740, 3260),
             (0.015, 0.015, 0.0138, 0.0024),
             fill_value="extrapolate",
@@ -88,30 +88,41 @@ class Settings:
 
         self.thd = (
             lambda z_above_reservoir: self.formulae.state_variable_triplet.th_dry(
-                self._th(z_above_reservoir), self.qv(z_above_reservoir)
+                self._th(z_above_reservoir),
+                self.water_vapour_mixing_ratio(z_above_reservoir),
             )
         )
 
         g = self.formulae.constants.g_std
         self.rhod0 = self.formulae.state_variable_triplet.rho_d(
             p=p0,
-            qv=self.qv(0 * si.m),
+            water_vapour_mixing_ratio=self.water_vapour_mixing_ratio(0 * si.m),
             theta_std=self._th(0 * si.m),
         )
 
         def drhod_dz(z_above_reservoir, rhod):
             if z_above_reservoir < 0:
                 return 0
-            qv = self.qv(z_above_reservoir)
-            dqv_dz = derivative(self.qv, z_above_reservoir)
+            water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
+                z_above_reservoir
+            )
+            d_water_vapour_mixing_ratio__dz = derivative(
+                self.water_vapour_mixing_ratio, z_above_reservoir
+            )
             T = self.formulae.state_variable_triplet.T(
                 rhod[0], self.thd(z_above_reservoir)
             )
-            p = self.formulae.state_variable_triplet.p(rhod[0], T, qv)
+            p = self.formulae.state_variable_triplet.p(
+                rhod[0], T, water_vapour_mixing_ratio
+            )
             lv = self.formulae.latent_heat.lv(T)
-            return self.formulae.hydrostatics.drho_dz(g, p, T, qv, lv) / (
-                1 + qv
-            ) - rhod * dqv_dz / (1 + qv)
+            return self.formulae.hydrostatics.drho_dz(
+                g, p, T, water_vapour_mixing_ratio, lv
+            ) / (
+                1 + water_vapour_mixing_ratio
+            ) - rhod * d_water_vapour_mixing_ratio__dz / (
+                1 + water_vapour_mixing_ratio
+            )
 
         z_span = (-self.particle_reservoir_depth, self.z_max)
         z_points = np.linspace(*z_span, 2 * self.nz + 1)

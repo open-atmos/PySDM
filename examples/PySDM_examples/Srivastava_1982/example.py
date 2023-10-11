@@ -16,7 +16,7 @@ NO_BOUNCE = ConstEb(1)
 
 
 def coalescence_and_breakup_eq13(
-    settings=None, n_steps=256, n_realisations=2, title=None
+    settings=None, n_steps=256, n_realisations=2, title=None, warn_overflows=True
 ):
     # arrange
     seeds = list(range(n_realisations))
@@ -30,11 +30,12 @@ def coalescence_and_breakup_eq13(
             coalescence_efficiency=ConstEc(settings.srivastava_c / collision_rate),
             breakup_efficiency=NO_BOUNCE,
             fragmentation_function=ConstantSize(c=settings.frag_mass / settings.rho),
+            warn_overflows=warn_overflows,
         ),
     )
 
     x = np.arange(n_steps + 1, dtype=float)
-    sim_products = simulation.run(x, seeds=seeds)
+    sim_products = simulation.run_convergence_analysis(x, seeds=seeds)
 
     secondary_products = get_pysdm_secondary_products(
         products=sim_products, total_volume=settings.total_volume

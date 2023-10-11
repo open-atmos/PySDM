@@ -13,5 +13,5 @@ class DummyParticulator(Builder, Particulator):
         Particulator.__init__(self, n_sd, backend)
         self.particulator = self
         Builder.set_environment(self, DummyEnvironment(grid=grid))
-        self.req_attr = {"n": Multiplicities(self), "cell id": CellID(self)}
+        self.req_attr = {"multiplicity": Multiplicities(self), "cell id": CellID(self)}
         self.attributes = None

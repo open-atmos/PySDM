@@ -12,4 +12,4 @@ class Multiplicities(BaseAttribute):
     MAX_VALUE = np.iinfo(TYPE).max
 
     def __init__(self, builder):
-        super().__init__(builder, name="n", dtype=Multiplicities.TYPE)
+        super().__init__(builder, name="multiplicity", dtype=Multiplicities.TYPE)

@@ -61,7 +61,7 @@ class Settings:
         pv0 = 0.999 * self.formulae.saturation_vapour_pressure.pvs_Celsius(
             self.T0 - const.T0
         )
-        self.q0 = const.eps * pv0 / (self.p0 - pv0)
+        self.initial_water_vapour_mixing_ratio = const.eps * pv0 / (self.p0 - pv0)
 
         self.cloud_radius_range = (0.5 * si.micrometre, np.inf)
 
@@ -74,8 +74,12 @@ class Settings:
     @property
     def rho0(self):
         const = self.formulae.constants
-        rhod0 = self.formulae.trivia.p_d(self.p0, self.q0) / self.T0 / const.Rd
-        return rhod0 * (1 + self.q0)
+        rhod0 = (
+            self.formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
+            / self.T0
+            / const.Rd
+        )
+        return rhod0 * (1 + self.initial_water_vapour_mixing_ratio)
 
     @property
     def nt(self) -> int:

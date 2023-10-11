@@ -33,7 +33,7 @@ class TestParcelSanityChecks:
             dt=0.25 * si.s,
             mass_of_dry_air=1e3 * si.kg,
             p0=1122 * si.hPa,
-            q0=20 * si.g / si.kg,
+            initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
             T0=300 * si.K,
             w=2.5 * si.m / si.s,
         )
@@ -59,7 +59,7 @@ class TestParcelSanityChecks:
         )
 
         attributes = {
-            "n": discretise_multiplicities(
+            "multiplicity": discretise_multiplicities(
                 specific_concentration * env.mass_of_dry_air
             ),
             "dry volume": v_dry,
@@ -78,7 +78,9 @@ class TestParcelSanityChecks:
                     name="n_c_cm3", unit="cm^-3", radius_range=cloud_range
                 ),
                 products.WaterMixingRatio(
-                    name="ql", unit="g/kg", radius_range=cloud_range
+                    name="liquid water mixing ratio",
+                    unit="g/kg",
+                    radius_range=cloud_range,
                 ),
                 products.ParcelDisplacement(name="z"),
             ),
@@ -120,7 +122,8 @@ class TestParcelSanityChecks:
     @pytest.mark.parametrize("update_thd", (True, False))
     @pytest.mark.parametrize("substeps", (1, 2))
     def test_how_condensation_modifies_args(backend_class, update_thd, substeps):
-        """asserting that condensation modifies env thd and qv only, not rhod"""
+        """asserting that condensation modifies env thd and water_vapour_mixing_ratio only,
+        not rhod"""
         # arrange
         builder = Builder(n_sd=10, backend=backend_class())
         builder.set_environment(
@@ -128,7 +131,7 @@ class TestParcelSanityChecks:
                 dt=1 * si.s,
                 mass_of_dry_air=1 * si.mg,
                 p0=1000 * si.hPa,
-                q0=22.2 * si.g / si.kg,
+                initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
                 T0=300 * si.K,
                 w=1 * si.m / si.s,
             )
@@ -154,22 +157,27 @@ class TestParcelSanityChecks:
         env = particulator.environment
         pred_rhod_old = env.get_predicted("rhod")[cell_id]
         pred_thd_old = env.get_predicted("thd")[cell_id]
-        pred_qv_old = env.get_predicted("qv")[cell_id]
+        pred_water_vapour_mixing_ratio_old = env.get_predicted(
+            "water_vapour_mixing_ratio"
+        )[cell_id]
 
         env_rhod_old = env["rhod"][cell_id]
         env_thd_old = env["thd"][cell_id]
-        env_qv_old = env["qv"][cell_id]
+        env_water_vapour_mixing_ratio_old = env["water_vapour_mixing_ratio"][cell_id]
 
         # act
         particulator.dynamics["Condensation"]()
 
         # assert
         assert env_rhod_old == env["rhod"]
-        assert env_qv_old == env["qv"]
+        assert env_water_vapour_mixing_ratio_old == env["water_vapour_mixing_ratio"]
         assert env_thd_old == env["thd"]
 
         assert pred_rhod_old == env.get_predicted("rhod")[cell_id]
-        assert pred_qv_old != env.get_predicted("qv")[cell_id]
+        assert (
+            pred_water_vapour_mixing_ratio_old
+            != env.get_predicted("water_vapour_mixing_ratio")[cell_id]
+        )
 
         if update_thd:
             assert pred_thd_old != env.get_predicted("thd")[cell_id]

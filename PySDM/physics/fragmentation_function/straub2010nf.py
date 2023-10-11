@@ -31,7 +31,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def params_sigma2(const, CW):
-        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(12)
+        return max(0.0, 7 * (CW - 21) * const.CM / 1000) / np.sqrt(const.TWELVE)
 
     @staticmethod
     def params_mu2(const, ds):  # pylint: disable=unused-argument
@@ -39,7 +39,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def params_sigma3(const, CW):
-        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(12)
+        return (1 + 0.76 * np.sqrt(CW)) * const.CM / 100 / np.sqrt(const.TWELVE)
 
     @staticmethod
     def params_mu3(ds):

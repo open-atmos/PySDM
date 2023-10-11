@@ -42,13 +42,13 @@ class Settings:
 
     @property
     def initial_air_density(self):
-        return self.formulae.state_variable_triplet.rho_of_rhod_qv(
+        return self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio(
             rhod=self.formulae.trivia.p_d(
                 self.initial_pressure, self.initial_vapour_mixing_ratio
             )
             / self.initial_temperature
             / self.formulae.constants.Rd,
-            qv=self.initial_vapour_mixing_ratio,
+            water_vapour_mixing_ratio=self.initial_vapour_mixing_ratio,
         )
 
     @property

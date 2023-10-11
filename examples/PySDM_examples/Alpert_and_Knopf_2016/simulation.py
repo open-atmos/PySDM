@@ -225,11 +225,11 @@ def simulation(
     else:
         _isa, _conc = spectral_sampling.ConstantMultiplicity(spectrum).sample(n_sd)
     attributes = {
-        "n": discretise_multiplicities(_conc * volume),
+        "multiplicity": discretise_multiplicities(_conc * volume),
         "immersed surface area": _isa,
         "volume": np.full(n_sd, droplet_volume),
     }
-    np.testing.assert_almost_equal(attributes["n"], multiplicity)
+    np.testing.assert_almost_equal(attributes["multiplicity"], multiplicity)
     products = (
         IceWaterContent(name="qi"),
         TotalUnfrozenImmersedSurfaceArea(name="A_tot"),

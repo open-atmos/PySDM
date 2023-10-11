@@ -14,7 +14,7 @@ DROP_VOLUME = 44 * si.um**3
 RHOD = 1.55 * si.kg / si.m**3
 ENV = Box(dt=0, dv=DV)
 ATTRIBUTES = {
-    "n": np.asarray([MULTIPLICITY] * N_SD),
+    "multiplicity": np.asarray([MULTIPLICITY] * N_SD),
     "volume": np.asarray([DROP_VOLUME] * N_SD),
 }
 CONC = N_SD * MULTIPLICITY / DV

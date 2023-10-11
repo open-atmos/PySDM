@@ -43,14 +43,18 @@ def make_particulator(
         insoluble_surface_spectrum=ABIFM_spec,
     )
     if singular:
-        attributes["freezing temperature"], _, attributes["n"] = sampling.sample(
-            backend=backend, n_sd=n_sd
-        )
+        (
+            attributes["freezing temperature"],
+            _,
+            attributes["multiplicity"],
+        ) = sampling.sample(backend=backend, n_sd=n_sd)
     else:
-        _, attributes["immersed surface area"], attributes["n"] = sampling.sample(
-            backend=backend, n_sd=n_sd
-        )
-    attributes["n"] *= total_particle_number
+        (
+            _,
+            attributes["immersed surface area"],
+            attributes["multiplicity"],
+        ) = sampling.sample(backend=backend, n_sd=n_sd)
+    attributes["multiplicity"] *= total_particle_number
 
     builder = Builder(n_sd, backend)
 

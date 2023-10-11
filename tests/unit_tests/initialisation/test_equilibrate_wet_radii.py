@@ -14,7 +14,6 @@ from PySDM.physics import si
 @pytest.mark.parametrize(
     "surface_tension", ("Constant", "CompressedFilmOvadnevaite", "SzyszkowskiLangmuir")
 )
-# pylint: disable=unused-argument,redefined-outer-name
 def test_equilibrate_wet_radii(r_dry, surface_tension, plot=False):
     # Arrange
     T = 280.0

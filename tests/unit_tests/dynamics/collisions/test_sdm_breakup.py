@@ -32,7 +32,7 @@ class TestSDMBreakup:
     def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class):
         # Arrange
         attributes = {
-            "n": np.asarray([1, 1]),
+            "multiplicity": np.asarray([1, 1]),
             "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
         }
         breakup = Breakup(
@@ -43,7 +43,7 @@ class TestSDMBreakup:
         )
         nsteps = 10
 
-        n_sd = len(attributes["n"])
+        n_sd = len(attributes["multiplicity"])
         builder = Builder(
             n_sd, backend_class(Formulae(fragmentation_function="AlwaysN"))
         )
@@ -55,13 +55,17 @@ class TestSDMBreakup:
         particulator.run(nsteps)
 
         # Assert
-        assert (particulator.attributes["n"].to_ndarray() > 0).all()
-        assert (particulator.attributes["n"].to_ndarray() != attributes["n"]).any()
-        assert np.sum(particulator.attributes["n"].to_ndarray()) >= np.sum(
-            attributes["n"]
+        assert (particulator.attributes["multiplicity"].to_ndarray() > 0).all()
+        assert (
+            particulator.attributes["multiplicity"].to_ndarray()
+            != attributes["multiplicity"]
+        ).any()
+        assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) >= np.sum(
+            attributes["multiplicity"]
         )
         assert (
-            particulator.attributes["n"].to_ndarray() == np.array([1024, 1024])
+            particulator.attributes["multiplicity"].to_ndarray()
+            == np.array([1024, 1024])
         ).all()
 
     @staticmethod
@@ -87,7 +91,7 @@ class TestSDMBreakup:
         n_init = [6, 6]
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
             },
             products=(),
@@ -120,7 +124,7 @@ class TestSDMBreakup:
         )
 
         # Assert
-        assert (particulator.attributes["n"].to_ndarray() == n_init).all()
+        assert (particulator.attributes["multiplicity"].to_ndarray() == n_init).all()
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -164,7 +168,7 @@ class TestSDMBreakup:
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=(),
@@ -258,9 +262,49 @@ class TestSDMBreakup:
                 "is_first_in_pair": [True, False],
                 "frag_size": [0.5],
             },
+            {
+                "gamma": [1.0],
+                "n_init": [15, 2],
+                "v_init": [2, 6],
+                "n_expected": [13, 4],
+                "v_expected": [2, 4],
+                "expected_deficit": [0.0],
+                "is_first_in_pair": [True, False],
+                "frag_size": [4],
+            },
+            {
+                "gamma": [1.0],
+                "n_init": [13, 4],
+                "v_init": [2, 4],
+                "n_expected": [9, 6],
+                "v_expected": [2, 4],
+                "expected_deficit": [0.0],
+                "is_first_in_pair": [True, False],
+                "frag_size": [4],
+            },
+            {
+                "gamma": [3.0],
+                "n_init": [15, 2],
+                "v_init": [2, 6],
+                "n_expected": [3, 9],
+                "v_expected": [2, 4],
+                "expected_deficit": [0.0],
+                "is_first_in_pair": [True, False],
+                "frag_size": [4],
+            },
+            {
+                "gamma": [0.0],
+                "n_init": [15, 2],
+                "v_init": [2, 6],
+                "n_expected": [15, 2],
+                "v_expected": [2, 6],
+                "expected_deficit": [0.0],
+                "is_first_in_pair": [True, False],
+                "frag_size": [4],
+            },
         ],
     )
-    @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
+    @pytest.mark.parametrize("flag", ("multiplicity", "v", "conserve", "deficit"))
     def test_attribute_update_single_breakup(
         params, flag, backend_class
     ):  # pylint: disable=too-many-locals
@@ -271,7 +315,7 @@ class TestSDMBreakup:
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
             products=(),
@@ -316,8 +360,8 @@ class TestSDMBreakup:
 
         # Assert
         {
-            "n": lambda: np.testing.assert_array_equal(
-                particulator.attributes["n"].to_ndarray(),
+            "multiplicity": lambda: np.testing.assert_array_equal(
+                particulator.attributes["multiplicity"].to_ndarray(),
                 np.array(params["n_expected"]),
             ),
             "v": lambda: np.testing.assert_array_equal(
@@ -326,7 +370,7 @@ class TestSDMBreakup:
             ),
             "conserve": lambda: np.testing.assert_equal(
                 np.sum(
-                    particulator.attributes["n"].to_ndarray()
+                    particulator.attributes["multiplicity"].to_ndarray()
                     * particulator.attributes["volume"].to_ndarray()
                 ),
                 np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
@@ -389,7 +433,7 @@ class TestSDMBreakup:
             builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
             particulator = builder.build(
                 attributes={
-                    "n": np.asarray(n_init),
+                    "multiplicity": np.asarray(n_init),
                     "volume": np.asarray(params["v_init"]),
                 },
                 products=(),
@@ -433,7 +477,7 @@ class TestSDMBreakup:
                     max_multiplicity=DEFAULTS.max_multiplicity,
                 )
 
-            res_mult = particulator.attributes["n"].to_ndarray()
+            res_mult = particulator.attributes["multiplicity"].to_ndarray()
             res_volume = particulator.attributes["volume"].to_ndarray()
             return res_mult, res_volume
 
@@ -441,12 +485,10 @@ class TestSDMBreakup:
         run2 = run_simulation(_n_times=_n, _gamma=[1])
 
         # Assert
-        # "n"
         np.testing.assert_array_equal(
             run1[0],
             run2[0],
         )
-        # "v"
         np.testing.assert_array_equal(
             run1[1],
             run2[1],
@@ -468,7 +510,7 @@ class TestSDMBreakup:
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
             products=(),
@@ -513,7 +555,7 @@ class TestSDMBreakup:
         assert breakup_rate_deficit[0] > 0
         np.testing.assert_equal(
             np.sum(
-                particulator.attributes["n"].to_ndarray()
+                particulator.attributes["multiplicity"].to_ndarray()
                 * particulator.attributes["volume"].to_ndarray()
             ),
             np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
@@ -537,7 +579,7 @@ class TestSDMBreakup:
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
             products=(),
@@ -582,7 +624,7 @@ class TestSDMBreakup:
         assert breakup_rate_deficit[0] > 0
         np.testing.assert_equal(
             np.sum(
-                particulator.attributes["n"].to_ndarray()
+                particulator.attributes["multiplicity"].to_ndarray()
                 * particulator.attributes["volume"].to_ndarray()
             ),
             np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
@@ -624,7 +666,7 @@ class TestSDMBreakup:
             },
         ],
     )
-    @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
+    @pytest.mark.parametrize("flag", ("multiplicity", "v", "conserve", "deficit"))
     def test_noninteger_fragments(
         params, flag, backend_class
     ):  # pylint: disable=too-many-locals
@@ -635,7 +677,7 @@ class TestSDMBreakup:
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
             products=(),
@@ -680,8 +722,8 @@ class TestSDMBreakup:
 
         # Assert
         {
-            "n": lambda: np.testing.assert_array_equal(
-                particulator.attributes["n"].to_ndarray(),
+            "multiplicity": lambda: np.testing.assert_array_equal(
+                particulator.attributes["multiplicity"].to_ndarray(),
                 np.array(params["n_expected"]),
             ),
             "v": lambda: np.testing.assert_array_almost_equal(
@@ -691,7 +733,7 @@ class TestSDMBreakup:
             ),
             "conserve": lambda: np.testing.assert_almost_equal(
                 np.sum(
-                    particulator.attributes["n"].to_ndarray()
+                    particulator.attributes["multiplicity"].to_ndarray()
                     * particulator.attributes["volume"].to_ndarray()
                 ),
                 np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
@@ -719,9 +761,9 @@ class TestSDMBreakup:
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
         spectrum = Exponential(norm_factor=norm_factor, scale=X0)
         attributes = {}
-        attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum).sample(
-            n_sd
-        )
+        attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
+            spectrum
+        ).sample(n_sd)
 
         mu = Trivia.volume(const, radius=100 * si.um)
         fragmentation = ExponFrag(scale=mu)
@@ -750,7 +792,7 @@ class TestSDMBreakup:
         t_end = 100
         particulator.run(t_end - particulator.n_steps)
 
-        assert (particulator.attributes["n"].to_ndarray() > 0).all()
+        assert (particulator.attributes["multiplicity"].to_ndarray() > 0).all()
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -778,7 +820,7 @@ class TestSDMBreakup:
             },
         ],
     )
-    @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
+    @pytest.mark.parametrize("flag", ("multiplicity", "v", "conserve", "deficit"))
     def test_while_loop_multi_breakup(
         params, flag, backend_class=CPU
     ):  # pylint:disable=too-many-locals
@@ -789,7 +831,7 @@ class TestSDMBreakup:
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
-                "n": np.asarray(n_init),
+                "multiplicity": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"]),
             },
             products=(),
@@ -834,8 +876,8 @@ class TestSDMBreakup:
 
         # Assert
         {
-            "n": lambda: np.testing.assert_array_equal(
-                particulator.attributes["n"].to_ndarray(),
+            "multiplicity": lambda: np.testing.assert_array_equal(
+                particulator.attributes["multiplicity"].to_ndarray(),
                 np.array(params["n_expected"]),
             ),
             "v": lambda: np.testing.assert_array_almost_equal(
@@ -845,7 +887,7 @@ class TestSDMBreakup:
             ),
             "conserve": lambda: np.testing.assert_almost_equal(
                 np.sum(
-                    particulator.attributes["n"].to_ndarray()
+                    particulator.attributes["multiplicity"].to_ndarray()
                     * particulator.attributes["volume"].to_ndarray()
                 ),
                 np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),

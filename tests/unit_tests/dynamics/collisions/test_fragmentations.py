@@ -55,7 +55,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
@@ -100,7 +102,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut = fragmentation_fn
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
@@ -147,7 +151,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
@@ -194,7 +200,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
@@ -255,7 +263,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
 
         rns = np.linspace(1e-6, 1 - 1e-6, n)
         for i, rn in enumerate(rns):
@@ -341,7 +351,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator

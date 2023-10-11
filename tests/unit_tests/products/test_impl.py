@@ -11,20 +11,27 @@ from PySDM import Builder, products
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.products import (
+    ActivatedMeanRadius,
+    ActivatedParticleConcentration,
+    ActivatedParticleSpecificConcentration,
     AqueousMassSpectrum,
     AqueousMoleFraction,
+    AreaStandardDeviation,
     DynamicWallTime,
     FlowVelocityComponent,
     FreezableSpecificConcentration,
     FrozenParticleConcentration,
     FrozenParticleSpecificConcentration,
     GaseousMoleFraction,
+    MeanVolumeRadius,
     NumberSizeSpectrum,
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
     ParticleVolumeVersusRadiusLogarithmSpectrum,
     RadiusBinnedNumberAveragedTerminalVelocity,
+    RadiusStandardDeviation,
     TotalDryMassMixingRatio,
+    VolumeStandardDeviation,
 )
 from PySDM.products.impl.product import Product
 from PySDM.products.impl.rate_product import RateProduct
@@ -47,6 +54,19 @@ _ARGUMENTS = {
         "count_activated": True,
     },
     NumberSizeSpectrum: {"radius_bins_edges": (0, np.inf)},
+    ActivatedMeanRadius: {"count_activated": True, "count_unactivated": False},
+    ActivatedParticleConcentration: {
+        "count_activated": True,
+        "count_unactivated": False,
+    },
+    ActivatedParticleSpecificConcentration: {
+        "count_activated": True,
+        "count_unactivated": False,
+    },
+    MeanVolumeRadius: {"count_activated": True, "count_unactivated": False},
+    RadiusStandardDeviation: {"count_activated": True, "count_unactivated": False},
+    AreaStandardDeviation: {"count_activated": True, "count_unactivated": False},
+    VolumeStandardDeviation: {"count_activated": True, "count_unactivated": False},
 }
 
 
@@ -54,15 +74,15 @@ _ARGUMENTS = {
     params=(
         pytest.param(p[1], id=p[0])
         for p in inspect.getmembers(sys.modules[products.__name__], inspect.isclass)
-    )
+    ),
+    name="product",
 )
-def product(request):
+def product_fixture(request):
     return request.param
 
 
 class TestProducts:
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_instantiate_all(product):
         product(**(_ARGUMENTS[product] if product in _ARGUMENTS else {}))
 
