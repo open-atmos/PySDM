@@ -323,16 +323,34 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize(
         "fragmentation_fn, expected",
         (
-                (AlwaysN(n=2), 3550.0 * si.um ** 3,),
-                (ExponFrag(scale=1e6 * si.um ** 3), 3550.0 * si.um ** 3,),
-                (Feingold1988Frag(scale=1e6 * si.um ** 3), 3550.0 * si.um ** 3,),
-                (Gaussian(mu=2e6 * si.um ** 3, sigma=1e6 * si.um ** 3), 3550.0 * si.um ** 3,),
-                (SLAMS(), 3550.0 * si.um ** 3,),
-                (Straub2010Nf(), 3550.0 * si.um ** 3,),
+            (
+                AlwaysN(n=2),
+                3550.0 * si.um**3,
+            ),
+            (
+                ExponFrag(scale=1e6 * si.um**3),
+                3550.0 * si.um**3,
+            ),
+            (
+                Feingold1988Frag(scale=1e6 * si.um**3),
+                3550.0 * si.um**3,
+            ),
+            (
+                Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
+                3550.0 * si.um**3,
+            ),
+            (
+                SLAMS(),
+                3550.0 * si.um**3,
+            ),
+            (
+                Straub2010Nf(),
+                3550.0 * si.um**3,
+            ),
         ),
     )
     def test_fragmentation_fn_precise_values(
-            fragmentation_fn, expected, plot=False
+        fragmentation_fn, expected, plot=False
     ):  # pylint: disable=too-many-locals, unnecessary-lambda-assignment
         # arrange
         backend = CPU(
@@ -340,14 +358,14 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         )
         volume = np.asarray(
             [
-                440.0 * si.um ** 3,
-                660.0 * si.um ** 3,
+                440.0 * si.um**3,
+                660.0 * si.um**3,
             ]
         )
         fragments = np.asarray([-1.0])
         builder = Builder(volume.size, backend)
         sut = fragmentation_fn
-        sut.vmin = 1 * si.um ** 3
+        sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
@@ -358,9 +376,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
-        nf = _PairwiseStorage.from_ndarray(
-            np.zeros_like(fragments, dtype=np.double)
-        )
+        nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments, dtype=np.double))
         frag_size = _PairwiseStorage.from_ndarray(
             np.zeros_like(fragments, dtype=np.double)
         )
@@ -368,9 +384,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(
-            np.asarray([rn])
-        )
+        u01 = _PairwiseStorage.from_ndarray(np.asarray([rn]))
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -380,7 +394,6 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
 
         # Assert
         np.testing.assert_approx_equal(frag_size.to_ndarray(), expected)
-
 
     @staticmethod
     @pytest.mark.parametrize(
