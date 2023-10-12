@@ -9,7 +9,7 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import Berry1967
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.formulae import Formulae
 from PySDM.initialisation import spectra
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
 
 TRIVIA = Formulae().trivia
 

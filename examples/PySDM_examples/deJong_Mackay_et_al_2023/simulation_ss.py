@@ -7,7 +7,7 @@ from PySDM_examples.deJong_Mackay_et_al_2023.simulation_0D import run_box_breaku
 from PySDM.dynamics.collisions.breakup_fragmentations import Straub2010Nf
 from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
 from PySDM.initialisation.spectra import Exponential
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
 
 
 def run_to_steady_state(parameterization, n_sd, steps, nruns=1, dt=1 * si.s):

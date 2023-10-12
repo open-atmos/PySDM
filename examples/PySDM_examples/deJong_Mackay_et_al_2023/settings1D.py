@@ -7,7 +7,7 @@ from PySDM import Formulae
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import Gaussian, Straub2010Nf
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub2010Ec
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
 
 
 class Settings1D(SettingsSH):
