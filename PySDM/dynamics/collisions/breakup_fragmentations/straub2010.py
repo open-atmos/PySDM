@@ -1,5 +1,5 @@
 """
-See Straub et al 2010
+See Straub et al 2010 (https://doi.org/10.1175/2009JAS3175.1)
 """
 from PySDM.physics.constants import si
 
