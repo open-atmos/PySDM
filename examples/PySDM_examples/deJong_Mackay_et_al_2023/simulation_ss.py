@@ -27,7 +27,7 @@ def run_to_steady_state(parameterization, n_sd, steps, nruns=1, dt=1 * si.s):
             settings = Settings0D(
                 seed=7 ** (irun + 1),
                 fragmentation=Straub2010Nf(
-                    mass_min=(0.01 * si.mm) ** 3 * np.pi / 6 * constants_defaults.rho_w,
+                    vmin=(0.01 * si.mm) ** 3 * np.pi / 6,
                     nfmax=10000,
                 ),
             )

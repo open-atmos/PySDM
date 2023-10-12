@@ -8,10 +8,8 @@ from PySDM.physics.constants import si
 
 class LowList1982Ec:
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, mass_min=0.0, nfmax=None):
+    def __init__(self):
         self.particulator = None
-        self.mass_min = mass_min
-        self.nfmax = nfmax
         self.arrays = {}
         self.ll82_tmp = {}
         self.max_size = None

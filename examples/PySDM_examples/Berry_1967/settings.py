@@ -25,7 +25,7 @@ class Settings:
             1e1 * si.metres**3
         )  # 1e6 -> overflows on ThrustRTC (32-bit int multiplicities)
         self.norm_factor = self.n_part * self.dv
-        self.rho = 1000 * si.kilogram / si.metre**3
+        self.rho = self.formulae.constants.rho_w
         self.dt = 1 * si.seconds
         self.adaptive = False
         self.seed = 44

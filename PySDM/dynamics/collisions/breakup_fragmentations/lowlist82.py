@@ -1,27 +1,27 @@
 """
 See [Low & List 1982](https://doi.org/10.1175/1520-0469(1982)039<1607:CCABOR>2.0.CO;2)
 """
+from .impl import VolumeBasedFragmentationFunction
 
 
-class LowList1982Nf:
+class LowList1982Nf(VolumeBasedFragmentationFunction):
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, mass_min=0.0, nfmax=None):
-        self.particulator = None
-        self.mass_min = mass_min
+    def __init__(self, vmin=0.0, nfmax=None):
+        super().__init__()
+        self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
         self.ll82_tmp = {}
-        self.sum_of_masses = None
+        self.sum_of_volumes = None
         self.const = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
-        self.sum_of_masses = self.particulator.PairwiseStorage.empty(
+        super().register(builder)
+        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute("radius")
-        builder.request_attribute("water mass")
         builder.request_attribute("relative fall velocity")
         for key in ("Sc", "St", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -32,25 +32,23 @@ class LowList1982Nf:
                 self.particulator.n_sd // 2, dtype=float
             )
 
-    def __call__(self, nf, frag_mass, u01, is_first_in_pair):
-        self.sum_of_masses.sum(
-            self.particulator.attributes["water mass"], is_first_in_pair
+    def __call__(self, nf, frag_volume, u01, is_first_in_pair):
+        self.sum_of_volumes.sum(
+            self.particulator.attributes["volume"], is_first_in_pair
         )
         self.arrays["ds"].min(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["ds"] *= 2
         self.arrays["dl"].max(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["dl"] *= 2
         self.arrays["dcoal"].sum(
-            self.particulator.attributes["water mass"], is_first_in_pair
+            self.particulator.attributes["volume"], is_first_in_pair
         )
 
         self.arrays["dcoal"] /= self.const.PI / 6
         self.arrays["dcoal"] **= 1 / 3
 
         # compute the surface energy, CKE, & dimensionless numbers
-        self.arrays["Sc"].sum(
-            self.particulator.attributes["water mass"], is_first_in_pair
-        )
+        self.arrays["Sc"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
@@ -64,15 +62,13 @@ class LowList1982Nf:
         self.arrays["St"] += self.arrays["tmp"]
         self.arrays["St"] *= self.const.PI * self.const.sgm_w
 
-        self.arrays["tmp"].sum(
-            self.particulator.attributes["water mass"], is_first_in_pair
-        )
+        self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["tmp2"].distance(
             self.particulator.attributes["relative fall velocity"], is_first_in_pair
         )
         self.arrays["tmp2"] **= 2
         self.arrays["CKE"].multiply(
-            self.particulator.attributes["water mass"], is_first_in_pair
+            self.particulator.attributes["volume"], is_first_in_pair
         )
         self.arrays["CKE"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["CKE"] *= self.arrays["tmp2"]
@@ -95,10 +91,10 @@ class LowList1982Nf:
             ds=self.arrays["ds"],
             dl=self.arrays["dl"],
             dcoal=self.arrays["dcoal"],
-            frag_mass=frag_mass,
-            x_plus_y=self.sum_of_masses,
+            frag_volume=frag_volume,
+            x_plus_y=self.sum_of_volumes,
             rand=u01,
-            mass_min=self.mass_min,
+            vmin=self.vmin,
             nfmax=self.nfmax,
             Rf=self.ll82_tmp["Rf"],
             Rs=self.ll82_tmp["Rs"],

@@ -393,10 +393,10 @@ class CollisionsMethods(BackendMethods):
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __straub_fragmentation_body(
-                *, CW, gam, ds, v_max, frag_mass, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
+                *, CW, gam, ds, v_max, frag_volume, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
             ):  # pylint: disable=too-many-arguments,too-many-locals
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_mass)
+                    len(frag_volume)
                 ):
                     straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
                     sigma1 = straub_sigma1(CW[i])
@@ -422,23 +422,24 @@ class CollisionsMethods(BackendMethods):
                         Nr4,
                     )
                     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
+
                     if Nrt[i] == 0.0:
-                        frag_mass[i] = 0.0
+                        diameter = 0.0
                     else:
                         if rand[i] < Nr1[i] / Nrt[i]:
                             X = rand[i] * Nrt[i] / Nr1[i]
                             lnarg = mu1 + np.sqrt(2) * sigma1 * straub_erfinv(X)
-                            frag_mass[i] = np.exp(lnarg)
+                            diameter = np.exp(lnarg)
                         elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
                             X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i]
-                            frag_mass[i] = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(X)
+                            diameter = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(X)
                         elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
                             X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i]
-                            frag_mass[i] = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(X)
+                            diameter = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(X)
                         else:
-                            frag_mass[i] = d34[i]
+                            diameter = d34[i]
 
-                    frag_mass[i] = frag_mass[i] ** 3 * const.PI / 6
+                    frag_volume[i] = diameter**3 * const.PI / 6
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
@@ -453,15 +454,15 @@ class CollisionsMethods(BackendMethods):
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __ll82_fragmentation_body(
-                *, CKE, W, W2, St, ds, dl, dcoal, frag_mass, rand, Rf, Rs, Rd, tol
+                *, CKE, W, W2, St, ds, dl, dcoal, frag_volume, rand, Rf, Rs, Rd, tol
             ):  # pylint: disable=too-many-branches,too-many-locals,too-many-statements
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_mass)
+                    len(frag_volume)
                 ):
                     if dl[i] <= 0.4e-3:
-                        frag_mass[i] = dcoal[i] ** 3 * const.PI / 6
+                        frag_volume[i] = const.rho_w * dcoal[i] ** 3 * const.PI / 6
                     elif ds[i] == 0.0 or dl[i] == 0.0:
-                        frag_mass[i] = 1e-18
+                        frag_volume[i] = const.rho_w * 1e-18
                     else:
                         ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
                         if rand[i] <= Rf[i]:  # filament breakup
@@ -475,20 +476,20 @@ class CollisionsMethods(BackendMethods):
                             rand[i] = rand[i] / Rf[i]
                             if rand[i] <= H1 / Hsum:
                                 X = max(rand[i] * Hsum / H1, tol)
-                                frag_mass[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
-                                    2 * X - 1
-                                )
+                                frag_volume[i] = mu1 + np.sqrt(
+                                    2
+                                ) * sigma1 * ll82_erfinv(2 * X - 1)
                             elif rand[i] <= (H1 + H2) / Hsum:
                                 X = (rand[i] * Hsum - H1) / H2
-                                frag_mass[i] = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
-                                    2 * X - 1
-                                )
+                                frag_volume[i] = mu2 + np.sqrt(
+                                    2
+                                ) * sigma2 * ll82_erfinv(2 * X - 1)
                             else:
                                 X = min((rand[i] * Hsum - H1 - H2) / H3, 1.0 - tol)
                                 lnarg = mu3 + np.sqrt(2) * sigma3 * ll82_erfinv(
                                     2 * X - 1
                                 )
-                                frag_mass[i] = np.exp(lnarg)
+                                frag_volume[i] = np.exp(lnarg)
 
                         elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
                             (H1, mu1, sigma1) = ll82_params_s1(dl[i], ds[i], dcoal[i])
@@ -499,15 +500,15 @@ class CollisionsMethods(BackendMethods):
                             rand[i] = (rand[i] - Rf[i]) / (Rs[i])
                             if rand[i] <= H1 / Hsum:
                                 X = max(rand[i] * Hsum / H1, tol)
-                                frag_mass[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
-                                    2 * X - 1
-                                )
+                                frag_volume[i] = mu1 + np.sqrt(
+                                    2
+                                ) * sigma1 * ll82_erfinv(2 * X - 1)
                             else:
                                 X = min((rand[i] * Hsum - H1) / H2, 1.0 - tol)
                                 lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
                                     2 * X - 1
                                 )
-                                frag_mass[i] = np.exp(lnarg)
+                                frag_volume[i] = np.exp(lnarg)
 
                         else:  # disk breakup
                             (H1, mu1, sigma1) = ll82_params_d1(
@@ -519,20 +520,20 @@ class CollisionsMethods(BackendMethods):
                             rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
                             if rand[i] <= H1 / Hsum:
                                 X = max(rand[i] * Hsum / H1, tol)
-                                frag_mass[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
-                                    2 * X - 1
-                                )
+                                frag_volume[i] = mu1 + np.sqrt(
+                                    2
+                                ) * sigma1 * ll82_erfinv(2 * X - 1)
                             else:
                                 X = min((rand[i] * Hsum - H1) / H2, 1 - tol)
                                 lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
                                     2 * X - 1
                                 )
-                                frag_mass[i] = np.exp(lnarg)
+                                frag_volume[i] = np.exp(lnarg)
 
-                        frag_mass[i] = (
-                            frag_mass[i] * 0.01
+                        frag_volume[i] = (
+                            frag_volume[i] * 0.01
                         )  # diameter in cm; convert to m
-                        frag_mass[i] = frag_mass[i] ** 3 * const.PI / 6
+                        frag_volume[i] = frag_volume[i] ** 3 * const.PI / 6
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
@@ -540,26 +541,26 @@ class CollisionsMethods(BackendMethods):
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __gauss_fragmentation_body(
-                *, mu, sigma, frag_mass, rand
+                *, mu, sigma, frag_volume, rand
             ):  # pylint: disable=too-many-arguments
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_mass)
+                    len(frag_volume)
                 ):
-                    frag_mass[i] = mu + sigma * erfinv_approx(rand[i])
+                    frag_volume[i] = mu + sigma * erfinv_approx(rand[i])
 
             self.__gauss_fragmentation_body = __gauss_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Feingold1988":
-            feingold1988_frag_mass = self.formulae.fragmentation_function.frag_mass
+            feingold1988_frag_volume = self.formulae.fragmentation_function.frag_volume
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             # pylint: disable=too-many-arguments
             def __feingold1988_fragmentation_body(
-                *, scale, frag_mass, x_plus_y, rand, fragtol
+                *, scale, frag_volume, x_plus_y, rand, fragtol
             ):
                 for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_mass)
+                    len(frag_volume)
                 ):
-                    frag_mass[i] = feingold1988_frag_mass(
+                    frag_volume[i] = feingold1988_frag_volume(
                         scale, rand[i], x_plus_y[i], fragtol
                     )
 
@@ -748,35 +749,33 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     # pylint: disable=too-many-arguments
-    def __fragmentation_limiters(n_fragment, frag_mass, mass_min, nfmax, x_plus_y):
-        for i in numba.prange(len(frag_mass)):  # pylint: disable=not-an-iterable
+    def __fragmentation_limiters(n_fragment, frag_volume, vmin, nfmax, x_plus_y):
+        for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
             if x_plus_y[i] == 0.0:
-                frag_mass[i] = 0.0
+                frag_volume[i] = 0.0
                 n_fragment[i] = 1.0
             else:
-                if np.isnan(frag_mass[i]) or frag_mass[i] == 0.0:
-                    frag_mass[i] = x_plus_y[i]
-                frag_mass[i] = min(frag_mass[i], x_plus_y[i])
-                if nfmax is not None and x_plus_y[i] / frag_mass[i] > nfmax:
-                    frag_mass[i] = x_plus_y[i] / nfmax
-                elif frag_mass[i] < mass_min:
-                    frag_mass[i] = x_plus_y[i]
-                n_fragment[i] = x_plus_y[i] / frag_mass[i]
+                if np.isnan(frag_volume[i]) or frag_volume[i] == 0.0:
+                    frag_volume[i] = x_plus_y[i]
+                frag_volume[i] = min(frag_volume[i], x_plus_y[i])
+                if nfmax is not None and x_plus_y[i] / frag_volume[i] > nfmax:
+                    frag_volume[i] = x_plus_y[i] / nfmax
+                elif frag_volume[i] < vmin:
+                    frag_volume[i] = x_plus_y[i]
+                n_fragment[i] = x_plus_y[i] / frag_volume[i]
 
-    def fragmentation_limiters(
-        self, *, n_fragment, frag_mass, mass_min, nfmax, x_plus_y
-    ):
+    def fragmentation_limiters(self, *, n_fragment, frag_volume, vmin, nfmax, x_plus_y):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
-            frag_mass=frag_mass.data,
-            mass_min=mass_min,
+            frag_volume=frag_volume.data,
+            vmin=vmin,
             nfmax=nfmax,
             x_plus_y=x_plus_y.data,
         )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __slams_fragmentation_body(n_fragment, frag_mass, x_plus_y, probs, rand):
+    def __slams_fragmentation_body(n_fragment, frag_volume, x_plus_y, probs, rand):
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             probs[i] = 0.0
             n_fragment[i] = 1
@@ -785,18 +784,18 @@ class CollisionsMethods(BackendMethods):
                 if rand[i] < probs[i]:
                     n_fragment[i] = n + 2
                     break
-            frag_mass[i] = x_plus_y[i] / n_fragment[i]
+            frag_volume[i] = x_plus_y[i] / n_fragment[i]
 
     def slams_fragmentation(
-        self, n_fragment, frag_mass, x_plus_y, probs, rand, mass_min, nfmax
+        self, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
     ):  # pylint: disable=too-many-arguments
         self.__slams_fragmentation_body(
-            n_fragment.data, frag_mass.data, x_plus_y.data, probs.data, rand.data
+            n_fragment.data, frag_volume.data, x_plus_y.data, probs.data, rand.data
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
-            frag_mass=frag_mass.data,
-            mass_min=mass_min,
+            frag_volume=frag_volume.data,
+            vmin=vmin,
             nfmax=nfmax,
             x_plus_y=x_plus_y.data,
         )
@@ -804,36 +803,36 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     # pylint: disable=too-many-arguments
-    def __exp_fragmentation_body(*, scale, frag_mass, rand, tol=1e-5):
+    def __exp_fragmentation_body(*, scale, frag_volume, rand, tol=1e-5):
         """
         Exponential PDF
         """
-        for i in numba.prange(len(frag_mass)):  # pylint: disable=not-an-iterable
-            frag_mass[i] = -scale * np.log(max(1 - rand[i], tol))
+        for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
+            frag_volume[i] = -scale * np.log(max(1 - rand[i], tol))
 
     def exp_fragmentation(
         self,
         *,
         n_fragment,
         scale,
-        frag_mass,
+        frag_volume,
         x_plus_y,
         rand,
-        mass_min,
+        vmin,
         nfmax,
         tol=1e-5,
     ):
         self.__exp_fragmentation_body(
             scale=scale,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             rand=rand.data,
             tol=tol,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             x_plus_y=x_plus_y.data,
-            mass_min=mass_min,
+            vmin=vmin,
             nfmax=nfmax,
         )
 
@@ -842,16 +841,16 @@ class CollisionsMethods(BackendMethods):
         *,
         n_fragment,
         scale,
-        frag_mass,
+        frag_volume,
         x_plus_y,
         rand,
         fragtol,
-        mass_min,
+        vmin,
         nfmax,
     ):
         self.__feingold1988_fragmentation_body(
             scale=scale,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             x_plus_y=x_plus_y.data,
             rand=rand.data,
             fragtol=fragtol,
@@ -859,26 +858,26 @@ class CollisionsMethods(BackendMethods):
 
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             x_plus_y=x_plus_y.data,
-            mass_min=mass_min,
+            vmin=vmin,
             nfmax=nfmax,
         )
 
     def gauss_fragmentation(
-        self, *, n_fragment, mu, sigma, frag_mass, x_plus_y, rand, mass_min, nfmax
+        self, *, n_fragment, mu, sigma, frag_volume, x_plus_y, rand, vmin, nfmax
     ):
         self.__gauss_fragmentation_body(
             mu=mu,
             sigma=sigma,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             rand=rand.data,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             x_plus_y=x_plus_y.data,
-            mass_min=mass_min,
+            vmin=vmin,
             nfmax=nfmax,
         )
 
@@ -890,11 +889,11 @@ class CollisionsMethods(BackendMethods):
         CW,
         gam,
         ds,
-        frag_mass,
+        frag_volume,
         v_max,
         x_plus_y,
         rand,
-        mass_min,
+        vmin,
         nfmax,
         Nr1,
         Nr2,
@@ -907,7 +906,7 @@ class CollisionsMethods(BackendMethods):
             CW=CW.data,
             gam=gam.data,
             ds=ds.data,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             v_max=v_max.data,
             rand=rand.data,
             Nr1=Nr1.data,
@@ -919,9 +918,9 @@ class CollisionsMethods(BackendMethods):
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             x_plus_y=x_plus_y.data,
-            mass_min=mass_min,
+            vmin=vmin,
             nfmax=nfmax,
         )
 
@@ -937,10 +936,10 @@ class CollisionsMethods(BackendMethods):
         ds,
         dl,
         dcoal,
-        frag_mass,
+        frag_volume,
         x_plus_y,
         rand,
-        mass_min,
+        vmin,
         nfmax,
         Rf,
         Rs,
@@ -955,7 +954,7 @@ class CollisionsMethods(BackendMethods):
             ds=ds.data,
             dl=dl.data,
             dcoal=dcoal.data,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             rand=rand.data,
             Rf=Rf.data,
             Rs=Rs.data,
@@ -964,9 +963,9 @@ class CollisionsMethods(BackendMethods):
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
-            frag_mass=frag_mass.data,
+            frag_volume=frag_volume.data,
             x_plus_y=x_plus_y.data,
-            mass_min=mass_min,
+            vmin=vmin,
             nfmax=nfmax,
         )
 

@@ -15,4 +15,3 @@ class ConstantMass:  # pylint: disable=too-many-instance-attributes
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute("water mass")

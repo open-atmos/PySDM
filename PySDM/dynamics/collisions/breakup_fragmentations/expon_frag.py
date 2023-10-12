@@ -1,6 +1,6 @@
 """
 DEPRECATED
-P(x) = exp(-x / lambda); specified in mass units
+P(x) = exp(-x / lambda); lambda specified in volume units
 """
 import warnings
 

@@ -11,7 +11,7 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub20
 from PySDM.physics import constants_defaults, si
 
 R_MIN = 0.1 * si.um
-MASS_MIN = 4 / 3 * np.pi * R_MIN**3 * constants_defaults.rho_w
+VMIN = 4 / 3 * np.pi * R_MIN**3
 EC_VALS = [1.0, 0.9, 0.8]
 BINS = 32
 N_SD = 2**10
@@ -23,7 +23,7 @@ N_SD = 2**10
 )
 def test_fig_6_reduced_resolution(backend_class, plot=False):
     # arrange
-    settings = Settings0D(fragmentation=AlwaysN(n=8, mass_min=MASS_MIN), seed=44)
+    settings = Settings0D(fragmentation=AlwaysN(n=8, vmin=VMIN), seed=44)
     settings.n_sd = N_SD
     settings.radius_bins_edges = np.logspace(
         np.log10(10 * si.um), np.log10(10000 * si.um), num=BINS, endpoint=True

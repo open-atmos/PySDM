@@ -53,17 +53,15 @@ class Settings1D(SettingsSH):
     ):
         if stochastic_breakup:
             self.coalescence_efficiency = Straub2010Ec()
-            self.fragmentation_function = Straub2010Nf(
-                mass_min=1 * si.um**3 * constants_defaults.rho_w
-            )
+            self.fragmentation_function = Straub2010Nf(vmin=1 * si.um**3)
         else:
             self.coalescence_efficiency = ConstEc(Ec=0.95)
             frag_scale_r = 30 * si.um
             frag_scale_v = frag_scale_r**3 * 4 / 3 * np.pi
             self.fragmentation_function = Gaussian(
-                mu=frag_scale_v * constants_defaults.rho_w,
-                sigma=frag_scale_v / 2 * constants_defaults.rho_w,
-                mass_min=(1 * si.um) ** 3 * constants_defaults.rho_w,
+                mu=frag_scale_v,
+                sigma=frag_scale_v / 2,
+                vmin=(1 * si.um) ** 3,
                 nfmax=20,
             )
 

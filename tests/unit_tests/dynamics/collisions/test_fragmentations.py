@@ -32,11 +32,11 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         "fragmentation_fn",
         (
             AlwaysN(n=2),
-            Exponential(scale=1e6 * si.um**3 * constants_defaults.rho_w),
-            Feingold1988(scale=1e6 * si.um**3 * constants_defaults.rho_w),
+            Exponential(scale=1e6 * si.um**3),
+            Feingold1988(scale=1e6 * si.um**3),
             Gaussian(
-                mu=2e6 * si.um**3 * constants_defaults.rho_w,
-                sigma=1e6 * si.um**3 * constants_defaults.rho_w,
+                mu=2e6 * si.um**3,
+                sigma=1e6 * si.um**3,
             ),
             SLAMS(),
             Straub2010Nf(),
@@ -53,7 +53,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             ),
         )
         sut = fragmentation_fn
-        sut.mass_min = 1 * si.um**3 * constants_defaults.rho_w
+        sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
@@ -86,24 +86,24 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         "fragmentation_fn",
         [
             Exponential(
-                scale=1 * si.um**3 * constants_defaults.rho_w,
-                mass_min=6660.0 * si.um**3 * constants_defaults.rho_w,
+                scale=1 * si.um**3,
+                vmin=6660.0 * si.um**3,
             ),
             Feingold1988(
-                scale=1 * si.um**3 * constants_defaults.rho_w,
-                mass_min=6660.0 * si.um**3 * constants_defaults.rho_w,
+                scale=1 * si.um**3,
+                vmin=6660.0 * si.um**3,
             ),
             Gaussian(
-                mu=2 * si.um**3 * constants_defaults.rho_w,
-                sigma=1 * si.um**3 * constants_defaults.rho_w,
-                mass_min=6660.0 * si.um**3 * constants_defaults.rho_w,
+                mu=2 * si.um**3,
+                sigma=1 * si.um**3,
+                vmin=6660.0 * si.um**3,
             ),
-            SLAMS(mass_min=6660.0 * si.um**3 * constants_defaults.rho_w),
-            Straub2010Nf(mass_min=6660.0 * si.um**3 * constants_defaults.rho_w),
+            SLAMS(vmin=6660.0 * si.um**3),
+            Straub2010Nf(vmin=6660.0 * si.um**3),
             pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
         ],
     )
-    def test_fragmentation_limiters_mass_min(fragmentation_fn, backend_class):
+    def test_fragmentation_limiters_vmin(fragmentation_fn, backend_class):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -145,11 +145,11 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize(
         "fragmentation_fn",
         [
-            Exponential(scale=1.0 * si.cm**3 * constants_defaults.rho_w),
-            Feingold1988(scale=1.0 * si.cm**3 * constants_defaults.rho_w),
+            Exponential(scale=1.0 * si.cm**3),
+            Feingold1988(scale=1.0 * si.cm**3),
             Gaussian(
-                mu=1.0 * si.cm**3 * constants_defaults.rho_w,
-                sigma=1e6 * si.um**3 * constants_defaults.rho_w,
+                mu=1.0 * si.cm**3,
+                sigma=1e6 * si.um**3,
             ),
             SLAMS(),
             Straub2010Nf(),
@@ -167,7 +167,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             ),
         )
         sut = fragmentation_fn
-        sut.mass_min = 1 * si.um**3 * constants_defaults.rho_w
+        sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
@@ -202,11 +202,11 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize(
         "fragmentation_fn",
         [
-            Exponential(scale=1.0 * si.um**3 * constants_defaults.rho_w, nfmax=2),
-            Feingold1988(scale=1.0 * si.um**3 * constants_defaults.rho_w, nfmax=2),
+            Exponential(scale=1.0 * si.um**3, nfmax=2),
+            Feingold1988(scale=1.0 * si.um**3, nfmax=2),
             Gaussian(
-                mu=1.0 * si.um**3 * constants_defaults.rho_w,
-                sigma=1e6 * si.um**3 * constants_defaults.rho_w,
+                mu=1.0 * si.um**3,
+                sigma=1e6 * si.um**3,
                 nfmax=2,
             ),
             SLAMS(nfmax=2),
@@ -225,7 +225,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             ),
         )
         sut = fragmentation_fn
-        sut.mass_min = 1 * si.um**3 * constants_defaults.rho_w
+        sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
@@ -260,11 +260,11 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         "fragmentation_fn",
         (
             AlwaysN(n=2),
-            Exponential(scale=(1e6 * si.um**3) * constants_defaults.rho_w),
-            Feingold1988(scale=1e6 * si.um**3 * constants_defaults.rho_w),
+            Exponential(scale=(1e6 * si.um**3)),
+            Feingold1988(scale=1e6 * si.um**3),
             Gaussian(
-                mu=2e6 * si.um**3 * constants_defaults.rho_w,
-                sigma=1e6 * si.um**3 * constants_defaults.rho_w,
+                mu=2e6 * si.um**3,
+                sigma=1e6 * si.um**3,
             ),
             SLAMS(),
             Straub2010Nf(),
@@ -295,7 +295,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         fragments = np.asarray([-1.0])
         builder = Builder(volume.size, backend)
         sut = fragmentation_fn
-        sut.mass_min = 1 * si.um**3 * constants_defaults.rho_w
+        sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
@@ -343,11 +343,11 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         "fragmentation_fn, water_mass, expected_nf",
         (
             (
-                ConstantMass(c=4 * si.um**3 * constants_defaults.rho_w),
+                ConstantMass(c=4 * si.um**3),
                 np.asarray(
                     [
-                        400.0 * si.um**3 * constants_defaults.rho_w,
-                        600.0 * si.um**3 * constants_defaults.rho_w,
+                        400.0 * si.um**3,
+                        600.0 * si.um**3,
                     ]
                 ),
                 250,
@@ -356,8 +356,8 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
                 AlwaysN(n=250),
                 np.asarray(
                     [
-                        400.0 * si.um**3 * constants_defaults.rho_w,
-                        600.0 * si.um**3 * constants_defaults.rho_w,
+                        400.0 * si.um**3,
+                        600.0 * si.um**3,
                     ]
                 ),
                 250,
@@ -381,7 +381,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             ),
         )
         sut = fragmentation_fn
-        sut.mass_min = 1 * si.um**3 * constants_defaults.rho_w
+        sut.vmin = 1 * si.um**3
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(

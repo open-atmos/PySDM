@@ -1,33 +1,36 @@
 """
-P(x) = exp(-x / lambda); specified in mass units
+P(x) = exp(-x / lambda); lambda specified in volume units
 """
 # TODO #796: introduce common code with Feingold fragmentation, including possible limiter
+from .impl import VolumeBasedFragmentationFunction
 
 
-class Exponential:
-    def __init__(self, scale, mass_min=0.0, nfmax=None):
-        self.particulator = None
+class Exponential(VolumeBasedFragmentationFunction):
+    def __init__(self, scale, vmin=0.0, nfmax=None):
+        super().__init__()
         self.scale = scale
-        self.mass_min = mass_min
+        self.vmin = vmin
         self.nfmax = nfmax
-        self.sum_of_masses = None
+        self.sum_of_volumes = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
-        self.sum_of_masses = self.particulator.PairwiseStorage.empty(
+        super().register(builder)
+        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
 
-    def __call__(self, nf, frag_mass, u01, is_first_in_pair):
-        self.sum_of_masses.sum(
-            self.particulator.attributes["water mass"], is_first_in_pair
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
+        self.sum_of_volumes.sum(
+            self.particulator.attributes["volume"], is_first_in_pair
         )
         self.particulator.backend.exp_fragmentation(
             n_fragment=nf,
             scale=self.scale,
-            frag_mass=frag_mass,
-            x_plus_y=self.sum_of_masses,
+            frag_volume=frag_volume,
+            x_plus_y=self.sum_of_volumes,
             rand=u01,
-            mass_min=self.mass_min,
+            vmin=self.vmin,
             nfmax=self.nfmax,
         )

@@ -26,9 +26,7 @@ class Settings0D:
     ):
         self.n_sd = 2**10
         self.n_part = 100 / si.cm**3
-        self.frag_scale = (
-            TRIVIA.volume(radius=100 * si.micrometres) * constants_defaults.rho_w
-        )
+        self.frag_scale = TRIVIA.volume(radius=100 * si.micrometres)
         self.dv = 1 * si.m**3
         self.norm_factor = self.n_part * self.dv
         self.rho = 1000 * si.kilogram / si.metre**3
@@ -40,7 +38,7 @@ class Settings0D:
         self.kernel = Geometric()
         self.coal_eff = Berry1967()
         self.fragmentation = fragmentation or Exponential(scale=self.frag_scale)
-        self.mass_min = 0.0
+        self.vmin = 0.0
         self.break_eff = ConstEb(1.0)  # no "bouncing"
         self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)
         self.radius_bins_edges = np.logspace(

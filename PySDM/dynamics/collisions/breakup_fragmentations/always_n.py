@@ -4,11 +4,9 @@ Always produces N fragments in a given collisional breakup
 
 
 class AlwaysN:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, n, mass_min=0.0, nfmax=None):
+    def __init__(self, n):
         self.particulator = None
         self.N = n
-        self.mass_min = mass_min
-        self.nfmax = nfmax
 
     def __call__(self, nf, frag_mass, u01, is_first_in_pair):
         nf.fill(self.N)
@@ -17,4 +15,3 @@ class AlwaysN:  # pylint: disable=too-many-instance-attributes
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute("water mass")

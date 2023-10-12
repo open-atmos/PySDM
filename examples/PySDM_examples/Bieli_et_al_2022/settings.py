@@ -25,13 +25,13 @@ class Settings:
         self._steps = list(range(60))
         self.kernel = Golovin(b=2000 * si.cm**3 / si.g / si.s * rho_w)
         self.coal_effs = [ConstEc(Ec=0.8), ConstEc(Ec=0.9), ConstEc(Ec=1.0)]
-        self.mass_min = 1.0 * si.um**3 * rho_w
+        self.vmin = 1.0 * si.um**3
         self.nfmax = 10
         self.fragtol = 1e-3
         self.fragmentation = Feingold1988(
             scale=self.k * self.theta,
             fragtol=self.fragtol,
-            mass_min=self.mass_min,
+            vmin=self.vmin,
             nfmax=self.nfmax,
         )
         self.break_eff = ConstEb(1.0)
