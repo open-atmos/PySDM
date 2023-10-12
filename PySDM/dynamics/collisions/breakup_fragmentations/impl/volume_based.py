@@ -15,7 +15,7 @@ class VolumeBasedFragmentationFunction:
         frag_volume_aliased_to_mass *= self.particulator.formulae.constants.rho_w
 
     def compute_fragment_number_and_volumes(
-        self, nf, frag_volumes, u01, is_first_in_pair
+        self, nf, frag_volume, u01, is_first_in_pair
     ):
         raise NotImplementedError()
 

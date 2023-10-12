@@ -8,7 +8,7 @@ from PySDM_examples.deJong_Mackay_et_al_2023 import Settings0D, run_box_breakup
 from PySDM.backends import CPU, GPU
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub2010Ec
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
 
 R_MIN = 0.1 * si.um
 VMIN = 4 / 3 * np.pi * R_MIN**3
@@ -23,7 +23,7 @@ N_SD = 2**10
 )
 def test_fig_6_reduced_resolution(backend_class, plot=False):
     # arrange
-    settings = Settings0D(fragmentation=AlwaysN(n=8, vmin=VMIN), seed=44)
+    settings = Settings0D(fragmentation=AlwaysN(n=8), seed=44)
     settings.n_sd = N_SD
     settings.radius_bins_edges = np.logspace(
         np.log10(10 * si.um), np.log10(10000 * si.um), num=BINS, endpoint=True

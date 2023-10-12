@@ -39,7 +39,7 @@ class Straub2010Nf(VolumeBasedFragmentationFunction):
             )
 
     def compute_fragment_number_and_volumes(
-        self, nf, frag_volumes, u01, is_first_in_pair
+        self, nf, frag_volume, u01, is_first_in_pair
     ):
         self.max_size.max(self.particulator.attributes["volume"], is_first_in_pair)
         self.sum_of_volumes.sum(
@@ -85,7 +85,7 @@ class Straub2010Nf(VolumeBasedFragmentationFunction):
             CW=self.arrays["CW"],
             gam=self.arrays["gam"],
             ds=self.arrays["ds"],
-            frag_volume=frag_volumes,
+            frag_volume=frag_volume,
             v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,

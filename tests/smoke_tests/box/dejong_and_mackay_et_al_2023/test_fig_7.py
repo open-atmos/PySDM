@@ -8,7 +8,7 @@ from PySDM_examples.deJong_Mackay_et_al_2023 import Settings0D, run_box_breakup
 from PySDM.backends import CPU, GPU
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponential
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
 
 CMAP = matplotlib.cm.get_cmap("viridis")
 N_SD = 2**12

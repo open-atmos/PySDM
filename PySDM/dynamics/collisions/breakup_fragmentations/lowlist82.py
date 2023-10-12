@@ -32,7 +32,9 @@ class LowList1982Nf(VolumeBasedFragmentationFunction):
                 self.particulator.n_sd // 2, dtype=float
             )
 
-    def __call__(self, nf, frag_volume, u01, is_first_in_pair):
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
         self.sum_of_volumes.sum(
             self.particulator.attributes["volume"], is_first_in_pair
         )
