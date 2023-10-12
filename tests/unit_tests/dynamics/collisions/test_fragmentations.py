@@ -260,7 +260,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         "fragmentation_fn",
         (
             AlwaysN(n=2),
-            Exponential(scale=(1e6 * si.um**3)),
+            Exponential(scale=1e6 * si.um**3),
             Feingold1988(scale=1e6 * si.um**3),
             Gaussian(
                 mu=2e6 * si.um**3,
