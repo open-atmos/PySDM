@@ -1,5 +1,6 @@
 """
-box- and single-column breakup-focused examples from [deJong et al. 2023](https://doi.org/10.5194/gmd-16-4193-2023)
+box- and single-column breakup-focused examples from
+[de Jong et al. 2023](https://doi.org/10.5194/gmd-16-4193-2023)
 """
 # pylint: disable=invalid-name
 from .plot_rates import plot_ax, plot_zeros_ax
