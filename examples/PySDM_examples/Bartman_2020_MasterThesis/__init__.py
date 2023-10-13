@@ -1,4 +1,4 @@
 # pylint: disable=invalid-name
 """
-The thesis is available here https://www.ap.uj.edu.pl/diplomas/141204/
+Box and parcel examples from [Bartman 2020 MSc thesis](https://www.ap.uj.edu.pl/diplomas/141204)
 """
