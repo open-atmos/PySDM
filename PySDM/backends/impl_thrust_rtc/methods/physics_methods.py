@@ -89,6 +89,30 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             ),
         )
 
+    @cached_property
+    def __volume_of_mass_body(self):
+        return trtc.For(
+            param_names=("volume", "mass"),
+            name_iter="i",
+            body=f"""
+            volume[i] = {self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass="mass[i]")};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
+    @cached_property
+    def __mass_of_volume_body(self):
+        return trtc.For(
+            param_names=("mass", "volume"),
+            name_iter="i",
+            body=f"""
+            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(mass="volume[i]")};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
     @nice_thrust(**NICE_THRUST_FLAGS)
     def critical_volume(self, *, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.__critical_volume_body.launch_n(
@@ -136,3 +160,13 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         dt = self._get_floating_point(dt)
         dy_dt = self._get_floating_point(dy_dt)
         self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
+
+    def volume_of_water_mass(self, volume, water_mass):
+        self.__volume_of_mass_body.launch_n(
+            volume.shape[0], (volume.data, water_mass.data)
+        )
+
+    def mass_of_water_volume(self, mass, water_volume):
+        self.__mass_of_volume_body.launch_n(
+            mass.shape[0], (mass.data, water_volume.data)
+        )

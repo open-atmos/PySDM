@@ -12,7 +12,9 @@ class VolumeBasedFragmentationFunction:
         self.compute_fragment_number_and_volumes(
             nf, frag_volume_aliased_to_mass, u01, is_first_in_pair
         )
-        frag_volume_aliased_to_mass *= self.particulator.formulae.constants.rho_w
+        self.particulator.backend.mass_of_water_volume(
+            frag_mass, frag_volume_aliased_to_mass
+        )
 
     def compute_fragment_number_and_volumes(
         self, nf, frag_volume, u01, is_first_in_pair

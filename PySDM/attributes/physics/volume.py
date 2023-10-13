@@ -1,5 +1,5 @@
 """
-particle (wet) volume, derived attribute for coalescence
+particle wet/ice volume (derived from water mass);
 in simulation involving mixed-phase clouds, positive values correspond to
 liquid water and negative values to ice
 """
@@ -12,4 +12,4 @@ class Volume(DerivedAttribute):
         super().__init__(builder, name="volume", dependencies=(self.water_mass,))
 
     def recalculate(self):
-        self.data.product(self.water_mass.get(), 1 / self.formulae.constants.rho_w)
+        self.particulator.backend.volume_of_water_mass(self.data, self.water_mass.get())

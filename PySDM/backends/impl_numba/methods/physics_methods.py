@@ -20,6 +20,8 @@ class PhysicsMethods(BackendMethods):
         phys_sigma = self.formulae.surface_tension.sigma
         phys_volume = self.formulae.trivia.volume
         phys_r_cr = self.formulae.hygroscopicity.r_cr
+        phys_mass_to_volume = self.formulae.particle_shape_and_density.mass_to_volume
+        phys_volume_to_mass = self.formulae.particle_shape_and_density.volume_to_mass
         const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
@@ -80,6 +82,20 @@ class PhysicsMethods(BackendMethods):
 
         self.a_w_ice_body = a_w_ice_body
 
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def volume_of_mass(volume, mass):
+            for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
+                volume[i] = phys_mass_to_volume(mass[i])
+
+        self.volume_of_mass = volume_of_mass
+
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def mass_of_volume(mass, volume):
+            for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
+                mass[i] = phys_volume_to_mass(volume[i])
+
+        self.mass_of_volume = mass_of_volume
+
     def temperature_pressure_RH(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
     ):
@@ -119,3 +135,9 @@ class PhysicsMethods(BackendMethods):
             water_vapour_mixing_ratio_in=water_vapour_mixing_ratio.data,
             a_w_ice_out=a_w_ice.data,
         )
+
+    def volume_of_water_mass(self, volume, water_mass):
+        self.volume_of_mass(volume.data, water_mass.data)
+
+    def mass_of_water_volume(self, mass, water_volume):
+        self.mass_of_volume(mass.data, water_volume.data)
