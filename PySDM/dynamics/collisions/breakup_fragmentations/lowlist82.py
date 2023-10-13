@@ -1,5 +1,5 @@
 """
-See Low & List 1982
+See [Low & List 1982](https://doi.org/10.1175/1520-0469(1982)039<1607:CCABOR>2.0.CO;2)
 """
 
 
