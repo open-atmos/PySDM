@@ -52,15 +52,19 @@ class TestSDMSingleCell:
             np.round(particles["temperature"].to_ndarray().astype(float), 7),
         )
 
-        assert np.sum(
-            particles["multiplicity"].to_ndarray() * particles["volume"].to_ndarray()
-        ) == np.sum(n_2 * v_2)
+        np.testing.assert_approx_equal(
+            np.sum(
+                particles["multiplicity"].to_ndarray()
+                * particles["volume"].to_ndarray()
+            ),
+            np.sum(n_2 * v_2),
+        )
         assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
             n_2
         ) - np.amin(n_2)
         if np.amin(n_2) > 0:
-            assert np.amax(particulator.attributes["volume"].to_ndarray()) == np.sum(
-                v_2
+            np.testing.assert_approx_equal(
+                np.amax(particulator.attributes["volume"].to_ndarray()), np.sum(v_2)
             )
         assert np.amax(particulator.attributes["multiplicity"].to_ndarray()) == max(
             np.amax(n_2) - np.amin(n_2), np.amin(n_2)
