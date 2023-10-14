@@ -27,4 +27,4 @@ class MixedPhaseSpheres:
 
     @staticmethod
     def radius_to_mass(const, radius):
-        raise NotImplemented()
+        raise NotImplementedError()
