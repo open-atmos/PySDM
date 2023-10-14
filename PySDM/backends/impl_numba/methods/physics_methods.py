@@ -136,8 +136,8 @@ class PhysicsMethods(BackendMethods):
             a_w_ice_out=a_w_ice.data,
         )
 
-    def volume_of_water_mass(self, volume, water_mass):
-        self.volume_of_mass(volume.data, water_mass.data)
+    def volume_of_water_mass(self, volume, mass):
+        self.volume_of_mass(volume.data, mass.data)
 
-    def mass_of_water_volume(self, mass, water_volume):
-        self.mass_of_volume(mass.data, water_volume.data)
+    def mass_of_water_volume(self, mass, volume):
+        self.mass_of_volume(mass.data, volume.data)

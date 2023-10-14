@@ -16,7 +16,7 @@ from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
     discretise_multiplicities,
 )
 from PySDM.particulator import Particulator
-from PySDM.physics.particle_shape_and_density import LiquidSphere
+from PySDM.physics.particle_shape_and_density import LiquidSpheres
 
 
 class Builder:
@@ -91,7 +91,7 @@ class Builder:
         if "volume" in attributes and "water mass" not in attributes:
             assert (
                 self.particulator.formulae.particle_shape_and_density.__name__
-                == LiquidSphere.__name__
+                == LiquidSpheres.__name__
             ), "only liquid spheres are supported"
             attributes[
                 "water mass"

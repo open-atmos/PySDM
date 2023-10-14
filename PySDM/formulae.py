@@ -42,7 +42,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
-        particle_shape_and_density: str = "LiquidSphere",
+        particle_shape_and_density: str = "LiquidSpheres",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints

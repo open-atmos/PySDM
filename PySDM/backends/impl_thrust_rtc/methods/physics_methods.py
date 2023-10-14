@@ -107,7 +107,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             param_names=("mass", "volume"),
             name_iter="i",
             body=f"""
-            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(mass="volume[i]")};
+            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume="volume[i]")};
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -161,12 +161,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         dy_dt = self._get_floating_point(dy_dt)
         self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
 
-    def volume_of_water_mass(self, volume, water_mass):
-        self.__volume_of_mass_body.launch_n(
-            volume.shape[0], (volume.data, water_mass.data)
-        )
+    def volume_of_water_mass(self, volume, mass):
+        self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))
 
-    def mass_of_water_volume(self, mass, water_volume):
-        self.__mass_of_volume_body.launch_n(
-            mass.shape[0], (mass.data, water_volume.data)
-        )
+    def mass_of_water_volume(self, mass, volume):
+        self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))

@@ -4,17 +4,17 @@ spherical particles with constant density of water
 import numpy as np
 
 
-class LiquidSphere:
+class LiquidSpheres:
     def __init__(self, _):
         pass
 
     @staticmethod
-    def mass_to_volume(const, mass):
-        return mass / const.rho_w
+    def supports_mixed_phase(_):
+        return False
 
     @staticmethod
-    def mass_to_surface(const, mass):
-        pass
+    def mass_to_volume(const, mass):
+        return mass / const.rho_w
 
     @staticmethod
     def volume_to_mass(const, volume):
