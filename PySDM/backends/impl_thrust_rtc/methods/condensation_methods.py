@@ -38,12 +38,11 @@ class CondensationMethods(
 
     @cached_property
     def __calculate_m_l(self):
-        const = self.formulae.constants
         return trtc.For(
-            ("ml", "v", "multiplicity", "cell_id"),
+            ("ml", "water_mass", "multiplicity", "cell_id"),
             "i",
             f"""
-            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * v[i] * {const.rho_w});
+            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * water_mass[i]);
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -66,12 +65,11 @@ class CondensationMethods(
         self.vars_data: Optional[Dict] = None
 
     @cached_property
-    def __update_volume(self):
+    def __update_drop_masses(self):
         phys = self.formulae
         const = phys.constants
         return trtc.For(
             (
-                "v",
                 "water_mass",
                 "vdry",
                 *CondensationMethods.keys,
@@ -128,12 +126,13 @@ class CondensationMethods(
             auto _lambdaK = lambdaK[cell_id[i]];
             auto _lambdaD = lambdaD[cell_id[i]];
 
-            auto x_old = {phys.condensation_coordinate.x.c_inline(volume="v[i]")};
-            auto r_old = {phys.trivia.radius.c_inline(volume="v[i]")};
+            auto v_old = {phys.particle_shape_and_density.mass_to_volume.c_inline(mass="water_mass[i]")};
+            auto x_old = {phys.condensation_coordinate.x.c_inline(volume="v_old")};
+            auto r_old = {phys.trivia.radius.c_inline(volume="v_old")};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume="vdry[i]/100")};
             auto rd3 = vdry[i] / {const.PI_4_3};
             auto sgm = {phys.surface_tension.sigma.c_inline(
-                T="_T", v_wet="v[i]", v_dry="vdry[i]", f_org="_f_org[i]"
+                T="_T", v_wet="v", v_dry="vdry[i]", f_org="_f_org[i]"
             )};
             auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(
                 r="r_old", T="_T", kp="_kappa[i]", rd3="rd3", sgm="sgm"
@@ -212,8 +211,8 @@ class CondensationMethods(
                     x_new = x_old;
                 }}
             }}
-            v[i] = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
-            water_mass[i] = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
+            auto v_new = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
+            water_mass[i] = {phys.particle_shape_and_density.volume_to_mass.c_inline(volume="v_new")};
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -341,10 +340,11 @@ class CondensationMethods(
             ),
         )
 
-    def calculate_m_l(self, ml, v, multiplicity, cell_id):
+    def calculate_m_l(self, ml, water_mass, multiplicity, cell_id):
         ml[:] = 0
         self.__calculate_m_l.launch_n(
-            len(multiplicity), (ml.data, v.data, multiplicity.data, cell_id.data)
+            len(multiplicity),
+            (ml.data, water_mass.data, multiplicity.data, cell_id.data),
         )
 
     # pylint: disable=unused-argument,too-many-locals
@@ -355,7 +355,6 @@ class CondensationMethods(
         solver,
         n_cell,
         cell_start_arg,
-        v,
         water_mass,
         v_cr,
         multiplicity,
@@ -409,7 +408,7 @@ class CondensationMethods(
             ),
         )
         timestep /= n_substeps
-        self.calculate_m_l(self.ml_old, v, multiplicity, cell_id)
+        self.calculate_m_l(self.ml_old, water_mass, multiplicity, cell_id)
 
         for _ in range(n_substeps):
             self.__pre.launch_n(
@@ -426,10 +425,9 @@ class CondensationMethods(
                     RH_max.data,
                 ),
             )
-            self.__update_volume.launch_n(
+            self.__update_drop_masses.launch_n(
                 len(multiplicity),
                 (
-                    v.data,
                     water_mass.data,
                     vdry.data,
                     *self.vars_data.values(),
@@ -442,7 +440,7 @@ class CondensationMethods(
                     cell_id.data,
                 ),
             )
-            self.calculate_m_l(self.ml_new, v, multiplicity, cell_id)
+            self.calculate_m_l(self.ml_new, water_mass, multiplicity, cell_id)
             self.__post.launch_n(
                 n_cell,
                 (

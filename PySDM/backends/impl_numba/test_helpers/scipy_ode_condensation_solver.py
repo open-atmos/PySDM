@@ -70,8 +70,9 @@ def _condensation(
 @lru_cache()
 def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-locals
     x = formulae.condensation_coordinate.x
-    mass_of_x = formulae.condensation_coordinate.mass
     volume_of_x = formulae.condensation_coordinate.volume
+    volume_to_mass = formulae.particle_shape_and_density.volume_to_mass
+    mass_to_volume = formulae.particle_shape_and_density.mass_to_volume
     dx_dt = formulae.condensation_coordinate.dx_dt
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv = formulae.latent_heat.lv
@@ -92,7 +93,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _liquid_water_mixing_ratio(n, x, m_d_mean):
-        return np.sum(n * mass_of_x(x)) / m_d_mean
+        return np.sum(n * volume_to_mass(volume_of_x(x))) / m_d_mean
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _impl(  # pylint: disable=too-many-arguments,too-many-locals
@@ -137,7 +138,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             )
         d_water_vapour_mixing_ratio__dt = (
             dot_water_vapour_mixing_ratio
-            - np.sum(n * mass_of_x(x) * dy_dt[idx_x:]) / m_d_mean
+            - np.sum(n * volume_to_mass(volume_of_x(x)) * dy_dt[idx_x:]) / m_d_mean
         )
         dy_dt[idx_thd] = dot_thd + phys_dthd_dt(
             rhod, thd, T, d_water_vapour_mixing_ratio__dt, lv
@@ -195,7 +196,6 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         return dy_dt
 
     def solve(  # pylint: disable=too-many-arguments,too-many-locals
-        _,
         water_mass,
         __,
         multiplicity,
@@ -258,7 +258,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 
         m_new = 0
         for i in range(n_sd_in_cell):
-            water_mass[cell_idx[i]] = mass_of_x(y1[idx_x + i])
+            water_mass[cell_idx[i]] = volume_to_mass(volume_of_x(y1[idx_x + i]))
             m_new += multiplicity[cell_idx[i]] * water_mass[cell_idx[i]]
 
         return (

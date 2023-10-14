@@ -21,7 +21,6 @@ class CondensationMethods(BackendMethods):
         solver,
         n_cell,
         cell_start_arg,
-        v,
         water_mass,
         v_cr,
         multiplicity,
@@ -51,7 +50,6 @@ class CondensationMethods(BackendMethods):
             n_threads=n_threads,
             n_cell=n_cell,
             cell_start_arg=cell_start_arg.data,
-            v=v.data,
             water_mass=water_mass.data,
             v_cr=v_cr.data,
             multiplicity=multiplicity.data,
@@ -86,7 +84,6 @@ class CondensationMethods(BackendMethods):
         n_threads,
         n_cell,
         cell_start_arg,
-        v,
         water_mass,
         v_cr,
         multiplicity,
@@ -141,7 +138,6 @@ class CondensationMethods(BackendMethods):
                     n_ripening,
                     RH_max_in_cell,
                 ) = solver(
-                    v,
                     water_mass,
                     v_cr,
                     multiplicity,
@@ -261,7 +257,6 @@ class CondensationMethods(BackendMethods):
     ):
         @numba.njit(**jit_flags)
         def step_impl(  # pylint: disable=too-many-arguments,too-many-locals
-            v,
             water_mass,
             v_cr,
             multiplicity,
@@ -685,7 +680,6 @@ class CondensationMethods(BackendMethods):
 
         @numba.njit(**jit_flags)
         def solve(  # pylint: disable=too-many-arguments
-            v,
             water_mass,
             v_cr,
             multiplicity,
@@ -706,7 +700,6 @@ class CondensationMethods(BackendMethods):
             n_substeps,
         ):
             args = (
-                v,
                 water_mass,
                 v_cr,
                 multiplicity,

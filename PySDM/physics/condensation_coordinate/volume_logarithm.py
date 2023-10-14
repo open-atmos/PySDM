@@ -24,7 +24,3 @@ class VolumeLogarithm:
     @staticmethod
     def x(volume):
         return np.log(volume)
-
-    @staticmethod
-    def mass(const, x):
-        return const.rho_w * np.exp(x)
