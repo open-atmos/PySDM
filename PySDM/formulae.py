@@ -210,6 +210,8 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     source = source.replace("np.power(", "np.pow(")
     source = source.replace("np.arctanh(", "atanh(")
     source = source.replace("np.arcsinh(", "asinh(")
+    source = source.replace("np.minimum(", "min(")
+    source = source.replace("np.maximum(", "max(")
     for pkg in ("np", "math"):
         source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")
