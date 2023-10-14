@@ -11,7 +11,7 @@ import scipy.integrate
 
 from PySDM.backends import Numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
-from PySDM.physics.constants_defaults import PI_4_3, T0, rho_w
+from PySDM.physics.constants_defaults import PI_4_3, T0
 
 idx_thd = 0
 idx_x = 1
@@ -72,6 +72,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
     x = formulae.condensation_coordinate.x
     volume_of_x = formulae.condensation_coordinate.volume
     volume_to_mass = formulae.particle_shape_and_density.volume_to_mass
+    mass_to_volume = formulae.particle_shape_and_density.mass_to_volume
     dx_dt = formulae.condensation_coordinate.dx_dt
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv = formulae.latent_heat.lv
@@ -217,7 +218,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         n_sd_in_cell = len(cell_idx)
         y0 = np.empty(n_sd_in_cell + idx_x)
         y0[idx_thd] = thd
-        y0[idx_x:] = x(water_mass[cell_idx] / rho_w)
+        y0[idx_x:] = x(mass_to_volume(water_mass[cell_idx]))
         total_water_mixing_ratio = (
             water_vapour_mixing_ratio
             + _liquid_water_mixing_ratio(multiplicity[cell_idx], y0[idx_x:], m_d_mean)
