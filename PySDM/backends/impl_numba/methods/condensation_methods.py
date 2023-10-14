@@ -282,7 +282,7 @@ class CondensationMethods(BackendMethods):
             fake,
         ):
             timestep /= n_substeps
-            ml_old = calculate_ml_old(v, multiplicity, cell_idx)
+            ml_old = calculate_ml_old(water_mass, multiplicity, cell_idx)
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
             success = True
@@ -314,7 +314,6 @@ class CondensationMethods(BackendMethods):
                     T,
                     p,
                     RH,
-                    v,
                     water_mass,
                     v_cr,
                     multiplicity,
@@ -363,13 +362,13 @@ class CondensationMethods(BackendMethods):
         return step_impl
 
     @staticmethod
-    def make_calculate_ml_old(jit_flags, const):
+    def make_calculate_ml_old(jit_flags):
         @numba.njit(**jit_flags)
-        def calculate_ml_old(volume, multiplicity, cell_idx):
+        def calculate_ml_old(water_mass, multiplicity, cell_idx):
             result = 0
             for drop in cell_idx:
-                if volume[drop] > 0:
-                    result += multiplicity[drop] * volume[drop] * const.rho_w
+                if water_mass[drop] > 0:
+                    result += multiplicity[drop] * water_mass[drop]
             return result
 
         return calculate_ml_old
@@ -389,6 +388,8 @@ class CondensationMethods(BackendMethods):
         phys_lambdaD,
         phys_dk_D,
         phys_dk_K,
+        volume_to_mass,
+        mass_to_volume,
         within_tolerance,
         max_iters,
         RH_rtol,
@@ -416,7 +417,6 @@ class CondensationMethods(BackendMethods):
             T,
             p,
             RH,
-            v,
             water_mass,
             v_cr,
             multiplicity,
@@ -438,7 +438,7 @@ class CondensationMethods(BackendMethods):
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
-                v_drop = v[drop]  # TODO #798 / const.rho_w
+                v_drop = mass_to_volume(water_mass[drop])
                 if v_drop < 0:
                     continue
                 x_old = x(v_drop)
@@ -531,17 +531,17 @@ class CondensationMethods(BackendMethods):
                     else:
                         x_new = x_old
 
-                v_new = volume_of_x(x_new)
-                result += multiplicity[drop] * v_new * const.rho_w
+                mass_new = volume_to_mass(volume_of_x(x_new))
+                mass_cr = volume_to_mass(v_cr[drop])
+                result += multiplicity[drop] * mass_new
                 if not fake:
-                    if v_new > v_cr[drop] and v_new > v_drop:
+                    if mass_new > mass_cr and mass_new > water_mass[drop]:
                         n_activated_and_growing += multiplicity[drop]
-                    if v_new > v_cr[drop] > v_drop:
+                    if mass_new > mass_cr > water_mass[drop]:
                         n_activating += multiplicity[drop]
-                    if v_new < v_cr[drop] < v_drop:
+                    if mass_new < mass_cr < water_mass[drop]:
                         n_deactivating += multiplicity[drop]
-                    water_mass[drop] = v_new * const.rho_w
-                    v[drop] = v_new
+                    water_mass[drop] = mass_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
             return result, success, n_activating, n_deactivating, n_ripening
 
@@ -582,6 +582,8 @@ class CondensationMethods(BackendMethods):
             dx_dt=self.formulae.condensation_coordinate.dx_dt,
             volume=self.formulae.condensation_coordinate.volume,
             x=self.formulae.condensation_coordinate.x,
+            mass_to_volume=self.formulae.particle_shape_and_density.mass_to_volume,
+            volume_to_mass=self.formulae.particle_shape_and_density.volume_to_mass,
             timestep=timestep,
             dt_range=dt_range,
             adaptive=adaptive,
@@ -617,6 +619,8 @@ class CondensationMethods(BackendMethods):
         dx_dt,
         volume,
         x,
+        volume_to_mass,
+        mass_to_volume,
         timestep,
         dt_range,
         adaptive,
@@ -632,7 +636,7 @@ class CondensationMethods(BackendMethods):
             **{"parallel": False, "cache": False, "fastmath": fastmath},
         }
 
-        calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags, const)
+        calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(
             jit_flags=jit_flags,
             dx_dt=dx_dt,
@@ -646,6 +650,8 @@ class CondensationMethods(BackendMethods):
             phys_lambdaD=phys_lambdaD,
             phys_dk_D=phys_dk_D,
             phys_dk_K=phys_dk_K,
+            volume_to_mass=volume_to_mass,
+            mass_to_volume=mass_to_volume,
             within_tolerance=within_tolerance,
             max_iters=max_iters,
             RH_rtol=RH_rtol,
