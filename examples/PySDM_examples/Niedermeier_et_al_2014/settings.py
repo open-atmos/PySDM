@@ -23,7 +23,7 @@ class Settings:
 
         self.timestep = timestep
         self.initial_temperature = initial_temperature
-        self.formulae = formulae or Formulae()
+        self.formulae = formulae or Formulae(particle_shape_and_density='MixedPhaseSpheres')
 
         self.initial_relative_humidity = 0.985
         self.vertical_velocity = 20 * si.cm / si.s
