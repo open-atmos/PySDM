@@ -72,7 +72,6 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
     x = formulae.condensation_coordinate.x
     volume_of_x = formulae.condensation_coordinate.volume
     volume_to_mass = formulae.particle_shape_and_density.volume_to_mass
-    mass_to_volume = formulae.particle_shape_and_density.mass_to_volume
     dx_dt = formulae.condensation_coordinate.dx_dt
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv = formulae.latent_heat.lv

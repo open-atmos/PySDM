@@ -16,7 +16,7 @@ from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
     discretise_multiplicities,
 )
 from PySDM.particulator import Particulator
-from PySDM.physics.particle_shape_and_density import LiquidSpheres
+from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
 
 
 class Builder:
@@ -89,10 +89,10 @@ class Builder:
             )
 
         if "volume" in attributes and "water mass" not in attributes:
-            assert (
-                self.particulator.formulae.particle_shape_and_density.__name__
-                == LiquidSpheres.__name__
-            ), "only liquid spheres are supported"
+            assert self.particulator.formulae.particle_shape_and_density.__name__ in (
+                LiquidSpheres.__name__,
+                MixedPhaseSpheres.__name__,
+            ), "implied volume-to-mass conversion is only supported for spherical particles"
             attributes[
                 "water mass"
             ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(

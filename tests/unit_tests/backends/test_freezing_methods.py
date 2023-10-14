@@ -26,7 +26,7 @@ class TestFreezingMethods:
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
-        formulae = Formulae()
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         builder = Builder(n_sd=1, backend=backend_class(formulae=formulae))
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder.set_environment(env)
@@ -71,7 +71,7 @@ class TestFreezingMethods:
         multiplicity = 1e10
         steps = 1
 
-        formulae = Formulae()
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
         env = Box(dt=dt, dv=dv)
         builder.set_environment(env)
@@ -136,6 +136,7 @@ class TestFreezingMethods:
         output = {}
 
         formulae = Formulae(
+            particle_shape_and_density="MixedPhaseSpheres",
             heterogeneous_ice_nucleation_rate="Constant",
             constants={"J_HET": rate / immersed_surface_area},
             seed=seed,

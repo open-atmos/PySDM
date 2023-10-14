@@ -9,7 +9,7 @@ class LiquidSpheres:
         pass
 
     @staticmethod
-    def supports_mixed_phase(_):
+    def supports_mixed_phase(_=None):
         return False
 
     @staticmethod

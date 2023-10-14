@@ -1,6 +1,7 @@
 """
 spherical particles with constant density of water or ice
 """
+import numpy as np
 
 
 class MixedPhaseSpheres:
@@ -8,7 +9,7 @@ class MixedPhaseSpheres:
         pass
 
     @staticmethod
-    def supports_mixed_phase(_):
+    def supports_mixed_phase(_=None):
         return True
 
     @staticmethod
@@ -21,8 +22,8 @@ class MixedPhaseSpheres:
     @staticmethod
     def volume_to_mass(const, volume):
         return (
-            max(const.ZERO_VOLUME, volume) * const.rho_w
-            + min(const.ZERO_VOLUME, volume) * const.rho_i
+            np.maximum(const.ZERO_VOLUME, volume) * const.rho_w
+            + np.minimum(const.ZERO_VOLUME, volume) * const.rho_i
         )
 
     @staticmethod

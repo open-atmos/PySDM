@@ -34,6 +34,7 @@ def make_particulator(
         "constants": constants,
         "freezing_temperature_spectrum": shima_T_fz,
         "heterogeneous_ice_nucleation_rate": "ABIFM",
+        "particle_shape_and_density": "MixedPhaseSpheres",
     }
     formulae = Formulae(**formulae_ctor_args)
     backend = CPU(formulae)
