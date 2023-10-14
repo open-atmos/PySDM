@@ -460,9 +460,9 @@ class CollisionsMethods(BackendMethods):
                     len(frag_volume)
                 ):
                     if dl[i] <= 0.4e-3:
-                        frag_volume[i] = const.rho_w * dcoal[i] ** 3 * const.PI / 6
+                        frag_volume[i] = dcoal[i] ** 3 * const.PI / 6
                     elif ds[i] == 0.0 or dl[i] == 0.0:
-                        frag_volume[i] = const.rho_w * 1e-18
+                        frag_volume[i] = 1e-18
                     else:
                         ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
                         if rand[i] <= Rf[i]:  # filament breakup
