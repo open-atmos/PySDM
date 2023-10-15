@@ -21,6 +21,7 @@ def test_freezing(singular):
     # Arrange
     settings = Settings(
         Formulae(
+            particle_shape_and_density='MixedPhaseSpheres',
             seed=44,
             condensation_coordinate="VolumeLogarithm",
             fastmath=True,

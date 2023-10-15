@@ -25,11 +25,11 @@ class ParticleConcentration(ConcentrationProduct):
             attr="water mass",
             rank=0,
             filter_range=(
-                self.formulae.particle_shape_and_density.radius_to_mass(
-                    self.radius_range[0]
+                self.formulae.particle_shape_and_density.volume_to_mass(
+                    self.formulae.trivia.volume(radius=self.radius_range[0])
                 ),
-                self.formulae.particle_shape_and_density.radius_to_mass(
-                    self.radius_range[1]
+                self.formulae.particle_shape_and_density.volume_to_mass(
+                    self.formulae.trivia.volume(self.radius_range[1])
                 ),
             ),
         )
