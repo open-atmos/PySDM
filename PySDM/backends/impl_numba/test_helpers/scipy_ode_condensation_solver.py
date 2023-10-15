@@ -34,7 +34,6 @@ def _condensation(
         n_threads=1,
         n_cell=particulator.mesh.n_cell,
         cell_start_arg=particulator.attributes.cell_start.data,
-        v=None,
         water_mass=particulator.attributes["water mass"].data,
         v_cr=None,
         multiplicity=particulator.attributes["multiplicity"].data,
