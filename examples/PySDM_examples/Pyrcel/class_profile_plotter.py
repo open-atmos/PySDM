@@ -1,4 +1,3 @@
-import matplotlib
 import numpy as np
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
@@ -7,7 +6,7 @@ from PySDM.physics.constants import si
 
 
 class ProfilePlotter:
-    def __init__(self, settings, title=None, legend=True, log_base=10):
+    def __init__(self, settings, legend=True, log_base=10):
         self.settings = settings
         self.format = "pdf"
         self.legend = legend
@@ -27,7 +26,7 @@ class ProfilePlotter:
         self.plot_data(self.settings, output)
 
     def plot_data(self, settings, output):
-        fig, axs = pyplot.subplots(1, 2, sharey=True, figsize=(10, 5))
+        _, axs = pyplot.subplots(1, 2, sharey=True, figsize=(10, 5))
         axS = axs[0]
         axS.plot(
             np.asarray(output["products"]["S_max"]) - 100,

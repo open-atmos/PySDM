@@ -1,6 +1,3 @@
-from distutils.version import StrictVersion
-
-import matplotlib
 import numpy as np
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot

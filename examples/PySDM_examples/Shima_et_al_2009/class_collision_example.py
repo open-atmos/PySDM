@@ -1,7 +1,3 @@
-import os
-
-import numpy as np
-
 from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
