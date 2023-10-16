@@ -1,3 +1,3 @@
 # pylint: disable=invalid-name
-from .class_condensation_settings import Settings
-from .class_condensation_simulation import Simulation
+from .condensation_settings import Settings
+from .condensation_simulation import Simulation
