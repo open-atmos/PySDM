@@ -11,7 +11,6 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub20
 from PySDM.physics import si
 
 R_MIN = 0.1 * si.um
-VMIN = 4 / 3 * np.pi * R_MIN**3
 EC_VALS = [1.0, 0.9, 0.8]
 BINS = 32
 N_SD = 2**10

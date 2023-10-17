@@ -3,8 +3,8 @@ from typing import Optional
 import numpy as np
 from pystrict import strict
 
+from PySDM.dynamics.collisions import breakup_fragmentations
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import Exponential
 from PySDM.dynamics.collisions.coalescence_efficiencies import Berry1967
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.formulae import Formulae
@@ -37,7 +37,9 @@ class Settings0D:
         self._steps = [0]
         self.kernel = Geometric()
         self.coal_eff = Berry1967()
-        self.fragmentation = fragmentation or Exponential(scale=self.frag_scale)
+        self.fragmentation = fragmentation or breakup_fragmentations.Exponential(
+            scale=self.frag_scale
+        )
         self.vmin = 0.0
         self.break_eff = ConstEb(1.0)  # no "bouncing"
         self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)

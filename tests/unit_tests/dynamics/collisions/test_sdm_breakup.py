@@ -7,8 +7,9 @@ from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup
+from PySDM.dynamics.collisions import breakup_fragmentations
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponential
+from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision import DEFAULTS, Collision
 from PySDM.dynamics.collisions.collision_kernels import ConstantK, Geometric
@@ -801,7 +802,7 @@ class TestSDMBreakup:
         ).sample(n_sd)
 
         mu = Trivia.volume(const, radius=100 * si.um)
-        fragmentation = Exponential(scale=mu)
+        fragmentation = breakup_fragmentations.Exponential(scale=mu)
         kernel = Geometric()
         coal_eff = ConstEc(Ec=0.01)
         break_eff = ConstEb(Eb=1.0)
