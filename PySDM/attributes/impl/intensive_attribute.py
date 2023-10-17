@@ -12,5 +12,4 @@ class IntensiveAttribute(DerivedAttribute):
         super().__init__(builder, name, dependencies=(self.volume, self.base))
 
     def recalculate(self):
-        self.data.idx = self.volume.data.idx
         self.data.ratio(self.base.get(), self.volume.get())

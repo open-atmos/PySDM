@@ -11,12 +11,11 @@ from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
 from PySDM.physics import si
 
 
-# pylint: disable=redefined-outer-name
 @pytest.mark.parametrize(
     "backend_class",
     (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
 )
-def test_fig_5(backend_class, plot=False):
+def test_fig_8(backend_class, plot=False):
     # arrange
     settings = Settings0D(
         fragmentation=Straub2010Nf(vmin=Settings0D.X0 * 1e-3, nfmax=10),

@@ -11,6 +11,7 @@ from PySDM.physics import si
 def test_temperature_profile(initial_temperature, plot=False):
     # arrange
     formulae = Formulae(
+        particle_shape_and_density="MixedPhaseSpheres",
         heterogeneous_ice_nucleation_rate="ABIFM",
         constants={"ABIFM_M": 54.48, "ABIFM_C": -10.67},
     )

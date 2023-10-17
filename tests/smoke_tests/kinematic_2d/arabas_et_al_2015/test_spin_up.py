@@ -39,15 +39,15 @@ def test_spin_up(backend_class, fastmath, plot=False):
     if plot:
         levels = np.arange(settings.grid[1])
         for step, datum in enumerate(storage.profiles):
-            pyplot.plot(datum["qv_env"], levels, label=str(step))
+            pyplot.plot(datum["water_vapour_mixing_ratio_env"], levels, label=str(step))
         pyplot.legend()
         pyplot.show()
 
     # Assert
     step_num = len(storage.profiles) - 1
     for step in range(step_num):
-        next_profile = storage.profiles[step + 1]["qv_env"]
-        prev_profile = storage.profiles[step]["qv_env"]
+        next_profile = storage.profiles[step + 1]["water_vapour_mixing_ratio_env"]
+        prev_profile = storage.profiles[step]["water_vapour_mixing_ratio_env"]
         eps = 1e-3
         assert ((prev_profile + eps) >= next_profile).all()
-    assert storage.profiles[step_num]["qv_env"][-1] < 7.1
+    assert storage.profiles[step_num]["water_vapour_mixing_ratio_env"][-1] < 7.1

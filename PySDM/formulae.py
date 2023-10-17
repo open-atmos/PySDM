@@ -36,7 +36,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         diffusion_kinetics: str = "FuchsSutugin",
         diffusion_thermics: str = "Neglect",
         ventilation: str = "Neglect",
-        state_variable_triplet: str = "RhodThdQv",
+        state_variable_triplet: str = "LibcloudphPlusPlus",
         particle_advection: str = "ImplicitInSpace",
         hydrostatics: str = "Default",
         freezing_temperature_spectrum: str = "Null",
@@ -44,6 +44,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_meteoric_water_line_excess: str = "Null",
+        particle_shape_and_density: str = "LiquidSpheres",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -67,6 +68,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             isotope_equilibrium_fractionation_factors
         )
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
+        self.particle_shape_and_density = particle_shape_and_density
         components = tuple(i for i in dir(self) if not i.startswith("__"))
 
         constants_defaults = {
@@ -129,7 +131,9 @@ def _formula(func, constants, dimensional_analysis, **kw):
             return partial(func, constants)
         return func
 
-    source = "class _:\n" + "\n".join(inspect.getsourcelines(func)[0])
+    source = "class _:\n" + "".join(inspect.getsourcelines(func)[0])
+    source = re.sub(r"\(\n\s+", "(", source)
+    source = re.sub(r"\n\s+\):", "):", source)
     loc = {}
     for arg_name in special_params:
         source = source.replace(
@@ -210,6 +214,10 @@ def _c_inline(fun, return_type=None, constants=None, **args):
             stripped += " "
         source += stripped
     source = source.replace("np.power(", "np.pow(")
+    source = source.replace("np.arctanh(", "atanh(")
+    source = source.replace("np.arcsinh(", "asinh(")
+    source = source.replace("np.minimum(", "min(")
+    source = source.replace("np.maximum(", "max(")
     for pkg in ("np", "math"):
         source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")

@@ -33,11 +33,13 @@ def run_box_breakup(
     env["rhod"] = 1.0
     attributes = {}
     if sample_in_radius:
-        diams, attributes["n"] = Logarithmic(settings.spectrum).sample(settings.n_sd)
+        diams, attributes["multiplicity"] = Logarithmic(settings.spectrum).sample(
+            settings.n_sd
+        )
         radii = diams / 2
         attributes["volume"] = Formulae().trivia.volume(radius=radii)
     else:
-        attributes["volume"], attributes["n"] = ConstantMultiplicity(
+        attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             settings.spectrum
         ).sample(settings.n_sd)
     breakup = Collision(
@@ -92,7 +94,7 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     builder.set_environment(env)
     env["rhod"] = 1.0
     attributes = {}
-    attributes["volume"], attributes["n"] = ConstantMultiplicity(
+    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
     ).sample(settings.n_sd)
     coal = Coalescence(

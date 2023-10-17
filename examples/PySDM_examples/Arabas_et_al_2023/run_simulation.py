@@ -26,7 +26,7 @@ def run_simulation(particulator, temperature_profile, n_steps):
         else:
             output["spectrum"] = {}
             output["frozen"] = [np.full(particulator.n_sd, False)]
-            for k in ("n", "freezing temperature", "immersed surface area"):
+            for k in ("multiplicity", "freezing temperature", "immersed surface area"):
                 if k in particulator.attributes:
                     output["spectrum"][k] = particulator.attributes[k].to_ndarray()
         for k, v in particulator.products.items():

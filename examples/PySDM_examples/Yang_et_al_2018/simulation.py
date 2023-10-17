@@ -1,8 +1,11 @@
+import numpy as np
+
 import PySDM.products as PySDM_products
 from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
+from PySDM.physics import si
 
 
 class Simulation:
@@ -24,7 +27,7 @@ class Simulation:
                 dt=dt_output / self.n_substeps,
                 mass_of_dry_air=settings.mass_of_dry_air,
                 p0=settings.p0,
-                q0=settings.q0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
                 T0=settings.T0,
                 w=settings.w,
                 z0=settings.z0,
@@ -49,6 +52,12 @@ class Simulation:
             PySDM_products.CondensationTimestepMin(name="dt_cond_min"),
             PySDM_products.CondensationTimestepMax(name="dt_cond_max"),
             PySDM_products.RipeningRate(),
+            PySDM_products.MeanRadius(
+                name="r_mean_gt_1_um", radius_range=(1 * si.um, np.inf)
+            ),
+            PySDM_products.ActivatedMeanRadius(
+                name="r_act", count_activated=True, count_unactivated=False
+            ),
         ]
 
         attributes = environment.init_attributes(
@@ -68,28 +77,34 @@ class Simulation:
         volume = _sp.attributes["volume"].to_ndarray()
         output["r"].append(self.formulae.trivia.radius(volume=volume))
         output["S"].append(_sp.environment["RH"][cell_id] - 1)
-        output["qv"].append(_sp.environment["qv"][cell_id])
-        output["T"].append(_sp.environment["T"][cell_id])
-        output["z"].append(_sp.environment["z"][cell_id])
-        output["t"].append(_sp.environment["t"][cell_id])
-        output["dt_cond_max"].append(_sp.products["dt_cond_max"].get()[cell_id].copy())
-        output["dt_cond_min"].append(_sp.products["dt_cond_min"].get()[cell_id].copy())
-        output["ripening rate"].append(
-            _sp.products["ripening rate"].get()[cell_id].copy()
-        )
+        for key in ("water_vapour_mixing_ratio", "T", "z", "t"):
+            output[key].append(_sp.environment[key][cell_id])
+        for key in (
+            "dt_cond_max",
+            "dt_cond_min",
+            "ripening rate",
+            "r_mean_gt_1_um",
+            "r_act",
+        ):
+            output[key].append(_sp.products[key].get()[cell_id].copy())
 
     def run(self):
         output = {
-            "r": [],
-            "S": [],
-            "z": [],
-            "t": [],
-            "qv": [],
-            "T": [],
-            "r_bins_values": [],
-            "dt_cond_max": [],
-            "dt_cond_min": [],
-            "ripening rate": [],
+            key: []
+            for key in (
+                "r",
+                "S",
+                "z",
+                "t",
+                "water_vapour_mixing_ratio",
+                "T",
+                "r_bins_values",
+                "dt_cond_max",
+                "dt_cond_min",
+                "ripening rate",
+                "r_mean_gt_1_um",
+                "r_act",
+            )
         }
 
         self.save(output)

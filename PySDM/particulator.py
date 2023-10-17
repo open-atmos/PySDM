@@ -94,7 +94,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             # input
             rhod=self.environment.get_predicted("rhod"),
             thd=self.environment.get_predicted("thd"),
-            qv=self.environment.get_predicted("qv"),
+            water_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
             # output
             T=self.environment.get_predicted("T"),
             p=self.environment.get_predicted("p"),
@@ -105,26 +107,30 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         """Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
-          the dry-air density (theta and qv should not be changed by other dynamics).
+          the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+          by other dynamics).
         In the case of prescribed-flow/kinematic environments, the dry-air density is
           constant in time throughout the simulation.
-        This function should only change environment's `thd` and `qv` (and not `rhod`).
+        This function should only change environment's predicted `thd` and
+          `water_vapour_mixing_ratio` (and not `rhod`).
         """
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            v=self.attributes["volume"],
-            n=self.attributes["n"],
+            water_mass=self.attributes["water mass"],
+            multiplicity=self.attributes["multiplicity"],
             vdry=self.attributes["dry volume"],
             idx=self.attributes._ParticleAttributes__idx,
             rhod=self.environment["rhod"],
             thd=self.environment["thd"],
-            qv=self.environment["qv"],
+            water_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
             dv=self.environment.dv,
             prhod=self.environment.get_predicted("rhod"),
             pthd=self.environment.get_predicted("thd"),
-            pqv=self.environment.get_predicted("qv"),
+            predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
             kappa=self.attributes["kappa"],
             f_org=self.attributes["dry volume organic fraction"],
             rtol_x=rtol_x,
@@ -137,7 +143,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes["cell id"],
         )
-        self.attributes.mark_updated("volume")
+        self.attributes.mark_updated("water mass")
 
     def collision_coalescence_breakup(
         self,
@@ -147,7 +153,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         coalescence_rate,
         breakup_rate,
         breakup_rate_deficit,
@@ -159,7 +165,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         idx = self.attributes._ParticleAttributes__idx
         healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes["cell id"]
-        multiplicity = self.attributes["n"]
+        multiplicity = self.attributes["multiplicity"]
         attributes = self.attributes.get_extensive_attribute_storage()
         if enable_breakup:
             self.backend.collision_coalescence_breakup(
@@ -170,7 +176,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 rand=rand,
                 Ec=Ec,
                 Eb=Eb,
-                fragment_size=fragment_size,
+                fragment_mass=fragment_mass,
                 healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
@@ -178,7 +184,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
-                volume=self.attributes["volume"],
+                particle_mass=self.attributes["water mass"],
                 max_multiplicity=max_multiplicity,
             )
         else:
@@ -196,7 +202,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
-        self.attributes.mark_updated("n")
+        self.attributes.mark_updated("multiplicity")
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
@@ -261,7 +267,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             timestep=timestep,
             dv=self.mesh.dv,
             droplet_volume=self.attributes["volume"],
-            multiplicity=self.attributes["n"],
+            multiplicity=self.attributes["multiplicity"],
             system_type=system_type,
             dissociation_factors=dissociation_factors,
         )
@@ -306,9 +312,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name="volume",
+        attr_name="water mass",
         attr_range=(-np.inf, np.inf),
-        weighting_attribute="volume",
+        weighting_attribute="water mass",
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
@@ -341,7 +347,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.backend.moments(
             moment_0=moment_0,
             moments=moments,
-            multiplicity=self.attributes["n"],
+            multiplicity=self.attributes["multiplicity"],
             attr_data=attr_data,
             cell_id=self.attributes["cell id"],
             idx=self.attributes._ParticleAttributes__idx,
@@ -363,15 +369,15 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         attr,
         rank,
         attr_bins,
-        attr_name="volume",
-        weighting_attribute="volume",
+        attr_name="water mass",
+        weighting_attribute="water mass",
         weighting_rank=0,
     ):
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
             moment_0=moment_0,
             moments=moments,
-            multiplicity=self.attributes["n"],
+            multiplicity=self.attributes["multiplicity"],
             attr_data=attr_data,
             cell_id=self.attributes["cell id"],
             idx=self.attributes._ParticleAttributes__idx,
@@ -393,7 +399,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             cell_origin=self.attributes["cell origin"],
             position_in_cell=self.attributes["position in cell"],
             volume=self.attributes["volume"],
-            multiplicity=self.attributes["n"],
+            multiplicity=self.attributes["multiplicity"],
             idx=self.attributes._ParticleAttributes__idx,
             length=self.attributes.super_droplet_count,
             healthy=self.attributes._ParticleAttributes__healthy_memory,

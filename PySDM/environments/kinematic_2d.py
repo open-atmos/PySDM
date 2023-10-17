@@ -79,7 +79,7 @@ class Kinematic2D(Moist):
             cell_id = attributes["cell id"]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes["n"] = n_per_kg * rhod[cell_id] * domain_volume
+        attributes["multiplicity"] = n_per_kg * rhod[cell_id] * domain_volume
         attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
@@ -89,9 +89,11 @@ class Kinematic2D(Moist):
             self.particulator.dynamics["EulerianAdvection"].solvers["th"].advectee.get()
         )
 
-    def get_qv(self):
+    def get_water_vapour_mixing_ratio(self):
         return (
-            self.particulator.dynamics["EulerianAdvection"].solvers["qv"].advectee.get()
+            self.particulator.dynamics["EulerianAdvection"]
+            .solvers["water_vapour_mixing_ratio"]
+            .advectee.get()
         )
 
     def sync(self):

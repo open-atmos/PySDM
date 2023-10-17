@@ -8,8 +8,8 @@ from PySDM.dynamics.impl.chemistry_utils import GASEOUS_COMPOUNDS
 from PySDM.physics import si
 
 
-@pytest.fixture(scope="session")
-def example_output():
+@pytest.fixture(scope="session", name="example_output")
+def example_output_fixture():
     settings = Settings(n_sd=16, dt=1 * si.s, n_substep=5)
     simulation = Simulation(settings)
     output = simulation.run()
@@ -21,11 +21,10 @@ Z_CB = 196 * si.m
 
 class TestFig1:
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_a(example_output, plot=False):
         # Plot
         if plot:
-            name = "ql"
+            name = "liquid water mixing ratio"
             pyplot.plot(
                 example_output[name], np.asarray(example_output["t"]) - Z_CB * si.s
             )
@@ -34,10 +33,9 @@ class TestFig1:
             pyplot.show()
 
         # Assert
-        assert (np.diff(example_output["ql"]) >= 0).all()
+        assert (np.diff(example_output["liquid water mixing ratio"]) >= 0).all()
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_b(example_output, plot=False):
         # Plot
         if plot:
@@ -81,7 +79,6 @@ class TestFig1:
         )
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_c(example_output, plot=False):
         if plot:
             pyplot.plot(

@@ -63,13 +63,13 @@ __x__ = {
 }
 
 
-@pytest.fixture(params=[__x__["ones_2"], __x__["random_2"]])
-def v_2(request):
+@pytest.fixture(params=[__x__["ones_2"], __x__["random_2"]], name="v_2")
+def v_2_fixture(request):
     return request.param
 
 
-@pytest.fixture(params=[__x__["ones_2"], __x__["random_2"]])
-def T_2(request):
+@pytest.fixture(params=[__x__["ones_2"], __x__["random_2"]], name="T_2")
+def T_2_fixture(request):
     return request.param
 
 
@@ -80,6 +80,6 @@ __n__ = {
 }
 
 
-@pytest.fixture(params=[__n__["1_1"], __n__["5_1"], __n__["5_3"]])
-def n_2(request):
+@pytest.fixture(params=[__n__["1_1"], __n__["5_1"], __n__["5_3"]], name="n_2")
+def n_2_fixture(request):
     return request.param

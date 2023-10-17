@@ -20,7 +20,7 @@ def generate_rand_attr_param(n_sd):
     return pytest.param(
         {
             "volume": (3 * np.random.random(n_sd) + 1) * si.mm**3,
-            "n": np.random.randint(100, 1000, n_sd),
+            "multiplicity": np.random.randint(100, 1000, n_sd),
             "relative fall momentum": (5 * np.random.random(n_sd) + 1) * 1e-6,
         },
         id=f"random(n_sd={n_sd})",
@@ -33,7 +33,7 @@ def generate_rand_attr_param(n_sd):
         pytest.param(
             {
                 "volume": np.array([si.mm**3, 2 * si.mm**3]),
-                "n": np.array([1, 1]),
+                "multiplicity": np.array([1, 1]),
                 "relative fall momentum": np.array([10e-6, 6e-6]),
             },
             id="two_droplets",
@@ -41,7 +41,7 @@ def generate_rand_attr_param(n_sd):
         pytest.param(
             {
                 "volume": np.array([si.mm**3, 2 * si.mm**3, 3 * si.mm**3]),
-                "n": np.array([2, 1, 4]),
+                "multiplicity": np.array([2, 1, 4]),
                 "relative fall momentum": np.array([10e-6, 6e-6, 4e-6]),
             },
             id="fixed(n_sd=3)",
@@ -57,12 +57,14 @@ def test_fall_velocity_calculation(default_attributes, backend_class):
     """
     Test that fall velocity is the momentum divided by the mass.
     """
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
+    builder = Builder(
+        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+    )
     builder.set_environment(Box(dt=1, dv=1))
 
     # needed to use relative fall velocity instead of terminal
     # velocity behind the scenes
-    builder.add_dynamic(RelaxedVelocity(tau=1))
+    builder.add_dynamic(RelaxedVelocity())
 
     builder.request_attribute("relative fall velocity")
 
@@ -71,11 +73,7 @@ def test_fall_velocity_calculation(default_attributes, backend_class):
     assert np.allclose(
         particulator.attributes["relative fall velocity"].to_ndarray(),
         particulator.attributes["relative fall momentum"].to_ndarray()
-        / (
-            # TODO #798 - we plan to use masses instead of volumes soon
-            particulator.formulae.constants.rho_w
-            * particulator.attributes["volume"].to_ndarray()
-        ),
+        / (particulator.attributes["water mass"].to_ndarray()),
     )
 
 
@@ -83,11 +81,13 @@ def test_conservation_of_momentum(default_attributes, backend_class):
     """
     Test that conservation of momentum holds when many super-droplets coalesce
     """
-    builder = Builder(n_sd=len(default_attributes["n"]), backend=backend_class())
+    builder = Builder(
+        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+    )
     builder.set_environment(Box(dt=1, dv=1))
 
     # add and remove relaxed velocity to prevent warning
-    builder.add_dynamic(RelaxedVelocity(tau=1))
+    builder.add_dynamic(RelaxedVelocity())
 
     builder.request_attribute("relative fall momentum")
 
@@ -100,17 +100,18 @@ def test_conservation_of_momentum(default_attributes, backend_class):
     particulator.run(2)
 
     total_initial_momentum = (
-        default_attributes["relative fall momentum"] * default_attributes["n"]
+        default_attributes["relative fall momentum"]
+        * default_attributes["multiplicity"]
     ).sum()
 
     total_final_momentum = (
         particulator.attributes["relative fall momentum"].to_ndarray()
-        * particulator.attributes["n"].to_ndarray()
+        * particulator.attributes["multiplicity"].to_ndarray()
     ).sum()
 
     # assert that the total number of droplets changed
-    assert np.sum(particulator.attributes["n"].to_ndarray()) != np.sum(
-        default_attributes["n"]
+    assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) != np.sum(
+        default_attributes["multiplicity"]
     )
 
     # assert that the total momentum is conserved
@@ -134,7 +135,7 @@ def test_attribute_selection(backend_class):
 
     builder = Builder(n_sd=1, backend=backend_class())
     builder.set_environment(Box(dt=1, dv=1))
-    builder.add_dynamic(RelaxedVelocity(tau=1))
+    builder.add_dynamic(RelaxedVelocity())
     builder.request_attribute("relative fall velocity")
 
     # with RelaxedVelocity, the builder should use RelativeFallVelocity

@@ -17,11 +17,11 @@ class TestSettings:
         assert settings._th(3260) == 312.66
 
     @staticmethod
-    def test_qv():
+    def test_water_vapour_mixing_ratio():
         settings = Settings(n_sd_per_gridbox=1, rho_times_w_1=1)
-        assert settings.qv(0) == 0.015
-        assert settings.qv(740) == 0.0138
-        np.testing.assert_approx_equal(settings.qv(3260), 0.0024)
+        assert settings.water_vapour_mixing_ratio(0) == 0.015
+        assert settings.water_vapour_mixing_ratio(740) == 0.0138
+        np.testing.assert_approx_equal(settings.water_vapour_mixing_ratio(3260), 0.0024)
 
     @staticmethod
     def test_rhod():

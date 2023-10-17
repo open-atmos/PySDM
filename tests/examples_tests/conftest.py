@@ -29,6 +29,7 @@ TEST_SUITES = {
         "Pyrcel",
         "Yang_et_al_2018",
         "Singer_Ward",
+        "Grabowski_and_Pawlowska_2023",
     ],
     "coagulation": ["Bartman_et_al_2021", "Berry_1967", "Shima_et_al_2009"],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
@@ -36,6 +37,7 @@ TEST_SUITES = {
         "Morrison_and_Grabowski_2007",
         "Arabas_et_al_2015",
         "Bartman_2020_MasterThesis",
+        "Bulenok_2023_MasterThesis",
         "Arabas_et_al_2023",
         "Szumowski_et_al_1998",
         "Shipway_and_Hill_2012",
@@ -51,7 +53,7 @@ TEST_SUITES = {
 }
 
 
-def get_selected_test_suites(suite_name, paths):
+def get_selected_test_paths(suite_name, paths):
     if suite_name is None:
         return paths
 
@@ -82,9 +84,11 @@ def pytest_generate_tests(metafunc):
     )
     if "notebook_filename" in metafunc.fixturenames:
         notebook_paths = findfiles(pysdm_examples_abs_path, r".*\.(ipynb)$")
-        selected_suites = get_selected_test_suites(suite_name, notebook_paths)
+        selected_paths = get_selected_test_paths(suite_name, notebook_paths)
         metafunc.parametrize(
-            "notebook_filename", selected_suites, ids=[str(i) for i in selected_suites]
+            "notebook_filename",
+            selected_paths,
+            ids=[str(path) for path in selected_paths],
         )
 
     if "example_filename" in metafunc.fixturenames:
@@ -92,7 +96,9 @@ def pytest_generate_tests(metafunc):
             pysdm_examples_abs_path,
             r".*\.(py)$",
         )
-        selected_suites = get_selected_test_suites(suite_name, examples_paths)
+        selected_paths = get_selected_test_paths(suite_name, examples_paths)
         metafunc.parametrize(
-            "example_filename", selected_suites, ids=[str(i) for i in selected_suites]
+            "example_filename",
+            selected_paths,
+            ids=[str(path) for path in selected_paths],
         )

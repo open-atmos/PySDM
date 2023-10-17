@@ -12,7 +12,7 @@ class Settings:
     def __init__(
         self,
         *,
-        formulae: Optional[Formulae] = None,
+        formulae: Optional[Formulae],
         ccn_sampling_n: int = 11,
         in_sampling_n: int = 20,
         initial_temperature: float,
@@ -23,7 +23,7 @@ class Settings:
 
         self.timestep = timestep
         self.initial_temperature = initial_temperature
-        self.formulae = formulae or Formulae()
+        self.formulae = formulae
 
         self.initial_relative_humidity = 0.985
         self.vertical_velocity = 20 * si.cm / si.s
@@ -44,7 +44,7 @@ class Settings:
         return self.initial_relative_humidity * pvs
 
     @property
-    def q0(self):
+    def initial_water_vapour_mixing_ratio(self):
         pv0 = self.pv0
         return self.formulae.constants.eps * pv0 / (self.p0 - pv0)
 
@@ -55,4 +55,4 @@ class Settings:
     @property
     def rhod0(self):
         rho_v = self.pv0 / self.formulae.constants.Rv / self.T0
-        return rho_v / self.q0
+        return rho_v / self.initial_water_vapour_mixing_ratio

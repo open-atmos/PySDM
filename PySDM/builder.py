@@ -2,19 +2,21 @@
 The Builder class handling creation of  `PySDM.particulator.Particulator` instances
 """
 import inspect
+import warnings
 
 import numpy as np
 
 from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.numerics.cell_id import CellID
+from PySDM.attributes.physics import WaterMass
 from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.physics.volume import Volume
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
     discretise_multiplicities,
 )
 from PySDM.particulator import Particulator
+from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
 
 
 class Builder:
@@ -23,8 +25,8 @@ class Builder:
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
-            "n": Multiplicities(self),
-            "volume": Volume(self),
+            "multiplicity": Multiplicities(self),
+            "water mass": WaterMass(self),
             "cell id": CellID(self),
         }
         self.aerosol_radius_threshold = 0
@@ -78,6 +80,27 @@ class Builder:
     ):
         assert self.particulator.environment is not None
 
+        if "n" in attributes and "multiplicity" not in attributes:
+            attributes["multiplicity"] = attributes["n"]
+            del attributes["n"]
+            warnings.warn(
+                'renaming attributes["n"] to attributes["multiplicity"]',
+                DeprecationWarning,
+            )
+
+        if "volume" in attributes and "water mass" not in attributes:
+            assert self.particulator.formulae.particle_shape_and_density.__name__ in (
+                LiquidSpheres.__name__,
+                MixedPhaseSpheres.__name__,
+            ), "implied volume-to-mass conversion is only supported for spherical particles"
+            attributes[
+                "water mass"
+            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                attributes["volume"]
+            )
+            del attributes["volume"]
+            self.request_attribute("volume")
+
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
 
@@ -95,9 +118,11 @@ class Builder:
                     **self.condensation_params,
                 )
             )
-        attributes["n"] = int_caster(attributes["n"])
+        attributes["multiplicity"] = int_caster(attributes["multiplicity"])
         if self.particulator.mesh.dimension == 0:
-            attributes["cell id"] = np.zeros_like(attributes["n"], dtype=np.int64)
+            attributes["cell id"] = np.zeros_like(
+                attributes["multiplicity"], dtype=np.int64
+            )
         self.particulator.attributes = ParticleAttributesFactory.attributes(
             self.particulator, self.req_attr, attributes
         )
