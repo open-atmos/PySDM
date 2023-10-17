@@ -1,5 +1,6 @@
 """
-for mixed-phase microphysics as in Shima et al. 2020
+for mixed-phase microphysics as in
+[Shima et al. 2020](https://doi.org/10.5194/gmd-13-4107-2020)
 """
 
 

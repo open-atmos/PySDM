@@ -1,5 +1,5 @@
 """
-particle wet/ice volume (derived from water mass);
+particle volume (derived from water mass);
 in simulation involving mixed-phase clouds, positive values correspond to
 liquid water and negative values to ice
 """
