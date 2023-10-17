@@ -37,14 +37,12 @@ from PySDM.physics.constants import si
 
 class LowList1982Ec:
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, vmin=0.0, nfmax=None):
+    def __init__(self):
         self.particulator = None
-        self.vmin = vmin
-        self.nfmax = nfmax
         self.arrays = {}
         self.ll82_tmp = {}
         self.max_size = None
-        self.sum_of_volumes = None
+        self.sum_of_masses = None
         self.const = None
 
     def register(self, builder):
@@ -52,12 +50,12 @@ class LowList1982Ec:
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+        self.sum_of_masses = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;volume&#34;)
+        builder.request_attribute(&#34;water mass&#34;)
         builder.request_attribute(&#34;relative fall velocity&#34;)
         for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;dS&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;Et&#34;, &#34;ds&#34;, &#34;dl&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -65,9 +63,9 @@ class LowList1982Ec:
             )
 
     def __call__(self, output, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.sum_of_volumes.sum(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        self.max_size.max(self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair)
+        self.sum_of_masses.sum(
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
         )
         self.arrays[&#34;ds&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         self.arrays[&#34;ds&#34;] *= 2
@@ -75,7 +73,9 @@ class LowList1982Ec:
         self.arrays[&#34;dl&#34;] *= 2
 
         # compute the surface energy, CKE
-        self.arrays[&#34;Sc&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;Sc&#34;].sum(
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
+        )
         self.arrays[&#34;Sc&#34;] **= 2 / 3
         self.arrays[&#34;Sc&#34;] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
@@ -91,13 +91,15 @@ class LowList1982Ec:
         self.arrays[&#34;dS&#34;].fill(self.arrays[&#34;St&#34;])
         self.arrays[&#34;dS&#34;] -= self.arrays[&#34;Sc&#34;]
 
-        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;].sum(
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
+        )
         self.arrays[&#34;tmp2&#34;].distance(
             self.particulator.attributes[&#34;relative fall velocity&#34;], is_first_in_pair
         )
         self.arrays[&#34;tmp2&#34;] **= 2
         self.arrays[&#34;CKE&#34;].multiply(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
         )
         self.arrays[&#34;CKE&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;CKE&#34;] *= self.arrays[&#34;tmp2&#34;]
@@ -137,7 +139,6 @@ class LowList1982Ec:
 <dl>
 <dt id="PySDM.dynamics.collisions.coalescence_efficiencies.lowlist1982.LowList1982Ec"><code class="flex name class">
 <span>class <span class="ident">LowList1982Ec</span></span>
-<span>(</span><span>vmin=0.0, nfmax=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -147,14 +148,12 @@ class LowList1982Ec:
 </summary>
 <pre><code class="python">class LowList1982Ec:
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, vmin=0.0, nfmax=None):
+    def __init__(self):
         self.particulator = None
-        self.vmin = vmin
-        self.nfmax = nfmax
         self.arrays = {}
         self.ll82_tmp = {}
         self.max_size = None
-        self.sum_of_volumes = None
+        self.sum_of_masses = None
         self.const = None
 
     def register(self, builder):
@@ -162,12 +161,12 @@ class LowList1982Ec:
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+        self.sum_of_masses = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;volume&#34;)
+        builder.request_attribute(&#34;water mass&#34;)
         builder.request_attribute(&#34;relative fall velocity&#34;)
         for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;dS&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;Et&#34;, &#34;ds&#34;, &#34;dl&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -175,9 +174,9 @@ class LowList1982Ec:
             )
 
     def __call__(self, output, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.sum_of_volumes.sum(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        self.max_size.max(self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair)
+        self.sum_of_masses.sum(
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
         )
         self.arrays[&#34;ds&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         self.arrays[&#34;ds&#34;] *= 2
@@ -185,7 +184,9 @@ class LowList1982Ec:
         self.arrays[&#34;dl&#34;] *= 2
 
         # compute the surface energy, CKE
-        self.arrays[&#34;Sc&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;Sc&#34;].sum(
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
+        )
         self.arrays[&#34;Sc&#34;] **= 2 / 3
         self.arrays[&#34;Sc&#34;] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
@@ -201,13 +202,15 @@ class LowList1982Ec:
         self.arrays[&#34;dS&#34;].fill(self.arrays[&#34;St&#34;])
         self.arrays[&#34;dS&#34;] -= self.arrays[&#34;Sc&#34;]
 
-        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;].sum(
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
+        )
         self.arrays[&#34;tmp2&#34;].distance(
             self.particulator.attributes[&#34;relative fall velocity&#34;], is_first_in_pair
         )
         self.arrays[&#34;tmp2&#34;] **= 2
         self.arrays[&#34;CKE&#34;].multiply(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+            self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair
         )
         self.arrays[&#34;CKE&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;CKE&#34;] *= self.arrays[&#34;tmp2&#34;]
@@ -251,12 +254,12 @@ class LowList1982Ec:
     self.max_size = self.particulator.PairwiseStorage.empty(
         self.particulator.n_sd // 2, dtype=float
     )
-    self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
+    self.sum_of_masses = self.particulator.PairwiseStorage.empty(
         self.particulator.n_sd // 2, dtype=float
     )
     self.const = self.particulator.formulae.constants
     builder.request_attribute(&#34;radius&#34;)
-    builder.request_attribute(&#34;volume&#34;)
+    builder.request_attribute(&#34;water mass&#34;)
     builder.request_attribute(&#34;relative fall velocity&#34;)
     for key in (&#34;Sc&#34;, &#34;St&#34;, &#34;dS&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;Et&#34;, &#34;ds&#34;, &#34;dl&#34;):
         self.arrays[key] = self.particulator.PairwiseStorage.empty(

@@ -31,9 +31,10 @@
 TODO #744
 &#34;&#34;&#34;
 from .always_n import AlwaysN
-from .constant_size import ConstantSize
-from .exponential import ExponFrag
-from .feingold1988 import Feingold1988Frag
+from .constant_mass import ConstantMass
+from .expon_frag import ExponFrag
+from .exponential import Exponential
+from .feingold1988 import Feingold1988
 from .gaussian import Gaussian
 from .lowlist82 import LowList1982Nf
 from .slams import SLAMS
@@ -47,23 +48,32 @@ from .straub2010 import Straub2010Nf</code></pre>
 <dd>
 <div class="desc"><p>Always produces N fragments in a given collisional breakup</p></div>
 </dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_size" href="constant_size.html">PySDM.dynamics.collisions.breakup_fragmentations.constant_size</a></code></dt>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_mass" href="constant_mass.html">PySDM.dynamics.collisions.breakup_fragmentations.constant_mass</a></code></dt>
 <dd>
-<div class="desc"><p>Always produces fragments of size c in a given collisional breakup</p></div>
+<div class="desc"><p>Always produces fragments of mass c in a given collisional breakup</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.expon_frag" href="expon_frag.html">PySDM.dynamics.collisions.breakup_fragmentations.expon_frag</a></code></dt>
+<dd>
+<div class="desc"><p>DEPRECATED
+P(x) = exp(-x / lambda); lambda specified in volume units</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.exponential" href="exponential.html">PySDM.dynamics.collisions.breakup_fragmentations.exponential</a></code></dt>
 <dd>
-<div class="desc"><p>P(x) = exp(-x / lambda); specified in volume units</p></div>
+<div class="desc"><p>P(x) = exp(-x / lambda); lambda specified in volume units</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.feingold1988" href="feingold1988.html">PySDM.dynamics.collisions.breakup_fragmentations.feingold1988</a></code></dt>
 <dd>
 <div class="desc"><p>P(m; x, y) = nu^2 * (x+y) exp(-m * nu)
-nu = 1/m<em> where m</em> is a scaling factor for fragment size dist.
+nu = 1/m<em> where m</em> is a scaling factor for fragment volume dist.
 see [Feingold et al …</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian" href="gaussian.html">PySDM.dynamics.collisions.breakup_fragmentations.gaussian</a></code></dt>
 <dd>
 <div class="desc"><p>P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.impl" href="impl/index.html">PySDM.dynamics.collisions.breakup_fragmentations.impl</a></code></dt>
+<dd>
+<div class="desc"><p>Abstractions and common code for fragmentation functions</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.lowlist82" href="lowlist82.html">PySDM.dynamics.collisions.breakup_fragmentations.lowlist82</a></code></dt>
 <dd>
@@ -101,10 +111,12 @@ for ocean particles</p></div>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.always_n" href="always_n.html">PySDM.dynamics.collisions.breakup_fragmentations.always_n</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_size" href="constant_size.html">PySDM.dynamics.collisions.breakup_fragmentations.constant_size</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_mass" href="constant_mass.html">PySDM.dynamics.collisions.breakup_fragmentations.constant_mass</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.expon_frag" href="expon_frag.html">PySDM.dynamics.collisions.breakup_fragmentations.expon_frag</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.exponential" href="exponential.html">PySDM.dynamics.collisions.breakup_fragmentations.exponential</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.feingold1988" href="feingold1988.html">PySDM.dynamics.collisions.breakup_fragmentations.feingold1988</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian" href="gaussian.html">PySDM.dynamics.collisions.breakup_fragmentations.gaussian</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.impl" href="impl/index.html">PySDM.dynamics.collisions.breakup_fragmentations.impl</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.lowlist82" href="lowlist82.html">PySDM.dynamics.collisions.breakup_fragmentations.lowlist82</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.slams" href="slams.html">PySDM.dynamics.collisions.breakup_fragmentations.slams</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.straub2010" href="straub2010.html">PySDM.dynamics.collisions.breakup_fragmentations.straub2010</a></code></li>

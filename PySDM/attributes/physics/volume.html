@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.attributes.physics.volume API documentation</title>
-<meta name="description" content="particle (wet) volume, key attribute for coalescence
+<meta name="description" content="particle volume (derived from water mass);
 in simulation involving mixed-phase clouds, positive values correspond to
-liquid water and …" />
+liquid water and negative values …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -24,7 +24,7 @@ liquid water and …" />
 <h1 class="title">Module <code>PySDM.attributes.physics.volume</code></h1>
 </header>
 <section id="section-intro">
-<p>particle (wet) volume, key attribute for coalescence
+<p>particle volume (derived from water mass);
 in simulation involving mixed-phase clouds, positive values correspond to
 liquid water and negative values to ice</p>
 <details class="source">
@@ -32,16 +32,20 @@ liquid water and negative values to ice</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-particle (wet) volume, key attribute for coalescence
+particle volume (derived from water mass);
 in simulation involving mixed-phase clouds, positive values correspond to
 liquid water and negative values to ice
 &#34;&#34;&#34;
-from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.impl import DerivedAttribute
 
 
-class Volume(ExtensiveAttribute):
+class Volume(DerivedAttribute):
     def __init__(self, builder):
-        super().__init__(builder, name=&#34;volume&#34;)</code></pre>
+        self.water_mass = builder.get_attribute(&#34;water mass&#34;)
+        super().__init__(builder, name=&#34;volume&#34;, dependencies=(self.water_mass,))
+
+    def recalculate(self):
+        self.particulator.backend.volume_of_water_mass(self.data, self.water_mass.get())</code></pre>
 </details>
 </section>
 <section>
@@ -63,16 +67,35 @@ class Volume(ExtensiveAttribute):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Volume(ExtensiveAttribute):
+<pre><code class="python">class Volume(DerivedAttribute):
     def __init__(self, builder):
-        super().__init__(builder, name=&#34;volume&#34;)</code></pre>
+        self.water_mass = builder.get_attribute(&#34;water mass&#34;)
+        super().__init__(builder, name=&#34;volume&#34;, dependencies=(self.water_mass,))
+
+    def recalculate(self):
+        self.particulator.backend.volume_of_water_mass(self.data, self.water_mass.get())</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute" href="../impl/extensive_attribute.html#PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute">ExtensiveAttribute</a></li>
-<li><a title="PySDM.attributes.impl.base_attribute.BaseAttribute" href="../impl/base_attribute.html#PySDM.attributes.impl.base_attribute.BaseAttribute">BaseAttribute</a></li>
+<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
 <li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.attributes.physics.volume.Volume.recalculate"><code class="name flex">
+<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recalculate(self):
+    self.particulator.backend.volume_of_water_mass(self.data, self.water_mass.get())</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -92,6 +115,9 @@ class Volume(ExtensiveAttribute):
 <ul>
 <li>
 <h4><code><a title="PySDM.attributes.physics.volume.Volume" href="#PySDM.attributes.physics.volume.Volume">Volume</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.attributes.physics.volume.Volume.recalculate" href="#PySDM.attributes.physics.volume.Volume.recalculate">recalculate</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

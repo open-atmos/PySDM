@@ -38,7 +38,7 @@ class TotalParticleConcentration(ConcentrationProduct):
         super().__init__(name=name, unit=unit, specific=False, stp=stp)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(attr=&#34;volume&#34;, rank=0)
+        self._download_moment_to_buffer(attr=&#34;water mass&#34;, rank=0)
         return super()._impl(**kwargs)</code></pre>
 </details>
 </section>
@@ -69,7 +69,7 @@ and pressure conditions (ground level of the ICAO standard atmosphere, zero humi
         super().__init__(name=name, unit=unit, specific=False, stp=stp)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(attr=&#34;volume&#34;, rank=0)
+        self._download_moment_to_buffer(attr=&#34;water mass&#34;, rank=0)
         return super()._impl(**kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>

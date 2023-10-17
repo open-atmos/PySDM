@@ -40,7 +40,7 @@ class Settings:
     def __init__(
         self,
         *,
-        formulae: Optional[Formulae] = None,
+        formulae: Optional[Formulae],
         ccn_sampling_n: int = 11,
         in_sampling_n: int = 20,
         initial_temperature: float,
@@ -51,7 +51,7 @@ class Settings:
 
         self.timestep = timestep
         self.initial_temperature = initial_temperature
-        self.formulae = formulae or Formulae()
+        self.formulae = formulae
 
         self.initial_relative_humidity = 0.985
         self.vertical_velocity = 20 * si.cm / si.s
@@ -97,7 +97,7 @@ class Settings:
 <dl>
 <dt id="PySDM_examples.Niedermeier_et_al_2014.settings.Settings"><code class="flex name class">
 <span>class <span class="ident">Settings</span></span>
-<span>(</span><span>*, formulae: Optional[<a title="PySDM.formulae.Formulae" href="../../PySDM/formulae.html#PySDM.formulae.Formulae">Formulae</a>] = None, ccn_sampling_n: int = 11, in_sampling_n: int = 20, initial_temperature: float, timestep: float)</span>
+<span>(</span><span>*, formulae: Optional[<a title="PySDM.formulae.Formulae" href="../../PySDM/formulae.html#PySDM.formulae.Formulae">Formulae</a>], ccn_sampling_n: int = 11, in_sampling_n: int = 20, initial_temperature: float, timestep: float)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -110,7 +110,7 @@ class Settings:
     def __init__(
         self,
         *,
-        formulae: Optional[Formulae] = None,
+        formulae: Optional[Formulae],
         ccn_sampling_n: int = 11,
         in_sampling_n: int = 20,
         initial_temperature: float,
@@ -121,7 +121,7 @@ class Settings:
 
         self.timestep = timestep
         self.initial_temperature = initial_temperature
-        self.formulae = formulae or Formulae()
+        self.formulae = formulae
 
         self.initial_relative_humidity = 0.985
         self.vertical_velocity = 20 * si.cm / si.s

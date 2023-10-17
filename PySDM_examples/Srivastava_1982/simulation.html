@@ -54,7 +54,7 @@ class Simulation:
             backend=self.settings.backend_class(
                 formulae=Formulae(
                     constants={&#34;rho_w&#34;: self.settings.rho},
-                    fragmentation_function=&#34;ConstantSize&#34;,
+                    fragmentation_function=&#34;ConstantMass&#34;,
                     seed=seed,
                 ),
                 double_precision=self.double_precision,
@@ -151,7 +151,7 @@ class Simulation:
             backend=self.settings.backend_class(
                 formulae=Formulae(
                     constants={&#34;rho_w&#34;: self.settings.rho},
-                    fragmentation_function=&#34;ConstantSize&#34;,
+                    fragmentation_function=&#34;ConstantMass&#34;,
                     seed=seed,
                 ),
                 double_precision=self.double_precision,
@@ -224,7 +224,7 @@ class Simulation:
         backend=self.settings.backend_class(
             formulae=Formulae(
                 constants={&#34;rho_w&#34;: self.settings.rho},
-                fragmentation_function=&#34;ConstantSize&#34;,
+                fragmentation_function=&#34;ConstantMass&#34;,
                 seed=seed,
             ),
             double_precision=self.double_precision,

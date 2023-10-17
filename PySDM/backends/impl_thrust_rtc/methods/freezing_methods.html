@@ -42,12 +42,11 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 class FreezingMethods(ThrustRTCBackendMethods):
     @cached_property
     def freeze_time_dependent_body(self):
-        const = self.formulae.constants
         return trtc.For(
             param_names=(
                 &#34;rand&#34;,
                 &#34;immersed_surface_area&#34;,
-                &#34;wet_volume&#34;,
+                &#34;water_mass&#34;,
                 &#34;timestep&#34;,
                 &#34;cell&#34;,
                 &#34;a_w_ice&#34;,
@@ -61,12 +60,12 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     return;
                 }}
                 if (thaw &amp;&amp; {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
-                    volume=&#34;wet_volume[i]&#34;,
+                    water_mass=&#34;water_mass[i]&#34;,
                     temperature=&#34;temperature[cell[i]]&#34;
                 )}) {{
-                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_i} / {const.rho_w};
+                    water_mass[i] = -1 * water_mass[i];
                 }} else if ({self.formulae.trivia.unfrozen_and_saturated.c_inline(
-                        volume=&#34;wet_volume[i]&#34;,
+                        water_mass=&#34;water_mass[i]&#34;,
                         relative_humidity=&#34;relative_humidity[cell[i]]&#34;
                     )}) {{
                     auto rate = {self.formulae.heterogeneous_ice_nucleation_rate.j_het.c_inline(
@@ -76,7 +75,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         -rate * immersed_surface_area[i] * timestep
                     );
                     if (rand[i] &lt; prob) {{
-                        wet_volume[i] = -1 * wet_volume[i] * {const.rho_w} / {const.rho_i};
+                        water_mass[i] = -1 * water_mass[i];
                     }}
                 }}
             &#34;&#34;&#34;.replace(
@@ -86,11 +85,10 @@ class FreezingMethods(ThrustRTCBackendMethods):
 
     @cached_property
     def freeze_singular_body(self):
-        const = self.formulae.constants
         return trtc.For(
             param_names=(
                 &#34;freezing_temperature&#34;,
-                &#34;wet_volume&#34;,
+                &#34;water_mass&#34;,
                 &#34;temperature&#34;,
                 &#34;relative_humidity&#34;,
                 &#34;cell&#34;,
@@ -102,17 +100,17 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     return;
                 }}
                 if (thaw &amp;&amp; {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
-                    volume=&#34;wet_volume[i]&#34;,
+                    water_mass=&#34;water_mass[i]&#34;,
                     temperature=&#34;temperature[cell[i]]&#34;
                 )}) {{
-                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_i} / {const.rho_w};
+                    water_mass[i] = -1 * water_mass[i];
                 }} else if (
                     {self.formulae.trivia.unfrozen_and_saturated.c_inline(
-                        volume=&#34;wet_volume[i]&#34;,
+                        water_mass=&#34;water_mass[i]&#34;,
                         relative_humidity=&#34;relative_humidity[cell[i]]&#34;
                     )} &amp;&amp; temperature[cell[i]] &lt;= freezing_temperature[i]
                 ) {{
-                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_w} / {const.rho_i};
+                    water_mass[i] = -1 * water_mass[i];
                 }}
             &#34;&#34;&#34;.replace(
                 &#34;real_type&#34;, self._get_c_type()
@@ -128,7 +126,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
             n=n_sd,
             args=(
                 attributes.freezing_temperature.data,
-                attributes.wet_volume.data,
+                attributes.water_mass.data,
                 temperature.data,
                 relative_humidity.data,
                 cell.data,
@@ -157,7 +155,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
             args=(
                 rand.data,
                 attributes.immersed_surface_area.data,
-                attributes.wet_volume.data,
+                attributes.water_mass.data,
                 self._get_floating_point(timestep),
                 cell.data,
                 a_w_ice.data,
@@ -189,12 +187,11 @@ class FreezingMethods(ThrustRTCBackendMethods):
 <pre><code class="python">class FreezingMethods(ThrustRTCBackendMethods):
     @cached_property
     def freeze_time_dependent_body(self):
-        const = self.formulae.constants
         return trtc.For(
             param_names=(
                 &#34;rand&#34;,
                 &#34;immersed_surface_area&#34;,
-                &#34;wet_volume&#34;,
+                &#34;water_mass&#34;,
                 &#34;timestep&#34;,
                 &#34;cell&#34;,
                 &#34;a_w_ice&#34;,
@@ -208,12 +205,12 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     return;
                 }}
                 if (thaw &amp;&amp; {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
-                    volume=&#34;wet_volume[i]&#34;,
+                    water_mass=&#34;water_mass[i]&#34;,
                     temperature=&#34;temperature[cell[i]]&#34;
                 )}) {{
-                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_i} / {const.rho_w};
+                    water_mass[i] = -1 * water_mass[i];
                 }} else if ({self.formulae.trivia.unfrozen_and_saturated.c_inline(
-                        volume=&#34;wet_volume[i]&#34;,
+                        water_mass=&#34;water_mass[i]&#34;,
                         relative_humidity=&#34;relative_humidity[cell[i]]&#34;
                     )}) {{
                     auto rate = {self.formulae.heterogeneous_ice_nucleation_rate.j_het.c_inline(
@@ -223,7 +220,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         -rate * immersed_surface_area[i] * timestep
                     );
                     if (rand[i] &lt; prob) {{
-                        wet_volume[i] = -1 * wet_volume[i] * {const.rho_w} / {const.rho_i};
+                        water_mass[i] = -1 * water_mass[i];
                     }}
                 }}
             &#34;&#34;&#34;.replace(
@@ -233,11 +230,10 @@ class FreezingMethods(ThrustRTCBackendMethods):
 
     @cached_property
     def freeze_singular_body(self):
-        const = self.formulae.constants
         return trtc.For(
             param_names=(
                 &#34;freezing_temperature&#34;,
-                &#34;wet_volume&#34;,
+                &#34;water_mass&#34;,
                 &#34;temperature&#34;,
                 &#34;relative_humidity&#34;,
                 &#34;cell&#34;,
@@ -249,17 +245,17 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     return;
                 }}
                 if (thaw &amp;&amp; {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
-                    volume=&#34;wet_volume[i]&#34;,
+                    water_mass=&#34;water_mass[i]&#34;,
                     temperature=&#34;temperature[cell[i]]&#34;
                 )}) {{
-                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_i} / {const.rho_w};
+                    water_mass[i] = -1 * water_mass[i];
                 }} else if (
                     {self.formulae.trivia.unfrozen_and_saturated.c_inline(
-                        volume=&#34;wet_volume[i]&#34;,
+                        water_mass=&#34;water_mass[i]&#34;,
                         relative_humidity=&#34;relative_humidity[cell[i]]&#34;
                     )} &amp;&amp; temperature[cell[i]] &lt;= freezing_temperature[i]
                 ) {{
-                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_w} / {const.rho_i};
+                    water_mass[i] = -1 * water_mass[i];
                 }}
             &#34;&#34;&#34;.replace(
                 &#34;real_type&#34;, self._get_c_type()
@@ -275,7 +271,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
             n=n_sd,
             args=(
                 attributes.freezing_temperature.data,
-                attributes.wet_volume.data,
+                attributes.water_mass.data,
                 temperature.data,
                 relative_humidity.data,
                 cell.data,
@@ -304,7 +300,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
             args=(
                 rand.data,
                 attributes.immersed_surface_area.data,
-                attributes.wet_volume.data,
+                attributes.water_mass.data,
                 self._get_floating_point(timestep),
                 cell.data,
                 a_w_ice.data,

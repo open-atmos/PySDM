@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.breakup_fragmentations.gaussian API documentation</title>
-<meta name="description" content="P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes" />
+<title>PySDM.physics.particle_shape_and_density.liquid_spheres API documentation</title>
+<meta name="description" content="spherical particles with constant density of water" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,53 +19,39 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.breakup_fragmentations.gaussian</code></h1>
+<h1 class="title">Module <code>PySDM.physics.particle_shape_and_density.liquid_spheres</code></h1>
 </header>
 <section id="section-intro">
-<p>P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes</p>
+<p>spherical particles with constant density of water</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes
+spherical particles with constant density of water
 &#34;&#34;&#34;
-from .impl import VolumeBasedFragmentationFunction
+import numpy as np
 
 
-class Gaussian(
-    VolumeBasedFragmentationFunction
-):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
-        super().__init__()
-        self.mu = mu
-        self.sigma = sigma
-        self.vmin = vmin
-        self.nfmax = nfmax
-        self.sum_of_volumes = None
+class LiquidSpheres:
+    def __init__(self, _):
+        pass
 
-    def register(self, builder):
-        super().register(builder)
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
+    @staticmethod
+    def supports_mixed_phase(_=None):
+        return False
 
-    def compute_fragment_number_and_volumes(
-        self, nf, frag_volume, u01, is_first_in_pair
-    ):
-        self.sum_of_volumes.sum(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
-        )
-        self.particulator.backend.gauss_fragmentation(
-            n_fragment=nf,
-            mu=self.mu,
-            sigma=self.sigma,
-            frag_volume=frag_volume,
-            x_plus_y=self.sum_of_volumes,
-            rand=u01,
-            vmin=self.vmin,
-            nfmax=self.nfmax,
-        )</code></pre>
+    @staticmethod
+    def mass_to_volume(const, mass):
+        return mass / const.rho_w
+
+    @staticmethod
+    def volume_to_mass(const, volume):
+        return const.rho_w * volume
+
+    @staticmethod
+    def radius_to_mass(const, radius):
+        return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)</code></pre>
 </details>
 </section>
 <section>
@@ -77,9 +63,9 @@ class Gaussian(
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian"><code class="flex name class">
-<span>class <span class="ident">Gaussian</span></span>
-<span>(</span><span>mu, sigma, vmin=0.0, nfmax=None)</span>
+<dt id="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres"><code class="flex name class">
+<span>class <span class="ident">LiquidSpheres</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,48 +73,30 @@ class Gaussian(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Gaussian(
-    VolumeBasedFragmentationFunction
-):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
-        super().__init__()
-        self.mu = mu
-        self.sigma = sigma
-        self.vmin = vmin
-        self.nfmax = nfmax
-        self.sum_of_volumes = None
+<pre><code class="python">class LiquidSpheres:
+    def __init__(self, _):
+        pass
 
-    def register(self, builder):
-        super().register(builder)
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
+    @staticmethod
+    def supports_mixed_phase(_=None):
+        return False
 
-    def compute_fragment_number_and_volumes(
-        self, nf, frag_volume, u01, is_first_in_pair
-    ):
-        self.sum_of_volumes.sum(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
-        )
-        self.particulator.backend.gauss_fragmentation(
-            n_fragment=nf,
-            mu=self.mu,
-            sigma=self.sigma,
-            frag_volume=frag_volume,
-            x_plus_y=self.sum_of_volumes,
-            rand=u01,
-            vmin=self.vmin,
-            nfmax=self.nfmax,
-        )</code></pre>
+    @staticmethod
+    def mass_to_volume(const, mass):
+        return mass / const.rho_w
+
+    @staticmethod
+    def volume_to_mass(const, volume):
+        return const.rho_w * volume
+
+    @staticmethod
+    def radius_to_mass(const, radius):
+        return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction" href="impl/volume_based.html#PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction">VolumeBasedFragmentationFunction</a></li>
-</ul>
-<h3>Methods</h3>
+<h3>Static methods</h3>
 <dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes"><code class="name flex">
-<span>def <span class="ident">compute_fragment_number_and_volumes</span></span>(<span>self, nf, frag_volume, u01, is_first_in_pair)</span>
+<dt id="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.mass_to_volume"><code class="name flex">
+<span>def <span class="ident">mass_to_volume</span></span>(<span>const, mass)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -136,26 +104,13 @@ class Gaussian(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def compute_fragment_number_and_volumes(
-    self, nf, frag_volume, u01, is_first_in_pair
-):
-    self.sum_of_volumes.sum(
-        self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
-    )
-    self.particulator.backend.gauss_fragmentation(
-        n_fragment=nf,
-        mu=self.mu,
-        sigma=self.sigma,
-        frag_volume=frag_volume,
-        x_plus_y=self.sum_of_volumes,
-        rand=u01,
-        vmin=self.vmin,
-        nfmax=self.nfmax,
-    )</code></pre>
+<pre><code class="python">@staticmethod
+def mass_to_volume(const, mass):
+    return mass / const.rho_w</code></pre>
 </details>
 </dd>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
+<dt id="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.radius_to_mass"><code class="name flex">
+<span>def <span class="ident">radius_to_mass</span></span>(<span>const, radius)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -163,11 +118,37 @@ class Gaussian(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def register(self, builder):
-    super().register(builder)
-    self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-        self.particulator.n_sd // 2, dtype=float
-    )</code></pre>
+<pre><code class="python">@staticmethod
+def radius_to_mass(const, radius):
+    return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.supports_mixed_phase"><code class="name flex">
+<span>def <span class="ident">supports_mixed_phase</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def supports_mixed_phase(_=None):
+    return False</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.volume_to_mass"><code class="name flex">
+<span>def <span class="ident">volume_to_mass</span></span>(<span>const, volume)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def volume_to_mass(const, volume):
+    return const.rho_w * volume</code></pre>
 </details>
 </dd>
 </dl>
@@ -183,16 +164,18 @@ class Gaussian(
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations" href="index.html">PySDM.dynamics.collisions.breakup_fragmentations</a></code></li>
+<li><code><a title="PySDM.physics.particle_shape_and_density" href="index.html">PySDM.physics.particle_shape_and_density</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian">Gaussian</a></code></h4>
+<h4><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres">LiquidSpheres</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes">compute_fragment_number_and_volumes</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register">register</a></code></li>
+<li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.mass_to_volume" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.mass_to_volume">mass_to_volume</a></code></li>
+<li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.radius_to_mass" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.radius_to_mass">radius_to_mass</a></code></li>
+<li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.supports_mixed_phase" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.supports_mixed_phase">supports_mixed_phase</a></code></li>
+<li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.volume_to_mass" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.volume_to_mass">volume_to_mass</a></code></li>
 </ul>
 </li>
 </ul>

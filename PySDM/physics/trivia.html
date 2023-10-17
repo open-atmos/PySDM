@@ -105,12 +105,12 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, volume, relative_humidity):
-        return volume &gt; 0 and relative_humidity &gt; 1
+    def unfrozen_and_saturated(_, water_mass, relative_humidity):
+        return water_mass &gt; 0 and relative_humidity &gt; 1
 
     @staticmethod
-    def frozen_and_above_freezing_point(const, volume, temperature):
-        return volume &lt; 0 and temperature &gt; const.T0
+    def frozen_and_above_freezing_point(const, water_mass, temperature):
+        return water_mass &lt; 0 and temperature &gt; const.T0
 
     @staticmethod
     def erfinv_approx(const, c):
@@ -217,12 +217,12 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, volume, relative_humidity):
-        return volume &gt; 0 and relative_humidity &gt; 1
+    def unfrozen_and_saturated(_, water_mass, relative_humidity):
+        return water_mass &gt; 0 and relative_humidity &gt; 1
 
     @staticmethod
-    def frozen_and_above_freezing_point(const, volume, temperature):
-        return volume &lt; 0 and temperature &gt; const.T0
+    def frozen_and_above_freezing_point(const, water_mass, temperature):
+        return water_mass &lt; 0 and temperature &gt; const.T0
 
     @staticmethod
     def erfinv_approx(const, c):
@@ -325,7 +325,7 @@ def explicit_euler(y, dt, dy_dt):
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point"><code class="name flex">
-<span>def <span class="ident">frozen_and_above_freezing_point</span></span>(<span>const, volume, temperature)</span>
+<span>def <span class="ident">frozen_and_above_freezing_point</span></span>(<span>const, water_mass, temperature)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -334,8 +334,8 @@ def explicit_euler(y, dt, dy_dt):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def frozen_and_above_freezing_point(const, volume, temperature):
-    return volume &lt; 0 and temperature &gt; const.T0</code></pre>
+def frozen_and_above_freezing_point(const, water_mass, temperature):
+    return water_mass &lt; 0 and temperature &gt; const.T0</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction"><code class="name flex">
@@ -451,7 +451,7 @@ def th_std(const, p, T):
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.unfrozen_and_saturated"><code class="name flex">
-<span>def <span class="ident">unfrozen_and_saturated</span></span>(<span>_, volume, relative_humidity)</span>
+<span>def <span class="ident">unfrozen_and_saturated</span></span>(<span>_, water_mass, relative_humidity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -460,8 +460,8 @@ def th_std(const, p, T):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def unfrozen_and_saturated(_, volume, relative_humidity):
-    return volume &gt; 0 and relative_humidity &gt; 1</code></pre>
+def unfrozen_and_saturated(_, water_mass, relative_humidity):
+    return water_mass &gt; 0 and relative_humidity &gt; 1</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.vant_hoff"><code class="name flex">

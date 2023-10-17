@@ -53,6 +53,7 @@ from PySDM.attributes.physics import (
     Temperature,
     TerminalVelocity,
     Volume,
+    WaterMass,
     WetToCriticalVolumeRatio,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
@@ -129,6 +130,7 @@ attributes = {
     &#34;critical supersaturation&#34;: lambda _, __: CriticalSupersaturation,
     &#34;equilibrium supersaturation&#34;: lambda _, __: EquilibriumSupersaturation,
     &#34;wet to critical volume ratio&#34;: lambda _, __: WetToCriticalVolumeRatio,
+    &#34;water mass&#34;: lambda _, __: WaterMass,
 }
 
 

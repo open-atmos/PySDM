@@ -37,6 +37,7 @@ from .dry_radius import DryRadius
 from .dry_volume import DryVolume
 from .equilibrium_supersaturation import EquilibriumSupersaturation
 from .heat import Heat
+from .mass import WaterMass
 from .multiplicities import Multiplicities
 from .radius import Radius, SquareRootOfRadius
 from .relative_fall_velocity import RelativeFallMomentum, RelativeFallVelocity
@@ -82,6 +83,12 @@ from .volume import Volume</code></pre>
 the <code><a title="PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume" href="hygroscopicity.html#PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume">KappaTimesDryVolume</a></code> base attribute
 and the derived …</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.attributes.physics.mass" href="mass.html">PySDM.attributes.physics.mass</a></code></dt>
+<dd>
+<div class="desc"><p>particle mass, derived attribute for coalescence
+in simulation involving mixed-phase clouds, positive values correspond to
+liquid water and negative …</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.multiplicities" href="multiplicities.html">PySDM.attributes.physics.multiplicities</a></code></dt>
 <dd>
 <div class="desc"><p>super-particle multiplicity (aka weighting factor) - the number of real-world particles
@@ -105,9 +112,9 @@ represented in the simulation with a given super particle</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.volume" href="volume.html">PySDM.attributes.physics.volume</a></code></dt>
 <dd>
-<div class="desc"><p>particle (wet) volume, key attribute for coalescence
+<div class="desc"><p>particle volume (derived from water mass);
 in simulation involving mixed-phase clouds, positive values correspond to
-liquid water and …</p></div>
+liquid water and negative values …</p></div>
 </dd>
 </dl>
 </section>
@@ -139,6 +146,7 @@ liquid water and …</p></div>
 <li><code><a title="PySDM.attributes.physics.equilibrium_supersaturation" href="equilibrium_supersaturation.html">PySDM.attributes.physics.equilibrium_supersaturation</a></code></li>
 <li><code><a title="PySDM.attributes.physics.heat" href="heat.html">PySDM.attributes.physics.heat</a></code></li>
 <li><code><a title="PySDM.attributes.physics.hygroscopicity" href="hygroscopicity.html">PySDM.attributes.physics.hygroscopicity</a></code></li>
+<li><code><a title="PySDM.attributes.physics.mass" href="mass.html">PySDM.attributes.physics.mass</a></code></li>
 <li><code><a title="PySDM.attributes.physics.multiplicities" href="multiplicities.html">PySDM.attributes.physics.multiplicities</a></code></li>
 <li><code><a title="PySDM.attributes.physics.radius" href="radius.html">PySDM.attributes.physics.radius</a></code></li>
 <li><code><a title="PySDM.attributes.physics.relative_fall_velocity" href="relative_fall_velocity.html">PySDM.attributes.physics.relative_fall_velocity</a></code></li>

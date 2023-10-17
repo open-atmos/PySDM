@@ -43,18 +43,16 @@ class RelativeFallMomentum(ExtensiveAttribute):
 class RelativeFallVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.momentum = builder.get_attribute(&#34;relative fall momentum&#34;)
-        self.volume = builder.get_attribute(&#34;volume&#34;)
-        self.rho_w = builder.formulae.constants.rho_w  # TODO #798
+        self.water_mass = builder.get_attribute(&#34;water mass&#34;)
 
         super().__init__(
             builder,
             name=&#34;relative fall velocity&#34;,
-            dependencies=(self.momentum, self.volume),
+            dependencies=(self.momentum, self.water_mass),
         )
 
     def recalculate(self):
-        self.data.ratio(self.momentum.get(), self.volume.get())
-        self.data[:] *= 1 / self.rho_w  # TODO #798</code></pre>
+        self.data.ratio(self.momentum.get(), self.water_mass.get())</code></pre>
 </details>
 </section>
 <section>
@@ -100,18 +98,16 @@ class RelativeFallVelocity(DerivedAttribute):
 <pre><code class="python">class RelativeFallVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.momentum = builder.get_attribute(&#34;relative fall momentum&#34;)
-        self.volume = builder.get_attribute(&#34;volume&#34;)
-        self.rho_w = builder.formulae.constants.rho_w  # TODO #798
+        self.water_mass = builder.get_attribute(&#34;water mass&#34;)
 
         super().__init__(
             builder,
             name=&#34;relative fall velocity&#34;,
-            dependencies=(self.momentum, self.volume),
+            dependencies=(self.momentum, self.water_mass),
         )
 
     def recalculate(self):
-        self.data.ratio(self.momentum.get(), self.volume.get())
-        self.data[:] *= 1 / self.rho_w  # TODO #798</code></pre>
+        self.data.ratio(self.momentum.get(), self.water_mass.get())</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -130,8 +126,7 @@ class RelativeFallVelocity(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    self.data.ratio(self.momentum.get(), self.volume.get())
-    self.data[:] *= 1 / self.rho_w  # TODO #798</code></pre>
+    self.data.ratio(self.momentum.get(), self.water_mass.get())</code></pre>
 </details>
 </dd>
 </dl>

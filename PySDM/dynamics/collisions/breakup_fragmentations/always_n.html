@@ -33,20 +33,17 @@ Always produces N fragments in a given collisional breakup
 
 
 class AlwaysN:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, n, vmin=0.0, nfmax=None):
+    def __init__(self, n):
         self.particulator = None
         self.N = n
-        self.vmin = vmin
-        self.nfmax = nfmax
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def __call__(self, nf, frag_mass, u01, is_first_in_pair):
         nf.fill(self.N)
-        frag_size.sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        frag_size /= self.N
+        frag_mass.sum(self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair)
+        frag_mass /= self.N
 
     def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;volume&#34;)</code></pre>
+        self.particulator = builder.particulator</code></pre>
 </details>
 </section>
 <section>
@@ -60,7 +57,7 @@ class AlwaysN:  # pylint: disable=too-many-instance-attributes
 <dl>
 <dt id="PySDM.dynamics.collisions.breakup_fragmentations.always_n.AlwaysN"><code class="flex name class">
 <span>class <span class="ident">AlwaysN</span></span>
-<span>(</span><span>n, vmin=0.0, nfmax=None)</span>
+<span>(</span><span>n)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -69,20 +66,17 @@ class AlwaysN:  # pylint: disable=too-many-instance-attributes
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AlwaysN:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, n, vmin=0.0, nfmax=None):
+    def __init__(self, n):
         self.particulator = None
         self.N = n
-        self.vmin = vmin
-        self.nfmax = nfmax
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def __call__(self, nf, frag_mass, u01, is_first_in_pair):
         nf.fill(self.N)
-        frag_size.sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        frag_size /= self.N
+        frag_mass.sum(self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair)
+        frag_mass /= self.N
 
     def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;volume&#34;)</code></pre>
+        self.particulator = builder.particulator</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -96,8 +90,7 @@ class AlwaysN:  # pylint: disable=too-many-instance-attributes
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.particulator = builder.particulator
-    builder.request_attribute(&#34;volume&#34;)</code></pre>
+    self.particulator = builder.particulator</code></pre>
 </details>
 </dd>
 </dl>

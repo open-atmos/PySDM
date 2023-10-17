@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.fragmentation_function.constant_size API documentation</title>
-<meta name="description" content="Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.constant_size`" />
+<title>PySDM.attributes.physics.mass API documentation</title>
+<meta name="description" content="particle mass, derived attribute for coalescence
+in simulation involving mixed-phase clouds, positive values correspond to
+liquid water and negative …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,22 +21,27 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.fragmentation_function.constant_size</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.physics.mass</code></h1>
 </header>
 <section id="section-intro">
-<p>Formulae supporting <code><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_size" href="../../dynamics/collisions/breakup_fragmentations/constant_size.html">PySDM.dynamics.collisions.breakup_fragmentations.constant_size</a></code></p>
+<p>particle mass, derived attribute for coalescence
+in simulation involving mixed-phase clouds, positive values correspond to
+liquid water and negative values to ice</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.constant_size`
+particle mass, derived attribute for coalescence
+in simulation involving mixed-phase clouds, positive values correspond to
+liquid water and negative values to ice
 &#34;&#34;&#34;
+from PySDM.attributes.impl import ExtensiveAttribute
 
 
-class ConstantSize:  # pylint: disable=too-few-public-methods
-    def __init__(self, _):
-        pass</code></pre>
+class WaterMass(ExtensiveAttribute):
+    def __init__(self, builder):
+        super().__init__(builder, name=&#34;water mass&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -46,9 +53,9 @@ class ConstantSize:  # pylint: disable=too-few-public-methods
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.fragmentation_function.constant_size.ConstantSize"><code class="flex name class">
-<span>class <span class="ident">ConstantSize</span></span>
-<span>(</span><span>_)</span>
+<dt id="PySDM.attributes.physics.mass.WaterMass"><code class="flex name class">
+<span>class <span class="ident">WaterMass</span></span>
+<span>(</span><span>builder)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -56,10 +63,16 @@ class ConstantSize:  # pylint: disable=too-few-public-methods
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ConstantSize:  # pylint: disable=too-few-public-methods
-    def __init__(self, _):
-        pass</code></pre>
+<pre><code class="python">class WaterMass(ExtensiveAttribute):
+    def __init__(self, builder):
+        super().__init__(builder, name=&#34;water mass&#34;)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute" href="../impl/extensive_attribute.html#PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute">ExtensiveAttribute</a></li>
+<li><a title="PySDM.attributes.impl.base_attribute.BaseAttribute" href="../impl/base_attribute.html#PySDM.attributes.impl.base_attribute.BaseAttribute">BaseAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -72,13 +85,13 @@ class ConstantSize:  # pylint: disable=too-few-public-methods
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.fragmentation_function" href="index.html">PySDM.physics.fragmentation_function</a></code></li>
+<li><code><a title="PySDM.attributes.physics" href="index.html">PySDM.attributes.physics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.fragmentation_function.constant_size.ConstantSize" href="#PySDM.physics.fragmentation_function.constant_size.ConstantSize">ConstantSize</a></code></h4>
+<h4><code><a title="PySDM.attributes.physics.mass.WaterMass" href="#PySDM.attributes.physics.mass.WaterMass">WaterMass</a></code></h4>
 </li>
 </ul>
 </li>

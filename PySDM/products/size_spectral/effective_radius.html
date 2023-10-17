@@ -70,12 +70,14 @@ class EffectiveRadius(MomentProduct):
             attr=&#34;volume&#34;,
             rank=2 / 3,
             filter_range=self.volume_range,
+            filter_attr=&#34;volume&#34;,
         )
         tmp[:] = self.buffer[:]
         self._download_moment_to_buffer(
             attr=&#34;volume&#34;,
             rank=1,
             filter_range=self.volume_range,
+            filter_attr=&#34;volume&#34;,
         )
         EffectiveRadius.__get_impl(self.buffer, tmp)
         return self.buffer</code></pre>
@@ -128,12 +130,14 @@ inheritance.</p></div>
             attr=&#34;volume&#34;,
             rank=2 / 3,
             filter_range=self.volume_range,
+            filter_attr=&#34;volume&#34;,
         )
         tmp[:] = self.buffer[:]
         self._download_moment_to_buffer(
             attr=&#34;volume&#34;,
             rank=1,
             filter_range=self.volume_range,
+            filter_attr=&#34;volume&#34;,
         )
         EffectiveRadius.__get_impl(self.buffer, tmp)
         return self.buffer</code></pre>

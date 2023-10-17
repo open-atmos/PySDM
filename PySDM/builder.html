@@ -39,14 +39,15 @@ import numpy as np
 
 from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.numerics.cell_id import CellID
+from PySDM.attributes.physics import WaterMass
 from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.physics.volume import Volume
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
     discretise_multiplicities,
 )
 from PySDM.particulator import Particulator
+from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
 
 
 class Builder:
@@ -56,7 +57,7 @@ class Builder:
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
             &#34;multiplicity&#34;: Multiplicities(self),
-            &#34;volume&#34;: Volume(self),
+            &#34;water mass&#34;: WaterMass(self),
             &#34;cell id&#34;: CellID(self),
         }
         self.aerosol_radius_threshold = 0
@@ -117,6 +118,19 @@ class Builder:
                 &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
                 DeprecationWarning,
             )
+
+        if &#34;volume&#34; in attributes and &#34;water mass&#34; not in attributes:
+            assert self.particulator.formulae.particle_shape_and_density.__name__ in (
+                LiquidSpheres.__name__,
+                MixedPhaseSpheres.__name__,
+            ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
+            attributes[
+                &#34;water mass&#34;
+            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                attributes[&#34;volume&#34;]
+            )
+            del attributes[&#34;volume&#34;]
+            self.request_attribute(&#34;volume&#34;)
 
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
@@ -197,7 +211,7 @@ def get_key(dynamic):
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
             &#34;multiplicity&#34;: Multiplicities(self),
-            &#34;volume&#34;: Volume(self),
+            &#34;water mass&#34;: WaterMass(self),
             &#34;cell id&#34;: CellID(self),
         }
         self.aerosol_radius_threshold = 0
@@ -258,6 +272,19 @@ def get_key(dynamic):
                 &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
                 DeprecationWarning,
             )
+
+        if &#34;volume&#34; in attributes and &#34;water mass&#34; not in attributes:
+            assert self.particulator.formulae.particle_shape_and_density.__name__ in (
+                LiquidSpheres.__name__,
+                MixedPhaseSpheres.__name__,
+            ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
+            attributes[
+                &#34;water mass&#34;
+            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                attributes[&#34;volume&#34;]
+            )
+            del attributes[&#34;volume&#34;]
+            self.request_attribute(&#34;volume&#34;)
 
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
@@ -333,6 +360,19 @@ def get_key(dynamic):
             &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
             DeprecationWarning,
         )
+
+    if &#34;volume&#34; in attributes and &#34;water mass&#34; not in attributes:
+        assert self.particulator.formulae.particle_shape_and_density.__name__ in (
+            LiquidSpheres.__name__,
+            MixedPhaseSpheres.__name__,
+        ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
+        attributes[
+            &#34;water mass&#34;
+        ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+            attributes[&#34;volume&#34;]
+        )
+        del attributes[&#34;volume&#34;]
+        self.request_attribute(&#34;volume&#34;)
 
     for dynamic in self.particulator.dynamics.values():
         dynamic.register(self)

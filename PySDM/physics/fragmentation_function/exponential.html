@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.breakup_fragmentations.constant_size API documentation</title>
-<meta name="description" content="Always produces fragments of size c in a given collisional breakup" />
+<title>PySDM.physics.fragmentation_function.exponential API documentation</title>
+<meta name="description" content="Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.exponential`" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,32 +19,22 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.breakup_fragmentations.constant_size</code></h1>
+<h1 class="title">Module <code>PySDM.physics.fragmentation_function.exponential</code></h1>
 </header>
 <section id="section-intro">
-<p>Always produces fragments of size c in a given collisional breakup</p>
+<p>Formulae supporting <code><a title="PySDM.dynamics.collisions.breakup_fragmentations.exponential" href="../../dynamics/collisions/breakup_fragmentations/exponential.html">PySDM.dynamics.collisions.breakup_fragmentations.exponential</a></code></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Always produces fragments of size c in a given collisional breakup
+Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.exponential`
 &#34;&#34;&#34;
 
 
-class ConstantSize:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, c):
-        self.particulator = None
-        self.C = c
-
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
-        frag_size[:] = self.C
-        nf.sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        nf /= self.C
-
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;volume&#34;)</code></pre>
+class Exponential:  # pylint: disable=too-few-public-methods
+    def __init__(self, _):
+        pass</code></pre>
 </details>
 </section>
 <section>
@@ -56,9 +46,9 @@ class ConstantSize:  # pylint: disable=too-many-instance-attributes
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.constant_size.ConstantSize"><code class="flex name class">
-<span>class <span class="ident">ConstantSize</span></span>
-<span>(</span><span>c)</span>
+<dt id="PySDM.physics.fragmentation_function.exponential.Exponential"><code class="flex name class">
+<span>class <span class="ident">Exponential</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -66,37 +56,14 @@ class ConstantSize:  # pylint: disable=too-many-instance-attributes
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ConstantSize:  # pylint: disable=too-many-instance-attributes
-    def __init__(self, c):
-        self.particulator = None
-        self.C = c
-
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
-        frag_size[:] = self.C
-        nf.sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        nf /= self.C
-
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;volume&#34;)</code></pre>
+<pre><code class="python">class Exponential:  # pylint: disable=too-few-public-methods
+    def __init__(self, _):
+        pass</code></pre>
 </details>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.constant_size.ConstantSize.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def register(self, builder):
-    self.particulator = builder.particulator
-    builder.request_attribute(&#34;volume&#34;)</code></pre>
-</details>
-</dd>
-</dl>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM.physics.fragmentation_function.expon_frag.ExponFrag" href="expon_frag.html#PySDM.physics.fragmentation_function.expon_frag.ExponFrag">ExponFrag</a></li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -109,16 +76,13 @@ class ConstantSize:  # pylint: disable=too-many-instance-attributes
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations" href="index.html">PySDM.dynamics.collisions.breakup_fragmentations</a></code></li>
+<li><code><a title="PySDM.physics.fragmentation_function" href="index.html">PySDM.physics.fragmentation_function</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_size.ConstantSize" href="#PySDM.dynamics.collisions.breakup_fragmentations.constant_size.ConstantSize">ConstantSize</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_size.ConstantSize.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.constant_size.ConstantSize.register">register</a></code></li>
-</ul>
+<h4><code><a title="PySDM.physics.fragmentation_function.exponential.Exponential" href="#PySDM.physics.fragmentation_function.exponential.Exponential">Exponential</a></code></h4>
 </li>
 </ul>
 </li>

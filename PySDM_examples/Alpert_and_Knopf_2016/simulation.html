@@ -159,6 +159,7 @@ class Simulation:
         assert variant in (&#34;apparent&#34;, &#34;actual&#34;)
 
         formulae = Formulae(
+            particle_shape_and_density=&#34;MixedPhaseSpheres&#34;,
             heterogeneous_ice_nucleation_rate=&#34;ABIFM&#34;,
             constants={
                 &#34;ABIFM_M&#34;: self.cases[abifm_params_case][&#34;ABIFM_m&#34;],
@@ -240,6 +241,7 @@ def simulation(
         seed=seed,
         heterogeneous_ice_nucleation_rate=heterogeneous_ice_nucleation_rate,
         constants=constants,
+        particle_shape_and_density=&#34;MixedPhaseSpheres&#34;,
     )
     builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
     env = Box(dt=time_step, dv=volume)
@@ -327,6 +329,7 @@ def simulation(
         seed=seed,
         heterogeneous_ice_nucleation_rate=heterogeneous_ice_nucleation_rate,
         constants=constants,
+        particle_shape_and_density=&#34;MixedPhaseSpheres&#34;,
     )
     builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
     env = Box(dt=time_step, dv=volume)
@@ -508,6 +511,7 @@ def simulation(
         assert variant in (&#34;apparent&#34;, &#34;actual&#34;)
 
         formulae = Formulae(
+            particle_shape_and_density=&#34;MixedPhaseSpheres&#34;,
             heterogeneous_ice_nucleation_rate=&#34;ABIFM&#34;,
             constants={
                 &#34;ABIFM_M&#34;: self.cases[abifm_params_case][&#34;ABIFM_m&#34;],
@@ -631,6 +635,7 @@ def simulation(
     assert variant in (&#34;apparent&#34;, &#34;actual&#34;)
 
     formulae = Formulae(
+        particle_shape_and_density=&#34;MixedPhaseSpheres&#34;,
         heterogeneous_ice_nucleation_rate=&#34;ABIFM&#34;,
         constants={
             &#34;ABIFM_M&#34;: self.cases[abifm_params_case][&#34;ABIFM_m&#34;],

@@ -34,7 +34,7 @@ from collections import namedtuple
 
 
 class SingularAttributes(
-    namedtuple(&#34;SingularAttributes&#34;, (&#34;freezing_temperature&#34;, &#34;wet_volume&#34;))
+    namedtuple(&#34;SingularAttributes&#34;, (&#34;freezing_temperature&#34;, &#34;water_mass&#34;))
 ):
     &#34;&#34;&#34;groups attributes required in singular regime&#34;&#34;&#34;
 
@@ -42,7 +42,7 @@ class SingularAttributes(
 
 
 class TimeDependentAttributes(
-    namedtuple(&#34;TimeDependentAttributes&#34;, (&#34;immersed_surface_area&#34;, &#34;wet_volume&#34;))
+    namedtuple(&#34;TimeDependentAttributes&#34;, (&#34;immersed_surface_area&#34;, &#34;water_mass&#34;))
 ):
     &#34;&#34;&#34;groups attributes required in time-dependent regime&#34;&#34;&#34;
 
@@ -60,7 +60,7 @@ class TimeDependentAttributes(
 <dl>
 <dt id="PySDM.backends.impl_common.freezing_attributes.SingularAttributes"><code class="flex name class">
 <span>class <span class="ident">SingularAttributes</span></span>
-<span>(</span><span>freezing_temperature, wet_volume)</span>
+<span>(</span><span>freezing_temperature, water_mass)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>groups attributes required in singular regime</p></div>
@@ -69,7 +69,7 @@ class TimeDependentAttributes(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SingularAttributes(
-    namedtuple(&#34;SingularAttributes&#34;, (&#34;freezing_temperature&#34;, &#34;wet_volume&#34;))
+    namedtuple(&#34;SingularAttributes&#34;, (&#34;freezing_temperature&#34;, &#34;water_mass&#34;))
 ):
     &#34;&#34;&#34;groups attributes required in singular regime&#34;&#34;&#34;
 
@@ -82,7 +82,7 @@ class TimeDependentAttributes(
 </dd>
 <dt id="PySDM.backends.impl_common.freezing_attributes.TimeDependentAttributes"><code class="flex name class">
 <span>class <span class="ident">TimeDependentAttributes</span></span>
-<span>(</span><span>immersed_surface_area, wet_volume)</span>
+<span>(</span><span>immersed_surface_area, water_mass)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>groups attributes required in time-dependent regime</p></div>
@@ -91,7 +91,7 @@ class TimeDependentAttributes(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TimeDependentAttributes(
-    namedtuple(&#34;TimeDependentAttributes&#34;, (&#34;immersed_surface_area&#34;, &#34;wet_volume&#34;))
+    namedtuple(&#34;TimeDependentAttributes&#34;, (&#34;immersed_surface_area&#34;, &#34;water_mass&#34;))
 ):
     &#34;&#34;&#34;groups attributes required in time-dependent regime&#34;&#34;&#34;
 

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.breakup_fragmentations.gaussian API documentation</title>
-<meta name="description" content="P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes" />
+<title>PySDM.dynamics.collisions.breakup_fragmentations.constant_mass API documentation</title>
+<meta name="description" content="Always produces fragments of mass c in a given collisional breakup" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,53 +19,31 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.breakup_fragmentations.gaussian</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.breakup_fragmentations.constant_mass</code></h1>
 </header>
 <section id="section-intro">
-<p>P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes</p>
+<p>Always produces fragments of mass c in a given collisional breakup</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes
+Always produces fragments of mass c in a given collisional breakup
 &#34;&#34;&#34;
-from .impl import VolumeBasedFragmentationFunction
 
 
-class Gaussian(
-    VolumeBasedFragmentationFunction
-):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
-        super().__init__()
-        self.mu = mu
-        self.sigma = sigma
-        self.vmin = vmin
-        self.nfmax = nfmax
-        self.sum_of_volumes = None
+class ConstantMass:  # pylint: disable=too-many-instance-attributes
+    def __init__(self, c):
+        self.particulator = None
+        self.C = c
+
+    def __call__(self, nf, frag_mass, u01, is_first_in_pair):
+        frag_mass[:] = self.C
+        nf.sum(self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair)
+        nf /= self.C
 
     def register(self, builder):
-        super().register(builder)
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
-
-    def compute_fragment_number_and_volumes(
-        self, nf, frag_volume, u01, is_first_in_pair
-    ):
-        self.sum_of_volumes.sum(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
-        )
-        self.particulator.backend.gauss_fragmentation(
-            n_fragment=nf,
-            mu=self.mu,
-            sigma=self.sigma,
-            frag_volume=frag_volume,
-            x_plus_y=self.sum_of_volumes,
-            rand=u01,
-            vmin=self.vmin,
-            nfmax=self.nfmax,
-        )</code></pre>
+        self.particulator = builder.particulator</code></pre>
 </details>
 </section>
 <section>
@@ -77,9 +55,9 @@ class Gaussian(
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian"><code class="flex name class">
-<span>class <span class="ident">Gaussian</span></span>
-<span>(</span><span>mu, sigma, vmin=0.0, nfmax=None)</span>
+<dt id="PySDM.dynamics.collisions.breakup_fragmentations.constant_mass.ConstantMass"><code class="flex name class">
+<span>class <span class="ident">ConstantMass</span></span>
+<span>(</span><span>c)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,74 +65,22 @@ class Gaussian(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Gaussian(
-    VolumeBasedFragmentationFunction
-):  # pylint: disable=too-many-instance-attributes
-    def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
-        super().__init__()
-        self.mu = mu
-        self.sigma = sigma
-        self.vmin = vmin
-        self.nfmax = nfmax
-        self.sum_of_volumes = None
+<pre><code class="python">class ConstantMass:  # pylint: disable=too-many-instance-attributes
+    def __init__(self, c):
+        self.particulator = None
+        self.C = c
+
+    def __call__(self, nf, frag_mass, u01, is_first_in_pair):
+        frag_mass[:] = self.C
+        nf.sum(self.particulator.attributes[&#34;water mass&#34;], is_first_in_pair)
+        nf /= self.C
 
     def register(self, builder):
-        super().register(builder)
-        self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
-
-    def compute_fragment_number_and_volumes(
-        self, nf, frag_volume, u01, is_first_in_pair
-    ):
-        self.sum_of_volumes.sum(
-            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
-        )
-        self.particulator.backend.gauss_fragmentation(
-            n_fragment=nf,
-            mu=self.mu,
-            sigma=self.sigma,
-            frag_volume=frag_volume,
-            x_plus_y=self.sum_of_volumes,
-            rand=u01,
-            vmin=self.vmin,
-            nfmax=self.nfmax,
-        )</code></pre>
+        self.particulator = builder.particulator</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction" href="impl/volume_based.html#PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction">VolumeBasedFragmentationFunction</a></li>
-</ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes"><code class="name flex">
-<span>def <span class="ident">compute_fragment_number_and_volumes</span></span>(<span>self, nf, frag_volume, u01, is_first_in_pair)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def compute_fragment_number_and_volumes(
-    self, nf, frag_volume, u01, is_first_in_pair
-):
-    self.sum_of_volumes.sum(
-        self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
-    )
-    self.particulator.backend.gauss_fragmentation(
-        n_fragment=nf,
-        mu=self.mu,
-        sigma=self.sigma,
-        frag_volume=frag_volume,
-        x_plus_y=self.sum_of_volumes,
-        rand=u01,
-        vmin=self.vmin,
-        nfmax=self.nfmax,
-    )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register"><code class="name flex">
+<dt id="PySDM.dynamics.collisions.breakup_fragmentations.constant_mass.ConstantMass.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
@@ -164,10 +90,7 @@ class Gaussian(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    super().register(builder)
-    self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
-        self.particulator.n_sd // 2, dtype=float
-    )</code></pre>
+    self.particulator = builder.particulator</code></pre>
 </details>
 </dd>
 </dl>
@@ -189,10 +112,9 @@ class Gaussian(
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian">Gaussian</a></code></h4>
+<h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_mass.ConstantMass" href="#PySDM.dynamics.collisions.breakup_fragmentations.constant_mass.ConstantMass">ConstantMass</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes">compute_fragment_number_and_volumes</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register">register</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.constant_mass.ConstantMass.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.constant_mass.ConstantMass.register">register</a></code></li>
 </ul>
 </li>
 </ul>

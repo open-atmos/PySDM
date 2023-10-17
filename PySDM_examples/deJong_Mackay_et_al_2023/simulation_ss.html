@@ -55,7 +55,8 @@ def run_to_steady_state(parameterization, n_sd, steps, nruns=1, dt=1 * si.s):
             settings = Settings0D(
                 seed=7 ** (irun + 1),
                 fragmentation=Straub2010Nf(
-                    vmin=(0.01 * si.mm) ** 3 * np.pi / 6, nfmax=10000
+                    vmin=(0.01 * si.mm) ** 3 * np.pi / 6,
+                    nfmax=10000,
                 ),
             )
             settings.coal_eff = Straub2010Ec()
@@ -374,7 +375,8 @@ def get_straub_fig10_data():
             settings = Settings0D(
                 seed=7 ** (irun + 1),
                 fragmentation=Straub2010Nf(
-                    vmin=(0.01 * si.mm) ** 3 * np.pi / 6, nfmax=10000
+                    vmin=(0.01 * si.mm) ** 3 * np.pi / 6,
+                    nfmax=10000,
                 ),
             )
             settings.coal_eff = Straub2010Ec()

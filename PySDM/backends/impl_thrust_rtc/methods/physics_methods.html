@@ -118,6 +118,30 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             ),
         )
 
+    @cached_property
+    def __volume_of_mass_body(self):
+        return trtc.For(
+            param_names=(&#34;volume&#34;, &#34;mass&#34;),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            volume[i] = {self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass=&#34;mass[i]&#34;)};
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
+
+    @cached_property
+    def __mass_of_volume_body(self):
+        return trtc.For(
+            param_names=(&#34;mass&#34;, &#34;volume&#34;),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume=&#34;volume[i]&#34;)};
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
+
     @nice_thrust(**NICE_THRUST_FLAGS)
     def critical_volume(self, *, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.__critical_volume_body.launch_n(
@@ -164,7 +188,13 @@ class PhysicsMethods(ThrustRTCBackendMethods):
     def explicit_euler(self, y, dt, dy_dt):
         dt = self._get_floating_point(dt)
         dy_dt = self._get_floating_point(dy_dt)
-        self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))</code></pre>
+        self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
+
+    def volume_of_water_mass(self, volume, mass):
+        self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))
+
+    def mass_of_water_volume(self, mass, volume):
+        self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))</code></pre>
 </details>
 </section>
 <section>
@@ -264,6 +294,30 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             ),
         )
 
+    @cached_property
+    def __volume_of_mass_body(self):
+        return trtc.For(
+            param_names=(&#34;volume&#34;, &#34;mass&#34;),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            volume[i] = {self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass=&#34;mass[i]&#34;)};
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
+
+    @cached_property
+    def __mass_of_volume_body(self):
+        return trtc.For(
+            param_names=(&#34;mass&#34;, &#34;volume&#34;),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume=&#34;volume[i]&#34;)};
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
+
     @nice_thrust(**NICE_THRUST_FLAGS)
     def critical_volume(self, *, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.__critical_volume_body.launch_n(
@@ -310,7 +364,13 @@ class PhysicsMethods(ThrustRTCBackendMethods):
     def explicit_euler(self, y, dt, dy_dt):
         dt = self._get_floating_point(dt)
         dy_dt = self._get_floating_point(dy_dt)
-        self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))</code></pre>
+        self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
+
+    def volume_of_water_mass(self, volume, mass):
+        self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))
+
+    def mass_of_water_volume(self, mass, volume):
+        self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -359,6 +419,19 @@ class PhysicsMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume"><code class="name flex">
+<span>def <span class="ident">mass_of_water_volume</span></span>(<span>self, mass, volume)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mass_of_water_volume(self, mass, volume):
+    self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH"><code class="name flex">
 <span>def <span class="ident">temperature_pressure_RH</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
@@ -395,6 +468,19 @@ class PhysicsMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass"><code class="name flex">
+<span>def <span class="ident">volume_of_water_mass</span></span>(<span>self, volume, mass)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def volume_of_water_mass(self, volume, mass):
+    self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -418,8 +504,10 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 <ul class="">
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.critical_volume" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.critical_volume">critical_volume</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.explicit_euler" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.explicit_euler">explicit_euler</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume">mass_of_water_volume</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH">temperature_pressure_RH</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.terminal_velocity" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.terminal_velocity">terminal_velocity</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass">volume_of_water_mass</a></code></li>
 </ul>
 </li>
 </ul>

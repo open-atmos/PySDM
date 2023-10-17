@@ -51,6 +51,8 @@ class Freezing:
     def register(self, builder):
         self.particulator = builder.particulator
 
+        assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
+
         builder.request_attribute(&#34;volume&#34;)
         if self.singular or self.record_freezing_temperature:
             builder.request_attribute(&#34;freezing temperature&#34;)
@@ -83,7 +85,7 @@ class Freezing:
                     freezing_temperature=self.particulator.attributes[
                         &#34;freezing temperature&#34;
                     ],
-                    wet_volume=self.particulator.attributes[&#34;volume&#34;],
+                    water_mass=self.particulator.attributes[&#34;water mass&#34;],
                 ),
                 temperature=self.particulator.environment[&#34;T&#34;],
                 relative_humidity=self.particulator.environment[&#34;RH&#34;],
@@ -98,7 +100,7 @@ class Freezing:
                     immersed_surface_area=self.particulator.attributes[
                         &#34;immersed surface area&#34;
                     ],
-                    wet_volume=self.particulator.attributes[&#34;volume&#34;],
+                    water_mass=self.particulator.attributes[&#34;water mass&#34;],
                 ),
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#34;cell id&#34;],
@@ -114,7 +116,7 @@ class Freezing:
                 thaw=self.thaw,
             )
 
-        self.particulator.attributes.mark_updated(&#34;volume&#34;)
+        self.particulator.attributes.mark_updated(&#34;water mass&#34;)
         if self.record_freezing_temperature:
             self.particulator.attributes.mark_updated(&#34;freezing temperature&#34;)</code></pre>
 </details>
@@ -152,6 +154,8 @@ class Freezing:
     def register(self, builder):
         self.particulator = builder.particulator
 
+        assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
+
         builder.request_attribute(&#34;volume&#34;)
         if self.singular or self.record_freezing_temperature:
             builder.request_attribute(&#34;freezing temperature&#34;)
@@ -184,7 +188,7 @@ class Freezing:
                     freezing_temperature=self.particulator.attributes[
                         &#34;freezing temperature&#34;
                     ],
-                    wet_volume=self.particulator.attributes[&#34;volume&#34;],
+                    water_mass=self.particulator.attributes[&#34;water mass&#34;],
                 ),
                 temperature=self.particulator.environment[&#34;T&#34;],
                 relative_humidity=self.particulator.environment[&#34;RH&#34;],
@@ -199,7 +203,7 @@ class Freezing:
                     immersed_surface_area=self.particulator.attributes[
                         &#34;immersed surface area&#34;
                     ],
-                    wet_volume=self.particulator.attributes[&#34;volume&#34;],
+                    water_mass=self.particulator.attributes[&#34;water mass&#34;],
                 ),
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#34;cell id&#34;],
@@ -215,7 +219,7 @@ class Freezing:
                 thaw=self.thaw,
             )
 
-        self.particulator.attributes.mark_updated(&#34;volume&#34;)
+        self.particulator.attributes.mark_updated(&#34;water mass&#34;)
         if self.record_freezing_temperature:
             self.particulator.attributes.mark_updated(&#34;freezing temperature&#34;)</code></pre>
 </details>
@@ -232,6 +236,8 @@ class Freezing:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
+
+    assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
 
     builder.request_attribute(&#34;volume&#34;)
     if self.singular or self.record_freezing_temperature:

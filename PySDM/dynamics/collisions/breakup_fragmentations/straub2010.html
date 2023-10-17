@@ -32,11 +32,13 @@ See [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1)
 &#34;&#34;&#34;
 from PySDM.physics.constants import si
 
+from .impl import VolumeBasedFragmentationFunction
 
-class Straub2010Nf:
+
+class Straub2010Nf(VolumeBasedFragmentationFunction):
     # pylint: disable=too-many-instance-attributes
     def __init__(self, vmin=0.0, nfmax=None):
-        self.particulator = None
+        super().__init__()
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
@@ -46,7 +48,7 @@ class Straub2010Nf:
         self.const = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
+        super().register(builder)
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
@@ -55,7 +57,6 @@ class Straub2010Nf:
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;volume&#34;)
         builder.request_attribute(&#34;relative fall velocity&#34;)
         for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;gam&#34;, &#34;CW&#34;, &#34;ds&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -66,7 +67,9 @@ class Straub2010Nf:
                 self.particulator.n_sd // 2, dtype=float
             )
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
         self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.sum_of_volumes.sum(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
@@ -111,7 +114,7 @@ class Straub2010Nf:
             CW=self.arrays[&#34;CW&#34;],
             gam=self.arrays[&#34;gam&#34;],
             ds=self.arrays[&#34;ds&#34;],
-            frag_size=frag_size,
+            frag_volume=frag_volume,
             v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
@@ -145,10 +148,10 @@ class Straub2010Nf:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Straub2010Nf:
+<pre><code class="python">class Straub2010Nf(VolumeBasedFragmentationFunction):
     # pylint: disable=too-many-instance-attributes
     def __init__(self, vmin=0.0, nfmax=None):
-        self.particulator = None
+        super().__init__()
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
@@ -158,7 +161,7 @@ class Straub2010Nf:
         self.const = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
+        super().register(builder)
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
@@ -167,7 +170,6 @@ class Straub2010Nf:
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;volume&#34;)
         builder.request_attribute(&#34;relative fall velocity&#34;)
         for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;gam&#34;, &#34;CW&#34;, &#34;ds&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -178,7 +180,9 @@ class Straub2010Nf:
                 self.particulator.n_sd // 2, dtype=float
             )
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
         self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         self.sum_of_volumes.sum(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
@@ -223,7 +227,7 @@ class Straub2010Nf:
             CW=self.arrays[&#34;CW&#34;],
             gam=self.arrays[&#34;gam&#34;],
             ds=self.arrays[&#34;ds&#34;],
-            frag_size=frag_size,
+            frag_volume=frag_volume,
             v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
@@ -237,8 +241,83 @@ class Straub2010Nf:
             d34=self.straub_tmp[&#34;d34&#34;],
         )</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction" href="impl/volume_based.html#PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction">VolumeBasedFragmentationFunction</a></li>
+</ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.compute_fragment_number_and_volumes"><code class="name flex">
+<span>def <span class="ident">compute_fragment_number_and_volumes</span></span>(<span>self, nf, frag_volume, u01, is_first_in_pair)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_fragment_number_and_volumes(
+    self, nf, frag_volume, u01, is_first_in_pair
+):
+    self.max_size.max(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+    self.sum_of_volumes.sum(
+        self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+    )
+    self.arrays[&#34;ds&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+    self.arrays[&#34;ds&#34;] *= 2
+
+    # compute the dimensionless numbers and CW=CKE * We
+    self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+    self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
+    self.arrays[&#34;Sc&#34;] **= 2 / 3
+    self.arrays[&#34;Sc&#34;] *= (
+        self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
+    )
+    self.arrays[&#34;tmp2&#34;].distance(
+        self.particulator.attributes[&#34;relative fall velocity&#34;], is_first_in_pair
+    )
+    self.arrays[&#34;tmp2&#34;] **= 2
+    self.arrays[&#34;CKE&#34;].multiply(
+        self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+    )
+    self.arrays[&#34;CKE&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
+    self.arrays[&#34;CKE&#34;] *= self.arrays[&#34;tmp2&#34;]
+    self.arrays[&#34;CKE&#34;] *= self.const.rho_w / 2
+
+    self.arrays[&#34;We&#34;].fill(self.arrays[&#34;CKE&#34;])
+    self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
+
+    self.arrays[&#34;CW&#34;].fill(self.arrays[&#34;We&#34;])
+    self.arrays[&#34;CW&#34;] *= self.arrays[&#34;CKE&#34;]
+    self.arrays[&#34;CW&#34;] /= si.uJ
+
+    self.arrays[&#34;gam&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+    self.arrays[&#34;tmp&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+    self.arrays[&#34;gam&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
+
+    for key in (&#34;Nr1&#34;, &#34;Nr2&#34;, &#34;Nr3&#34;, &#34;Nr4&#34;, &#34;Nrt&#34;):
+        self.straub_tmp[key] *= 0.0
+
+    self.particulator.backend.straub_fragmentation(
+        n_fragment=nf,
+        CW=self.arrays[&#34;CW&#34;],
+        gam=self.arrays[&#34;gam&#34;],
+        ds=self.arrays[&#34;ds&#34;],
+        frag_volume=frag_volume,
+        v_max=self.max_size,
+        x_plus_y=self.sum_of_volumes,
+        rand=u01,
+        vmin=self.vmin,
+        nfmax=self.nfmax,
+        Nr1=self.straub_tmp[&#34;Nr1&#34;],
+        Nr2=self.straub_tmp[&#34;Nr2&#34;],
+        Nr3=self.straub_tmp[&#34;Nr3&#34;],
+        Nr4=self.straub_tmp[&#34;Nr4&#34;],
+        Nrt=self.straub_tmp[&#34;Nrt&#34;],
+        d34=self.straub_tmp[&#34;d34&#34;],
+    )</code></pre>
+</details>
+</dd>
 <dt id="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -249,7 +328,7 @@ class Straub2010Nf:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.particulator = builder.particulator
+    super().register(builder)
     self.max_size = self.particulator.PairwiseStorage.empty(
         self.particulator.n_sd // 2, dtype=float
     )
@@ -258,7 +337,6 @@ class Straub2010Nf:
     )
     self.const = self.particulator.formulae.constants
     builder.request_attribute(&#34;radius&#34;)
-    builder.request_attribute(&#34;volume&#34;)
     builder.request_attribute(&#34;relative fall velocity&#34;)
     for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;CKE&#34;, &#34;We&#34;, &#34;gam&#34;, &#34;CW&#34;, &#34;ds&#34;):
         self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -291,6 +369,7 @@ class Straub2010Nf:
 <li>
 <h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf" href="#PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf">Straub2010Nf</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.compute_fragment_number_and_volumes" href="#PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.compute_fragment_number_and_volumes">compute_fragment_number_and_volumes</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.straub2010.Straub2010Nf.register">register</a></code></li>
 </ul>
 </li>
