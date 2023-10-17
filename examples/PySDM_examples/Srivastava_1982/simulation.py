@@ -26,7 +26,7 @@ class Simulation:
             backend=self.settings.backend_class(
                 formulae=Formulae(
                     constants={"rho_w": self.settings.rho},
-                    fragmentation_function="ConstantSize",
+                    fragmentation_function="ConstantMass",
                     seed=seed,
                 ),
                 double_precision=self.double_precision,

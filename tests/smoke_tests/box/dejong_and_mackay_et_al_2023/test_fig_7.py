@@ -6,9 +6,9 @@ from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_et_al_2023 import Settings0D, run_box_breakup
 
 from PySDM.backends import CPU, GPU
-from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, ExponFrag
+from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponential
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.physics.constants import si
+from PySDM.physics import si
 
 CMAP = matplotlib.cm.get_cmap("viridis")
 N_SD = 2**12
@@ -21,13 +21,13 @@ def bins_edges(num):
     )
 
 
-class TestFig4:
+class TestFig7:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
         (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
     )
-    def test_fig_4a(backend_class, plot=False):
+    def test_fig_7a(backend_class, plot=False):
         # arrange
         settings0 = Settings0D(seed=44)
         settings0.n_sd = N_SD
@@ -102,7 +102,7 @@ class TestFig4:
             )
 
     @staticmethod
-    def test_fig_4b(backend_class, plot=False):  # pylint: disable=too-many-locals
+    def test_fig_7b(backend_class, plot=False):  # pylint: disable=too-many-locals
         # arrange
         settings0 = Settings0D()
         settings0.n_sd = N_SD
@@ -118,8 +118,10 @@ class TestFig4:
         data_x[lbl], data_y[lbl] = res.x, res.y
         for i, mu_val in enumerate(mu_vals):
             settings = Settings0D(
-                fragmentation=ExponFrag(
-                    scale=mu_val, vmin=(1 * si.um) ** 3, nfmax=None
+                fragmentation=Exponential(
+                    scale=mu_val,
+                    vmin=(1 * si.um) ** 3,
+                    nfmax=None,
                 ),
                 warn_overflows=False,
                 seed=44,

@@ -15,7 +15,7 @@ def init_fall_momenta(
     volume: np.ndarray,
     rho_w: float,  # TODO #798 - we plan to use masses instead of volumes soon
     zero: bool = False,
-    terminal_velocity_approx=Interpolation,
+    terminal_velocity_approx=Interpolation,  # TODO #1155
 ):
     """
     Calculate default values of the
@@ -33,7 +33,7 @@ def init_fall_momenta(
     if zero:
         return np.zeros_like(volume)
 
-    particulator = Particulator(0, CPU(Formulae()))
+    particulator = Particulator(0, CPU(Formulae()))  # TODO #1155
 
     approximation = terminal_velocity_approx(particulator=particulator)
 
@@ -44,4 +44,4 @@ def init_fall_momenta(
 
     approximation(output=output, radius=radii)
 
-    return output.to_ndarray() * volume * rho_w  # TODO #798
+    return output.to_ndarray() * volume * rho_w  # TODO #798 this assumes no ice
