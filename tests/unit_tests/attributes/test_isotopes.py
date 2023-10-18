@@ -1,3 +1,6 @@
+"""
+unit tests for isotope-related attributes
+"""
 import numpy as np
 import pytest
 
@@ -6,10 +9,10 @@ from PySDM.attributes.isotopes import ISOTOPES
 from PySDM.environments import Box
 
 
-def dummy_attrs(len):
+def dummy_attrs(length):
     return {
-        "water mass": np.asarray([np.nan] * len),
-        "multiplicity": np.asarray([-1] * len, dtype=int),
+        "water mass": np.asarray([np.nan] * length),
+        "multiplicity": np.asarray([-1] * length, dtype=int),
     }
 
 
