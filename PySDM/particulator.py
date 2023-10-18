@@ -438,3 +438,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 position_in_cell=position_in_cell,
                 n_substeps=n_substeps,
             )
+
+    def isotopic_fractionation(self):
+        self.backend.isotopic_fractionation()

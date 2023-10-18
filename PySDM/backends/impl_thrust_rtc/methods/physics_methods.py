@@ -113,21 +113,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-    @cached_property
-    def __isotopic_delta(self):
-        return trtc.For(
-            param_names=("output", "ratio", "reference_ratio"),
-            name_iter="i",
-            body=f"""
-            output[i] = {self.formulae.trivia.isotopic_ratio_2_delta.c_inline(
-                ratio="ratio[i]",
-                reference_ratio="reference_ratio"
-            )};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
-        )
-
     @nice_thrust(**NICE_THRUST_FLAGS)
     def critical_volume(self, *, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.__critical_volume_body.launch_n(
@@ -183,10 +168,3 @@ class PhysicsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def mass_of_water_volume(self, mass, volume):
         self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def isotopic_delta(self, output, ratio, reference_ratio):
-        self.__isotopic_delta.launch_n(
-            n=output.shape[0],
-            args=(output.data, ratio.data, self._get_floating_point(reference_ratio)),
-        )
