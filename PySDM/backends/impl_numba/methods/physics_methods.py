@@ -22,6 +22,7 @@ class PhysicsMethods(BackendMethods):
         phys_r_cr = self.formulae.hygroscopicity.r_cr
         phys_mass_to_volume = self.formulae.particle_shape_and_density.mass_to_volume
         phys_volume_to_mass = self.formulae.particle_shape_and_density.volume_to_mass
+        phys_isotopic_delta = self.formulae.trivia.isotopic_ratio_2_delta
         const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
@@ -87,14 +88,21 @@ class PhysicsMethods(BackendMethods):
             for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
                 volume[i] = phys_mass_to_volume(mass[i])
 
-        self.volume_of_mass = volume_of_mass
+        self.volume_of_mass_body = volume_of_mass
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def mass_of_volume(mass, volume):
             for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
                 mass[i] = phys_volume_to_mass(volume[i])
 
-        self.mass_of_volume = mass_of_volume
+        self.mass_of_volume_body = mass_of_volume
+
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def isotopic_delta(output, ratio, reference_ratio):
+            for i in prange(output.shape[0]):  # pylint: disable=not-an-iterable
+                output[i] = phys_isotopic_delta(ratio[i], reference_ratio)
+
+        self.isotopic_delta_body = isotopic_delta
 
     def temperature_pressure_RH(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
@@ -137,7 +145,10 @@ class PhysicsMethods(BackendMethods):
         )
 
     def volume_of_water_mass(self, volume, mass):
-        self.volume_of_mass(volume.data, mass.data)
+        self.volume_of_mass_body(volume.data, mass.data)
 
     def mass_of_water_volume(self, mass, volume):
-        self.mass_of_volume(mass.data, volume.data)
+        self.mass_of_volume_body(mass.data, volume.data)
+
+    def isotopic_delta(self, output, ratio, reference_ratio):
+        self.isotopic_delta_body(output.data, ratio.data, reference_ratio)

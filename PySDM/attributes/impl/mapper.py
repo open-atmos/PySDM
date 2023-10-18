@@ -7,10 +7,12 @@ from PySDM.attributes.chemistry import (
     Acidity,
     HydrogenIonConcentration,
     make_concentration_factory,
-    make_mole_amount_factory,
 )
 from PySDM.attributes.ice import CoolingRate, FreezingTemperature, ImmersedSurfaceArea
 from PySDM.attributes.impl.dummy_attribute import make_dummy_attribute_factory
+from PySDM.attributes.impl.mole_amount import make_mole_amount_factory
+from PySDM.attributes.isotopes import ISOTOPES
+from PySDM.attributes.isotopes.delta import make_delta_factory
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.physics import (
     Area,
@@ -102,6 +104,15 @@ attributes = {
     "equilibrium supersaturation": lambda _, __: EquilibriumSupersaturation,
     "wet to critical volume ratio": lambda _, __: WetToCriticalVolumeRatio,
     "water mass": lambda _, __: WaterMass,
+    **{
+        "moles_"
+        + isotope: partial(lambda _, __, c: make_mole_amount_factory(c), c=isotope)
+        for isotope in ISOTOPES
+    },
+    **{
+        "delta_" + isotope: partial(lambda _, __, c: make_delta_factory(c), c=isotope)
+        for isotope in ISOTOPES
+    },
 }
 
 

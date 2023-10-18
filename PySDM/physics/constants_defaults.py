@@ -280,4 +280,6 @@ CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 
 """ https://en.wikipedia.org/wiki/Vienna_Standard_Mean_Ocean_Water """
 VSMOW_R_2H = 155.76 * PPM
+VSMOW_R_3H = 1.85e-11 * PPM
 VSMOW_R_18O = 2005.20 * PPM
+VSMOW_R_17O = 379.9 * PPM
