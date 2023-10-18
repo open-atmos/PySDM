@@ -439,5 +439,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 n_substeps=n_substeps,
             )
 
-    def isotopic_fractionation(self):
+    def isotopic_fractionation(self, isotopes: tuple):
         self.backend.isotopic_fractionation()
+        for isotope in isotopes:
+            self.attributes.mark_updated(f"moles_{isotope}")
