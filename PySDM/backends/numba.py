@@ -36,10 +36,11 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
     default_croupier = "local"
 
-    def __init__(self, formulae=None, double_precision=True):
+    def __init__(self, formulae=None, double_precision=True, default_jit_flags=None):
         if not double_precision:
             raise NotImplementedError()
         self.formulae = formulae or Formulae()
+        self.default_jit_flags = default_jit_flags or {}
         CollisionsMethods.__init__(self)
         PairMethods.__init__(self)
         IndexMethods.__init__(self)
