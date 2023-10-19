@@ -32,6 +32,16 @@ Md = (
 )
 Mv = Substance.from_formula("H2O").mass * si.gram / si.mole
 
+# https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H
+M_1H = 1.00782503224 * si.g / si.mole
+M_2H = 2.01410177812 * si.g / si.mole
+M_3H = 3.01604927792 * si.g / si.mole
+
+# https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O
+M_16O = 15.99491461957 * si.g / si.mole
+M_17O = 16.99913175651 * si.g / si.mole
+M_18O = 17.99915961287 * si.g / si.mole
+
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 
