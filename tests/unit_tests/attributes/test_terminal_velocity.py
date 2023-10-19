@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from PySDM.dynamics.terminal_velocity import Interpolation, RogersYau
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, RogersYau
 from PySDM.physics import constants as const
 from tests.unit_tests.dummy_particulator import DummyParticulator
 
@@ -26,7 +26,7 @@ def test_approximation(backend_class, plot=False):
     RogersYau(particulator=particulator)(u_term_ry, r)
 
     u_term_inter = particulator.backend.Storage.from_ndarray(u_term_ry.to_ndarray())
-    Interpolation(particulator)(u_term_inter, r)
+    GunnKinzer1949(particulator)(u_term_inter, r)
 
     assert np.mean((u - u_term_ry) ** 2) < 2e-2
     assert np.mean((u - u_term_inter) ** 2) < 1e-6

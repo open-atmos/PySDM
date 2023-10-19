@@ -15,7 +15,7 @@ from PySDM.dynamics.terminal_velocity import gunn_and_kinzer
 
 def main(plot: bool, save):
     with np.errstate(all="ignore"):
-        u_term_approxs = (gunn_and_kinzer.Interpolation,)
+        u_term_approxs = (gunn_and_kinzer.GunnKinzer1949,)
         dts = (1, 10, "adaptive")
         setup_prop = {
             Geometric: (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
