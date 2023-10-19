@@ -14,12 +14,12 @@ from typing import Optional
 import numba
 import numpy as np
 import pint
-from dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
 from PySDM.dynamics.terminal_velocity import GunnKinzer1949, RogersYau
+from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
 class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
