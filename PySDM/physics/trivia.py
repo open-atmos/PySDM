@@ -125,3 +125,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
           δ_R0/SMOW is the initial SMOW-delta in the experiment
         """
         return (E + 1) * (delta_0_SMOW + 1) - 1
+
+    @staticmethod
+    def mixing_ratio_to_specific_content(mixing_ratio):
+        return mixing_ratio / (1 + mixing_ratio)

@@ -24,13 +24,21 @@ from .constants import (  # pylint: disable=unused-import
     M,
     si,
 )
+from .trivia import Trivia
 
+# https://physics.nist.gov/cgi-bin/Star/compos.pl?matno=104
 Md = (
-    0.78 * Substance.from_formula("N2").mass * si.gram / si.mole
-    + 0.21 * Substance.from_formula("O2").mass * si.gram / si.mole
-    + 0.01 * Substance.from_formula("Ar").mass * si.gram / si.mole
+    0.755267 * Substance.from_formula("N2").mass * si.gram / si.mole
+    + 0.231781 * Substance.from_formula("O2").mass * si.gram / si.mole
+    + 0.012827 * Substance.from_formula("Ar").mass * si.gram / si.mole
+    + 0.000124 * Substance.from_formula("C").mass * si.gram / si.mole
 )
-Mv = Substance.from_formula("H2O").mass * si.gram / si.mole
+
+# https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf
+VSMOW_R_2H = 155.76 * PPM
+VSMOW_R_3H = 1.85e-11 * PPM
+VSMOW_R_18O = 2005.20 * PPM
+VSMOW_R_17O = 379.9 * PPM
 
 # https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H
 M_1H = 1.00782503224 * si.g / si.mole
@@ -41,6 +49,19 @@ M_3H = 3.01604927792 * si.g / si.mole
 M_16O = 15.99491461957 * si.g / si.mole
 M_17O = 16.99913175651 * si.g / si.mole
 M_18O = 17.99915961287 * si.g / si.mole
+
+Mv = (
+    1
+    - Trivia.mixing_ratio_to_specific_content(
+        VSMOW_R_2H / 2 + VSMOW_R_2H / 2 + VSMOW_R_17O + VSMOW_R_18O
+    )
+) * (
+    (M_1H * 2 + M_16O)
+    + (M_2H * 2 + M_16O) * VSMOW_R_2H
+    + (M_3H * 2 + M_16O) * VSMOW_R_3H
+    + (M_1H * 2 + M_17O) * VSMOW_R_17O
+    + (M_1H * 2 + M_18O) * VSMOW_R_18O
+)
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
@@ -287,9 +308,3 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 """ [Craig 1961](https://doi.org/10.1126/science.133.3465.170) """
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
-
-""" https://en.wikipedia.org/wiki/Vienna_Standard_Mean_Ocean_Water """
-VSMOW_R_2H = 155.76 * PPM
-VSMOW_R_3H = 1.85e-11 * PPM
-VSMOW_R_18O = 2005.20 * PPM
-VSMOW_R_17O = 379.9 * PPM

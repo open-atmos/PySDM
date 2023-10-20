@@ -8,6 +8,7 @@ import pytest
 from scipy.constants import physical_constants
 
 from PySDM.physics import constants, constants_defaults, si
+from PySDM.physics.constants_defaults import Substance
 
 
 def consecutive_seeds():
@@ -113,19 +114,21 @@ class TestConstants:
             actual=getattr(constants_defaults, item), desired=value, significant=7
         )
 
-    def test_isotope_molar_masses_vsmow_vs_mean_water_molar_mass(self):
-        cd = constants_defaults
-        n_H2O = 1 / (
-            1 + cd.VSMOW_R_2H / 2 + cd.VSMOW_R_2H / 2 + cd.VSMOW_R_17O + cd.VSMOW_R_18O
-        )
+    @staticmethod
+    def test_isotope_molar_masses_vsmow_vs_mean_water_molar_mass():
         np.testing.assert_approx_equal(
             desired=constants_defaults.Mv,
-            actual=(
-                (cd.M_1H * 2 + cd.M_16O) * n_H2O
-                + (cd.M_2H * 2 + cd.M_16O) * cd.VSMOW_R_2H * n_H2O
-                + (cd.M_3H * 2 + cd.M_16O) * cd.VSMOW_R_3H * n_H2O
-                + (cd.M_1H * 2 + cd.M_17O) * cd.VSMOW_R_17O * n_H2O
-                + (cd.M_1H * 2 + cd.M_18O) * cd.VSMOW_R_18O * n_H2O
-            ),
+            actual=Substance.from_formula("H2O").mass * si.gram / si.mole,
             significant=5,
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "item, value",
+        (("Rd", 287 * si.J / si.K / si.kg), ("Rv", 461 * si.J / si.K / si.kg)),
+    )
+    def test_gas_constants_vs_ams_glossary(item, value):
+        # https://glossary.ametsoc.org/wiki/Gas_constant
+        np.testing.assert_allclose(
+            actual=getattr(constants_defaults, item), desired=value, rtol=5e-3, atol=0
         )
