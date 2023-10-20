@@ -40,7 +40,10 @@ class TestParticulator:
             def mark_updated(self, attr):
                 self.updated += [attr]
 
-        particulator = DummyParticulator(backend_class, 44)
+        class DP(DummyParticulator):
+            pass
+
+        particulator = DP(backend_class, 44)
         particulator.attributes = AttributesMock()
 
         # act
