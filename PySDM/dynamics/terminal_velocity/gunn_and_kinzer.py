@@ -110,7 +110,9 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
 
         self.minimum_radius = 0
         self.maximum_radius = 0.6 * const.si.cm
-        space, step = np.linspace(0, self.maximum_radius, num, retstep=True)
+        space, step = np.linspace(
+            self.minimum_radius, self.maximum_radius, num, retstep=True
+        )
         u = np.empty(num)
         u[:] = rbf(space)
         u[0] = 0
