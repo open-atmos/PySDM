@@ -3,12 +3,14 @@ resolves fractionation of water molecules across different isotopologues
 requires condensation dynamic to be registered (and run beforehand)
 """
 
-from PySDM.attributes.isotopes import ISOTOPES
-from PySDM.dynamics import Condensation
+from PySDM.dynamics.condensation import Condensation
+
+LIGHT_ISOTOPES = ("1H", "16O")
+HEAVY_ISOTOPES = ("2H", "3H", "17O", "18O")
 
 
 class IsotopicFractionation:
-    def __init__(self, isotopes: tuple = ISOTOPES):
+    def __init__(self, isotopes: tuple = HEAVY_ISOTOPES):
         self.isotopes = isotopes
         self.particulator = None
 
