@@ -12,7 +12,9 @@ from PySDM.physics import si
 @strict
 class Settings:
     def __init__(
-        self, steps: Optional[list] = None, terminal_velocity_variant="GunnKinzer1949"
+        self,
+        steps: Optional[list] = None,
+        terminal_velocity_variant: str = "GunnKinzer1949",
     ):
         steps = steps or [200 * i for i in range(10)]
 
