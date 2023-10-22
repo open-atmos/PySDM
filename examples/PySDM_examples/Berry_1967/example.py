@@ -10,12 +10,11 @@ from PySDM.dynamics.collisions.collision_kernels import (
     Geometric,
     Hydrodynamic,
 )
-from PySDM.dynamics.terminal_velocity import gunn_and_kinzer
 
 
 def main(plot: bool, save):
     with np.errstate(all="ignore"):
-        u_term_approxs = (gunn_and_kinzer.GunnKinzer1949,)
+        u_term_approxs = ("GunnKinzer1949",)
         dts = (1, 10, "adaptive")
         setup_prop = {
             Geometric: (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
@@ -30,7 +29,7 @@ def main(plot: bool, save):
                 setups[u_term_approx][dt] = {}
 
                 for kernel_type, steps in setup_prop.items():
-                    s = Settings()
+                    s = Settings(terminal_velocity_variant=u_term_approx)
                     s.dt = 10 if dt == "adaptive" else dt
                     s.adaptive = dt == "adaptive"
                     s.kernel = kernel_type()
@@ -57,7 +56,7 @@ def main(plot: bool, save):
                         plotter.save(
                             save
                             + "/"
-                            + f"{n_sd}_{u_term_approx.__name__}_{dt}_{kernel.__name__}"
+                            + f"{n_sd}_{u_term_approx}_{dt}_{kernel.__name__}"
                             + "."
                             + plotter.format
                         )
