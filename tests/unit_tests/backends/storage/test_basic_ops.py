@@ -44,3 +44,22 @@ class TestBasicOps:
 
         # Assert
         np.testing.assert_array_equal(output.to_ndarray(), np.exp(data))
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "data, expected",
+        [
+            ([1, 2], 2),
+            ([0, 0], 0),
+            ([999, 99, 9], 999),
+        ],
+    )
+    def test_amax(backend_class, data, expected):
+        backend = backend_class(double_precision=True)
+        output = backend.Storage.from_ndarray(np.asarray(data))
+
+        # Act
+        actual = output.amax()
+
+        # Assert
+        assert actual == expected
