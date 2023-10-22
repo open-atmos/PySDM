@@ -75,7 +75,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, water_mass, relative_humidity):
+    def unfrozen_and_saturated(water_mass, relative_humidity):
         return water_mass > 0 and relative_humidity > 1
 
     @staticmethod
@@ -99,20 +99,20 @@ class Trivia:  # pylint: disable=too-many-public-methods
         )
 
     @staticmethod
-    def rayleigh_fractionation(_, f, a):
+    def rayleigh_fractionation(f, a):
         """https://en.wikipedia.org/wiki/Rayleigh_fractionation"""
         return f ** (a - 1)
 
     @staticmethod
-    def isotopic_delta_2_ratio(_, delta, reference_ratio):
+    def isotopic_delta_2_ratio(delta, reference_ratio):
         return (delta + 1) * reference_ratio
 
     @staticmethod
-    def isotopic_ratio_2_delta(_, ratio, reference_ratio):
+    def isotopic_ratio_2_delta(ratio, reference_ratio):
         return ratio / reference_ratio - 1
 
     @staticmethod
-    def isotopic_enrichment_to_delta_SMOW(_, E, delta_0_SMOW):
+    def isotopic_enrichment_to_delta_SMOW(E, delta_0_SMOW):
         """(see also eq. 10 in Pierchala et al. 2022)
 
         conversion from E to delta_R_SMOW with:
