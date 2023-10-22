@@ -125,7 +125,8 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
         r_max = radius.amax()
         if r_max > self.maximum_radius:
             raise ValueError(
-                f"Radii can be interpolated up to {self.maximum_radius} m (max value of {r_max} m within input data)"
+                f"Radii can be interpolated up to {self.maximum_radius} m"
+                + f" (max value of {r_max} m within input data)"
             )
         self.particulator.backend.interpolation(
             output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
