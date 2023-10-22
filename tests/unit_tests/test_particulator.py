@@ -47,7 +47,7 @@ class TestParticulator:
         particulator.attributes = AttributesMock()
 
         # act
-        particulator.isotopic_fractionation(isotopes=isotopes)
+        particulator.isotopic_fractionation(heavy_isotopes=isotopes)
 
         # assert
         assert particulator.attributes.updated == [
