@@ -8,6 +8,7 @@ import pytest
 
 from PySDM import Builder
 from PySDM.dynamics import Condensation, IsotopicFractionation
+from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import si
 
@@ -45,7 +46,7 @@ def test_ensure_condensation_executed_before(backend_class, dynamics, context):
                     "water mass",
                     "dry volume",
                     "kappa times dry volume",
-                    "moles_1H",
+                    *[f"moles_{isotope}" for isotope in HEAVY_ISOTOPES],
                 )
             }
         )
