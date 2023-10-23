@@ -4,16 +4,44 @@ import pint
 import pytest
 
 from PySDM import Formulae
-from PySDM.physics import constants_defaults
+from PySDM.physics import constants_defaults, si
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 CASES = (
-    ("HDO", "ice", {-120: 1.82, 0: 1.13}),
-    ("HDO", "liquid", {-40: 1.2, 20: 1.08}),
-    ("H2_18O", "ice", {-120: 1.05, 0: 1.015}),
-    ("H2_18O", "liquid", {-40: 1.02, 20: 1.01}),
+    (
+        "HDO",
+        "ice",
+        {
+            -120 * si.K + constants_defaults.T0: 1.82,
+            0 * si.K + constants_defaults.T0: 1.13,
+        },
+    ),
+    (
+        "HDO",
+        "liquid",
+        {
+            -40 * si.K + constants_defaults.T0: 1.2,
+            20 * si.K + constants_defaults.T0: 1.08,
+        },
+    ),
+    (
+        "H2_18O",
+        "ice",
+        {
+            -120 * si.K + constants_defaults.T0: 1.05,
+            0 * si.K + constants_defaults.T0: 1.015,
+        },
+    ),
+    (
+        "H2_18O",
+        "liquid",
+        {
+            -40 * si.K + constants_defaults.T0: 1.02,
+            20 * si.K + constants_defaults.T0: 1.01,
+        },
+    ),
 )
-"""values from Fig. 1 in [Bolot et al. 2013](https://10.5194/acp-13-7903-2013)"""
+"""values from Fig. 1 in [Bolot et al. 2013](https://doi.org/10.5194/acp-13-7903-2013)"""
 
 PAPERS = ("BolotEtAl2013", "VanHook1968")
 
@@ -23,8 +51,10 @@ PAPERS = ("BolotEtAl2013", "VanHook1968")
 class TestIsotopeEquilibriumFractionationFactors:
     @staticmethod
     @pytest.mark.parametrize("paper", PAPERS)
-    @pytest.mark.parametrize("isotopologue, phase, expected_alpha_celsius_pairs", CASES)
-    def test_values(paper, isotopologue, phase, expected_alpha_celsius_pairs):
+    @pytest.mark.parametrize(
+        "isotopologue, phase, expected_temperature_alpha_pairs", CASES
+    )
+    def test_values(paper, isotopologue, phase, expected_temperature_alpha_pairs):
         # arrange
         formulae = Formulae(isotope_equilibrium_fractionation_factors=paper)
         sut = getattr(
@@ -34,20 +64,21 @@ class TestIsotopeEquilibriumFractionationFactors:
 
         # act
         actual_pairs = {
-            temp_celsius: sut(temp_celsius + formulae.constants.T0)
-            for temp_celsius in expected_alpha_celsius_pairs.keys()
+            temp: sut(temp) for temp in expected_temperature_alpha_pairs.keys()
         }
 
         # assert
-        for k, v in expected_alpha_celsius_pairs.items():
+        for k, v in expected_temperature_alpha_pairs.items():
             np.testing.assert_approx_equal(
                 actual=actual_pairs[k], desired=v, significant=2
             )
 
     @staticmethod
     @pytest.mark.parametrize("paper", PAPERS)
-    @pytest.mark.parametrize("isotopologue, phase, expected_alpha_celsius_pairs", CASES)
-    def test_monotonic(paper, isotopologue, phase, expected_alpha_celsius_pairs):
+    @pytest.mark.parametrize(
+        "isotopologue, phase, expected_temperature_alpha_pairs", CASES
+    )
+    def test_monotonic(paper, isotopologue, phase, expected_temperature_alpha_pairs):
         # arrange
         formulae = Formulae(isotope_equilibrium_fractionation_factors=paper)
         sut = getattr(
@@ -57,10 +88,9 @@ class TestIsotopeEquilibriumFractionationFactors:
 
         # act
         values = sut(
-            formulae.constants.T0
-            + np.linspace(
-                tuple(expected_alpha_celsius_pairs.keys())[0],
-                tuple(expected_alpha_celsius_pairs.keys())[-1],
+            np.linspace(
+                tuple(expected_temperature_alpha_pairs.keys())[0],
+                tuple(expected_temperature_alpha_pairs.keys())[-1],
                 100,
             )
         )
