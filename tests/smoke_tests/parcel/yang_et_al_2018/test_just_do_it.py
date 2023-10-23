@@ -5,7 +5,7 @@ from PySDM_examples.Yang_et_al_2018 import Settings, Simulation
 
 from PySDM.backends import CPU, GPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
-from PySDM.physics.constants import si
+from PySDM.physics import si
 
 #  TODO #527
 
@@ -15,7 +15,7 @@ from PySDM.physics.constants import si
 def test_just_do_it(scheme, adaptive, backend_class=CPU):
     # Arrange
     if scheme == "SciPy" and (not adaptive or backend_class is GPU):
-        return
+        pytest.skip()
 
     settings = Settings(dt_output=10 * si.second)
     settings.adaptive = adaptive

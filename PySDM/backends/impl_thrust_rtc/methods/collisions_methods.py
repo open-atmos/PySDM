@@ -77,8 +77,8 @@ struct Commons {
     int64_t j,
     int64_t k,
     VectorView<int64_t> multiplicity,
-    VectorView<real_type> volume,
-    real_type fragment_size_i,
+    VectorView<real_type> particle_mass,
+    real_type fragment_mass_i,
     int64_t max_multiplicity,
 
     real_type *take_from_j,
@@ -87,7 +87,7 @@ struct Commons {
     real_type gamma_j_k = 0;
     real_type take_from_j_test = multiplicity[k];
     take_from_j[0] = 0;
-    real_type new_mult_k_test = ((volume[j] + volume[k]) / fragment_size_i * multiplicity[k]);
+    real_type new_mult_k_test = ((particle_mass[j] + particle_mass[k]) / fragment_mass_i * multiplicity[k]);
     new_mult_k[0] = multiplicity[k];
 
     for (auto m = 0; m < (int64_t) (gamma); m += 1) {
@@ -104,7 +104,7 @@ struct Commons {
         gamma_j_k = m + 1;
 
         take_from_j_test += new_mult_k_test;
-        new_mult_k_test = new_mult_k_test * (volume[j] / fragment_size_i) + new_mult_k_test;
+        new_mult_k_test = new_mult_k_test * (particle_mass[j] / fragment_mass_i) + new_mult_k_test;
     }
     return gamma_j_k;
   }
@@ -168,11 +168,11 @@ struct Commons {
     VectorView<int64_t> multiplicity,
     VectorView<real_type> gamma,
     VectorView<real_type> attributes,
-    VectorView<real_type> fragment_size,
+    VectorView<real_type> fragment_mass,
     int64_t max_multiplicity,
     VectorView<int64_t> breakup_rate,
     VectorView<int64_t> breakup_rate_deficit,
-    VectorView<real_type> volume,
+    VectorView<real_type> particle_mass,
     int64_t n_sd,
     int64_t n_attr
   ) {
@@ -183,8 +183,8 @@ struct Commons {
         j,
         k,
         multiplicity,
-        volume,
-        fragment_size[i],
+        particle_mass,
+        fragment_mass[i],
         max_multiplicity,
         take_from_j,
         new_mult_k
@@ -359,7 +359,7 @@ class CollisionsMethods(
                 "rand",
                 "Ec",
                 "Eb",
-                "fragment_size",
+                "fragment_mass",
                 "healthy",
                 "cell_id",
                 "coalescence_rate",
@@ -367,7 +367,7 @@ class CollisionsMethods(
                 "breakup_rate_deficit",
                 "is_first_in_pair",
                 "max_multiplicity",
-                "volume",
+                "particle_mass",
                 "n_sd",
                 "n_attr",
             ),
@@ -407,11 +407,11 @@ class CollisionsMethods(
                     multiplicity,
                     gamma,
                     attributes,
-                    fragment_size,
+                    fragment_mass,
                     max_multiplicity,
                     breakup_rate,
                     breakup_rate_deficit,
-                    volume,
+                    particle_mass,
                     n_sd,
                     n_attr
                 );
@@ -524,10 +524,10 @@ class CollisionsMethods(
     @cached_property
     def __exp_fragmentation_body(self):
         return trtc.For(
-            param_names=("scale", "frag_size", "rand", "tol"),
+            param_names=("scale", "frag_volume", "rand", "tol"),
             name_iter="i",
             body="""
-            frag_size[i] = -scale * log(max(1 - rand[i], tol));
+            frag_volume[i] = -scale * log(max(1 - rand[i], tol));
             """,
         )
 
@@ -536,7 +536,7 @@ class CollisionsMethods(
         return trtc.For(
             param_names=(
                 "n_fragment",
-                "frag_size",
+                "frag_volume",
                 "x_plus_y",
                 "vmin",
                 "nfmax",
@@ -544,30 +544,30 @@ class CollisionsMethods(
             ),
             name_iter="i",
             body="""
-            frag_size[i] = min(frag_size[i], x_plus_y[i]);
+            frag_volume[i] = min(frag_volume[i], x_plus_y[i]);
 
             if (nfmax_is_not_none) {
-                if (x_plus_y[i] / frag_size[i] > nfmax) {
-                    frag_size[i] = x_plus_y[i] / nfmax;
+                if (x_plus_y[i] / frag_volume[i] > nfmax) {
+                    frag_volume[i] = x_plus_y[i] / nfmax;
                 }
             }
-            else if (frag_size[i] < vmin) {
-                frag_size[i] = x_plus_y[i];
+            else if (frag_volume[i] < vmin) {
+                frag_volume[i] = x_plus_y[i];
             }
-            else if (frag_size[i] == 0.0) {
-                frag_size[i] = x_plus_y[i];
+            else if (frag_volume[i] == 0.0) {
+                frag_volume[i] = x_plus_y[i];
             }
-            n_fragment[i] = x_plus_y[i] / frag_size[i];
+            n_fragment[i] = x_plus_y[i] / frag_volume[i];
             """,
         )
 
     @cached_property
     def __gauss_fragmentation_body(self):
         return trtc.For(
-            param_names=("mu", "sigma", "frag_size", "rand"),
+            param_names=("mu", "sigma", "frag_volume", "rand"),
             name_iter="i",
             body=f"""
-            frag_size[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
+            frag_volume[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
                 c="rand[i]"
             )};
             """.replace(
@@ -578,7 +578,7 @@ class CollisionsMethods(
     @cached_property
     def __slams_fragmentation_body(self):
         return trtc.For(
-            param_names=("n_fragment", "frag_size", "x_plus_y", "probs", "rand"),
+            param_names=("n_fragment", "frag_volume", "x_plus_y", "probs", "rand"),
             name_iter="i",
             body="""
             probs[i] = 0.0;
@@ -591,17 +591,17 @@ class CollisionsMethods(
                     break;
                 }
             }
-            frag_size[i] = x_plus_y[i] / n_fragment[i];
+            frag_volume[i] = x_plus_y[i] / n_fragment[i];
             """,
         )
 
     @cached_property
     def __feingold1988_fragmentation_body(self):
         return trtc.For(
-            param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
+            param_names=("scale", "frag_volume", "x_plus_y", "rand", "fragtol"),
             name_iter="i",
             body=f"""
-            frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
+            frag_volume[i] = {self.formulae.fragmentation_function.frag_volume.c_inline(
                 scale="scale",
                 rand="rand[i]",
                 x_plus_y="x_plus_y[i]",
@@ -656,7 +656,7 @@ class CollisionsMethods(
                 "CW",
                 "gam",
                 "ds",
-                "frag_size",
+                "frag_volume",
                 "v_max",
                 "rand",
                 "Nr1",
@@ -683,25 +683,25 @@ class CollisionsMethods(
                     auto lnarg = mu1 + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
-                    frag_size[i] = exp(lnarg);
+                    frag_volume[i] = exp(lnarg);
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
-                    frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
+                    frag_volume[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
                 }}
                 else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
-                    frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
+                    frag_volume[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
                         c="X"
                     )};
                 }}
                 else {{
-                    frag_size[i] = d34[i];
+                    frag_volume[i] = d34[i];
                 }}
 
-                frag_size[i] = pow(frag_size[i], 3) * {const.PI} / 6;
+                frag_volume[i] = pow(frag_volume[i], 3) * {const.PI} / 6;
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -824,7 +824,7 @@ class CollisionsMethods(
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         healthy,
         cell_id,
         coalescence_rate,
@@ -832,7 +832,7 @@ class CollisionsMethods(
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
-        volume,
+        particle_mass,
         max_multiplicity,
     ):
         if warn_overflows:
@@ -851,7 +851,7 @@ class CollisionsMethods(
                 rand.data,
                 Ec.data,
                 Eb.data,
-                fragment_size.data,
+                fragment_mass.data,
                 healthy.data,
                 cell_id.data,
                 coalescence_rate.data,
@@ -859,7 +859,7 @@ class CollisionsMethods(
                 breakup_rate_deficit.data,
                 is_first_in_pair.indicator.data,
                 trtc.DVInt64(max_multiplicity),
-                volume.data,
+                particle_mass.data,
                 n_sd,
                 n_attr,
             ),
@@ -950,7 +950,7 @@ class CollisionsMethods(
         *,
         n_fragment,
         scale,
-        frag_size,
+        frag_volume,
         x_plus_y,
         rand,
         vmin,
@@ -958,20 +958,20 @@ class CollisionsMethods(
         tol=1e-5,
     ):
         self.__exp_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 self._get_floating_point(scale),
-                frag_size.data,
+                frag_volume.data,
                 rand.data,
                 self._get_floating_point(tol),
             ),
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_volume.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -980,23 +980,23 @@ class CollisionsMethods(
         )
 
     def gauss_fragmentation(
-        self, *, n_fragment, mu, sigma, frag_size, x_plus_y, rand, vmin, nfmax
+        self, *, n_fragment, mu, sigma, frag_volume, x_plus_y, rand, vmin, nfmax
     ):
         self.__gauss_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 self._get_floating_point(mu),
                 self._get_floating_point(sigma),
-                frag_size.data,
+                frag_volume.data,
                 rand.data,
             ),
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_volume.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -1005,13 +1005,13 @@ class CollisionsMethods(
         )
 
     def slams_fragmentation(
-        self, n_fragment, frag_size, x_plus_y, probs, rand, vmin, nfmax
+        self, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
     ):  # pylint: disable=too-many-arguments
         self.__slams_fragmentation_body.launch_n(
             n=(len(n_fragment)),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_volume.data,
                 x_plus_y.data,
                 probs.data,
                 rand.data,
@@ -1019,10 +1019,10 @@ class CollisionsMethods(
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_volume.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -1035,7 +1035,7 @@ class CollisionsMethods(
         *,
         n_fragment,
         scale,
-        frag_size,
+        frag_volume,
         x_plus_y,
         rand,
         fragtol,
@@ -1043,10 +1043,10 @@ class CollisionsMethods(
         nfmax,
     ):
         self.__feingold1988_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 self._get_floating_point(scale),
-                frag_size.data,
+                frag_volume.data,
                 x_plus_y.data,
                 rand.data,
                 self._get_floating_point(fragtol),
@@ -1054,10 +1054,10 @@ class CollisionsMethods(
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_volume.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -1073,7 +1073,7 @@ class CollisionsMethods(
         CW,
         gam,
         ds,
-        frag_size,
+        frag_volume,
         v_max,
         x_plus_y,
         rand,
@@ -1087,12 +1087,12 @@ class CollisionsMethods(
         d34,
     ):
         self.__straub_fragmentation_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 CW.data,
                 gam.data,
                 ds.data,
-                frag_size.data,
+                frag_volume.data,
                 v_max.data,
                 rand.data,
                 Nr1.data,
@@ -1105,10 +1105,10 @@ class CollisionsMethods(
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            n=len(frag_size),
+            n=len(frag_volume),
             args=(
                 n_fragment.data,
-                frag_size.data,
+                frag_volume.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),

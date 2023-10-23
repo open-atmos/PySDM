@@ -64,7 +64,7 @@ def test_pysdm_coalescence_is_close_to_analytic_coalescence(
     )
 
     # act
-    sim_products = simulation.run(x, seeds=SEEDS)
+    sim_products = simulation.run_convergence_analysis(x, seeds=SEEDS)
     secondary_products = get_pysdm_secondary_products(
         products=sim_products, total_volume=settings.total_volume
     )

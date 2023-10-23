@@ -5,7 +5,7 @@ from collections import namedtuple
 
 
 class SingularAttributes(
-    namedtuple("SingularAttributes", ("freezing_temperature", "wet_volume"))
+    namedtuple("SingularAttributes", ("freezing_temperature", "water_mass"))
 ):
     """groups attributes required in singular regime"""
 
@@ -13,7 +13,7 @@ class SingularAttributes(
 
 
 class TimeDependentAttributes(
-    namedtuple("TimeDependentAttributes", ("immersed_surface_area", "wet_volume"))
+    namedtuple("TimeDependentAttributes", ("immersed_surface_area", "water_mass"))
 ):
     """groups attributes required in time-dependent regime"""
 

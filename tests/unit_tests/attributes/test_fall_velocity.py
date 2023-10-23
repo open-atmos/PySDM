@@ -73,11 +73,7 @@ def test_fall_velocity_calculation(default_attributes, backend_class):
     assert np.allclose(
         particulator.attributes["relative fall velocity"].to_ndarray(),
         particulator.attributes["relative fall momentum"].to_ndarray()
-        / (
-            # TODO #798 - we plan to use masses instead of volumes soon
-            particulator.formulae.constants.rho_w
-            * particulator.attributes["volume"].to_ndarray()
-        ),
+        / (particulator.attributes["water mass"].to_ndarray()),
     )
 
 

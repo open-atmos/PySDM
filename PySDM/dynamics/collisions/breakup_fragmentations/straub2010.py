@@ -1,13 +1,15 @@
 """
-See Straub et al 2010
+See [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1)
 """
 from PySDM.physics.constants import si
 
+from .impl import VolumeBasedFragmentationFunction
 
-class Straub2010Nf:
+
+class Straub2010Nf(VolumeBasedFragmentationFunction):
     # pylint: disable=too-many-instance-attributes
     def __init__(self, vmin=0.0, nfmax=None):
-        self.particulator = None
+        super().__init__()
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
@@ -17,7 +19,7 @@ class Straub2010Nf:
         self.const = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
+        super().register(builder)
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
@@ -26,7 +28,6 @@ class Straub2010Nf:
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute("radius")
-        builder.request_attribute("volume")
         builder.request_attribute("relative fall velocity")
         for key in ("Sc", "tmp", "tmp2", "CKE", "We", "gam", "CW", "ds"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -37,7 +38,9 @@ class Straub2010Nf:
                 self.particulator.n_sd // 2, dtype=float
             )
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
         self.max_size.max(self.particulator.attributes["volume"], is_first_in_pair)
         self.sum_of_volumes.sum(
             self.particulator.attributes["volume"], is_first_in_pair
@@ -82,7 +85,7 @@ class Straub2010Nf:
             CW=self.arrays["CW"],
             gam=self.arrays["gam"],
             ds=self.arrays["ds"],
-            frag_size=frag_size,
+            frag_volume=frag_volume,
             v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
