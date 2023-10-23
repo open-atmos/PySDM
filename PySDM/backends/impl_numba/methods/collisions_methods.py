@@ -533,11 +533,7 @@ class CollisionsMethods(BackendMethods):
                         frag_volume[i] = (
                             frag_volume[i] * 0.01
                         )  # diameter in cm; convert to m
-<<<<<<< HEAD
-                        frag_size[i] = frag_size[i] ** 3 * const.PI / 6
-=======
                         frag_volume[i] = frag_volume[i] ** 3 * const.PI / 6
->>>>>>> 10a05b1b21b747bb28be63bde9a2b2d1a13c378c
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
