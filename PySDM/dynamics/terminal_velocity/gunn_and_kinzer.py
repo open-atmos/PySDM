@@ -1,7 +1,7 @@
 """
 [Gunn & Kinzer 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2)
- terminal velocities used for both coalescence kernel evaluation as well as for particle
- displacement
+ terminal velocities used for things like coalescence kernel evaluation, particle displacement,
+ ventilation factor, etc
 """
 import numba
 import numpy as np
@@ -135,7 +135,6 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
         )
 
 
-# TODO #348 implement in backend logic
 class TpDependent:
     def __init__(self, _, small_r_limit=None):
         si = const.si
