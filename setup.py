@@ -39,7 +39,7 @@ setup(
             "ghapi",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==0.6.3",
+            "PyPartMC==0.6.4",
         ]
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
