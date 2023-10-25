@@ -36,7 +36,7 @@ class OrganicFraction(DerivedAttribute):
         super().__init__(
             builder,
             name="dry volume organic fraction",
-            dependencies=(self.volume_dry_org, self.volume_dry)
+            dependencies=(self.volume_dry_org, self.volume_dry),
         )
 
     def recalculate(self):
