@@ -59,6 +59,11 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def amin(data):
             return trtc.Reduce(data, Impl.thrust(np.inf), trtc.Minimum())
 
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def amax(data):
+            return trtc.Reduce(data, Impl.thrust(-np.inf), trtc.Maximum())
+
         __row_modulo_body = trtc.For(
             ("output", "divisor", "length"),
             "i",
@@ -418,6 +423,9 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
 
         def amin(self):
             return Impl.amin(self.data)
+
+        def amax(self):
+            return Impl.amax(self.data)
 
         def all(self):
             assert self.dtype is self.BOOL
