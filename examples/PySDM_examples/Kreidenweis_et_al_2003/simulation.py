@@ -30,8 +30,8 @@ class Simulation(BasicSimulation):
         attributes = {
             **attributes,
             **settings.starting_amounts,
-            "pH": np.zeros(settings.n_sd),
         }
+        del attributes["dry volume"]
 
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
