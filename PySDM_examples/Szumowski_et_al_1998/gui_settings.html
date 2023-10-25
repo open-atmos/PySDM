@@ -174,7 +174,15 @@ class GUISettings:
                 value=defaults[k],
             )
             for k, v in formulae_init_params
-            if k not in (&#34;self&#34;, &#34;fastmath&#34;, &#34;seed&#34;, &#34;constants&#34;, &#34;handle_all_breakups&#34;)
+            if k
+            not in (
+                &#34;self&#34;,
+                &#34;fastmath&#34;,
+                &#34;seed&#34;,
+                &#34;constants&#34;,
+                &#34;handle_all_breakups&#34;,
+                &#34;terminal_velocity&#34;,
+            )
         ]
 
         self.ui_formulae_options.append(
@@ -610,7 +618,15 @@ def set_visibility(widget, visible):
                 value=defaults[k],
             )
             for k, v in formulae_init_params
-            if k not in (&#34;self&#34;, &#34;fastmath&#34;, &#34;seed&#34;, &#34;constants&#34;, &#34;handle_all_breakups&#34;)
+            if k
+            not in (
+                &#34;self&#34;,
+                &#34;fastmath&#34;,
+                &#34;seed&#34;,
+                &#34;constants&#34;,
+                &#34;handle_all_breakups&#34;,
+                &#34;terminal_velocity&#34;,
+            )
         ]
 
         self.ui_formulae_options.append(

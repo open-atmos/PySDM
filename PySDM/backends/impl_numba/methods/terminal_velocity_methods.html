@@ -30,6 +30,8 @@
 <pre><code class="python">&#34;&#34;&#34;
 CPU implementation of backend methods for terminal velocities
 &#34;&#34;&#34;
+from functools import cached_property
+
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
@@ -37,59 +39,41 @@ from PySDM.backends.impl_numba import conf
 
 
 class TerminalVelocityMethods(BackendMethods):
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def linear_collection_efficiency_body(
-        params, output, radii, is_first_in_pair, idx, length, unit
-    ):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        output[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if radii[idx[i]] &gt; radii[idx[i + 1]]:
-                    r = radii[idx[i]] / unit
-                    r_s = radii[idx[i + 1]] / unit
+    @cached_property
+    def interpolation_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
+        def interpolation_body(output, radius, factor, b, c):
+            for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
+                if radius[i] &lt; 0:
+                    output[i] = 0
                 else:
-                    r = radii[idx[i + 1]] / unit
-                    r_s = radii[idx[i]] / unit
-                p = r_s / r
-                if p not in (0, 1):
-                    G = (G1 / r) ** Mg + G2 + G3 * r
-                    Gp = (1 - p) ** G
-                    if Gp != 0:
-                        D = D1 / r**D2
-                        E = E1 / r**E2
-                        F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p**F + E / Gp
-                        output[i // 2] = max(0, output[i // 2])
+                    r_id = int(factor * radius[i])
+                    r_rest = ((factor * radius[i]) % 1) / factor
+                    output[i] = b[r_id] + r_rest * c[r_id]
 
-    def linear_collection_efficiency(
-        self, *, params, output, radii, is_first_in_pair, unit
-    ):
-        return self.linear_collection_efficiency_body(
-            params,
-            output.data,
-            radii.data,
-            is_first_in_pair.indicator.data,
-            radii.idx.data,
-            len(is_first_in_pair),
-            unit,
-        )
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def interpolation_body(output, radius, factor, b, c):
-        for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-            if radius[i] &lt; 0:
-                output[i] = 0
-            else:
-                r_id = int(factor * radius[i])
-                r_rest = ((factor * radius[i]) % 1) / factor
-                output[i] = b[r_id] + r_rest * c[r_id]
+        return interpolation_body
 
     def interpolation(self, *, output, radius, factor, b, c):
-        return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
+        return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)
+
+    @cached_property
+    def terminal_velocity_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
+        def terminal_velocity_body(*, values, radius, k1, k2, k3, r1, r2):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if radius[i] &lt; r1:
+                    values[i] = k1 * radius[i] ** 2
+                elif radius[i] &lt; r2:
+                    values[i] = k2 * radius[i]
+                else:
+                    values[i] = k3 * radius[i] ** (1 / 2)
+
+        return terminal_velocity_body
+
+    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
+        self.terminal_velocity_body(
+            values=values, radius=radius, k1=k1, k2=k2, k3=k3, r1=r1, r2=r2
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -111,59 +95,41 @@ class TerminalVelocityMethods(BackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TerminalVelocityMethods(BackendMethods):
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def linear_collection_efficiency_body(
-        params, output, radii, is_first_in_pair, idx, length, unit
-    ):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        output[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if radii[idx[i]] &gt; radii[idx[i + 1]]:
-                    r = radii[idx[i]] / unit
-                    r_s = radii[idx[i + 1]] / unit
+    @cached_property
+    def interpolation_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
+        def interpolation_body(output, radius, factor, b, c):
+            for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
+                if radius[i] &lt; 0:
+                    output[i] = 0
                 else:
-                    r = radii[idx[i + 1]] / unit
-                    r_s = radii[idx[i]] / unit
-                p = r_s / r
-                if p not in (0, 1):
-                    G = (G1 / r) ** Mg + G2 + G3 * r
-                    Gp = (1 - p) ** G
-                    if Gp != 0:
-                        D = D1 / r**D2
-                        E = E1 / r**E2
-                        F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p**F + E / Gp
-                        output[i // 2] = max(0, output[i // 2])
+                    r_id = int(factor * radius[i])
+                    r_rest = ((factor * radius[i]) % 1) / factor
+                    output[i] = b[r_id] + r_rest * c[r_id]
 
-    def linear_collection_efficiency(
-        self, *, params, output, radii, is_first_in_pair, unit
-    ):
-        return self.linear_collection_efficiency_body(
-            params,
-            output.data,
-            radii.data,
-            is_first_in_pair.indicator.data,
-            radii.idx.data,
-            len(is_first_in_pair),
-            unit,
-        )
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def interpolation_body(output, radius, factor, b, c):
-        for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-            if radius[i] &lt; 0:
-                output[i] = 0
-            else:
-                r_id = int(factor * radius[i])
-                r_rest = ((factor * radius[i]) % 1) / factor
-                output[i] = b[r_id] + r_rest * c[r_id]
+        return interpolation_body
 
     def interpolation(self, *, output, radius, factor, b, c):
-        return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
+        return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)
+
+    @cached_property
+    def terminal_velocity_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath})
+        def terminal_velocity_body(*, values, radius, k1, k2, k3, r1, r2):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if radius[i] &lt; r1:
+                    values[i] = k1 * radius[i] ** 2
+                elif radius[i] &lt; r2:
+                    values[i] = k2 * radius[i]
+                else:
+                    values[i] = k3 * radius[i] ** (1 / 2)
+
+        return terminal_velocity_body
+
+    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
+        self.terminal_velocity_body(
+            values=values, radius=radius, k1=k1, k2=k2, k3=k3, r1=r1, r2=r2
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -173,64 +139,84 @@ class TerminalVelocityMethods(BackendMethods):
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.Numba" href="../../numba.html#PySDM.backends.numba.Numba">Numba</a></li>
 </ul>
-<h3>Static methods</h3>
+<h3>Instance variables</h3>
 <dl>
-<dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation_body"><code class="name flex">
-<span>def <span class="ident">interpolation_body</span></span>(<span>output, radius, factor, b, c)</span>
-</code></dt>
+<dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation_body"><code class="name">var <span class="ident">interpolation_body</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def interpolation_body(output, radius, factor, b, c):
-    for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-        if radius[i] &lt; 0:
-            output[i] = 0
-        else:
-            r_id = int(factor * radius[i])
-            r_rest = ((factor * radius[i]) % 1) / factor
-            output[i] = b[r_id] + r_rest * c[r_id]</code></pre>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency_body"><code class="name flex">
-<span>def <span class="ident">linear_collection_efficiency_body</span></span>(<span>params, output, radii, is_first_in_pair, idx, length, unit)</span>
-</code></dt>
+<dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity_body"><code class="name">var <span class="ident">terminal_velocity_body</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-# pylint: disable=too-many-arguments,too-many-locals
-def linear_collection_efficiency_body(
-    params, output, radii, is_first_in_pair, idx, length, unit
-):
-    A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-    output[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            if radii[idx[i]] &gt; radii[idx[i + 1]]:
-                r = radii[idx[i]] / unit
-                r_s = radii[idx[i + 1]] / unit
-            else:
-                r = radii[idx[i + 1]] / unit
-                r_s = radii[idx[i]] / unit
-            p = r_s / r
-            if p not in (0, 1):
-                G = (G1 / r) ** Mg + G2 + G3 * r
-                Gp = (1 - p) ** G
-                if Gp != 0:
-                    D = D1 / r**D2
-                    E = E1 / r**E2
-                    F = (F1 / r) ** Mf + F2
-                    output[i // 2] = A + B * p + D / p**F + E / Gp
-                    output[i // 2] = max(0, output[i // 2])</code></pre>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
 </details>
 </dd>
 </dl>
@@ -249,8 +235,8 @@ def linear_collection_efficiency_body(
     return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency"><code class="name flex">
-<span>def <span class="ident">linear_collection_efficiency</span></span>(<span>self, *, params, output, radii, is_first_in_pair, unit)</span>
+<dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity"><code class="name flex">
+<span>def <span class="ident">terminal_velocity</span></span>(<span>self, *, values, radius, k1, k2, k3, r1, r2)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -258,17 +244,9 @@ def linear_collection_efficiency_body(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def linear_collection_efficiency(
-    self, *, params, output, radii, is_first_in_pair, unit
-):
-    return self.linear_collection_efficiency_body(
-        params,
-        output.data,
-        radii.data,
-        is_first_in_pair.indicator.data,
-        radii.idx.data,
-        len(is_first_in_pair),
-        unit,
+<pre><code class="python">def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
+    self.terminal_velocity_body(
+        values=values, radius=radius, k1=k1, k2=k2, k3=k3, r1=r1, r2=r2
     )</code></pre>
 </details>
 </dd>
@@ -295,8 +273,8 @@ def linear_collection_efficiency_body(
 <ul class="">
 <li><code><a title="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation" href="#PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation">interpolation</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation_body" href="#PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation_body">interpolation_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency" href="#PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency">linear_collection_efficiency</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency_body" href="#PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency_body">linear_collection_efficiency_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity" href="#PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity">terminal_velocity</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity_body" href="#PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity_body">terminal_velocity_body</a></code></li>
 </ul>
 </li>
 </ul>

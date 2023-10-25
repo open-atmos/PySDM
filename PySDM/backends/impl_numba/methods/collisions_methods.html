@@ -1212,7 +1212,47 @@ class CollisionsMethods(BackendMethods):
                 cell_end_thread[t, cell_idx[cell_id[idx[i]]]] -= 1
                 new_idx[cell_end_thread[t, cell_idx[cell_id[idx[i]]]]] = idx[i]
 
-        cell_start[:] = cell_end_thread[0, :]</code></pre>
+        cell_start[:] = cell_end_thread[0, :]
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    # pylint: disable=too-many-arguments,too-many-locals
+    def linear_collection_efficiency_body(
+        params, output, radii, is_first_in_pair, idx, length, unit
+    ):
+        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+        output[:] = 0
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+            if is_first_in_pair[i]:
+                if radii[idx[i]] &gt; radii[idx[i + 1]]:
+                    r = radii[idx[i]] / unit
+                    r_s = radii[idx[i + 1]] / unit
+                else:
+                    r = radii[idx[i + 1]] / unit
+                    r_s = radii[idx[i]] / unit
+                p = r_s / r
+                if p not in (0, 1):
+                    G = (G1 / r) ** Mg + G2 + G3 * r
+                    Gp = (1 - p) ** G
+                    if Gp != 0:
+                        D = D1 / r**D2
+                        E = E1 / r**E2
+                        F = (F1 / r) ** Mf + F2
+                        output[i // 2] = A + B * p + D / p**F + E / Gp
+                        output[i // 2] = max(0, output[i // 2])
+
+    def linear_collection_efficiency(
+        self, *, params, output, radii, is_first_in_pair, unit
+    ):
+        return self.linear_collection_efficiency_body(
+            params,
+            output.data,
+            radii.data,
+            is_first_in_pair.indicator.data,
+            radii.idx.data,
+            len(is_first_in_pair),
+            unit,
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -2512,7 +2552,47 @@ def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
                 cell_end_thread[t, cell_idx[cell_id[idx[i]]]] -= 1
                 new_idx[cell_end_thread[t, cell_idx[cell_id[idx[i]]]]] = idx[i]
 
-        cell_start[:] = cell_end_thread[0, :]</code></pre>
+        cell_start[:] = cell_end_thread[0, :]
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    # pylint: disable=too-many-arguments,too-many-locals
+    def linear_collection_efficiency_body(
+        params, output, radii, is_first_in_pair, idx, length, unit
+    ):
+        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+        output[:] = 0
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+            if is_first_in_pair[i]:
+                if radii[idx[i]] &gt; radii[idx[i + 1]]:
+                    r = radii[idx[i]] / unit
+                    r_s = radii[idx[i + 1]] / unit
+                else:
+                    r = radii[idx[i + 1]] / unit
+                    r_s = radii[idx[i]] / unit
+                p = r_s / r
+                if p not in (0, 1):
+                    G = (G1 / r) ** Mg + G2 + G3 * r
+                    Gp = (1 - p) ** G
+                    if Gp != 0:
+                        D = D1 / r**D2
+                        E = E1 / r**E2
+                        F = (F1 / r) ** Mf + F2
+                        output[i // 2] = A + B * p + D / p**F + E / Gp
+                        output[i // 2] = max(0, output[i // 2])
+
+    def linear_collection_efficiency(
+        self, *, params, output, radii, is_first_in_pair, unit
+    ):
+        return self.linear_collection_efficiency_body(
+            params,
+            output.data,
+            radii.data,
+            is_first_in_pair.indicator.data,
+            radii.idx.data,
+            len(is_first_in_pair),
+            unit,
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -2524,6 +2604,43 @@ def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
 </ul>
 <h3>Static methods</h3>
 <dl>
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency_body"><code class="name flex">
+<span>def <span class="ident">linear_collection_efficiency_body</span></span>(<span>params, output, radii, is_first_in_pair, idx, length, unit)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+@numba.njit(**conf.JIT_FLAGS)
+# pylint: disable=too-many-arguments,too-many-locals
+def linear_collection_efficiency_body(
+    params, output, radii, is_first_in_pair, idx, length, unit
+):
+    A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+    output[:] = 0
+    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+        if is_first_in_pair[i]:
+            if radii[idx[i]] &gt; radii[idx[i + 1]]:
+                r = radii[idx[i]] / unit
+                r_s = radii[idx[i + 1]] / unit
+            else:
+                r = radii[idx[i + 1]] / unit
+                r_s = radii[idx[i]] / unit
+            p = r_s / r
+            if p not in (0, 1):
+                G = (G1 / r) ** Mg + G2 + G3 * r
+                Gp = (1 - p) ** G
+                if Gp != 0:
+                    D = D1 / r**D2
+                    E = E1 / r**E2
+                    F = (F1 / r) ** Mf + F2
+                    output[i // 2] = A + B * p + D / p**F + E / Gp
+                    output[i // 2] = max(0, output[i // 2])</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker"><code class="name flex">
 <span>def <span class="ident">make_cell_caretaker</span></span>(<span>idx_shape, idx_dtype, cell_start_len, scheme='default')</span>
 </code></dt>
@@ -2876,6 +2993,29 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     )</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency"><code class="name flex">
+<span>def <span class="ident">linear_collection_efficiency</span></span>(<span>self, *, params, output, radii, is_first_in_pair, unit)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def linear_collection_efficiency(
+    self, *, params, output, radii, is_first_in_pair, unit
+):
+    return self.linear_collection_efficiency_body(
+        params,
+        output.data,
+        radii.data,
+        is_first_in_pair.indicator.data,
+        radii.idx.data,
+        len(is_first_in_pair),
+        unit,
+    )</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.ll82_coalescence_check"><code class="name flex">
 <span>def <span class="ident">ll82_coalescence_check</span></span>(<span>self, *, Ec, dl)</span>
 </code></dt>
@@ -3127,6 +3267,8 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.feingold1988_fragmentation" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.feingold1988_fragmentation">feingold1988_fragmentation</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.fragmentation_limiters" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.fragmentation_limiters">fragmentation_limiters</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.gauss_fragmentation" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.gauss_fragmentation">gauss_fragmentation</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency">linear_collection_efficiency</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency_body">linear_collection_efficiency_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.ll82_coalescence_check" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.ll82_coalescence_check">ll82_coalescence_check</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.ll82_fragmentation" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.ll82_fragmentation">ll82_fragmentation</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker">make_cell_caretaker</a></code></li>

@@ -47,6 +47,11 @@ def amin(data):
 
 
 @numba.njit(**conf.JIT_FLAGS)
+def amax(data):
+    return np.amax(data)
+
+
+@numba.njit(**conf.JIT_FLAGS)
 def row_modulo(output, divisor):
     for d in range(output.shape[0]):
         for i in numba.prange(output.shape[1]):  # pylint: disable=not-an-iterable
@@ -120,6 +125,20 @@ def subtract(output, subtrahend):
 <pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
 def add(output, addend):
     output += addend</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.storage_impl.amax"><code class="name flex">
+<span>def <span class="ident">amax</span></span>(<span>data)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@numba.njit(**conf.JIT_FLAGS)
+def amax(data):
+    return np.amax(data)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.storage_impl.amin"><code class="name flex">
@@ -300,6 +319,7 @@ def sum_out_of_place(output, a, b):
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.add" href="#PySDM.backends.impl_numba.storage_impl.add">add</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.storage_impl.amax" href="#PySDM.backends.impl_numba.storage_impl.amax">amax</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.amin" href="#PySDM.backends.impl_numba.storage_impl.amin">amin</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.divide_if_not_zero" href="#PySDM.backends.impl_numba.storage_impl.divide_if_not_zero">divide_if_not_zero</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.divide_out_of_place" href="#PySDM.backends.impl_numba.storage_impl.divide_out_of_place">divide_out_of_place</a></code></li>

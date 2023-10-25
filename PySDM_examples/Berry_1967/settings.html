@@ -39,10 +39,14 @@ from PySDM.physics import si
 
 @strict
 class Settings:
-    def __init__(self, steps: Optional[list] = None):
+    def __init__(
+        self,
+        steps: Optional[list] = None,
+        terminal_velocity_variant: str = &#34;GunnKinzer1949&#34;,
+    ):
         steps = steps or [200 * i for i in range(10)]
 
-        self.formulae = Formulae()
+        self.formulae = Formulae(terminal_velocity=terminal_velocity_variant)
         self.init_x_min = self.formulae.trivia.volume(radius=3.94 * si.micrometre)
         self.init_x_max = self.formulae.trivia.volume(radius=25 * si.micrometres)
 
@@ -82,7 +86,7 @@ class Settings:
 <dl>
 <dt id="PySDM_examples.Berry_1967.settings.Settings"><code class="flex name class">
 <span>class <span class="ident">Settings</span></span>
-<span>(</span><span>steps: Optional[list] = None)</span>
+<span>(</span><span>steps: Optional[list] = None, terminal_velocity_variant: str = 'GunnKinzer1949')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -92,10 +96,14 @@ class Settings:
 </summary>
 <pre><code class="python">@strict
 class Settings:
-    def __init__(self, steps: Optional[list] = None):
+    def __init__(
+        self,
+        steps: Optional[list] = None,
+        terminal_velocity_variant: str = &#34;GunnKinzer1949&#34;,
+    ):
         steps = steps or [200 * i for i in range(10)]
 
-        self.formulae = Formulae()
+        self.formulae = Formulae(terminal_velocity=terminal_velocity_variant)
         self.init_x_min = self.formulae.trivia.volume(radius=3.94 * si.micrometre)
         self.init_x_max = self.formulae.trivia.volume(radius=25 * si.micrometres)
 

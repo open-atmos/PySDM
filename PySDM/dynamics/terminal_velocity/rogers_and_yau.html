@@ -36,8 +36,8 @@ from PySDM.physics import constants as const
 class RogersYau:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
-        *,
         particulator,
+        *,
         small_k=None,
         medium_k=None,
         large_k=None,
@@ -75,7 +75,7 @@ class RogersYau:  # pylint: disable=too-few-public-methods
 <dl>
 <dt id="PySDM.dynamics.terminal_velocity.rogers_and_yau.RogersYau"><code class="flex name class">
 <span>class <span class="ident">RogersYau</span></span>
-<span>(</span><span>*, particulator, small_k=None, medium_k=None, large_k=None, small_r_limit=None, medium_r_limit=None)</span>
+<span>(</span><span>particulator, *, small_k=None, medium_k=None, large_k=None, small_r_limit=None, medium_r_limit=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -86,8 +86,8 @@ class RogersYau:  # pylint: disable=too-few-public-methods
 <pre><code class="python">class RogersYau:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
-        *,
         particulator,
+        *,
         small_k=None,
         medium_k=None,
         large_k=None,
