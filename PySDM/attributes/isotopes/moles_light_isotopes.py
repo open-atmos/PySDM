@@ -3,16 +3,16 @@ derived attributes providing amounts of light isotopes in water (1H and 16O)
 
         (water mass) = (
             moles_H2O * (2 * molar_mass_1H + molar_mass_16O) +
-            moles_2H *  (2 * molar_mass_2H + molar_mass_16O) +
-            moles_3H *  (2 * molar_mass_3H + molar_mass_16O) +
+            moles_2H *  (molar_mass_1H + molar_mass_2H + molar_mass_16O) +
+            moles_3H *  (molar_mass_1H + molar_mass_3H + molar_mass_16O) +
             moles_17O * (2 * molar_mass_1H + molar_mass_17O) +
             moles_18O * (2 * molar_mass_1H + molar_mass_18O)
         )
 
         moles_H2O = (
             water_mass
-            - moles_2H *  (2 * molar_mass_2H + molar_mass_16O)
-            - moles_3H *  (2 * molar_mass_3H + molar_mass_16O)
+            - moles_2H *  (molar_mass_1H + molar_mass_2H + molar_mass_16O)
+            - moles_3H *  (molar_mass_1H + molar_mass_3H + molar_mass_16O)
             - moles_17O * (2 * molar_mass_1H + molar_mass_17O)
             - moles_18O * (2 * molar_mass_1H + molar_mass_18O)
         ) / (2 * molar_mass_1H + molar_mass_16O)
@@ -46,9 +46,9 @@ class MolesLightWater(Helper):
             builder=builder,
             name="moles light water",
             attrs_to_multiplier={
-                builder.get_attribute("moles_2H"): -(2 * const.M_2H + const.M_16O)
+                builder.get_attribute("moles_2H"): -(const.M_1H * const.M_2H + const.M_16O)
                 / M_H2O,
-                builder.get_attribute("moles_3H"): -(2 * const.M_3H + const.M_16O)
+                builder.get_attribute("moles_3H"): -(const.M_1H * const.M_3H + const.M_16O)
                 / M_H2O,
                 builder.get_attribute("moles_17O"): -(2 * const.M_1H + const.M_17O)
                 / M_H2O,
