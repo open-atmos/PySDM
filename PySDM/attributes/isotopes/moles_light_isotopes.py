@@ -46,9 +46,13 @@ class MolesLightWater(Helper):
             builder=builder,
             name="moles light water",
             attrs_to_multiplier={
-                builder.get_attribute("moles_2H"): -(const.M_1H * const.M_2H + const.M_16O)
+                builder.get_attribute("moles_2H"): -(
+                    const.M_1H * const.M_2H + const.M_16O
+                )
                 / M_H2O,
-                builder.get_attribute("moles_3H"): -(const.M_1H * const.M_3H + const.M_16O)
+                builder.get_attribute("moles_3H"): -(
+                    const.M_1H * const.M_3H + const.M_16O
+                )
                 / M_H2O,
                 builder.get_attribute("moles_17O"): -(2 * const.M_1H + const.M_17O)
                 / M_H2O,
