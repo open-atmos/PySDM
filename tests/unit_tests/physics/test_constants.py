@@ -132,3 +132,17 @@ class TestConstants:
         np.testing.assert_allclose(
             actual=getattr(constants_defaults, item), desired=value, rtol=5e-3, atol=0
         )
+
+    @staticmethod
+    def test_e_mc2():
+        assert constants_defaults.M_2H < (
+            physical_constants["proton molar mass"][0]
+            + physical_constants["neutron molar mass"][0]
+            + physical_constants["electron molar mass"][0]
+        )
+        assert constants_defaults.M_3H < (
+            physical_constants["proton molar mass"][0]
+            + physical_constants["neutron molar mass"][0]
+            + physical_constants["neutron molar mass"][0]
+            + physical_constants["electron molar mass"][0]
+        )
