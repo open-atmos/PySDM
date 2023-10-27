@@ -1,3 +1,6 @@
+"""
+regression tests checking values from the plots
+"""
 from pathlib import Path
 
 import nbformat
@@ -10,8 +13,8 @@ from PySDM.physics.constants_defaults import PER_MILLE
 PLOT = False
 
 
-@pytest.fixture(scope="session")
-def notebook_local_variables():
+@pytest.fixture(scope="session", name="notebook_local_variables")
+def notebook_local_variables_fixture():
     notebook = nbformat.read(
         Path(Pierchala_et_al_2022.__file__).parent / "fig_3.ipynb", nbformat.NO_CONVERT
     )
@@ -30,7 +33,7 @@ def notebook_local_variables():
                         "pyplot.show(" if PLOT else "pyplot.gca().clear() #",
                     )
 
-            exec("\n".join(lines), context)
+            exec("\n".join(lines), context)  # pylint: disable=exec-used
     return context
 
 
