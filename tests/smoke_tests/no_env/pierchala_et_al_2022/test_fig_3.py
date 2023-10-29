@@ -1,9 +1,8 @@
 """
-regression tests checking values from the plots
+regression tests checking values from the plots in Fig 3
 """
 from pathlib import Path
 
-import nbformat
 import numpy as np
 import pytest
 from PySDM_examples import Pierchala_et_al_2022
