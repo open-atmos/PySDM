@@ -10,29 +10,16 @@ from PySDM_examples import Pierchala_et_al_2022
 
 from PySDM.physics.constants_defaults import PER_MEG, PER_MILLE
 
+from .utils import notebook_vars
+
 PLOT = False
 
 
 @pytest.fixture(scope="session", name="notebook_local_variables")
 def notebook_local_variables_fixture():
-    notebook = nbformat.read(
-        Path(Pierchala_et_al_2022.__file__).parent / "fig_3.ipynb", nbformat.NO_CONVERT
+    return notebook_vars(
+        Path(Pierchala_et_al_2022.__file__).parent / "fig_3.ipynb", plot=PLOT
     )
-    context = {}
-    for cell in notebook.cells:
-        if cell.cell_type != "markdown":
-            lines = cell.source.splitlines()
-            for i, line in enumerate(lines):
-                if line.strip().startswith("!"):
-                    lines[i] = line.replace("!", "pass #")
-                if line.strip().startswith("show_plot("):
-                    lines[i] = line.replace(
-                        "show_plot() #",
-                        "pyplot.show(" if PLOT else "pyplot.gca().clear() #",
-                    )
-
-            exec("\n".join(lines), context)  # pylint: disable=exec-used
-    return context
 
 
 class TestFig3:
