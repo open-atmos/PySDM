@@ -13,8 +13,8 @@ def notebook_vars(file, plot):
                     lines[i] = line.replace("!", "pass #")
                 if line.strip().startswith("show_plot("):
                     lines[i] = line.replace(
-                        "show_plot() #",
-                        "pyplot.show(" if plot else "pyplot.gca().clear() #",
+                        "show_plot(",
+                        "pyplot.show() #" if plot else "pyplot.gca().clear() #",
                     )
 
             exec("\n".join(lines), context)  # pylint: disable=exec-used
