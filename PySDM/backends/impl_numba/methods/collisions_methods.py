@@ -2,6 +2,8 @@
 CPU implementation of backend methods for particle collisions
 """
 # pylint: disable=too-many-lines
+from functools import cached_property
+
 import numba
 import numpy as np
 
@@ -373,14 +375,6 @@ class CollisionsMethods(BackendMethods):
                 flag_zero_multiplicity(j, k, multiplicity, healthy)
 
         self.__collision_coalescence_breakup_body = __collision_coalescence_breakup_body
-
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def __ll82_coalescence_check_body(*, Ec, dl):
-            for i in numba.prange(len(Ec)):  # pylint: disable=not-an-iterable
-                if dl[i] < 0.4e-3:
-                    Ec[i] = 1.0
-
-        self.__ll82_coalescence_check_body = __ll82_coalescence_check_body
 
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
             straub_sigma1 = self.formulae.fragmentation_function.params_sigma1
@@ -968,6 +962,15 @@ class CollisionsMethods(BackendMethods):
             vmin=vmin,
             nfmax=nfmax,
         )
+
+    @cached_property
+    def __ll82_coalescence_check_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def __ll82_coalescence_check_body(*, Ec, dl):
+            for i in numba.prange(len(Ec)):  # pylint: disable=not-an-iterable
+                if dl[i] < 0.4e-3:
+                    Ec[i] = 1.0
+        return __ll82_coalescence_check_body
 
     def ll82_coalescence_check(self, *, Ec, dl):
         self.__ll82_coalescence_check_body(

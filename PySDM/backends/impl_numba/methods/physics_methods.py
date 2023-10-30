@@ -1,6 +1,8 @@
 """
 CPU implementation of backend methods wrapping basic physics formulae
 """
+from functools import  cached_property
+
 import numba
 from numba import prange
 
@@ -21,7 +23,6 @@ class PhysicsMethods(BackendMethods):
         phys_volume = self.formulae.trivia.volume
         phys_r_cr = self.formulae.hygroscopicity.r_cr
         phys_mass_to_volume = self.formulae.particle_shape_and_density.mass_to_volume
-        phys_volume_to_mass = self.formulae.particle_shape_and_density.volume_to_mass
         const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
@@ -77,13 +78,6 @@ class PhysicsMethods(BackendMethods):
 
         self.volume_of_mass = volume_of_mass
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def mass_of_volume(mass, volume):
-            for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
-                mass[i] = phys_volume_to_mass(volume[i])
-
-        self.mass_of_volume = mass_of_volume
-
     def temperature_pressure_RH(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
     ):
@@ -121,6 +115,17 @@ class PhysicsMethods(BackendMethods):
 
     def volume_of_water_mass(self, volume, mass):
         self.volume_of_mass(volume.data, mass.data)
+
+    @cached_property
+    def mass_of_volume(self):
+        phys_volume_to_mass = self.formulae.particle_shape_and_density.volume_to_mass
+
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def mass_of_volume(mass, volume):
+            for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
+                mass[i] = phys_volume_to_mass(volume[i])
+
+        return mass_of_volume
 
     def mass_of_water_volume(self, mass, volume):
         self.mass_of_volume(mass.data, volume.data)
