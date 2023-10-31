@@ -36,7 +36,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
     default_croupier = "local"
 
-    def __init__(self, formulae=None, double_precision=True):
+    def __init__(self, formulae: Formulae = None, double_precision: bool = True):
         if not double_precision:
             raise NotImplementedError()
         self.formulae = formulae or Formulae()
@@ -50,3 +50,4 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         FreezingMethods.__init__(self)
         DisplacementMethods.__init__(self)
         TerminalVelocityMethods.__init__(self)
+        self.initialised = True

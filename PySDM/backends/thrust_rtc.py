@@ -45,7 +45,11 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     default_croupier = "global"
 
     def __init__(
-        self, formulae=None, double_precision=False, debug=False, verbose=False
+        self,
+        formulae: Formulae = None,
+        double_precision: bool = False,
+        debug: bool = False,
+        verbose: bool = False,
     ):
         self.formulae = formulae or Formulae()
 
@@ -70,3 +74,5 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 
         if not ThrustRTC.ENABLE and "CI" not in os.environ:
             warnings.warn("CUDA is not available, using FakeThrustRTC!")
+
+        self.initialised = True

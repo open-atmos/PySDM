@@ -1,6 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
 
+import pystrict
+import pytest
+
 from PySDM.backends import CPU, GPU
 
 
@@ -17,3 +20,9 @@ class TestCtorDefaults:
     def test_cpu_ctor_defaults():
         signature = inspect.signature(CPU.__init__)
         assert signature.parameters["formulae"].default is None
+
+    @staticmethod
+    def test_formulae_unchangeable(backend_class):
+        sut = backend_class()
+        with pytest.raises(AssertionError):
+            sut.formulae = 123
