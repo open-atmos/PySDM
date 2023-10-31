@@ -11,10 +11,14 @@ from PySDM.physics import si
 
 @strict
 class Settings:
-    def __init__(self, steps: Optional[list] = None):
+    def __init__(
+        self,
+        steps: Optional[list] = None,
+        terminal_velocity_variant: str = "GunnKinzer1949",
+    ):
         steps = steps or [200 * i for i in range(10)]
 
-        self.formulae = Formulae()
+        self.formulae = Formulae(terminal_velocity=terminal_velocity_variant)
         self.init_x_min = self.formulae.trivia.volume(radius=3.94 * si.micrometre)
         self.init_x_max = self.formulae.trivia.volume(radius=25 * si.micrometres)
 
@@ -25,7 +29,7 @@ class Settings:
             1e1 * si.metres**3
         )  # 1e6 -> overflows on ThrustRTC (32-bit int multiplicities)
         self.norm_factor = self.n_part * self.dv
-        self.rho = 1000 * si.kilogram / si.metre**3
+        self.rho = self.formulae.constants.rho_w
         self.dt = 1 * si.seconds
         self.adaptive = False
         self.seed = 44

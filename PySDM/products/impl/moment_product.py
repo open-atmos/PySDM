@@ -26,9 +26,9 @@ class MomentProduct(Product, ABC):
         *,
         attr,
         rank,
-        filter_attr="volume",
+        filter_attr="water mass",
         filter_range=(-np.inf, np.inf),
-        weighting_attribute="volume",
+        weighting_attribute="water mass",
         weighting_rank=0,
         skip_division_by_m0=False,
     ):

@@ -17,6 +17,7 @@ from . import (
     impl,
     latent_heat,
     particle_advection,
+    particle_shape_and_density,
     saturation_vapour_pressure,
     state_variable_triplet,
     surface_tension,

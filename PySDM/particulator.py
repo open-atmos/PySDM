@@ -118,7 +118,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            v=self.attributes["volume"],
+            water_mass=self.attributes["water mass"],
             multiplicity=self.attributes["multiplicity"],
             vdry=self.attributes["dry volume"],
             idx=self.attributes._ParticleAttributes__idx,
@@ -143,7 +143,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes["cell id"],
         )
-        self.attributes.mark_updated("volume")
+        self.attributes.mark_updated("water mass")
 
     def collision_coalescence_breakup(
         self,
@@ -153,7 +153,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         coalescence_rate,
         breakup_rate,
         breakup_rate_deficit,
@@ -176,7 +176,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 rand=rand,
                 Ec=Ec,
                 Eb=Eb,
-                fragment_size=fragment_size,
+                fragment_mass=fragment_mass,
                 healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
@@ -184,7 +184,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
-                volume=self.attributes["volume"],
+                particle_mass=self.attributes["water mass"],
                 max_multiplicity=max_multiplicity,
             )
         else:
@@ -312,9 +312,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name="volume",
+        attr_name="water mass",
         attr_range=(-np.inf, np.inf),
-        weighting_attribute="volume",
+        weighting_attribute="water mass",
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
@@ -369,8 +369,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         attr,
         rank,
         attr_bins,
-        attr_name="volume",
-        weighting_attribute="volume",
+        attr_name="water mass",
+        weighting_attribute="water mass",
         weighting_rank=0,
     ):
         attr_data = self.attributes[attr]

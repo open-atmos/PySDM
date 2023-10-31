@@ -1,7 +1,3 @@
-"""
-Created at 23.04.2020
-"""
-
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 

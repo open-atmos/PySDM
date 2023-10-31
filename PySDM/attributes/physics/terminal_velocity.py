@@ -2,7 +2,6 @@
 particle terminal velocity (used for collision probability and particle displacement)
 """
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
-from PySDM.dynamics.terminal_velocity import Interpolation
 
 
 class TerminalVelocity(DerivedAttribute):
@@ -11,7 +10,9 @@ class TerminalVelocity(DerivedAttribute):
         dependencies = [self.radius]
         super().__init__(builder, name="terminal velocity", dependencies=dependencies)
 
-        self.approximation = Interpolation(builder.particulator)
+        self.approximation = builder.formulae.terminal_velocity_class(
+            builder.particulator
+        )
 
     def recalculate(self):
         self.approximation(self.data, self.radius.get())

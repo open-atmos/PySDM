@@ -8,7 +8,7 @@ from PySDM_examples.Srivastava_1982.simulation import Simulation
 
 from PySDM.dynamics import Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import ConstantSize
+from PySDM.dynamics.collisions.breakup_fragmentations import ConstantMass
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
 
@@ -16,7 +16,7 @@ NO_BOUNCE = ConstEb(1)
 
 
 def coalescence_and_breakup_eq13(
-    settings=None, n_steps=256, n_realisations=2, title=None
+    settings=None, n_steps=256, n_realisations=2, title=None, warn_overflows=True
 ):
     # arrange
     seeds = list(range(n_realisations))
@@ -29,12 +29,13 @@ def coalescence_and_breakup_eq13(
             collision_kernel=ConstantK(a=collision_rate),
             coalescence_efficiency=ConstEc(settings.srivastava_c / collision_rate),
             breakup_efficiency=NO_BOUNCE,
-            fragmentation_function=ConstantSize(c=settings.frag_mass / settings.rho),
+            fragmentation_function=ConstantMass(c=settings.frag_mass),
+            warn_overflows=warn_overflows,
         ),
     )
 
     x = np.arange(n_steps + 1, dtype=float)
-    sim_products = simulation.run(x, seeds=seeds)
+    sim_products = simulation.run_convergence_analysis(x, seeds=seeds)
 
     secondary_products = get_pysdm_secondary_products(
         products=sim_products, total_volume=settings.total_volume

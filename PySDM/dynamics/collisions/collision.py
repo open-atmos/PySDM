@@ -81,7 +81,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
         self.kernel_temp = None
         self.n_fragment = None
-        self.fragment_size = None
+        self.fragment_mass = None
         self.Ec_temp = None
         self.Eb_temp = None
         self.norm_factor_temp = None
@@ -149,7 +149,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.n_fragment = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
-            self.fragment_size = self.particulator.PairwiseStorage.empty(
+            self.fragment_mass = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
             self.Ec_temp = self.particulator.PairwiseStorage.empty(
@@ -206,7 +206,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.compute_coalescence_efficiency(self.Ec_temp, self.is_first_in_pair)
             self.compute_breakup_efficiency(self.Eb_temp, self.is_first_in_pair)
             self.compute_number_of_fragments(
-                self.n_fragment, self.fragment_size, rand_frag, self.is_first_in_pair
+                self.n_fragment, self.fragment_mass, rand_frag, self.is_first_in_pair
             )
         else:
             proc_rand = None
@@ -221,7 +221,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             rand=proc_rand,
             Ec=self.Ec_temp,
             Eb=self.Eb_temp,
-            fragment_size=self.fragment_size,
+            fragment_mass=self.fragment_mass,
             coalescence_rate=self.coalescence_rate,
             breakup_rate=self.breakup_rate,
             breakup_rate_deficit=self.breakup_rate_deficit,
