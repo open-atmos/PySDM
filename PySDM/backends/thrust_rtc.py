@@ -74,5 +74,3 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 
         if not ThrustRTC.ENABLE and "CI" not in os.environ:
             warnings.warn("CUDA is not available, using FakeThrustRTC!")
-
-        self.initialised = True

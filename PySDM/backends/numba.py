@@ -50,4 +50,3 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         FreezingMethods.__init__(self)
         DisplacementMethods.__init__(self)
         TerminalVelocityMethods.__init__(self)
-        self.initialised = True

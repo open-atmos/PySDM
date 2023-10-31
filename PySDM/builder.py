@@ -131,6 +131,8 @@ class Builder:
         for key in self.particulator.dynamics:
             self.particulator.timers[key] = WallTimer()
 
+        self.particulator.backend.disable_setattr()
+
         return self.particulator
 
 

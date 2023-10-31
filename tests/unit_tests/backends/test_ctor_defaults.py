@@ -24,5 +24,6 @@ class TestCtorDefaults:
     @staticmethod
     def test_formulae_unchangeable(backend_class):
         sut = backend_class()
+        sut.disable_setattr()
         with pytest.raises(AssertionError):
             sut.formulae = 123
