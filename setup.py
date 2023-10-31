@@ -30,6 +30,7 @@ setup(
         "chempy" + ("==0.8.3" if CI else ""),
         "scipy" + ("==1.7.3" if CI else ""),
         "pyevtk" + ("==1.2.0" if CI else ""),
+        "pystrict" + ("==1.3" if CI else ""),
     ],
     extras_require={
         "tests": [
