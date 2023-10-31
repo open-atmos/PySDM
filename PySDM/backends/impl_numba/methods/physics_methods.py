@@ -1,7 +1,7 @@
 """
 CPU implementation of backend methods wrapping basic physics formulae
 """
-from functools import  cached_property
+from functools import cached_property
 
 import numba
 from numba import prange

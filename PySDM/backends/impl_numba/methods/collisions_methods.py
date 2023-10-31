@@ -970,6 +970,7 @@ class CollisionsMethods(BackendMethods):
             for i in numba.prange(len(Ec)):  # pylint: disable=not-an-iterable
                 if dl[i] < 0.4e-3:
                     Ec[i] = 1.0
+
         return __ll82_coalescence_check_body
 
     def ll82_coalescence_check(self, *, Ec, dl):

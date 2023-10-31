@@ -5,6 +5,7 @@ logic around the `PySDM.backends.impl_common.backend_methods.BackendMethods` - t
 
 from pystrict import strict
 
+
 # pylint: disable=too-few-public-methods
 @strict
 class BackendMethods:
