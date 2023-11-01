@@ -44,8 +44,8 @@ class DryVolumeDynamic(DerivedAttribute):
 
     def recalculate(self):
         dynamic = self.particulator.dynamics[&#34;AqueousChemistry&#34;]
-        self.data.data[:] = self.moles_sulphur_p6.data.data[:]
-        self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho
+        self.data.fill(self.moles_sulphur_p6.data)
+        self.data *= dynamic.dry_molar_mass / dynamic.dry_rho
 
 
 class DryVolume(ExtensiveAttribute):
@@ -62,9 +62,10 @@ class OrganicFraction(DerivedAttribute):
     def __init__(self, builder):
         self.volume_dry_org = builder.get_attribute(&#34;dry volume organic&#34;)
         self.volume_dry = builder.get_attribute(&#34;dry volume&#34;)
-        dependencies = [self.volume_dry_org, self.volume_dry]
         super().__init__(
-            builder, name=&#34;dry volume organic fraction&#34;, dependencies=dependencies
+            builder,
+            name=&#34;dry volume organic fraction&#34;,
+            dependencies=(self.volume_dry_org, self.volume_dry),
         )
 
     def recalculate(self):
@@ -121,8 +122,8 @@ class OrganicFraction(DerivedAttribute):
 
     def recalculate(self):
         dynamic = self.particulator.dynamics[&#34;AqueousChemistry&#34;]
-        self.data.data[:] = self.moles_sulphur_p6.data.data[:]
-        self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho</code></pre>
+        self.data.fill(self.moles_sulphur_p6.data)
+        self.data *= dynamic.dry_molar_mass / dynamic.dry_rho</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -142,8 +143,8 @@ class OrganicFraction(DerivedAttribute):
 </summary>
 <pre><code class="python">def recalculate(self):
     dynamic = self.particulator.dynamics[&#34;AqueousChemistry&#34;]
-    self.data.data[:] = self.moles_sulphur_p6.data.data[:]
-    self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho</code></pre>
+    self.data.fill(self.moles_sulphur_p6.data)
+    self.data *= dynamic.dry_molar_mass / dynamic.dry_rho</code></pre>
 </details>
 </dd>
 </dl>
@@ -183,9 +184,10 @@ class OrganicFraction(DerivedAttribute):
     def __init__(self, builder):
         self.volume_dry_org = builder.get_attribute(&#34;dry volume organic&#34;)
         self.volume_dry = builder.get_attribute(&#34;dry volume&#34;)
-        dependencies = [self.volume_dry_org, self.volume_dry]
         super().__init__(
-            builder, name=&#34;dry volume organic fraction&#34;, dependencies=dependencies
+            builder,
+            name=&#34;dry volume organic fraction&#34;,
+            dependencies=(self.volume_dry_org, self.volume_dry),
         )
 
     def recalculate(self):
