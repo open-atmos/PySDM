@@ -88,7 +88,6 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        self.formulae.particle_shape_and_density
         dry_volume = self.formulae.trivia.volume(radius=r_dry)
         attributes["kappa times dry volume"] = dry_volume * kappa
         attributes["multiplicity"] = n_in_dv
