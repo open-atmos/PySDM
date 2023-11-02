@@ -12,7 +12,6 @@ from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
-from PySDM.physics.trivia import Trivia
 
 
 def run_parcel(
