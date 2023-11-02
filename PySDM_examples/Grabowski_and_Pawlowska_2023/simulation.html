@@ -71,7 +71,7 @@ class Simulation(BasicSimulation):
         volume = env.mass_of_dry_air / settings.initial_air_density
         attributes = {
             k: np.empty(0)
-            for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;multiplicity&#34;, &#34;kappa&#34;)
+            for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;multiplicity&#34;)
         }
 
         assert len(settings.aerosol_modes_by_kappa.keys()) == 1
@@ -86,9 +86,6 @@ class Simulation(BasicSimulation):
         attributes[&#34;dry volume&#34;] = np.append(attributes[&#34;dry volume&#34;], v_dry)
         attributes[&#34;kappa times dry volume&#34;] = np.append(
             attributes[&#34;kappa times dry volume&#34;], v_dry * kappa
-        )
-        attributes[&#34;kappa&#34;] = np.append(
-            attributes[&#34;kappa&#34;], np.full(settings.n_sd, kappa)
         )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes[&#34;dry volume&#34;]),
@@ -196,7 +193,7 @@ class Simulation(BasicSimulation):
         volume = env.mass_of_dry_air / settings.initial_air_density
         attributes = {
             k: np.empty(0)
-            for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;multiplicity&#34;, &#34;kappa&#34;)
+            for k in (&#34;dry volume&#34;, &#34;kappa times dry volume&#34;, &#34;multiplicity&#34;)
         }
 
         assert len(settings.aerosol_modes_by_kappa.keys()) == 1
@@ -211,9 +208,6 @@ class Simulation(BasicSimulation):
         attributes[&#34;dry volume&#34;] = np.append(attributes[&#34;dry volume&#34;], v_dry)
         attributes[&#34;kappa times dry volume&#34;] = np.append(
             attributes[&#34;kappa times dry volume&#34;], v_dry * kappa
-        )
-        attributes[&#34;kappa&#34;] = np.append(
-            attributes[&#34;kappa&#34;], np.full(settings.n_sd, kappa)
         )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes[&#34;dry volume&#34;]),

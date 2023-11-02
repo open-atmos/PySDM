@@ -71,12 +71,12 @@ class ParticleAttributesFactory:
 
         for attr in req_attr.values():
             if isinstance(attr, (DerivedAttribute, DummyAttribute)):
+                if attr.name in attributes:
+                    raise ValueError(
+                        f&#34;attribute &#39;{attr.name}&#39; is a dummy/derived one,&#34;
+                        f&#34; but values were provided&#34;
+                    )
                 attr.allocate(idx)
-            if isinstance(attr, DummyAttribute) and attr.name in attributes:
-                raise ValueError(
-                    f&#34;attribute &#39;{attr.name}&#39; indicated as dummy&#34;
-                    f&#34; but values were provided&#34;
-                )
 
         extensive_keys = {}
         maximum_keys = {}
@@ -202,12 +202,12 @@ class ParticleAttributesFactory:
 
         for attr in req_attr.values():
             if isinstance(attr, (DerivedAttribute, DummyAttribute)):
+                if attr.name in attributes:
+                    raise ValueError(
+                        f&#34;attribute &#39;{attr.name}&#39; is a dummy/derived one,&#34;
+                        f&#34; but values were provided&#34;
+                    )
                 attr.allocate(idx)
-            if isinstance(attr, DummyAttribute) and attr.name in attributes:
-                raise ValueError(
-                    f&#34;attribute &#39;{attr.name}&#39; indicated as dummy&#34;
-                    f&#34; but values were provided&#34;
-                )
 
         extensive_keys = {}
         maximum_keys = {}
@@ -324,12 +324,12 @@ def attributes(particulator, req_attr, attributes):
 
     for attr in req_attr.values():
         if isinstance(attr, (DerivedAttribute, DummyAttribute)):
+            if attr.name in attributes:
+                raise ValueError(
+                    f&#34;attribute &#39;{attr.name}&#39; is a dummy/derived one,&#34;
+                    f&#34; but values were provided&#34;
+                )
             attr.allocate(idx)
-        if isinstance(attr, DummyAttribute) and attr.name in attributes:
-            raise ValueError(
-                f&#34;attribute &#39;{attr.name}&#39; indicated as dummy&#34;
-                f&#34; but values were provided&#34;
-            )
 
     extensive_keys = {}
     maximum_keys = {}

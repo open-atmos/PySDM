@@ -110,14 +110,15 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         kappa: float,
         r_dry: [float, np.ndarray],
         rtol=default_rtol,
+        include_dry_volume_in_attribute: bool = True,
     ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
-        attributes[&#34;kappa times dry volume&#34;] = attributes[&#34;dry volume&#34;] * kappa
+        dry_volume = self.formulae.trivia.volume(radius=r_dry)
+        attributes[&#34;kappa times dry volume&#34;] = dry_volume * kappa
         attributes[&#34;multiplicity&#34;] = n_in_dv
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
@@ -126,6 +127,8 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             rtol=rtol,
         )
         attributes[&#34;volume&#34;] = self.formulae.trivia.volume(radius=r_wet)
+        if include_dry_volume_in_attribute:
+            attributes[&#34;dry volume&#34;] = dry_volume
         return attributes
 
     def advance_parcel_vars(self):
@@ -271,14 +274,15 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         kappa: float,
         r_dry: [float, np.ndarray],
         rtol=default_rtol,
+        include_dry_volume_in_attribute: bool = True,
     ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
-        attributes[&#34;kappa times dry volume&#34;] = attributes[&#34;dry volume&#34;] * kappa
+        dry_volume = self.formulae.trivia.volume(radius=r_dry)
+        attributes[&#34;kappa times dry volume&#34;] = dry_volume * kappa
         attributes[&#34;multiplicity&#34;] = n_in_dv
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
@@ -287,6 +291,8 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             rtol=rtol,
         )
         attributes[&#34;volume&#34;] = self.formulae.trivia.volume(radius=r_wet)
+        if include_dry_volume_in_attribute:
+            attributes[&#34;dry volume&#34;] = dry_volume
         return attributes
 
     def advance_parcel_vars(self):
@@ -437,7 +443,7 @@ def dv(self):
 </details>
 </dd>
 <dt id="PySDM.environments.parcel.Parcel.init_attributes"><code class="name flex">
-<span>def <span class="ident">init_attributes</span></span>(<span>self, *, n_in_dv: [<class 'float'>, <class 'numpy.ndarray'>], kappa: float, r_dry: [<class 'float'>, <class 'numpy.ndarray'>], rtol=1e-05)</span>
+<span>def <span class="ident">init_attributes</span></span>(<span>self, *, n_in_dv: [<class 'float'>, <class 'numpy.ndarray'>], kappa: float, r_dry: [<class 'float'>, <class 'numpy.ndarray'>], rtol=1e-05, include_dry_volume_in_attribute: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -452,14 +458,15 @@ def dv(self):
     kappa: float,
     r_dry: [float, np.ndarray],
     rtol=default_rtol,
+    include_dry_volume_in_attribute: bool = True,
 ):
     if not isinstance(n_in_dv, np.ndarray):
         r_dry = np.array([r_dry])
         n_in_dv = np.array([n_in_dv])
 
     attributes = {}
-    attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
-    attributes[&#34;kappa times dry volume&#34;] = attributes[&#34;dry volume&#34;] * kappa
+    dry_volume = self.formulae.trivia.volume(radius=r_dry)
+    attributes[&#34;kappa times dry volume&#34;] = dry_volume * kappa
     attributes[&#34;multiplicity&#34;] = n_in_dv
     r_wet = equilibrate_wet_radii(
         r_dry=r_dry,
@@ -468,6 +475,8 @@ def dv(self):
         rtol=rtol,
     )
     attributes[&#34;volume&#34;] = self.formulae.trivia.volume(radius=r_wet)
+    if include_dry_volume_in_attribute:
+        attributes[&#34;dry volume&#34;] = dry_volume
     return attributes</code></pre>
 </details>
 </dd>
