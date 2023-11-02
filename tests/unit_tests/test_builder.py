@@ -1,7 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics import Condensation, Displacement
 from PySDM.environments import Box
@@ -69,3 +70,21 @@ class TestBuilder:
                 attributes={k: np.asarray([0]) for k in ("multiplicity", "volume")},
             ).dynamics
         )
+
+    @staticmethod
+    def test_setattr_disabled():
+        # arrange
+        builder = Builder(backend=CPU(), n_sd=1)
+        builder.set_environment(Box(dt=np.nan, dv=np.nan))
+
+        # act
+        particulator = builder.build(
+            products=(),
+            attributes={k: np.asarray([0]) for k in ("multiplicity", "water mass")},
+        )
+
+        # assert
+        with pytest.raises(AssertionError):
+            particulator.backend.formulae = Formulae()
+        with pytest.raises(AssertionError):
+            particulator.formulae = Formulae()

@@ -21,7 +21,7 @@ class TestCtorDefaults:
         assert signature.parameters["formulae"].default is None
 
     @staticmethod
-    def test_formulae_unchangeable(backend_class):
+    def test_formulae_unchangeable_after_disabling_setattr(backend_class):
         sut = backend_class()
         sut.disable_setattr()
         with pytest.raises(AssertionError):
