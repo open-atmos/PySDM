@@ -100,7 +100,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         rnd_args = {
             "optimized_random": self.optimized_random,
             "dt_min": self.dt_coal_range[0],
-            "seed": builder.formulae.seed,
+            "seed": self.particulator.formulae.seed,
         }
         self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
         if self.enable_breakup:

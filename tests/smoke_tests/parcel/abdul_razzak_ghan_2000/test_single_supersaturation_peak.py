@@ -62,16 +62,18 @@ def test_single_supersaturation_peak(
     )
 
     r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
-    v_dry = builder.formulae.trivia.volume(radius=r_dry)
+    v_dry = builder.particulator.formulae.trivia.volume(radius=r_dry)
     r_wet = equilibrate_wet_radii(
         r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry
     )
-    specific_concentration = concentration / builder.formulae.constants.rho_STP
+    specific_concentration = (
+        concentration / builder.particulator.formulae.constants.rho_STP
+    )
     attributes = {
         "multiplicity": specific_concentration * env.mass_of_dry_air,
         "dry volume": v_dry,
         "kappa times dry volume": kappa * v_dry,
-        "volume": builder.formulae.trivia.volume(radius=r_wet),
+        "volume": builder.particulator.formulae.trivia.volume(radius=r_wet),
     }
 
     particulator = builder.build(attributes, products=products)

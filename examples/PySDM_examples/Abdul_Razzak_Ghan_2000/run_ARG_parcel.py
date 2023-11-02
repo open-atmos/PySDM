@@ -12,6 +12,7 @@ from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
+from PySDM.physics.trivia import Trivia
 
 
 def run_parcel(
@@ -62,8 +63,10 @@ def run_parcel(
     for i, mode in enumerate(aerosol.modes):
         kappa, spectrum = mode["kappa"]["CompressedFilmOvadnevaite"], mode["spectrum"]
         r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
-        v_dry = builder.formulae.trivia.volume(radius=r_dry)
-        specific_concentration = concentration / builder.formulae.constants.rho_STP
+        v_dry = builder.particulator.formulae.trivia.volume(radius=r_dry)
+        specific_concentration = (
+            concentration / builder.particulator.formulae.constants.rho_STP
+        )
         attributes["multiplicity"] = np.append(
             attributes["multiplicity"], specific_concentration * env.mass_of_dry_air
         )
@@ -73,11 +76,13 @@ def run_parcel(
         )
 
     r_wet = equilibrate_wet_radii(
-        r_dry=builder.formulae.trivia.radius(volume=attributes["dry volume"]),
+        r_dry=builder.particulator.formulae.trivia.radius(
+            volume=attributes["dry volume"]
+        ),
         environment=env,
         kappa_times_dry_volume=attributes["kappa times dry volume"],
     )
-    attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet)
+    attributes["volume"] = builder.particulator.formulae.trivia.volume(radius=r_wet)
 
     particulator = builder.build(attributes, products=products)
     scipy_ode_condensation_solver.patch_particulator(particulator)
