@@ -25,13 +25,15 @@ class Simulation(BasicSimulation):
         builder.set_environment(env)
 
         attributes = env.init_attributes(
-            n_in_dv=settings.n_in_dv, kappa=settings.kappa, r_dry=settings.r_dry
+            n_in_dv=settings.n_in_dv,
+            kappa=settings.kappa,
+            r_dry=settings.r_dry,
+            include_dry_volume_in_attribute=False,
         )
         attributes = {
             **attributes,
             **settings.starting_amounts,
         }
-        del attributes["dry volume"]
 
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
