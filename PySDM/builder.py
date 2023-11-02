@@ -22,7 +22,6 @@ from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSp
 class Builder:
     def __init__(self, n_sd, backend):
         assert not inspect.isclass(backend)
-        self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
             "multiplicity": Multiplicities(self),
@@ -67,7 +66,7 @@ class Builder:
     def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(
-                attribute, self.particulator.dynamics, self.formulae
+                attribute, self.particulator.dynamics, self.particulator.formulae
             )(self)
         if variant is not None:
             assert variant == self.req_attr[attribute]
