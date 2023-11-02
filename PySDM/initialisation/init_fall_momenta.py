@@ -6,7 +6,7 @@ of droplets
 import numpy as np
 
 from PySDM.backends import CPU
-from PySDM.dynamics.terminal_velocity import Interpolation
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949
 from PySDM.formulae import Formulae
 from PySDM.particulator import Particulator
 
@@ -15,7 +15,7 @@ def init_fall_momenta(
     volume: np.ndarray,
     rho_w: float,  # TODO #798 - we plan to use masses instead of volumes soon
     zero: bool = False,
-    terminal_velocity_approx=Interpolation,  # TODO #1155
+    terminal_velocity_approx=GunnKinzer1949,  # TODO #1155
 ):
     """
     Calculate default values of the
