@@ -78,9 +78,8 @@ class TestCollisionProducts:
         n_init = [5, 2]
         n_sd = len(n_init)
 
-        builder = Builder(n_sd, backend_class())
         env = Box(**ENV_ARGS)
-        builder.set_environment(env)
+        builder = Builder(n_sd, backend_class(), environment=env)
 
         dynamic, products = _get_dynamics_and_products(params, adaptive=False)
         builder.add_dynamic(dynamic)
@@ -136,9 +135,8 @@ class TestCollisionProducts:
     def test_no_collision_deficits_when_adaptive(params, n_init, backend_class=CPU):
         # Arrange
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
         env = Box(**ENV_ARGS)
-        builder.set_environment(env)
+        builder = Builder(n_sd, backend_class(), environment=env)
 
         dynamic, _ = _get_dynamics_and_products(
             params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
@@ -184,9 +182,8 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
         env = Box(**ENV_ARGS)
-        builder.set_environment(env)
+        builder = Builder(n_sd, backend_class(), environment=env)
 
         dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
         builder.add_dynamic(dynamic)
@@ -233,9 +230,10 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class(Formulae(handle_all_breakups=True)))
         env = Box(**ENV_ARGS)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd, backend_class(Formulae(handle_all_breakups=True)), environment=env
+        )
 
         dynamic, _ = _get_dynamics_and_products(
             params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
@@ -290,9 +288,8 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
         env = Box(**ENV_ARGS)
-        builder.set_environment(env)
+        builder = Builder(n_sd, backend_class(), environment=env)
 
         dynamic, products = _get_dynamics_and_products(params, adaptive=False)
         builder.add_dynamic(dynamic)

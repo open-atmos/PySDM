@@ -27,8 +27,9 @@ class Simulation(BasicSimulation):
             w=settings.vertical_velocity,
             mass_of_dry_air=44 * si.kg,
         )
-        builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae), environment=env
+        )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(
             Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x)

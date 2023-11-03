@@ -25,8 +25,7 @@ class TestParticleConcentration:
     @pytest.mark.parametrize("stp", (True, False))
     def test_stp(backend_class, stp):
         # arrange
-        builder = Builder(n_sd=N_SD, backend=backend_class())
-        builder.set_environment(ENV)
+        builder = Builder(n_sd=N_SD, backend=backend_class(), environment=ENV)
         particulator = builder.build(
             attributes=ATTRIBUTES, products=(TotalParticleConcentration(stp=stp),)
         )
@@ -49,8 +48,7 @@ class TestParticleConcentration:
     @pytest.mark.parametrize("specific", (True, False))
     def test_specific(backend_class, specific):
         # arrange
-        builder = Builder(n_sd=N_SD, backend=backend_class())
-        builder.set_environment(ENV)
+        builder = Builder(n_sd=N_SD, backend=backend_class(), environment=ENV)
         particulator = builder.build(
             attributes=ATTRIBUTES, products=(ParticleConcentration(specific=specific),)
         )

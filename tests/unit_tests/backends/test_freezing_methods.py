@@ -27,9 +27,10 @@ class TestFreezingMethods:
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        builder = Builder(n_sd=1, backend=backend_class(formulae=formulae))
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=1, backend=backend_class(formulae=formulae), environment=env
+        )
         builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
         particulator = builder.build(
             products=(IceWaterContent(),),
@@ -72,9 +73,10 @@ class TestFreezingMethods:
         steps = 1
 
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
         env = Box(dt=dt, dv=dv)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+        )
         builder.add_dynamic(Freezing(singular=True))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
@@ -151,14 +153,14 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
+            env = Box(dt=case["dt"], dv=d_v)
             builder = Builder(
                 n_sd=n_sd,
                 backend=backend_class(
                     formulae=formulae, double_precision=double_precision
                 ),
+                environment=env,
             )
-            env = Box(dt=case["dt"], dv=d_v)
-            builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),

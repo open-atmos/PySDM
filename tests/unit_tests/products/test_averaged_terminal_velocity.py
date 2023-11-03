@@ -20,9 +20,10 @@ u = np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565]
 class TestAveragedTerminalVelocity:
     @staticmethod
     def _make_particulator(attributes: dict, weighting="volume"):
-        builder = Builder(n_sd=len(attributes["multiplicity"]), backend=CPU())
         env = Box(dt=dt, dv=np.nan)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=len(attributes["multiplicity"]), backend=CPU(), environment=env
+        )
         env["T"] = T
         return builder.build(
             attributes=attributes,

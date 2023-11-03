@@ -34,10 +34,10 @@ class TestKernels:
         # arrange
         volume = np.asarray([44.0, 666.0])
 
-        builder = Builder(backend=CPU(), n_sd=volume.size)
+        env = Box(dv=None, dt=None)
+        builder = Builder(backend=CPU(), n_sd=volume.size, environment=env)
         sut = SimpleGeometric(C=C)
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )
@@ -62,11 +62,10 @@ class TestKernels:
     @pytest.mark.parametrize("volume", (np.array([1.0, 2.0]), np.array([1.0, 1.0])))
     def test_simple_geometric_same_size(volume):
         # arrange
-
-        builder = Builder(backend=CPU(), n_sd=volume.size)
+        env = Box(dv=None, dt=None)
+        builder = Builder(backend=CPU(), n_sd=volume.size, environment=env)
         sut = SimpleGeometric(C=1.0)
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )

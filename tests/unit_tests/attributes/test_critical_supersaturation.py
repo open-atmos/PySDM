@@ -15,9 +15,8 @@ def test_critical_supersaturation():
     S_max = 0.01
     vdry = np.linspace(0.001, 1, n_sd) * si.um**3
 
-    builder = Builder(n_sd=n_sd, backend=CPU())
     env = Box(dt=np.nan, dv=np.nan)
-    builder.set_environment(env)
+    builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
     env["T"] = T
     particulator = builder.build(
         attributes={

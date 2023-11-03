@@ -45,8 +45,7 @@ class TestParcelSanityChecks:
         n_sd = 64
 
         formulae = Formulae()
-        builder = Builder(backend=backend_class(formulae), n_sd=n_sd)
-        builder.set_environment(env)
+        builder = Builder(backend=backend_class(formulae), n_sd=n_sd, environment=env)
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
 
@@ -125,17 +124,15 @@ class TestParcelSanityChecks:
         """asserting that condensation modifies env thd and water_vapour_mixing_ratio only,
         not rhod"""
         # arrange
-        builder = Builder(n_sd=10, backend=backend_class())
-        builder.set_environment(
-            Parcel(
-                dt=1 * si.s,
-                mass_of_dry_air=1 * si.mg,
-                p0=1000 * si.hPa,
-                initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
-                T0=300 * si.K,
-                w=1 * si.m / si.s,
-            )
+        env = Parcel(
+            dt=1 * si.s,
+            mass_of_dry_air=1 * si.mg,
+            p0=1000 * si.hPa,
+            initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
+            T0=300 * si.K,
+            w=1 * si.m / si.s,
         )
+        builder = Builder(n_sd=10, backend=backend_class(), environment=env)
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(
             Condensation(
