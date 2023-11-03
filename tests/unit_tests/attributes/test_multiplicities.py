@@ -30,8 +30,8 @@ class TestMultiplicities:
     def test_max_multiplicity_assignable(backend_class, value):
         # arrange
         n_sd = 1
-        builder = Builder(n_sd=n_sd, backend=backend_class())
-        builder.set_environment(Box(dt=np.nan, dv=np.nan))
+        env = Box(dt=np.nan, dv=np.nan)
+        builder = Builder(n_sd=n_sd, backend=backend_class(), environment=env)
 
         # act
         particulator = builder.build(

@@ -59,8 +59,7 @@ def make_particulator(
 
     builder = Builder(n_sd, backend)
 
-    env = Box(dt, volume)
-    builder.set_environment(env)
+    env = Box(dt, volume, env)
     env["T"] = initial_temperature
     env["RH"] = A_VALUE_LARGER_THAN_ONE
     env["rhod"] = 1.0

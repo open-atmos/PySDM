@@ -240,8 +240,8 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").Particl
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
-builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
+env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
 particulator = builder.build(attributes, products)
@@ -260,8 +260,8 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
-builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
-builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
+env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
+builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU(), 'environment', env));
 builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
@@ -284,8 +284,8 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
-builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
+env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3)
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
@@ -388,13 +388,12 @@ The component submodules used to create this simulation are visualized below:
     BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
     ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
     N_SD["n_sd :int"] -->|passed as arg to| BUILDER_INIT
-    BUILDER_INSTANCE -..-|has a method| BUILDER_SET_ENV(["Builder.set_environment()"])
     BUILDER_INIT(["Builder.__init__()"]) ----->|instantiates| BUILDER_INSTANCE
     BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
     ENV_INIT(["Box.__init__()"]) --->|instantiates| ENV
     DT[dt :float] ----->|passed as arg to| ENV_INIT
     DV[dv :float] ----->|passed as arg to| ENV_INIT
-    ENV[":Box"] -->|passed as arg to| BUILDER_SET_ENV
+    ENV[":Box"] -->|passed as arg to| BUILDER_INIT
     B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
     KERNEL_INIT -->|instantiates| KERNEL
     KERNEL[collision_kernel: Golovin] -->|passed as arg to| COAL_INIT(["Coalesncence.__init__()"])
@@ -424,7 +423,6 @@ The component submodules used to create this simulation are visualized below:
     click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click BUILDER_SET_ENV "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
     click ENV "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
     click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
@@ -495,8 +493,7 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
-builder.set_environment(env)
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
@@ -577,8 +574,7 @@ output_points = 40;
 n_sd = 256;
 
 formulae = Formulae();
-builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
-builder.set_environment(env);
+builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environment', env));
 builder.add_dynamic(AmbientThermodynamics());
 builder.add_dynamic(Condensation());
 
@@ -678,8 +674,7 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
-builder.set_environment(env)
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 

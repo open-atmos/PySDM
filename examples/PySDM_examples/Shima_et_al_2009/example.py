@@ -14,8 +14,10 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
 
 
 def run(settings, backend=CPU, observers=()):
-    builder = Builder(n_sd=settings.n_sd, backend=backend(formulae=settings.formulae))
-    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
+    env = Box(dv=settings.dv, dt=settings.dt)
+    builder = Builder(
+        n_sd=settings.n_sd, backend=backend(formulae=settings.formulae), environment=env
+    )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
     attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)

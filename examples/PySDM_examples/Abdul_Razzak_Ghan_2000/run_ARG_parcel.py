@@ -50,8 +50,7 @@ def run_parcel(
     aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
     n_sd = n_sd_per_mode * len(aerosol.modes)
 
-    builder = Builder(backend=CPU(), n_sd=n_sd)
-    builder.set_environment(env)
+    builder = Builder(backend=CPU(), n_sd=n_sd, environment=env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
     builder.request_attribute("critical supersaturation")

@@ -30,9 +30,6 @@ class Simulation:
         self.output_attributes = None
         self.output_products = None
 
-        self.builder = Builder(
-            n_sd=settings.n_sd, backend=backend(formulae=settings.formulae)
-        )
         self.mesh = Mesh(
             grid=(settings.nz,),
             size=(settings.z_max + settings.particle_reservoir_depth,),
@@ -66,7 +63,11 @@ class Simulation:
         )
         self.g_factor_vec = settings.rhod(_z_vec)
 
-        self.builder.set_environment(self.env)
+        self.builder = Builder(
+            n_sd=settings.n_sd,
+            backend=backend(formulae=settings.formulae),
+            environment=self.env,
+        )
         self.builder.add_dynamic(AmbientThermodynamics())
         self.builder.add_dynamic(
             Condensation(

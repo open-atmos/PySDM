@@ -48,11 +48,12 @@ def test_small_timescale(default_attributes, constant_timescale, backend_class):
     the velocity should quickly approach the terminal velocity
     """
 
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_class(),
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
 
     builder.add_dynamic(RelaxedVelocity(c=1e-12, constant=constant_timescale))
 
@@ -79,11 +80,12 @@ def test_large_timescale(default_attributes, constant_timescale, backend_class):
     the velocity should remain 0
     """
 
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_class(),
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
 
     builder.add_dynamic(RelaxedVelocity(c=1e15, constant=constant_timescale))
 
@@ -109,11 +111,12 @@ def test_behavior(default_attributes, constant_timescale, backend_class):
     The fall velocity should approach the terminal velocity exponentially
     """
 
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_class(),
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
 
     # relaxation happens too quickly unless c is high enough
     builder.add_dynamic(RelaxedVelocity(c=100, constant=constant_timescale))
@@ -157,12 +160,12 @@ def test_timescale(default_attributes, c, constant_timescale, backend_class):
 
     The constant timescale should be constant.
     """
-
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_class(),
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
 
     sqrt_radius_attr = builder.get_attribute("square root of radius")
 

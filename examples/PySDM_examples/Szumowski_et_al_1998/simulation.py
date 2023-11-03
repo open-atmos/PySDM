@@ -35,7 +35,6 @@ class Simulation:
     def reinit(self, products=None):
         formulae = self.settings.formulae
         backend = self.backend_class(formulae=formulae)
-        builder = Builder(n_sd=self.settings.n_sd, backend=backend)
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
@@ -43,7 +42,9 @@ class Simulation:
             rhod_of=self.settings.rhod_of_zZ,
             mixed_phase=self.settings.processes["freezing"],
         )
-        builder.set_environment(environment)
+        builder = Builder(
+            n_sd=self.settings.n_sd, backend=backend, environment=environment
+        )
 
         if products is not None:
             products = list(products)
