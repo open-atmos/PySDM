@@ -86,9 +86,10 @@ def test_particle_size_product(
     validation_fun,
 ):
     # arrange
-    env = Box(dt=np.nan, dv=np.nan)
     builder = Builder(
-        n_sd=len(n), backend=backend_class(double_precision=True), environment=env
+        n_sd=len(n),
+        backend=backend_class(double_precision=True),
+        environment=Box(dt=np.nan, dv=np.nan),
     )
     volume = builder.formulae.trivia.volume(np.asarray(r))
     dry_volume = np.full_like(volume, (0.01 * si.um) ** 3)
