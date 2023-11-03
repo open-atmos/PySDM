@@ -58,10 +58,6 @@ def run(settings, backend=CPU, observers=()):
         WallTime(),
     )
     particulator = builder.build(attributes, products)
-    if hasattr(settings, &#34;u_term&#34;) and &#34;terminal velocity&#34; in particulator.attributes:
-        particulator.attributes[&#34;terminal velocity&#34;].approximation = settings.u_term(
-            particulator
-        )
 
     for observer in observers:
         particulator.observers.append(observer)
@@ -165,10 +161,6 @@ if __name__ == &#34;__main__&#34;:
         WallTime(),
     )
     particulator = builder.build(attributes, products)
-    if hasattr(settings, &#34;u_term&#34;) and &#34;terminal velocity&#34; in particulator.attributes:
-        particulator.attributes[&#34;terminal velocity&#34;].approximation = settings.u_term(
-            particulator
-        )
 
     for observer in observers:
         particulator.observers.append(observer)
