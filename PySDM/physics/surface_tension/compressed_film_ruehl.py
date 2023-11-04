@@ -5,9 +5,9 @@ surface tension coefficient model featuring surface-partitioning
 import numba
 import numpy as np
 
-from PySDM.backends.impl_numba.conf import JIT_FLAGS as jit_flags
 from PySDM.backends.impl_numba.toms748 import toms748_solve
 from PySDM.physics.trivia import Trivia
+from PySDM.storages.numba.conf import JIT_FLAGS as jit_flags
 
 
 # pylint: disable=too-many-arguments

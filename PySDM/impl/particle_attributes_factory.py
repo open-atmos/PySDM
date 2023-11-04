@@ -33,10 +33,10 @@ class ParticleAttributesFactory:
             ):
                 raise AssertionError()
 
-        extensive_attribute_storage = particulator.IndexedStorage.empty(
+        extensive_attribute_storage = particulator.IndexedStorage.indexed_and_empty(
             idx, (len(extensive_attr), particulator.n_sd), float
         )
-        maximum_attributes = particulator.IndexedStorage.empty(
+        maximum_attributes = particulator.IndexedStorage.indexed_and_empty(
             idx, (len(maximum_attr), particulator.n_sd), float
         )
 

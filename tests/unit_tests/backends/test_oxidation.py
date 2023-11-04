@@ -4,7 +4,6 @@ import pytest
 
 from PySDM import Formulae
 from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods
-from PySDM.backends.impl_numba.storage import Storage
 from PySDM.dynamics.impl.chemistry_utils import (
     DISSOCIATION_FACTORS,
     EquilibriumConsts,
@@ -14,6 +13,7 @@ from PySDM.dynamics.impl.chemistry_utils import (
 from PySDM.physics import si
 from PySDM.physics.constants import PI_4_3
 from PySDM.physics.constants_defaults import T_STP
+from PySDM.storages.numba.storage import Storage
 
 formulae = Formulae()
 

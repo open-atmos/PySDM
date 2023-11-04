@@ -7,7 +7,6 @@ import numba
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.toms748 import toms748_solve
 from PySDM.dynamics.impl.chemistry_utils import (
     DIFFUSION_CONST,
@@ -21,6 +20,7 @@ from PySDM.dynamics.impl.chemistry_utils import (
     k4,
 )
 from PySDM.physics.constants import K_H2O
+from PySDM.storages.numba import conf
 
 _MAX_ITER_QUITE_CLOSE = 8
 _MAX_ITER_DEFAULT = 32

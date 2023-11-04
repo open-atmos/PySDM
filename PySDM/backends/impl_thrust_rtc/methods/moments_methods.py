@@ -3,10 +3,9 @@ GPU implementation of moment calculation backend methods
 """
 from functools import cached_property
 
-from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
-from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
+from PySDM.storages.thrust_rtc.conf import NICE_THRUST_FLAGS, trtc
+from PySDM.storages.thrust_rtc.nice_thrust import nice_thrust
 
-from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 # https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#atomic-functions

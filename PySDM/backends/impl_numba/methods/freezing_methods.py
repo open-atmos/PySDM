@@ -5,12 +5,12 @@ import numba
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.storages.numba import conf
 
 from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
 )
-from ...impl_numba import conf
 
 
 class FreezingMethods(BackendMethods):

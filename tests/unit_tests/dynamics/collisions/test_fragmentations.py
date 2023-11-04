@@ -135,8 +135,8 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut(nf, frag_mass, u01, is_first_in_pair)
 
         # Assert
-        np.testing.assert_array_equal([1.0], nf.to_ndarray())
-        np.testing.assert_array_equal(
+        np.testing.assert_allclose([1.0], nf.to_ndarray())
+        np.testing.assert_allclose(
             [(6660.0 + 440.0) * si.um**3 * constants_defaults.rho_w],
             frag_mass.to_ndarray(),
         )

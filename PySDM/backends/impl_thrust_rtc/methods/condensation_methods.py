@@ -4,12 +4,11 @@ GPU implementation of backend methods for water condensation/evaporation
 from functools import cached_property
 from typing import Dict, Optional
 
-from PySDM.backends.impl_common.storage_utils import StorageBase
 from PySDM.backends.impl_thrust_rtc.bisection import BISECTION
-from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
-from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
+from PySDM.storages.common.storage import Storage as StorageBase
+from PySDM.storages.thrust_rtc.conf import NICE_THRUST_FLAGS, trtc
+from PySDM.storages.thrust_rtc.nice_thrust import nice_thrust
 
-from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 ARGS_VARS = (

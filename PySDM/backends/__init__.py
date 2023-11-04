@@ -47,16 +47,16 @@ def _cuda_is_available():
 if "CI" not in os.environ and (_cuda_is_available() or cuda.is_available()):
     from PySDM.backends.thrust_rtc import ThrustRTC
 else:
-    from .impl_thrust_rtc.test_helpers import flag
+    from PySDM.storages.thrust_rtc.test_helpers import flag
 
     flag.fakeThrustRTC = True
 
     import numpy as np
 
-    from PySDM.backends.impl_common.random_common import (  # pylint: disable=ungrouped-imports
-        RandomCommon,
-    )
     from PySDM.backends.thrust_rtc import ThrustRTC  # pylint: disable=ungrouped-imports
+    from PySDM.storages.common.random import (
+        Random as RandomCommon,  # pylint: disable=ungrouped-imports
+    )
 
     ThrustRTC.ENABLE = False
 

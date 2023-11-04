@@ -10,8 +10,8 @@ import numpy as np
 import scipy.integrate
 
 from PySDM.backends import Numba
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.physics.constants_defaults import PI_4_3, T0
+from PySDM.storages.numba.conf import JIT_FLAGS
 
 idx_thd = 0
 idx_x = 1

@@ -6,7 +6,7 @@ from functools import cached_property
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
+from PySDM.storages.numba import conf
 
 
 class TerminalVelocityMethods(BackendMethods):

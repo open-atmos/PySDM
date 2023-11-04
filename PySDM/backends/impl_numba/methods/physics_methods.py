@@ -5,7 +5,7 @@ import numba
 from numba import prange
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
+from PySDM.storages.numba import conf
 
 
 class PhysicsMethods(BackendMethods):

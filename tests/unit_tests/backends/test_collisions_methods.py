@@ -4,10 +4,6 @@ import os
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU, GPU
-from PySDM.backends.impl_common.index import make_Index
-from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_numba.methods.collisions_methods import pair_indices
 
 NONZERO = 44
@@ -165,11 +161,11 @@ class TestCollisionMethods:
         # Arrange
         backend = backend_class()
         _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
-        _idx = make_Index(backend).from_ndarray(np.asarray(idx))
-        _n = make_IndexedStorage(backend).from_ndarray(_idx, np.asarray(n))
+        _idx = backend.Index.from_ndarray(np.asarray(idx))
+        _n = backend.IndexedStorage.indexed_from_ndarray(_idx, np.asarray(n))
         _cell_id = backend.Storage.from_ndarray(np.asarray(cell_id))
         _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
-        _is_first_in_pair = make_PairIndicator(backend)(len(n))
+        _is_first_in_pair = backend.PairIndicator(len(n))
         _is_first_in_pair.indicator[:] = np.asarray(is_first_in_pair)
         _n_substep = backend.Storage.from_ndarray(np.zeros_like(dt_left, dtype=int))
         _dt_min = backend.Storage.from_ndarray(np.zeros_like(dt_left))

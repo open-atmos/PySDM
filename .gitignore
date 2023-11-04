@@ -138,3 +138,6 @@ dmypy.json
 
 #Jetbrains
 .idea/
+
+# PyCharm
+.idea

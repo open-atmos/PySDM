@@ -5,7 +5,6 @@ import pytest
 import PySDM.physics.constants as const
 from PySDM import Builder, Formulae
 from PySDM.backends import CPU
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup
 from PySDM.dynamics.collisions import breakup_fragmentations
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
@@ -115,7 +114,7 @@ class TestSDMBreakup:
         fragment_mass = particulator.PairwiseStorage.from_ndarray(
             np.array([50 * si.um**3], dtype=float)
         )
-        is_first_in_pair = make_PairIndicator(backend)(n_sd)
+        is_first_in_pair = particulator.PairIndicator(n_sd)
 
         # Act
         particulator.collision_coalescence_breakup(

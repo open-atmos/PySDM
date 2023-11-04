@@ -22,6 +22,7 @@ setup(
     use_scm_version={"local_scheme": lambda _: "", "version_scheme": "post-release"},
     setup_requires=["setuptools_scm"],
     install_requires=[
+        "typing-extensions" + ("==4.4.0" if "CI" in os.environ else ""),
         "ThrustRTC==0.3.20",
         "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
         "numba" + ("==0.56.4" if CI else ">=0.51.2"),

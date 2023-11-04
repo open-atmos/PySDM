@@ -3,9 +3,6 @@ import numpy as np
 import pytest
 
 from PySDM.backends import ThrustRTC
-from PySDM.backends.impl_common.index import make_Index
-from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Coalescence
 from PySDM.physics import constants_defaults
 
@@ -229,8 +226,8 @@ class TestSDMSingleCell:
                 # Act
                 prob_arr = backend.Storage.from_ndarray(np.full((n_sd // 2,), p))
                 rand_arr = backend.Storage.from_ndarray(np.full((n_sd // 2,), r))
-                idx = make_Index(backend).from_ndarray(np.arange(n_sd))
-                mult = make_IndexedStorage(backend).from_ndarray(
+                idx = backend.Index.from_ndarray(np.arange(n_sd))
+                mult = backend.IndexedStorage.indexed_from_ndarray(
                     idx, np.asarray([expected(p, r), 1]).astype(backend.Storage.INT)
                 )
                 _ = backend.Storage.from_ndarray(np.zeros(n_sd // 2))
@@ -238,7 +235,7 @@ class TestSDMSingleCell:
                     np.zeros(n_sd, dtype=backend.Storage.INT)
                 )
 
-                indicator = make_PairIndicator(backend)(n_sd)
+                indicator = backend.PairIndicator(n_sd)
                 indicator.indicator[:] = backend.Storage.from_ndarray(
                     np.asarray((True, False))
                 )

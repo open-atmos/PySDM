@@ -7,8 +7,8 @@ import numba
 import numpy as np
 from scipy.interpolate import Rbf
 
-from PySDM.backends.impl_numba import conf
 from PySDM.physics import constants as const
+from PySDM.storages.numba import conf
 
 
 class GunnKinzer1949:  # pylint: disable=too-few-public-methods

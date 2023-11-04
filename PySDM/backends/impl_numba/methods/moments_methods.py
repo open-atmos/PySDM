@@ -4,8 +4,8 @@ CPU implementation of moment calculation backend methods
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
+from PySDM.storages.numba import conf
 
 
 class MomentsMethods(BackendMethods):

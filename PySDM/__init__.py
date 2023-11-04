@@ -22,6 +22,9 @@ PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in th
 [tests package](https://github.com/open-atmos/PySDM/tree/master/tests).
 """
 
+
+import contextlib
+
 from pkg_resources import DistributionNotFound, VersionConflict, get_distribution
 
 from . import environments, exporters, products
@@ -29,8 +32,5 @@ from .builder import Builder
 from .formulae import Formulae
 from .particulator import Particulator
 
-try:
+with contextlib.suppress(DistributionNotFound, VersionConflict):
     __version__ = get_distribution(__name__).version
-except (DistributionNotFound, VersionConflict):
-    # package is not installed
-    pass

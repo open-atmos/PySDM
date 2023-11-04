@@ -3,8 +3,6 @@ import numpy as np
 import pytest
 
 from PySDM.backends import CPU, GPU, ThrustRTC
-from PySDM.backends.impl_common.index import make_Index
-from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 
 from ..dummy_environment import DummyEnvironment
@@ -12,12 +10,8 @@ from ..dummy_particulator import DummyParticulator
 
 
 def make_indexed_storage(backend, iterable, idx=None):
-    index = make_Index(backend).from_ndarray(np.array(iterable))
-    if idx is not None:
-        result = make_IndexedStorage(backend).indexed(idx, index)
-    else:
-        result = index
-    return result
+    index = backend.Index.from_ndarray(np.array(iterable))
+    return backend.IndexedStorage.indexed(idx, index) if idx is not None else index
 
 
 # pylint: disable=protected-access
