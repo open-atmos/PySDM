@@ -21,7 +21,11 @@ authors:
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "3"
+  - name: Oleksii Bulenok
+    orcid: 0000-0003-2272-8548
+    affiliation: "3"
   - name: Kacper Derlatka
+    orcid: 0000-0003-3137-1288
     affiliation: "3"
   - name: Isabella Dula
     affiliation: "2"
@@ -29,23 +33,25 @@ authors:
     affiliation: "2"
     orcid: 0000-0003-3194-6440
   - name: J. Ben Mackay
-    affiliation: "2"
+    affiliation: "2,4"
     orcid: 0000-0001-8677-3562
   - name: Ryan X. Ward
     affiliation: "2"
     orcid: 0000-0003-2317-3310
   - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "4,3"
+    affiliation: "3,5"
 affiliations:
- - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, USA
+ - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, United States of America
    index: 1
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, United States of America
    index: 2
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
    index: 3
- - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, USA
+ - name: Scripps Institution of Oceanography, San Diego, CA, United States of America
    index: 4
+ - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, United States of America
+   index: 5 
 bibliography: paper.bib
 
 ---
@@ -67,7 +73,7 @@ Recent efforts have culminated
 
 # Background and Statement of Need
 
-The key motivation behind development of `PySDM` has been to offer the community an approachable
+The key motivation behind development of `PySDM` has been to offer the community an approachable,
   readily reusable software for users and developers who wish to contribute to the
   scientific progress of particle-based methods for simulating atmospheric clouds.
 To this end, we strive to maintain modularity of the `PySDM` building blocks, separation of
@@ -110,7 +116,7 @@ For an example of running basic zero-dimensional
   simulations with `PySDM`, we refer to the project `README.md` file and @Bartman_et_al_2022_JOSS.
 The key building blocks of the `PySDM` API and class hierarchy are: "attributes", "backends", "dynamics",
   "environments", "products" and physics "formulae".
-The following code snippets demonstrate new elements of `PySDM` API which
+The following code snippets demonstrate new elements of `PySDM` API, which
   can be added or substituted into the "v1" API description to run 
   simulations using the new features.
 Execution of code snippets from both the present "v2" and the previous "v1" papers
@@ -141,18 +147,22 @@ from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
+from PySDM.formulae import Formulae
 
-builder = Builder(backend=CPU(), n_sd=100)
+formulae = Formulae(fragmentation_function="ExponFrag")
+builder = Builder(backend=CPU(formulae), n_sd=100)
 builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
+frag_scale = formulae.trivia.volume(radius=100 * si.micrometres)
 builder.add_dynamic(Collision(
   collision_kernel=Golovin(b=1.5e3 / si.s),
   coalescence_efficiency=ConstEc(Ec=0.9),
   breakup_efficiency=ConstEb(Eb=1.0),
-  fragmentation_function=ExponFrag(scale=100*si.um**3)
+  fragmentation_function=ExponFrag(scale=frag_scale),
+  adaptive=True,
 ))
 ```
 
-In `PySDM-examples`, we introduced a set of notebooks reproducing figures from two forthcoming publications.
+In `PySDM-examples`, we introduced a set of notebooks reproducing figures from two publications.
 In @Bieli_et_al_2022, `PySDM` results from collisional coalescence and breakup 
   were used as a calibration tool for learning microphysical rate parameters.
 In @DeJong_et_al_2022, the physics of and algorithm for superdroplet breakup are described,
@@ -162,8 +172,7 @@ In @DeJong_et_al_2022, the physics of and algorithm for superdroplet breakup are
 ## Immersion Freezing
 
 This release of `PySDM` introduces representation of immersion freezing, 
-  i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
-  in supercooled water droplets.
+  i.e. liquid-solid phase change contingent on the presence of insoluble ice nuclei immersed in supercooled water droplets.
 There are two alternative models implemented: the singular approach presented in 
   @Shima_et_al_2020, and the time-dependent approach of @Alpert_and_Knopf_2016.
 For the time-dependent model, the water Activity Based Immersion Freezing Model (ABIFM)
@@ -206,16 +215,14 @@ class SimpleAerosol(DryAerosolMixture):
             is_soluble={"(NH4)2SO4": True, "NaCl": True},
             ionic_dissociation_phi={"(NH4)2SO4": 3, "NaCl": 2},
         )
-        self.modes = (
-            {
-                "kappa": self.kappa(
-                  mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
-                "spectrum": spectra.Lognormal(
-                    norm_factor=100 / si.cm**3,
-                    m_mode=50 * si.nm, s_geom=2
-                ),
-            },
-        )
+        self.modes = ({
+            "kappa": self.kappa(
+              mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
+            "spectrum": spectra.Lognormal(
+                norm_factor=100 / si.cm**3,
+                m_mode=50 * si.nm, s_geom=2
+            ),
+        },)
 ```
 An aerosol object (instance of `DryAerosolMixture` subclass) is used during initialization to calculate the total number of 
   superdroplets given a prescribed number per mode, sample the size spectrum from the aerosol 
@@ -229,7 +236,7 @@ The new aerosol initialization framework is used in several examples in `PySDM-e
   simulations against data retrieved from the
   publication as shown in \autoref{fig:ARG}).
 
-![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit). For comparison, we include the parameterization developed in @Abdul_Razzak_and_Ghan_2000 as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
+![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit). For comparison, we include the parameterization developed in @Abdul_Razzak_and_Ghan_2000 as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](joss-ARG-fig_1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
 
@@ -260,7 +267,7 @@ In `PySDM` "v2", the `Condensation`, `Collision`, and `Displacement` "dynamics"
 Adaptivity is enabled by default and can be disabled by passing `False` as the value of optional `adaptive`
   keyword to the given dynamic.
 This adaptive time-stepping applies separately in each grid box of a multidimensional environment,
-  and includes a load-balancing logic.
+  and includes a load-balancing logic as described in @Bartman_et_al_2023.
 In the case of collisions, the time-step adaptivity is aimed at eliminating errors
   associated with multiple coalescence events within a timestep.
 In the case of condensation, the time-step adaptivity is aimed at reducing computational
@@ -271,6 +278,17 @@ In the case of displacement, the time-step adaptivity is aimed at obeying a give
   in integration of the super-particle trajectories, and the error measure is constructed
   by comparing implicit- and explicit-Euler solutions.
 
+# Relevant recent open-source developments
+`PySDM` supports a `PyMPDATA`-based [@Bartman_et_al_2022_MP] reimplementation of the 1D kinematically-driven test framework in a recently-published intercomparison of microphysics methods [@Hill_et_al_2023]. 
+The authors are unaware of recent SDM algorithm implementations in open-source packages beyond those mentioned in [@Bartman_et_al_2022_JOSS]
+  and the related list of links in the `PySDM` README file. 
+Furthermore, none of these implementations include superdroplet-count-conserving collisional breakup,
+  organic surface partitioning or adaptive time-stepping for coagulation. 
+The aerosol initialization method described
+  in `PySDM` v2 is similar to that of `pyrcel` [@Rothenberg_and_Wang_2017].
+Leveraging the availability of `PyPartMC` - a new Python interface to the `PartMC` particle-resolved Monte-Carlo aerosol simulation code [@PyPartMC_AMS2023],
+  `PySDM` test suite has been extended with automated checks against `PartMC`.
+
 # Author contributions
 
 EdJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
@@ -279,9 +297,10 @@ CES contributed the new surface tension models and relevant examples, in consult
 SAz contributed to extensions and enhancement of the one-dimensional kinematic framework environment.
 PB led the formulation and worked with SAr on implementation of the adaptive time-stepping schemes.
 KD contributed to setting up continuous integration workflows for the GPU backend. 
+OB implemented breakup handling within the GPU backend and contributed code refactors and new tests for both CPU and GPU backends.
 ID, CES, and AJ contributed to the aerosol activation examples.
 The immersion freezing representation code was developed by SAr.
-Maintenance of the project have been carried out by SAr, CS, and EdJ.
+Maintenance of the project have been carried out by SAr, CES, and EdJ.
 
 # Acknowledgments
 
@@ -291,6 +310,7 @@ Development of ice-phase microphysics representation has been supported through
   grant no. DE-SC0021034 by the Atmospheric System Research Program and 
   Atmospheric Radiation Measurement Program sponsored by the U.S. Department of Energy (DOE).
 EdJ's contributions were made possible by support from the Department of Energy Computational Sciences Graduate Research Fellowship.
+SAr, OB and KD acknowledge support from the Polish National Science Centre (grant no. 2020/39/D/ST10/01220).
 
 # References
 

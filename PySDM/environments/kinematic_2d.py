@@ -1,6 +1,6 @@
 """
 Two-dimensional single-eddy prescribed-flow framework with moisture and heat advection
-handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
+handled by [PyMPDATA](http://github.com/open-atmos/PyMPDATA/)
 """
 
 import numpy as np
@@ -11,7 +11,7 @@ from PySDM.initialisation.equilibrate_wet_radii import (
     default_rtol,
     equilibrate_wet_radii,
 )
-from PySDM.initialisation.sampling import spectral_sampling
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
 from ..impl import arakawa_c
 
@@ -42,30 +42,26 @@ class Kinematic2D(Moist):
         kappa,
         dry_radius_spectrum,
         rtol=default_rtol,
-        n_sd=None
+        n_sd=None,
+        spectral_sampling=ConstantMultiplicity
     ):
         super().sync()
         self.notify()
         n_sd = n_sd or self.particulator.n_sd
         attributes = {}
         with np.errstate(all="raise"):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
-            (
-                attributes["cell id"],
-                attributes["cell origin"],
-                attributes["position in cell"],
-            ) = self.mesh.cellular_attributes(positions)
-        with np.errstate(all="raise"):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
+            positions = spatial_discretisation.sample(
+                backend=self.particulator.backend, grid=self.mesh.grid, n_sd=n_sd
+            )
             (
                 attributes["cell id"],
                 attributes["cell origin"],
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
-                spectrum=dry_radius_spectrum
-            ).sample(n_sd)
+            r_dry, n_per_kg = spectral_sampling(spectrum=dry_radius_spectrum).sample(
+                n_sd=n_sd, backend=self.particulator.backend
+            )
 
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]
@@ -83,7 +79,7 @@ class Kinematic2D(Moist):
             cell_id = attributes["cell id"]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes["n"] = n_per_kg * rhod[cell_id] * domain_volume
+        attributes["multiplicity"] = n_per_kg * rhod[cell_id] * domain_volume
         attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
@@ -93,9 +89,11 @@ class Kinematic2D(Moist):
             self.particulator.dynamics["EulerianAdvection"].solvers["th"].advectee.get()
         )
 
-    def get_qv(self):
+    def get_water_vapour_mixing_ratio(self):
         return (
-            self.particulator.dynamics["EulerianAdvection"].solvers["qv"].advectee.get()
+            self.particulator.dynamics["EulerianAdvection"]
+            .solvers["water_vapour_mixing_ratio"]
+            .advectee.get()
         )
 
     def sync(self):

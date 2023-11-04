@@ -7,8 +7,8 @@ from PySDM.physics import constants as const
 class RogersYau:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
-        *,
         particulator,
+        *,
         small_k=None,
         medium_k=None,
         large_k=None,

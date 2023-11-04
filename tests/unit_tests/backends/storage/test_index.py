@@ -8,7 +8,6 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 
 class TestIndex:  # pylint: disable=too-few-public-methods
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_remove_zero_n_or_flagged(backend_class):
         # Arrange
         backend = backend_class()

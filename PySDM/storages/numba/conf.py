@@ -7,12 +7,12 @@ import warnings
 import numba.core.errors
 import numba.parfors.parfor
 
-JIT_FLAGS = dict(
-    parallel=True,
-    fastmath=True,
-    error_model="numpy",
-    cache=False,  # https://github.com/numba/numba/issues/2956
-)
+JIT_FLAGS = {
+    "parallel": True,
+    "fastmath": True,
+    "error_model": "numpy",
+    "cache": False,  # https://github.com/numba/numba/issues/2956
+}
 
 try:
     numba.parfors.parfor.ensure_parallel_support()

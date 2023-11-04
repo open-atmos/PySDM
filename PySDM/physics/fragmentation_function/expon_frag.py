@@ -1,8 +1,11 @@
 """
-Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.exponential`
+Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.expon_frag`
 """
+import warnings
+
+from .exponential import Exponential
 
 
-class ExponFrag:  # pylint: disable=too-few-public-methods
-    def __init__(self, _):
-        pass
+class ExponFrag(Exponential):  # pylint: disable=too-few-public-methods
+    def __init_subclass__(cls):
+        warnings.warn("Class has been renamed", DeprecationWarning)

@@ -1,0 +1,83 @@
+name: readme_snippets
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 13 * * 4'
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - run: pip install -e .[tests]
+      - run: pip install pytest-codeblocks pytest
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('README.md'); f=open('readme.py', 'w'); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
+      - run: python -We readme.py
+      - run: sed -i 's/CPU/GPU/g' readme.py
+      - run: python -We readme.py
+      
+      - name: artefacts
+        if: github.ref == 'refs/heads/main'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            readme.png
+
+  julia:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - run: pip install -e .
+      - run: pip install pytest-codeblocks pytest
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('README.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
+      - uses: julia-actions/setup-julia@v1
+      - run: cat -n readme.jl
+      - run: julia readme.jl
+      - run: sed -i 's/CPU/GPU/g' readme.jl
+      - run: julia readme.jl
+
+  matlab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - run: pip install -e .
+      - run: pip install pytest-codeblocks pytest
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
+      - run: cat -n readme.m
+      - uses: matlab-actions/setup-matlab@v0
+        with:
+          release: R2021a
+      - uses: matlab-actions/run-command@v0
+        with:
+          command: readme
+      - run: sed -i 's/CPU/GPU/g' readme.m
+      - uses: matlab-actions/run-command@v0
+        with:
+          command: readme
+
+      - name: artefacts
+        if: github.ref == 'refs/heads/main'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            parcel.png
+

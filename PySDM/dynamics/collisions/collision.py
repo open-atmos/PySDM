@@ -81,7 +81,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
         self.kernel_temp = None
         self.n_fragment = None
-        self.fragment_size = None
+        self.fragment_mass = None
         self.Ec_temp = None
         self.Eb_temp = None
         self.norm_factor_temp = None
@@ -149,7 +149,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.n_fragment = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
-            self.fragment_size = self.particulator.PairwiseStorage.empty(
+            self.fragment_mass = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
             self.Ec_temp = self.particulator.PairwiseStorage.empty(
@@ -206,7 +206,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.compute_coalescence_efficiency(self.Ec_temp, self.is_first_in_pair)
             self.compute_breakup_efficiency(self.Eb_temp, self.is_first_in_pair)
             self.compute_number_of_fragments(
-                self.n_fragment, self.fragment_size, rand_frag, self.is_first_in_pair
+                self.n_fragment, self.fragment_mass, rand_frag, self.is_first_in_pair
             )
         else:
             proc_rand = None
@@ -221,8 +221,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             rand=proc_rand,
             Ec=self.Ec_temp,
             Eb=self.Eb_temp,
-            n_fragment=self.n_fragment,
-            fragment_size=self.fragment_size,
+            fragment_mass=self.fragment_mass,
             coalescence_rate=self.coalescence_rate,
             breakup_rate=self.breakup_rate,
             breakup_rate_deficit=self.breakup_rate_deficit,
@@ -240,12 +239,14 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.particulator.attributes.cell_idx,
             self.particulator.attributes["cell id"],
         )
-        self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
+        self.particulator.sort_within_pair_by_attr(
+            is_first_in_pair, attr_name="multiplicity"
+        )
 
     def compute_probabilities_of_collision(self, is_first_in_pair, out):
         """eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)"""
         self.collision_kernel(self.kernel_temp, is_first_in_pair)
-        out.max(self.particulator.attributes["n"], is_first_in_pair)
+        out.max(self.particulator.attributes["multiplicity"], is_first_in_pair)
         out *= self.kernel_temp
         self.particulator.normalize(out, self.norm_factor_temp)
 
@@ -260,7 +261,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         if self.adaptive:
             self.particulator.backend.scale_prob_for_adaptive_sdm_gamma(
                 prob=prob,
-                n=self.particulator.attributes["n"],
+                multiplicity=self.particulator.attributes["multiplicity"],
                 cell_id=self.particulator.attributes["cell id"],
                 dt_left=self.dt_left,
                 dt=self.particulator.dt,
@@ -277,7 +278,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.particulator.backend.compute_gamma(
             prob=prob,
             rand=rand,
-            multiplicity=self.particulator.attributes["n"],
+            multiplicity=self.particulator.attributes["multiplicity"],
             cell_id=self.particulator.attributes["cell id"],
             collision_rate_deficit=self.collision_rate_deficit,
             collision_rate=self.collision_rate,

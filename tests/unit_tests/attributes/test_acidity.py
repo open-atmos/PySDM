@@ -88,7 +88,6 @@ class TestAcidity:
         ),
     )
     def test_equilibrate_pH_non_trivial(init_conc, env_T):
-
         equilibria = {
             "water": Equilibrium.from_string(f"H2O = H+ + OH-; {K_H2O / M / M}"),
             "ammonia": Equilibrium.from_string(

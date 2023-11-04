@@ -26,6 +26,6 @@ class Parameterized(Gravitational):
         output *= self.pair_tmp
 
         self.pair_tmp.distance(
-            self.particulator.attributes["terminal velocity"], is_first_in_pair
+            self.particulator.attributes["relative fall velocity"], is_first_in_pair
         )
         output *= self.pair_tmp

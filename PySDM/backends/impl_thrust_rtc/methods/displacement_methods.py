@@ -1,6 +1,8 @@
 """
 GPU implementation of backend methods for particle displacement (advection and sedimentation)
 """
+from functools import cached_property
+
 from PySDM.storages.thrust_rtc.conf import NICE_THRUST_FLAGS, trtc
 from PySDM.storages.thrust_rtc.nice_thrust import nice_thrust
 
@@ -8,9 +10,9 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class DisplacementMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        self.__calculate_displacement_body = {
+    @cached_property
+    def __calculate_displacement_body(self):
+        return {
             n_dims: trtc.For(
                 param_names=(
                     "dim",
@@ -59,7 +61,9 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             for n_dims in (1, 2, 3)
         }
 
-        self.__flag_precipitated_body = trtc.For(
+    @cached_property
+    def __flag_precipitated_body(self):
+        return trtc.For(
             (
                 "idx",
                 "n_sd",
@@ -68,7 +72,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 "cell_origin",
                 "position_in_cell",
                 "volume",
-                "n",
+                "multiplicity",
                 "rainfall",
             ),
             "i",
@@ -76,7 +80,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             auto origin = cell_origin[n_sd * (n_dims-1) + idx[i]];
             auto pic = position_in_cell[n_sd * (n_dims-1) + idx[i]];
             if (origin + pic < 0) {
-                atomicAdd((real_type*) &rainfall[0], n[idx[i]] * volume[idx[i]]);
+                atomicAdd((real_type*) &rainfall[0], multiplicity[idx[i]] * volume[idx[i]]);
                 idx[i] = n_sd;
                 healthy[0] = 0;
             }
@@ -128,7 +132,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         trtc.Fill(rainfall, self._get_floating_point(0))
         self.__flag_precipitated_body.launch_n(
             length,
-            [
+            (
                 idx.data,
                 n_sd,
                 n_dims,
@@ -138,7 +142,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 volume.data,
                 multiplicity.data,
                 rainfall,
-            ],
+            ),
         )
         return rainfall.to_host()[0]
 

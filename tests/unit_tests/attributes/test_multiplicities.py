@@ -6,10 +6,6 @@ from PySDM import Builder
 from PySDM.attributes.physics import Multiplicities
 from PySDM.environments import Box
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
 
 class TestMultiplicities:
     @staticmethod
@@ -21,7 +17,6 @@ class TestMultiplicities:
 
         assert actual_max_multiplicity == expected_max_multiplicity
 
-    # pylint: disable=redefined-outer-name
     @staticmethod
     @pytest.mark.parametrize(
         "value",
@@ -41,10 +36,10 @@ class TestMultiplicities:
         # act
         particulator = builder.build(
             attributes={
-                "n": np.full((n_sd,), value),
+                "multiplicity": np.full((n_sd,), value),
                 "volume": np.full((n_sd,), np.nan),
             }
         )
 
         # assert
-        assert particulator.attributes["n"].data[:] == [value]
+        assert particulator.attributes["multiplicity"].to_ndarray() == [value]

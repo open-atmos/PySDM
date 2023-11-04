@@ -1,10 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 
-from ....backends_fixture import backend_class
 from .displacement_settings import DisplacementSettings
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class ConstantTerminalVelocity:  # pylint: disable=too-few-public-methods
@@ -17,7 +14,6 @@ class ConstantTerminalVelocity:  # pylint: disable=too-few-public-methods
 
 class TestSedimentation:  # pylint: disable=too-few-public-methods
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_boundary_condition(backend_class):
         # Arrange
         settings = DisplacementSettings()
@@ -28,7 +24,7 @@ class TestSedimentation:  # pylint: disable=too-few-public-methods
         )
 
         particulator.attributes._ParticleAttributes__attributes[
-            "terminal velocity"
+            "relative fall velocity"
         ] = ConstantTerminalVelocity(particulator.backend, particulator)
         assert sut.precipitation_in_last_step == 0
 

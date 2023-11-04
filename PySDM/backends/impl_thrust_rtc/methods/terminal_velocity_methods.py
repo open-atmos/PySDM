@@ -1,6 +1,8 @@
 """
 GPU implementation of backend methods for terminal velocities
 """
+from functools import cached_property
+
 from PySDM.storages.thrust_rtc.conf import NICE_THRUST_FLAGS, trtc
 from PySDM.storages.thrust_rtc.nice_thrust import nice_thrust
 
@@ -8,9 +10,9 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class TerminalVelocityMethods(ThrustRTCBackendMethods):
-    def __init__(self):
-        ThrustRTCBackendMethods.__init__(self)
-        self.__linear_collection_efficiency_body = trtc.For(
+    @cached_property
+    def __linear_collection_efficiency_body(self):
+        return trtc.For(
             (
                 "A",
                 "B",
@@ -64,8 +66,10 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
             ),
         )
 
+    @cached_property
+    def __interpolation_body(self):
         # TODO #599 r<0
-        self.__interpolation_body = trtc.For(
+        return trtc.For(
             ("output", "radius", "factor", "a", "b"),
             "i",
             """

@@ -1,5 +1,7 @@
 """
 Various (hopefully) undebatable formulae
+
+`erfinv` approximation based on eqs. 11-12 from Vedder 1987, https://doi.org/10.1119/1.15018
 """
 import numpy as np
 
@@ -65,13 +67,33 @@ class Trivia:
         return mixing_ratio / (specific_gravity + mixing_ratio)
 
     @staticmethod
-    def p_d(const, p, qv):
-        return p * (1 - 1 / (1 + const.eps / qv))
+    def p_d(const, p, water_vapour_mixing_ratio):
+        return p * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
 
     @staticmethod
     def th_std(const, p, T):
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, volume, relative_humidity):
-        return volume > 0 and relative_humidity > 1
+    def unfrozen_and_saturated(_, water_mass, relative_humidity):
+        return water_mass > 0 and relative_humidity > 1
+
+    @staticmethod
+    def frozen_and_above_freezing_point(const, water_mass, temperature):
+        return water_mass < 0 and temperature > const.T0
+
+    @staticmethod
+    def erfinv_approx(const, c):
+        return (
+            2
+            * np.sqrt(const.VEDDER_1987_A)
+            * np.sinh(
+                np.arcsinh(
+                    np.arctanh(c)
+                    / 2
+                    / const.VEDDER_1987_b
+                    / np.power(const.VEDDER_1987_A, const.ONE_AND_A_HALF)
+                )
+                / 3
+            )
+        )

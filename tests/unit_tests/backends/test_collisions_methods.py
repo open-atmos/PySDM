@@ -6,11 +6,6 @@ import pytest
 
 from PySDM.backends.impl_numba.methods.collisions_methods import pair_indices
 
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-
-
 NONZERO = 44
 
 
@@ -68,7 +63,6 @@ class TestCollisionMethods:
             ((4, 5, 4.5, 3, 0.1), (0, 1, 2, 3, 4, 5), 5),
         ),
     )
-    # pylint: disable=redefined-outer-name
     def test_adaptive_sdm_end(backend_class, dt_left, cell_start, expected):
         # Arrange
         backend = backend_class()
@@ -149,7 +143,7 @@ class TestCollisionMethods:
             ),
         ),
     )
-    # pylint: disable=redefined-outer-name,too-many-locals
+    # pylint: disable=too-many-locals
     def test_scale_prob_for_adaptive_sdm_gamma(
         *,
         backend_class,
@@ -180,7 +174,7 @@ class TestCollisionMethods:
         # Act
         backend.scale_prob_for_adaptive_sdm_gamma(
             prob=_gamma,
-            n=_n,
+            multiplicity=_n,
             cell_id=_cell_id,
             dt_left=_dt_left,
             dt=dt,
@@ -210,7 +204,6 @@ class TestCollisionMethods:
         "backend_class, scheme",
         ((CPU, "counting_sort"), (CPU, "counting_sort_parallel"), (GPU, "default")),
     )
-    # pylint: disable=redefined-outer-name
     def test_cell_caretaker(backend_class, scheme):
         # Arrange
         backend = backend_class()
@@ -237,4 +230,4 @@ class TestCollisionMethods:
         sut(cell_id, cell_idx, cell_start, _idx)
 
         # Assert
-        assert all(cell_start.data[:] == np.array([0, 3]))
+        assert all(cell_start.to_ndarray()[:] == np.array([0, 3]))

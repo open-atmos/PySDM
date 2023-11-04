@@ -7,7 +7,7 @@ from warnings import warn
 
 from PySDM.storages.thrust_rtc.test_helpers.flag import fakeThrustRTC
 
-if not fakeThrustRTC:  # TODO #325: move to GPU backend ctor
+if not fakeThrustRTC:
     try:
         # noinspection PyUnresolvedReferences
         import ThrustRTC as trtc  # pylint: disable=unused-import
@@ -33,6 +33,7 @@ else:
     # noinspection PyUnresolvedReferences
     rndrtc = None
 
-NICE_THRUST_FLAGS = dict(
-    wait=False, debug_print=False
-)  # TODO #325: move to GPU backend ctor
+NICE_THRUST_FLAGS = {
+    "wait": False,
+    "debug_print": False,
+}  # TODO #1120: move to GPU backend ctor

@@ -25,6 +25,8 @@ def make_arbitrary_moment_product(**kwargs):
     return ArbitraryMoment
 
 
+ZerothMoment = make_arbitrary_moment_product(rank=0, attr="volume", attr_unit="m^3")
+
 VolumeFirstMoment = make_arbitrary_moment_product(
     rank=1, attr="volume", attr_unit="m^3"
 )

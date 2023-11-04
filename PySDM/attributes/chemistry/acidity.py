@@ -18,7 +18,7 @@ class Acidity(DerivedAttribute):
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = self.formulae.constants.pH_w
+        self.data.fill(self.formulae.constants.pH_w)
 
     def recalculate(self):
         dynamic = self.particulator.dynamics["AqueousChemistry"]

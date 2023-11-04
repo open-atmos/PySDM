@@ -9,10 +9,11 @@ from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
 
 
 class Freezing:
-    def __init__(self, *, singular=True, record_freezing_temperature=False):
+    def __init__(self, *, singular=True, record_freezing_temperature=False, thaw=False):
         assert not (record_freezing_temperature and singular)
         self.singular = singular
         self.record_freezing_temperature = record_freezing_temperature
+        self.thaw = thaw
         self.enable = True
         self.rand = None
         self.rng = None
@@ -20,6 +21,8 @@ class Freezing:
 
     def register(self, builder):
         self.particulator = builder.particulator
+
+        assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
 
         builder.request_attribute("volume")
         if self.singular or self.record_freezing_temperature:
@@ -53,11 +56,12 @@ class Freezing:
                     freezing_temperature=self.particulator.attributes[
                         "freezing temperature"
                     ],
-                    wet_volume=self.particulator.attributes["volume"],
+                    water_mass=self.particulator.attributes["water mass"],
                 ),
                 temperature=self.particulator.environment["T"],
                 relative_humidity=self.particulator.environment["RH"],
                 cell=self.particulator.attributes["cell id"],
+                thaw=self.thaw,
             )
         else:
             self.rand.urand(self.rng)
@@ -67,16 +71,12 @@ class Freezing:
                     immersed_surface_area=self.particulator.attributes[
                         "immersed surface area"
                     ],
-                    wet_volume=self.particulator.attributes["volume"],
+                    water_mass=self.particulator.attributes["water mass"],
                 ),
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes["cell id"],
                 a_w_ice=self.particulator.environment["a_w_ice"],
-                temperature=(
-                    self.particulator.environment["T"]
-                    if self.record_freezing_temperature
-                    else None
-                ),
+                temperature=self.particulator.environment["T"],
                 relative_humidity=self.particulator.environment["RH"],
                 record_freezing_temperature=self.record_freezing_temperature,
                 freezing_temperature=(
@@ -84,8 +84,9 @@ class Freezing:
                     if self.record_freezing_temperature
                     else None
                 ),
+                thaw=self.thaw,
             )
 
-        self.particulator.attributes.mark_updated("volume")
+        self.particulator.attributes.mark_updated("water mass")
         if self.record_freezing_temperature:
             self.particulator.attributes.mark_updated("freezing temperature")

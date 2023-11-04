@@ -2,6 +2,7 @@
 Logic for enabling common CPU/GPU physics formulae code
 """
 import inspect
+import math
 import numbers
 import re
 import warnings
@@ -16,6 +17,8 @@ import pint
 from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, RogersYau
+from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 from PySDM.storages.numba import conf
 
 
@@ -35,12 +38,14 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         diffusion_kinetics: str = "FuchsSutugin",
         diffusion_thermics: str = "Neglect",
         ventilation: str = "Neglect",
-        state_variable_triplet: str = "RhodThdQv",
+        state_variable_triplet: str = "LibcloudphPlusPlus",
         particle_advection: str = "ImplicitInSpace",
         hydrostatics: str = "Default",
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
+        particle_shape_and_density: str = "LiquidSpheres",
+        terminal_velocity: str = "GunnKinzer1949",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -60,6 +65,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
         self.fragmentation_function = fragmentation_function
+        self.particle_shape_and_density = particle_shape_and_density
+
         components = tuple(i for i in dir(self) if not i.startswith("__"))
 
         constants_defaults = {
@@ -95,6 +102,13 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                 ),
             )
 
+        # TODO #348
+        self.terminal_velocity_class = {
+            "GunnKinzer1949": GunnKinzer1949,
+            "RogersYau": RogersYau,
+            "TpDependent": TpDependent,
+        }[terminal_velocity]
+
     def __str__(self):
         description = []
         for attr in dir(self):
@@ -119,9 +133,10 @@ def _formula(func, constants, dimensional_analysis, **kw):
     if dimensional_analysis:
         first_param = parameters_keys[0]
         return partial(func, constants) if first_param in special_params else func
-    source = "class _:\n"
-    for line in inspect.getsourcelines(func)[0]:
-        source += f"{line}\n"
+
+    source = "class _:\n" + "".join(inspect.getsourcelines(func)[0])
+    source = re.sub(r"\(\n\s+", "(", source)
+    source = re.sub(r"\n\s+\):", "):", source)
     loc = {}
     for arg_name in special_params:
         source = source.replace(
@@ -130,7 +145,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
     extras = func.__extras if hasattr(func, "__extras") else {}
     exec(  # pylint:disable=exec-used
-        source, {"const": constants, "np": np, **extras}, loc
+        source, {"const": constants, "np": np, "math": math, **extras}, loc
     )
 
     n_params = len(parameters_keys) - (1 if parameters_keys[0] in special_params else 0)
@@ -200,7 +215,12 @@ def _c_inline(fun, return_type=None, constants=None, **args):
             stripped += " "
         source += stripped
     source = source.replace("np.power(", "np.pow(")
-    source = source.replace("np.", "")
+    source = source.replace("np.arctanh(", "atanh(")
+    source = source.replace("np.arcsinh(", "asinh(")
+    source = source.replace("np.minimum(", "min(")
+    source = source.replace("np.maximum(", "max(")
+    for pkg in ("np", "math"):
+        source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:

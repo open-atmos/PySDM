@@ -39,12 +39,14 @@ class EffectiveRadius(MomentProduct):
             attr="volume",
             rank=2 / 3,
             filter_range=self.volume_range,
+            filter_attr="volume",
         )
         tmp[:] = self.buffer[:]
         self._download_moment_to_buffer(
             attr="volume",
             rank=1,
             filter_range=self.volume_range,
+            filter_attr="volume",
         )
         EffectiveRadius.__get_impl(self.buffer, tmp)
         return self.buffer

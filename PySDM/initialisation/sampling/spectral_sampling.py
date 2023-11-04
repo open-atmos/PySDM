@@ -7,20 +7,12 @@ from typing import Optional, Tuple
 import numpy as np
 from scipy import optimize
 
-from PySDM.physics import constants as const
-
 default_cdf_range = (0.00001, 0.99999)
 
 
 class SpectralSampling:  # pylint: disable=too-few-public-methods
-    def __init__(
-        self,
-        spectrum,
-        size_range: [None, Tuple[float, float]] = None,
-        error_threshold: Optional[float] = None,
-    ):
+    def __init__(self, spectrum, size_range: Optional[Tuple[float, float]] = None):
         self.spectrum = spectrum
-        self.error_threshold = error_threshold or 0.01
 
         if size_range is None:
             if hasattr(spectrum, "percentiles"):
@@ -40,6 +32,20 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
             assert size_range[1] > size_range[0]
             self.size_range = size_range
 
+
+class DeterministicSpectralSampling(
+    SpectralSampling
+):  # pylint: disable=too-few-public-methods
+    # TODO #1031 - error_threshold will be also used in non-deterministic sampling
+    def __init__(
+        self,
+        spectrum,
+        size_range: Optional[Tuple[float, float]] = None,
+        error_threshold: Optional[float] = None,
+    ):
+        super().__init__(spectrum, size_range)
+        self.error_threshold = error_threshold or 0.01
+
     def _sample(self, grid, spectrum):
         x = grid[1:-1:2]
         cdf = spectrum.cumulative(grid[0::2])
@@ -47,20 +53,22 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
 
         diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
         if diff > self.error_threshold:
-            raise Exception(
+            raise ValueError(
                 f"{100*diff}% error in total real-droplet number due to sampling"
             )
 
         return x, y_float
 
 
-class Linear(SpectralSampling):  # pylint: disable=too-few-public-methods
-    def sample(self, n_sd):
+class Linear(DeterministicSpectralSampling):  # pylint: disable=too-few-public-methods
+    def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)
 
 
-class Logarithmic(SpectralSampling):  # pylint: disable=too-few-public-methods
+class Logarithmic(
+    DeterministicSpectralSampling
+):  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         spectrum,
@@ -71,12 +79,14 @@ class Logarithmic(SpectralSampling):  # pylint: disable=too-few-public-methods
         self.start = np.log10(self.size_range[0])
         self.stop = np.log10(self.size_range[1])
 
-    def sample(self, n_sd):
+    def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
         grid = np.logspace(self.start, self.stop, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)
 
 
-class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-methods
+class ConstantMultiplicity(
+    DeterministicSpectralSampling
+):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, size_range)
 
@@ -86,7 +96,7 @@ class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-
         )
         assert 0 < self.cdf_range[0] < self.cdf_range[1]
 
-    def sample(self, n_sd):
+    def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
         cdf_arg = np.linspace(self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1)
         cdf_arg /= self.spectrum.norm_factor
         percentiles = self.spectrum.percentiles(cdf_arg)
@@ -97,11 +107,13 @@ class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-
 
 
 class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range=None, seed=const.default_random_seed):
-        super().__init__(spectrum, size_range)
-        self.rng = np.random.default_rng(seed)
+    def sample(self, n_sd, *, backend):
+        n_elements = n_sd
+        storage = backend.Storage.empty(n_elements, dtype=float)
+        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+        u01 = storage.to_ndarray()
 
-    def sample(self, n_sd):
-        pdf_arg = self.rng.uniform(*self.size_range, n_sd)
+        pdf_arg = self.size_range[0] + u01 * (self.size_range[1] - self.size_range[0])
         dr = abs(self.size_range[1] - self.size_range[0]) / n_sd
+        # TODO #1031 - should also handle error_threshold check
         return pdf_arg, dr * self.spectrum.size_distribution(pdf_arg)

@@ -1,6 +1,6 @@
 """
 Single-column time-varying-updraft framework with moisture advection handled by
-[PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
+[PyMPDATA](http://github.com/open-atmos/PyMPDATA/)
 """
 
 import numpy as np
@@ -25,7 +25,7 @@ class Kinematic1D(Moist):
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
 
-    def get_qv(self) -> np.ndarray:
+    def get_water_vapour_mixing_ratio(self) -> np.ndarray:
         return self.particulator.dynamics["EulerianAdvection"].solvers.advectee.get()
 
     def get_thd(self) -> np.ndarray:
@@ -40,7 +40,9 @@ class Kinematic1D(Moist):
         attributes = {}
         with np.errstate(all="raise"):
             positions = spatial_discretisation.sample(
-                self.mesh.grid, self.particulator.n_sd
+                backend=self.particulator.backend,
+                grid=self.mesh.grid,
+                n_sd=self.particulator.n_sd,
             )
             (
                 attributes["cell id"],
@@ -48,7 +50,9 @@ class Kinematic1D(Moist):
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
+            r_dry, n_per_kg = spectral_discretisation.sample(
+                backend=self.particulator.backend, n_sd=self.particulator.n_sd
+            )
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
             r_wet = equilibrate_wet_radii(
@@ -62,7 +66,7 @@ class Kinematic1D(Moist):
             cell_id = attributes["cell id"]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes["n"] = n_per_kg * rhod[cell_id] * domain_volume
+        attributes["multiplicity"] = n_per_kg * rhod[cell_id] * domain_volume
         attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes

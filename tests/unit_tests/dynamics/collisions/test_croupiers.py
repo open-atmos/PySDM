@@ -6,14 +6,10 @@ from PySDM.backends import ThrustRTC
 from PySDM.initialisation.sampling.spectral_sampling import Linear
 from PySDM.initialisation.spectra.lognormal import Lognormal
 
-from ....backends_fixture import backend_class
 from ...dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 @pytest.mark.parametrize("croupier", ["local", "global"])
-# pylint: disable=redefined-outer-name
 def test_final_state(croupier, backend_class):
     if backend_class is ThrustRTC:
         return  # TODO #330
@@ -28,7 +24,7 @@ def test_final_state(croupier, backend_class):
 
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
-    attributes["volume"], attributes["n"] = Linear(spectrum).sample(n_sd)
+    attributes["volume"], attributes["multiplicity"] = Linear(spectrum).sample(n_sd)
     particulator = DummyParticulator(backend_class, n_sd, grid=(x, y))
     particulator.croupier = croupier
 

@@ -1,0 +1,4 @@
+[submodule "tests/devops_tests"]
+	path = tests/devops_tests
+	url = https://github.com/open-atmos/devops_tests
+	shallow = true

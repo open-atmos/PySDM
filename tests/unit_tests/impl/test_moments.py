@@ -5,15 +5,12 @@ from PySDM.initialisation.discretise_multiplicities import discretise_multiplici
 from PySDM.initialisation.sampling.spectral_sampling import Linear
 from PySDM.initialisation.spectra.lognormal import Lognormal
 
-from ...backends_fixture import backend_class
 from ..dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestMaths:
     @staticmethod
-    # pylint: disable=redefined-outer-name,too-many-locals
+    # pylint: disable=too-many-locals
     def test_moment_0d(backend_class):
         # Arrange
         n_part = 100000
@@ -23,10 +20,11 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, v_mean, d)
         v, n = Linear(spectrum).sample(n_sd)
-        T = np.full_like(v, 300.0)
+        T = 300.0
         n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)
-        attribute = {"n": n, "volume": v, "temperature": T, "heat": T * v}
+        attribute = {"multiplicity": n, "volume": v, "heat": T * v}
+        particulator.request_attribute("temperature")
         particulator.build(attribute)
 
         true_mean, true_var = spectrum.stats(moments="mv")
@@ -73,7 +71,7 @@ class TestMaths:
         np.testing.assert_approx_equal(discr_mean_T_squared, 300.0**2, significant=6)
 
     @staticmethod
-    # pylint: disable=redefined-outer-name,too-many-locals
+    # pylint: disable=too-many-locals
     def test_spectrum_moment_0d(backend_class):
         # Arrange
         n_part = 100000
@@ -83,10 +81,11 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, v_mean, d)
         v, n = Linear(spectrum).sample(n_sd)
-        T = np.full_like(v, 300.0)
+        T = 300.0
         n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)
-        attribute = {"n": n, "volume": v, "temperature": T, "heat": T * v}
+        attribute = {"multiplicity": n, "volume": v, "heat": T * v}
+        particulator.request_attribute("temperature")
         particulator.build(attribute)
 
         v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)

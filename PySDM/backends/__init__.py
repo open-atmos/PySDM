@@ -3,6 +3,7 @@ Backend classes: CPU=`PySDM.backends.numba.Numba`
 and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
 """
 import ctypes
+import os
 import sys
 import warnings
 
@@ -43,7 +44,7 @@ def _cuda_is_available():
     return True
 
 
-if _cuda_is_available() or cuda.is_available():
+if "CI" not in os.environ and (_cuda_is_available() or cuda.is_available()):
     from PySDM.backends.thrust_rtc import ThrustRTC
 else:
     from PySDM.storages.thrust_rtc.test_helpers import flag

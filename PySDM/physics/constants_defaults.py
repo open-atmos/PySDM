@@ -101,13 +101,20 @@ p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin
 l_tri = 2.5e6 * si.joule / si.kilogram
 
+# Seinfeld and Pandis, Appendix 16.1, 16A.2
+# default constant values according to Lowe et al (2019), from ICPM code
 l_l19_a = 0.167 * si.dimensionless
 l_l19_b = 3.65e-4 / si.kelvin
 
+# Thermal diffusivity constants from Lowe et al (2019)
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
 
+# Delta v for diffusivity in Pruppacher & Klett eq. 13-14
+dv_pk05 = 0.0 * si.metres
+
+# Seinfeld & Pandis eq. 15.65
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
 d_l19_b = 1.94
 
@@ -163,3 +170,9 @@ J_HET = np.nan
 
 STRAUB_E_D1 = 0.04 * si.cm
 STRAUB_MU2 = 0.095 * si.cm
+
+CM = 1 * si.cm
+UM = 1 * si.um
+
+VEDDER_1987_b = 89 / 880
+VEDDER_1987_A = 993 / 880 / 3 / VEDDER_1987_b

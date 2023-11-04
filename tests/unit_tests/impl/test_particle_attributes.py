@@ -5,11 +5,8 @@ import pytest
 from PySDM.backends import CPU, GPU, ThrustRTC
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 
-from ...backends_fixture import backend_class
 from ..dummy_environment import DummyEnvironment
 from ..dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 def make_indexed_storage(backend, iterable, idx=None):
@@ -21,18 +18,17 @@ def make_indexed_storage(backend, iterable, idx=None):
 class TestParticleAttributes:
     @staticmethod
     @pytest.mark.parametrize(
-        "volume, multiplicity",
+        "water_mass, multiplicity",
         [
             pytest.param(np.array([1.0, 1, 1, 1]), np.array([1, 1, 1, 1])),
             pytest.param(np.array([1.0, 2, 1, 1]), np.array([2, 0, 2, 0])),
             pytest.param(np.array([1.0, 1, 4]), np.array([5, 0, 0])),
         ],
     )
-    # pylint: disable=redefined-outer-name
-    def test_housekeeping(backend_class, volume, multiplicity):
+    def test_housekeeping(backend_class, water_mass, multiplicity):
         # Arrange
         particulator = DummyParticulator(backend_class, n_sd=len(multiplicity))
-        attributes = {"n": multiplicity, "volume": volume}
+        attributes = {"multiplicity": multiplicity, "water mass": water_mass}
         particulator.build(attributes, int_caster=np.int64)
         sut = particulator.attributes
         sut.healthy = False
@@ -43,10 +39,10 @@ class TestParticleAttributes:
 
         # Assert
         assert sut.super_droplet_count == (multiplicity != 0).sum()
-        assert sut["n"].to_ndarray().sum() == multiplicity.sum()
-        assert (sut["volume"].to_ndarray() * sut["n"].to_ndarray()).sum() == (
-            volume * multiplicity
-        ).sum()
+        assert sut["multiplicity"].to_ndarray().sum() == multiplicity.sum()
+        assert (
+            sut["water mass"].to_ndarray() * sut["multiplicity"].to_ndarray()
+        ).sum() == (water_mass * multiplicity).sum()
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -80,10 +76,10 @@ class TestParticleAttributes:
         particulator = DummyParticulator(backend_cls, n_sd=n_sd)
         n_cell = max(cells) + 1
         particulator.environment.mesh.n_cell = n_cell
-        particulator.build(attributes={"n": np.ones(n_sd)})
+        particulator.build(attributes={"multiplicity": np.ones(n_sd)})
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
-        sut._ParticleAttributes__attributes["n"].data = make_indexed_storage(
+        sut._ParticleAttributes__attributes["multiplicity"].data = make_indexed_storage(
             particulator.backend, multiplicity, sut._ParticleAttributes__idx
         )
         sut._ParticleAttributes__attributes["cell id"].data = make_indexed_storage(
@@ -116,7 +112,6 @@ class TestParticleAttributes:
         )
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_recalculate_cell_id(backend_class):
         # Arrange
         multiplicity = np.ones(1, dtype=np.int64)
@@ -132,7 +127,7 @@ class TestParticleAttributes:
         cell_origin[1, droplet_id] = 0.2
         cell_id[droplet_id] = -1
         attribute = {
-            "n": multiplicity,
+            "multiplicity": multiplicity,
             "cell id": cell_id,
             "cell origin": cell_origin,
             "position in cell": position_in_cell,
@@ -170,7 +165,6 @@ class TestParticleAttributes:
         assert not sut._ParticleAttributes__sorted
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_permutation_local(backend_class):
         if backend_class is GPU:  # TODO #358
             return
@@ -201,7 +195,6 @@ class TestParticleAttributes:
         assert sut._ParticleAttributes__sorted
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_permutation_global_repeatable(backend_class):
         if backend_class is ThrustRTC:
             return  # TODO #328
@@ -233,7 +226,6 @@ class TestParticleAttributes:
         assert not sut._ParticleAttributes__sorted
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_permutation_local_repeatable(backend_class):
         if backend_class is GPU:  # TODO #358
             return
@@ -249,7 +241,7 @@ class TestParticleAttributes:
         for i in range(particulator.environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
-        particulator.build(attributes={"n": np.ones(n_sd)})
+        particulator.build(attributes={"multiplicity": np.ones(n_sd)})
         sut = particulator.attributes
         sut._ParticleAttributes__idx = make_indexed_storage(particulator.backend, idx)
         idx_length = len(sut._ParticleAttributes__idx)

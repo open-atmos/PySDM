@@ -1,7 +1,7 @@
 """
 [Gunn & Kinzer 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2)
- terminal velocities used for both coalescence kernel evaluation as well as for particle
- displacement
+ terminal velocities used for things like coalescence kernel evaluation, particle displacement,
+ ventilation factor, etc
 """
 import numba
 import numpy as np
@@ -11,7 +11,7 @@ from PySDM.physics import constants as const
 from PySDM.storages.numba import conf
 
 
-class Interpolation:  # pylint: disable=too-few-public-methods
+class GunnKinzer1949:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator, small_r_limit=None):
         self.particulator = particulator
 
@@ -107,7 +107,12 @@ class Interpolation:  # pylint: disable=too-few-public-methods
         rbf = Rbf(ir, iu)
         self.factor = 100000
         num = 6 * self.factor // 1000 + 1
-        space, step = np.linspace(0, 0.6 * const.si.cm, num, retstep=True)
+
+        self.minimum_radius = 0
+        self.maximum_radius = 0.6 * const.si.cm
+        space, step = np.linspace(
+            self.minimum_radius, self.maximum_radius, num, retstep=True
+        )
         u = np.empty(num)
         u[:] = rbf(space)
         u[0] = 0
@@ -119,14 +124,19 @@ class Interpolation:  # pylint: disable=too-few-public-methods
         self.b = particulator.backend.Storage.from_ndarray(b)
 
     def __call__(self, output, radius):
+        r_max = radius.amax()
+        if r_max > self.maximum_radius:
+            raise ValueError(
+                f"Radii can be interpolated up to {self.maximum_radius} m"
+                + f" (max value of {r_max} m within input data)"
+            )
         self.particulator.backend.interpolation(
             output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
         )
 
 
-# TODO #348 implement in backend logic
 class TpDependent:
-    def __init__(self, _, small_r_limit):
+    def __init__(self, _, small_r_limit=None):
         si = const.si
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation = TpDependent.make()
@@ -141,7 +151,7 @@ class TpDependent:
         # TODO #348 move constants to physics.constants
 
         si = const.si
-        cm = si.cm
+        si_cm = si.cm
         T = 293.15
         p = 1000 * si.hPa
 
@@ -188,15 +198,15 @@ class TpDependent:
                 if radius[i] < 0:
                     values[i] = 0
                     continue  # TODO #599
-                r = radius[i] / cm
+                r = radius[i] / si_cm
                 sum_r = 0
                 if radius[i] < threshold:
                     for j in range(4):
                         sum_r += c4[j] * (np.log(2 * r) ** j)
-                    values[i] = f4(r) * np.exp(sum_r) * cm
+                    values[i] = f4(r) * np.exp(sum_r) * si_cm
                 elif not only_small:
                     for j in range(8):
                         sum_r += c8[j] * (np.log(2 * r) ** j)
-                    values[i] = f8(r) * np.exp(sum_r) * cm
+                    values[i] = f8(r) * np.exp(sum_r) * si_cm
 
         return terminal_velocity

@@ -3,16 +3,12 @@ import numpy as np
 
 from PySDM.dynamics import EulerianAdvection
 
-from ...backends_fixture import backend_class
 from ..dummy_environment import DummyEnvironment
 from ..dummy_particulator import DummyParticulator
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_update(backend_class):
         # Arrange
         particulator = DummyParticulator(backend_class)
@@ -20,9 +16,9 @@ class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
         grid = (11, 13)
         env = DummyEnvironment(grid=grid, halo=halo)
         env.register(particulator)
-        env.qv[:] = 7.3
+        env.water_vapour_mixing_ratio[:] = 7.3
         env.thd[:] = 59.5
-        env.pred["qv"][:] = 3.7
+        env.pred["water_vapour_mixing_ratio"][:] = 3.7
         env.pred["thd"][:] = 5.59
         particulator.environment = env
 
@@ -34,7 +30,8 @@ class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
 
         # Assert
         np.testing.assert_array_equal(
-            env.get_qv(), env.get_predicted("qv").to_ndarray().reshape(grid)
+            env.get_water_vapour_mixing_ratio(),
+            env.get_predicted("water_vapour_mixing_ratio").to_ndarray().reshape(grid),
         )
         np.testing.assert_array_equal(
             env.get_thd(), env.get_predicted("thd").to_ndarray().reshape(grid)

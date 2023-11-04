@@ -50,7 +50,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
         CollisionsMethods.__init__(self)
         PhysicsMethods.__init__(self)
         CondensationMethods.__init__(self)
-        MomentsMethods.__init__(self)
+        MomentsMethods.__init__(self, double_precision=double_precision)
         DisplacementMethods.__init__(self)
         TerminalVelocityMethods.__init__(self)
         FreezingMethods.__init__(self)

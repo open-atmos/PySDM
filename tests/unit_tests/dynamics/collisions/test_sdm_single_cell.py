@@ -4,25 +4,13 @@ import pytest
 
 from PySDM.backends import ThrustRTC
 from PySDM.dynamics import Coalescence
+from PySDM.physics import constants_defaults
 
-from ....backends_fixture import backend_class
-from .__parametrisation__ import (
-    T_2,
-    backend_fill,
-    get_dummy_particulator_and_coalescence,
-    n_2,
-    v_2,
-)
-
-assert hasattr(backend_class, "_pytestfixturefunction")
-assert hasattr(v_2, "_pytestfixturefunction")
-assert hasattr(T_2, "_pytestfixturefunction")
-assert hasattr(n_2, "_pytestfixturefunction")
+from .conftest import backend_fill, get_dummy_particulator_and_coalescence
 
 
 class TestSDMSingleCell:
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_single_collision(backend_class, v_2, T_2, n_2):
         # Arrange
         const = 1.0
@@ -33,11 +21,11 @@ class TestSDMSingleCell:
             out, 1
         )
         attributes = {
-            "n": n_2,
+            "multiplicity": n_2,
             "volume": v_2,
             "heat": const * T_2 * v_2,
-            "temperature": T_2,
         }
+        particulator.request_attribute("temperature")
         particulator.build(attributes)
 
         # Act
@@ -48,7 +36,7 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(
             const
             * np.sum(
-                particles["n"].to_ndarray()
+                particles["multiplicity"].to_ndarray()
                 * particles["volume"].to_ndarray()
                 * particles["temperature"].to_ndarray()
             ),
@@ -61,17 +49,21 @@ class TestSDMSingleCell:
             np.round(particles["temperature"].to_ndarray().astype(float), 7),
         )
 
-        assert np.sum(
-            particles["n"].to_ndarray() * particles["volume"].to_ndarray()
-        ) == np.sum(n_2 * v_2)
-        assert np.sum(particulator.attributes["n"].to_ndarray()) == np.sum(
+        np.testing.assert_approx_equal(
+            np.sum(
+                particles["multiplicity"].to_ndarray()
+                * particles["volume"].to_ndarray()
+            ),
+            np.sum(n_2 * v_2),
+        )
+        assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
             n_2
         ) - np.amin(n_2)
         if np.amin(n_2) > 0:
-            assert np.amax(particulator.attributes["volume"].to_ndarray()) == np.sum(
-                v_2
+            np.testing.assert_approx_equal(
+                np.amax(particulator.attributes["volume"].to_ndarray()), np.sum(v_2)
             )
-        assert np.amax(particulator.attributes["n"].to_ndarray()) == max(
+        assert np.amax(particulator.attributes["multiplicity"].to_ndarray()) == max(
             np.amax(n_2) - np.amin(n_2), np.amin(n_2)
         )
 
@@ -84,14 +76,13 @@ class TestSDMSingleCell:
             pytest.param(3, np.array([2, 1])),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_single_collision_same_n(backend_class, n_in, n_out):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(backend_class, 2)
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, 1
         )
-        attributes = {"n": np.full(2, n_in), "volume": np.full(2, 1.0)}
+        attributes = {"multiplicity": np.full(2, n_in), "volume": np.full(2, 1.0)}
         particulator.build(attributes)
 
         # Act
@@ -99,7 +90,8 @@ class TestSDMSingleCell:
 
         # Assert
         np.testing.assert_array_equal(
-            sorted(particulator.attributes["n"].to_ndarray(raw=True)), sorted(n_out)
+            sorted(particulator.attributes["multiplicity"].to_ndarray(raw=True)),
+            sorted(n_out),
         )
 
     @staticmethod
@@ -112,7 +104,6 @@ class TestSDMSingleCell:
             pytest.param(7),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_multi_collision(backend_class, v_2, n_2, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
@@ -125,7 +116,7 @@ class TestSDMSingleCell:
 
         sut.compute_gamma = _compute_gamma
 
-        attributes = {"n": n_2, "volume": v_2}
+        attributes = {"multiplicity": n_2, "volume": v_2}
         particulator.build(attributes)
 
         # Act
@@ -134,16 +125,25 @@ class TestSDMSingleCell:
         # Assert
         state = particulator.attributes
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
-        assert np.amin(state["n"]) >= 0
-        assert np.sum(state["n"].to_ndarray() * state["volume"].to_ndarray()) == np.sum(
-            n_2 * v_2
+        assert np.amin(state["multiplicity"]) >= 0
+        np.testing.assert_approx_equal(
+            np.sum(
+                state["multiplicity"].to_ndarray() * state["water mass"].to_ndarray()
+            ),
+            np.sum(n_2 * v_2 * constants_defaults.rho_w),
         )
-        assert np.sum(state["n"].to_ndarray()) == np.sum(n_2) - gamma * np.amin(n_2)
-        assert (
-            np.amax(state["volume"].to_ndarray())
-            == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
+        np.testing.assert_approx_equal(
+            np.sum(state["multiplicity"].to_ndarray() * state["volume"].to_ndarray()),
+            np.sum(n_2 * v_2),
         )
-        assert np.amax(state["n"].to_ndarray()) == max(
+        assert np.sum(state["multiplicity"].to_ndarray()) == np.sum(
+            n_2
+        ) - gamma * np.amin(n_2)
+        np.testing.assert_approx_equal(
+            np.amax(state["volume"].to_ndarray()),
+            gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1],
+        )
+        assert np.amax(state["multiplicity"].to_ndarray()) == max(
             np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2)
         )
 
@@ -156,7 +156,6 @@ class TestSDMSingleCell:
             pytest.param(np.array([1.0, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
         ],
     )
-    # pylint: disable=redefined-outer-name
     def test_multi_droplet(backend_class, v, n, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
@@ -168,21 +167,20 @@ class TestSDMSingleCell:
             Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair, out=out)
 
         sut.compute_gamma = _compute_gamma
-        attributes = {"n": n, "volume": v}
+        attributes = {"multiplicity": n, "volume": v}
         particulator.build(attributes)
 
         # Act
         sut()
 
         # Assert
-        assert np.amin(particulator.attributes["n"].to_ndarray()) >= 0
+        assert np.amin(particulator.attributes["multiplicity"].to_ndarray()) >= 0
         assert np.sum(
-            particulator.attributes["n"].to_ndarray()
+            particulator.attributes["multiplicity"].to_ndarray()
             * particulator.attributes["volume"].to_ndarray()
         ) == np.sum(n * v)
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_multi_step(backend_class):
         # Arrange
         n_sd = 256
@@ -194,7 +192,7 @@ class TestSDMSingleCell:
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, rand.to_ndarray() > 0.5, odd_zeros=True
         )
-        attributes = {"n": n, "volume": v}
+        attributes = {"multiplicity": n, "volume": v}
         particulator.build(attributes)
 
         # Act
@@ -203,16 +201,15 @@ class TestSDMSingleCell:
             particulator.attributes.sanitize()
 
         # Assert
-        assert np.amin(particulator.attributes["n"].to_ndarray()) >= 0
+        assert np.amin(particulator.attributes["multiplicity"].to_ndarray()) >= 0
         actual = np.sum(
-            particulator.attributes["n"].to_ndarray()
+            particulator.attributes["multiplicity"].to_ndarray()
             * particulator.attributes["volume"].to_ndarray()
         )
         desired = np.sum(n * v)
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
-    # pylint: disable=redefined-outer-name
     def test_compute_gamma(backend_class):
         # Arrange
         backend = backend_class()
@@ -266,7 +263,6 @@ class TestSDMSingleCell:
         "adaptive",
         (pytest.param(True, id="adaptive_dt"), pytest.param(False, id="const_dt")),
     )
-    # pylint: disable=redefined-outer-name
     def test_rnd_reuse(backend_class, optimized_random, adaptive):
         if backend_class is ThrustRTC:
             return  # TODO #330
@@ -280,7 +276,7 @@ class TestSDMSingleCell:
         particles, sut = get_dummy_particulator_and_coalescence(
             backend_class, n_sd, optimized_random=optimized_random, substeps=n_substeps
         )
-        attributes = {"n": n, "volume": v}
+        attributes = {"multiplicity": n, "volume": v}
         particles.build(attributes)
 
         class CountingRandom(

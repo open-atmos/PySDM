@@ -1,0 +1,268 @@
+name: tests+artifacts+pypi
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 13 * * 4'
+  release:
+    types: [published]
+
+jobs:
+  precommit:
+    strategy:
+      matrix:
+        package-dir: [".", "examples"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - run: |
+          cd ${{ matrix.package-dir }}
+          pip install pre-commit
+          pre-commit clean
+          pre-commit autoupdate
+          pre-commit run --all-files
+
+  nojit_and_codecov:
+    runs-on: ubuntu-latest
+    env:
+      NUMBA_DISABLE_JIT: 1
+    steps:
+    - uses: actions/checkout@master
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    - uses: actions/setup-python@master
+      with:
+        python-version: 3.9
+    - name: Generate coverage report
+      run: |
+        pip install -e .[tests]
+        pip install -e ./examples
+        pip install pytest-cov
+        pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
+    - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: true
+        verbose: true
+
+  pdoc:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - run: |
+          pip install pdoc3
+          pip install -e .
+          pip install -e examples
+          python -We -m pdoc --html PySDM examples/PySDM_examples
+          python -We .github/workflows/pdoc_index_workaround.py
+      - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          BRANCH: pdoc
+          FOLDER: html
+          CLEAN: true
+
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+        fetch-depth: 0 
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
+        pip install "pylint<3.0.0" nbqa
+        pip install pdoc3 # (pdoc3 for checking the .github/workflows/pdoc_index_workaround.py)
+        pip install -r tests/devops_tests/requirements.txt
+        pip install -e ./examples[tests]
+        pip install -e .[tests]
+    - run: |
+        # TODO #682
+        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v ^examples)
+    - run: |
+        # TODO #682
+        pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
+    - run: |
+        # TODO #682
+        nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
+
+  zenodo_json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: '.zenodo.json'
+          prop_path: 'creators'
+
+  tests:
+    needs: [pylint, pdoc, nojit_and_codecov, precommit, zenodo_json]
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-12, windows-latest]
+        python-version: ["3.8", "3.10"]
+        test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
+        exclude:
+          - test-suite: "devops_tests"
+            python-version: "3.8"
+      fail-fast: false
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - run: |
+          pip install -e .
+
+      # sanity check if we do not depend on something from tests extras
+      - run: |
+          python -We -c "import PySDM"
+
+      - run: |
+          pip install -e ./examples
+          pip install -e .[tests]
+
+      # ensure previous pip did not overwrite the package
+      - run: |
+          pip install -e .
+
+      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
+
+#       - if: ${{ failure() }}
+#         uses: mxschmitt/action-tmate@v3
+#         with:
+#           limit-access-to-actor: true
+
+  examples:
+    needs: [pylint, precommit]
+    strategy:
+      matrix:
+        platform: [ubuntu-22.04, macos-12, windows-latest]
+        python-version: ["3.8", "3.10"]
+        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process" ]
+      fail-fast: false
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: |
+          python -m pip install --upgrade --user pip
+      - run: |
+          python -m pip install -e . ./examples
+          python -m pip install -r tests/devops_tests/requirements.txt
+
+      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: |
+          sudo apt-get update
+          sudo apt-get install python3-paraview
+      - if: startsWith(matrix.platform, 'macos-')
+        run: |
+          brew install --cask paraview
+          echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
+      - if: matrix.platform != 'windows-latest'
+        run: pvpython --version
+
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
+          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+
+  devops:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
+      - run: pip install -r tests/devops_tests/requirements.txt
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
+
+  dist:
+    strategy:
+      matrix:
+        packages-dir: [".", "examples"]
+      fail-fast: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: [tests, examples, devops]
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - run: pip install twine build
+
+      - run: |
+          unset CI
+          cd ${{ matrix.packages-dir }}
+          python -m build 2>&1 | tee build.log
+          exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | grep -v "no previously-included files matching" | wc -l`
+          twine check --strict dist/*
+          cd ..
+
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: pypa/gh-action-pypi-publish@unstable/v1
+        with:
+          repository_url: https://test.pypi.org/legacy/
+          packages-dir: ${{ matrix.packages-dir }}/dist
+
+      - if: startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@unstable/v1
+        with:
+          packages-dir: ${{ matrix.packages-dir }}/dist

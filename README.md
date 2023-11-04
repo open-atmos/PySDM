@@ -7,7 +7,7 @@
 [![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
 [![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Windows)
 [![Jupyter](https://img.shields.io/static/v1?label=Jupyter&logo=Jupyter&color=f37626&message=%E2%9C%93)](https://jupyter.org/)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/atmos-cloud-sim-uj/PySDM/graphs/commit-activity)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/open-atmos/PySDM/graphs/commit-activity)
 [![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)
 [![status](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9/status.svg)](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9)
 [![DOI](https://zenodo.org/badge/199064632.svg)](https://zenodo.org/badge/latestdoi/199064632)    
@@ -16,17 +16,12 @@
 [![US Funding](https://img.shields.io/static/v1?label=US%20DOE%20Funding%20by&color=267c32&message=ASR&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAQCAMAAAA25D/gAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAASFBMVEVOTXyyIjRDQnNZWINZWITtzdFUU4BVVIFVVYHWiZM9PG/KZnNXVoJaWYT67/FKSXhgX4hgX4lcW4VbWoX03uHQeIN2VXj///9pZChlAAAAAWJLR0QXC9aYjwAAAAd0SU1FB+EICRMGJV+KCCQAAABdSURBVBjThdBJDoAgEETRkkkZBBX0/kd11QTTpH1/STqpAAwWBkobSlkGbt0o5xmEfqxDZJB2Q6XMoBwnVSbTylWp0hi42rmbwTOYPDfR5Kc+07IIUQQvghX9THsBHcES8/SiF0kAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMDgtMDlUMTk6MDY6MzcrMDA6MDCX1tBgAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTA4LTA5VDE5OjA2OjM3KzAwOjAw5oto3AAAAABJRU5ErkJggg==)](https://asr.science.energy.gov/)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
-[![Copyright](https://img.shields.io/static/v1?label=Copyright&color=249fe2&message=Jagiellonian%20University&)](https://en.uj.edu.pl/)
 
-[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/main/badge.svg?branch=main)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
-[![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/atmos-cloud-sim-uj/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
-[![Coverage Status](https://codecov.io/gh/atmos-cloud-sim-uj/PySDM/branch/main/graph/badge.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=main)    
-[![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/pulls?q=)
-[![GitHub issues](https://img.shields.io/github/issues-pr-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/pulls?q=is:closed)    
-[![GitHub issues](https://img.shields.io/github/issues/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=)
-[![GitHub issues](https://img.shields.io/github/issues-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=is:closed)   
+[![Github Actions Build Status](https://github.com/open-atmos/PySDM/workflows/tests+artifacts+pypi/badge.svg?branch=main)](https://github.com/open-atmos/PySDM/actions)
+[![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/open-atmos/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
+[![Coverage Status](https://codecov.io/gh/open-atmos/PySDM/branch/main/graph/badge.svg)](https://app.codecov.io/gh/open-atmos/PySDM)    
 [![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
-[![API docs](https://img.shields.io/badge/API_docs-pdoc3-blue.svg)](https://atmos-cloud-sim-uj.github.io/PySDM/)
+[![API docs](https://img.shields.io/badge/API_docs-pdoc3-blue.svg)](https://open-atmos.github.io/PySDM/)
 
 PySDM is a package for simulating the dynamics of population of particles. 
 It is intended to serve as a building block for simulation systems modelling
@@ -40,20 +35,36 @@ The package features a Pythonic high-performance implementation of the
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
 
+There is a growing set of example Jupyter notebooks exemplifying how to perform 
+  various types of calculations and simulations using PySDM.
+Most of the example notebooks reproduce resutls and plot from literature, see below for 
+  a list of examples and links to the notebooks (which can be either executed or viewed 
+  "in the cloud").
+
 PySDM has two alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
-The [`Numba`](https://atmos-cloud-sim-uj.github.io/PySDM/backends/numba/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
+The [`Numba`](https://open-atmos.github.io/PySDM/PySDM/backends/numba/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
   multi-core CPUs, it uses the just-in-time compilation technique based on the LLVM infrastructure.
-The [`ThrustRTC`](https://atmos-cloud-sim-uj.github.io/PySDM/backends/thrustRTC/thrustRTC.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
+The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrustRTC/thrustRTC.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
 
-For an overview paper on PySDM v1 (and the preferred item to cite if using PySDM), see [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (J. Open Source Software).
-For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/atmos-cloud-sim-uj/PySDM/wiki).
+For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS papers:
+- [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
+- [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
+  
+PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
+For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
-A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://atmos-cloud-sim-uj.github.io/PySDM](https://atmos-cloud-sim-uj.github.io/PySDM) 
+A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
+
+## Example Jupyter notebooks (reproducing results from literature):
+
+See [PySDM-examples README](https://github.com/open-atmos/PySDM/blob/main/examples/README.md).
+
+![animation](https://github.com/open-atmos/PySDM/wiki/files/kinematic_2D_example.gif)
 
 ## Dependencies and Installation
 
@@ -63,7 +74,7 @@ PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata
 [ThrustRTC](https://fynv.github.io/ThrustRTC/) and [CURandRTC](https://github.com/fynv/CURandRTC).
 
 To install PySDM using ``pip``, use: ``pip install PySDM`` 
-(or ``pip install git+https://github.com/atmos-cloud-sim-uj/PySDM.git`` to get updates
+(or ``pip install git+https://github.com/open-atmos/PySDM.git`` to get updates
 beyond the latest release).
 
 Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. Dependencies of PySDM are available at the following conda channels:
@@ -74,27 +85,82 @@ Conda users may use ``pip`` as well, see the [Installing non-conda packages](htt
 - nvidia: [cudatoolkit](https://anaconda.org/nvidia/cudatoolkit)
 
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
-Test-time dependencies are listed in the ``test-time-requirements.txt`` file.
+Test-time dependencies can be installed with ``pip -e .[tests]``.
 
-PySDM examples are hosted in a separate repository and constitute 
-the [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) package.
-The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/setup.py) file.
-Running the examples requires the ``PySDM_examples`` package to be installed.
-Since the examples package includes Jupyter notebooks (and their execution requires write access), the suggested install and launch steps are:
+PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM-examples) package.
+The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM/blob/main/examples/setup.py) file.
+Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
+The suggested install and launch steps are:
 ```
-git clone https://github.com/atmos-cloud-sim-uj/PySDM-examples.git
-cd PySDM-examples
+git clone https://github.com/open-atmos/PySDM.git
+cd examples
 pip install -e .
 jupyter-notebook
 ```
 Alternatively, one can also install the examples package from pypi.org by 
-using ``pip install PySDM-examples``.
+using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
+only the supporting .py files).
 
-## PySDM examples (Jupyter notebooks reproducing results from literature):
-
-Examples are maintained at the `PySDM-examples` repository, see [PySDM-examples README.md](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/README.md) file for details.
-
-![animation](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/files/kinematic_2D_example.gif)
+## Submodule organization
+```mermaid
+mindmap
+  root((PySDM))
+    Builder
+    Formulae
+    Particulator
+    ((attributes))
+      (physics)
+        DryVolume: ExtensiveAttribute
+        Kappa: DerivedAttribute
+        ...
+      (chemistry)
+        Acidity
+        ...
+      (...)
+    ((backends))
+      CPU
+      GPU
+    ((dynamics))
+      AqueousChemistry
+      Collision
+      Condensation
+      ...
+    ((environments))
+      Box
+      Parcel
+      Kinematic2D
+      ...
+    ((initialisation))
+      (spectra)
+        Lognormal
+        Exponential
+        ...
+      (sampling)
+        (spectral_sampling)
+          ConstantMultiplicity
+          UniformRandom
+          Logarithmic
+          ...
+        (...)  
+      (...)
+    ((physics))
+      (hygroscopicity)
+        KappaKoehler
+        ...
+      (condensation_coordinate)
+        Volume
+        VolumeLogarithm
+      (...)
+    ((products))
+      (size_spectral)
+        EffectiveRadius
+        WaterMixingRatio
+        ...
+      (ambient_thermodynamics)
+        AmbientRelativeHumidity
+        ...
+      (...)
+```
 
 ## Hello-world coalescence example in Python, Julia and Matlab
 
@@ -102,8 +168,8 @@ In order to depict the PySDM API with a practical example, the following
   listings provide sample code roughly reproducing the 
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
   using PySDM from Python, Julia and Matlab.
-It is a [`Coalescence`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
-  spectrum is [`Exponential`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Exponential) and is deterministically sampled to match
+It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
+  spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Exponential) and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -122,7 +188,7 @@ Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
 ```
 </details>
 <details>
@@ -139,7 +205,7 @@ initial_spectrum = Exponential(pyargs(...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
 tmp = ConstantMultiplicity(initial_spectrum).sample(int32(n_sd));
-attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
+attributes = py.dict(pyargs('volume', tmp{1}, 'multiplicity', tmp{2}));
 ```
 </details>
 <details open>
@@ -153,13 +219,13 @@ from PySDM.initialisation.spectra.exponential import Exponential
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
 ```
 </details>
 
-The key element of the PySDM interface is the [``Particulator``](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html) 
+The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html) 
   class instances of which are used to manage the system state and control the simulation.
-Instantiation of the [``Particulator``](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html) class is handled by the [``Builder``](https://atmos-cloud-sim-uj.github.io/PySDM/builder.html)
+Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html) class is handled by the [``Builder``](https://open-atmos.github.io/PySDM/PySDM/builder.html)
   as exemplified below:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -229,18 +295,18 @@ particulator = builder.build(attributes, products)
 The ``backend`` argument may be set to ``CPU`` or ``GPU``
   what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
-The employed [`Box`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/box.html) environment corresponds to a zero-dimensional framework
+The employed [`Box`](https://open-atmos.github.io/PySDM/PySDM/environments/box.html) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
   used to initialise super-droplet attributes.
-The [`Coalescence`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/coalescence.html)
+The [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/coalescence.html)
   Monte-Carlo algorithm (Super Droplet Method) is registered as the only
   dynamic in the system.
-Finally, the [`build()`](https://atmos-cloud-sim-uj.github.io/PySDM/builder.html#PySDM.builder.Builder.build) method is used to obtain an instance
-  of [`Particulator`](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html#PySDM.particulator.Particulator) which can then be used to control time-stepping and
+Finally, the [`build()`](https://open-atmos.github.io/PySDM/PySDM/builder.html#PySDM.builder.Builder.build) method is used to obtain an instance
+  of [`Particulator`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#PySDM.particulator.Particulator) which can then be used to control time-stepping and
   access simulation state.
 
-The [`run(nt)`](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html#PySDM.particuparticulatorr.Particulator.run) method advances the simulation by ``nt`` timesteps.
+The [`run(nt)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#PySDM.particuparticulatorr.Particulator.run) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
@@ -313,25 +379,86 @@ pyplot.savefig('readme.png')
 
 The resultant plot (generated with the Python code) looks as follows:
 
-![plot](https://github.com/atmos-cloud-sim-uj/PySDM/releases/download/tip/readme.png)
+![plot](https://github.com/open-atmos/PySDM/releases/download/tip/readme.png)
+
+The component submodules used to create this simulation are visualized below:
+```mermaid
+ graph
+    COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
+    BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
+    ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
+    N_SD["n_sd :int"] -->|passed as arg to| BUILDER_INIT
+    BUILDER_INSTANCE -..-|has a method| BUILDER_SET_ENV(["Builder.set_environment()"])
+    BUILDER_INIT(["Builder.__init__()"]) ----->|instantiates| BUILDER_INSTANCE
+    BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
+    ENV_INIT(["Box.__init__()"]) --->|instantiates| ENV
+    DT[dt :float] ----->|passed as arg to| ENV_INIT
+    DV[dv :float] ----->|passed as arg to| ENV_INIT
+    ENV[":Box"] -->|passed as arg to| BUILDER_SET_ENV
+    B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
+    KERNEL_INIT -->|instantiates| KERNEL
+    KERNEL[collision_kernel: Golovin] -->|passed as arg to| COAL_INIT(["Coalesncence.__init__()"])
+    COAL_INIT -->|instantiates| COAL
+    PRODUCTS[products: list] ----->|passed as arg to| BUILDER_BUILD
+    NORM_FACTOR[norm_factor: float]-->|passed as arg to| EXP_INIT
+    SCALE[scale: float]-->|passed as arg to| EXP_INIT
+    EXP_INIT(["Exponential.__init__()"]) -->|instantiates| IS
+    IS["initial_spectrum :Exponential"] -->|passed as arg to| CM_INIT
+    CM_INIT(["ConstantMultiplicity.__init__()"]) -->|instantiates| CM_INSTANCE
+    CM_INSTANCE[":ConstantMultiplicity"] -.-|has a method| SAMPLE
+    SAMPLE(["ConstantMultiplicity.sample()"]) -->|returns| n
+    SAMPLE -->|returns| volume
+    n -->|added as element of| ATTRIBUTES
+    PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_RUN(["Particulator.run()"])
+    volume -->|added as element of| ATTRIBUTES
+    BUILDER_BUILD -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
+    PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
+    BACKEND_INSTANCE["backend :CPU"] -->|passed as arg to| BUILDER_INIT
+    PRODUCTS -.-|accessible via| PARTICULATOR_PROD
+    NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES 
+    EDGES[radius_bins_edges: np.ndarray] -->|passed as arg to| SPECTRUM_INIT
+    SPECTRUM_INIT["ParticleVolumeVersusRadiusLogarithmSpectrum.__init__()"] -->|instantiates| SPECTRUM
+    SPECTRUM[":ParticleVolumeVersusRadiusLogarithmSpectrum"] -->|added as element of| PRODUCTS
+
+    click COAL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html"
+    click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click BUILDER_SET_ENV "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
+    click ENV "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
+    click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
+    click KERNEL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
+    click EXP_INIT "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/index.html"
+    click IS "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/index.html"
+    click CM_INIT "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
+    click CM_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
+    click SAMPLE "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
+    click PARTICULATOR_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/particulator.html"
+    click BACKEND_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/backends/numba.html"
+    click BUILDER_BUILD "https://open-atmos.github.io/PySDM/PySDM/builder.html"
+    click NP_LOGSPACE "https://numpy.org/doc/stable/reference/generated/numpy.logspace.html"
+    click SPECTRUM_INIT "https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_volume_versus_radius_logarithm_spectrum.html"
+    click SPECTRUM "https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_volume_versus_radius_logarithm_spectrum.html"
+```
 
 ## Hello-world condensation example in Python, Julia and Matlab
 
 In the following example, a condensation-only setup is used with the adiabatic 
-[`Parcel`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
+[`Parcel`](https://open-atmos.github.io/PySDM/PySDM/environments/parcel.html) environment.
+An initial [`Lognormal`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
-Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
+Subsequent particle growth due to [`Condensation`](https://open-atmos.github.io/PySDM/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
 causes a subset of particles to activate into cloud droplets.
 Results of the simulation are plotted against vertical 
-[`ParcelDisplacement`](https://atmos-cloud-sim-uj.github.io/PySDM/products/housekeeping/parcel_displacement.html)
+[`ParcelDisplacement`](https://open-atmos.github.io/PySDM/PySDM/products/housekeeping/parcel_displacement.html)
 and depict the evolution of 
-[`PeakSupersaturation`](https://atmos-cloud-sim-uj.github.io/PySDM/products/condensation/peak_supersaturation.html), 
-[`EffectiveRadius`](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/effective_radius.html), 
-[`ParticleConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/particle_concentration.html#PySDM.products.particles_concentration.ParticleConcentration) 
+[`PeakSupersaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_supersaturation.html), 
+[`EffectiveRadius`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/effective_radius.html), 
+[`ParticleConcentration`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_concentration.html#PySDM.products.particles_concentration.ParticleConcentration) 
 and the 
-[`WaterMixingRatio `](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/water_mixing_ratio.html).
+[`WaterMixingRatio `](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/water_mixing_ratio.html).
 
 <details>
 <summary>Julia (click to expand)</summary>
@@ -356,7 +483,7 @@ env = Parcel(
     dt=.25 * si.s,
     mass_of_dry_air=1e3 * si.kg,
     p0=1122 * si.hPa,
-    q0=20 * si.g / si.kg,
+    initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
     T0=300 * si.K,
     w= 2.5 * si.m / si.s
 )
@@ -378,7 +505,7 @@ v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = Dict()
-attributes["n"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
+attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
 attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
@@ -387,7 +514,7 @@ particulator = builder.build(attributes, products=[
     products.PeakSupersaturation(name="S_max", unit="%"),
     products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
     products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
-    products.WaterMixingRatio(name="ql", unit="g/kg", radius_range=cloud_range),
+    products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
     products.ParcelDisplacement(name="z")
 ])
     
@@ -438,7 +565,7 @@ env = Parcel(pyargs( ...
     'dt', .25 * si.s, ...
     'mass_of_dry_air', 1e3 * si.kg, ...
     'p0', 1122 * si.hPa, ...
-    'q0', 20 * si.g / si.kg, ...
+    'initial_water_vapour_mixing_ratio', 20 * si.g / si.kg, ...
     'T0', 300 * si.K, ...
     'w', 2.5 * si.m / si.s ...
 ));
@@ -466,7 +593,7 @@ r_wet = equilibrate_wet_radii(pyargs(...
 ));
 
 attributes = py.dict(pyargs( ...
-    'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
+    'multiplicity', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
     'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
@@ -476,7 +603,7 @@ particulator = builder.build(attributes, py.list({ ...
     products.PeakSupersaturation(pyargs('name', 'S_max', 'unit', '%')), ...
     products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
     products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
-    products.WaterMixingRatio(pyargs('name', 'ql', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
+    products.WaterMixingRatio(pyargs('name', 'liquid water mixing ratio', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
     products.ParcelDisplacement(pyargs('name', 'z')) ...
 }));
 
@@ -539,7 +666,7 @@ env = Parcel(
   dt=.25 * si.s,
   mass_of_dry_air=1e3 * si.kg,
   p0=1122 * si.hPa,
-  q0=20 * si.g / si.kg,
+  initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
   T0=300 * si.K,
   w=2.5 * si.m / si.s
 )
@@ -561,7 +688,7 @@ v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = {
-  'n': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
+  'multiplicity': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
   'dry volume': v_dry,
   'kappa times dry volume': kappa * v_dry,
   'volume': formulae.trivia.volume(radius=r_wet)
@@ -571,7 +698,7 @@ particulator = builder.build(attributes, products=[
   products.PeakSupersaturation(name='S_max', unit='%'),
   products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
   products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
-  products.WaterMixingRatio(name='ql', unit='g/kg', radius_range=cloud_range),
+  products.WaterMixingRatio(name='liquid water mixing ratio', unit='g/kg', radius_range=cloud_range),
   products.ParcelDisplacement(name='z')
 ])
 
@@ -597,18 +724,30 @@ pyplot.savefig('parcel.svg')
 
 The resultant plot (generated with the Matlab code) looks as follows:
 
-![plot](https://github.com/atmos-cloud-sim-uj/PySDM/releases/download/tip/parcel.png)
+![plot](https://github.com/open-atmos/PySDM/releases/download/tip/parcel.png)
 
 ## Contributing, reporting issues, seeking support 
 
-Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/atmos-cloud-sim-uj/PySDM/pulls) 
-(or the [PySDM-examples PR site](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls) if working on examples) - it helps to keep record of code authorship, 
+#### Our technologicial stack:   
+[![Python 3](https://img.shields.io/static/v1?label=+&logo=Python&color=darkred&message=Python)](https://www.python.org/)
+[![Numba](https://img.shields.io/static/v1?label=+&logo=Numba&color=orange&message=Numba)](https://numba.pydata.org)
+[![LLVM](https://img.shields.io/static/v1?label=+&logo=LLVM&color=gold&message=LLVM)](https://llvm.org)
+[![CUDA](https://img.shields.io/static/v1?label=+&logo=nVidia&color=darkgreen&message=ThrustRTC/CUDA)](https://pypi.org/project/ThrustRTC/)
+[![NumPy](https://img.shields.io/static/v1?label=+&logo=numpy&color=blue&message=NumPy)](https://numpy.org/)
+[![pytest](https://img.shields.io/static/v1?label=+&logo=pytest&color=purple&message=pytest)](https://pytest.org/)   
+[![Colab](https://img.shields.io/static/v1?label=+&logo=googlecolab&color=darkred&message=Colab)](https://colab.research.google.com/)
+[![Codecov](https://img.shields.io/static/v1?label=+&logo=codecov&color=orange&message=Codecov)](https://codecov.io/)
+[![PyPI](https://img.shields.io/static/v1?label=+&logo=pypi&color=gold&message=PyPI)](https://pypi.org/)
+[![GithubActions](https://img.shields.io/static/v1?label=+&logo=github&color=darkgreen&message=GitHub&nbsp;Actions)](https://github.com/features/actions)
+[![Jupyter](https://img.shields.io/static/v1?label=+&logo=Jupyter&color=blue&message=Jupyter)](https://jupyter.org/)
+[![PyCharm](https://img.shields.io/static/v1?label=+&logo=pycharm&color=purple&message=PyCharm)](https:///)
+
+Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/open-atmos/PySDM/pulls) - it helps to keep record of code authorship, 
 track and archive the code review workflow and allows to benefit
 from the continuous integration setup which automates execution of tests 
 with the newly added code. 
 
-As of now, the copyright to the entire PySDM codebase is with the Jagiellonian
-University, and code contributions are assumed to imply transfer of copyright.
+Code contributions are assumed to imply transfer of copyright.
 Should there be a need to make an exception, please indicate it when creating
 a pull request or contributing code in any other way. In any case, 
 the license of the contributed code must be compatible with GPL v3.
@@ -628,14 +767,15 @@ To run all pre-commit hooks, run `pre-commit run --all-files`.
 The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
   existing ones need to be altered.  
 
-Issues regarding any incorrect, unintuitive or undocumented bahaviour of
-PySDM are best to be reported on the [GitHub issue tracker](https://github.com/atmos-cloud-sim-uj/PySDM/issues/new).
-Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/Ideas-for-new-features-and-examples).
+Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki).
 
-We encourage to use the [GitHub Discussions](https://github.com/atmos-cloud-sim-uj/PySDM/discussions) feature
+Issues regarding any incorrect, unintuitive or undocumented bahaviour of
+PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).
+Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github.com/open-atmos/PySDM/wiki/Ideas-for-new-features-and-examples).
+
+We encourage to use the [GitHub Discussions](https://github.com/open-atmos/PySDM/discussions) feature
 (rather than the issue tracker) for seeking support in understanding, using and extending PySDM code.
 
-Please use the PySDM issue-tracking and dicsussion infrastructure for `PySDM-examples` as well.
 We look forward to your contributions and feedback.
 
 ## Credits:

@@ -18,7 +18,7 @@ install:
       if ($env:platform -Match "x86") 
       {
         $env:PYTHON="C:\Python38\python"
-        Set-Content -Path "test-time-requirements.txt" -Value (get-content -Path "test-time-requirements.txt" | Select-String -Pattern 'PyPartMC' -NotMatch)
+        Set-Content -Path "setup.py" -Value (get-content -Path "setup.py" | Select-String -Pattern 'PyPartMC' -NotMatch)
       }
       elseif ($env:platform -Match "x64") 
       {
@@ -30,12 +30,7 @@ install:
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
   
   - ps: |
-      # Add-Content requirements.txt "`npywin32>=300"
-      iex "$env:PYTHON -m pip install -r test-time-requirements.txt"
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-
-  - ps: |
-      iex "$env:PYTHON -m pip install -e ."
+      iex "$env:PYTHON -m pip install --prefer-binary -e .[tests]"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
 test_script:

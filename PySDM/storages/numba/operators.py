@@ -18,6 +18,11 @@ def amin(data):
 
 
 @numba.njit(**conf.JIT_FLAGS)
+def amax(data):
+    return np.amax(data)
+
+
+@numba.njit(**conf.JIT_FLAGS)
 def row_modulo(output, divisor):
     for d in range(output.shape[0]):
         for i in numba.prange(output.shape[1]):  # pylint: disable=not-an-iterable
@@ -72,6 +77,6 @@ def subtract(output, subtrahend):
     output[:] -= subtrahend[:]
 
 
-# @numba.njit(void(f8[:]), **conf.JIT_FLAGS)
-def urand(output):
-    output.data[:] = np.random.uniform(0, 1, output.shape)
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def exp(output):
+    output[:] = np.exp(output)

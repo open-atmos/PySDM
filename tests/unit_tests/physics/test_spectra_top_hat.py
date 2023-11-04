@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from matplotlib import pylab
+from matplotlib import pyplot
 
 from PySDM.initialisation import spectra
 
@@ -19,14 +19,14 @@ class TestSpectraTopHat:
 
         # plot
         if plot:
-            pylab.axhline(0)
-            pylab.axhline(norm_factor)
-            pylab.axvline(endpoints[0])
-            pylab.axvline(endpoints[1])
-            pylab.plot(x, y, color="red")
-            pylab.xlim(x[0], x[-1])
-            pylab.grid()
-            pylab.show()
+            pyplot.axhline(0)
+            pyplot.axhline(norm_factor)
+            pyplot.axvline(endpoints[0])
+            pyplot.axvline(endpoints[1])
+            pyplot.plot(x, y, color="red")
+            pyplot.xlim(x[0], x[-1])
+            pyplot.grid()
+            pyplot.show()
 
         # assert
         for point in y:
@@ -51,12 +51,12 @@ class TestSpectraTopHat:
 
         # plot
         if plot:
-            pylab.axvline(0)
-            pylab.axvline(1)
-            pylab.axhline(spectrum.endpoints[0])
-            pylab.axhline(spectrum.endpoints[1])
-            pylab.plot(x, y, color="red")
-            pylab.show()
+            pyplot.axvline(0)
+            pyplot.axvline(1)
+            pyplot.axhline(spectrum.endpoints[0])
+            pyplot.axhline(spectrum.endpoints[1])
+            pyplot.plot(x, y, color="red")
+            pyplot.show()
 
         # assert
         assert y[0] == spectrum.endpoints[0]

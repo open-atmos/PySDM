@@ -8,17 +8,13 @@ from PySDM.environments import Box
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling.spatial_sampling import Pseudorandom
 
-from ....backends_fixture import backend_class
-from .__parametrisation__ import get_dummy_particulator_and_coalescence
-
-assert hasattr(backend_class, "_pytestfixturefunction")
+from .conftest import get_dummy_particulator_and_coalescence
 
 
 class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
-    # pylint: disable=redefined-outer-name
     def test_coalescence_call(n_sd, backend_class, adaptive):
         # TODO #330
         if backend_class is ThrustRTC:
@@ -33,8 +29,10 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
         particulator, sut = get_dummy_particulator_and_coalescence(
             backend_class, len(n), environment=env
         )
-        cell_id, _, _ = env.mesh.cellular_attributes(Pseudorandom.sample(grid, len(n)))
-        attributes = {"n": n, "volume": v, "cell id": cell_id}
+        cell_id, _, _ = env.mesh.cellular_attributes(
+            Pseudorandom.sample(backend=particulator.backend, grid=grid, n_sd=len(n))
+        )
+        attributes = {"multiplicity": n, "volume": v, "cell id": cell_id}
         particulator.build(attributes)
         sut.actual_length = particulator.attributes._ParticleAttributes__idx.length
         sut.adaptive = adaptive

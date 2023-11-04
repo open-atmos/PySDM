@@ -21,18 +21,18 @@ class CondensationMethods(BackendMethods):
         solver,
         n_cell,
         cell_start_arg,
-        v,
+        water_mass,
         v_cr,
-        n,
+        multiplicity,
         vdry,
         idx,
         rhod,
         thd,
-        qv,
+        water_vapour_mixing_ratio,
         dv,
         prhod,
         pthd,
-        pqv,
+        predicted_water_vapour_mixing_ratio,
         kappa,
         f_org,
         rtol_x,
@@ -50,18 +50,18 @@ class CondensationMethods(BackendMethods):
             n_threads=n_threads,
             n_cell=n_cell,
             cell_start_arg=cell_start_arg.data,
-            v=v.data,
+            water_mass=water_mass.data,
             v_cr=v_cr.data,
-            n=n.data,
+            multiplicity=multiplicity.data,
             vdry=vdry.data,
             idx=idx.data,
             rhod=rhod.data,
             thd=thd.data,
-            qv=qv.data,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio.data,
             dv_mean=dv,
             prhod=prhod.data,
             pthd=pthd.data,
-            pqv=pqv.data,
+            predicted_water_vapour_mixing_ratio=predicted_water_vapour_mixing_ratio.data,
             kappa=kappa.data,
             f_org=f_org.data,
             rtol_x=rtol_x,
@@ -84,18 +84,18 @@ class CondensationMethods(BackendMethods):
         n_threads,
         n_cell,
         cell_start_arg,
-        v,
+        water_mass,
         v_cr,
-        n,
+        multiplicity,
         vdry,
         idx,
         rhod,
         thd,
-        qv,
+        water_vapour_mixing_ratio,
         dv_mean,
         prhod,
         pthd,
-        pqv,
+        predicted_water_vapour_mixing_ratio,
         kappa,
         f_org,
         rtol_x,
@@ -121,13 +121,16 @@ class CondensationMethods(BackendMethods):
                     continue
 
                 dthd_dt = (pthd[cell_id] - thd[cell_id]) / timestep
-                dqv_dt = (pqv[cell_id] - qv[cell_id]) / timestep
-                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
-                md = rhod_mean * dv_mean
+                d_water_vapour_mixing_ratio__dt = (
+                    predicted_water_vapour_mixing_ratio[cell_id]
+                    - water_vapour_mixing_ratio[cell_id]
+                ) / timestep
+                drhod_dt = (prhod[cell_id] - rhod[cell_id]) / timestep
+                md = (prhod[cell_id] + rhod[cell_id]) / 2 * dv_mean
 
                 (
                     success_in_cell,
-                    qv_new,
+                    water_vapour_mixing_ratio_new,
                     thd_new,
                     substeps_hint,
                     n_activating,
@@ -135,19 +138,20 @@ class CondensationMethods(BackendMethods):
                     n_ripening,
                     RH_max_in_cell,
                 ) = solver(
-                    v,
+                    water_mass,
                     v_cr,
-                    n,
+                    multiplicity,
                     vdry,
                     idx[cell_start:cell_end],
                     kappa,
                     f_org,
                     thd[cell_id],
-                    qv[cell_id],
+                    water_vapour_mixing_ratio[cell_id],
+                    rhod[cell_id],
                     dthd_dt,
-                    dqv_dt,
+                    d_water_vapour_mixing_ratio__dt,
+                    drhod_dt,
                     md,
-                    rhod_mean,
                     rtol_x,
                     rtol_thd,
                     timestep,
@@ -159,7 +163,9 @@ class CondensationMethods(BackendMethods):
                 counter_n_ripening[cell_id] = n_ripening
                 RH_max[cell_id] = RH_max_in_cell
                 success[cell_id] = success_in_cell
-                pqv[cell_id] = qv_new
+                predicted_water_vapour_mixing_ratio[
+                    cell_id
+                ] = water_vapour_mixing_ratio_new
                 pthd[cell_id] = thd_new
 
     @staticmethod
@@ -251,37 +257,41 @@ class CondensationMethods(BackendMethods):
     ):
         @numba.njit(**jit_flags)
         def step_impl(  # pylint: disable=too-many-arguments,too-many-locals
-            v,
+            water_mass,
             v_cr,
-            n,
+            multiplicity,
             vdry,
             cell_idx,
             kappa,
             f_org,
             thd,
-            qv,
+            water_vapour_mixing_ratio,
+            rhod,
             dthd_dt_pred,
-            dqv_dt_pred,
+            d_water_vapour_mixing_ratio__dt_predicted,
+            drhod_dt,
             m_d,
-            rhod_mean,
             rtol_x,
             timestep,
             n_substeps,
             fake,
         ):
             timestep /= n_substeps
-            ml_old = calculate_ml_old(v, n, cell_idx)
+            ml_old = calculate_ml_old(water_mass, multiplicity, cell_idx)
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
             success = True
             for _ in range(n_substeps):
                 # note: no example yet showing that the trapezoidal scheme brings any improvement
                 thd += timestep * dthd_dt_pred / 2
-                qv += timestep * dqv_dt_pred / 2
+                water_vapour_mixing_ratio += (
+                    timestep * d_water_vapour_mixing_ratio__dt_predicted / 2
+                )
+                rhod += timestep * drhod_dt / 2
 
-                T = phys_T(rhod_mean, thd)
-                p = phys_p(rhod_mean, T, qv)
-                pv = phys_pv(p, qv)
+                T = phys_T(rhod, thd)
+                p = phys_p(rhod, T, water_vapour_mixing_ratio)
+                pv = phys_pv(p, water_vapour_mixing_ratio)
                 lv = phys_lv(T)
                 pvs = phys_pvs_C(T - const.T0)
                 RH = pv / pvs
@@ -299,9 +309,9 @@ class CondensationMethods(BackendMethods):
                     T,
                     p,
                     RH,
-                    v,
+                    water_mass,
                     v_cr,
-                    n,
+                    multiplicity,
                     vdry,
                     cell_idx,
                     kappa,
@@ -313,13 +323,21 @@ class CondensationMethods(BackendMethods):
                     rtol_x,
                 )
                 dml_dt = (ml_new - ml_old) / timestep
-                dqv_dt_corr = -dml_dt / m_d
+                d_water_vapour_mixing_ratio__dt_corrected = -dml_dt / m_d
                 dthd_dt_corr = phys_dthd_dt(
-                    rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv
+                    rhod=rhod,
+                    thd=thd,
+                    T=T,
+                    d_water_vapour_mixing_ratio__dt=d_water_vapour_mixing_ratio__dt_corrected,
+                    lv=lv,
                 )
 
                 thd += timestep * (dthd_dt_pred / 2 + dthd_dt_corr)
-                qv += timestep * (dqv_dt_pred / 2 + dqv_dt_corr)
+                water_vapour_mixing_ratio += timestep * (
+                    d_water_vapour_mixing_ratio__dt_predicted / 2
+                    + d_water_vapour_mixing_ratio__dt_corrected
+                )
+                rhod += timestep * drhod_dt / 2
                 ml_old = ml_new
                 count_activating += n_activating
                 count_deactivating += n_deactivating
@@ -327,7 +345,7 @@ class CondensationMethods(BackendMethods):
                 RH_max = max(RH_max, RH)
                 success = success and success_within_substep
             return (
-                qv,
+                water_vapour_mixing_ratio,
                 thd,
                 count_activating,
                 count_deactivating,
@@ -339,13 +357,13 @@ class CondensationMethods(BackendMethods):
         return step_impl
 
     @staticmethod
-    def make_calculate_ml_old(jit_flags, const):
+    def make_calculate_ml_old(jit_flags):
         @numba.njit(**jit_flags)
-        def calculate_ml_old(volume, multiplicity, cell_idx):
+        def calculate_ml_old(water_mass, multiplicity, cell_idx):
             result = 0
             for drop in cell_idx:
-                if volume[drop] > 0:
-                    result += multiplicity[drop] * volume[drop] * const.rho_w
+                if water_mass[drop] > 0:
+                    result += multiplicity[drop] * water_mass[drop]
             return result
 
         return calculate_ml_old
@@ -365,6 +383,8 @@ class CondensationMethods(BackendMethods):
         phys_lambdaD,
         phys_dk_D,
         phys_dk_K,
+        volume_to_mass,
+        mass_to_volume,
         within_tolerance,
         max_iters,
         RH_rtol,
@@ -392,9 +412,9 @@ class CondensationMethods(BackendMethods):
             T,
             p,
             RH,
-            v,
+            water_mass,
             v_cr,
-            n,
+            multiplicity,
             vdry,
             cell_idx,
             kappa,
@@ -413,13 +433,14 @@ class CondensationMethods(BackendMethods):
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
-                if v[drop] < 0:
+                v_drop = mass_to_volume(water_mass[drop])
+                if v_drop < 0:
                     continue
-                x_old = x(v[drop])
-                r_old = radius(v[drop])
+                x_old = x(v_drop)
+                r_old = radius(v_drop)
                 x_insane = x(vdry[drop] / 100)
                 rd3 = vdry[drop] / const.PI_4_3
-                sgm = phys_sigma(T, v[drop], vdry[drop], f_org[drop])
+                sgm = phys_sigma(T, v_drop, vdry[drop], f_org[drop])
                 RH_eq = phys_RH_eq(r_old, T, kappa[drop], rd3, sgm)
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
                     Dr = phys_dk_D(DTp, r_old, lambdaD)
@@ -505,16 +526,17 @@ class CondensationMethods(BackendMethods):
                     else:
                         x_new = x_old
 
-                v_new = volume_of_x(x_new)
-                result += n[drop] * v_new * const.rho_w
+                mass_new = volume_to_mass(volume_of_x(x_new))
+                mass_cr = volume_to_mass(v_cr[drop])
+                result += multiplicity[drop] * mass_new
                 if not fake:
-                    if v_new > v_cr[drop] and v_new > v[drop]:
-                        n_activated_and_growing += n[drop]
-                    if v_new > v_cr[drop] > v[drop]:
-                        n_activating += n[drop]
-                    if v_new < v_cr[drop] < v[drop]:
-                        n_deactivating += n[drop]
-                    v[drop] = v_new
+                    if mass_new > mass_cr and mass_new > water_mass[drop]:
+                        n_activated_and_growing += multiplicity[drop]
+                    if mass_new > mass_cr > water_mass[drop]:
+                        n_activating += multiplicity[drop]
+                    if mass_new < mass_cr < water_mass[drop]:
+                        n_deactivating += multiplicity[drop]
+                    water_mass[drop] = mass_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
             return result, success, n_activating, n_deactivating, n_ripening
 
@@ -555,6 +577,8 @@ class CondensationMethods(BackendMethods):
             dx_dt=self.formulae.condensation_coordinate.dx_dt,
             volume=self.formulae.condensation_coordinate.volume,
             x=self.formulae.condensation_coordinate.x,
+            mass_to_volume=self.formulae.particle_shape_and_density.mass_to_volume,
+            volume_to_mass=self.formulae.particle_shape_and_density.volume_to_mass,
             timestep=timestep,
             dt_range=dt_range,
             adaptive=adaptive,
@@ -590,6 +614,8 @@ class CondensationMethods(BackendMethods):
         dx_dt,
         volume,
         x,
+        volume_to_mass,
+        mass_to_volume,
         timestep,
         dt_range,
         adaptive,
@@ -605,7 +631,7 @@ class CondensationMethods(BackendMethods):
             **{"parallel": False, "cache": False, "fastmath": fastmath},
         }
 
-        calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags, const)
+        calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(
             jit_flags=jit_flags,
             dx_dt=dx_dt,
@@ -619,6 +645,8 @@ class CondensationMethods(BackendMethods):
             phys_lambdaD=phys_lambdaD,
             phys_dk_D=phys_dk_D,
             phys_dk_K=phys_dk_K,
+            volume_to_mass=volume_to_mass,
+            mass_to_volume=mass_to_volume,
             within_tolerance=within_tolerance,
             max_iters=max_iters,
             RH_rtol=RH_rtol,
@@ -652,38 +680,40 @@ class CondensationMethods(BackendMethods):
 
         @numba.njit(**jit_flags)
         def solve(  # pylint: disable=too-many-arguments
-            v,
+            water_mass,
             v_cr,
-            n,
+            multiplicity,
             vdry,
             cell_idx,
             kappa,
             f_org,
             thd,
-            qv,
+            water_vapour_mixing_ratio,
+            rhod,
             dthd_dt,
-            dqv_dt,
+            d_water_vapour_mixing_ratio__dt,
+            drhod_dt,
             m_d,
-            rhod_mean,
             rtol_x,
             rtol_thd,
             timestep,
             n_substeps,
         ):
             args = (
-                v,
+                water_mass,
                 v_cr,
-                n,
+                multiplicity,
                 vdry,
                 cell_idx,
                 kappa,
                 f_org,
                 thd,
-                qv,
+                water_vapour_mixing_ratio,
+                rhod,
                 dthd_dt,
-                dqv_dt,
+                d_water_vapour_mixing_ratio__dt,
+                drhod_dt,
                 m_d,
-                rhod_mean,
                 rtol_x,
             )
             success = True
@@ -691,7 +721,7 @@ class CondensationMethods(BackendMethods):
                 n_substeps, success = adapt_substeps(args, n_substeps, thd, rtol_thd)
             if success:
                 (
-                    qv,
+                    water_vapour_mixing_ratio,
                     thd,
                     n_activating,
                     n_deactivating,
@@ -703,7 +733,7 @@ class CondensationMethods(BackendMethods):
                 n_activating, n_deactivating, n_ripening, RH_max = -1, -1, -1, -1
             return (
                 success,
-                qv,
+                water_vapour_mixing_ratio,
                 thd,
                 n_substeps,
                 n_activating,

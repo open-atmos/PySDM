@@ -136,5 +136,8 @@ dmypy.json
 # Mac stuff
 **.DS_Store
 
+#Jetbrains
+.idea/
+
 # PyCharm
 .idea
