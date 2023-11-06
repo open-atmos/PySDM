@@ -11,9 +11,9 @@ from PySDM.physics import si
 
 @strict
 class Settings:
-    def __init__(self, steps: Optional[list] = None):
+    def __init__(self, seed: int, steps: Optional[list] = None):
         steps = steps or [0, 1200, 2400, 3600]
-        self.formulae = Formulae()
+        self.formulae = Formulae(seed=seed)
         self.n_sd = 2**13
         self.n_part = 2**23 / si.metre**3
         self.X0 = self.formulae.trivia.volume(radius=30.531 * si.micrometres)
@@ -22,7 +22,6 @@ class Settings:
         self.rho = 1000 * si.kilogram / si.metre**3
         self.dt = 1 * si.seconds
         self.adaptive = False
-        self.seed = 44
         self.steps = steps
         self.kernel = Golovin(b=1.5e3 / si.second)
         self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)
