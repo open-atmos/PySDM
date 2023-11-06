@@ -7,7 +7,7 @@ import warnings
 import numba
 
 JIT_FLAGS = {
-    "parallel": True,
+    "parallel": os.uname().machine != "arm64",  # TODO #1183 - atomics don't work!
     "fastmath": True,
     "error_model": "numpy",
     "cache": False,  # https://github.com/numba/numba/issues/2956
