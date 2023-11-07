@@ -31,6 +31,7 @@
 default settings for Numba just-in-time compilation
 &#34;&#34;&#34;
 import os
+import platform
 import warnings
 
 import numba
@@ -41,6 +42,12 @@ JIT_FLAGS = {
     &#34;error_model&#34;: &#34;numpy&#34;,
     &#34;cache&#34;: False,  # https://github.com/numba/numba/issues/2956
 }
+
+if platform.machine() == &#34;arm64&#34;:
+    warnings.warn(
+        &#34;Disabling Numba threading due to ARM64 CPU (atomics do not work yet)&#34;
+    )
+    JIT_FLAGS[&#34;parallel&#34;] = False  # TODO #1183 - atomics don&#39;t work on ARM64!
 
 try:
     numba.parfors.parfor.ensure_parallel_support()
