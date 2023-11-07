@@ -10,9 +10,7 @@ class TerminalVelocity(DerivedAttribute):
         dependencies = [self.radius]
         super().__init__(builder, name="terminal velocity", dependencies=dependencies)
 
-        self.approximation = builder.formulae.terminal_velocity_class(
-            builder.particulator
-        )
+        self.approximation = self.formulae.terminal_velocity_class(builder.particulator)
 
     def recalculate(self):
         self.approximation(self.data, self.radius.get())

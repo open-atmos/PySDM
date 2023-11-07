@@ -15,7 +15,7 @@ class SuperDropletCountPerGridbox(Product):
     def register(self, builder):
         super().register(builder)
 
-        @numba.njit(**{**JIT_FLAGS, "fastmath": builder.formulae.fastmath})
+        @numba.njit(**{**JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def jit_impl(cell_start, ravelled_buffer):
             n_cell = cell_start.shape[0] - 1
             for i in numba.prange(n_cell):  # pylint: disable=not-an-iterable

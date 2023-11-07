@@ -17,7 +17,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.__n_sd = n_sd
 
         self.backend = backend
-        self.formulae = backend.formulae
         self.environment = None
         self.attributes: (ParticleAttributes, None) = None
         self.dynamics = {}
@@ -77,6 +76,14 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         if self.environment is not None:
             return self.environment.mesh
         return None
+
+    @property
+    def formulae(self):
+        return self.backend.formulae
+
+    @formulae.setter
+    def formulae(self, _):
+        raise AssertionError()
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(

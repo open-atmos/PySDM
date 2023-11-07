@@ -22,7 +22,9 @@ class Freezing:
     def register(self, builder):
         self.particulator = builder.particulator
 
-        assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
+        assert (
+            self.particulator.formulae.particle_shape_and_density.supports_mixed_phase()
+        )
 
         builder.request_attribute("volume")
         if self.singular or self.record_freezing_temperature:
@@ -30,7 +32,7 @@ class Freezing:
 
         if not self.singular:
             assert not isinstance(
-                builder.formulae.heterogeneous_ice_nucleation_rate, Null
+                self.particulator.formulae.heterogeneous_ice_nucleation_rate, Null
             )
             builder.request_attribute("immersed surface area")
             self.rand = self.particulator.Storage.empty(
