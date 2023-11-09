@@ -31,9 +31,10 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     TerminalVelocityMethods,
     NumbaStorageHolder,
 ):
-
     default_croupier = "local"
 
+    # TODO #1185  https://github.com/pylint-dev/pylint/issues/9225
+    # pylint: disable=super-init-not-called
     def __init__(self, formulae=None, double_precision=True):
         if not double_precision:
             raise NotImplementedError()
