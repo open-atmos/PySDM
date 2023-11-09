@@ -21,8 +21,6 @@ class Backend(Protocol):
     The backend base class is used to define the interface of the backends.
     """
 
-    ...
-
 
 class IndexBackend(Backend):
     """ "
@@ -43,7 +41,6 @@ class IndexBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def shuffle_global(idx: DataType, length: int, u01: DataType) -> None:
@@ -63,7 +60,6 @@ class IndexBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def shuffle_local(idx: DataType, u01: DataType, cell_start: DataType) -> None:
@@ -83,7 +79,6 @@ class IndexBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def sort_by_key(idx: Storage, attr: Storage) -> None:
@@ -101,7 +96,6 @@ class IndexBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def remove_zero_n_or_flagged(
@@ -124,7 +118,6 @@ class IndexBackend(Backend):
         int
             new length of the index
         """
-        ...
 
 
 class PairBackend(Backend):
@@ -150,7 +143,6 @@ class PairBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def max_pair(
@@ -174,7 +166,6 @@ class PairBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def min_pair(
@@ -198,7 +189,6 @@ class PairBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def sort_pair(
@@ -222,7 +212,6 @@ class PairBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def sum_pair(
@@ -246,7 +235,6 @@ class PairBackend(Backend):
         -------
         None
         """
-        ...
 
     @staticmethod
     def multiply_pair(
@@ -270,4 +258,3 @@ class PairBackend(Backend):
         -------
         None
         """
-        ...
