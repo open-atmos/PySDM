@@ -1,9 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring
 import numpy as np
+import pytest
 from matplotlib import pyplot
 
 from PySDM import Formulae
 from PySDM.physics import in_unit
+from PySDM.physics.constants_defaults import PER_MILLE
 
 
 class TestIsotopeMeteoricWaterLineExcess:
@@ -77,4 +79,25 @@ class TestIsotopeMeteoricWaterLineExcess:
         assert (44 * const.PER_MILLE, 23 * const.PER_MILLE) == (
             np.round(x_values[-1], 3),
             np.round(y_values[-1], 3),
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "delta_2H", (-30 * PER_MILLE, -10 * PER_MILLE, 10 * PER_MILLE, 30 * PER_MILLE)
+    )
+    def test_d18O_of_d2H(delta_2H):
+        # arrange
+        formulae = Formulae(isotope_meteoric_water_line_excess="Dansgaard1964")
+        sut = formulae.isotope_meteoric_water_line_excess.d18O_of_d2H
+
+        # act
+        delta_18O = sut(delta_2H=delta_2H)
+
+        # assert
+        np.testing.assert_approx_equal(
+            actual=formulae.isotope_meteoric_water_line_excess.excess_d(
+                delta_18O=delta_18O, delta_2H=delta_2H
+            ),
+            desired=formulae.constants.CRAIG_1961_INTERCEPT_COEFF,
+            significant=3,
         )

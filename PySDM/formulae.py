@@ -44,6 +44,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_meteoric_water_line_excess: str = "Null",
+        isotope_ratio_evolution: str = "MerlivatAndJouzel1979",
         particle_shape_and_density: str = "LiquidSpheres",
         handle_all_breakups: bool = False,
     ):
@@ -68,6 +69,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             isotope_equilibrium_fractionation_factors
         )
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
+        self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
         components = tuple(i for i in dir(self) if not i.startswith("__"))
 

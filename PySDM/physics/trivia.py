@@ -99,11 +99,6 @@ class Trivia:  # pylint: disable=too-many-public-methods
         )
 
     @staticmethod
-    def rayleigh_fractionation(f, a):
-        """https://en.wikipedia.org/wiki/Rayleigh_fractionation"""
-        return f ** (a - 1)
-
-    @staticmethod
     def isotopic_delta_2_ratio(delta, reference_ratio):
         return (delta + 1) * reference_ratio
 

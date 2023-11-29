@@ -17,6 +17,7 @@ from . import (
     impl,
     isotope_equilibrium_fractionation_factors,
     isotope_meteoric_water_line_excess,
+    isotope_ratio_evolution,
     latent_heat,
     particle_advection,
     particle_shape_and_density,
