@@ -29,6 +29,11 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         max_iters: int = 16,
         update_thd: bool = True,
     ):
+        if adaptive and substeps != 1:
+            raise ValueError(
+                "if specifying substeps count manually, adaptivity must be disabled"
+            )
+
         self.particulator = None
         self.enable = True
 
@@ -120,4 +125,3 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
                         self.counters["n_substeps"][:],
                         int(self.particulator.dt / self.dt_cond_range[0]),
                     )
-            self.particulator.attributes.mark_updated("volume")

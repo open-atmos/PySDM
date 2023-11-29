@@ -119,7 +119,7 @@ class Common:
         self.simulation_time = None
         self.grid = None
         self.p0 = None
-        self.qv0 = None
+        self.initial_water_vapour_mixing_ratio = None
         self.th_std0 = None
         self.size = None
 
@@ -145,11 +145,13 @@ class Common:
 
     @property
     def initial_vapour_mixing_ratio_profile(self):
-        return np.full(self.grid[-1], self.qv0)
+        return np.full(self.grid[-1], self.initial_water_vapour_mixing_ratio)
 
     @property
     def initial_dry_potential_temperature_profile(self):
         return np.full(
             self.grid[-1],
-            self.formulae.state_variable_triplet.th_dry(self.th_std0, self.qv0),
+            self.formulae.state_variable_triplet.th_dry(
+                self.th_std0, self.initial_water_vapour_mixing_ratio
+            ),
         )

@@ -59,6 +59,11 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def amin(data):
             return trtc.Reduce(data, Impl.thrust(np.inf), trtc.Minimum())
 
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def amax(data):
+            return trtc.Reduce(data, Impl.thrust(-np.inf), trtc.Maximum())
+
         __row_modulo_body = trtc.For(
             ("output", "divisor", "length"),
             "i",
@@ -282,6 +287,19 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 n=(output.shape[0]), args=(Impl.thrust((output, divisor)))
             )
 
+        __exp_body = trtc.For(
+            ("output",),
+            "i",
+            """
+                output[i] = exp(output[i]);
+            """,
+        )
+
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def exp(output):
+            Impl.__exp_body.launch_n(output.shape[0], Impl.thrust((output,)))
+
     class Storage(StorageBase):
         FLOAT = BACKEND._get_np_dtype()
         INT = np.int64
@@ -406,6 +424,9 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def amin(self):
             return Impl.amin(self.data)
 
+        def amax(self):
+            return Impl.amax(self.data)
+
         def all(self):
             assert self.dtype is self.BOOL
             return self.amin()
@@ -497,17 +518,21 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             Impl.divide_if_not_zero(self, divisor)
             return self
 
-        def fill(self, value):
-            if isinstance(value, Storage):
-                trtc.Copy(value.data, self.data)
+        def fill(self, other):
+            if isinstance(other, Storage):
+                trtc.Copy(other.data, self.data)
             else:
-                if isinstance(value, int):
-                    dvalue = trtc.DVInt64(value)
-                elif isinstance(value, float):
-                    dvalue = BACKEND._get_floating_point(value)
+                if isinstance(other, int):
+                    dvalue = trtc.DVInt64(other)
+                elif isinstance(other, float):
+                    dvalue = BACKEND._get_floating_point(other)
                 else:
                     raise TypeError("Only Storage, int and float are supported.")
                 trtc.Fill(self.data, dvalue)
+            return self
+
+        def exp(self):
+            Impl.exp(self)
             return self
 
     return Storage

@@ -27,8 +27,11 @@ class GUISettings:
         self.ui_dth0 = FloatSlider(
             description="$\\Delta\\theta_0$ [K]", value=0, min=-15, max=15
         )
-        self.ui_dqv0 = FloatSlider(
-            description="$\\Delta q_{v0}$ [g/kg]", value=0, min=-6, max=6
+        self.ui_delta_initial_water_vapour_mixing_ratio = FloatSlider(
+            description="$\\Delta initial_water_vapour_mixing_ratio$ [g/kg]",
+            value=0,
+            min=-6,
+            max=6,
         )
         self.ui_rhod_w_max = FloatSlider(
             description="$\\rho_d w_{max}$",
@@ -143,7 +146,15 @@ class GUISettings:
                 value=defaults[k],
             )
             for k, v in formulae_init_params
-            if k not in ("self", "fastmath", "seed", "constants", "handle_all_breakups")
+            if k
+            not in (
+                "self",
+                "fastmath",
+                "seed",
+                "constants",
+                "handle_all_breakups",
+                "terminal_velocity",
+            )
         ]
 
         self.ui_formulae_options.append(
@@ -206,7 +217,11 @@ class GUISettings:
 
     @property
     def initial_vapour_mixing_ratio_profile(self):
-        return np.full(self.grid[-1], self.__settings.qv0 + self.ui_dqv0.value / 1000)
+        return np.full(
+            self.grid[-1],
+            self.__settings.initial_water_vapour_mixing_ratio
+            + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
+        )
 
     @property
     def initial_dry_potential_temperature_profile(self):
@@ -214,7 +229,8 @@ class GUISettings:
             self.grid[-1],
             self.formulae.state_variable_triplet.th_dry(
                 self.__settings.th_std0 + self.ui_dth0.value,
-                self.__settings.qv0 + self.ui_dqv0.value / 1000,
+                self.__settings.initial_water_vapour_mixing_ratio
+                + self.ui_delta_initial_water_vapour_mixing_ratio.value / 1000,
             ),
         )
 
@@ -356,7 +372,7 @@ class GUISettings:
                 VBox(
                     [
                         self.ui_dth0,
-                        self.ui_dqv0,
+                        self.ui_delta_initial_water_vapour_mixing_ratio,
                         self.ui_kappa,
                         self.ui_rhod_w_max,
                         *self.ui_freezing.values(),

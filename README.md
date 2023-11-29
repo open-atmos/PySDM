@@ -51,9 +51,11 @@ The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrustRTC/th
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
 
-For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS paper:
+For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS papers:
 - [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
-- [de Jong et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
+- [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
+  
+PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
 For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
 A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
@@ -186,7 +188,7 @@ Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
 ```
 </details>
 <details>
@@ -203,7 +205,7 @@ initial_spectrum = Exponential(pyargs(...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
 tmp = ConstantMultiplicity(initial_spectrum).sample(int32(n_sd));
-attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
+attributes = py.dict(pyargs('volume', tmp{1}, 'multiplicity', tmp{2}));
 ```
 </details>
 <details open>
@@ -217,7 +219,7 @@ from PySDM.initialisation.spectra.exponential import Exponential
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
 ```
 </details>
 
@@ -481,7 +483,7 @@ env = Parcel(
     dt=.25 * si.s,
     mass_of_dry_air=1e3 * si.kg,
     p0=1122 * si.hPa,
-    q0=20 * si.g / si.kg,
+    initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
     T0=300 * si.K,
     w= 2.5 * si.m / si.s
 )
@@ -503,7 +505,7 @@ v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = Dict()
-attributes["n"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
+attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
 attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
@@ -512,7 +514,7 @@ particulator = builder.build(attributes, products=[
     products.PeakSupersaturation(name="S_max", unit="%"),
     products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
     products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
-    products.WaterMixingRatio(name="ql", unit="g/kg", radius_range=cloud_range),
+    products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
     products.ParcelDisplacement(name="z")
 ])
     
@@ -563,7 +565,7 @@ env = Parcel(pyargs( ...
     'dt', .25 * si.s, ...
     'mass_of_dry_air', 1e3 * si.kg, ...
     'p0', 1122 * si.hPa, ...
-    'q0', 20 * si.g / si.kg, ...
+    'initial_water_vapour_mixing_ratio', 20 * si.g / si.kg, ...
     'T0', 300 * si.K, ...
     'w', 2.5 * si.m / si.s ...
 ));
@@ -591,7 +593,7 @@ r_wet = equilibrate_wet_radii(pyargs(...
 ));
 
 attributes = py.dict(pyargs( ...
-    'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
+    'multiplicity', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
     'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
@@ -601,7 +603,7 @@ particulator = builder.build(attributes, py.list({ ...
     products.PeakSupersaturation(pyargs('name', 'S_max', 'unit', '%')), ...
     products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
     products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
-    products.WaterMixingRatio(pyargs('name', 'ql', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
+    products.WaterMixingRatio(pyargs('name', 'liquid water mixing ratio', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
     products.ParcelDisplacement(pyargs('name', 'z')) ...
 }));
 
@@ -664,7 +666,7 @@ env = Parcel(
   dt=.25 * si.s,
   mass_of_dry_air=1e3 * si.kg,
   p0=1122 * si.hPa,
-  q0=20 * si.g / si.kg,
+  initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
   T0=300 * si.K,
   w=2.5 * si.m / si.s
 )
@@ -686,7 +688,7 @@ v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = {
-  'n': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
+  'multiplicity': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
   'dry volume': v_dry,
   'kappa times dry volume': kappa * v_dry,
   'volume': formulae.trivia.volume(radius=r_wet)
@@ -696,7 +698,7 @@ particulator = builder.build(attributes, products=[
   products.PeakSupersaturation(name='S_max', unit='%'),
   products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
   products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
-  products.WaterMixingRatio(name='ql', unit='g/kg', radius_range=cloud_range),
+  products.WaterMixingRatio(name='liquid water mixing ratio', unit='g/kg', radius_range=cloud_range),
   products.ParcelDisplacement(name='z')
 ])
 

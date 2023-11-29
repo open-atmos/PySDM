@@ -20,7 +20,7 @@ from PySDM.physics import si
     "rtol_thd",
     (
         pytest.param(1e-6, marks=pytest.mark.xfail(strict=True)),
-        pytest.param(1e-7, marks=pytest.mark.xfail(strict=True)),
+        1e-7,
         1e-8,
         1e-9,
     ),
@@ -33,7 +33,7 @@ def test_single_supersaturation_peak(
 ):  # pylint: disable=too-many-locals
     # arrange
     products = (
-        PySDM_products.WaterMixingRatio(unit="g/kg", name="ql"),
+        PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid water mixing ratio"),
         PySDM_products.PeakSupersaturation(name="S max"),
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.ParcelDisplacement(name="z"),
@@ -42,7 +42,7 @@ def test_single_supersaturation_peak(
         dt=2 * si.s,
         mass_of_dry_air=1e3 * si.kg,
         p0=1000 * si.hPa,
-        q0=22.76 * si.g / si.kg,
+        initial_water_vapour_mixing_ratio=22.76 * si.g / si.kg,
         w=0.5 * si.m / si.s,
         T0=300 * si.K,
     )
@@ -68,7 +68,7 @@ def test_single_supersaturation_peak(
     )
     specific_concentration = concentration / builder.formulae.constants.rho_STP
     attributes = {
-        "n": specific_concentration * env.mass_of_dry_air,
+        "multiplicity": specific_concentration * env.mass_of_dry_air,
         "dry volume": v_dry,
         "kappa times dry volume": kappa * v_dry,
         "volume": builder.formulae.trivia.volume(radius=r_wet),

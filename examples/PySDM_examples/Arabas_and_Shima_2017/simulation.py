@@ -24,7 +24,7 @@ class Simulation:
                 dt=dt_output / self.n_substeps,
                 mass_of_dry_air=settings.mass_of_dry_air,
                 p0=settings.p0,
-                q0=settings.q0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
                 T0=settings.T0,
                 w=settings.w,
             )
@@ -42,7 +42,7 @@ class Simulation:
         r_dry = np.array([settings.r_dry])
         attributes["dry volume"] = settings.formulae.trivia.volume(radius=r_dry)
         attributes["kappa times dry volume"] = attributes["dry volume"] * settings.kappa
-        attributes["n"] = np.array([settings.n_in_dv], dtype=np.int64)
+        attributes["multiplicity"] = np.array([settings.n_in_dv], dtype=np.int64)
         environment = builder.particulator.environment
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,

@@ -42,7 +42,7 @@ def test_initialisation(backend_class, plot=False):
         particulator.moments(
             moment_0=moment_0,
             moments=moments,
-            specs={"n": (0,)},
+            specs={"multiplicity": (0,)},
             attr_name="dry volume",
             attr_range=(v_bins[i], v_bins[i + 1]),
         )
@@ -54,7 +54,7 @@ def test_initialisation(backend_class, plot=False):
         particulator.moments(
             moment_0=moment_0,
             moments=moments,
-            specs={"n": (0,)},
+            specs={"multiplicity": (0,)},
             attr_name="volume",
             attr_range=(v_bins[i], v_bins[i + 1]),
         )

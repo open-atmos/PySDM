@@ -26,7 +26,7 @@ class TestFreezingMethods:
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
-        formulae = Formulae()
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         builder = Builder(n_sd=1, backend=backend_class(formulae=formulae))
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder.set_environment(env)
@@ -34,7 +34,7 @@ class TestFreezingMethods:
         particulator = builder.build(
             products=(IceWaterContent(),),
             attributes={
-                "n": np.ones(builder.particulator.n_sd),
+                "multiplicity": np.ones(builder.particulator.n_sd),
                 "volume": -1 * np.ones(builder.particulator.n_sd) * si.um**3,
                 **(
                     {"freezing temperature": np.full(builder.particulator.n_sd, -1)}
@@ -71,13 +71,13 @@ class TestFreezingMethods:
         multiplicity = 1e10
         steps = 1
 
-        formulae = Formulae()
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
         env = Box(dt=dt, dv=dv)
         builder.set_environment(env)
         builder.add_dynamic(Freezing(singular=True))
         attributes = {
-            "n": np.full(n_sd, multiplicity),
+            "multiplicity": np.full(n_sd, multiplicity),
             "freezing temperature": np.full(n_sd, T_fz),
             "volume": np.full(n_sd, vol),
         }
@@ -96,8 +96,12 @@ class TestFreezingMethods:
         )
 
     @staticmethod
+    @pytest.mark.parametrize("double_precision", (True, False))
     # pylint: disable=too-many-locals
-    def test_freeze_time_dependent(backend_class, plot=False):
+    def test_freeze_time_dependent(backend_class, double_precision, plot=False):
+        if backend_class.__name__ == "Numba" and not double_precision:
+            pytest.skip()
+
         # Arrange
         seed = 44
         cases = (
@@ -131,6 +135,14 @@ class TestFreezingMethods:
         # Act
         output = {}
 
+        formulae = Formulae(
+            particle_shape_and_density="MixedPhaseSpheres",
+            heterogeneous_ice_nucleation_rate="Constant",
+            constants={"J_HET": rate / immersed_surface_area},
+            seed=seed,
+        )
+        products = (IceWaterContent(name="qi"),)
+
         for case in cases:
             n_sd = int(number_of_real_droplets // case["N"])
             assert n_sd == number_of_real_droplets / case["N"]
@@ -139,21 +151,20 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
-            formulae = Formulae(
-                heterogeneous_ice_nucleation_rate="Constant",
-                constants={"J_HET": rate / immersed_surface_area},
-                seed=seed,
+            builder = Builder(
+                n_sd=n_sd,
+                backend=backend_class(
+                    formulae=formulae, double_precision=double_precision
+                ),
             )
-            builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
             env = Box(dt=case["dt"], dv=d_v)
             builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
-                "n": np.full(n_sd, int(case["N"])),
+                "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
                 "volume": np.full(n_sd, vol),
             }
-            products = (IceWaterContent(name="qi"),)
             particulator = builder.build(attributes=attributes, products=products)
             env["RH"] = 1.0001
             env["a_w_ice"] = np.nan
@@ -208,6 +219,6 @@ def _plot_fit(fit_x, fit_y, low, hgh, total_time):
     pyplot.yscale("log")
     pyplot.ylim(fit_y[-1], fit_y[0])
     pyplot.xlim(None, total_time)
-    pyplot.xlabel("time")
+    pyplot.xlabel("time [s]")
     pyplot.ylabel("unfrozen fraction")
     pyplot.grid()

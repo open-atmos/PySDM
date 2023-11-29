@@ -18,7 +18,7 @@ def run(settings, backend=CPU, observers=()):
     builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
-    attributes["volume"], attributes["n"] = sampling.sample(settings.n_sd)
+    attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
     )
@@ -30,10 +30,6 @@ def run(settings, backend=CPU, observers=()):
         WallTime(),
     )
     particulator = builder.build(attributes, products)
-    if hasattr(settings, "u_term") and "terminal velocity" in particulator.attributes:
-        particulator.attributes["terminal velocity"].approximation = settings.u_term(
-            particulator
-        )
 
     for observer in observers:
         particulator.observers.append(observer)

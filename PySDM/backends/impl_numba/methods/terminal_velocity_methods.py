@@ -1,6 +1,8 @@
 """
 CPU implementation of backend methods for terminal velocities
 """
+from functools import cached_property
+
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
@@ -8,56 +10,38 @@ from PySDM.backends.impl_numba import conf
 
 
 class TerminalVelocityMethods(BackendMethods):
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def linear_collection_efficiency_body(
-        params, output, radii, is_first_in_pair, idx, length, unit
-    ):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        output[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if radii[idx[i]] > radii[idx[i + 1]]:
-                    r = radii[idx[i]] / unit
-                    r_s = radii[idx[i + 1]] / unit
+    @cached_property
+    def interpolation_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def interpolation_body(output, radius, factor, b, c):
+            for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
+                if radius[i] < 0:
+                    output[i] = 0
                 else:
-                    r = radii[idx[i + 1]] / unit
-                    r_s = radii[idx[i]] / unit
-                p = r_s / r
-                if p not in (0, 1):
-                    G = (G1 / r) ** Mg + G2 + G3 * r
-                    Gp = (1 - p) ** G
-                    if Gp != 0:
-                        D = D1 / r**D2
-                        E = E1 / r**E2
-                        F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p**F + E / Gp
-                        output[i // 2] = max(0, output[i // 2])
+                    r_id = int(factor * radius[i])
+                    r_rest = ((factor * radius[i]) % 1) / factor
+                    output[i] = b[r_id] + r_rest * c[r_id]
 
-    def linear_collection_efficiency(
-        self, *, params, output, radii, is_first_in_pair, unit
-    ):
-        return self.linear_collection_efficiency_body(
-            params,
-            output.data,
-            radii.data,
-            is_first_in_pair.indicator.data,
-            radii.idx.data,
-            len(is_first_in_pair),
-            unit,
-        )
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def interpolation_body(output, radius, factor, b, c):
-        for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-            if radius[i] < 0:
-                output[i] = 0
-            else:
-                r_id = int(factor * radius[i])
-                r_rest = ((factor * radius[i]) % 1) / factor
-                output[i] = b[r_id] + r_rest * c[r_id]
+        return interpolation_body
 
     def interpolation(self, *, output, radius, factor, b, c):
         return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)
+
+    @cached_property
+    def terminal_velocity_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def terminal_velocity_body(*, values, radius, k1, k2, k3, r1, r2):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if radius[i] < r1:
+                    values[i] = k1 * radius[i] ** 2
+                elif radius[i] < r2:
+                    values[i] = k2 * radius[i]
+                else:
+                    values[i] = k3 * radius[i] ** (1 / 2)
+
+        return terminal_velocity_body
+
+    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
+        self.terminal_velocity_body(
+            values=values, radius=radius, k1=k1, k2=k2, k3=k3, r1=r1, r2=r2
+        )

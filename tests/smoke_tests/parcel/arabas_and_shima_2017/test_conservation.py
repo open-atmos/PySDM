@@ -6,15 +6,14 @@ from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 
 from PySDM.backends import CPU, GPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
-from PySDM.physics.constants_defaults import rho_w
 
 
 def liquid_water_mixing_ratio(simulation: Simulation):
-    droplet_volume = simulation.particulator.attributes["volume"].to_ndarray()[0]
-    droplet_number = simulation.particulator.attributes["n"].to_ndarray()[0]
-    droplet_mass = droplet_number * droplet_volume * rho_w
+    droplet_mass = simulation.particulator.attributes["water mass"].to_ndarray()[0]
+    droplet_number = simulation.particulator.attributes["multiplicity"].to_ndarray()[0]
+    mass_of_all_droplets = droplet_number * droplet_mass
     env = simulation.particulator.environment
-    return droplet_mass / env.mass_of_dry_air
+    return mass_of_all_droplets / env.mass_of_dry_air
 
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
@@ -35,7 +34,10 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     settings.n_output = 50
     settings.coord = coord
     simulation = Simulation(settings, GPU if scheme == "GPU" else CPU)
-    qt0 = settings.q0 + liquid_water_mixing_ratio(simulation)
+    initial_total_water_mixing_ratio = (
+        settings.initial_water_vapour_mixing_ratio
+        + liquid_water_mixing_ratio(simulation)
+    )
 
     if scheme == "SciPy":
         scipy_ode_condensation_solver.patch_particulator(simulation.particulator)
@@ -45,10 +47,12 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     output = simulation.run()
 
     # Assert
-    ql = liquid_water_mixing_ratio(simulation)
-    qt = simulation.particulator.environment["qv"].to_ndarray() + ql
-    significant = 6 if scheme == "GPU" else 14  # TODO #540
-    np.testing.assert_approx_equal(qt, qt0, significant)
+    total_water_mixing_ratio = simulation.particulator.environment[
+        "water_vapour_mixing_ratio"
+    ].to_ndarray() + liquid_water_mixing_ratio(simulation)
+    np.testing.assert_approx_equal(
+        total_water_mixing_ratio, initial_total_water_mixing_ratio, significant=6
+    )
     if scheme != "SciPy":
         assert simulation.particulator.products["S_max"].get() >= output["S"][-1]
 

@@ -1,16 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Lowe_et_al_2019 import aerosol
+from PySDM_examples.Lowe_et_al_2019 import aerosol as paper_aerosol
 from scipy import signal
 
 from PySDM import Formulae
 from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
-
-from .constants import constants
-
-assert hasattr(constants, "_pytestfixturefunction")
 
 TRIVIA = Formulae().trivia
 R_WET = np.logspace(np.log(150 * si.nm), np.log(3000 * si.nm), base=np.e, num=100)
@@ -40,12 +36,12 @@ class TestFig1:
     @pytest.mark.parametrize(
         "aerosol, cutoff",
         (
-            (aerosol.AerosolBoreal(), 560 * si.nm),
-            (aerosol.AerosolMarine(), 380 * si.nm),
-            (aerosol.AerosolNascent(), 500 * si.nm),
+            (paper_aerosol.AerosolBoreal(), 560 * si.nm),
+            (paper_aerosol.AerosolMarine(), 380 * si.nm),
+            (paper_aerosol.AerosolNascent(), 500 * si.nm),
         ),
     )
-    # pylint: disable=redefined-outer-name,unused-argument
+    # pylint: disable=unused-argument
     def test_kink_location(constants, aerosol, cutoff):
         # arrange
         formulae = Formulae(
@@ -68,25 +64,25 @@ class TestFig1:
     @pytest.mark.parametrize(
         "aerosol, surface_tension, maximum_x, maximum_y, bimodal",
         (
-            (aerosol.AerosolBoreal(), "Constant", 320 * si.nm, 0.217, False),
-            (aerosol.AerosolMarine(), "Constant", 420 * si.nm, 0.164, False),
-            (aerosol.AerosolNascent(), "Constant", 360 * si.nm, 0.194, False),
+            (paper_aerosol.AerosolBoreal(), "Constant", 320 * si.nm, 0.217, False),
+            (paper_aerosol.AerosolMarine(), "Constant", 420 * si.nm, 0.164, False),
+            (paper_aerosol.AerosolNascent(), "Constant", 360 * si.nm, 0.194, False),
             (
-                aerosol.AerosolBoreal(),
+                paper_aerosol.AerosolBoreal(),
                 "CompressedFilmOvadnevaite",
                 360 * si.nm,
                 0.108,
                 True,
             ),
             (
-                aerosol.AerosolMarine(),
+                paper_aerosol.AerosolMarine(),
                 "CompressedFilmOvadnevaite",
                 600 * si.nm,
                 0.115,
                 False,
             ),
             (
-                aerosol.AerosolNascent(),
+                paper_aerosol.AerosolNascent(),
                 "CompressedFilmOvadnevaite",
                 670 * si.nm,
                 0.104,
@@ -94,10 +90,7 @@ class TestFig1:
             ),
         ),
     )
-    # pylint: disable=redefined-outer-name,unused-argument
-    def test_koehler_maxima(
-        *, constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal
-    ):
+    def test_koehler_maxima(*, aerosol, surface_tension, maximum_x, maximum_y, bimodal):
         # arrange
         formulae = Formulae(
             surface_tension=surface_tension,
@@ -115,7 +108,7 @@ class TestFig1:
         )
 
         # act
-        peaks = signal.find_peaks(RH_eq)
+        peaks, _ = signal.find_peaks(RH_eq)
 
         # assert
         assert np.argmax(RH_eq) == (np.abs(R_WET - maximum_x)).argmin()

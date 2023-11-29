@@ -8,6 +8,10 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 class ConcentrationProduct(MomentProduct):
     def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
+        """
+        `stp` toggles expressing the concentration in terms of standard temperature
+        and pressure conditions (ground level of the ICAO standard atmosphere, zero humidity)
+        """
         super().__init__(unit=unit, name=name)
         self.specific = specific
         self.stp = stp

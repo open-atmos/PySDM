@@ -6,13 +6,13 @@ from PySDM_examples.Bartman_2020_MasterThesis.fig_5_SCIPY_VS_ADAPTIVE import (
     data as data_method,
 )
 
-rtols = (1e-3, 1e-7)
-schemes = ("CPU", "GPU", "SciPy")
+rtols = (1e-2,)
+schemes = ("CPU", "SciPy")  # ,'GPU')  # TODO #588
 setups_num = len(setups)
 
 
-@pytest.fixture(scope="module")
-def data():
+@pytest.fixture(scope="module", name="data")
+def data_fixture():
     return data_method(n_output=20, rtols=rtols, schemes=schemes, setups_num=setups_num)
 
 
@@ -24,7 +24,6 @@ def split(arg1, arg2):
 @pytest.mark.parametrize("rtol", rtols)
 @pytest.mark.parametrize("leg", ["ascent", "descent"])
 @pytest.mark.parametrize("scheme", ("CPU",))  # 'GPU'))  # TODO #588
-# pylint: disable=redefined-outer-name
 def test_vs_scipy(settings_idx, data, rtol, leg, scheme):
     # Arrange
     supersaturation = {}

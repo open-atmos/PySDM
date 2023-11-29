@@ -32,7 +32,7 @@ class DisplacementSettings:  # pylint: disable=too-few-public-methods
             positions
         )
         attributes = {
-            "n": self.n,
+            "multiplicity": self.n,
             "volume": self.volume,
             "cell id": cell_id,
             "cell origin": cell_origin,

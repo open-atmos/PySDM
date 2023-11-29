@@ -13,16 +13,16 @@ class IceWaterContent(MomentProduct):
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
-            attr="volume", rank=1, filter_range=(-np.inf, 0)
+            attr="water mass", rank=1, filter_range=(-np.inf, 0)
         )
         result = self.buffer.copy()
 
         self._download_moment_to_buffer(
-            attr="volume", rank=0, filter_range=(-np.inf, 0)
+            attr="water mass", rank=0, filter_range=(-np.inf, 0)
         )
         conc = self.buffer
 
-        result[:] *= -self.formulae.constants.rho_i * conc / self.particulator.mesh.dv
+        result[:] *= -1 * conc / self.particulator.mesh.dv
 
         if self.specific:
             self._download_to_buffer(self.particulator.environment["rhod"])

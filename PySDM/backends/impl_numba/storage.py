@@ -139,6 +139,9 @@ class Storage(StorageBase):
     def amin(self):
         return impl.amin(self.data)
 
+    def amax(self):
+        return impl.amax(self.data)
+
     def all(self):
         return self.data.all()
 
@@ -193,3 +196,6 @@ class Storage(StorageBase):
             self.data[:] = other.data
         else:
             self.data[:] = other
+
+    def exp(self):
+        self.data[:] = np.exp(self.data)

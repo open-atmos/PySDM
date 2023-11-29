@@ -42,12 +42,12 @@ class ParticleAttributesFactory:
 
         for attr in req_attr.values():
             if isinstance(attr, (DerivedAttribute, DummyAttribute)):
+                if attr.name in attributes:
+                    raise ValueError(
+                        f"attribute '{attr.name}' is a dummy/derived one,"
+                        f" but values were provided"
+                    )
                 attr.allocate(idx)
-            if isinstance(attr, DummyAttribute) and attr.name in attributes:
-                raise ValueError(
-                    f"attribute '{attr.name}' indicated as dummy"
-                    f" but values were provided"
-                )
 
         extensive_keys = {}
         maximum_keys = {}
@@ -73,10 +73,10 @@ class ParticleAttributesFactory:
         )
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
 
-        n = req_attr["n"]
+        n = req_attr["multiplicity"]
         n.allocate(idx)
-        n.init(attributes["n"])
-        req_attr["n"].data = particulator.IndexedStorage.indexed(idx, n.data)
+        n.init(attributes["multiplicity"])
+        req_attr["multiplicity"].data = particulator.IndexedStorage.indexed(idx, n.data)
         cell_id = req_attr["cell id"]
         cell_id.allocate(idx)
         cell_id.init(attributes["cell id"])

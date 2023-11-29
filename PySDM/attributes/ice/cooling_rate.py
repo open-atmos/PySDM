@@ -28,4 +28,4 @@ class CoolingRate(DerivedAttribute):
         env_T = self.particulator.environment["T"]
         self.data[:] = env_T[cell_id]
         self.data -= self.prev_T
-        self.data /= self.particulator.environment.dt
+        self.data /= -self.particulator.environment.dt

@@ -17,7 +17,7 @@ from PySDM.physics import si
     params=(
         pytest.param(
             {
-                "n": np.array([1, 2, 3, 2]),
+                "multiplicity": np.array([1, 2, 3, 2]),
                 "volume": np.array(
                     [
                         1 * si.mm**3,
@@ -41,11 +41,12 @@ def test_init_to_terminal_velocity(params, backend_class):
     Fall momenta correctly initialized to the terminal velocity * mass.
     """
 
-    builder = Builder(n_sd=len(params["n"]), backend=backend_class())
+    builder = Builder(n_sd=len(params["multiplicity"]), backend=backend_class())
     builder.set_environment(Box(dt=1, dv=1))
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
-        attributes={"n": params["n"], "volume": params["volume"]}, products=()
+        attributes={"multiplicity": params["multiplicity"], "volume": params["volume"]},
+        products=(),
     )
 
     terminal_momentum = (
