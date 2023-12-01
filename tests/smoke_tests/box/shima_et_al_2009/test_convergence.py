@@ -43,6 +43,13 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
             settings.n_sd = 2**ln2_nsd
             values, _ = run(settings)
 
+            title = (
+                ""
+                if i != 0
+                else (
+                    f"{settings.dt=}  settings.times={settings.steps}  {settings.adaptive=}"
+                )
+            )
             errors[ln2_nsd] = plotter.plot(
                 **dict(
                     islice(
@@ -51,7 +58,7 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
                             "spectrum": values[tuple(values.keys())[-1]],
                             "label": f"{ln2_nsd=}",
                             "color": COLORS[i],
-                            "title": f"{settings.dt=}  settings.times={settings.steps}  {settings.adaptive=}",
+                            "title": title,
                             "add_error_to_label": True,
                         }.items(),
                         len(signature(plotter.plot).parameters),
