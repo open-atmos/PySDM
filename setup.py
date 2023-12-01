@@ -21,7 +21,8 @@ setup(
     " examples in Python, Julia and Matlab",
     use_scm_version={"local_scheme": lambda _: "", "version_scheme": "post-release"},
     setup_requires=[
-        "setuptools_scm" + ("==65.5.0" if CI else "")
+        "setuptools" + ("==65.5.0" if CI else ""),
+        "setuptools_scm",
     ],
     install_requires=[
         "ThrustRTC==0.3.20",
