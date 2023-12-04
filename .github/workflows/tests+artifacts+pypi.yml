@@ -70,7 +70,7 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install pdoc3
+          pip install pdoc3 setuptools==58.1.0
           pip install -e .
           pip install -e examples
           python -We -m pdoc --html PySDM examples/PySDM_examples
