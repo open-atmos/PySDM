@@ -30,7 +30,7 @@ from .formulae import Formulae
 from .particulator import Particulator
 
 try:
-    __version__ = metadata.version(__name__)
+    __version__ = version(__name__)
 except PackageNotFoundError:
     # package is not installed
     pass
