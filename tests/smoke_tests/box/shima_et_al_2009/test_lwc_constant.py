@@ -1,3 +1,6 @@
+"""
+checks if liquid water contant remains constant throughout coalescence-only simulation
+"""
 import numpy as np
 import pytest
 
