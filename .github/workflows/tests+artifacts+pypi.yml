@@ -70,9 +70,9 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install pdoc3
-          pip install -e .
-          pip install -e examples
+          pip install pdoc3 setuptools==58.1.0
+          pip install -e . setuptools==58.1.0
+          pip install -e examples setuptools==58.1.0
           python -We -m pdoc --html PySDM examples/PySDM_examples
           python -We .github/workflows/pdoc_index_workaround.py
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
