@@ -23,7 +23,7 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
             iz_min = int(grid[0] * z_part[0])
             iz_max = int(grid[0] * z_part[1])
             for dim in range(dimension):
-                positions[dim, :] *= (grid[dim] - iz_min) / (iz_max - iz_min)
+                positions[dim, :] *= iz_max - iz_min
                 positions[dim, :] += iz_min
 
         return positions
