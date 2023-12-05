@@ -247,8 +247,7 @@ jobs:
           python-version: "3.10"
 
       - run: |
-          pip install twine build
-          pip show setuptools setuptools-scm
+          pip install twine build setuptools>=69.0.2 setuptools-scm>=8.0.4
 
       - run: |
           unset CI
