@@ -24,9 +24,34 @@ def test_pseudorandom_reproducible(seeds, backend_class):
 
     # act
     positions = [
-        Pseudorandom.sample(backend=backend, grid=grid, n_sd=n_sd)
+        Pseudorandom.sample(backend=backend, grid=grid, n_sd=n_sd, z_part=None)
         for backend in backends
     ]
 
     # assert
     np.testing.assert_array_equal(positions[0], positions[1])
+
+
+@pytest.mark.parametrize(
+    "z_range",
+    (
+        pytest.param([0.0, 1.0], id="full range"),
+        pytest.param((0.5, 0.75), id="partial range"),
+    ),
+)
+def test_pseudorandom_zrange(z_range, backend_class):
+    # arrange
+    assert len(z_range) == 2
+    backend = backend_class(Formulae())
+    grid = (8,)
+    n_sd = 100
+
+    # act
+    positions = [
+        Pseudorandom.sample(backend=backend, grid=grid, n_sd=n_sd, z_part=z_range)
+    ]
+    comp = np.ones_like(positions)
+
+    # assert
+    np.testing.assert_array_less(positions, comp * z_range[1] * grid[0])
+    np.testing.assert_array_less(comp * z_range[0] * grid[0], positions)
