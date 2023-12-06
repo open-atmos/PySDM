@@ -100,8 +100,8 @@ jobs:
         pip install "pylint<3.0.0" nbqa
         pip install pdoc3 # (pdoc3 for checking the .github/workflows/pdoc_index_workaround.py)
         pip install -r tests/devops_tests/requirements.txt
-        pip install ./examples[tests]
-        pip install .[tests]
+        pip install -e ./examples[tests]
+        pip install -e .[tests]
     - run: |
         # TODO #682
         pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v ^examples)
