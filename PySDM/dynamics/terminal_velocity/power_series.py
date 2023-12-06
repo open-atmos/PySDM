@@ -11,9 +11,10 @@ class PowerSeries:  # pylint: disable=too-few-public-methods
         si = const.si
         self.particulator = particulator
         self.prefactors = prefactors or [2.0 * si.m / si.s]
-        self.prefactors = np.array(self.prefactors) * 4 / 3 * const.PI
+        self.prefactors = [
+            self.prefactors[i] * 4 / 3 * const.PI for i in range(len(self.prefactors))
+        ]
         self.powers = powers or [1 / 6]
-        self.powers = np.array(powers)
         assert len(self.prefactors) == len(self.powers)
 
     def __call__(self, output, radius):

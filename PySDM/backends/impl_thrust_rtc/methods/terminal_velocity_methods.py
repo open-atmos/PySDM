@@ -130,3 +130,27 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         self.__interpolation_body.launch_n(
             len(radius), (output.data, radius.data, factor_device, b.data, c.data)
         )
+
+    @cached_property
+    def __power_series_body(self):
+        # TODO #599 r<0
+        return trtc.For(
+            ("output", "radius", "num_terms", "prefactors", "powers"),
+            "i",
+            """
+            output[i] = 0.0
+            int kmax = num_terms
+            for (auto k = 0; k < kmax; k+=1) {
+                auto sumterm = prefactors[k] * pow(radius[i], 3*powers[k])
+                output[i] = output[i] + sumterm
+            """,
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def power_series(self, *, values, radius, num_terms, prefactors, powers):
+        prefactors = self._get_floating_point(prefactors)
+        powers = self._get_floating_point(powers)
+        num_terms = self._get_floating_point(num_terms)
+        self.__power_series_body.launch_n(
+            values.size(), (values, radius, num_terms, prefactors, powers)
+        )
