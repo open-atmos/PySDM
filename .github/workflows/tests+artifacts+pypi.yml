@@ -70,6 +70,7 @@ jobs:
         with:
           python-version: 3.9
       - run: |
+          # setuptools pinned to avoid triggering deprecation warnings within pdoc3
           pip install pdoc3 setuptools==58.1.0
           pip install -e . setuptools==58.1.0
           pip install -e examples setuptools==58.1.0
@@ -227,16 +228,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
 
-  dist:
+  package:
     strategy:
       matrix:
         packages-dir: [".", "examples"]
       fail-fast: false
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-    needs: [tests, examples, devops]
-    permissions:
-      id-token: write
     steps:
       - uses: actions/checkout@v2
         with:
@@ -246,7 +243,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - run: pip install twine build
+      - run: pip install twine build setuptools==58.1.0
 
       - run: |
           unset CI
@@ -254,7 +251,22 @@ jobs:
           python -m build 2>&1 | tee build.log
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | grep -v "no previously-included files matching" | wc -l`
           twine check --strict dist/*
-          cd ..
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [tests, examples, devops, package]
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist     
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@unstable/v1
