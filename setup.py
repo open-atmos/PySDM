@@ -2,6 +2,7 @@
 the magick behind "pip install PySDM"
 """
 import os
+import sys
 
 from setuptools import find_packages, setup
 
@@ -13,6 +14,11 @@ def get_long_description():
 
 
 CI = "CI" in os.environ
+compat_requires = (
+    ["importlib-metadata" + ("<7.0.0" if CI else "")]
+    if sys.version_info < (3, 10)
+    else []
+)
 
 setup(
     name="PySDM",
@@ -21,7 +27,7 @@ setup(
     " examples in Python, Julia and Matlab",
     use_scm_version={"local_scheme": lambda _: "", "version_scheme": "post-release"},
     setup_requires=["setuptools_scm"],
-    install_requires=[
+    install_requires=compat_requires + [
         "ThrustRTC==0.3.20",
         "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
         "numba" + ("==0.56.4" if CI else ">=0.51.2"),
