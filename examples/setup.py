@@ -20,9 +20,7 @@ setup(
         "local_scheme": lambda _: "",
         "version_scheme": "post-release",
         "root": "..",
-        "relative_to": __file__,
     },
-    setup_requires=["setuptools_scm"],
     install_requires=[
         "PySDM",
         "PyMPDATA" + ">=1.0.15" if CI else "",
