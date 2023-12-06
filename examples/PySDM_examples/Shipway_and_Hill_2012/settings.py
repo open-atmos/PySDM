@@ -47,7 +47,10 @@ class Settings:
         save_spec_and_attr_times=(),
         collisions_only=False,
     ):
-        self.formulae = formulae or Formulae(terminal_velocity="RogersYau")
+        if collisions_only:
+            self.formulae = formulae or Formulae(terminal_velocity="RogersYau")
+        else:
+            self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
         self.p0 = p0
         self.kappa = kappa
