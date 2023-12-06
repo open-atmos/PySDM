@@ -4,4 +4,5 @@ profile = "black"
 [tool.setuptools_scm]
 
 [build-system]
+# TODO #1200
 requires = ['setuptools==58.1.0', 'setuptools-scm==7.1.0']
