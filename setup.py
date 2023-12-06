@@ -15,9 +15,7 @@ def get_long_description():
 
 CI = "CI" in os.environ
 compat_requires = (
-    ["setuptools" + ("==58.1.0" if CI else "")]
-    if sys.version_info < (3, 10)
-    else []
+    ["setuptools" + ("==58.1.0" if CI else "")] if sys.version_info < (3, 10) else []
 )
 
 setup(
