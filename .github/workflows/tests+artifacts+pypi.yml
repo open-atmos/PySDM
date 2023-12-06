@@ -253,8 +253,8 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
+          path: ${{ matrix.packages-dir}}/dist
           name: dist
-          path: dist
 
   publish:
     runs-on: ubuntu-latest
