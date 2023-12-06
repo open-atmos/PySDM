@@ -5,6 +5,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# output data
+*.nc
+*.pdf
+
 # C extensions
 *.so
 

@@ -12,11 +12,12 @@ from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
 
 
 class Kinematic1D(Moist):
-    def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0):
+    def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0, z_part=None):
         super().__init__(dt, mesh, [])
         self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.formulae = None
+        self.z_part = z_part
 
     def register(self, builder):
         super().register(builder)
@@ -43,6 +44,7 @@ class Kinematic1D(Moist):
                 backend=self.particulator.backend,
                 grid=self.mesh.grid,
                 n_sd=self.particulator.n_sd,
+                z_part=self.z_part,
             )
             (
                 attributes["cell id"],

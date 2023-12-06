@@ -44,9 +44,13 @@ class Settings:
         t_max: float = 60 * si.minutes,
         precip: bool = True,
         formulae: Formulae = None,
-        save_spec_and_attr_times=()
+        save_spec_and_attr_times=(),
+        collisions_only=False,
     ):
-        self.formulae = formulae or Formulae()
+        if collisions_only:
+            self.formulae = formulae or Formulae(terminal_velocity="RogersYau")
+        else:
+            self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
         self.p0 = p0
         self.kappa = kappa
@@ -55,6 +59,10 @@ class Settings:
         self.dt = dt
         self.dz = dz
         self.precip = precip
+        self.collisions_only = collisions_only
+
+        if self.collisions_only:
+            assert self.precip
 
         self.z_max = z_max
         self.t_max = t_max
@@ -68,11 +76,18 @@ class Settings:
             (2 * apprx_w1 * t_1 / np.pi) // self.dz + 1
         ) * self.dz
 
-        self.wet_radius_spectrum_per_mass_of_dry_air = spectra.Lognormal(
-            norm_factor=particles_per_volume_STP / self.formulae.constants.rho_STP,
-            m_mode=0.08 / 2 * si.um,
-            s_geom=1.4,
-        )
+        if self.collisions_only:
+            self.wet_radius_spectrum_per_mass_of_dry_air = spectra.Gamma(
+                norm_factor=particles_per_volume_STP / self.formulae.constants.rho_STP,
+                k=2.0,
+                theta=10.0 * si.um,
+            )
+        else:
+            self.wet_radius_spectrum_per_mass_of_dry_air = spectra.Lognormal(
+                norm_factor=particles_per_volume_STP / self.formulae.constants.rho_STP,
+                m_mode=0.08 / 2 * si.um,
+                s_geom=1.4,
+            )
 
         self._th = interp1d(
             (0.0 * si.m, 740.0 * si.m, 3260.00 * si.m),

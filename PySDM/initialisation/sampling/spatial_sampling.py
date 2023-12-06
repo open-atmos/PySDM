@@ -7,7 +7,7 @@ spatial sampling logic (i.e., physical x-y-z coordinates)
 
 class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def sample(*, backend, grid, n_sd):
+    def sample(*, backend, grid, n_sd, z_part):
         dimension = len(grid)
         n_elements = dimension * n_sd
 
@@ -15,6 +15,15 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
         backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
         positions = storage.to_ndarray().reshape(dimension, n_sd)
 
-        for dim in range(dimension):
-            positions[dim, :] *= grid[dim]
+        if z_part is None:
+            for dim in range(dimension):
+                positions[dim, :] *= grid[dim]
+        else:
+            assert dimension == 1
+            iz_min = int(grid[0] * z_part[0])
+            iz_max = int(grid[0] * z_part[1])
+            for dim in range(dimension):
+                positions[dim, :] *= iz_max - iz_min
+                positions[dim, :] += iz_min
+
         return positions
