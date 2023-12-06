@@ -2,3 +2,6 @@
 profile = "black"
 
 [tool.setuptools_scm]
+
+[build-system]
+requires = ['setuptools==58.1.0']

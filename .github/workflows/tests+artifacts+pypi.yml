@@ -232,7 +232,7 @@ jobs:
     strategy:
       matrix:
         packages-dir: [".", "examples"]
-      fail-fast: false
+      fail-fast: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -243,7 +243,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      - run: pip install twine build setuptools==58.1.0
+      - run: pip install twine build
 
       - run: |
           unset CI
