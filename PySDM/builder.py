@@ -21,7 +21,8 @@ from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSp
 
 def _warn_env_as_ctor_arg():
     warnings.warn(
-        "PySDM > v2.31 Builder expects environment instance as argument", DeprecationWarning
+        "PySDM > v2.31 Builder expects environment instance as argument",
+        DeprecationWarning,
     )
 
 
