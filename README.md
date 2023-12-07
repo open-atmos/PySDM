@@ -387,12 +387,12 @@ The component submodules used to create this simulation are visualized below:
     COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
     BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
     ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
-    N_SD["n_sd :int"] -->|passed as arg to| BUILDER_INIT
-    BUILDER_INIT(["Builder.__init__()"]) ----->|instantiates| BUILDER_INSTANCE
+    N_SD["n_sd :int"] ---->|passed as arg to| BUILDER_INIT
+    BUILDER_INIT(["Builder.__init__()"]) --->|instantiates| BUILDER_INSTANCE
     BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
-    ENV_INIT(["Box.__init__()"]) --->|instantiates| ENV
-    DT[dt :float] ----->|passed as arg to| ENV_INIT
-    DV[dv :float] ----->|passed as arg to| ENV_INIT
+    ENV_INIT(["Box.__init__()"]) -->|instantiates| ENV
+    DT[dt :float] -->|passed as arg to| ENV_INIT
+    DV[dv :float] -->|passed as arg to| ENV_INIT
     ENV[":Box"] -->|passed as arg to| BUILDER_INIT
     B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
     KERNEL_INIT -->|instantiates| KERNEL
@@ -412,7 +412,7 @@ The component submodules used to create this simulation are visualized below:
     volume -->|added as element of| ATTRIBUTES
     BUILDER_BUILD -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
     PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
-    BACKEND_INSTANCE["backend :CPU"] -->|passed as arg to| BUILDER_INIT
+    BACKEND_INSTANCE["backend :CPU"] ---->|passed as arg to| BUILDER_INIT
     PRODUCTS -.-|accessible via| PARTICULATOR_PROD
     NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES 
     EDGES[radius_bins_edges: np.ndarray] -->|passed as arg to| SPECTRUM_INIT
