@@ -31,6 +31,10 @@ VolumeFirstMoment = make_arbitrary_moment_product(
     rank=1, attr="volume", attr_unit="m^3"
 )
 
+VolumeSecondMoment = make_arbitrary_moment_product(
+    rank=2, attr="volume", attr_unit="m^3"
+)
+
 RadiusSixthMoment = make_arbitrary_moment_product(rank=6, attr="radius", attr_unit="m")
 
 RadiusFirstMoment = make_arbitrary_moment_product(rank=1, attr="radius", attr_unit="m")

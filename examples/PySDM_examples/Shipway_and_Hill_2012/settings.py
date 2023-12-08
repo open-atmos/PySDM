@@ -48,7 +48,7 @@ class Settings:
         collisions_only=False,
     ):
         if collisions_only:
-            self.formulae = formulae or Formulae(terminal_velocity="RogersYau")
+            self.formulae = formulae or Formulae(terminal_velocity="PowerSeries")
         else:
             self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox

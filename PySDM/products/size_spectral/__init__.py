@@ -3,6 +3,7 @@ from .arbitrary_moment import (
     RadiusFirstMoment,
     RadiusSixthMoment,
     VolumeFirstMoment,
+    VolumeSecondMoment,
     ZerothMoment,
 )
 from .effective_radius import EffectiveRadius
