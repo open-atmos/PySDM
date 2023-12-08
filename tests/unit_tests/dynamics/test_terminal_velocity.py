@@ -67,8 +67,8 @@ def test_terminal_velocity_boundary_values(
         context = exception_context
 
     formulae = Formulae(terminal_velocity=variant)
-    builder = Builder(n_sd=1, backend=backend_class(formulae))
-    builder.set_environment(Box(dv=np.nan, dt=np.nan))
+    env = Box(dv=np.nan, dt=np.nan)
+    builder = Builder(n_sd=1, backend=backend_class(formulae), environment=env)
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
         attributes={

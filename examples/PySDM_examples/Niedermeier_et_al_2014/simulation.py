@@ -16,18 +16,19 @@ from PySDM.products import AmbientTemperature, IceWaterContent, ParcelDisplaceme
 class Simulation(BasicSimulation):
     def __init__(self, settings: Settings):
         n_particles = settings.ccn_sampling_n - 1 + settings.in_sampling_n
-        builder = Builder(n_sd=n_particles, backend=CPU(settings.formulae))
-        builder.set_environment(
-            Parcel(
-                dt=settings.timestep,
-                p0=settings.p0,
-                T0=settings.T0,
-                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                mass_of_dry_air=settings.mass_of_dry_air,
-                w=settings.vertical_velocity,
-                mixed_phase=True,
-            )
+        env = Parcel(
+            dt=settings.timestep,
+            p0=settings.p0,
+            T0=settings.T0,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+            mass_of_dry_air=settings.mass_of_dry_air,
+            w=settings.vertical_velocity,
+            mixed_phase=True,
         )
+        builder = Builder(
+            n_sd=n_particles, backend=CPU(settings.formulae), environment=env
+        )
+
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
         builder.add_dynamic(Freezing(singular=False))

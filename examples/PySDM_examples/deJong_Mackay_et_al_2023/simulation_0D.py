@@ -27,9 +27,10 @@ from PySDM.products.size_spectral import (
 def run_box_breakup(
     settings, steps=None, backend_class=CPU, sample_in_radius=False, return_nv=False
 ):
-    builder = Builder(n_sd=settings.n_sd, backend=backend_class(settings.formulae))
     env = Box(dv=settings.dv, dt=settings.dt)
-    builder.set_environment(env)
+    builder = Builder(
+        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=env
+    )
     env["rhod"] = 1.0
     attributes = {}
     if sample_in_radius:
@@ -89,9 +90,10 @@ def run_box_breakup(
 
 
 def run_box_NObreakup(settings, steps=None, backend_class=CPU):
-    builder = Builder(n_sd=settings.n_sd, backend=backend_class(settings.formulae))
     env = Box(dv=settings.dv, dt=settings.dt)
-    builder.set_environment(env)
+    builder = Builder(
+        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=env
+    )
     env["rhod"] = 1.0
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
