@@ -243,9 +243,8 @@ def simulation(
         constants=constants,
         particle_shape_and_density=&#34;MixedPhaseSpheres&#34;,
     )
-    builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
     env = Box(dt=time_step, dv=volume)
-    builder.set_environment(env)
+    builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae), environment=env)
     builder.add_dynamic(Freezing(singular=False))
 
     if hasattr(spectrum, &#34;s_geom&#34;) and spectrum.s_geom == 1:
@@ -331,9 +330,8 @@ def simulation(
         constants=constants,
         particle_shape_and_density=&#34;MixedPhaseSpheres&#34;,
     )
-    builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
     env = Box(dt=time_step, dv=volume)
-    builder.set_environment(env)
+    builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae), environment=env)
     builder.add_dynamic(Freezing(singular=False))
 
     if hasattr(spectrum, &#34;s_geom&#34;) and spectrum.s_geom == 1:

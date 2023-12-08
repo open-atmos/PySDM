@@ -50,8 +50,15 @@ from PySDM.particulator import Particulator
 from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
 
 
+def _warn_env_as_ctor_arg():
+    warnings.warn(
+        &#34;PySDM &gt; v2.31 Builder expects environment instance as argument&#34;,
+        DeprecationWarning,
+    )
+
+
 class Builder:
-    def __init__(self, n_sd, backend):
+    def __init__(self, n_sd, backend, environment=None):
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
@@ -63,10 +70,19 @@ class Builder:
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
+        if environment is None:
+            _warn_env_as_ctor_arg()
+        else:
+            self._set_environment(environment)
+
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
     def set_environment(self, environment):
+        _warn_env_as_ctor_arg()
+        self._set_environment(environment)
+
+    def _set_environment(self, environment):
         if self.particulator.environment is not None:
             raise AssertionError(&#34;environment has already been set&#34;)
         self.particulator.environment = environment
@@ -196,7 +212,7 @@ def get_key(dynamic):
 <dl>
 <dt id="PySDM.builder.Builder"><code class="flex name class">
 <span>class <span class="ident">Builder</span></span>
-<span>(</span><span>n_sd, backend)</span>
+<span>(</span><span>n_sd, backend, environment=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -205,7 +221,7 @@ def get_key(dynamic):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Builder:
-    def __init__(self, n_sd, backend):
+    def __init__(self, n_sd, backend, environment=None):
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
@@ -217,10 +233,19 @@ def get_key(dynamic):
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
+        if environment is None:
+            _warn_env_as_ctor_arg()
+        else:
+            self._set_environment(environment)
+
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
     def set_environment(self, environment):
+        _warn_env_as_ctor_arg()
+        self._set_environment(environment)
+
+    def _set_environment(self, environment):
         if self.particulator.environment is not None:
             raise AssertionError(&#34;environment has already been set&#34;)
         self.particulator.environment = environment
@@ -482,10 +507,8 @@ def get_key(dynamic):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def set_environment(self, environment):
-    if self.particulator.environment is not None:
-        raise AssertionError(&#34;environment has already been set&#34;)
-    self.particulator.environment = environment
-    self.particulator.environment.register(self)</code></pre>
+    _warn_env_as_ctor_arg()
+    self._set_environment(environment)</code></pre>
 </details>
 </dd>
 </dl>
