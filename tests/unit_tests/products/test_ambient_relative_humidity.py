@@ -14,7 +14,7 @@ from PySDM.physics import si
 def test_ambient_relative_humidity(backend_class):
     # arrange
     n_sd = 1
-    builder = Builder(n_sd, backend=backend_class())
+
     env = Parcel(
         dt=np.nan,
         mixed_phase=True,
@@ -24,7 +24,7 @@ def test_ambient_relative_humidity(backend_class):
         T0=260 * si.K,
         w=np.nan,
     )
-    builder.set_environment(env)
+    builder = Builder(n_sd, backend=backend_class(), environment=env)
     attributes = {"multiplicity": np.ones(n_sd), "volume": np.ones(n_sd)}
     particulator = builder.build(
         attributes=attributes,

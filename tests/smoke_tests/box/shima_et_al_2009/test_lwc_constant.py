@@ -52,8 +52,12 @@ def test_lwc_constant(backend_class, croupier, adaptive):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
-    builder.set_environment(Box(dt=dt, dv=dv))
+
+    env = Box(dt=dt, dv=dv)
+    builder = Builder(
+        n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+    )
+
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         spectrum

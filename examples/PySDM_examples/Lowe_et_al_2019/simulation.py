@@ -22,8 +22,9 @@ class Simulation(BasicSimulation):
             w=settings.w,
         )
         n_sd = settings.n_sd_per_mode * len(settings.aerosol.modes)
-        builder = Builder(n_sd=n_sd, backend=CPU(formulae=settings.formulae))
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=n_sd, backend=CPU(formulae=settings.formulae), environment=env
+        )
 
         attributes = {
             "dry volume": np.empty(0),

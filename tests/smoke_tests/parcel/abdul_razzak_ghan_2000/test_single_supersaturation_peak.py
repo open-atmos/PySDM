@@ -50,8 +50,7 @@ def test_single_supersaturation_peak(
     n_sd = 2
     kappa = 0.4
     spectrum = Lognormal(norm_factor=5000 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
-    builder = Builder(backend=CPU(), n_sd=n_sd)
-    builder.set_environment(env)
+    builder = Builder(backend=CPU(), n_sd=n_sd, environment=env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(
         Condensation(

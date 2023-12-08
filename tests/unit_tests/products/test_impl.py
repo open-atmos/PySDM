@@ -160,8 +160,8 @@ class TestProducts:
     def test_register_can_be_called_twice_on_r_eff():
         # arrange
         sut = products.EffectiveRadius()
-        builder = Builder(backend=CPU(), n_sd=0)
-        builder.set_environment(Box(dt=0, dv=0))
+        env = Box(dt=0, dv=0)
+        builder = Builder(backend=CPU(), n_sd=0, environment=env)
         sut.register(builder)
 
         # act

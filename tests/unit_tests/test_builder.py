@@ -11,8 +11,8 @@ class TestBuilder:
     @staticmethod
     def test_build_minimal():
         # arrange
-        builder = Builder(backend=CPU(), n_sd=1)
-        builder.set_environment(Box(dt=np.nan, dv=np.nan))
+        env = Box(dt=np.nan, dv=np.nan)
+        builder = Builder(backend=CPU(), n_sd=1, environment=env)
 
         # act
         particulator = builder.build(
@@ -27,8 +27,7 @@ class TestBuilder:
     def test_request_attribute():
         # arrange
         env = Box(dt=-1, dv=np.nan)
-        builder = Builder(backend=CPU(), n_sd=1)
-        builder.set_environment(env)
+        builder = Builder(backend=CPU(), n_sd=1, environment=env)
         builder.add_dynamic(Condensation())
 
         # act
@@ -54,8 +53,7 @@ class TestBuilder:
     def test_replace_dynamic():
         # arrange
         env = Box(dt=-1, dv=np.nan)
-        builder = Builder(backend=CPU(), n_sd=1)
-        builder.set_environment(env)
+        builder = Builder(backend=CPU(), n_sd=1, environment=env)
         builder.add_dynamic(Displacement(adaptive=False))
 
         # act
