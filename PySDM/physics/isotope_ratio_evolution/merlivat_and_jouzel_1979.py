@@ -1,5 +1,5 @@
 """
-see derivation of eq. (12) in [Merlivat and Jouzel 1979](TODO-doi)
+see derivation of eq. (12) in [Merlivat and Jouzel 1979](https://doi.org/10.1029/JC084iC08p05029)
 """
 
 
