@@ -1,3 +1,4 @@
+""" Tests for formulae from [Merlivat and Jouzel 1979](https://doi.org/10.1029/JC084iC08p05029) """
 from functools import partial
 
 import numpy as np
@@ -8,7 +9,7 @@ from PySDM import Formulae
 
 class TestMerlivatAndJouzel1979:
     @staticmethod
-    def test_rayleigh_distillation_case(plot=True):
+    def test_rayleigh_distillation_case(plot=False):
         """
         d_Rv/Rv = (alpha - 1) * d_n_vapour/n_vapour
         ln(Rv/Rv0) = (alpha - 1) * ln(nv/nv0)
@@ -32,7 +33,7 @@ class TestMerlivatAndJouzel1979:
         Rv0 = 1
 
         # act
-        nv, delta_nv = np.linspace(1, 0, retstep=True)
+        nv, delta_nv = np.linspace(1, 1e-3, retstep=True)
         actual = Rv0 + delta_nv * np.cumsum(
             d_Rv_over_Rv_M_J_1979(alpha=alpha, n_vapour=nv, d_n_vapour=-delta_nv)
         )

@@ -1,4 +1,7 @@
-class RayleighDistillation:
+""" Fractional distillation assuming continuous removal under equilibrium """
+
+
+class RayleighDistillation:  # pylint:disable=too-few-public-methods
     """https://en.wikipedia.org/wiki/Rayleigh_fractionation"""
 
     def __init__(self, _):
