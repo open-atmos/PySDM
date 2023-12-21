@@ -1,6 +1,6 @@
 import numpy as np
-from PySDM_examples.utils import BasicSimulation
 
+from examples.PySDM_examples.utils import BasicSimulation
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver

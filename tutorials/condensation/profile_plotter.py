@@ -19,7 +19,7 @@ class ProfilePlotter:
         show_plot()
 
     def save(self, file):
-        self.finish()
+        # self.finish()
         pyplot.savefig(file, format=self.format)
 
     def plot(self, output):

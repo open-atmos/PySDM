@@ -59,20 +59,17 @@ class SpectrumPlotter:
         pyplot.savefig(file, format=self.format)
 
     def plot(self, spectrum, t):
-        error = self.plot_analytic_solution(self.settings, t, spectrum)
+        self.plot_analytic_solution(self.settings, t)
         self.plot_data(self.settings, t, spectrum)
-        return error
 
-    def plot_analytic_solution(self, settings, t, spectrum=None):
+    def plot_analytic_solution(self, settings, t):
+        def analytic_solution(x):
+            return settings.norm_factor * settings.kernel.analytic_solution(
+                x=x, t=t, x_0=settings.X0, N_0=settings.n_part
+            )
+
         if t == 0:
             analytic_solution = settings.spectrum.size_distribution
-        else:
-            analytic_solution = (
-                lambda x: settings.norm_factor
-                * settings.kernel.analytic_solution(
-                    x=x, t=t, x_0=settings.X0, N_0=settings.n_part
-                )
-            )
 
         volume_bins_edges = self.settings.formulae.trivia.volume(
             settings.radius_bins_edges
@@ -98,9 +95,8 @@ class SpectrumPlotter:
 
         self.ax.plot(x, y_true, color="black")
 
-        if spectrum is not None:
-            y = spectrum * si.kilograms / si.grams
-        return None
+        # if spectrum is not None:
+        #     y = spectrum * si.kilograms / si.grams
 
     def plot_data(self, settings, t, spectrum):
         if self.smooth:
