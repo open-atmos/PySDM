@@ -20,7 +20,6 @@ setup(
     " cloud microphysics package with box, parcel & 1D/2D prescribed-flow"
     " examples in Python, Julia and Matlab",
     use_scm_version={"local_scheme": lambda _: "", "version_scheme": "post-release"},
-    setup_requires=["setuptools_scm"],
     install_requires=[
         "ThrustRTC==0.3.20",
         "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
@@ -39,7 +38,7 @@ setup(
             "ghapi",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==0.6.3",
+            "PyPartMC==1.0.1",
         ]
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",

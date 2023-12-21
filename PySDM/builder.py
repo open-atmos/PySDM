@@ -19,8 +19,15 @@ from PySDM.particulator import Particulator
 from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
 
 
+def _warn_env_as_ctor_arg():
+    warnings.warn(
+        "PySDM > v2.31 Builder expects environment instance as argument",
+        DeprecationWarning,
+    )
+
+
 class Builder:
-    def __init__(self, n_sd, backend):
+    def __init__(self, n_sd, backend, environment=None):
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
@@ -32,10 +39,19 @@ class Builder:
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
+        if environment is None:
+            _warn_env_as_ctor_arg()
+        else:
+            self._set_environment(environment)
+
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
     def set_environment(self, environment):
+        _warn_env_as_ctor_arg()
+        self._set_environment(environment)
+
+    def _set_environment(self, environment):
         if self.particulator.environment is not None:
             raise AssertionError("environment has already been set")
         self.particulator.environment = environment

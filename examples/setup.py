@@ -21,10 +21,9 @@ setup(
         "version_scheme": "post-release",
         "root": "..",
     },
-    setup_requires=["setuptools_scm"],
     install_requires=[
         "PySDM",
-        "PyMPDATA",
+        "PyMPDATA" + ">=1.0.15" if CI else "",
         "open-atmos-jupyter-utils",
         "pystrict",
         "matplotlib" + "<3.8.0" if CI else "",  # TODO #1142

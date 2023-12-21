@@ -2,10 +2,10 @@
 PySDM_examples package includes common Python modules used in PySDM smoke tests
 and in example notebooks (but the package wheels do not include the notebooks)
 """
-from pkg_resources import DistributionNotFound, VersionConflict, get_distribution
+from importlib.metadata import PackageNotFoundError, version
 
 try:
-    __version__ = get_distribution(__name__).version
-except (DistributionNotFound, VersionConflict):
+    __version__ = version(__name__)
+except PackageNotFoundError:
     # package is not installed
     pass

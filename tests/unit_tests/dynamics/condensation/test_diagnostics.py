@@ -59,19 +59,18 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
         dry_volume=np.nan,
         wet_radius=np.nan,
     ):
-        builder = Builder(n_sd=n_sd, backend=backend())
-        builder.set_environment(
-            _TestEnv(
-                dt=dt,
-                dv=dv,
-                rhod=rhod,
-                thd=thd,
-                water_vapour_mixing_ratio=water_vapour_mixing_ratio,
-                T=T,
-                p=p,
-                RH=RH,
-            )
+        env = _TestEnv(
+            dt=dt,
+            dv=dv,
+            rhod=rhod,
+            thd=thd,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio,
+            T=T,
+            p=p,
+            RH=RH,
         )
+        builder = Builder(n_sd=n_sd, backend=backend(), environment=env)
+
         builder.add_dynamic(Condensation(max_iters=max_iters))
         self.particulator = builder.build(
             attributes={

@@ -81,14 +81,15 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         kappa: float,
         r_dry: [float, np.ndarray],
         rtol=default_rtol,
+        include_dry_volume_in_attribute: bool = True,
     ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
-        attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
+        dry_volume = self.formulae.trivia.volume(radius=r_dry)
+        attributes["kappa times dry volume"] = dry_volume * kappa
         attributes["multiplicity"] = n_in_dv
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
@@ -97,6 +98,8 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             rtol=rtol,
         )
         attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
+        if include_dry_volume_in_attribute:
+            attributes["dry volume"] = dry_volume
         return attributes
 
     def advance_parcel_vars(self):

@@ -33,10 +33,10 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
     def test_efficiency_fn_call(efficiency, backend_class=CPU):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
-        builder = Builder(volume.size, backend_class())
+        env = Box(dv=None, dt=None)
+        builder = Builder(volume.size, backend_class(), environment=env)
         sut = efficiency
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )
@@ -86,10 +86,10 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
                             get_volume_from_diam(dl),
                         ]
                     )
-                    builder = Builder(volume.size, backend_class())
+                    env = Box(dv=None, dt=None)
+                    builder = Builder(volume.size, backend_class(), environment=env)
                     sut = efficiency
                     sut.register(builder)
-                    builder.set_environment(Box(dv=None, dt=None))
                     _ = builder.build(
                         attributes={
                             "volume": volume,
