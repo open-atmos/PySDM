@@ -16,9 +16,6 @@ on:
 
 jobs:
   precommit:
-    strategy:
-      matrix:
-        package-dir: [".", "examples"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,7 +23,6 @@ jobs:
         with:
           python-version: 3.8
       - run: |
-          cd ${{ matrix.package-dir }}
           pip install pre-commit
           pre-commit clean
           pre-commit autoupdate
