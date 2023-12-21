@@ -24,8 +24,11 @@ class TestIsotopes:
     def test_heavy_isotope_moles_attributes(backend_class, isotope):
         # arrange
         values = [1, 2, 3]
-        builder = Builder(n_sd=len(values), backend=backend_class())
-        builder.set_environment(Box(dt=np.nan, dv=np.nan))
+        builder = Builder(
+            n_sd=len(values),
+            backend=backend_class(),
+            environment=Box(dt=np.nan, dv=np.nan),
+        )
         particulator = builder.build(
             attributes={
                 f"moles_{isotope}": np.asarray(values),
@@ -50,8 +53,11 @@ class TestIsotopes:
     )
     def test_delta_attribute(backend_class, isotope, heavier_water_specific_content):
         # arrange
-        builder = Builder(n_sd=1, backend=backend_class(double_precision=True))
-        builder.set_environment(Box(dt=np.nan, dv=np.nan))
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(double_precision=True),
+            environment=Box(dt=np.nan, dv=np.nan),
+        )
         builder.request_attribute(f"delta_{isotope}")
 
         attributes = {
