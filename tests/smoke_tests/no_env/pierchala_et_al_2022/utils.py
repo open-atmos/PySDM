@@ -1,7 +1,10 @@
 """ common notebook execution logic """
 import nbformat
 
-from PySDM.physics.constants_defaults import PER_MEG, PER_MILLE
+from PySDM.physics.constants_defaults import (  # pylint:disable=unused-import
+    PER_MEG,
+    PER_MILLE,
+)
 
 
 def notebook_vars(file, plot):
