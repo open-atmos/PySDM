@@ -1,6 +1,8 @@
 """ common notebook execution logic """
 import nbformat
 
+from PySDM.physics.constants_defaults import PER_MEG, PER_MILLE
+
 
 def notebook_vars(file, plot):
     notebook = nbformat.read(file, nbformat.NO_CONVERT)
