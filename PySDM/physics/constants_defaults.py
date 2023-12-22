@@ -66,10 +66,6 @@ Mv = (
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 
-eps = Mv / Md
-Rd = R_str / Md
-Rv = R_str / Mv
-
 D0 = 2.26e-5 * si.metre**2 / si.second
 D_exp = 1.81
 
@@ -85,8 +81,6 @@ c_pv = 1850 * si.joule / si.kilogram / si.kelvin
 g_std = sci.g * si.metre / si.second**2
 
 c_pw = 4218 * si.joule / si.kilogram / si.kelvin
-
-Rd_over_c_pd = Rd / c_pd
 
 ARM_C1 = 6.1094 * si.hectopascal
 ARM_C2 = 17.625 * si.dimensionless
@@ -132,7 +126,6 @@ rho_w = 1 * si.kilograms / si.litres
 rho_i = 916.8 * si.kg / si.metres**3
 pH_w = 7
 sgm_w = 0.072 * si.joule / si.metre**2
-nu_w = Mv / rho_w
 
 p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin
@@ -179,10 +172,8 @@ MK05_LIQ_C13 = 0.014025 / si.K
 # standard pressure and temperature (ICAO)
 T_STP = (sci.zero_Celsius + 15) * si.kelvin
 p_STP = 101325 * si.pascal
-rho_STP = p_STP / Rd / T_STP
 
 ROOM_TEMP = T_tri + 25 * si.K
-H_u = M / p_STP
 dT_u = si.K
 
 sgm_org = np.nan
@@ -308,3 +299,15 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 """ [Craig 1961](https://doi.org/10.1126/science.133.3465.170) """
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
+
+
+def compute_derived_values(c: dict):
+    c["eps"] = c["Mv"] / c["Md"]
+    c["Rd"] = c["R_str"] / c["Md"]
+    c["Rv"] = c["R_str"] / c["Mv"]
+
+    c["Rd_over_c_pd"] = c["Rd"] / c["c_pd"]
+
+    c["nu_w"] = c["Mv"] / c["rho_w"]
+    c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
+    c["H_u"] = c["M"] / c["p_STP"]

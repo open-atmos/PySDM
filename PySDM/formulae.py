@@ -83,8 +83,10 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             for k in dir(defaults)
             if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
         }
+        constants_defaults = {**constants_defaults, **(constants or {})}
+        physics.constants_defaults.compute_derived_values(constants_defaults)
         constants = namedtuple("Constants", tuple(constants_defaults.keys()))(
-            **{**constants_defaults, **(constants or {})}
+            **constants_defaults
         )
         self.constants = constants
         self.seed = seed or physics.constants.default_random_seed
