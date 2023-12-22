@@ -81,7 +81,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             k: getattr(defaults, k)
             for defaults in (physics.constants, physics.constants_defaults)
             for k in dir(defaults)
-            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
+            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity, pint.Unit))
         }
         constants_defaults = {**constants_defaults, **(constants or {})}
         physics.constants_defaults.compute_derived_values(constants_defaults)

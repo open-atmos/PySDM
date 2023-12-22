@@ -7,6 +7,7 @@ import pint
 import pytest
 from scipy.constants import physical_constants
 
+from PySDM import Formulae
 from PySDM.physics import constants, constants_defaults, si
 from PySDM.physics.constants_defaults import Substance
 
@@ -128,9 +129,11 @@ class TestConstants:
         (("Rd", 287 * si.J / si.K / si.kg), ("Rv", 461 * si.J / si.K / si.kg)),
     )
     def test_gas_constants_vs_ams_glossary(item, value):
+        constants = Formulae().constants
+
         # https://glossary.ametsoc.org/wiki/Gas_constant
         np.testing.assert_allclose(
-            actual=getattr(constants_defaults, item), desired=value, rtol=5e-3, atol=0
+            actual=getattr(constants, item), desired=value, rtol=5e-3, atol=0
         )
 
     @staticmethod
