@@ -13,9 +13,6 @@ class TestIsotopeMethods:
         # act
         backend.isotopic_fractionation()
 
-        # assert
-        # TODO #1063
-
     @staticmethod
     def test_isotopic_delta(backend_class):
         # arrange

@@ -45,7 +45,7 @@ CASES = (
 
 PAPERS = ("BolotEtAl2013", "VanHook1968")
 
-# TODO #1063: tests for VanHook1968 H2_17O, HOT
+# TODO #1208: tests for VanHook1968 H2_17O, HOT
 
 
 class TestIsotopeEquilibriumFractionationFactors:
