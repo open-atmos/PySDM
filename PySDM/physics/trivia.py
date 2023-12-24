@@ -6,7 +6,7 @@ Various (hopefully) undebatable formulae
 import numpy as np
 
 
-class Trivia:
+class Trivia:  # pylint: disable=too-many-public-methods
     def __init__(self, _):
         pass
 
@@ -75,7 +75,7 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, water_mass, relative_humidity):
+    def unfrozen_and_saturated(water_mass, relative_humidity):
         return water_mass > 0 and relative_humidity > 1
 
     @staticmethod
@@ -97,3 +97,30 @@ class Trivia:
                 / 3
             )
         )
+
+    @staticmethod
+    def isotopic_delta_2_ratio(delta, reference_ratio):
+        return (delta + 1) * reference_ratio
+
+    @staticmethod
+    def isotopic_ratio_2_delta(ratio, reference_ratio):
+        return ratio / reference_ratio - 1
+
+    @staticmethod
+    def isotopic_enrichment_to_delta_SMOW(E, delta_0_SMOW):
+        """(see also eq. 10 in Pierchala et al. 2022)
+
+        conversion from E to delta_R_SMOW with:
+          δ_R/SMOW = R / R_SMOW - 1
+          E = δ_R/R0 = R / R0 - 1
+        and the sought formula (the quantity used to define d-excess, etc.) is:
+          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
+                      = (E + 1) * (δ_R0/SMOW + 1) - 1
+        where:
+          δ_R0/SMOW is the initial SMOW-delta in the experiment
+        """
+        return (E + 1) * (delta_0_SMOW + 1) - 1
+
+    @staticmethod
+    def mixing_ratio_to_specific_content(mixing_ratio):
+        return mixing_ratio / (1 + mixing_ratio)
