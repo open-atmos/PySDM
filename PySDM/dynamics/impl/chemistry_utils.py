@@ -5,8 +5,7 @@ aqueous chemistry helper utils including specific gravity constants with
 import numpy as np
 from chempy import Substance
 
-from PySDM.physics import si
-from PySDM.physics.constants import K_H2O, M
+from PySDM.physics.constants import K_H2O, M, si
 
 
 class EqConst:  # pylint: disable=too-few-public-methods
