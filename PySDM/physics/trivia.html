@@ -36,7 +36,7 @@ Various (hopefully) undebatable formulae
 import numpy as np
 
 
-class Trivia:
+class Trivia:  # pylint: disable=too-many-public-methods
     def __init__(self, _):
         pass
 
@@ -105,7 +105,7 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, water_mass, relative_humidity):
+    def unfrozen_and_saturated(water_mass, relative_humidity):
         return water_mass &gt; 0 and relative_humidity &gt; 1
 
     @staticmethod
@@ -126,7 +126,34 @@ class Trivia:
                 )
                 / 3
             )
-        )</code></pre>
+        )
+
+    @staticmethod
+    def isotopic_delta_2_ratio(delta, reference_ratio):
+        return (delta + 1) * reference_ratio
+
+    @staticmethod
+    def isotopic_ratio_2_delta(ratio, reference_ratio):
+        return ratio / reference_ratio - 1
+
+    @staticmethod
+    def isotopic_enrichment_to_delta_SMOW(E, delta_0_SMOW):
+        &#34;&#34;&#34;(see also eq. 10 in Pierchala et al. 2022)
+
+        conversion from E to delta_R_SMOW with:
+          δ_R/SMOW = R / R_SMOW - 1
+          E = δ_R/R0 = R / R0 - 1
+        and the sought formula (the quantity used to define d-excess, etc.) is:
+          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
+                      = (E + 1) * (δ_R0/SMOW + 1) - 1
+        where:
+          δ_R0/SMOW is the initial SMOW-delta in the experiment
+        &#34;&#34;&#34;
+        return (E + 1) * (delta_0_SMOW + 1) - 1
+
+    @staticmethod
+    def mixing_ratio_to_specific_content(mixing_ratio):
+        return mixing_ratio / (1 + mixing_ratio)</code></pre>
 </details>
 </section>
 <section>
@@ -148,7 +175,7 @@ class Trivia:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Trivia:
+<pre><code class="python">class Trivia:  # pylint: disable=too-many-public-methods
     def __init__(self, _):
         pass
 
@@ -217,7 +244,7 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, water_mass, relative_humidity):
+    def unfrozen_and_saturated(water_mass, relative_humidity):
         return water_mass &gt; 0 and relative_humidity &gt; 1
 
     @staticmethod
@@ -238,7 +265,34 @@ class Trivia:
                 )
                 / 3
             )
-        )</code></pre>
+        )
+
+    @staticmethod
+    def isotopic_delta_2_ratio(delta, reference_ratio):
+        return (delta + 1) * reference_ratio
+
+    @staticmethod
+    def isotopic_ratio_2_delta(ratio, reference_ratio):
+        return ratio / reference_ratio - 1
+
+    @staticmethod
+    def isotopic_enrichment_to_delta_SMOW(E, delta_0_SMOW):
+        &#34;&#34;&#34;(see also eq. 10 in Pierchala et al. 2022)
+
+        conversion from E to delta_R_SMOW with:
+          δ_R/SMOW = R / R_SMOW - 1
+          E = δ_R/R0 = R / R0 - 1
+        and the sought formula (the quantity used to define d-excess, etc.) is:
+          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
+                      = (E + 1) * (δ_R0/SMOW + 1) - 1
+        where:
+          δ_R0/SMOW is the initial SMOW-delta in the experiment
+        &#34;&#34;&#34;
+        return (E + 1) * (delta_0_SMOW + 1) - 1
+
+    @staticmethod
+    def mixing_ratio_to_specific_content(mixing_ratio):
+        return mixing_ratio / (1 + mixing_ratio)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -338,6 +392,67 @@ def frozen_and_above_freezing_point(const, water_mass, temperature):
     return water_mass &lt; 0 and temperature &gt; const.T0</code></pre>
 </details>
 </dd>
+<dt id="PySDM.physics.trivia.Trivia.isotopic_delta_2_ratio"><code class="name flex">
+<span>def <span class="ident">isotopic_delta_2_ratio</span></span>(<span>delta, reference_ratio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def isotopic_delta_2_ratio(delta, reference_ratio):
+    return (delta + 1) * reference_ratio</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.isotopic_enrichment_to_delta_SMOW"><code class="name flex">
+<span>def <span class="ident">isotopic_enrichment_to_delta_SMOW</span></span>(<span>E, delta_0_SMOW)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>(see also eq. 10 in Pierchala et al. 2022)</p>
+<p>conversion from E to delta_R_SMOW with:
+δ_R/SMOW = R / R_SMOW - 1
+E = δ_R/R0 = R / R0 - 1
+and the sought formula (the quantity used to define d-excess, etc.) is:
+δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
+= (E + 1) * (δ_R0/SMOW + 1) - 1
+where:
+δ_R0/SMOW is the initial SMOW-delta in the experiment</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def isotopic_enrichment_to_delta_SMOW(E, delta_0_SMOW):
+    &#34;&#34;&#34;(see also eq. 10 in Pierchala et al. 2022)
+
+    conversion from E to delta_R_SMOW with:
+      δ_R/SMOW = R / R_SMOW - 1
+      E = δ_R/R0 = R / R0 - 1
+    and the sought formula (the quantity used to define d-excess, etc.) is:
+      δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
+                  = (E + 1) * (δ_R0/SMOW + 1) - 1
+    where:
+      δ_R0/SMOW is the initial SMOW-delta in the experiment
+    &#34;&#34;&#34;
+    return (E + 1) * (delta_0_SMOW + 1) - 1</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.isotopic_ratio_2_delta"><code class="name flex">
+<span>def <span class="ident">isotopic_ratio_2_delta</span></span>(<span>ratio, reference_ratio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def isotopic_ratio_2_delta(ratio, reference_ratio):
+    return ratio / reference_ratio - 1</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction"><code class="name flex">
 <span>def <span class="ident">mixing_ratio_2_mole_fraction</span></span>(<span>mixing_ratio, specific_gravity)</span>
 </code></dt>
@@ -350,6 +465,20 @@ def frozen_and_above_freezing_point(const, water_mass, temperature):
 <pre><code class="python">@staticmethod
 def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
     return mixing_ratio / (specific_gravity + mixing_ratio)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.mixing_ratio_to_specific_content"><code class="name flex">
+<span>def <span class="ident">mixing_ratio_to_specific_content</span></span>(<span>mixing_ratio)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def mixing_ratio_to_specific_content(mixing_ratio):
+    return mixing_ratio / (1 + mixing_ratio)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio"><code class="name flex">
@@ -451,7 +580,7 @@ def th_std(const, p, T):
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.unfrozen_and_saturated"><code class="name flex">
-<span>def <span class="ident">unfrozen_and_saturated</span></span>(<span>_, water_mass, relative_humidity)</span>
+<span>def <span class="ident">unfrozen_and_saturated</span></span>(<span>water_mass, relative_humidity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -460,7 +589,7 @@ def th_std(const, p, T):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def unfrozen_and_saturated(_, water_mass, relative_humidity):
+def unfrozen_and_saturated(water_mass, relative_humidity):
     return water_mass &gt; 0 and relative_humidity &gt; 1</code></pre>
 </details>
 </dd>
@@ -547,7 +676,11 @@ def within_tolerance(error_estimate, value, rtol):
 <li><code><a title="PySDM.physics.trivia.Trivia.erfinv_approx" href="#PySDM.physics.trivia.Trivia.erfinv_approx">erfinv_approx</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.explicit_euler" href="#PySDM.physics.trivia.Trivia.explicit_euler">explicit_euler</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point" href="#PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point">frozen_and_above_freezing_point</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.isotopic_delta_2_ratio" href="#PySDM.physics.trivia.Trivia.isotopic_delta_2_ratio">isotopic_delta_2_ratio</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.isotopic_enrichment_to_delta_SMOW" href="#PySDM.physics.trivia.Trivia.isotopic_enrichment_to_delta_SMOW">isotopic_enrichment_to_delta_SMOW</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.isotopic_ratio_2_delta" href="#PySDM.physics.trivia.Trivia.isotopic_ratio_2_delta">isotopic_ratio_2_delta</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction" href="#PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction">mixing_ratio_2_mole_fraction</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.mixing_ratio_to_specific_content" href="#PySDM.physics.trivia.Trivia.mixing_ratio_to_specific_content">mixing_ratio_to_specific_content</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio" href="#PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio">mole_fraction_2_mixing_ratio</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.pH2H" href="#PySDM.physics.trivia.Trivia.pH2H">pH2H</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.p_d" href="#PySDM.physics.trivia.Trivia.p_d">p_d</a></code></li>

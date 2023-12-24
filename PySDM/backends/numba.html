@@ -37,6 +37,7 @@ from PySDM.backends.impl_numba.methods.condensation_methods import CondensationM
 from PySDM.backends.impl_numba.methods.displacement_methods import DisplacementMethods
 from PySDM.backends.impl_numba.methods.freezing_methods import FreezingMethods
 from PySDM.backends.impl_numba.methods.index_methods import IndexMethods
+from PySDM.backends.impl_numba.methods.isotope_methods import IsotopeMethods
 from PySDM.backends.impl_numba.methods.moments_methods import MomentsMethods
 from PySDM.backends.impl_numba.methods.pair_methods import PairMethods
 from PySDM.backends.impl_numba.methods.physics_methods import PhysicsMethods
@@ -59,6 +60,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     FreezingMethods,
     DisplacementMethods,
     TerminalVelocityMethods,
+    IsotopeMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -111,6 +113,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     FreezingMethods,
     DisplacementMethods,
     TerminalVelocityMethods,
+    IsotopeMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -144,6 +147,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 <li><a title="PySDM.backends.impl_numba.methods.freezing_methods.FreezingMethods" href="impl_numba/methods/freezing_methods.html#PySDM.backends.impl_numba.methods.freezing_methods.FreezingMethods">FreezingMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods" href="impl_numba/methods/displacement_methods.html#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods" href="impl_numba/methods/terminal_velocity_methods.html#PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods">TerminalVelocityMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.isotope_methods.IsotopeMethods" href="impl_numba/methods/isotope_methods.html#PySDM.backends.impl_numba.methods.isotope_methods.IsotopeMethods">IsotopeMethods</a></li>
 <li><a title="PySDM.backends.impl_common.backend_methods.BackendMethods" href="impl_common/backend_methods.html#PySDM.backends.impl_common.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Class variables</h3>

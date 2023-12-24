@@ -55,6 +55,10 @@ def convert_to(value, unit):
     value /= unit
 
 
+def in_unit(value, unit):
+    return value / unit
+
+
 sqrt_two = np.sqrt(2)
 sqrt_pi = np.sqrt(sci.pi)
 PI = sci.pi
@@ -80,6 +84,10 @@ default_random_seed = (
 PPT = 1e-12
 PPB = 1e-9
 PPM = 1e-6
+
+PER_CENT = 1e-2
+PER_MILLE = 1e-3
+PER_MEG = PPM
 
 T0 = sci.zero_Celsius * si.kelvin
 
@@ -111,6 +119,19 @@ UM = 1 * si.um</code></pre>
     value /= unit</code></pre>
 </details>
 </dd>
+<dt id="PySDM.physics.constants.in_unit"><code class="name flex">
+<span>def <span class="ident">in_unit</span></span>(<span>value, unit)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def in_unit(value, unit):
+    return value / unit</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -130,6 +151,7 @@ UM = 1 * si.um</code></pre>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="PySDM.physics.constants.convert_to" href="#PySDM.physics.constants.convert_to">convert_to</a></code></li>
+<li><code><a title="PySDM.physics.constants.in_unit" href="#PySDM.physics.constants.in_unit">in_unit</a></code></li>
 </ul>
 </li>
 </ul>

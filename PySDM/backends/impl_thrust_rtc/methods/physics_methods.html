@@ -190,9 +190,11 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         dy_dt = self._get_floating_point(dy_dt)
         self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
 
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def volume_of_water_mass(self, volume, mass):
         self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))
 
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def mass_of_water_volume(self, mass, volume):
         self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))</code></pre>
 </details>
@@ -366,9 +368,11 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         dy_dt = self._get_floating_point(dy_dt)
         self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
 
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def volume_of_water_mass(self, volume, mass):
         self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))
 
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def mass_of_water_volume(self, mass, volume):
         self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))</code></pre>
 </details>
@@ -420,7 +424,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 </details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume"><code class="name flex">
-<span>def <span class="ident">mass_of_water_volume</span></span>(<span>self, mass, volume)</span>
+<span>def <span class="ident">mass_of_water_volume</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -428,8 +432,13 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def mass_of_water_volume(self, mass, volume):
-    self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))</code></pre>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH"><code class="name flex">
@@ -469,7 +478,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 </details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass"><code class="name flex">
-<span>def <span class="ident">volume_of_water_mass</span></span>(<span>self, volume, mass)</span>
+<span>def <span class="ident">volume_of_water_mass</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -477,8 +486,13 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def volume_of_water_mass(self, volume, mass):
-    self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))</code></pre>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
 </details>
 </dd>
 </dl>

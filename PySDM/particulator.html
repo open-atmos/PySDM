@@ -466,7 +466,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 cell_origin=cell_origin,
                 position_in_cell=position_in_cell,
                 n_substeps=n_substeps,
-            )</code></pre>
+            )
+
+    def isotopic_fractionation(self, heavy_isotopes: tuple):
+        self.backend.isotopic_fractionation()
+        for isotope in heavy_isotopes:
+            self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -914,7 +919,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 cell_origin=cell_origin,
                 position_in_cell=position_in_cell,
                 n_substeps=n_substeps,
-            )</code></pre>
+            )
+
+    def isotopic_fractionation(self, heavy_isotopes: tuple):
+        self.backend.isotopic_fractionation()
+        for isotope in heavy_isotopes:
+            self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -1256,6 +1266,21 @@ This function should only change environment's predicted <code>thd</code> and
     self.attributes.sanitize()</code></pre>
 </details>
 </dd>
+<dt id="PySDM.particulator.Particulator.isotopic_fractionation"><code class="name flex">
+<span>def <span class="ident">isotopic_fractionation</span></span>(<span>self, heavy_isotopes: tuple)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def isotopic_fractionation(self, heavy_isotopes: tuple):
+    self.backend.isotopic_fractionation()
+    for isotope in heavy_isotopes:
+        self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.particulator.Particulator.moments"><code class="name flex">
 <span>def <span class="ident">moments</span></span>(<span>self, *, moment_0, moments, specs: dict, attr_name='water mass', attr_range=(-inf, inf), weighting_attribute='water mass', weighting_rank=0, skip_division_by_m0=False)</span>
 </code></dt>
@@ -1571,6 +1596,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
 <li><code><a title="PySDM.particulator.Particulator.dissolution" href="#PySDM.particulator.Particulator.dissolution">dissolution</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.dt" href="#PySDM.particulator.Particulator.dt">dt</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.flag_out_of_column" href="#PySDM.particulator.Particulator.flag_out_of_column">flag_out_of_column</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.isotopic_fractionation" href="#PySDM.particulator.Particulator.isotopic_fractionation">isotopic_fractionation</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.mesh" href="#PySDM.particulator.Particulator.mesh">mesh</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.moments" href="#PySDM.particulator.Particulator.moments">moments</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.n_sd" href="#PySDM.particulator.Particulator.n_sd">n_sd</a></code></li>

@@ -66,6 +66,14 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             &#34;&#34;&#34;,
         )
 
+        __add_elementwise_with_multiplier_body = trtc.For(
+            (&#34;output&#34;, &#34;addend&#34;, &#34;multiplier&#34;),
+            &#34;i&#34;,
+            &#34;&#34;&#34;
+                output[i] += multiplier * addend[i];
+            &#34;&#34;&#34;,
+        )
+
         __add_body = trtc.For(
             [&#34;output&#34;, &#34;addend&#34;],
             &#34;i&#34;,
@@ -77,11 +85,21 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def add(output, addend):
+            args = (output, addend)
             if hasattr(addend, &#34;data&#34;):
                 loop = Impl.__add_elementwise_body
+            elif (
+                isinstance(addend, tuple)
+                and len(addend) == 3
+                and isinstance(addend[0], float)
+                and addend[1] == &#34;*&#34;
+                and isinstance(addend[2], Storage)
+            ):
+                loop = Impl.__add_elementwise_with_multiplier_body
+                args = (output, addend[2], addend[0])
             else:
                 loop = Impl.__add_body
-            loop.launch_n(output.shape[0], Impl.thrust((output, addend)))
+            loop.launch_n(n=output.shape[0], args=Impl.thrust(args))
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
@@ -607,6 +625,14 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             &#34;&#34;&#34;,
         )
 
+        __add_elementwise_with_multiplier_body = trtc.For(
+            (&#34;output&#34;, &#34;addend&#34;, &#34;multiplier&#34;),
+            &#34;i&#34;,
+            &#34;&#34;&#34;
+                output[i] += multiplier * addend[i];
+            &#34;&#34;&#34;,
+        )
+
         __add_body = trtc.For(
             [&#34;output&#34;, &#34;addend&#34;],
             &#34;i&#34;,
@@ -618,11 +644,21 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def add(output, addend):
+            args = (output, addend)
             if hasattr(addend, &#34;data&#34;):
                 loop = Impl.__add_elementwise_body
+            elif (
+                isinstance(addend, tuple)
+                and len(addend) == 3
+                and isinstance(addend[0], float)
+                and addend[1] == &#34;*&#34;
+                and isinstance(addend[2], Storage)
+            ):
+                loop = Impl.__add_elementwise_with_multiplier_body
+                args = (output, addend[2], addend[0])
             else:
                 loop = Impl.__add_body
-            loop.launch_n(output.shape[0], Impl.thrust((output, addend)))
+            loop.launch_n(n=output.shape[0], args=Impl.thrust(args))
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)

@@ -46,6 +46,7 @@ from PySDM.backends.impl_thrust_rtc.methods.displacement_methods import (
 )
 from PySDM.backends.impl_thrust_rtc.methods.freezing_methods import FreezingMethods
 from PySDM.backends.impl_thrust_rtc.methods.index_methods import IndexMethods
+from PySDM.backends.impl_thrust_rtc.methods.isotope_methods import IsotopeMethods
 from PySDM.backends.impl_thrust_rtc.methods.moments_methods import MomentsMethods
 from PySDM.backends.impl_thrust_rtc.methods.pair_methods import PairMethods
 from PySDM.backends.impl_thrust_rtc.methods.physics_methods import PhysicsMethods
@@ -67,6 +68,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     DisplacementMethods,
     TerminalVelocityMethods,
     FreezingMethods,
+    IsotopeMethods,
 ):
     ENABLE = True
     Random = ImportedRandom
@@ -130,6 +132,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     DisplacementMethods,
     TerminalVelocityMethods,
     FreezingMethods,
+    IsotopeMethods,
 ):
     ENABLE = True
     Random = ImportedRandom
@@ -174,6 +177,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods" href="impl_thrust_rtc/methods/displacement_methods.html#PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods" href="impl_thrust_rtc/methods/terminal_velocity_methods.html#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods">TerminalVelocityMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.freezing_methods.FreezingMethods" href="impl_thrust_rtc/methods/freezing_methods.html#PySDM.backends.impl_thrust_rtc.methods.freezing_methods.FreezingMethods">FreezingMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.isotope_methods.IsotopeMethods" href="impl_thrust_rtc/methods/isotope_methods.html#PySDM.backends.impl_thrust_rtc.methods.isotope_methods.IsotopeMethods">IsotopeMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.thrust_rtc_backend_methods.ThrustRTCBackendMethods" href="impl_thrust_rtc/methods/thrust_rtc_backend_methods.html#PySDM.backends.impl_thrust_rtc.methods.thrust_rtc_backend_methods.ThrustRTCBackendMethods">ThrustRTCBackendMethods</a></li>
 <li><a title="PySDM.backends.impl_common.backend_methods.BackendMethods" href="impl_common/backend_methods.html#PySDM.backends.impl_common.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>

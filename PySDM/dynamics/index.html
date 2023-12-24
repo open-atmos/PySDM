@@ -36,6 +36,9 @@ Classes representing physicochemical processes:
 `PySDM.dynamics.collisions.collision.Collision`,
 `PySDM.dynamics.condensation.Condensation`, ...
 &#34;&#34;&#34;
+from PySDM.dynamics.isotopic_fractionation import IsotopicFractionation
+
+# isort: split
 from PySDM.dynamics.ambient_thermodynamics import AmbientThermodynamics
 from PySDM.dynamics.aqueous_chemistry import AqueousChemistry
 from PySDM.dynamics.collisions import Breakup, Coalescence, Collision
@@ -84,6 +87,11 @@ with implicit-in-particle-size integration and adaptive timestepping</p></div>
 <dd>
 <div class="desc"><p>stuff not intended to be imported from user code</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.dynamics.isotopic_fractionation" href="isotopic_fractionation.html">PySDM.dynamics.isotopic_fractionation</a></code></dt>
+<dd>
+<div class="desc"><p>resolves fractionation of water molecules across different isotopologues
+requires condensation dynamic to be registered (and run beforehand)</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.dynamics.relaxed_velocity" href="relaxed_velocity.html">PySDM.dynamics.relaxed_velocity</a></code></dt>
 <dd>
 <div class="desc"><p>A dynamic which relaxes
@@ -124,6 +132,7 @@ towards the terminal velocity</p></div>
 <li><code><a title="PySDM.dynamics.eulerian_advection" href="eulerian_advection.html">PySDM.dynamics.eulerian_advection</a></code></li>
 <li><code><a title="PySDM.dynamics.freezing" href="freezing.html">PySDM.dynamics.freezing</a></code></li>
 <li><code><a title="PySDM.dynamics.impl" href="impl/index.html">PySDM.dynamics.impl</a></code></li>
+<li><code><a title="PySDM.dynamics.isotopic_fractionation" href="isotopic_fractionation.html">PySDM.dynamics.isotopic_fractionation</a></code></li>
 <li><code><a title="PySDM.dynamics.relaxed_velocity" href="relaxed_velocity.html">PySDM.dynamics.relaxed_velocity</a></code></li>
 <li><code><a title="PySDM.dynamics.terminal_velocity" href="terminal_velocity/index.html">PySDM.dynamics.terminal_velocity</a></code></li>
 </ul>
