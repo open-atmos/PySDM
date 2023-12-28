@@ -93,9 +93,9 @@ Running the example Jupyter notebooks requires the ``PySDM_examples`` package to
 The suggested install and launch steps are:
 ```
 git clone https://github.com/open-atmos/PySDM.git
-cd examples
-pip install -e .
-jupyter-notebook
+pip install -e PySDM
+pip install -e PySDM/examples
+jupyter-notebook PySDM/examples/PySDM_examples
 ```
 Alternatively, one can also install the examples package from pypi.org by 
 using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
