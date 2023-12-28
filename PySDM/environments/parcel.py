@@ -27,7 +27,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         mixed_phase=False,
         variables: Optional[List[str]] = None,
     ):
-        variables += ["rhod", "z", "t"]
+        variables = (variables or []) + ["rhod", "z", "t"]
         super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
         self.p0 = p0
