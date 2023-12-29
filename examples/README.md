@@ -101,7 +101,7 @@
   -
 - [Yang et al. 2018](https://doi.org/10.5194/acp-18-7313-2018) (polydisperse size spectrum activation/deactivation test case):
   - Fig. 2:
-    [![preview in nbviewer](https://raw.githubusercontent.com/jupyter/design/master/logos/Badges/nbviewer_badge.svg)](https://nbviewer.jupyter.org/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
+    [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
     [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
     [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
 
