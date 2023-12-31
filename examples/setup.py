@@ -52,15 +52,15 @@ setup(
         ]
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
-    author_email="slayoo@staszic.waw.pl",
+    author_email="sylwester.arabas@agh.edu.pl",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url="https://github.com/open-atmos/PySDM-examples",
+    url="https://github.com/open-atmos/PySDM",
     license="GPL-3.0",
     packages=find_packages(include=["PySDM_examples", "PySDM_examples.*"]),
     project_urls={
         "Tracker": "https://github.com/open-atmos/PySDM/issues",
-        "Documentation": "https://open-atmos.github.io/PySDM-examples",
-        "Source": "https://github.com/open-atmos/PySDM-examples",
+        "Documentation": "https://open-atmos.github.io/PySDM/PySDM_examples",
+        "Source": "https://github.com/open-atmos/PySDM/tree/main/examples",
     },
 )
