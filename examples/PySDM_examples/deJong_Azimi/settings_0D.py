@@ -36,10 +36,10 @@ class Settings0D:
             norm_factor=self.norm_factor, k=1.0, theta=1e5 * si.um**3
         )
         self.radius_bins_edges = np.logspace(
-            np.log10(1.0 * si.um), np.log10(5000 * si.um), num=64, endpoint=True
+            np.log10(8.0 * si.um), np.log10(5000 * si.um), num=64, endpoint=True
         )
         self.radius_range = [0 * si.um, 1e6 * si.um]
-        self.formulae = Formulae(seed=seed)
+        self.formulae = Formulae(seed=seed, terminal_velocity="PowerSeries")
 
     @property
     def output_steps(self):

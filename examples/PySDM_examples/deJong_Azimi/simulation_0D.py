@@ -6,10 +6,7 @@ from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
-from PySDM.initialisation.sampling.spectral_sampling import (
-    ConstantMultiplicity,
-    Logarithmic,
-)
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
 from PySDM.products.collision.collision_rates import (
     CoalescenceRatePerGridbox,
@@ -30,7 +27,7 @@ def run_box(settings, steps=None, backend_class=CPU):
     builder.set_environment(env)
     env["rhod"] = 1.0
     attributes = {}
-    attributes["volume"], attributes["multiplicity"] = Logarithmic(
+    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
     ).sample(settings.n_sd)
     coal = Coalescence(
