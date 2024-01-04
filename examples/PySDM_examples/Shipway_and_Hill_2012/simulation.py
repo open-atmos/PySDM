@@ -13,7 +13,7 @@ from PySDM.dynamics import (
     Displacement,
     EulerianAdvection,
 )
-from PySDM.dynamics.collisions.collision_kernels import Geometric, SimpleGeometric
+from PySDM.dynamics.collisions.collision_kernels import Geometric, Golovin
 from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
@@ -38,17 +38,14 @@ class Simulation:
             size=(settings.z_max + settings.particle_reservoir_depth,),
         )
 
-        if settings.collisions_only:
-            z_part = [0.5, 0.875]
-        else:
-            z_part = None
         self.env = Kinematic1D(
             dt=settings.dt,
             mesh=self.mesh,
             thd_of_z=settings.thd,
             rhod_of_z=settings.rhod,
             z0=-settings.particle_reservoir_depth,
-            z_part=z_part,
+            z_part=None,
+            collisions_only=False,
         )
 
         def zZ_to_z_above_reservoir(zZ):
@@ -75,15 +72,14 @@ class Simulation:
         self.builder.set_environment(self.env)
         self.builder.add_dynamic(AmbientThermodynamics())
 
-        if not settings.collisions_only:
-            self.builder.add_dynamic(
-                Condensation(
-                    adaptive=settings.condensation_adaptive,
-                    rtol_thd=settings.condensation_rtol_thd,
-                    rtol_x=settings.condensation_rtol_x,
-                    update_thd=settings.condensation_update_thd,
-                )
+        self.builder.add_dynamic(
+            Condensation(
+                adaptive=settings.condensation_adaptive,
+                rtol_thd=settings.condensation_rtol_thd,
+                rtol_x=settings.condensation_rtol_x,
+                update_thd=settings.condensation_update_thd,
             )
+        )
         self.builder.add_dynamic(EulerianAdvection(self.mpdata))
 
         self.products = []
@@ -143,6 +139,16 @@ class Simulation:
                 name="rain averaged terminal velocity",
                 radius_range=settings.rain_water_radius_range,
             ),
+            PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
+            PySDM_products.AmbientPressure(name="p"),
+            PySDM_products.AmbientTemperature(name="T"),
+            PySDM_products.AmbientWaterVapourMixingRatio(
+                name="water_vapour_mixing_ratio"
+            ),
+            PySDM_products.RipeningRate(name="ripening"),
+            PySDM_products.ActivatingRate(name="activating"),
+            PySDM_products.DeactivatingRate(name="deactivating"),
+            PySDM_products.PeakSupersaturation(unit="%"),
         ]
         if settings.precip:
             self.products.append(
@@ -160,22 +166,6 @@ class Simulation:
                     name="coalescence_rate",
                 ),
             )
-        if not settings.collisions_only:
-            addtl_prods = [
-                PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
-                PySDM_products.AmbientPressure(name="p"),
-                PySDM_products.AmbientTemperature(name="T"),
-                PySDM_products.AmbientWaterVapourMixingRatio(
-                    name="water_vapour_mixing_ratio"
-                ),
-                PySDM_products.RipeningRate(name="ripening"),
-                PySDM_products.ActivatingRate(name="activating"),
-                PySDM_products.DeactivatingRate(name="deactivating"),
-                PySDM_products.PeakSupersaturation(unit="%"),
-            ]
-            for prod in addtl_prods:
-                self.products.append(prod)
-
         self.particulator = self.builder.build(
             attributes=self.attributes, products=self.products
         )
@@ -198,20 +188,12 @@ class Simulation:
 
     @staticmethod
     def add_collision_dynamic(builder, settings, _):
-        if settings.collisions_only:
-            builder.add_dynamic(
-                Coalescence(
-                    collision_kernel=SimpleGeometric(C=1e6),
-                    adaptive=settings.coalescence_adaptive,
-                )
+        builder.add_dynamic(
+            Coalescence(
+                collision_kernel=Geometric(collection_efficiency=1),
+                adaptive=settings.coalescence_adaptive,
             )
-        else:
-            builder.add_dynamic(
-                Coalescence(
-                    collision_kernel=Geometric(collection_efficiency=1),
-                    adaptive=settings.coalescence_adaptive,
-                )
-            )
+        )
 
     def save_scalar(self, step):
         for k, v in self.particulator.products.items():
