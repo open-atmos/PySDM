@@ -18,16 +18,17 @@ class Simulation:
         while dt_output / self.n_substeps >= settings.dt_max:  # TODO #334 dt_max
             self.n_substeps += 1
 
-        builder = Builder(backend=backend(formulae=settings.formulae), n_sd=1)
-        builder.set_environment(
-            Parcel(
+        builder = Builder(
+            backend=backend(formulae=settings.formulae),
+            n_sd=1,
+            environment=Parcel(
                 dt=dt_output / self.n_substeps,
                 mass_of_dry_air=settings.mass_of_dry_air,
                 p0=settings.p0,
                 initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
                 T0=settings.T0,
                 w=settings.w,
-            )
+            ),
         )
 
         builder.add_dynamic(AmbientThermodynamics())

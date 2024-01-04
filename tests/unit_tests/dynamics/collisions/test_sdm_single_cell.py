@@ -7,6 +7,7 @@ from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Coalescence
+from PySDM.physics import constants_defaults
 
 from .conftest import backend_fill, get_dummy_particulator_and_coalescence
 
@@ -26,8 +27,8 @@ class TestSDMSingleCell:
             "multiplicity": n_2,
             "volume": v_2,
             "heat": const * T_2 * v_2,
-            "temperature": T_2,
         }
+        particulator.request_attribute("temperature")
         particulator.build(attributes)
 
         # Act
@@ -51,15 +52,19 @@ class TestSDMSingleCell:
             np.round(particles["temperature"].to_ndarray().astype(float), 7),
         )
 
-        assert np.sum(
-            particles["multiplicity"].to_ndarray() * particles["volume"].to_ndarray()
-        ) == np.sum(n_2 * v_2)
+        np.testing.assert_approx_equal(
+            np.sum(
+                particles["multiplicity"].to_ndarray()
+                * particles["volume"].to_ndarray()
+            ),
+            np.sum(n_2 * v_2),
+        )
         assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
             n_2
         ) - np.amin(n_2)
         if np.amin(n_2) > 0:
-            assert np.amax(particulator.attributes["volume"].to_ndarray()) == np.sum(
-                v_2
+            np.testing.assert_approx_equal(
+                np.amax(particulator.attributes["volume"].to_ndarray()), np.sum(v_2)
             )
         assert np.amax(particulator.attributes["multiplicity"].to_ndarray()) == max(
             np.amax(n_2) - np.amin(n_2), np.amin(n_2)
@@ -124,15 +129,22 @@ class TestSDMSingleCell:
         state = particulator.attributes
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state["multiplicity"]) >= 0
-        assert np.sum(
-            state["multiplicity"].to_ndarray() * state["volume"].to_ndarray()
-        ) == np.sum(n_2 * v_2)
+        np.testing.assert_approx_equal(
+            np.sum(
+                state["multiplicity"].to_ndarray() * state["water mass"].to_ndarray()
+            ),
+            np.sum(n_2 * v_2 * constants_defaults.rho_w),
+        )
+        np.testing.assert_approx_equal(
+            np.sum(state["multiplicity"].to_ndarray() * state["volume"].to_ndarray()),
+            np.sum(n_2 * v_2),
+        )
         assert np.sum(state["multiplicity"].to_ndarray()) == np.sum(
             n_2
         ) - gamma * np.amin(n_2)
-        assert (
-            np.amax(state["volume"].to_ndarray())
-            == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
+        np.testing.assert_approx_equal(
+            np.amax(state["volume"].to_ndarray()),
+            gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1],
         )
         assert np.amax(state["multiplicity"].to_ndarray()) == max(
             np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2)

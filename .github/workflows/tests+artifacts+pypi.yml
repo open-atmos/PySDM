@@ -16,9 +16,6 @@ on:
 
 jobs:
   precommit:
-    strategy:
-      matrix:
-        package-dir: [".", "examples"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,11 +23,12 @@ jobs:
         with:
           python-version: 3.8
       - run: |
-          cd ${{ matrix.package-dir }}
           pip install pre-commit
           pre-commit clean
           pre-commit autoupdate
           pre-commit run --all-files
+      - if: ${{ failure() }}
+        run: git diff
 
   nojit_and_codecov:
     runs-on: ubuntu-latest
@@ -128,7 +126,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: ["3.8", "3.10"]
-        test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - test-suite: "devops_tests"
             python-version: "3.8"
@@ -178,7 +176,7 @@ jobs:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.8", "3.10"]
-        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process" ]
+        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     steps:
@@ -228,16 +226,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
 
-  dist:
+  package:
     strategy:
       matrix:
         packages-dir: [".", "examples"]
       fail-fast: false
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-    needs: [tests, examples, devops]
-    permissions:
-      id-token: write
     steps:
       - uses: actions/checkout@v2
         with:
@@ -255,15 +249,49 @@ jobs:
           python -m build 2>&1 | tee build.log
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | grep -v "no previously-included files matching" | wc -l`
           twine check --strict dist/*
-          cd ..
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ${{ matrix.packages-dir}}/dist
+          name: dist
+
+  pkg_install_check:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.8", "3.10"]
+    runs-on: ${{ matrix.platform }}
+    needs: [package]
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist     
+      - run: pip install dist/*.whl
+      - run: python -c "import PySDM; print(PySDM.__version__)"
+      - run: python -c "import PySDM_examples; print(PySDM_examples.__version__)"
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [tests, examples, devops, package, pkg_install_check]
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist     
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@unstable/v1
         with:
           repository_url: https://test.pypi.org/legacy/
-          packages-dir: ${{ matrix.packages-dir }}/dist
+          packages-dir: dist
 
       - if: startsWith(github.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@unstable/v1
         with:
-          packages-dir: ${{ matrix.packages-dir }}/dist
+          packages-dir: dist

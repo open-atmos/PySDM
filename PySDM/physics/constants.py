@@ -22,11 +22,17 @@ def convert_to(value, unit):
     value /= unit
 
 
+def in_unit(value, unit):
+    return value / unit
+
+
 sqrt_two = np.sqrt(2)
 sqrt_pi = np.sqrt(sci.pi)
 PI = sci.pi
 PI_4_3 = PI * 4 / 3
 LN_2 = np.log(2)
+ZERO_MASS = 0 * si.kg
+ZERO_VOLUME = 0 * si.m**3
 TWO = 2
 THREE = 3
 FOUR = 4
@@ -45,6 +51,10 @@ default_random_seed = (
 PPT = 1e-12
 PPB = 1e-9
 PPM = 1e-6
+
+PER_CENT = 1e-2
+PER_MILLE = 1e-3
+PER_MEG = PPM
 
 T0 = sci.zero_Celsius * si.kelvin
 

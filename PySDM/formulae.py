@@ -18,6 +18,8 @@ from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, RogersYau
+from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
 class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
@@ -42,6 +44,11 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
+        isotope_equilibrium_fractionation_factors: str = "Null",
+        isotope_meteoric_water_line_excess: str = "Null",
+        isotope_ratio_evolution: str = "Null",
+        particle_shape_and_density: str = "LiquidSpheres",
+        terminal_velocity: str = "GunnKinzer1949",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -61,16 +68,27 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
         self.fragmentation_function = fragmentation_function
+        self.isotope_equilibrium_fractionation_factors = (
+            isotope_equilibrium_fractionation_factors
+        )
+        self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
+        self.isotope_ratio_evolution = isotope_ratio_evolution
+        self.particle_shape_and_density = particle_shape_and_density
+
         components = tuple(i for i in dir(self) if not i.startswith("__"))
 
         constants_defaults = {
             k: getattr(defaults, k)
             for defaults in (physics.constants, physics.constants_defaults)
             for k in dir(defaults)
-            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
+            if isinstance(
+                getattr(defaults, k), (numbers.Number, pint.Quantity, pint.Unit)
+            )
         }
+        constants_defaults = {**constants_defaults, **(constants or {})}
+        physics.constants_defaults.compute_derived_values(constants_defaults)
         constants = namedtuple("Constants", tuple(constants_defaults.keys()))(
-            **{**constants_defaults, **(constants or {})}
+            **constants_defaults
         )
         self.constants = constants
         self.seed = seed or physics.constants.default_random_seed
@@ -95,6 +113,13 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                     dimensional_analysis=dimensional_analysis,
                 ),
             )
+
+        # TODO #348
+        self.terminal_velocity_class = {
+            "GunnKinzer1949": GunnKinzer1949,
+            "RogersYau": RogersYau,
+            "TpDependent": TpDependent,
+        }[terminal_velocity]
 
     def __str__(self):
         description = []
@@ -208,6 +233,8 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     source = source.replace("np.power(", "np.pow(")
     source = source.replace("np.arctanh(", "atanh(")
     source = source.replace("np.arcsinh(", "asinh(")
+    source = source.replace("np.minimum(", "min(")
+    source = source.replace("np.maximum(", "max(")
     for pkg in ("np", "math"):
         source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")

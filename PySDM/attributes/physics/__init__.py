@@ -8,6 +8,7 @@ from .dry_radius import DryRadius
 from .dry_volume import DryVolume
 from .equilibrium_supersaturation import EquilibriumSupersaturation
 from .heat import Heat
+from .mass import WaterMass
 from .multiplicities import Multiplicities
 from .radius import Radius, SquareRootOfRadius
 from .relative_fall_velocity import RelativeFallMomentum, RelativeFallVelocity

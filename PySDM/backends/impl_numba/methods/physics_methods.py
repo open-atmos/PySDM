@@ -20,6 +20,8 @@ class PhysicsMethods(BackendMethods):
         phys_sigma = self.formulae.surface_tension.sigma
         phys_volume = self.formulae.trivia.volume
         phys_r_cr = self.formulae.hygroscopicity.r_cr
+        phys_mass_to_volume = self.formulae.particle_shape_and_density.mass_to_volume
+        phys_volume_to_mass = self.formulae.particle_shape_and_density.volume_to_mass
         const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
@@ -57,18 +59,6 @@ class PhysicsMethods(BackendMethods):
         self.temperature_pressure_RH_body = temperature_pressure_RH_body
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def terminal_velocity_body(*, values, radius, k1, k2, k3, r1, r2):
-            for i in prange(len(values)):  # pylint: disable=not-an-iterable
-                if radius[i] < r1:
-                    values[i] = k1 * radius[i] ** 2
-                elif radius[i] < r2:
-                    values[i] = k2 * radius[i]
-                else:
-                    values[i] = k3 * radius[i] ** (1 / 2)
-
-        self.terminal_velocity_body = terminal_velocity_body
-
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def a_w_ice_body(
             *, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out
         ):
@@ -80,6 +70,20 @@ class PhysicsMethods(BackendMethods):
 
         self.a_w_ice_body = a_w_ice_body
 
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def volume_of_mass(volume, mass):
+            for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
+                volume[i] = phys_mass_to_volume(mass[i])
+
+        self.volume_of_mass_body = volume_of_mass
+
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def mass_of_volume(mass, volume):
+            for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
+                mass[i] = phys_volume_to_mass(volume[i])
+
+        self.mass_of_volume_body = mass_of_volume
+
     def temperature_pressure_RH(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
     ):
@@ -90,11 +94,6 @@ class PhysicsMethods(BackendMethods):
             T=T.data,
             p=p.data,
             RH=RH.data,
-        )
-
-    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
-        self.terminal_velocity_body(
-            values=values, radius=radius, k1=k1, k2=k2, k3=k3, r1=r1, r2=r2
         )
 
     def explicit_euler(self, y, dt, dy_dt):
@@ -119,3 +118,9 @@ class PhysicsMethods(BackendMethods):
             water_vapour_mixing_ratio_in=water_vapour_mixing_ratio.data,
             a_w_ice_out=a_w_ice.data,
         )
+
+    def volume_of_water_mass(self, volume, mass):
+        self.volume_of_mass_body(volume.data, mass.data)
+
+    def mass_of_water_volume(self, mass, volume):
+        self.mass_of_volume_body(mass.data, volume.data)

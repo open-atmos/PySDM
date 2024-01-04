@@ -27,8 +27,9 @@ class Simulation(BasicSimulation):
             w=settings.vertical_velocity,
             mass_of_dry_air=44 * si.kg,
         )
-        builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae), environment=env
+        )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(
             Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x)
@@ -43,7 +44,7 @@ class Simulation(BasicSimulation):
         volume = env.mass_of_dry_air / settings.initial_air_density
         attributes = {
             k: np.empty(0)
-            for k in ("dry volume", "kappa times dry volume", "multiplicity", "kappa")
+            for k in ("dry volume", "kappa times dry volume", "multiplicity")
         }
 
         assert len(settings.aerosol_modes_by_kappa.keys()) == 1
@@ -58,9 +59,6 @@ class Simulation(BasicSimulation):
         attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
         attributes["kappa times dry volume"] = np.append(
             attributes["kappa times dry volume"], v_dry * kappa
-        )
-        attributes["kappa"] = np.append(
-            attributes["kappa"], np.full(settings.n_sd, kappa)
         )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),

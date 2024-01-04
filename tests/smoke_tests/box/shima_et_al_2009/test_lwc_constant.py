@@ -1,4 +1,6 @@
-# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+"""
+checks if liquid water contant remains constant throughout coalescence-only simulation
+"""
 import numpy as np
 import pytest
 
@@ -32,11 +34,11 @@ def check(*, n_part, dv, n_sd, rho, attributes, step):
 @pytest.mark.parametrize("croupier", ["local", "global"])
 @pytest.mark.parametrize("adaptive", [True, False])
 # pylint: disable=too-many-locals
-def test_coalescence(backend_class, croupier, adaptive):
+def test_lwc_constant(backend_class, croupier, adaptive):
     if backend_class == ThrustRTC and croupier == "local":  # TODO #358
-        return
+        pytest.skip()
     if backend_class == ThrustRTC and adaptive and croupier == "global":  # TODO #329
-        return
+        pytest.skip()
     # Arrange
     formulae = Formulae(seed=256)
     n_sd = 2**14
@@ -50,8 +52,12 @@ def test_coalescence(backend_class, croupier, adaptive):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
-    builder.set_environment(Box(dt=dt, dv=dv))
+
+    env = Box(dt=dt, dv=dv)
+    builder = Builder(
+        n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+    )
+
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         spectrum

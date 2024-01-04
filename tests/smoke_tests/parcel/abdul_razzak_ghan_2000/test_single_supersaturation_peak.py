@@ -2,9 +2,10 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
+from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG
 from scipy import signal
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM import products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
@@ -50,8 +51,8 @@ def test_single_supersaturation_peak(
     n_sd = 2
     kappa = 0.4
     spectrum = Lognormal(norm_factor=5000 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
-    builder = Builder(backend=CPU(), n_sd=n_sd)
-    builder.set_environment(env)
+    formulae = Formulae(constants=CONSTANTS_ARG)
+    builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(
         Condensation(

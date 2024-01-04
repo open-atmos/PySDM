@@ -24,17 +24,17 @@ def make_indexed_storage(backend, iterable, idx=None):
 class TestParticleAttributes:
     @staticmethod
     @pytest.mark.parametrize(
-        "volume, multiplicity",
+        "water_mass, multiplicity",
         [
             pytest.param(np.array([1.0, 1, 1, 1]), np.array([1, 1, 1, 1])),
             pytest.param(np.array([1.0, 2, 1, 1]), np.array([2, 0, 2, 0])),
             pytest.param(np.array([1.0, 1, 4]), np.array([5, 0, 0])),
         ],
     )
-    def test_housekeeping(backend_class, volume, multiplicity):
+    def test_housekeeping(backend_class, water_mass, multiplicity):
         # Arrange
         particulator = DummyParticulator(backend_class, n_sd=len(multiplicity))
-        attributes = {"multiplicity": multiplicity, "volume": volume}
+        attributes = {"multiplicity": multiplicity, "water mass": water_mass}
         particulator.build(attributes, int_caster=np.int64)
         sut = particulator.attributes
         sut.healthy = False
@@ -47,8 +47,8 @@ class TestParticleAttributes:
         assert sut.super_droplet_count == (multiplicity != 0).sum()
         assert sut["multiplicity"].to_ndarray().sum() == multiplicity.sum()
         assert (
-            sut["volume"].to_ndarray() * sut["multiplicity"].to_ndarray()
-        ).sum() == (volume * multiplicity).sum()
+            sut["water mass"].to_ndarray() * sut["multiplicity"].to_ndarray()
+        ).sum() == (water_mass * multiplicity).sum()
 
     @staticmethod
     @pytest.mark.parametrize(

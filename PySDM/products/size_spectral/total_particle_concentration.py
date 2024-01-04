@@ -9,5 +9,5 @@ class TotalParticleConcentration(ConcentrationProduct):
         super().__init__(name=name, unit=unit, specific=False, stp=stp)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(attr="volume", rank=0)
+        self._download_moment_to_buffer(attr="water mass", rank=0)
         return super()._impl(**kwargs)

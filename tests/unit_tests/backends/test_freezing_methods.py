@@ -26,10 +26,11 @@ class TestFreezingMethods:
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
-        formulae = Formulae()
-        builder = Builder(n_sd=1, backend=backend_class(formulae=formulae))
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=1, backend=backend_class(formulae=formulae), environment=env
+        )
         builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
         particulator = builder.build(
             products=(IceWaterContent(),),
@@ -71,10 +72,11 @@ class TestFreezingMethods:
         multiplicity = 1e10
         steps = 1
 
-        formulae = Formulae()
-        builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         env = Box(dt=dt, dv=dv)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+        )
         builder.add_dynamic(Freezing(singular=True))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
@@ -136,6 +138,7 @@ class TestFreezingMethods:
         output = {}
 
         formulae = Formulae(
+            particle_shape_and_density="MixedPhaseSpheres",
             heterogeneous_ice_nucleation_rate="Constant",
             constants={"J_HET": rate / immersed_surface_area},
             seed=seed,
@@ -150,14 +153,14 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
+            env = Box(dt=case["dt"], dv=d_v)
             builder = Builder(
                 n_sd=n_sd,
                 backend=backend_class(
                     formulae=formulae, double_precision=double_precision
                 ),
+                environment=env,
             )
-            env = Box(dt=case["dt"], dv=d_v)
-            builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),

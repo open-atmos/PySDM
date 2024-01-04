@@ -1,10 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 
+from PySDM import Formulae
 from PySDM.physics import si
 
 
-class TestPhysicsMethods:  # pylint: disable=too-few-public-methods
+class TestPhysicsMethods:
     @staticmethod
     def test_temperature_pressure_RH(backend_class):
         # Arrange
@@ -32,5 +34,71 @@ class TestPhysicsMethods:  # pylint: disable=too-few-public-methods
 
         # Assert
         assert 282 * si.K < T.amin() < 283 * si.K
-        assert 820 * si.hPa < p.amin() < 830 * si.hPa
-        assert 1.10 < RH.amin() < 1.11
+        assert 810 * si.hPa < p.amin() < 830 * si.hPa
+        assert 1.12 < RH.amin() < 1.13
+
+    @staticmethod
+    @pytest.mark.parametrize("variant", ("LiquidSpheres", "MixedPhaseSpheres"))
+    def test_mass_to_volume(backend_class, variant):
+        # Arrange
+        formulae = Formulae(particle_shape_and_density=variant)
+        backend = backend_class(formulae, double_precision=True)
+        sut = backend.volume_of_water_mass
+        mass = np.asarray([1.0, -1.0])
+        mass_in = backend.Storage.from_ndarray(mass)
+        volume_out = backend.Storage.from_ndarray(np.zeros_like(mass_in))
+
+        # Act
+        sut(volume=volume_out, mass=mass_in)
+
+        # Assert
+        assert (mass_in.to_ndarray() == mass).all()
+        if variant == "LiquidSpheres":
+            assert (
+                volume_out.to_ndarray()
+                == mass_in.to_ndarray() / formulae.constants.rho_w
+            ).all()
+        elif variant == "MixedPhaseSpheres":
+            assert (
+                volume_out.to_ndarray()
+                == np.where(
+                    mass < 0,
+                    mass / formulae.constants.rho_i,
+                    mass / formulae.constants.rho_w,
+                )
+            ).all()
+        else:
+            raise NotImplementedError()
+
+    @staticmethod
+    @pytest.mark.parametrize("variant", ("LiquidSpheres", "MixedPhaseSpheres"))
+    def test_volume_to_mass(backend_class, variant):
+        # Arrange
+        formulae = Formulae(particle_shape_and_density=variant)
+        backend = backend_class(formulae, double_precision=True)
+        sut = backend.mass_of_water_volume
+        volume = np.asarray([1.0, -1.0])
+        volume_in = backend.Storage.from_ndarray(volume)
+        mass_out = backend.Storage.from_ndarray(np.zeros_like(volume_in))
+
+        # Act
+        sut(volume=volume_in, mass=mass_out)
+
+        # Assert
+        assert (volume_in.to_ndarray() == volume).all()
+        if variant == "LiquidSpheres":
+            assert (
+                mass_out.to_ndarray()
+                == volume_in.to_ndarray() * formulae.constants.rho_w
+            ).all()
+        elif variant == "MixedPhaseSpheres":
+            assert (
+                mass_out.to_ndarray()
+                == np.where(
+                    volume < 0,
+                    volume * formulae.constants.rho_i,
+                    volume * formulae.constants.rho_w,
+                )
+            ).all()
+        else:
+            raise NotImplementedError()

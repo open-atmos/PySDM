@@ -28,9 +28,8 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
         self.particulator = None
         self.fall_momentum_attr = None
         self.terminal_vel_attr = None
-        self.volume_attr = None
+        self.water_mass_attr = None
         self.sqrt_radius_attr = None
-        self.rho_w = None  # TODO #798 - we plan to use masses instead of volumes soon
 
         self.tmp_momentum_diff = None
         self.tmp_tau = None
@@ -63,12 +62,10 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
             "relative fall momentum"
         )
         self.terminal_vel_attr: Attribute = builder.get_attribute("terminal velocity")
-        self.volume_attr: Attribute = builder.get_attribute("volume")
+        self.water_mass_attr: Attribute = builder.get_attribute("water mass")
         self.sqrt_radius_attr: Attribute = builder.get_attribute(
             "square root of radius"
         )
-
-        self.rho_w: float = builder.formulae.constants.rho_w  # TODO #798
 
         self.tmp_momentum_diff = self.create_storage(self.particulator.n_sd)
         self.tmp_tau = self.create_storage(self.particulator.n_sd)
@@ -77,11 +74,8 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     def __call__(self):
         # calculate momentum difference
         self.tmp_momentum_diff.product(
-            self.terminal_vel_attr.get(), self.volume_attr.get()
+            self.terminal_vel_attr.get(), self.water_mass_attr.get()
         )
-        self.tmp_momentum_diff *= (
-            self.rho_w
-        )  # TODO #798 - we plan to use masses instead of volumes soon
         self.tmp_momentum_diff -= self.fall_momentum_attr.get()
 
         if not self.tmp_tau_init or not self.constant:

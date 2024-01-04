@@ -22,18 +22,19 @@ class Simulation:
         }
 
     def build(self, n_sd, seed, products):
+        env = Box(dt=self.settings.dt, dv=self.settings.dv)
         builder = Builder(
             backend=self.settings.backend_class(
                 formulae=Formulae(
                     constants={"rho_w": self.settings.rho},
-                    fragmentation_function="ConstantSize",
+                    fragmentation_function="ConstantMass",
                     seed=seed,
                 ),
                 double_precision=self.double_precision,
             ),
             n_sd=n_sd,
+            environment=env,
         )
-        builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
         builder.add_dynamic(self.collision_dynamic)
         particulator = builder.build(
             products=products,

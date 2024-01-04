@@ -40,9 +40,10 @@ def test_init_to_terminal_velocity(params, backend_class):
     """
     Fall momenta correctly initialized to the terminal velocity * mass.
     """
-
-    builder = Builder(n_sd=len(params["multiplicity"]), backend=backend_class())
-    builder.set_environment(Box(dt=1, dv=1))
+    env = Box(dt=1, dv=1)
+    builder = Builder(
+        n_sd=len(params["multiplicity"]), backend=backend_class(), environment=env
+    )
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
         attributes={"multiplicity": params["multiplicity"], "volume": params["volume"]},

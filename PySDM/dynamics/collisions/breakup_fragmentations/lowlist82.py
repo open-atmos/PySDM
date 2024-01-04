@@ -1,12 +1,13 @@
 """
 See [Low & List 1982](https://doi.org/10.1175/1520-0469(1982)039<1607:CCABOR>2.0.CO;2)
 """
+from .impl import VolumeBasedFragmentationFunction
 
 
-class LowList1982Nf:
+class LowList1982Nf(VolumeBasedFragmentationFunction):
     # pylint: disable=too-many-instance-attributes
     def __init__(self, vmin=0.0, nfmax=None):
-        self.particulator = None
+        super().__init__()
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
@@ -15,13 +16,12 @@ class LowList1982Nf:
         self.const = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
+        super().register(builder)
         self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
         self.const = self.particulator.formulae.constants
         builder.request_attribute("radius")
-        builder.request_attribute("volume")
         builder.request_attribute("relative fall velocity")
         for key in ("Sc", "St", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -32,7 +32,9 @@ class LowList1982Nf:
                 self.particulator.n_sd // 2, dtype=float
             )
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
         self.sum_of_volumes.sum(
             self.particulator.attributes["volume"], is_first_in_pair
         )
@@ -91,7 +93,7 @@ class LowList1982Nf:
             ds=self.arrays["ds"],
             dl=self.arrays["dl"],
             dcoal=self.arrays["dcoal"],
-            frag_size=frag_size,
+            frag_volume=frag_volume,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
             vmin=self.vmin,

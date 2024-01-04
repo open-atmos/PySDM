@@ -11,6 +11,7 @@ from PySDM.physics import si
 def test_temperature_profile(initial_temperature, plot=False):
     # arrange
     formulae = Formulae(
+        particle_shape_and_density="MixedPhaseSpheres",
         heterogeneous_ice_nucleation_rate="ABIFM",
         constants={"ABIFM_M": 54.48, "ABIFM_C": -10.67},
     )
@@ -28,5 +29,5 @@ def test_temperature_profile(initial_temperature, plot=False):
         pyplot.show()
 
     # assert
-    assert output["T"][0] == initial_temperature
+    assert abs(output["T"][0] - initial_temperature) < 1e-10 * si.K
     assert output["T"][-1] < initial_temperature

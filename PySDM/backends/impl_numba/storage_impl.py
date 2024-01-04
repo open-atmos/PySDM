@@ -12,9 +12,19 @@ def add(output, addend):
     output += addend
 
 
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def add_with_multiplier(output, addend, multiplier):
+    output += multiplier * addend
+
+
 @numba.njit(**conf.JIT_FLAGS)
 def amin(data):
     return np.amin(data)
+
+
+@numba.njit(**conf.JIT_FLAGS)
+def amax(data):
+    return np.amax(data)
 
 
 @numba.njit(**conf.JIT_FLAGS)

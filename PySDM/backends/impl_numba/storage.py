@@ -60,6 +60,14 @@ class Storage(StorageBase):
     def __iadd__(self, other):
         if isinstance(other, Storage):
             impl.add(self.data, other.data)
+        elif (
+            isinstance(other, tuple)
+            and len(other) == 3
+            and isinstance(other[0], float)
+            and other[1] == "*"
+            and isinstance(other[2], Storage)
+        ):
+            impl.add_with_multiplier(self.data, other[2].data, other[0])
         else:
             impl.add(self.data, other)
         return self
@@ -138,6 +146,9 @@ class Storage(StorageBase):
 
     def amin(self):
         return impl.amin(self.data)
+
+    def amax(self):
+        return impl.amax(self.data)
 
     def all(self):
         return self.data.all()

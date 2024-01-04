@@ -4,7 +4,7 @@ from PySDM_examples.Srivastava_1982.simulation import Simulation
 
 from PySDM.dynamics import Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import ConstantSize
+from PySDM.dynamics.collisions.breakup_fragmentations import ConstantMass
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.physics import si
@@ -65,7 +65,7 @@ def setup_simulation(settings, n_sd, seed, double_precision=True):
             collision_kernel=ConstantK(a=collision_rate),
             coalescence_efficiency=ConstEc(settings.srivastava_c / collision_rate),
             breakup_efficiency=NO_BOUNCE,
-            fragmentation_function=ConstantSize(c=settings.frag_mass / settings.rho),
+            fragmentation_function=ConstantMass(c=settings.frag_mass / settings.rho),
             warn_overflows=False,
             adaptive=False,
         ),

@@ -8,33 +8,50 @@ import numpy as np
 
 from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.numerics.cell_id import CellID
+from PySDM.attributes.physics import WaterMass
 from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.physics.volume import Volume
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
     discretise_multiplicities,
 )
 from PySDM.particulator import Particulator
+from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
+
+
+def _warn_env_as_ctor_arg():
+    warnings.warn(
+        "PySDM > v2.31 Builder expects environment instance as argument",
+        DeprecationWarning,
+    )
 
 
 class Builder:
-    def __init__(self, n_sd, backend):
+    def __init__(self, n_sd, backend, environment=None):
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
             "multiplicity": Multiplicities(self),
-            "volume": Volume(self),
+            "water mass": WaterMass(self),
             "cell id": CellID(self),
         }
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
+        if environment is None:
+            _warn_env_as_ctor_arg()
+        else:
+            self._set_environment(environment)
+
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
     def set_environment(self, environment):
+        _warn_env_as_ctor_arg()
+        self._set_environment(environment)
+
+    def _set_environment(self, environment):
         if self.particulator.environment is not None:
             raise AssertionError("environment has already been set")
         self.particulator.environment = environment
@@ -86,6 +103,19 @@ class Builder:
                 'renaming attributes["n"] to attributes["multiplicity"]',
                 DeprecationWarning,
             )
+
+        if "volume" in attributes and "water mass" not in attributes:
+            assert self.particulator.formulae.particle_shape_and_density.__name__ in (
+                LiquidSpheres.__name__,
+                MixedPhaseSpheres.__name__,
+            ), "implied volume-to-mass conversion is only supported for spherical particles"
+            attributes[
+                "water mass"
+            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                attributes["volume"]
+            )
+            del attributes["volume"]
+            self.request_attribute("volume")
 
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)

@@ -42,6 +42,7 @@ class Acidity(MomentProduct):
                 self.formulae.trivia.volume(self.radius_range[0]),
                 self.formulae.trivia.volume(self.radius_range[1]),
             ),
+            filter_attr="volume",
             weighting_attribute="volume",
             weighting_rank=self.weighting_rank,
         )

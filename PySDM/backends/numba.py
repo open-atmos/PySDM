@@ -8,6 +8,7 @@ from PySDM.backends.impl_numba.methods.condensation_methods import CondensationM
 from PySDM.backends.impl_numba.methods.displacement_methods import DisplacementMethods
 from PySDM.backends.impl_numba.methods.freezing_methods import FreezingMethods
 from PySDM.backends.impl_numba.methods.index_methods import IndexMethods
+from PySDM.backends.impl_numba.methods.isotope_methods import IsotopeMethods
 from PySDM.backends.impl_numba.methods.moments_methods import MomentsMethods
 from PySDM.backends.impl_numba.methods.pair_methods import PairMethods
 from PySDM.backends.impl_numba.methods.physics_methods import PhysicsMethods
@@ -30,6 +31,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     FreezingMethods,
     DisplacementMethods,
     TerminalVelocityMethods,
+    IsotopeMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
