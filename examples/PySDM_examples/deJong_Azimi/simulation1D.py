@@ -43,7 +43,7 @@ class Simulation:
             thd_of_z=settings.thd,
             rhod_of_z=settings.rhod,
             z0=-settings.particle_reservoir_depth,
-            z_part=[0.5, 0.75],
+            z_part=settings.z_part,
             collisions_only=True,
         )
 

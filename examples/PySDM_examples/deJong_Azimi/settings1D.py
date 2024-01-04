@@ -42,6 +42,7 @@ class Settings1D(SettingsSH):
         precip: bool = True,
         formulae: Formulae = None,
         save_spec_and_attr_times=(),
+        z_part=[0.5, 0.75]
     ):
         super().__init__(
             n_sd_per_gridbox=n_sd_per_gridbox,
@@ -57,9 +58,13 @@ class Settings1D(SettingsSH):
             formulae=formulae or Formulae(terminal_velocity="PowerSeries"),
             save_spec_and_attr_times=save_spec_and_attr_times,
         )
-
+        self.z_part = z_part
+        z_frac = z_part[1] - z_part[0]
+        norm_factor = (
+            particles_per_volume_STP / self.formulae.constants.rho_STP * z_frac
+        )
         self.wet_radius_spectrum_per_mass_of_dry_air = spectra.Gamma(
-            norm_factor=particles_per_volume_STP / self.formulae.constants.rho_STP,
+            norm_factor=norm_factor,
             k=1.0,
             theta=1e5 * si.um**3,
         )
