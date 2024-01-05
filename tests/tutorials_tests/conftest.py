@@ -15,10 +15,3 @@ PYSDM_TUTORIALS_ABS_PATH = (
 )
 def notebook_filename(request):
     return request.param
-
-
-@pytest.fixture(
-    params=(path for path in findfiles(PYSDM_TUTORIALS_ABS_PATH, r".*\.(py)$")),
-)
-def tutorial_filename(request):
-    return request.param
