@@ -40,7 +40,7 @@
       [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)
      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)
 
-- [Bieli et al. 2022](https://doi.org/10.1002/essoar.10510248.1) (Box model, coalescence and breakup with fixed coalescence efficiency):
+- [Bieli et al. 2022](https://doi.org/10.1029/2022MS002994) (Box model, coalescence and breakup with fixed coalescence efficiency):
     - Fig. 3:
       [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bieli_et_al_2022/make_fig_3.ipynb)
       [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Bieli_et_al_2022/make_fig_3.ipynb)
