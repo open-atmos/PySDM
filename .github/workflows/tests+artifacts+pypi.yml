@@ -161,6 +161,10 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
+      # install devops_tests for tutorials_tests
+      - if: ${{ ${{ matrix.test-suite}} == "tutorials_tests"}}
+        run: pip install -r tests/devops_tests/requirements.txt 
+
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
