@@ -162,7 +162,7 @@ jobs:
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
       # install devops_tests for tutorials_tests
-      - if: ${{ ${{ matrix.test-suite}} == "tutorials_tests"}}
+      - if: matrix.test-suite == "tutorials_tests"
         run: pip install -r tests/devops_tests/requirements.txt 
 
       - env:
