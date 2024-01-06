@@ -16,7 +16,6 @@ from typing import Dict, Tuple
 
 from PySDM import formulae
 from PySDM.physics import surface_tension
-from PySDM.physics.constants_defaults import Mv, rho_w
 
 
 class DryAerosolMixture:
@@ -94,13 +93,13 @@ class DryAerosolMixture:
         result = {}
         for st in formulae._choices(surface_tension).keys():
             if st in (surface_tension.Constant.__name__):
-                result[st] = all_soluble_ns * Mv / rho_w
+                result[st] = all_soluble_ns * const.Mv / const.rho_w
             elif st in (
                 surface_tension.CompressedFilmOvadnevaite.__name__,
                 surface_tension.CompressedFilmRuehl.__name__,
                 surface_tension.SzyszkowskiLangmuir.__name__,
             ):
-                result[st] = part_soluble_ns * Mv / rho_w
+                result[st] = part_soluble_ns * const.Mv / const.rho_w
             else:
                 raise AssertionError()
         return result
