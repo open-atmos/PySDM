@@ -49,10 +49,10 @@ TEST_SUITES = {
     ],
     "isotopes": [
         "Bolot_et_al_2013",
+        "Graf_et_al_2019",
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
         "Pierchala_et_al_2022",
-        "Graf_et_al_2019",
         # "Rozanski_and_Sonntag_1982",  # TODO #1207
     ],
 }
