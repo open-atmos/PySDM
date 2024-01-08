@@ -5,6 +5,12 @@ from PySDM.initialisation import spectra
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 from PySDM.physics import si
 
+# not in the paper - guessed and checked to match
+CONSTANTS_ARG = {
+    "Mv": 18.015 * si.g / si.mol,
+    "Md": 28.97 * si.g / si.mol,
+}
+
 
 @strict
 class AerosolARG(DryAerosolMixture):

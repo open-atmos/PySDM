@@ -44,6 +44,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
+        isotope_equilibrium_fractionation_factors: str = "Null",
+        isotope_meteoric_water_line_excess: str = "Null",
+        isotope_ratio_evolution: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
         handle_all_breakups: bool = False,
@@ -65,6 +68,11 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
         self.fragmentation_function = fragmentation_function
+        self.isotope_equilibrium_fractionation_factors = (
+            isotope_equilibrium_fractionation_factors
+        )
+        self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
+        self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
 
         components = tuple(i for i in dir(self) if not i.startswith("__"))
@@ -73,10 +81,14 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             k: getattr(defaults, k)
             for defaults in (physics.constants, physics.constants_defaults)
             for k in dir(defaults)
-            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
+            if isinstance(
+                getattr(defaults, k), (numbers.Number, pint.Quantity, pint.Unit)
+            )
         }
+        constants_defaults = {**constants_defaults, **(constants or {})}
+        physics.constants_defaults.compute_derived_values(constants_defaults)
         constants = namedtuple("Constants", tuple(constants_defaults.keys()))(
-            **{**constants_defaults, **(constants or {})}
+            **constants_defaults
         )
         self.constants = constants
         self.seed = seed or physics.constants.default_random_seed

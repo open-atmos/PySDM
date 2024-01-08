@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 import numpy as np
-from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
+from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG, AerosolARG
 
 from PySDM import Builder, Formulae
 from PySDM import products as PySDM_products
@@ -34,7 +34,7 @@ def run_parcel(
         PySDM_products.ParcelDisplacement(name="z"),
     )
 
-    formulae = Formulae()
+    formulae = Formulae(constants=CONSTANTS_ARG)
     const = formulae.constants
     pv0 = RH0 * formulae.saturation_vapour_pressure.pvs_Celsius(T0 - const.T0)
 
@@ -50,8 +50,7 @@ def run_parcel(
     aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
     n_sd = n_sd_per_mode * len(aerosol.modes)
 
-    builder = Builder(backend=CPU(), n_sd=n_sd)
-    builder.set_environment(env)
+    builder = Builder(backend=CPU(), n_sd=n_sd, environment=env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
     builder.request_attribute("critical supersaturation")

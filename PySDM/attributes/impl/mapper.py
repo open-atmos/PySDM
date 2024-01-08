@@ -7,10 +7,12 @@ from PySDM.attributes.chemistry import (
     Acidity,
     HydrogenIonConcentration,
     make_concentration_factory,
-    make_mole_amount_factory,
 )
 from PySDM.attributes.ice import CoolingRate, FreezingTemperature, ImmersedSurfaceArea
 from PySDM.attributes.impl.dummy_attribute import make_dummy_attribute_factory
+from PySDM.attributes.impl.mole_amount import make_mole_amount_factory
+from PySDM.attributes.isotopes import Moles1H, Moles16O, MolesLightWater
+from PySDM.attributes.isotopes.delta import make_delta_factory
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.physics import (
     Area,
@@ -40,6 +42,7 @@ from PySDM.attributes.physics.equilibrium_supersaturation import (
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
 from PySDM.attributes.physics.relative_fall_velocity import RelativeFallMomentum
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
+from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.physics.surface_tension import Constant
 
 attributes = {
@@ -102,6 +105,18 @@ attributes = {
     "equilibrium supersaturation": lambda _, __: EquilibriumSupersaturation,
     "wet to critical volume ratio": lambda _, __: WetToCriticalVolumeRatio,
     "water mass": lambda _, __: WaterMass,
+    **{
+        "moles_"
+        + isotope: partial(lambda _, __, c: make_mole_amount_factory(c), c=isotope)
+        for isotope in HEAVY_ISOTOPES
+    },
+    **{
+        "delta_" + isotope: partial(lambda _, __, c: make_delta_factory(c), c=isotope)
+        for isotope in HEAVY_ISOTOPES
+    },
+    "moles_1H": lambda _, __: Moles1H,
+    "moles_16O": lambda _, __: Moles16O,
+    "moles light water": lambda _, __: MolesLightWater,
 }
 
 

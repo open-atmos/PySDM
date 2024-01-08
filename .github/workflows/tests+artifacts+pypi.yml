@@ -16,9 +16,6 @@ on:
 
 jobs:
   precommit:
-    strategy:
-      matrix:
-        package-dir: [".", "examples"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,11 +23,12 @@ jobs:
         with:
           python-version: 3.8
       - run: |
-          cd ${{ matrix.package-dir }}
           pip install pre-commit
           pre-commit clean
           pre-commit autoupdate
           pre-commit run --all-files
+      - if: ${{ failure() }}
+        run: git diff
 
   nojit_and_codecov:
     runs-on: ubuntu-latest
@@ -127,7 +125,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: ["3.8", "3.10"]
-        test-suite: ["unit_tests", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
+        test-suite: ["unit_tests", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d"]
         exclude:
           - test-suite: "devops_tests"
             python-version: "3.8"
@@ -177,7 +175,7 @@ jobs:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.8", "3.10"]
-        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process" ]
+        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     steps:

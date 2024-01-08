@@ -29,5 +29,5 @@ def test_temperature_profile(initial_temperature, plot=False):
         pyplot.show()
 
     # assert
-    assert output["T"][0] == initial_temperature
+    assert abs(output["T"][0] - initial_temperature) < 1e-10 * si.K
     assert output["T"][-1] < initial_temperature
