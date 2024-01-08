@@ -12,9 +12,9 @@ class PowerSeries:  # pylint: disable=too-few-public-methods
         self.particulator = particulator
         self.prefactors = prefactors or [2.0e-1 * si.m / si.s / np.sqrt(si.m)]
         self.powers = powers or [1 / 6]
-        for i in range(len(self.prefactors)):
-            self.prefactors[i] *= (4 / 3 * const.PI) ** (self.powers[i])
-            self.prefactors[i] /= (1 * si.um**3) ** (self.powers[i])
+        for i, p in enumerate(self.powers):
+            self.prefactors[i] *= (4 / 3 * const.PI) ** (p)
+            self.prefactors[i] /= (1 * si.um**3) ** (p)
         assert len(self.prefactors) == len(self.powers)
 
     def __call__(self, output, radius):

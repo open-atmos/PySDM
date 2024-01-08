@@ -96,8 +96,8 @@ def test_power_series(backend_class, prefactors, powers):
     r = np.array([0.01, 0.1, 1.0]) * const.si.mm / 2
     particulator = DummyParticulator(backend_class, n_sd=len(r))
     u = np.zeros_like(r)
-    for j in range(len(prefactors)):
-        u = u + prefactors[j] * 4 / 3 * const.PI * (r ** (powers[j] * 3))
+    for j, pref in enumerate(prefactors):
+        u = u + pref * 4 / 3 * const.PI * (r ** (powers[j] * 3))
     r = particulator.backend.Storage.from_ndarray(r)
 
     u_term_ps = particulator.backend.Storage.empty((len(u),), float)
