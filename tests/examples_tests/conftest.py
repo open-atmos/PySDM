@@ -35,7 +35,6 @@ TEST_SUITES = {
         "Bartman_et_al_2021",
         "Berry_1967",
         "Shima_et_al_2009",
-        "Wang_and_Grabowski_2009",
     ],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process": [
@@ -53,6 +52,7 @@ TEST_SUITES = {
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
         "Pierchala_et_al_2022",
+        "Graf_et_al_2019",
         # "Rozanski_and_Sonntag_1982",  # TODO #1207
     ],
 }
