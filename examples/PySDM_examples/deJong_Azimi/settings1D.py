@@ -41,7 +41,7 @@ class Settings1D(SettingsSH):
         precip: bool = True,
         formulae: Formulae = None,
         save_spec_and_attr_times=(),
-        z_part=[0.5, 0.75]
+        z_part=(0.5, 0.75)
     ):
         super().__init__(
             n_sd_per_gridbox=n_sd_per_gridbox,
