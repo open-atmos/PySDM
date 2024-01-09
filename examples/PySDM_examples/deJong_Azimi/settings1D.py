@@ -1,6 +1,5 @@
 from typing import Iterable
 
-import numpy as np
 from PySDM_examples.Shipway_and_Hill_2012 import Settings as SettingsSH
 
 from PySDM import Formulae

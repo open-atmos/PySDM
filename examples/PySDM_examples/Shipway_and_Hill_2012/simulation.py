@@ -13,7 +13,7 @@ from PySDM.dynamics import (
     Displacement,
     EulerianAdvection,
 )
-from PySDM.dynamics.collisions.collision_kernels import Geometric, Golovin
+from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
