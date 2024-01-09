@@ -310,7 +310,7 @@ Development of ice-phase microphysics representation has been supported through
   grant no. DE-SC0021034 by the Atmospheric System Research Program and 
   Atmospheric Radiation Measurement Program sponsored by the U.S. Department of Energy (DOE).
 EdJ's contributions were made possible by support from the Department of Energy Computational Sciences Graduate Research Fellowship.
-SAr acknowledges support from the Polish National Science Centre (grant no. 2020/39/D/ST10/01220).
+SAr, OB and KD acknowledge support from the Polish National Science Centre (grant no. 2020/39/D/ST10/01220).
 
 # References
 

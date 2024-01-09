@@ -41,8 +41,6 @@ class Simulation:
             thd_of_z=settings.thd,
             rhod_of_z=settings.rhod,
             z0=-settings.particle_reservoir_depth,
-            z_part=None,
-            collisions_only=False,
         )
 
         def zZ_to_z_above_reservoir(zZ):

@@ -1,6 +1,6 @@
 """
-box- and single-column breakup-focused examples from
-[de Jong et al. 2023](https://doi.org/10.5194/gmd-16-4193-2023)
+box- and single-column coalescence-focused examples used to test new
+moment-based microphysics in (Cloudy.jl)[https://github.com/CliMA/Cloudy.jl]
 """
 from .settings1D import Settings1D
 
