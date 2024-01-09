@@ -1,5 +1,5 @@
 """
-basic geometric kernel
+basic geometric kernel (not taking fall velocity into account)
 """
 
 
