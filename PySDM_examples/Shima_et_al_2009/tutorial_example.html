@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM_examples.Shima_et_al_2009 API documentation</title>
-<meta name="description" content="box-model coalescence-only example featuring Golovin analytic solution following setup from
-[Shima et al. 2009](https://doi.org/10.1002/qj.441)" />
+<title>PySDM_examples.Shima_et_al_2009.tutorial_example API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,62 +19,110 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM_examples.Shima_et_al_2009</code></h1>
+<h1 class="title">Module <code>PySDM_examples.Shima_et_al_2009.tutorial_example</code></h1>
 </header>
 <section id="section-intro">
-<p>box-model coalescence-only example featuring Golovin analytic solution following setup from
-<a href="https://doi.org/10.1002/qj.441">Shima et al. 2009</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python"># pylint: disable=invalid-name
-&#34;&#34;&#34;
-box-model coalescence-only example featuring Golovin analytic solution following setup from
-[Shima et al. 2009](https://doi.org/10.1002/qj.441)
-&#34;&#34;&#34;</code></pre>
+<pre><code class="python">from PySDM.backends import CPU
+from PySDM.builder import Builder
+from PySDM.dynamics import Coalescence
+from PySDM.environments import Box
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
+
+
+def run(settings, observers=()):
+    builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
+    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
+    attributes = {}
+    sampling = ConstantMultiplicity(settings.spectrum)
+    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = sampling.sample(settings.n_sd)
+    coalescence = Coalescence(
+        collision_kernel=settings.kernel, adaptive=settings.adaptive
+    )
+    builder.add_dynamic(coalescence)
+    products = (
+        ParticleVolumeVersusRadiusLogarithmSpectrum(
+            settings.radius_bins_edges, name=&#34;dv/dlnr&#34;
+        ),
+        WallTime(),
+    )
+    particulator = builder.build(attributes, products)
+    if hasattr(settings, &#34;u_term&#34;) and &#34;terminal velocity&#34; in particulator.attributes:
+        particulator.attributes[&#34;terminal velocity&#34;].approximation = settings.u_term(
+            particulator
+        )
+
+    for observer in observers:
+        particulator.observers.append(observer)
+
+    vals = {}
+    particulator.products[&#34;wall time&#34;].reset()
+    for step in settings.output_steps:
+        particulator.run(step - particulator.n_steps)
+        vals[step] = particulator.products[&#34;dv/dlnr&#34;].get()[0]
+        vals[step][:] *= settings.rho
+
+    exec_time = particulator.products[&#34;wall time&#34;].get()
+    return vals, exec_time</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.error_measure" href="error_measure.html">PySDM_examples.Shima_et_al_2009.error_measure</a></code></dt>
+<dt id="PySDM_examples.Shima_et_al_2009.tutorial_example.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>settings, observers=())</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.example" href="example.html">PySDM_examples.Shima_et_al_2009.example</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.example_timing" href="example_timing.html">PySDM_examples.Shima_et_al_2009.example_timing</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.settings" href="settings.html">PySDM_examples.Shima_et_al_2009.settings</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter" href="spectrum_plotter.html">PySDM_examples.Shima_et_al_2009.spectrum_plotter</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.tutorial_example" href="tutorial_example.html">PySDM_examples.Shima_et_al_2009.tutorial_example</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.tutorial_plotter" href="tutorial_plotter.html">PySDM_examples.Shima_et_al_2009.tutorial_plotter</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM_examples.Shima_et_al_2009.tutorial_settings" href="tutorial_settings.html">PySDM_examples.Shima_et_al_2009.tutorial_settings</a></code></dt>
-<dd>
-<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(settings, observers=()):
+    builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
+    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
+    attributes = {}
+    sampling = ConstantMultiplicity(settings.spectrum)
+    attributes[&#34;volume&#34;], attributes[&#34;n&#34;] = sampling.sample(settings.n_sd)
+    coalescence = Coalescence(
+        collision_kernel=settings.kernel, adaptive=settings.adaptive
+    )
+    builder.add_dynamic(coalescence)
+    products = (
+        ParticleVolumeVersusRadiusLogarithmSpectrum(
+            settings.radius_bins_edges, name=&#34;dv/dlnr&#34;
+        ),
+        WallTime(),
+    )
+    particulator = builder.build(attributes, products)
+    if hasattr(settings, &#34;u_term&#34;) and &#34;terminal velocity&#34; in particulator.attributes:
+        particulator.attributes[&#34;terminal velocity&#34;].approximation = settings.u_term(
+            particulator
+        )
+
+    for observer in observers:
+        particulator.observers.append(observer)
+
+    vals = {}
+    particulator.products[&#34;wall time&#34;].reset()
+    for step in settings.output_steps:
+        particulator.run(step - particulator.n_steps)
+        vals[step] = particulator.products[&#34;dv/dlnr&#34;].get()[0]
+        vals[step][:] *= settings.rho
+
+    exec_time = particulator.products[&#34;wall time&#34;].get()
+    return vals, exec_time</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
 </section>
 <section>
 </section>
@@ -88,19 +135,12 @@ box-model coalescence-only example featuring Golovin analytic solution following
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM_examples" href="../index.html">PySDM_examples</a></code></li>
+<li><code><a title="PySDM_examples.Shima_et_al_2009" href="index.html">PySDM_examples.Shima_et_al_2009</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
-<ul>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.error_measure" href="error_measure.html">PySDM_examples.Shima_et_al_2009.error_measure</a></code></li>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.example" href="example.html">PySDM_examples.Shima_et_al_2009.example</a></code></li>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.example_timing" href="example_timing.html">PySDM_examples.Shima_et_al_2009.example_timing</a></code></li>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.settings" href="settings.html">PySDM_examples.Shima_et_al_2009.settings</a></code></li>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.spectrum_plotter" href="spectrum_plotter.html">PySDM_examples.Shima_et_al_2009.spectrum_plotter</a></code></li>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.tutorial_example" href="tutorial_example.html">PySDM_examples.Shima_et_al_2009.tutorial_example</a></code></li>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.tutorial_plotter" href="tutorial_plotter.html">PySDM_examples.Shima_et_al_2009.tutorial_plotter</a></code></li>
-<li><code><a title="PySDM_examples.Shima_et_al_2009.tutorial_settings" href="tutorial_settings.html">PySDM_examples.Shima_et_al_2009.tutorial_settings</a></code></li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PySDM_examples.Shima_et_al_2009.tutorial_example.run" href="#PySDM_examples.Shima_et_al_2009.tutorial_example.run">run</a></code></li>
 </ul>
 </li>
 </ul>
