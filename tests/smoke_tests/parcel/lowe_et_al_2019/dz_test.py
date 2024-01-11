@@ -1,6 +1,7 @@
 """ checks how parcel equilibrium supersaturation depends on dz """
 
-import numpy as npfrom matplotlib import pyplot
+import numpy as np
+from matplotlib import pyplot
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019.aerosol_code import AerosolMarine
 
