@@ -1,14 +1,14 @@
+# pylint: disable=missing-module-docstring
 import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019.aerosol_code import AerosolMarine
 
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
-from PySDM.initialisation.spectra import Sum
 from PySDM.physics import si
 
 
-def test_dz(plot=False):
+def test_dz(plot=False):  # pylint: disable=too-many-locals
     consts = {
         "delta_min": 0.1,
         "MAC": 1,
@@ -42,7 +42,7 @@ def test_dz(plot=False):
 
     if plot:
         pyplot.rc("font", size=14)
-        fig, axs = pyplot.subplots(1, 2, figsize=(11, 4), sharey=True)
+        _, axs = pyplot.subplots(1, 2, figsize=(11, 4), sharey=True)
         vlist = ("S_max", "n_c_cm3")
 
         for idx, var in enumerate(vlist):
