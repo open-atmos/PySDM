@@ -25,7 +25,7 @@ def test_fig_4(variables, level_name, expected_height):
     tolerance = 50 * si.m
 
     # act
-    actual = vars["levels"][level_name] + vars["alt_initial"]
+    actual = variables["levels"][level_name] + variables["alt_initial"]
 
     # assert
     assert abs(expected_height - actual) < tolerance
