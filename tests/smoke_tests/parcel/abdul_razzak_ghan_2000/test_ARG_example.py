@@ -1,14 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM_examples.Abdul_Razzak_Ghan_2000.data_from_ARG2000_paper import (  # Fig2a_N2_obs, Fig2a_AF_obs, Fig2a_N2_param, Fig2a_AF_param,; Fig2b_N2_obs, Fig2b_AF_obs, Fig2b_N2_param, Fig2b_AF_param,; Fig3b_sol2_obs, Fig3b_AF_obs, Fig3b_sol2_param, Fig3b_AF_param,; Fig4a_rad2_obs, Fig4a_AF_obs, Fig4a_rad2_param, Fig4a_AF_param,; Fig4b_rad2_obs, Fig4b_AF_obs, Fig4b_rad2_param, Fig4b_AF_param,; Fig5a_w_obs, Fig5a_AF_obs, Fig5a_w_param, Fig5a_AF_param,; Fig5b_w_obs, Fig5b_AF_obs, Fig5b_w_param, Fig5b_AF_param
-    Fig1_AF_obs,
+from PySDM_examples.Abdul_Razzak_Ghan_2000.data_from_ARG2000_paper import (
     Fig1_AF_param,
-    Fig1_N2_obs,
     Fig1_N2_param,
-    Fig3a_AF_obs,
     Fig3a_AF_param,
-    Fig3a_sol2_obs,
     Fig3a_sol2_param,
 )
 from PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel import run_parcel
