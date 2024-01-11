@@ -9,7 +9,7 @@ from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
 
-def test_dz(plot=False):  # pylint: disable=too-many-locals
+def test_dz(plot=False):  # pylint: disable=too-many-locals,too-many-branches
     # arrange
     consts = {
         "delta_min": 0.1,
@@ -47,10 +47,7 @@ def test_dz(plot=False):  # pylint: disable=too-many-locals
     for idx, var in enumerate(vlist):
         for key, out_item in output.items():
             Y = np.asarray(out_item["z"])
-            if var == "RH":
-                X = np.asarray(out_item[var]) - 100
-            else:
-                X = out_item[var]
+            X = out_item[var]
             axs[idx].plot(
                 X, Y, label=f"dz={key} m", color=out_item["color"], linestyle="-"
             )
