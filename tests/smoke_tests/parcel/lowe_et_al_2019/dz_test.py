@@ -1,6 +1,6 @@
-# pylint: disable=missing-module-docstring
-import numpy as np
-from matplotlib import pyplot
+""" checks how parcel equilibrium supersaturation depends on dz """
+
+import numpy as npfrom matplotlib import pyplot
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019.aerosol_code import AerosolMarine
 
@@ -9,6 +9,7 @@ from PySDM.physics import si
 
 
 def test_dz(plot=False):  # pylint: disable=too-many-locals
+    # arrange
     consts = {
         "delta_min": 0.1,
         "MAC": 1,
@@ -21,6 +22,8 @@ def test_dz(plot=False):  # pylint: disable=too-many-locals
     output = {}
     aerosol = AerosolMarine()
     model = "Constant"
+
+    # act
     for i, dz_test in enumerate((0.1, 1, 10)):
         key = f"{dz_test}"
         settings = Settings(
@@ -35,38 +38,42 @@ def test_dz(plot=False):  # pylint: disable=too-many-locals
         output[key] = simulation.run()
         output[key]["color"] = "C" + str(i)
 
+    # plot
+    pyplot.rc("font", size=14)
+    _, axs = pyplot.subplots(1, 2, figsize=(11, 4), sharey=True)
+    vlist = ("S_max", "n_c_cm3")
+
+    for idx, var in enumerate(vlist):
+        for key, out_item in output.items():
+            Y = np.asarray(out_item["z"])
+            if var == "RH":
+                X = np.asarray(out_item[var]) - 100
+            else:
+                X = out_item[var]
+            axs[idx].plot(
+                X, Y, label=f"dz={key} m", color=out_item["color"], linestyle="-"
+            )
+
+        axs[idx].set_ylabel("Displacement [m]")
+        if var == "S_max":
+            axs[idx].set_xlabel("Supersaturation [%]")
+            axs[idx].set_xlim(0)
+        elif var == "n_c_cm3":
+            axs[idx].set_xlabel("Cloud droplet concentration [cm$^{-3}$]")
+        else:
+            assert False
+
+    for ax in axs:
+        ax.grid()
+    axs[0].legend(fontsize=12)
+
+    if plot:
+        pyplot.show()
+    else:
+        pyplot.clf()
+
+    # assert
     for i, out_item in enumerate(output.values()):
         if i == 0:
             x = out_item["S_max"][-1]
         np.testing.assert_approx_equal(x, out_item["S_max"][-1], significant=1)
-
-    if plot:
-        pyplot.rc("font", size=14)
-        _, axs = pyplot.subplots(1, 2, figsize=(11, 4), sharey=True)
-        vlist = ("S_max", "n_c_cm3")
-
-        for idx, var in enumerate(vlist):
-            for key, out_item in output.items():
-                Y = np.asarray(out_item["z"])
-                if var == "RH":
-                    X = np.asarray(out_item[var]) - 100
-                else:
-                    X = out_item[var]
-                axs[idx].plot(
-                    X, Y, label=f"dz={key} m", color=out_item["color"], linestyle="-"
-                )
-            # axs[idx].set_ylim(0, 210)
-
-            axs[idx].set_ylabel("Displacement [m]")
-            if var == "S_max":
-                axs[idx].set_xlabel("Supersaturation [%]")
-                axs[idx].set_xlim(0)
-            elif var == "n_c_cm3":
-                axs[idx].set_xlabel("Cloud droplet concentration [cm$^{-3}$]")
-            else:
-                assert False
-
-        for ax in axs:
-            ax.grid()
-        axs[0].legend(fontsize=12)
-        pyplot.show()
