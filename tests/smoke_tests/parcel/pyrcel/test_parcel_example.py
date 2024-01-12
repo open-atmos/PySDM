@@ -17,6 +17,7 @@ class TestParcelExample:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("s_max, s_250m, T_250m", ((0.62, 0.139, 272.2),))
     @pytest.mark.parametrize("scipy_solver", (pytest.param(True), pytest.param(False)))
+    @pytest.mark.xfail(strict=True)  # TODO #776 only s_250m fails
     def test_supersaturation_and_temperature_profile(
         s_max, s_250m, T_250m, scipy_solver
     ):
@@ -56,11 +57,9 @@ class TestParcelExample:  # pylint: disable=too-few-public-methods
         np.testing.assert_approx_equal(
             np.nanmax(np.asarray(output["products"]["RH"])) - 100, s_max, significant=2
         )
-
         np.testing.assert_approx_equal(
             output["products"]["T"][-1], T_250m, significant=2
         )
-
-        # TODO #776
-        # np.testing.assert_approx_equal(output['products']['RH'][-1]-100, s_250m, significant=2)
-        assert s_250m is not None
+        np.testing.assert_approx_equal(
+            output["products"]["RH"][-1] - 100, s_250m, significant=2
+        )
