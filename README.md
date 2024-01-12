@@ -41,7 +41,7 @@ Most of the example notebooks reproduce results and plot from literature, see be
   a list of examples and links to the notebooks (which can be either executed or viewed 
   "in the cloud").
 
-There are also a growing set of tutorials, also in the form of Jupyter notebooks.
+There are also a growing set of [tutorials](https://github.com/open-atmos/PySDM/tree/main/tutorials), also in the form of Jupyter notebooks.
 These tutorials are intended for teaching purposes and include short explanations of cloud microphysical 
   concepts paired with widgets for running interactive simulations using PySDM.
 Each tutorial also comes with a set of questions at the end that can be used as homework problems.
