@@ -38,6 +38,7 @@ TEST_SUITES = {
         "Arabas_et_al_2015",
         "Bartman_2020_MasterThesis",
         "Bulenok_2023_MasterThesis",
+        "deJong_Azimi",
         "Arabas_et_al_2023",
         "Szumowski_et_al_1998",
         "Shipway_and_Hill_2012",
