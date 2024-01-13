@@ -9,7 +9,9 @@ from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
 
-def test_dz_sensitivity(plot=False):  # pylint: disable=too-many-locals,too-many-branches
+def test_dz_sensitivity(
+    plot=False,
+):  # pylint: disable=too-many-locals,too-many-branches
     # arrange
     consts = {
         "delta_min": 0.1,
