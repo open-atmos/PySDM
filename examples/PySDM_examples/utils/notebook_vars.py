@@ -1,13 +1,16 @@
-""" common notebook execution logic """
+""" helper routines for use in smoke tests """
+from pathlib import Path
+
 import nbformat
 
-from PySDM.physics.constants_defaults import (  # pylint:disable=unused-import
-    PER_MEG,
-    PER_MILLE,
-)
 
-
-def notebook_vars(file, plot):
+def notebook_vars(file: Path, plot: bool):
+    """Executes the code from all cells of the Jupyter notebook `file` and
+    returns a dictionary with the notebook variables. If the `plot` argument
+    is set to `True`, any code line within the notebook starting with `show_plot(`
+    (see [open_atmos_jupyter_utils docs](https://pypi.org/p/open_atmos_jupyter_utils))
+    is replaced with `pyplot.show() #`, otherwise it is replaced with `pyplot.gca().clear() #`
+    to match the smoke-test conventions."""
     notebook = nbformat.read(file, nbformat.NO_CONVERT)
     context = {}
     for cell in notebook.cells:
