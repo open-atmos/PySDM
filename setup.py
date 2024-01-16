@@ -25,7 +25,7 @@ setup(
         "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
         "numba" + ("==0.58.1" if CI else ">=0.51.2"),
         "numpy" + ("==1.24.4" if CI else ""),
-        "Pint" + ("==0.23" if CI else ""),
+        "Pint" + ("==0.21.1" if CI else ""),
         "chempy" + ("==0.8.3" if CI else ""),
         "scipy" + ("==1.10.1" if CI else ""),
         "pyevtk" + ("==1.2.0" if CI else ""),
