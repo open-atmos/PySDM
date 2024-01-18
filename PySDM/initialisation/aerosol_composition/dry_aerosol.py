@@ -16,6 +16,7 @@ from typing import Dict, Tuple
 
 from PySDM import formulae
 from PySDM.physics import surface_tension
+from PySDM.physics.constants_defaults import Mv, rho_w
 
 
 class DryAerosolMixture:
@@ -71,7 +72,7 @@ class DryAerosolMixture:
         return x
 
     # calculate hygroscopicities with different assumptions about solubility
-    def kappa(self, mass_fractions: dict):
+    def kappa(self, mass_fractions: dict, water_molar_mass_over_density=Mv / rho_w):
         volfrac = self.volume_fractions(mass_fractions)
         molar_volumes = {
             i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -93,13 +94,13 @@ class DryAerosolMixture:
         result = {}
         for st in formulae._choices(surface_tension).keys():
             if st in (surface_tension.Constant.__name__):
-                result[st] = all_soluble_ns * const.Mv / const.rho_w
+                result[st] = all_soluble_ns * water_molar_mass_over_density
             elif st in (
                 surface_tension.CompressedFilmOvadnevaite.__name__,
                 surface_tension.CompressedFilmRuehl.__name__,
                 surface_tension.SzyszkowskiLangmuir.__name__,
             ):
-                result[st] = part_soluble_ns * const.Mv / const.rho_w
+                result[st] = part_soluble_ns * water_molar_mass_over_density
             else:
                 raise AssertionError()
         return result

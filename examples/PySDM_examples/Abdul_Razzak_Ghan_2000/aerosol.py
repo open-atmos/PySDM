@@ -4,12 +4,14 @@ from pystrict import strict
 from PySDM.initialisation import spectra
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 from PySDM.physics import si
+from PySDM.physics.constants_defaults import rho_w
 
 # not in the paper - guessed and checked to match
 CONSTANTS_ARG = {
     "Mv": 18.015 * si.g / si.mol,
     "Md": 28.97 * si.g / si.mol,
 }
+water_molar_mass_over_density = CONSTANTS_ARG["Mv"] / rho_w
 
 
 @strict
@@ -20,6 +22,8 @@ class AerosolARG(DryAerosolMixture):
         M2_N: float = 100 / si.cm**3,
         M2_rad: float = 50 * si.nm,
     ):
+        mode1 = {"(NH4)2SO4": 1.0, "insoluble": 0.0}
+        mode2 = {"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}
         super().__init__(
             compounds=("(NH4)2SO4", "insoluble"),
             molar_masses={
@@ -35,13 +39,13 @@ class AerosolARG(DryAerosolMixture):
         )
         self.modes = (
             {
-                "kappa": self.kappa({"(NH4)2SO4": 1.0, "insoluble": 0.0}),
+                "kappa": self.kappa(mode1, water_molar_mass_over_density),
                 "spectrum": spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0
                 ),
             },
             {
-                "kappa": self.kappa({"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}),
+                "kappa": self.kappa(mode2, water_molar_mass_over_density),
                 "spectrum": spectra.Lognormal(
                     norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
@@ -69,19 +73,19 @@ class AerosolWhitby(DryAerosolMixture):
         )
         self.modes = (
             {
-                "kappa": self.kappa(nuclei),
+                "kappa": self.kappa(nuclei, water_molar_mass_over_density),
                 "spectrum": spectra.Lognormal(
                     norm_factor=1000.0 / si.cm**3, m_mode=0.008 * si.um, s_geom=1.6
                 ),
             },
             {
-                "kappa": self.kappa(accum),
+                "kappa": self.kappa(accum, water_molar_mass_over_density),
                 "spectrum": spectra.Lognormal(
                     norm_factor=800 / si.cm**3, m_mode=0.034 * si.um, s_geom=2.1
                 ),
             },
             {
-                "kappa": self.kappa(coarse),
+                "kappa": self.kappa(coarse, water_molar_mass_over_density),
                 "spectrum": spectra.Lognormal(
                     norm_factor=0.72 / si.cm**3, m_mode=0.46 * si.um, s_geom=2.2
                 ),
