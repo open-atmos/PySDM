@@ -40,7 +40,7 @@ authors:
     orcid: 0000-0003-2317-3310
   - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "5,3"
+    affiliation: "3,5"
 affiliations:
  - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, United States of America
    index: 1
