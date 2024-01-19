@@ -47,7 +47,9 @@ def run_parcel(
         T0=T0,
     )
 
-    aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
+    aerosol = AerosolARG(
+        M2_sol=sol2, M2_N=N2, M2_rad=rad2, water_molar_volume=const.Mv / const.rho_w
+    )
     n_sd = n_sd_per_mode * len(aerosol.modes)
 
     builder = Builder(backend=CPU(), n_sd=n_sd, environment=env)

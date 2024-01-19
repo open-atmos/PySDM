@@ -94,13 +94,13 @@ class DryAerosolMixture:
         result = {}
         for st in formulae._choices(surface_tension).keys():
             if st in (surface_tension.Constant.__name__):
-                result[st] = all_soluble_ns * Mv / rho_w
+                result[st] = all_soluble_ns * water_molar_volume
             elif st in (
                 surface_tension.CompressedFilmOvadnevaite.__name__,
                 surface_tension.CompressedFilmRuehl.__name__,
                 surface_tension.SzyszkowskiLangmuir.__name__,
             ):
-                result[st] = part_soluble_ns * Mv / rho_w
+                result[st] = part_soluble_ns * water_molar_volume
             else:
                 raise AssertionError()
         return result
