@@ -11,7 +11,7 @@ CONSTANTS_ARG = {
     "Mv": 18.015 * si.g / si.mol,
     "Md": 28.97 * si.g / si.mol,
 }
-water_molar_mass_over_density = CONSTANTS_ARG["Mv"] / rho_w
+nu_w = CONSTANTS_ARG["Mv"] / rho_w
 
 
 @strict
@@ -39,13 +39,13 @@ class AerosolARG(DryAerosolMixture):
         )
         self.modes = (
             {
-                "kappa": self.kappa(mode1, water_molar_mass_over_density),
+                "kappa": self.kappa(mode1, nu_w),
                 "spectrum": spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0
                 ),
             },
             {
-                "kappa": self.kappa(mode2, water_molar_mass_over_density),
+                "kappa": self.kappa(mode2, nu_w),
                 "spectrum": spectra.Lognormal(
                     norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
@@ -73,19 +73,19 @@ class AerosolWhitby(DryAerosolMixture):
         )
         self.modes = (
             {
-                "kappa": self.kappa(nuclei, water_molar_mass_over_density),
+                "kappa": self.kappa(nuclei, nu_w),
                 "spectrum": spectra.Lognormal(
                     norm_factor=1000.0 / si.cm**3, m_mode=0.008 * si.um, s_geom=1.6
                 ),
             },
             {
-                "kappa": self.kappa(accum, water_molar_mass_over_density),
+                "kappa": self.kappa(accum, nu_w),
                 "spectrum": spectra.Lognormal(
                     norm_factor=800 / si.cm**3, m_mode=0.034 * si.um, s_geom=2.1
                 ),
             },
             {
-                "kappa": self.kappa(coarse, water_molar_mass_over_density),
+                "kappa": self.kappa(coarse, nu_w),
                 "spectrum": spectra.Lognormal(
                     norm_factor=0.72 / si.cm**3, m_mode=0.46 * si.um, s_geom=2.2
                 ),

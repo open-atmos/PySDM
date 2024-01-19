@@ -72,7 +72,7 @@ class DryAerosolMixture:
         return x
 
     # calculate hygroscopicities with different assumptions about solubility
-    def kappa(self, mass_fractions: dict, water_molar_mass_over_density=Mv / rho_w):
+    def kappa(self, mass_fractions: dict, nu_w=Mv / rho_w):
         volfrac = self.volume_fractions(mass_fractions)
         molar_volumes = {
             i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -94,13 +94,13 @@ class DryAerosolMixture:
         result = {}
         for st in formulae._choices(surface_tension).keys():
             if st in (surface_tension.Constant.__name__):
-                result[st] = all_soluble_ns * water_molar_mass_over_density
+                result[st] = all_soluble_ns * nu_w
             elif st in (
                 surface_tension.CompressedFilmOvadnevaite.__name__,
                 surface_tension.CompressedFilmRuehl.__name__,
                 surface_tension.SzyszkowskiLangmuir.__name__,
             ):
-                result[st] = part_soluble_ns * water_molar_mass_over_density
+                result[st] = part_soluble_ns * nu_w
             else:
                 raise AssertionError()
         return result
