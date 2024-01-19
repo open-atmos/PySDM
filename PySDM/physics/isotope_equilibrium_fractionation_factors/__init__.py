@@ -9,3 +9,4 @@ from .merlivat_and_nief_1967 import MerlivatAndNief1967
 from .null import Null
 from .pierchala_et_al_2022 import PierchalaEtAl2022
 from .van_hook_1968 import VanHook1968
+from .graf_phd_2017 import GrafPhD2017

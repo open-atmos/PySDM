@@ -9,9 +9,19 @@ class Majoube1971:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def alpha_l_H2_18O(const, T):
+    def alpha_l_18O(const, T):
         return np.exp(
-            const.MAJOUBE_1971_ALPHA_L_H218O_T2 / T**2
-            + const.MAJOUBE_1971_ALPHA_L_H218O_T1 / T
-            + const.MAJOUBE_1971_ALPHA_L_H218O_T0
+            const.MAJOUBE_1971_ALPHA_L_18O_T2 / T**2
+            + const.MAJOUBE_1971_ALPHA_L_18O_T1 / T
+            + const.MAJOUBE_1971_ALPHA_L_18O_T0
         )
+
+    @staticmethod
+    def alpha_l_2H(const, T):
+        return np.exp(
+            const.MAJOUBE_1971_ALPHA_L_2H_T2 / T ** 2
+            + const.MAJOUBE_1971_ALPHA_L_2H_T1 / T
+            + const.MAJOUBE_1971_ALPHA_L_2H_T0
+        )
+
+# TODO: rename to be consistent with other formulae (18O instead of H2_18O)
