@@ -23,6 +23,3 @@ class Majoube1971:  # pylint: disable=too-few-public-methods
             + const.MAJOUBE_1971_ALPHA_L_2H_T1 / T
             + const.MAJOUBE_1971_ALPHA_L_2H_T0
         )
-
-
-# TODO: rename to be consistent with other formulae (18O instead of H2_18O)
