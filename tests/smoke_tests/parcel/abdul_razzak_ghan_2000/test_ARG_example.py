@@ -21,10 +21,14 @@ class TestARGExample:  # pylint: disable=too-few-public-methods
         output = run_parcel(w, sol2, N2i, rad2, n_sd_per_mode)
 
         assert np.isclose(
-            output.activated_fraction_S[0], ARG_paper.Fig1_AF_param[idx], atol=output.error[0]
+            output.activated_fraction_S[0],
+            ARG_paper.Fig1_AF_param[idx],
+            atol=output.error[0],
         )
         assert np.isclose(
-            output.activated_fraction_V[0], ARG_paper.Fig1_AF_param[idx], atol=output.error[0]
+            output.activated_fraction_V[0],
+            ARG_paper.Fig1_AF_param[idx],
+            atol=output.error[0],
         )
 
     @staticmethod
@@ -42,8 +46,12 @@ class TestARGExample:  # pylint: disable=too-few-public-methods
         output = run_parcel(w, sol2i, N2, rad2, n_sd_per_mode)
 
         assert np.isclose(
-            output.activated_fraction_S[0], ARG_paper.Fig3a_AF_param[idx], atol=output.error[0]
+            output.activated_fraction_S[0],
+            ARG_paper.Fig3a_AF_param[idx],
+            atol=output.error[0],
         )
         assert np.isclose(
-            output.activated_fraction_V[0], ARG_paper.Fig3a_AF_param[idx], atol=output.error[0]
+            output.activated_fraction_V[0],
+            ARG_paper.Fig3a_AF_param[idx],
+            atol=output.error[0],
         )
