@@ -37,9 +37,16 @@ The package features a Pythonic high-performance implementation of the
 
 There is a growing set of example Jupyter notebooks exemplifying how to perform 
   various types of calculations and simulations using PySDM.
-Most of the example notebooks reproduce resutls and plot from literature, see below for 
+Most of the example notebooks reproduce results and plot from literature, see below for 
   a list of examples and links to the notebooks (which can be either executed or viewed 
   "in the cloud").
+
+There are also a growing set of [tutorials](https://github.com/open-atmos/PySDM/tree/main/tutorials), also in the form of Jupyter notebooks.
+These tutorials are intended for teaching purposes and include short explanations of cloud microphysical 
+  concepts paired with widgets for running interactive simulations using PySDM.
+Each tutorial also comes with a set of questions at the end that can be used as homework problems.
+Like the examples, these tutorials can be executed or viewed "in the cloud" making it an especially 
+  easy way for students to get started.
 
 PySDM has two alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 

@@ -4,4 +4,4 @@
 
 set -e
 shopt -s extglob
-rm -rfv !("examples")
+rm -rfv !("examples"|"tutorials")
