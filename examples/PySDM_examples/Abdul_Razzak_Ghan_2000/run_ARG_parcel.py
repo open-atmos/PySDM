@@ -52,7 +52,7 @@ def run_parcel(
     )
     n_sd = n_sd_per_mode * len(aerosol.modes)
 
-    builder = Builder(backend=CPU(), n_sd=n_sd, environment=env)
+    builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
     builder.request_attribute("critical supersaturation")
