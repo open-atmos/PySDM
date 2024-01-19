@@ -1,8 +1,7 @@
 """
-Equilibrium fractionation factors used in [Graf et al. 2017](https://doi.org/10.3929/ethz-b-000266387)
+Equilibrium fractionation factors used in
+[Graf et al. 2017](https://doi.org/10.3929/ethz-b-000266387)
 """
-import numpy as np
-
 from PySDM.physics.isotope_equilibrium_fractionation_factors.majoube_1970 import (
     Majoube1970,
 )

@@ -41,6 +41,7 @@ def variables_fixture():
         (0, "s_v", "B", "diff_d_excess", -13.4 * PER_MILLE),
     ),
 )
+# pylint: disable=too-many-arguments
 def test_table_1(variables, temp_celsius, phases, case, var, diff):
     # arrange
     three_for_per_mille = 3
