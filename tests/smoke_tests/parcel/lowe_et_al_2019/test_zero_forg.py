@@ -4,8 +4,12 @@ from matplotlib import pyplot
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019.aerosol import AerosolBoreal, AerosolMarine
 
+from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
+
+FORMULAE = Formulae()
+WATER_MOLAR_VOLUME = FORMULAE.constants.Mv / FORMULAE.constants.rho_w
 
 
 def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
@@ -35,10 +39,26 @@ def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
                     n_sd_per_mode=20,
                     model=model,
                     aerosol={
-                        "a": AerosolMarine(Forg=0, Acc_N2=Acc["a"]),
-                        "b": AerosolMarine(Forg=0, Acc_N2=Acc["b"]),
-                        "c": AerosolBoreal(Forg=0, Acc_N2=Acc["c"]),
-                        "d": AerosolBoreal(Forg=0, Acc_N2=Acc["d"]),
+                        "a": AerosolMarine(
+                            water_molar_volume=WATER_MOLAR_VOLUME,
+                            Forg=0,
+                            Acc_N2=Acc["a"],
+                        ),
+                        "b": AerosolMarine(
+                            water_molar_volume=WATER_MOLAR_VOLUME,
+                            Forg=0,
+                            Acc_N2=Acc["b"],
+                        ),
+                        "c": AerosolBoreal(
+                            water_molar_volume=WATER_MOLAR_VOLUME,
+                            Forg=0,
+                            Acc_N2=Acc["c"],
+                        ),
+                        "d": AerosolBoreal(
+                            water_molar_volume=WATER_MOLAR_VOLUME,
+                            Forg=0,
+                            Acc_N2=Acc["d"],
+                        ),
                     }[subplot],
                     w=w * si.m / si.s,
                     spectral_sampling=spec_sampling.ConstantMultiplicity,
