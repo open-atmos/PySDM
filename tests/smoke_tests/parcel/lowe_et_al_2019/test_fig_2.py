@@ -5,7 +5,9 @@ from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019 import aerosol as paper_aerosol
 
 from PySDM.initialisation.sampling import spectral_sampling
-from PySDM.physics import si
+from PySDM.physics import constants_defaults, si
+
+WATER_MOLAR_VOLUME = constants_defaults.Mv / constants_defaults.rho_w
 
 
 class TestFig2:  # pylint: disable=too-few-public-methods
@@ -13,25 +15,43 @@ class TestFig2:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize(
         "aerosol, surface_tension, s_max, s_100m, n_100m",
         (
-            (paper_aerosol.AerosolMarine(), "Constant", 0.271, 0.081, 148),
             (
-                paper_aerosol.AerosolMarine(),
+                paper_aerosol.AerosolMarine(water_molar_volume=WATER_MOLAR_VOLUME),
+                "Constant",
+                0.271,
+                0.081,
+                148,
+            ),
+            (
+                paper_aerosol.AerosolMarine(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 0.250,
                 0.075,
                 169,
             ),
-            (paper_aerosol.AerosolBoreal(), "Constant", 0.182, 0.055, 422),
             (
-                paper_aerosol.AerosolBoreal(),
+                paper_aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME),
+                "Constant",
+                0.182,
+                0.055,
+                422,
+            ),
+            (
+                paper_aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 0.137,
                 0.055,
                 525,
             ),
-            (paper_aerosol.AerosolNascent(), "Constant", 0.407, 0.122, 68),
             (
-                paper_aerosol.AerosolNascent(),
+                paper_aerosol.AerosolNascent(water_molar_volume=WATER_MOLAR_VOLUME),
+                "Constant",
+                0.407,
+                0.122,
+                68,
+            ),
+            (
+                paper_aerosol.AerosolNascent(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 0.314,
                 0.076,

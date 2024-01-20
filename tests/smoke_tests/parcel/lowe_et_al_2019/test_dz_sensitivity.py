@@ -6,7 +6,7 @@ from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019.aerosol_code import AerosolMarine
 
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
-from PySDM.physics import si
+from PySDM.physics import constants_defaults, si
 
 
 def test_dz_sensitivity(
@@ -23,7 +23,9 @@ def test_dz_sensitivity(
     }
 
     output = {}
-    aerosol = AerosolMarine()
+    aerosol = AerosolMarine(
+        water_molar_volume=constants_defaults.Mv / constants_defaults.rho_w
+    )
     model = "Constant"
 
     # act
