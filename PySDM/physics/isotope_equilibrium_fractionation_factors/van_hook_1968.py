@@ -9,67 +9,67 @@ class VanHook1968:
         pass
 
     @staticmethod
-    def alpha_l_HDO(const, T):
+    def alpha_l_2H(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_L_HDO_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_L_HDO_B / T
-            + const.VAN_HOOK_1968_ALPHA_L_HDO_C
+            const.VAN_HOOK_1968_ALPHA_L_2H_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_L_2H_B / T
+            + const.VAN_HOOK_1968_ALPHA_L_2H_C
         )
 
     @staticmethod
-    def alpha_i_HDO(const, T):
+    def alpha_i_2H(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_I_HDO_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_I_HDO_B / T
-            + const.VAN_HOOK_1968_ALPHA_I_HDO_C
+            const.VAN_HOOK_1968_ALPHA_I_2H_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_I_2H_B / T
+            + const.VAN_HOOK_1968_ALPHA_I_2H_C
         )
 
     @staticmethod
-    def alpha_l_H2_18O(const, T):
+    def alpha_l_18O(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_L_H218O_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_L_H218O_B / T
-            + const.VAN_HOOK_1968_ALPHA_L_H218O_C
+            const.VAN_HOOK_1968_ALPHA_L_18O_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_L_18O_B / T
+            + const.VAN_HOOK_1968_ALPHA_L_18O_C
         )
 
     @staticmethod
-    def alpha_i_H2_18O(const, T):
+    def alpha_i_18O(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_I_H218O_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_I_H218O_B / T
-            + const.VAN_HOOK_1968_ALPHA_I_H218O_C
+            const.VAN_HOOK_1968_ALPHA_I_18O_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_I_18O_B / T
+            + const.VAN_HOOK_1968_ALPHA_I_18O_C
         )
 
     @staticmethod
-    def alpha_l_H2_17O(const, T):
+    def alpha_l_17O(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_L_H217O_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_L_H217O_B / T
-            + const.VAN_HOOK_1968_ALPHA_L_H217O_C
+            const.VAN_HOOK_1968_ALPHA_L_17O_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_L_17O_B / T
+            + const.VAN_HOOK_1968_ALPHA_L_17O_C
         )
 
     @staticmethod
-    def alpha_i_H2_17O(const, T):
+    def alpha_i_17O(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_I_H217O_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_I_H217O_B / T
-            + const.VAN_HOOK_1968_ALPHA_I_H217O_C
+            const.VAN_HOOK_1968_ALPHA_I_17O_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_I_17O_B / T
+            + const.VAN_HOOK_1968_ALPHA_I_17O_C
         )
 
     @staticmethod
-    def alpha_l_HOT(const, T):
+    def alpha_l_3H(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_L_HOT_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_L_HOT_B / T
-            + const.VAN_HOOK_1968_ALPHA_L_HOT_C
+            const.VAN_HOOK_1968_ALPHA_L_3H_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_L_3H_B / T
+            + const.VAN_HOOK_1968_ALPHA_L_3H_C
         )
 
     @staticmethod
-    def alpha_i_HOT(const, T):
+    def alpha_i_3H(const, T):
         return np.exp(
-            const.VAN_HOOK_1968_ALPHA_I_HOT_A / T**2
-            + const.VAN_HOOK_1968_ALPHA_I_HOT_B / T
-            + const.VAN_HOOK_1968_ALPHA_I_HOT_C
+            const.VAN_HOOK_1968_ALPHA_I_3H_A / T**2
+            + const.VAN_HOOK_1968_ALPHA_I_3H_B / T
+            + const.VAN_HOOK_1968_ALPHA_I_3H_C
         )
 
     @staticmethod
