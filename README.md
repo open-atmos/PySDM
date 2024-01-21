@@ -787,18 +787,20 @@ The development and maintenance of PySDM is led by [Sylwester Arabas](https://gi
 of technological solutions in PySDM. 
 The suite of examples shipped with PySDM includes contributions from researchers 
 from [Jagiellonian University](https://en.uj.edu.pl/en) departments of computer science, physics and chemistry;
-and from 
-[Caltech's Climate Modelling Alliance](https://clima.caltech.edu/).
+from [Caltech's Climate Modelling Alliance](https://clima.caltech.edu/) and
+from [AGH University of Krakow](https://agh.edu.pl/en) where release maintanance takes place currently.
 
 Development of PySDM had been initially supported by the EU through a grant of the 
-[Foundation for Polish Science](https://www.fnp.org.pl/)) (POIR.04.04.00-00-5E1C/18) 
+[Foundation for Polish Science](https://www.fnp.org.pl/)) (grant no. POIR.04.04.00-00-5E1C/18) 
 realised at the [Jagiellonian University](https://en.uj.edu.pl/en).
 The immersion freezing support in PySDM is developed with support from the
 US Department of Energy [Atmospheric System Research](https://asr.science.energy.gov/) programme
-through a grant realised at the 
+through a grant (no. DE-SC0021034) realised at the 
 [University of Illinois at Urbana-Champaign](https://illinois.edu/).
+Development of isotopic fractionation representation and mixed-phase support is carried out with support from
+the [Polish National Science Centre](https://ncn.gov.pl/en) (grant no. 2020/39/D/ST10/01220).
 
-copyright: [Jagiellonian University](https://en.uj.edu.pl/en)    
+copyright: [Jagiellonian University](https://en.uj.edu.pl/en) (2019-2023) & [AGH University of Krakow](https://agh.edu.pl/en) (2023-...)    
 licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Related resources and open-source projects
