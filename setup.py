@@ -37,7 +37,6 @@ setup(
             "matplotlib" + ("==3.5.3" if CI else ""),
             "jupyter-core<5.0.0",
             "ipywidgets!=8.0.3",
-            "ghapi",
             "pytest",
             "pytest-timeout",
             "PyPartMC==1.0.1",
