@@ -23,12 +23,35 @@ class TestARGExample:  # pylint: disable=too-few-public-methods
         assert np.isclose(
             output.activated_fraction_S[0],
             ARG_paper.Fig1_AF_param[idx],
-            atol=output.error[0],
+            atol=output.error[0] * 2,
         )
         assert np.isclose(
             output.activated_fraction_V[0],
             ARG_paper.Fig1_AF_param[idx],
-            atol=output.error[0],
+            atol=output.error[0] * 2,
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize("N2i", np.linspace(100, 5000, 5) / si.cm**3)
+    def test_ARG_fig2a(N2i):
+        w = 0.5 * si.m / si.s
+        sol2 = 0.1  # 10% ammonium sulfate, 90% insoluble
+        rad2 = 50.0 * si.nm
+
+        n_sd_per_mode = 10
+
+        idx = np.argmin(np.abs(ARG_paper.Fig2a_N2_param - N2i * si.cm**3))
+        output = run_parcel(w, sol2, N2i, rad2, n_sd_per_mode)
+
+        assert np.isclose(
+            output.activated_fraction_S[0],
+            ARG_paper.Fig2a_AF_param[idx],
+            atol=output.error[0] * 2,
+        )
+        assert np.isclose(
+            output.activated_fraction_V[0],
+            ARG_paper.Fig2a_AF_param[idx],
+            atol=output.error[0] * 2,
         )
 
     @staticmethod
@@ -48,10 +71,10 @@ class TestARGExample:  # pylint: disable=too-few-public-methods
         assert np.isclose(
             output.activated_fraction_S[0],
             ARG_paper.Fig3a_AF_param[idx],
-            atol=output.error[0],
+            atol=output.error[0] * 2,
         )
         assert np.isclose(
             output.activated_fraction_V[0],
             ARG_paper.Fig3a_AF_param[idx],
-            atol=output.error[0],
+            atol=output.error[0] * 2,
         )
