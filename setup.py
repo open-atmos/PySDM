@@ -34,7 +34,7 @@ setup(
     ],
     extras_require={
         "tests": [
-            "matplotlib" + ("==3.5.3" if CI else ""),
+            "matplotlib",
             "jupyter-core<5.0.0",
             "ipywidgets!=8.0.3",
             "pytest",
