@@ -2,16 +2,26 @@
 # PySDM-examples
 
 ### no-model examples depicting isotope-related formulae:
-- [Bolot et al. 2013](http://doi.org/10.5194/acp-13-7903-2013):
-  - Fig. 1:
-      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bolot_et_al_2013/fig_1.ipynb)
-      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Bolot_et_al_2013/fig_1.ipynb)
-      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bolot_et_al_2013/fig_1.ipynb)    
 - [Merlivat & Nief 1967](https://doi.org/10.3402/tellusa.v19i1.9756):
   - Fig. 2:
       [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Merlivat_and_Nief_1967/fig_2.ipynb)
       [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Merlivat_and_Nief_1967/fig_2.ipynb)
       [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Merlivat_and_Nief_1967/fig_2.ipynb)    
+- [Van Hook 1968](https://doi.org/10.1021/j100850a028):
+  - Fig. 1:
+      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb)    
+- [Bolot et al. 2013](http://doi.org/10.5194/acp-13-7903-2013):
+  - Fig. 1:
+      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bolot_et_al_2013/fig_1.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Bolot_et_al_2013/fig_1.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Bolot_et_al_2013/fig_1.ipynb)    
+- [Graf et al. 2019](https://doi.org/10.5194/acp-19-747-2019):
+  - Table. 1:
+      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb)    
 - [Pierchala et al. 2022](https://doi.org/10.1016/j.gca.2022.01.020):
   - Fig. 3:
       [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb)
@@ -21,11 +31,6 @@
       [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb)
       [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb)
       [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb)    
-- [Van Hook 1968](https://doi.org/10.1021/j100850a028):
-  - Fig. 1:
-      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb)
-      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb)
-      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb)    
 
 ### 0D box-model coalescence and breakup examples:
 - [Shima et al. 2009](http://doi.org/10.1002/qj.441) (Box model, coalescence only, test case employing Golovin analytical solution):
