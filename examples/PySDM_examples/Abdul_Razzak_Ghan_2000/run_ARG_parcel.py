@@ -6,7 +6,6 @@ from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import CONSTANTS_ARG, Aerosol
 from PySDM import Builder, Formulae
 from PySDM import products as PySDM_products
 from PySDM.backends import CPU
-from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
@@ -47,10 +46,12 @@ def run_parcel(
         T0=T0,
     )
 
-    aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
+    aerosol = AerosolARG(
+        M2_sol=sol2, M2_N=N2, M2_rad=rad2, water_molar_volume=const.Mv / const.rho_w
+    )
     n_sd = n_sd_per_mode * len(aerosol.modes)
 
-    builder = Builder(backend=CPU(), n_sd=n_sd, environment=env)
+    builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
     builder.request_attribute("critical supersaturation")
@@ -79,7 +80,6 @@ def run_parcel(
     attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet)
 
     particulator = builder.build(attributes, products=products)
-    scipy_ode_condensation_solver.patch_particulator(particulator)
 
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {
