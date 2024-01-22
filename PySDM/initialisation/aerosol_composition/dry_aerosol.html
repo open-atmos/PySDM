@@ -56,14 +56,13 @@ from typing import Dict, Tuple
 
 from PySDM import formulae
 from PySDM.physics import surface_tension
-from PySDM.physics.constants_defaults import Mv, rho_w
 
 
 class DryAerosolMixture:
     def __init__(
         self,
         *,
-        compounds: Tuple[str],
+        compounds: Tuple[str, ...],
         densities: Dict[str, float],
         molar_masses: Dict[str, float],
         is_soluble: Dict[str, bool],
@@ -84,21 +83,21 @@ class DryAerosolMixture:
     def modes(self, value: Tuple[Dict]):
         self._modes = value
 
-    # convert mass fractions to volume fractions
     def volume_fractions(self, mass_fractions: dict):
+        &#34;&#34;&#34;convert mass fractions to volume fractions&#34;&#34;&#34;
         return {
             k: (mass_fractions[k] / self.densities[k])
             / sum(mass_fractions[i] / self.densities[i] for i in self.compounds)
             for k in self.compounds
         }
 
-    # calculate total volume fraction of soluble species
     def f_soluble_volume(self, mass_fractions: dict):
+        &#34;&#34;&#34;calculate total volume fraction of soluble species&#34;&#34;&#34;
         volfrac = self.volume_fractions(mass_fractions)
         return sum(self.is_soluble[k] * volfrac[k] for k in self.compounds)
 
-    # calculate volume fractions of just soluble or just insoluble species
     def volfrac_just_soluble(self, volfrac: dict, soluble=True):
+        &#34;&#34;&#34;calculate volume fractions of just soluble or just insoluble species&#34;&#34;&#34;
         if soluble:
             _masked = {k: (self.is_soluble[k]) * volfrac[k] for k in self.compounds}
         else:
@@ -111,8 +110,8 @@ class DryAerosolMixture:
             x = {k: _masked[k] / _denom for k in self.compounds}
         return x
 
-    # calculate hygroscopicities with different assumptions about solubility
-    def kappa(self, mass_fractions: dict):
+    def kappa(self, mass_fractions: dict, water_molar_volume: float):
+        &#34;&#34;&#34;calculate hygroscopicities with different assumptions about solubility&#34;&#34;&#34;
         volfrac = self.volume_fractions(mass_fractions)
         molar_volumes = {
             i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -134,19 +133,19 @@ class DryAerosolMixture:
         result = {}
         for st in formulae._choices(surface_tension).keys():
             if st in (surface_tension.Constant.__name__):
-                result[st] = all_soluble_ns * Mv / rho_w
+                result[st] = all_soluble_ns * water_molar_volume
             elif st in (
                 surface_tension.CompressedFilmOvadnevaite.__name__,
                 surface_tension.CompressedFilmRuehl.__name__,
                 surface_tension.SzyszkowskiLangmuir.__name__,
             ):
-                result[st] = part_soluble_ns * Mv / rho_w
+                result[st] = part_soluble_ns * water_molar_volume
             else:
                 raise AssertionError()
         return result
 
-    # calculate molar volume of just organic species
     def nu_org(self, mass_fractions: dict):
+        &#34;&#34;&#34;calculate molar volume of just organic species&#34;&#34;&#34;
         volfrac = self.volume_fractions(mass_fractions)
         molar_volumes = {
             i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -168,7 +167,7 @@ class DryAerosolMixture:
 <dl>
 <dt id="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture"><code class="flex name class">
 <span>class <span class="ident">DryAerosolMixture</span></span>
-<span>(</span><span>*, compounds: Tuple[str], densities: Dict[str, float], molar_masses: Dict[str, float], is_soluble: Dict[str, bool], ionic_dissociation_phi: Dict[str, int])</span>
+<span>(</span><span>*, compounds: Tuple[str, ...], densities: Dict[str, float], molar_masses: Dict[str, float], is_soluble: Dict[str, bool], ionic_dissociation_phi: Dict[str, int])</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -180,7 +179,7 @@ class DryAerosolMixture:
     def __init__(
         self,
         *,
-        compounds: Tuple[str],
+        compounds: Tuple[str, ...],
         densities: Dict[str, float],
         molar_masses: Dict[str, float],
         is_soluble: Dict[str, bool],
@@ -201,21 +200,21 @@ class DryAerosolMixture:
     def modes(self, value: Tuple[Dict]):
         self._modes = value
 
-    # convert mass fractions to volume fractions
     def volume_fractions(self, mass_fractions: dict):
+        &#34;&#34;&#34;convert mass fractions to volume fractions&#34;&#34;&#34;
         return {
             k: (mass_fractions[k] / self.densities[k])
             / sum(mass_fractions[i] / self.densities[i] for i in self.compounds)
             for k in self.compounds
         }
 
-    # calculate total volume fraction of soluble species
     def f_soluble_volume(self, mass_fractions: dict):
+        &#34;&#34;&#34;calculate total volume fraction of soluble species&#34;&#34;&#34;
         volfrac = self.volume_fractions(mass_fractions)
         return sum(self.is_soluble[k] * volfrac[k] for k in self.compounds)
 
-    # calculate volume fractions of just soluble or just insoluble species
     def volfrac_just_soluble(self, volfrac: dict, soluble=True):
+        &#34;&#34;&#34;calculate volume fractions of just soluble or just insoluble species&#34;&#34;&#34;
         if soluble:
             _masked = {k: (self.is_soluble[k]) * volfrac[k] for k in self.compounds}
         else:
@@ -228,8 +227,8 @@ class DryAerosolMixture:
             x = {k: _masked[k] / _denom for k in self.compounds}
         return x
 
-    # calculate hygroscopicities with different assumptions about solubility
-    def kappa(self, mass_fractions: dict):
+    def kappa(self, mass_fractions: dict, water_molar_volume: float):
+        &#34;&#34;&#34;calculate hygroscopicities with different assumptions about solubility&#34;&#34;&#34;
         volfrac = self.volume_fractions(mass_fractions)
         molar_volumes = {
             i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -251,19 +250,19 @@ class DryAerosolMixture:
         result = {}
         for st in formulae._choices(surface_tension).keys():
             if st in (surface_tension.Constant.__name__):
-                result[st] = all_soluble_ns * Mv / rho_w
+                result[st] = all_soluble_ns * water_molar_volume
             elif st in (
                 surface_tension.CompressedFilmOvadnevaite.__name__,
                 surface_tension.CompressedFilmRuehl.__name__,
                 surface_tension.SzyszkowskiLangmuir.__name__,
             ):
-                result[st] = part_soluble_ns * Mv / rho_w
+                result[st] = part_soluble_ns * water_molar_volume
             else:
                 raise AssertionError()
         return result
 
-    # calculate molar volume of just organic species
     def nu_org(self, mass_fractions: dict):
+        &#34;&#34;&#34;calculate molar volume of just organic species&#34;&#34;&#34;
         volfrac = self.volume_fractions(mass_fractions)
         molar_volumes = {
             i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -309,26 +308,28 @@ def modes(self):
 <span>def <span class="ident">f_soluble_volume</span></span>(<span>self, mass_fractions: dict)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>calculate total volume fraction of soluble species</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def f_soluble_volume(self, mass_fractions: dict):
+    &#34;&#34;&#34;calculate total volume fraction of soluble species&#34;&#34;&#34;
     volfrac = self.volume_fractions(mass_fractions)
     return sum(self.is_soluble[k] * volfrac[k] for k in self.compounds)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.kappa"><code class="name flex">
-<span>def <span class="ident">kappa</span></span>(<span>self, mass_fractions: dict)</span>
+<span>def <span class="ident">kappa</span></span>(<span>self, mass_fractions: dict, water_molar_volume: float)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>calculate hygroscopicities with different assumptions about solubility</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def kappa(self, mass_fractions: dict):
+<pre><code class="python">def kappa(self, mass_fractions: dict, water_molar_volume: float):
+    &#34;&#34;&#34;calculate hygroscopicities with different assumptions about solubility&#34;&#34;&#34;
     volfrac = self.volume_fractions(mass_fractions)
     molar_volumes = {
         i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -350,13 +351,13 @@ def modes(self):
     result = {}
     for st in formulae._choices(surface_tension).keys():
         if st in (surface_tension.Constant.__name__):
-            result[st] = all_soluble_ns * Mv / rho_w
+            result[st] = all_soluble_ns * water_molar_volume
         elif st in (
             surface_tension.CompressedFilmOvadnevaite.__name__,
             surface_tension.CompressedFilmRuehl.__name__,
             surface_tension.SzyszkowskiLangmuir.__name__,
         ):
-            result[st] = part_soluble_ns * Mv / rho_w
+            result[st] = part_soluble_ns * water_molar_volume
         else:
             raise AssertionError()
     return result</code></pre>
@@ -366,12 +367,13 @@ def modes(self):
 <span>def <span class="ident">nu_org</span></span>(<span>self, mass_fractions: dict)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>calculate molar volume of just organic species</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def nu_org(self, mass_fractions: dict):
+    &#34;&#34;&#34;calculate molar volume of just organic species&#34;&#34;&#34;
     volfrac = self.volume_fractions(mass_fractions)
     molar_volumes = {
         i: self.molar_masses[i] / self.densities[i] for i in self.compounds
@@ -386,12 +388,13 @@ def modes(self):
 <span>def <span class="ident">volfrac_just_soluble</span></span>(<span>self, volfrac: dict, soluble=True)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>calculate volume fractions of just soluble or just insoluble species</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def volfrac_just_soluble(self, volfrac: dict, soluble=True):
+    &#34;&#34;&#34;calculate volume fractions of just soluble or just insoluble species&#34;&#34;&#34;
     if soluble:
         _masked = {k: (self.is_soluble[k]) * volfrac[k] for k in self.compounds}
     else:
@@ -409,12 +412,13 @@ def modes(self):
 <span>def <span class="ident">volume_fractions</span></span>(<span>self, mass_fractions: dict)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>convert mass fractions to volume fractions</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def volume_fractions(self, mass_fractions: dict):
+    &#34;&#34;&#34;convert mass fractions to volume fractions&#34;&#34;&#34;
     return {
         k: (mass_fractions[k] / self.densities[k])
         / sum(mass_fractions[i] / self.densities[i] for i in self.compounds)

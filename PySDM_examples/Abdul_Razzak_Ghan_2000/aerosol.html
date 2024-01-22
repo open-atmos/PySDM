@@ -44,6 +44,7 @@ CONSTANTS_ARG = {
 class AerosolARG(DryAerosolMixture):
     def __init__(
         self,
+        water_molar_volume: float,
         M2_sol: float = 0,
         M2_N: float = 100 / si.cm**3,
         M2_rad: float = 50 * si.nm,
@@ -63,13 +64,19 @@ class AerosolARG(DryAerosolMixture):
         )
         self.modes = (
             {
-                &#34;kappa&#34;: self.kappa({&#34;(NH4)2SO4&#34;: 1.0, &#34;insoluble&#34;: 0.0}),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions={&#34;(NH4)2SO4&#34;: 1.0, &#34;insoluble&#34;: 0.0},
+                    water_molar_volume=water_molar_volume,
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0
                 ),
             },
             {
-                &#34;kappa&#34;: self.kappa({&#34;(NH4)2SO4&#34;: M2_sol, &#34;insoluble&#34;: (1 - M2_sol)}),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions={&#34;(NH4)2SO4&#34;: M2_sol, &#34;insoluble&#34;: (1 - M2_sol)},
+                    water_molar_volume=water_molar_volume,
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
@@ -79,7 +86,7 @@ class AerosolARG(DryAerosolMixture):
 
 @strict
 class AerosolWhitby(DryAerosolMixture):
-    def __init__(self):
+    def __init__(self, water_molar_volume: float):
         nuclei = {&#34;(NH4)2SO4&#34;: 1.0}
         accum = {&#34;(NH4)2SO4&#34;: 1.0}
         coarse = {&#34;(NH4)2SO4&#34;: 1.0}
@@ -97,19 +104,25 @@ class AerosolWhitby(DryAerosolMixture):
         )
         self.modes = (
             {
-                &#34;kappa&#34;: self.kappa(nuclei),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions=nuclei, water_molar_volume=water_molar_volume
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=1000.0 / si.cm**3, m_mode=0.008 * si.um, s_geom=1.6
                 ),
             },
             {
-                &#34;kappa&#34;: self.kappa(accum),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions=accum, water_molar_volume=water_molar_volume
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=800 / si.cm**3, m_mode=0.034 * si.um, s_geom=2.1
                 ),
             },
             {
-                &#34;kappa&#34;: self.kappa(coarse),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions=coarse, water_molar_volume=water_molar_volume
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=0.72 / si.cm**3, m_mode=0.46 * si.um, s_geom=2.2
                 ),
@@ -128,7 +141,7 @@ class AerosolWhitby(DryAerosolMixture):
 <dl>
 <dt id="PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol.AerosolARG"><code class="flex name class">
 <span>class <span class="ident">AerosolARG</span></span>
-<span>(</span><span>M2_sol: float = 0, M2_N: float = 99999999.99999999, M2_rad: float = 5.0000000000000004e-08)</span>
+<span>(</span><span>water_molar_volume: float, M2_sol: float = 0, M2_N: float = 99999999.99999999, M2_rad: float = 5.0000000000000004e-08)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -140,6 +153,7 @@ class AerosolWhitby(DryAerosolMixture):
 class AerosolARG(DryAerosolMixture):
     def __init__(
         self,
+        water_molar_volume: float,
         M2_sol: float = 0,
         M2_N: float = 100 / si.cm**3,
         M2_rad: float = 50 * si.nm,
@@ -159,13 +173,19 @@ class AerosolARG(DryAerosolMixture):
         )
         self.modes = (
             {
-                &#34;kappa&#34;: self.kappa({&#34;(NH4)2SO4&#34;: 1.0, &#34;insoluble&#34;: 0.0}),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions={&#34;(NH4)2SO4&#34;: 1.0, &#34;insoluble&#34;: 0.0},
+                    water_molar_volume=water_molar_volume,
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0
                 ),
             },
             {
-                &#34;kappa&#34;: self.kappa({&#34;(NH4)2SO4&#34;: M2_sol, &#34;insoluble&#34;: (1 - M2_sol)}),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions={&#34;(NH4)2SO4&#34;: M2_sol, &#34;insoluble&#34;: (1 - M2_sol)},
+                    water_molar_volume=water_molar_volume,
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
@@ -176,9 +196,22 @@ class AerosolARG(DryAerosolMixture):
 <ul class="hlist">
 <li><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></li>
 </ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.f_soluble_volume" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.f_soluble_volume">f_soluble_volume</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.kappa" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.kappa">kappa</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.nu_org" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.nu_org">nu_org</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volfrac_just_soluble" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volfrac_just_soluble">volfrac_just_soluble</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volume_fractions" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volume_fractions">volume_fractions</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol.AerosolWhitby"><code class="flex name class">
 <span>class <span class="ident">AerosolWhitby</span></span>
+<span>(</span><span>water_molar_volume: float)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -188,7 +221,7 @@ class AerosolARG(DryAerosolMixture):
 </summary>
 <pre><code class="python">@strict
 class AerosolWhitby(DryAerosolMixture):
-    def __init__(self):
+    def __init__(self, water_molar_volume: float):
         nuclei = {&#34;(NH4)2SO4&#34;: 1.0}
         accum = {&#34;(NH4)2SO4&#34;: 1.0}
         coarse = {&#34;(NH4)2SO4&#34;: 1.0}
@@ -206,19 +239,25 @@ class AerosolWhitby(DryAerosolMixture):
         )
         self.modes = (
             {
-                &#34;kappa&#34;: self.kappa(nuclei),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions=nuclei, water_molar_volume=water_molar_volume
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=1000.0 / si.cm**3, m_mode=0.008 * si.um, s_geom=1.6
                 ),
             },
             {
-                &#34;kappa&#34;: self.kappa(accum),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions=accum, water_molar_volume=water_molar_volume
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=800 / si.cm**3, m_mode=0.034 * si.um, s_geom=2.1
                 ),
             },
             {
-                &#34;kappa&#34;: self.kappa(coarse),
+                &#34;kappa&#34;: self.kappa(
+                    mass_fractions=coarse, water_molar_volume=water_molar_volume
+                ),
                 &#34;spectrum&#34;: spectra.Lognormal(
                     norm_factor=0.72 / si.cm**3, m_mode=0.46 * si.um, s_geom=2.2
                 ),
@@ -228,6 +267,18 @@ class AerosolWhitby(DryAerosolMixture):
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.f_soluble_volume" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.f_soluble_volume">f_soluble_volume</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.kappa" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.kappa">kappa</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.nu_org" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.nu_org">nu_org</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volfrac_just_soluble" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volfrac_just_soluble">volfrac_just_soluble</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volume_fractions" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volume_fractions">volume_fractions</a></code></li>
+</ul>
+</li>
 </ul>
 </dd>
 </dl>
