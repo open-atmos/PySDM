@@ -8,12 +8,14 @@ from PySDM import Formulae
 from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
-TRIVIA = Formulae().trivia
+FORMULAE = Formulae()
+TRIVIA = FORMULAE.trivia
 R_WET = np.logspace(np.log(150 * si.nm), np.log(3000 * si.nm), base=np.e, num=100)
 R_DRY = 50 * si.nm
 V_WET = TRIVIA.volume(R_WET)
 V_DRY = TRIVIA.volume(R_DRY)
 TEMPERATURE = 300 * si.K
+WATER_MOLAR_VOLUME = FORMULAE.constants.Mv / FORMULAE.constants.rho_w
 
 
 class TestFig1:
@@ -36,9 +38,18 @@ class TestFig1:
     @pytest.mark.parametrize(
         "aerosol, cutoff",
         (
-            (paper_aerosol.AerosolBoreal(), 560 * si.nm),
-            (paper_aerosol.AerosolMarine(), 380 * si.nm),
-            (paper_aerosol.AerosolNascent(), 500 * si.nm),
+            (
+                paper_aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME),
+                560 * si.nm,
+            ),
+            (
+                paper_aerosol.AerosolMarine(water_molar_volume=WATER_MOLAR_VOLUME),
+                380 * si.nm,
+            ),
+            (
+                paper_aerosol.AerosolNascent(water_molar_volume=WATER_MOLAR_VOLUME),
+                500 * si.nm,
+            ),
         ),
     )
     # pylint: disable=unused-argument
@@ -64,25 +75,43 @@ class TestFig1:
     @pytest.mark.parametrize(
         "aerosol, surface_tension, maximum_x, maximum_y, bimodal",
         (
-            (paper_aerosol.AerosolBoreal(), "Constant", 320 * si.nm, 0.217, False),
-            (paper_aerosol.AerosolMarine(), "Constant", 420 * si.nm, 0.164, False),
-            (paper_aerosol.AerosolNascent(), "Constant", 360 * si.nm, 0.194, False),
             (
-                paper_aerosol.AerosolBoreal(),
+                paper_aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME),
+                "Constant",
+                320 * si.nm,
+                0.217,
+                False,
+            ),
+            (
+                paper_aerosol.AerosolMarine(water_molar_volume=WATER_MOLAR_VOLUME),
+                "Constant",
+                420 * si.nm,
+                0.164,
+                False,
+            ),
+            (
+                paper_aerosol.AerosolNascent(water_molar_volume=WATER_MOLAR_VOLUME),
+                "Constant",
+                360 * si.nm,
+                0.194,
+                False,
+            ),
+            (
+                paper_aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 360 * si.nm,
                 0.108,
                 True,
             ),
             (
-                paper_aerosol.AerosolMarine(),
+                paper_aerosol.AerosolMarine(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 600 * si.nm,
                 0.115,
                 False,
             ),
             (
-                paper_aerosol.AerosolNascent(),
+                paper_aerosol.AerosolNascent(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 670 * si.nm,
                 0.104,

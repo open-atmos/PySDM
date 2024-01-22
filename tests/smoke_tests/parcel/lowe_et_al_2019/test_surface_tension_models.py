@@ -6,13 +6,15 @@ from PySDM import Formulae
 from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
-TRIVIA = Formulae().trivia
+FORMULAE = Formulae()
+TRIVIA = FORMULAE.trivia
 R_WET = np.logspace(np.log(150 * si.nm), np.log(3000 * si.nm), base=np.e, num=100)
 R_DRY = 50 * si.nm
 V_WET = TRIVIA.volume(R_WET)
 V_DRY = TRIVIA.volume(R_DRY)
 TEMPERATURE = 300 * si.K
-aer = aerosol.AerosolBoreal()
+WATER_MOLAR_VOLUME = FORMULAE.constants.Mv / FORMULAE.constants.rho_w
+aer = aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME)
 
 
 class TestFig1:

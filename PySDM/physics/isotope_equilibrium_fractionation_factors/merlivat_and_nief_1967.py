@@ -10,17 +10,17 @@ class MerlivatAndNief1967:
         pass
 
     @staticmethod
-    def alpha_l_HDO(const, T):
+    def alpha_l_2H(const, T):
         return np.exp(
-            const.MERLIVAT_NIEF_1967_ALPHA_L_HDO_T2 / T**2
-            + const.MERLIVAT_NIEF_1967_ALPHA_L_HDO_T1 / T
-            + const.MERLIVAT_NIEF_1967_ALPHA_L_HDO_T0
+            const.MERLIVAT_NIEF_1967_ALPHA_L_2H_T2 / T**2
+            + const.MERLIVAT_NIEF_1967_ALPHA_L_2H_T1 / T
+            + const.MERLIVAT_NIEF_1967_ALPHA_L_2H_T0
         )
 
     @staticmethod
-    def alpha_i_HDO(const, T):
+    def alpha_i_2H(const, T):
         return np.exp(
-            const.MERLIVAT_NIEF_1967_ALPHA_I_HDO_T2 / T**2
-            + const.MERLIVAT_NIEF_1967_ALPHA_I_HDO_T1 / T
-            + const.MERLIVAT_NIEF_1967_ALPHA_I_HDO_T0
+            const.MERLIVAT_NIEF_1967_ALPHA_I_2H_T2 / T**2
+            + const.MERLIVAT_NIEF_1967_ALPHA_I_2H_T1 / T
+            + const.MERLIVAT_NIEF_1967_ALPHA_I_2H_T0
         )

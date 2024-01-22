@@ -9,7 +9,7 @@ from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 CASES = (
     (
-        "HDO",
+        "2H",
         "ice",
         {
             -120 * si.K + constants_defaults.T0: 1.82,
@@ -17,7 +17,7 @@ CASES = (
         },
     ),
     (
-        "HDO",
+        "2H",
         "liquid",
         {
             -40 * si.K + constants_defaults.T0: 1.2,
@@ -25,7 +25,7 @@ CASES = (
         },
     ),
     (
-        "H2_18O",
+        "18O",
         "ice",
         {
             -120 * si.K + constants_defaults.T0: 1.05,
@@ -33,7 +33,7 @@ CASES = (
         },
     ),
     (
-        "H2_18O",
+        "18O",
         "liquid",
         {
             -40 * si.K + constants_defaults.T0: 1.02,
