@@ -8,7 +8,9 @@ from PySDM.physics import si
 
 @strict
 class AerosolMarine(DryAerosolMixture):
-    def __init__(self, Forg: float = 0.2, Acc_N2: float = 134):
+    def __init__(
+        self, water_molar_volume: float, Forg: float = 0.2, Acc_N2: float = 134
+    ):
         Aitken = {
             "palmitic": Forg,
             "(NH4)2SO4": (1 - Forg),
@@ -48,7 +50,7 @@ class AerosolMarine(DryAerosolMixture):
         self.modes = (
             {
                 "f_org": 1 - self.f_soluble_volume(Aitken),
-                "kappa": self.kappa(Aitken),
+                "kappa": self.kappa(Aitken, water_molar_volume=water_molar_volume),
                 "nu_org": self.nu_org(Aitken),
                 "spectrum": spectra.Lognormal(
                     norm_factor=226 / si.cm**3, m_mode=19.6 * si.nm, s_geom=1.71
@@ -56,7 +58,9 @@ class AerosolMarine(DryAerosolMixture):
             },
             {
                 "f_org": 1 - self.f_soluble_volume(Accumulation),
-                "kappa": self.kappa(Accumulation),
+                "kappa": self.kappa(
+                    Accumulation, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Accumulation),
                 "spectrum": spectra.Lognormal(
                     norm_factor=Acc_N2 / si.cm**3, m_mode=69.5 * si.nm, s_geom=1.7
@@ -69,7 +73,9 @@ class AerosolMarine(DryAerosolMixture):
 
 @strict
 class AerosolBoreal(DryAerosolMixture):
-    def __init__(self, Forg: float = 0.668, Acc_N2: float = 540):
+    def __init__(
+        self, water_molar_volume: float, Forg: float = 0.668, Acc_N2: float = 540
+    ):
         # note: SOA1 or SOA2 unclear from the paper
         Aitken = {
             "SOA1": Forg,
@@ -116,7 +122,7 @@ class AerosolBoreal(DryAerosolMixture):
         self.modes = (
             {
                 "f_org": 1 - self.f_soluble_volume(Aitken),
-                "kappa": self.kappa(Aitken),
+                "kappa": self.kappa(Aitken, water_molar_volume=water_molar_volume),
                 "nu_org": self.nu_org(Aitken),
                 "spectrum": spectra.Lognormal(
                     norm_factor=1110 / si.cm**3, m_mode=22.7 * si.nm, s_geom=1.75
@@ -124,7 +130,9 @@ class AerosolBoreal(DryAerosolMixture):
             },
             {
                 "f_org": 1 - self.f_soluble_volume(Accumulation),
-                "kappa": self.kappa(Accumulation),
+                "kappa": self.kappa(
+                    Accumulation, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Accumulation),
                 "spectrum": spectra.Lognormal(
                     norm_factor=Acc_N2 / si.cm**3,
@@ -139,7 +147,9 @@ class AerosolBoreal(DryAerosolMixture):
 
 @strict
 class AerosolNascent(DryAerosolMixture):
-    def __init__(self, Acc_Forg: float = 0.3, Acc_N2: float = 30):
+    def __init__(
+        self, water_molar_volume: float, Acc_Forg: float = 0.3, Acc_N2: float = 30
+    ):
         Ultrafine = {
             "SOA1": 0.52,
             "SOA2": 0,
@@ -178,7 +188,7 @@ class AerosolNascent(DryAerosolMixture):
         self.modes = (
             {
                 "f_org": 1 - self.f_soluble_volume(Ultrafine),
-                "kappa": self.kappa(Ultrafine),
+                "kappa": self.kappa(Ultrafine, water_molar_volume=water_molar_volume),
                 "nu_org": self.nu_org(Ultrafine),
                 "spectrum": spectra.Lognormal(
                     norm_factor=2000 / si.cm**3, m_mode=11.5 * si.nm, s_geom=1.71
@@ -186,7 +196,9 @@ class AerosolNascent(DryAerosolMixture):
             },
             {
                 "f_org": 1 - self.f_soluble_volume(Accumulation),
-                "kappa": self.kappa(Accumulation),
+                "kappa": self.kappa(
+                    Accumulation, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Accumulation),
                 "spectrum": spectra.Lognormal(
                     norm_factor=Acc_N2 / si.cm**3, m_mode=100 * si.nm, s_geom=1.70
