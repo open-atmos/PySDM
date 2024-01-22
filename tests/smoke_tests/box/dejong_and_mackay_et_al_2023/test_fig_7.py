@@ -10,7 +10,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponentia
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics import si
 
-CMAP = matplotlib.cm.get_cmap("viridis")
+CMAP = matplotlib.colormaps["viridis"]
 N_SD = 2**12
 DT = 1 * si.s
 
