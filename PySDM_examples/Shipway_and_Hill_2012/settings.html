@@ -29,9 +29,9 @@
 <pre><code class="python">from typing import Iterable
 
 import numpy as np
+from numdifftools import Derivative
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
-from scipy.misc import derivative
 
 from PySDM import Formulae
 from PySDM.dynamics import condensation
@@ -134,9 +134,9 @@ class Settings:
             water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
                 z_above_reservoir
             )
-            d_water_vapour_mixing_ratio__dz = derivative(
-                self.water_vapour_mixing_ratio, z_above_reservoir
-            )
+            d_water_vapour_mixing_ratio__dz = Derivative(
+                self.water_vapour_mixing_ratio
+            )(z_above_reservoir)
             T = self.formulae.state_variable_triplet.T(
                 rhod[0], self.thd(z_above_reservoir)
             )
@@ -325,9 +325,9 @@ class Settings:
             water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
                 z_above_reservoir
             )
-            d_water_vapour_mixing_ratio__dz = derivative(
-                self.water_vapour_mixing_ratio, z_above_reservoir
-            )
+            d_water_vapour_mixing_ratio__dz = Derivative(
+                self.water_vapour_mixing_ratio
+            )(z_above_reservoir)
             T = self.formulae.state_variable_triplet.T(
                 rhod[0], self.thd(z_above_reservoir)
             )
