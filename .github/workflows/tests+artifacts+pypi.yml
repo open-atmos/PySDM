@@ -124,7 +124,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
-        python-version: ["3.8", "3.10"]
+        python-version: ["3.8", "3.11"]
         test-suite: ["unit_tests", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - test-suite: "devops_tests"
@@ -178,7 +178,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
-        python-version: ["3.8", "3.10"]
+        python-version: ["3.8", "3.11"]
         test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
@@ -242,7 +242,7 @@ jobs:
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
       - uses: actions/setup-python@v2
         with:
-          python-version: "3.10"
+          python-version: "3.11"
 
       - run: pip install twine build
 
@@ -262,7 +262,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.10"]
+        python-version: ["3.8", "3.11"]
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
