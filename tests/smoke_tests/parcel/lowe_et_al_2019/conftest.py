@@ -9,7 +9,7 @@ from PySDM.physics.surface_tension import compressed_film_ovadnevaite
 @pytest.fixture(name="constants")
 def constants_fixture():
     compressed_film_ovadnevaite.sgm_org = 40 * si.mN / si.m
-    # TODO #604 0.2 in the paper, but 0.1 matches the paper plots
+    # TODO #1247 0.2 in the paper, but 0.1 matches the paper plots
     compressed_film_ovadnevaite.delta_min = 0.1 * si.nm
 
     yield

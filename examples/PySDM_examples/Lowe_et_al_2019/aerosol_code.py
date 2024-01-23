@@ -109,8 +109,8 @@ class AerosolBoreal(DryAerosolMixture):
     def __init__(
         self, water_molar_volume: float, Forg: float = 0.668, Acc_N2: float = 540
     ):
-        # TODO #604: SOA1 or SOA2 unclear from the paper
-        # TODO #604: CAN'T FIND WHERE NH4NO3 PROPERTIES ARE DEFINED IN ICPM
+        # TODO #1247: SOA1 or SOA2 unclear from the paper
+        # TODO #1247: CAN'T FIND WHERE NH4NO3 PROPERTIES ARE DEFINED IN ICPM
         INORG_MASS_RATIO = 0.1515 / 0.1559
         Aitken = {
             "SOA1": Forg,
@@ -137,8 +137,8 @@ class AerosolBoreal(DryAerosolMixture):
                 * si.gram
                 / si.mole,
                 "NH4NO3": Substance.from_formula("NH4NO3").mass * si.gram / si.mole,
-                "SOA1": 190 * si.g / si.mole,  # TODO #604: 190 OR 200?
-                "SOA2": 368.4 * si.g / si.mole,  # TODO #604: 368.4 OR 200?
+                "SOA1": 190 * si.g / si.mole,  # TODO #1247: 190 OR 200?
+                "SOA2": 368.4 * si.g / si.mole,  # TODO #1247: 368.4 OR 200?
             },
             densities={
                 "SOA1": 1.2 * si.g / si.cm**3,
@@ -199,7 +199,7 @@ class AerosolNascent(DryAerosolMixture):
     def __init__(
         self, water_molar_volume: float, Acc_Forg: float = 0.3, Acc_N2: float = 30
     ):
-        # TODO #604: CAN'T FIND WHEN PHI IS MULTIPLIED FOR KÖHLER B IN ICPM CODE
+        # TODO #1247: CAN'T FIND WHEN PHI IS MULTIPLIED FOR KÖHLER B IN ICPM CODE
         Ultrafine = {
             "SOA1": 0.52,
             "SOA2": 0,
@@ -217,8 +217,8 @@ class AerosolNascent(DryAerosolMixture):
                 "(NH4)2SO4": 3,
             },
             molar_masses={
-                "SOA1": 190 * si.g / si.mole,  # TODO #604: 190 OR 200?
-                "SOA2": 368.4 * si.g / si.mole,  # TODO #604: 368.4 OR 200?
+                "SOA1": 190 * si.g / si.mole,  # TODO #1247: 190 OR 200?
+                "SOA2": 368.4 * si.g / si.mole,  # TODO #1247: 368.4 OR 200?
                 "(NH4)2SO4": Substance.from_formula("(NH4)2SO4").mass
                 * si.gram
                 / si.mole,
