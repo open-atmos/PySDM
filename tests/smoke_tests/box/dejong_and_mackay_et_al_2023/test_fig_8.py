@@ -35,7 +35,7 @@ def test_fig_8(backend_class, plot=False):
     data_x, data_y = res.x, res.y
 
     # plot
-    cmap = matplotlib.cm.get_cmap("viridis")
+    cmap = matplotlib.colormaps["viridis"]
     for j, step in enumerate(steps):
         if j == 0:
             kwargs = {"color": "k", "linestyle": "--", "label": "initial"}
