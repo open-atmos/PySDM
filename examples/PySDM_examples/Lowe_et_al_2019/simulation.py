@@ -87,6 +87,9 @@ class Simulation(BasicSimulation):
                 radius_bins_edges=settings.wet_radius_bins_edges
             ),
             PySDM_products.ActivableFraction(),
+            PySDM_products.WaterMixingRatio(),
+            PySDM_products.AmbientDryAirDensity(name="rhod"),
+            PySDM_products.EffectiveRadius(name="reff"),
         )
 
         particulator = builder.build(attributes=attributes, products=products)
