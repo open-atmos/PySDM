@@ -314,6 +314,6 @@ def compute_derived_values(c: dict):
 
     c["Rd_over_c_pd"] = c["Rd"] / c["c_pd"]
 
-    c["nu_w"] = c["Mv"] / c["rho_w"]
+    c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
