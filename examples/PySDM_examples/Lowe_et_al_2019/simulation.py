@@ -4,7 +4,6 @@ from PySDM_examples.utils import BasicSimulation
 import PySDM.products as PySDM_products
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
@@ -93,8 +92,6 @@ class Simulation(BasicSimulation):
         )
 
         particulator = builder.build(attributes=attributes, products=products)
-        if settings.scipy_ode_solver:
-            scipy_ode_condensation_solver.patch_particulator(particulator)
         self.settings = settings
         super().__init__(particulator=particulator)
 
@@ -117,12 +114,7 @@ class Simulation(BasicSimulation):
             self.particulator.run(step - self.particulator.n_steps)
             self._save_scalars(output)
         self._save_spectrum(output)
-        if self.settings.scipy_ode_solver:
-            output["Activated Fraction"] = self.particulator.products[
-                "activable fraction"
-            ].get(S_max=np.nanmax(output["RH"]) - 100)
-        else:
-            output["Activated Fraction"] = self.particulator.products[
-                "activable fraction"
-            ].get(S_max=np.nanmax(output["S_max"]))
+        output["Activated Fraction"] = self.particulator.products[
+            "activable fraction"
+        ].get(S_max=np.nanmax(output["S_max"]))
         return output

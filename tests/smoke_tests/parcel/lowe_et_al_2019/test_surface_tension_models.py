@@ -1,19 +1,20 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from PySDM_examples.Lowe_et_al_2019 import aerosol
+from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
 from PySDM import Formulae
 from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
-FORMULAE = Formulae()
+FORMULAE = Formulae(constants=LOWE_CONSTS)
 TRIVIA = FORMULAE.trivia
 R_WET = np.logspace(np.log(150 * si.nm), np.log(3000 * si.nm), base=np.e, num=100)
 R_DRY = 50 * si.nm
 V_WET = TRIVIA.volume(R_WET)
 V_DRY = TRIVIA.volume(R_DRY)
 TEMPERATURE = 300 * si.K
-WATER_MOLAR_VOLUME = FORMULAE.constants.Mv / FORMULAE.constants.rho_w
+WATER_MOLAR_VOLUME = FORMULAE.constants.water_molar_volume
 aer = aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME)
 
 
@@ -21,7 +22,7 @@ class TestFig1:
     @staticmethod
     def test_bulk_surface_tension_is_sgm_w():
         # arrange
-        formulae = Formulae(surface_tension="Constant")
+        formulae = Formulae(surface_tension="Constant", constants=LOWE_CONSTS)
 
         # act
         sigma = formulae.surface_tension.sigma(np.nan, V_WET, np.nan, np.nan)
@@ -34,7 +35,7 @@ class TestFig1:
         # arrange
         formulae = Formulae(
             surface_tension="CompressedFilmOvadnevaite",
-            constants={"sgm_org": 40 * si.mN / si.m, "delta_min": 0.1 * si.nm},
+            constants=LOWE_CONSTS,
         )
 
         # act
@@ -155,6 +156,7 @@ class TestFig1:
         formulae = Formulae(
             surface_tension="CompressedFilmRuehl",
             constants={
+                **LOWE_CONSTS,
                 "RUEHL_nu_org": aer.modes[0]["nu_org"],
                 "RUEHL_A0": 115e-20 * si.m * si.m,
                 "RUEHL_C0": 6e-7,
@@ -281,6 +283,7 @@ class TestFig1:
         formulae = Formulae(
             surface_tension="SzyszkowskiLangmuir",
             constants={
+                **LOWE_CONSTS,
                 "RUEHL_nu_org": aer.modes[0]["nu_org"],
                 "RUEHL_A0": 115e-20 * si.m * si.m,
                 "RUEHL_C0": 6e-7,

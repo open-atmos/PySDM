@@ -3,13 +3,14 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019.aerosol import AerosolBoreal, AerosolMarine
+from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
 from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
-FORMULAE = Formulae()
-WATER_MOLAR_VOLUME = FORMULAE.constants.Mv / FORMULAE.constants.rho_w
+FORMULAE = Formulae(constants=LOWE_CONSTS)
+WATER_MOLAR_VOLUME = FORMULAE.constants.water_molar_volume
 
 
 def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
@@ -20,15 +21,6 @@ def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
     models = ("Constant", "CompressedFilmOvadnevaite")
 
     Acc = {"a": 30, "b": 134, "c": 160, "d": 540}
-
-    consts = {
-        "delta_min": 0.1,
-        "MAC": 1,
-        "HAC": 1,
-        "c_pd": 1006 * si.joule / si.kilogram / si.kelvin,
-        "g_std": 9.81 * si.metre / si.second**2,
-        "scipy_ode_solver": False,
-    }
 
     cdnc_compare = np.zeros((len(models), len(subplot_list), len(updraft_list)))
     for i, w in enumerate(updraft_list):
@@ -62,7 +54,6 @@ def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
                     }[subplot],
                     w=w * si.m / si.s,
                     spectral_sampling=spec_sampling.ConstantMultiplicity,
-                    **consts,
                 )
                 simulation = Simulation(settings)
                 output = simulation.run()

@@ -3,11 +3,14 @@ import numpy as np
 import pytest
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019 import aerosol as paper_aerosol
+from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
+from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
 
-WATER_MOLAR_VOLUME = constants_defaults.Mv / constants_defaults.rho_w
+FORMULAE = Formulae(constants=LOWE_CONSTS)
+WATER_MOLAR_VOLUME = FORMULAE.constants.water_molar_volume
 
 
 class TestFig2:  # pylint: disable=too-few-public-methods

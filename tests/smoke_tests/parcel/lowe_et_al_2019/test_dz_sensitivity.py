@@ -4,28 +4,22 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019.aerosol_code import AerosolMarine
+from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
+from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
+
+FORMULAE = Formulae(constants=LOWE_CONSTS)
+WATER_MOLAR_VOLUME = FORMULAE.constants.water_molar_volume
 
 
 def test_dz_sensitivity(
     plot=False,
 ):  # pylint: disable=too-many-locals,too-many-branches
     # arrange
-    consts = {
-        "delta_min": 0.1,
-        "MAC": 1,
-        "HAC": 1,
-        "c_pd": 1006 * si.joule / si.kilogram / si.kelvin,
-        "g_std": 9.81 * si.m / si.s**2,
-        "scipy_ode_solver": False,
-    }
-
     output = {}
-    aerosol = AerosolMarine(
-        water_molar_volume=constants_defaults.Mv / constants_defaults.rho_w
-    )
+    aerosol = AerosolMarine(water_molar_volume=WATER_MOLAR_VOLUME)
     model = "Constant"
 
     # act
@@ -37,7 +31,6 @@ def test_dz_sensitivity(
             model=model,
             aerosol=aerosol,
             spectral_sampling=spec_sampling.ConstantMultiplicity,
-            **consts,
         )
         simulation = Simulation(settings)
         output[key] = simulation.run()
