@@ -7,10 +7,10 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from PySDM.physics.constants import PER_MEG, PER_MILLE
-
 from PySDM_examples.utils.notebook_vars import notebook_vars
 from PySDM_examples import Pierchala_et_al_2022
+
+from PySDM.physics.constants import PER_MEG, PER_MILLE
 
 PLOT = False
 
