@@ -1,6 +1,7 @@
 """
 logic around the `PySDM.products.impl.product.Product` - parent class for all products
 """
+
 import inspect
 import re
 from abc import abstractmethod

@@ -2,6 +2,7 @@
 Gaussian/normal spectrum implemented using
  [SciPy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html)
 """
+
 from scipy.stats import norm
 
 from PySDM.initialisation.impl.spectrum import Spectrum

@@ -1,6 +1,7 @@
 """
 integer-valued discretisation with sanity checks for errors due to type casting
 """
+
 import numpy as np
 
 

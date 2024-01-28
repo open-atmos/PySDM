@@ -3,6 +3,7 @@ Rates of collision events and their deficit wrt expected values in case mutiplic
  values preclude representation of resultant multiplicity in multiple collisions,
  or due to unrepresentable breakups from integer overflow
 """
+
 from PySDM.products.impl.rate_product import RateProduct
 
 

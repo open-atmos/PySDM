@@ -1,6 +1,7 @@
 """
 C code of basic bisection root-finding algorithm for use within ThrustRTC CUDA codes
 """
+
 BISECTION = """
     struct Bisect {
         static __device__ real_type bisect(

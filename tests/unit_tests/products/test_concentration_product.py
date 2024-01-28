@@ -38,9 +38,9 @@ class TestParticleConcentration:
         # assert
         np.testing.assert_approx_equal(
             actual=prod,
-            desired=CONC / RHOD * particulator.formulae.constants.rho_STP
-            if stp
-            else CONC,
+            desired=(
+                CONC / RHOD * particulator.formulae.constants.rho_STP if stp else CONC
+            ),
             significant=7,
         )
 

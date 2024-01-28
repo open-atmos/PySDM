@@ -1,6 +1,7 @@
 """
 attribute name-class mapping logic (each new attribute must be added here)
 """
+
 from functools import partial
 
 from PySDM.attributes.chemistry import (
@@ -54,9 +55,9 @@ attributes = {
         and formulae.surface_tension.__name__ == Constant.__name__
         else DryVolumeOrganic
     ),
-    "dry volume": lambda dynamics, formulae: DryVolumeDynamic
-    if "AqueousChemistry" in dynamics
-    else DryVolume,
+    "dry volume": lambda dynamics, formulae: (
+        DryVolumeDynamic if "AqueousChemistry" in dynamics else DryVolume
+    ),
     "dry volume organic fraction": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic fraction")
         if "Condensation" in dynamics

@@ -2,6 +2,7 @@
 average pH (averaging after or before taking the logarithm in pH definition)
 with weighting either by number or volume
 """
+
 import numpy as np
 
 from PySDM.products.impl.moment_product import MomentProduct

@@ -2,6 +2,7 @@
 Equilibrium fractionation factors from
 [Horita and Wesolowski 1994](https://doi.org/10.1016/0016-7037(94)90096-5)
 """
+
 import numpy as np
 
 

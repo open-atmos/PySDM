@@ -57,11 +57,11 @@ class ProfilePlotter:
                 settings.formulae.trivia.radius(volume=np.asarray(volume)) / si.um,
                 output["products"]["z"],
                 color="magenta" if drop_id < settings.n_sd_per_mode[0] else "blue",
-                label="mode 1"
-                if drop_id == 0
-                else "mode 2"
-                if drop_id == settings.n_sd_per_mode[0]
-                else "",
+                label=(
+                    "mode 1"
+                    if drop_id == 0
+                    else "mode 2" if drop_id == settings.n_sd_per_mode[0] else ""
+                ),
             )
         axR.legend(loc="upper right")
         axR.set_xlabel("Droplet radius [μm]")

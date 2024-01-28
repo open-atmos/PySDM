@@ -1,4 +1,5 @@
 """ helper routines for use in smoke tests """
+
 from pathlib import Path
 
 import nbformat

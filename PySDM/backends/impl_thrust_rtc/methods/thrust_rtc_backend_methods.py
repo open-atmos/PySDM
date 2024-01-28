@@ -1,6 +1,7 @@
 """
 common parent class for all ThrustRTC backend methods classes
 """
+
 from typing import Callable, Optional
 
 from ...impl_common.backend_methods import BackendMethods

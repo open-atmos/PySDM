@@ -1,6 +1,5 @@
 """ common parent class for collision kernels specified using Berry's parameterization """
 
-
 from PySDM.physics import constants as const
 
 from .gravitational import Gravitational

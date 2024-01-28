@@ -1,6 +1,7 @@
 """
 fragmentation functions for use with breakup
 """
+
 from .always_n import AlwaysN
 from .constant_mass import ConstantMass
 from .expon_frag import ExponFrag

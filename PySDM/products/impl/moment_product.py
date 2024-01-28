@@ -1,4 +1,5 @@
 """ common code for products computing statistical moments (e.g., effective radius, acidity) """
+
 from abc import ABC
 
 import numpy as np

@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for water condensation/evaporation
 """
+
 import math
 from functools import lru_cache
 
@@ -163,9 +164,9 @@ class CondensationMethods(BackendMethods):
                 counter_n_ripening[cell_id] = n_ripening
                 RH_max[cell_id] = RH_max_in_cell
                 success[cell_id] = success_in_cell
-                predicted_water_vapour_mixing_ratio[
-                    cell_id
-                ] = water_vapour_mixing_ratio_new
+                predicted_water_vapour_mixing_ratio[cell_id] = (
+                    water_vapour_mixing_ratio_new
+                )
                 pthd[cell_id] = thd_new
 
     @staticmethod

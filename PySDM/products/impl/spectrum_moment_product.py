@@ -2,6 +2,7 @@
 common code for products computing **binned** statistical moments
  (e.g., dry radius spectrum in each grid cell)
 """
+
 from abc import ABC
 
 from PySDM.products.impl.product import Product

@@ -2,6 +2,7 @@
 classes representing logic around size spectra and more generally
 probability density functions (based on SciPy.stats logic)
 """
+
 from .exponential import Exponential
 from .gamma import Gamma
 from .gaussian import Gaussian

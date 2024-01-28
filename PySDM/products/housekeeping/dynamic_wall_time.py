@@ -1,6 +1,7 @@
 """
 wall-time for a given dynamic (fetching a value resets the counter)
 """
+
 from PySDM.products.impl.product import Product
 
 

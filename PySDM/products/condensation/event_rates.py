@@ -2,6 +2,7 @@
 rates of activation, deactivation and ripening events (take into account substeps,
  fetching a value resets the given counter)
 """
+
 import numpy as np
 
 from PySDM.products.impl.product import Product

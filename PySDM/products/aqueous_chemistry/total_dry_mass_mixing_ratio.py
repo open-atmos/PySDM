@@ -1,6 +1,7 @@
 """
 dry aerosol mass summed over all particles in a grid box per mass of dry air
 """
+
 import numpy as np
 
 from PySDM.products.impl.moment_product import MomentProduct
