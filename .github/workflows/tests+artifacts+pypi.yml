@@ -102,7 +102,7 @@ jobs:
         pip install -e .[tests]
     - run: |
         # TODO #682
-        pylint --unsafe-load-any-extension=y --disable=fixme,wrong-import-order,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
+        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
     - run: |
         # TODO #682
         pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
