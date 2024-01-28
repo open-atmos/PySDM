@@ -3,6 +3,7 @@ Various (hopefully) undebatable formulae
 
 `erfinv` approximation based on eqs. 11-12 from Vedder 1987, https://doi.org/10.1119/1.15018
 """
+
 import numpy as np
 
 

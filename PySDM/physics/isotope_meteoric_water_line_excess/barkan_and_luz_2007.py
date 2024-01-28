@@ -2,6 +2,7 @@
 Water isotopic line excess parameters defined in
 [Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180)
 """
+
 import numpy as np
 
 

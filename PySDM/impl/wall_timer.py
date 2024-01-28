@@ -2,6 +2,7 @@
 context manager automating wall-time counting using Python's basic
  [time.perf_counter()](https://docs.python.org/3/library/time.html#time.perf_counter)
 """
+
 import time
 
 

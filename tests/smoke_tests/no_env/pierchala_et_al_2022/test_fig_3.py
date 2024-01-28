@@ -1,6 +1,7 @@
 """
 regression tests checking values from the plots in Fig 3
 """
+
 from pathlib import Path
 
 import numpy as np

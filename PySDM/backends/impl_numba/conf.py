@@ -1,6 +1,7 @@
 """
 default settings for Numba just-in-time compilation
 """
+
 import os
 import platform
 import warnings

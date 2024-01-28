@@ -1,4 +1,5 @@
 """ tests ensuring values on plots match those in the paper """
+
 from pathlib import Path
 
 import pytest

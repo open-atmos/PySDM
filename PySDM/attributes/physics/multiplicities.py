@@ -2,6 +2,7 @@
 super-particle multiplicity (aka weighting factor) - the number of real-world particles
  represented in the simulation with a given super particle
 """
+
 import numpy as np
 
 from PySDM.attributes.impl.base_attribute import BaseAttribute

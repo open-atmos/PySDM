@@ -1,6 +1,7 @@
 """
 Equilibrium fractionation factors from [Majoube 1971](https://doi.org/10.1051/jcp/1971681423)
 """
+
 import numpy as np
 
 

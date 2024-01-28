@@ -1,6 +1,7 @@
 """
 [Murphy and Koop 2005](https://doi.org/10.1256/qj.04.94)
 """
+
 import numpy as np
 
 

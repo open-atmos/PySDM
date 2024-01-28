@@ -1,6 +1,7 @@
 """
 Numba njit-ted basic arithmetics routines for CPU backend
 """
+
 import numba
 import numpy as np
 

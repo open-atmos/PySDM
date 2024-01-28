@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for aqueous chemistry
 """
+
 from collections import namedtuple
 
 import numba
@@ -294,10 +295,10 @@ class ChemistryMethods(BackendMethods):
     ):
         for i in range(len(temperature)):
             for key in equilibrium_consts:
-                equilibrium_consts[key].data[
-                    i
-                ] = self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(
-                    temperature.data[i]
+                equilibrium_consts[key].data[i] = (
+                    self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(
+                        temperature.data[i]
+                    )
                 )
             for key in kinetic_consts:
                 kinetic_consts[key].data[i] = self.KINETIC_CONST.KINETIC_CONST[key].at(

@@ -1,6 +1,7 @@
 """
 concentrations (intensive, derived attributes)
 """
+
 from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
 
 

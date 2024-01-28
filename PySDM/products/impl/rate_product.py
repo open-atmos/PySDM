@@ -1,6 +1,7 @@
 """
 common code for products representing event rates
 """
+
 from PySDM.products.impl.product import Product
 
 

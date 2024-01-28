@@ -1,6 +1,7 @@
 """
 the magick behind "pip install PySDM"
 """
+
 import os
 import platform
 

@@ -68,9 +68,11 @@ class Simulation(BasicSimulation):
                     data[:-1],
                     np.full(
                         settings.in_sampling_n,
-                        data[-1]
-                        if attribute != "multiplicity"
-                        else data[-1] / settings.in_sampling_n,
+                        (
+                            data[-1]
+                            if attribute != "multiplicity"
+                            else data[-1] / settings.in_sampling_n
+                        ),
                     ),
                 )
             )

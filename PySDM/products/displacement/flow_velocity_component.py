@@ -2,6 +2,7 @@
 reports on the maximum Courant field value for each cell (maximum of
 absolute values of Courant number on all edges of a cell)
 """
+
 import numpy as np
 
 from PySDM.products.impl.product import Product

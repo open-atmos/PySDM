@@ -1,6 +1,7 @@
 """
 CPU implementation of pairwise operations backend methods
 """
+
 import numba
 import numpy as np
 

@@ -8,6 +8,7 @@ General algorithm format:
         1 - Ec - Eb = bounce back to original fragments (subset of breakup)
     b. Perform the relevant dynamic
 """
+
 import warnings
 from collections import namedtuple
 

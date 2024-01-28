@@ -2,6 +2,7 @@
 spectral sampling logic incl. linear, logarithmic, uniform-random and constant-multiplicity
  sampling classes
 """
+
 from typing import Optional, Tuple
 
 import numpy as np
