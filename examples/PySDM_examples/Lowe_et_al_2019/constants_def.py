@@ -10,5 +10,4 @@ LOWE_CONSTS = {
     "g_std": 9.81 * si.metre / si.second**2,
     "Md": constants_defaults.R_str / 287.058 * si.joule / si.kelvin / si.kg,
     "Mv": constants_defaults.R_str / 461 * si.joule / si.kelvin / si.kg,
-    "g_std": 9.81 * si.metre / si.second**2,
 }
