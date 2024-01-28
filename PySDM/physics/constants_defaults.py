@@ -56,12 +56,12 @@ M_18O = 17.99915961287 * si.g / si.mole
 Mv = (
     1
     - Trivia.mixing_ratio_to_specific_content(
-        VSMOW_R_2H / 2 + VSMOW_R_3H / 2 + VSMOW_R_17O + VSMOW_R_18O
+        VSMOW_R_2H * 2 + VSMOW_R_3H * 2 + VSMOW_R_17O + VSMOW_R_18O
     )
 ) * (
     (M_1H * 2 + M_16O)
-    + (M_2H + M_1H + M_16O) * VSMOW_R_2H
-    + (M_3H + M_1H + M_16O) * VSMOW_R_3H
+    + (M_2H + M_1H + M_16O) * 2 *VSMOW_R_2H
+    + (M_3H + M_1H + M_16O) * 2 * VSMOW_R_3H
     + (M_1H * 2 + M_17O) * VSMOW_R_17O
     + (M_1H * 2 + M_18O) * VSMOW_R_18O
 )
