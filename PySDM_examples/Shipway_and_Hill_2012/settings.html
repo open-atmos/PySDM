@@ -88,8 +88,8 @@ class Settings:
         self.t_max = t_max
 
         t_1 = 600 * si.s
-        self.rho_times_w = (
-            lambda t: rho_times_w_1 * np.sin(np.pi * t / t_1) if t &lt; t_1 else 0
+        self.rho_times_w = lambda t: (
+            rho_times_w_1 * np.sin(np.pi * t / t_1) if t &lt; t_1 else 0
         )
         apprx_w1 = rho_times_w_1 / self.formulae.constants.rho_STP
         self.particle_reservoir_depth = (
@@ -279,8 +279,8 @@ class Settings:
         self.t_max = t_max
 
         t_1 = 600 * si.s
-        self.rho_times_w = (
-            lambda t: rho_times_w_1 * np.sin(np.pi * t / t_1) if t &lt; t_1 else 0
+        self.rho_times_w = lambda t: (
+            rho_times_w_1 * np.sin(np.pi * t / t_1) if t &lt; t_1 else 0
         )
         apprx_w1 = rho_times_w_1 / self.formulae.constants.rho_STP
         self.particle_reservoir_depth = (

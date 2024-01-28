@@ -29,11 +29,11 @@
 <pre><code class="python">def label(settings):
     lbl = str(
         {
-            k.replace(&#34;condensation_&#34;, &#34;&#34;): f&#34;{v:.1e}&#34;
-            if isinstance(v, float)
-            else str(v).zfill(2)
-            if isinstance(v, int)
-            else v
+            k.replace(&#34;condensation_&#34;, &#34;&#34;): (
+                f&#34;{v:.1e}&#34;
+                if isinstance(v, float)
+                else str(v).zfill(2) if isinstance(v, int) else v
+            )
             for k, v in settings.items()
         }
     )
@@ -67,11 +67,11 @@
 <pre><code class="python">def label(settings):
     lbl = str(
         {
-            k.replace(&#34;condensation_&#34;, &#34;&#34;): f&#34;{v:.1e}&#34;
-            if isinstance(v, float)
-            else str(v).zfill(2)
-            if isinstance(v, int)
-            else v
+            k.replace(&#34;condensation_&#34;, &#34;&#34;): (
+                f&#34;{v:.1e}&#34;
+                if isinstance(v, float)
+                else str(v).zfill(2) if isinstance(v, int) else v
+            )
             for k, v in settings.items()
         }
     )

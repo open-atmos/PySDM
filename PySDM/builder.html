@@ -32,6 +32,7 @@
 <pre><code class="python">&#34;&#34;&#34;
 The Builder class handling creation of  `PySDM.particulator.Particulator` instances
 &#34;&#34;&#34;
+
 import inspect
 import warnings
 
@@ -140,10 +141,10 @@ class Builder:
                 LiquidSpheres.__name__,
                 MixedPhaseSpheres.__name__,
             ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
-            attributes[
-                &#34;water mass&#34;
-            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
-                attributes[&#34;volume&#34;]
+            attributes[&#34;water mass&#34;] = (
+                self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                    attributes[&#34;volume&#34;]
+                )
             )
             del attributes[&#34;volume&#34;]
             self.request_attribute(&#34;volume&#34;)
@@ -303,10 +304,10 @@ def get_key(dynamic):
                 LiquidSpheres.__name__,
                 MixedPhaseSpheres.__name__,
             ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
-            attributes[
-                &#34;water mass&#34;
-            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
-                attributes[&#34;volume&#34;]
+            attributes[&#34;water mass&#34;] = (
+                self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                    attributes[&#34;volume&#34;]
+                )
             )
             del attributes[&#34;volume&#34;]
             self.request_attribute(&#34;volume&#34;)
@@ -391,10 +392,10 @@ def get_key(dynamic):
             LiquidSpheres.__name__,
             MixedPhaseSpheres.__name__,
         ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
-        attributes[
-            &#34;water mass&#34;
-        ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
-            attributes[&#34;volume&#34;]
+        attributes[&#34;water mass&#34;] = (
+            self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                attributes[&#34;volume&#34;]
+            )
         )
         del attributes[&#34;volume&#34;]
         self.request_attribute(&#34;volume&#34;)

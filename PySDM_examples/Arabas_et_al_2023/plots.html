@@ -56,9 +56,11 @@ def make_temperature_plot(data):
         xy2.plot(
             datum[&#34;t&#34;],
             np.asarray(datum[&#34;qi&#34;]) / qi_unit,  # marker=&#39;.&#39;,
-            label=f&#34;Monte-Carlo ({labels[v[&#39;singular&#39;]]})&#34;
-            if not plotted[v[&#34;singular&#34;]]
-            else &#34;&#34;,
+            label=(
+                f&#34;Monte-Carlo ({labels[v[&#39;singular&#39;]]})&#34;
+                if not plotted[v[&#34;singular&#34;]]
+                else &#34;&#34;
+            ),
             color=colors[v[&#34;singular&#34;]],
         )
         plotted[v[&#34;singular&#34;]] = True
@@ -354,9 +356,11 @@ def make_pdf_plot(A_spec, Shima_T_fz, A_range, T_range):
         xy2.plot(
             datum[&#34;t&#34;],
             np.asarray(datum[&#34;qi&#34;]) / qi_unit,  # marker=&#39;.&#39;,
-            label=f&#34;Monte-Carlo ({labels[v[&#39;singular&#39;]]})&#34;
-            if not plotted[v[&#34;singular&#34;]]
-            else &#34;&#34;,
+            label=(
+                f&#34;Monte-Carlo ({labels[v[&#39;singular&#39;]]})&#34;
+                if not plotted[v[&#34;singular&#34;]]
+                else &#34;&#34;
+            ),
             color=colors[v[&#34;singular&#34;]],
         )
         plotted[v[&#34;singular&#34;]] = True

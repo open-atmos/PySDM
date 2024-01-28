@@ -165,10 +165,10 @@ def get_breakup_coalescence_analytic_results(equations, settings, m0, x, x_log):
 
 def get_analytic_results(equations, settings, mean_mass, mean_mass_ratio):
     res = {}
-    res[
-        SimProducts.Computed.mean_drop_volume_total_volume_ratio.name
-    ] = compute_drop_volume_total_volume_ratio(
-        mean_volume=mean_mass / settings.rho, total_volume=settings.total_volume
+    res[SimProducts.Computed.mean_drop_volume_total_volume_ratio.name] = (
+        compute_drop_volume_total_volume_ratio(
+            mean_volume=mean_mass / settings.rho, total_volume=settings.total_volume
+        )
     )
     res[SimProducts.PySDM.total_numer.name] = equations.M / mean_mass_ratio
     return res
@@ -543,10 +543,10 @@ def add_analytic_result_to_axs(axs_i, prod, x, res, key=&#34;&#34;):
 </summary>
 <pre><code class="python">def get_analytic_results(equations, settings, mean_mass, mean_mass_ratio):
     res = {}
-    res[
-        SimProducts.Computed.mean_drop_volume_total_volume_ratio.name
-    ] = compute_drop_volume_total_volume_ratio(
-        mean_volume=mean_mass / settings.rho, total_volume=settings.total_volume
+    res[SimProducts.Computed.mean_drop_volume_total_volume_ratio.name] = (
+        compute_drop_volume_total_volume_ratio(
+            mean_volume=mean_mass / settings.rho, total_volume=settings.total_volume
+        )
     )
     res[SimProducts.PySDM.total_numer.name] = equations.M / mean_mass_ratio
     return res</code></pre>
