@@ -1,6 +1,7 @@
 """
 particle concentration (per volume of air)
 """
+
 from PySDM.products.impl.concentration_product import ConcentrationProduct
 
 

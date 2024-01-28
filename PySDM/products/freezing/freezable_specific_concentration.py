@@ -1,6 +1,7 @@
 """
 freezing-temperature binned specific concentration of particles
 """
+
 import numpy as np
 
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct

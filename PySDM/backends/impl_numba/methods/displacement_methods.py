@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for particle displacement (advection and sedimentation)
 """
+
 import numba
 
 from PySDM.backends.impl_numba import conf

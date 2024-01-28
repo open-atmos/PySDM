@@ -2,6 +2,7 @@
 DEPRECATED
 P(x) = exp(-x / lambda); lambda specified in volume units
 """
+
 import warnings
 
 from .exponential import Exponential

@@ -1,6 +1,7 @@
 """
 Equilibrium fractionation factors used in [Bolot et al. 2013](https://10.5194/acp-13-7903-2013)
 """
+
 from PySDM.physics.isotope_equilibrium_fractionation_factors.majoube_1970 import (
     Majoube1970,
 )

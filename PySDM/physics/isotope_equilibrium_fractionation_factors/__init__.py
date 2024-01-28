@@ -1,5 +1,6 @@
 """ factors describing partitioning of water isotopologues under thermodynamic
 phase equilibrium, defined as ratios alpha of isotopic ratios R """
+
 from .barkan_and_luz_2005 import BarkanAndLuz2005
 from .bolot_et_al_2013 import BolotEtAl2013
 from .graf_phd_2017 import GrafPhD2017

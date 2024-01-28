@@ -1,6 +1,7 @@
 """
 top-hat spectrum
 """
+
 import numpy as np
 
 

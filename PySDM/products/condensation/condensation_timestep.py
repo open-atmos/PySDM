@@ -1,6 +1,7 @@
 """
 minimum and maximum condensation timestep (fetching a value resets the counter)
 """
+
 import numpy as np
 
 from PySDM.products.impl.product import Product

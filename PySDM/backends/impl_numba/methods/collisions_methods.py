@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for particle collisions
 """
+
 # pylint: disable=too-many-lines
 import numba
 import numpy as np
@@ -1174,9 +1175,11 @@ class CollisionsMethods(BackendMethods):
 
         for t in numba.prange(thread_num):  # pylint: disable=not-an-iterable
             for i in range(
-                (t + 1) * length // thread_num - 1
-                if t < thread_num - 1
-                else length - 1,
+                (
+                    (t + 1) * length // thread_num - 1
+                    if t < thread_num - 1
+                    else length - 1
+                ),
                 t * length // thread_num - 1,
                 -1,
             ):

@@ -1,6 +1,7 @@
 """
 immersed ice nucleus concentration (both within frozen and unfrozen particles)
 """
+
 import numpy as np
 
 from PySDM.products.impl.concentration_product import ConcentrationProduct

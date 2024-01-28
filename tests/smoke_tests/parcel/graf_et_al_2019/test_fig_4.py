@@ -1,11 +1,12 @@
 """ tests ensuring values on plots match those in the paper """
+
 from pathlib import Path
 
 import pytest
-from PySDM_examples import Graf_et_al_2019
 from PySDM_examples.utils import notebook_vars
 
 from PySDM.physics import si
+from PySDM_examples import Graf_et_al_2019
 
 PLOT = False
 

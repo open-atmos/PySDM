@@ -1,6 +1,7 @@
 """
 CPU implementation of isotope-relates backend methods
 """
+
 from functools import cached_property
 
 import numba

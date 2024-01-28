@@ -1,6 +1,7 @@
 """
 Golovin kernel with analytic solution (see [Golovin 1963](http://mi.mathnet.ru/dan27630))
 """
+
 import numpy as np
 from scipy import special
 

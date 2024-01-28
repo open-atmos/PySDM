@@ -2,6 +2,7 @@
 Average collision timestep length used when adaptive timestepping is enabled in the
  `PySDM.dynamics.collisions.collision.Collision` dynamic (fetching a value reset the counter)
 """
+
 import numba
 import numpy as np
 

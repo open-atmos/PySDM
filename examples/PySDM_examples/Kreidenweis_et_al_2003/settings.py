@@ -70,11 +70,13 @@ class Settings:
 
         self.starting_amounts = {
             "moles_"
-            + k: self.formulae.trivia.volume(self.r_dry)
-            * self.DRY_RHO
-            / self.dry_molar_mass
-            if k in ("N_mIII", "S_VI")
-            else np.zeros(self.n_sd)
+            + k: (
+                self.formulae.trivia.volume(self.r_dry)
+                * self.DRY_RHO
+                / self.dry_molar_mass
+                if k in ("N_mIII", "S_VI")
+                else np.zeros(self.n_sd)
+            )
             for k in AQUEOUS_COMPOUNDS
         }
 

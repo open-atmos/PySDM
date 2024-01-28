@@ -68,9 +68,11 @@ class TestFig7:
                 data_x[lbl],
                 data_y[lbl][0] * settings.rho,
                 color=CMAP(i / len(nf_vals)),
-                label=lbl
-                if lbl not in pyplot.gca().get_legend_handles_labels()[1]
-                else "",
+                label=(
+                    lbl
+                    if lbl not in pyplot.gca().get_legend_handles_labels()[1]
+                    else ""
+                ),
             )
         pyplot.xscale("log")
         pyplot.xlabel("particle radius (um)")
@@ -149,9 +151,11 @@ class TestFig7:
                 data_y[lbl][0] * settings.rho,
                 color=CMAP(i / len(mu_vals)),
                 linestyle="-",
-                label=lbl
-                if lbl not in pyplot.gca().get_legend_handles_labels()[1]
-                else "",
+                label=(
+                    lbl
+                    if lbl not in pyplot.gca().get_legend_handles_labels()[1]
+                    else ""
+                ),
             )
 
         pyplot.xscale("log")

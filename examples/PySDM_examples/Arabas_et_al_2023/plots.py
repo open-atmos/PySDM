@@ -28,9 +28,11 @@ def make_temperature_plot(data):
         xy2.plot(
             datum["t"],
             np.asarray(datum["qi"]) / qi_unit,  # marker='.',
-            label=f"Monte-Carlo ({labels[v['singular']]})"
-            if not plotted[v["singular"]]
-            else "",
+            label=(
+                f"Monte-Carlo ({labels[v['singular']]})"
+                if not plotted[v["singular"]]
+                else ""
+            ),
             color=colors[v["singular"]],
         )
         plotted[v["singular"]] = True

@@ -2,6 +2,7 @@
 aqueous chemistry helper utils including specific gravity constants with
  values obtained using [chempy](https://pythonhosted.org/chempy/)'s `Substance`
 """
+
 import numpy as np
 from chempy import Substance
 

@@ -1,6 +1,7 @@
 """
 common code intended for use from within attribute classes (not in user code)
 """
+
 from .attribute import Attribute
 from .base_attribute import BaseAttribute
 from .cell_attribute import CellAttribute

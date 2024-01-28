@@ -1,6 +1,7 @@
 """
 mean radius of particles within a grid cell, for activated, unactivated or both
 """
+
 from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct
 from PySDM.products.impl.moment_product import MomentProduct
 

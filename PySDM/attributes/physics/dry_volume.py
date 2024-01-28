@@ -1,6 +1,7 @@
 """
 particle dry volume (subject to evolution due to collisions or aqueous chemistry)
 """
+
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 

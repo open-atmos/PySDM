@@ -70,9 +70,9 @@ class Simulation:
                     if step != 0:
                         particulator.run(steps=1)
                     for prod in self.settings.prods:
-                        self.simulation_res[n_sd][prod][seed][
-                            step
-                        ] = particulator.products[prod].get()
+                        self.simulation_res[n_sd][prod][seed][step] = (
+                            particulator.products[prod].get()
+                        )
 
                 np.testing.assert_allclose(
                     actual=self.simulation_res[n_sd][

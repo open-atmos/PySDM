@@ -1,6 +1,7 @@
 """
 P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes
 """
+
 from .impl import VolumeBasedFragmentationFunction
 
 

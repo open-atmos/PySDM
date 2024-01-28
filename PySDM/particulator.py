@@ -1,6 +1,7 @@
 """
 The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
 """
+
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
