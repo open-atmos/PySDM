@@ -60,7 +60,7 @@ Mv = (
     )
 ) * (
     (M_1H * 2 + M_16O)
-    + (M_2H + M_1H + M_16O) * 2 *VSMOW_R_2H
+    + (M_2H + M_1H + M_16O) * 2 * VSMOW_R_2H
     + (M_3H + M_1H + M_16O) * 2 * VSMOW_R_3H
     + (M_1H * 2 + M_17O) * VSMOW_R_17O
     + (M_1H * 2 + M_18O) * VSMOW_R_18O
