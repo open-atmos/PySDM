@@ -79,8 +79,8 @@ class Simulation(BasicSimulation):
             PySDM_products.Time(name="t"),
             PySDM_products.PeakSupersaturation(unit="%", name="S_max"),
             PySDM_products.AmbientRelativeHumidity(unit="%", name="RH"),
-            PySDM_products.ParticleConcentration(
-                name="n_c_cm3", unit="cm^-3", radius_range=settings.cloud_radius_range
+            PySDM_products.ActivatedParticleConcentration(
+                name="CDNC", unit="cm^-3", count_activated=True, count_unactivated=False
             ),
             PySDM_products.ParticleSizeSpectrumPerVolume(
                 radius_bins_edges=settings.wet_radius_bins_edges
@@ -88,7 +88,12 @@ class Simulation(BasicSimulation):
             PySDM_products.ActivableFraction(),
             PySDM_products.WaterMixingRatio(),
             PySDM_products.AmbientDryAirDensity(name="rhod"),
-            PySDM_products.EffectiveRadius(name="reff"),
+            PySDM_products.ActivatedEffectiveRadius(
+                name="reff", count_activated=True, count_unactivated=False
+            ),
+            # PySDM_products.LiquidWaterPath(name="lwp"),
+            # PySDM_products.CloudOpticalDepth(name="tau"),
+            # PySDM_products.CloudAlbedo(name="albedo"),
         )
 
         particulator = builder.build(attributes=attributes, products=products)

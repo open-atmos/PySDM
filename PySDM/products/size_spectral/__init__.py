@@ -7,6 +7,7 @@ from .arbitrary_moment import (
     ZerothMoment,
 )
 from .effective_radius import EffectiveRadius
+from .effective_radius_activated import ActivatedEffectiveRadius
 from .mean_radius import MeanRadius
 from .mean_radius_activated import ActivatedMeanRadius
 from .mean_volume_radius import MeanVolumeRadius
@@ -34,3 +35,4 @@ from .size_standard_deviation import (
 from .total_particle_concentration import TotalParticleConcentration
 from .total_particle_specific_concentration import TotalParticleSpecificConcentration
 from .water_mixing_ratio import WaterMixingRatio
+from .liquid_water_content import LiquidWaterContent
