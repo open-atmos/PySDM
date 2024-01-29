@@ -23,7 +23,7 @@ setup(
     },
     install_requires=[
         "PySDM",
-        "PyMPDATA" + ">=1.0.15" if CI else "",
+        "PyMPDATA" + (">=1.0.15" if CI else ""),
         "open-atmos-jupyter-utils",
         "pystrict",
         "matplotlib",
@@ -31,8 +31,8 @@ setup(
         "ipywidgets",
         "seaborn",
         "numdifftools",
-    ]
-    + (["pyvinecopulib", "vtk"] if platform.architecture()[0] != "32bit" else []),
+    ],
+    # + (["pyvinecopulib", "vtk"] if platform.architecture()[0] != "32bit" else []),
     extras_require={
         "tests": [
             "pytest",
