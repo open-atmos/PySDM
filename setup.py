@@ -42,6 +42,7 @@ setup(
             "pytest-timeout",
             "PyPartMC==1.0.1",
         ]
+        + ([] if _32bit else ["pyrcel"])
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
     author_email="sylwester.arabas@agh.edu.pl",
