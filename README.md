@@ -827,6 +827,8 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://github.com/darothen/superdroplet
 - NTLP (FORTRAN)   
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
+- CLEO (C++)
+  https://yoctoyotta1024.github.io/CLEO/
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
