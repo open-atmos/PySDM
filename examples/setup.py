@@ -23,7 +23,7 @@ setup(
     },
     install_requires=[
         "PySDM",
-        "PyMPDATA" + ">=1.0.15" if CI else "",
+        "PyMPDATA" + (">=1.0.15" if CI else ""),
         "open-atmos-jupyter-utils",
         "pystrict",
         "matplotlib",
