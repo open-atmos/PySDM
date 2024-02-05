@@ -11,6 +11,7 @@ from PySDM import Builder, products
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.products import (
+    ActivatedEffectiveRadius,
     ActivatedMeanRadius,
     ActivatedParticleConcentration,
     ActivatedParticleSpecificConcentration,
@@ -67,6 +68,7 @@ _ARGUMENTS = {
     RadiusStandardDeviation: {"count_activated": True, "count_unactivated": False},
     AreaStandardDeviation: {"count_activated": True, "count_unactivated": False},
     VolumeStandardDeviation: {"count_activated": True, "count_unactivated": False},
+    ActivatedEffectiveRadius: {"count_activated": True, "count_unactivated": False},
 }
 
 
