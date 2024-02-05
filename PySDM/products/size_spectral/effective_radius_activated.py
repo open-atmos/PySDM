@@ -7,7 +7,7 @@ import numpy as np
 from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct
 from PySDM.physics import constants as const
 from PySDM.products.impl.moment_product import MomentProduct
-from PySDM.products.size_spectral import EffectiveRadius
+from PySDM.products.size_spectral.effective_radius import EffectiveRadius
 
 GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
 

@@ -9,7 +9,6 @@ import numpy as np
 from PySDM.environments.parcel import Parcel
 
 from PySDM.products.impl.moment_product import MomentProduct
-from PySDM.products.impl.product import Product
 
 
 class CloudWaterPath(MomentProduct):

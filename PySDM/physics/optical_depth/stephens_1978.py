@@ -10,4 +10,4 @@ class Stephens1978:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def tau(const, LWP, reff):
-        return (3 * LWP) / (2 * reff)
+        return const.ONE_AND_A_HALF * LWP / reff

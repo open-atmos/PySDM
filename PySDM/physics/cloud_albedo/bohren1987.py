@@ -9,4 +9,4 @@ class Bohren1987:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def albedo(const, g, tau):
-        return ((1 - g) * tau) / (2 + (1 - g) * tau)
+        return ((const.ONE - g) * tau) / (const.TWO + (const.ONE - g) * tau)
