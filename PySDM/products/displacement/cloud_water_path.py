@@ -17,6 +17,7 @@ class CloudWaterPath(MomentProduct):
         self.liquid = liquid
         self.ice = ice
         self.dz = None
+        self.previous_z = None
         self.environment = None
         self._reset_counters()
 
