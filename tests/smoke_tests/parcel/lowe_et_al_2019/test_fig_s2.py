@@ -59,22 +59,26 @@ def aerosols_fixture(request):
     return request.param
 
 
-@pytest.mark.parametrize(
-    "var, range",
-    (
-        ("lwp", (25 * si.g / si.m**2, 35 * si.g / si.m**2)),
-        ("tau", (2, 14)),
-        ("albedo", (0.2, 0.5)),
-    ),
-)
-def test_ranges(var, value_range, variables, key):
-    assert value_range[0] < variables["optical_products"][key][var] < value_range[1]
+class TestFigS2:
+    @staticmethod
+    @pytest.mark.parametrize(
+        "var, value_range",
+        (
+            ("lwp", (25 * si.g / si.m**2, 35 * si.g / si.m**2)),
+            ("tau", (2, 14)),
+            ("albedo", (0.2, 0.5)),
+        ),
+    )
+    def test_ranges(var, value_range, variables, key):
+        assert value_range[0] < variables["optical_products"][key][var] < value_range[1]
 
-
-@pytest.mark.parametrize("var, sgn", (("lwp", -1), ("tau", 1), ("albedo", 1)))
-def test_monotonicity(var, sgn, variables, model, aerosol_class_name):
-    tmp = [
-        variables["optical_products"][keygen(updraft, model, aerosol_class_name)][var]
-        for updraft in updrafts
-    ]
-    assert (np.diff(tmp) * sgn > 0).all()
+    @staticmethod
+    @pytest.mark.parametrize("var, sgn", (("lwp", -1), ("tau", 1), ("albedo", 1)))
+    def test_monotonicity(var, sgn, variables, model, aerosol_class_name):
+        tmp = [
+            variables["optical_products"][keygen(updraft, model, aerosol_class_name)][
+                var
+            ]
+            for updraft in updrafts
+        ]
+        assert (np.diff(tmp) * sgn > 0).all()
