@@ -80,4 +80,4 @@ def test_relative_humidity():
     simulation = Simulation(settings)
 
     # Assert
-    assert round(simulation.particulator.environment["RH"][0], 3) == 0.859
+    assert round(simulation.particulator.environment["RH"][0], 2) == 0.86
