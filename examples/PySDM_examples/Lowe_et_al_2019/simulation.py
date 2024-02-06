@@ -31,14 +31,15 @@ class Simulation(BasicSimulation):
             "kappa times dry volume": np.empty(0),
             "multiplicity": np.ndarray(0),
         }
+        initial_volume = settings.mass_of_dry_air / settings.rho0
         for mode in settings.aerosol.modes:
             r_dry, n_in_dv = settings.spectral_sampling(
                 spectrum=mode["spectrum"]
             ).sample(settings.n_sd_per_mode)
-            V = settings.mass_of_dry_air / settings.rho0
-            N = n_in_dv * V
             v_dry = settings.formulae.trivia.volume(radius=r_dry)
-            attributes["multiplicity"] = np.append(attributes["multiplicity"], N)
+            attributes["multiplicity"] = np.append(
+                attributes["multiplicity"], n_in_dv * initial_volume
+            )
             attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
             attributes["dry volume organic"] = np.append(
                 attributes["dry volume organic"], mode["f_org"] * v_dry
@@ -51,7 +52,7 @@ class Simulation(BasicSimulation):
             assert attribute.shape[0] == n_sd
 
         np.testing.assert_approx_equal(
-            np.sum(attributes["multiplicity"]) / V,
+            np.sum(attributes["multiplicity"]) / initial_volume,
             Sum(
                 tuple(
                     settings.aerosol.modes[i]["spectrum"]
