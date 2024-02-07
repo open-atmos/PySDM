@@ -39,7 +39,7 @@ def test_dz_sensitivity(
     # plot
     pyplot.rc("font", size=14)
     _, axs = pyplot.subplots(1, 2, figsize=(11, 4), sharey=True)
-    vlist = ("S_max", "n_c_cm3")
+    vlist = ("S_max", "CDNC_cm3")
 
     for idx, var in enumerate(vlist):
         for key, out_item in output.items():
@@ -53,7 +53,7 @@ def test_dz_sensitivity(
         if var == "S_max":
             axs[idx].set_xlabel("Supersaturation [%]")
             axs[idx].set_xlim(0)
-        elif var == "n_c_cm3":
+        elif var == "CDNC_cm3":
             axs[idx].set_xlabel("Cloud droplet concentration [cm$^{-3}$]")
         else:
             assert False

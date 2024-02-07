@@ -57,7 +57,7 @@ def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
                 )
                 simulation = Simulation(settings)
                 output = simulation.run()
-                cdnc_compare[m, k, i] = np.array(output["n_c_cm3"])[-1]
+                cdnc_compare[m, k, i] = np.array(output["CDNC_cm3"])[-1]
 
     mrkr = ["o", "s", "*", "v", "^", "D", "h", "x", "+", "8", "p", "<", ">", "d", "H"]
     _, axes = pyplot.subplots(

@@ -81,7 +81,10 @@ class Simulation(BasicSimulation):
             PySDM_products.PeakSupersaturation(unit="%", name="S_max"),
             PySDM_products.AmbientRelativeHumidity(unit="%", name="RH"),
             PySDM_products.ActivatedParticleConcentration(
-                name="CDNC", unit="cm^-3", count_activated=True, count_unactivated=False
+                name="CDNC_cm3",
+                unit="cm^-3",
+                count_activated=True,
+                count_unactivated=False,
             ),
             PySDM_products.ParticleSizeSpectrumPerVolume(
                 radius_bins_edges=settings.wet_radius_bins_edges
