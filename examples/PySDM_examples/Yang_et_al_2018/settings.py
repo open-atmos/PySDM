@@ -48,7 +48,7 @@ class Settings:
         self.dt_cond_range = condensation.DEFAULTS.cond_range
 
         self.T0 = 284.3 * si.kelvin
-        self.initial_water_vapour_mixing_ratio = 7.6 * si.grams / si.kilogram
+        self.RH0 = 0.856
         self.p0 = 938.5 * si.hectopascals
         self.z0 = 600 * si.metres
         self.kappa = 0.53  # Petters and S. M. Kreidenweis mean growth-factor derived
