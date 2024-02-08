@@ -31,8 +31,8 @@ setup(
         "ipywidgets",
         "seaborn",
         "numdifftools",
-    ],
-    # + (["pyvinecopulib", "vtk"] if platform.architecture()[0] != "32bit" else []),
+    ]
+    + (["pyvinecopulib", "vtk"] if platform.architecture()[0] != "32bit" else []),
     extras_require={
         "tests": [
             "pytest",
