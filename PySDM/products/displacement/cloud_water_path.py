@@ -18,11 +18,13 @@ class CloudWaterPath(MomentProduct):
         self.ice = ice
         self.dz = None
         self.previous_z = None
+        self.cwp = None
         self.environment = None
         self._reset_counters()
 
     def _reset_counters(self):
         self.previous_z = 0.0
+        self.cwp = 0.0
 
     def register(self, builder):
         super().register(builder)
@@ -61,14 +63,15 @@ class CloudWaterPath(MomentProduct):
         rhod = self.buffer.copy()
 
         if self.dz:
-            result = cwc * rhod * self.dz
+            # TODO this is supposed to integrate over the whole vertical column - how do you access other cells at this level of the code?
+            self.cwp = cwc * rhod * self.dz
         else:
             self._download_to_buffer(self.environment["z"])
             current_z = self.buffer.copy()
-            result = cwc * rhod * (current_z - self.previous_z)
+            self.cwp += cwc * rhod * (current_z - self.previous_z)
             self.previous_z = current_z
 
-        return result
+        return self.cwp
 
 
 class LiquidWaterPath(CloudWaterPath):

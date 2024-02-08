@@ -5,6 +5,7 @@ Physical `PySDM.physics.constants` and simple formulae (essentially one-liners)
 """
 
 from . import (
+    cloud_albedo,
     condensation_coordinate,
     constants_defaults,
     diffusion_kinetics,
@@ -20,6 +21,7 @@ from . import (
     isotope_meteoric_water_line_excess,
     isotope_ratio_evolution,
     latent_heat,
+    optical_depth,
     particle_advection,
     particle_shape_and_density,
     saturation_vapour_pressure,

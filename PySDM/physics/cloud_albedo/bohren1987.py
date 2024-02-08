@@ -8,5 +8,7 @@ class Bohren1987:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def albedo(const, g, tau):
-        return ((const.ONE - g) * tau) / (const.TWO + (const.ONE - g) * tau)
+    def albedo(const, tau):
+        return ((const.ONE - const.asymmetry_g) * tau) / (
+            const.TWO + (const.ONE - const.asymmetry_g) * tau
+        )
