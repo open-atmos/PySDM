@@ -2,18 +2,16 @@
 cloud albedo
 """
 
-import numpy as np
+from PySDM.products.impl.product import Product
+from PySDM.products.size_spectral.cloud_optical_depth import CloudOpticalDepth
 
-from PySDM.products.impl.moment_product import MomentProduct
 
-
-class CloudAlbedo(MomentProduct):
-    def __init__(self, *, radius_range=(0, np.inf), unit="m^-3", name=None):
-        self.radius_range = radius_range
+class CloudAlbedo(Product):
+    def __init__(self, *, unit="None", name=None):
         super().__init__(name=name, unit=unit)
 
     def register(self, builder):
-        super().register(builder)
+        pass
 
     def _impl(self, **kwargs):
-        return  # self.formulae.albedo(tau)
+        return self.formulae.cloud_albedo.albedo(CloudOpticalDepth())

@@ -2,18 +2,22 @@
 cloud optical depth
 """
 
-import numpy as np
+from PySDM.products.impl.product import Product
+from PySDM.products.size_spectral.effective_radius_activated import (
+    ActivatedEffectiveRadius,
+)
+from PySDM.products.displacement.cloud_water_path import CloudWaterPath
 
-from PySDM.products.impl.moment_product import MomentProduct
 
-
-class CloudOpticalDepth(MomentProduct):
-    def __init__(self, *, radius_range=(0, np.inf), unit="m^-3", name=None):
-        self.radius_range = radius_range
+class CloudOpticalDepth(Product):
+    def __init__(self, *, unit="None", name=None):
         super().__init__(name=name, unit=unit)
 
     def register(self, builder):
-        super().register(builder)
+        pass
 
     def _impl(self, **kwargs):
-        return  # self.formulae.tau(lwp, reff)
+        return self.formulae.optical_depth.tau(
+            CloudWaterPath(),
+            ActivatedEffectiveRadius(count_unactivated=False, count_activated=True),
+        )

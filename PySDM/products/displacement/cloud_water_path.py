@@ -63,7 +63,8 @@ class CloudWaterPath(MomentProduct):
         rhod = self.buffer.copy()
 
         if self.dz:
-            # TODO this is supposed to integrate over the whole vertical column - how do you access other cells at this level of the code?
+            # todo: this is supposed to integrate over the whole vertical column
+            # how do you access other cells at this level of the code?
             self.cwp = cwc * rhod * self.dz
         else:
             self._download_to_buffer(self.environment["z"])
