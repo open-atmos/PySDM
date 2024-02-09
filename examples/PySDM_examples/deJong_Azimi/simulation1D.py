@@ -17,8 +17,10 @@ from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
 
+from PySDM_examples.Shipway_and_Hill_2012 import Simulation as SH12Simulation
 
-class Simulation:
+
+class Simulation(SH12Simulation):
     def __init__(self, settings, backend=CPU):
         self.nt = settings.nt
         self.z0 = -settings.particle_reservoir_depth
@@ -161,67 +163,3 @@ class Simulation:
                 self.output_products[k] = np.zeros(
                     (self.mesh.grid[-1], self.number_of_bins, number_of_time_sections)
                 )
-
-    def save_scalar(self, step):
-        for k, v in self.particulator.products.items():
-            if len(v.shape) > 1:
-                continue
-            self.output_products[k][:, step] = v.get()
-
-    def save_spectrum(self, index):
-        for k, v in self.particulator.products.items():
-            if len(v.shape) == 2:
-                self.output_products[k][:, :, index] = v.get()
-
-    def save_attributes(self):
-        for k, v in self.output_attributes.items():
-            v.append(self.particulator.attributes[k].to_ndarray())
-
-    def save(self, step):
-        self.save_scalar(step)
-        time = step * self.particulator.dt
-        if len(self.save_spec_and_attr_times) > 0 and (
-            np.min(
-                np.abs(
-                    np.ones_like(self.save_spec_and_attr_times) * time
-                    - np.array(self.save_spec_and_attr_times)
-                )
-            )
-            < 0.1
-        ):
-            save_index = np.argmin(
-                np.abs(
-                    np.ones_like(self.save_spec_and_attr_times) * time
-                    - np.array(self.save_spec_and_attr_times)
-                )
-            )
-            self.save_spectrum(save_index)
-            self.save_attributes()
-
-    def run(self):
-        mesh = self.particulator.mesh
-
-        assert "t" not in self.output_products and "z" not in self.output_products
-        self.output_products["t"] = np.linspace(
-            0, self.nt * self.particulator.dt, self.nt + 1, endpoint=True
-        )
-        self.output_products["z"] = np.linspace(
-            self.z0 + mesh.dz / 2,
-            self.z0 + (mesh.grid[-1] - 1 / 2) * mesh.dz,
-            mesh.grid[-1],
-            endpoint=True,
-        )
-
-        self.save(0)
-        for step in range(self.nt):
-            self.mpdata.update_advector_field()
-            if "Displacement" in self.particulator.dynamics:
-                self.particulator.dynamics["Displacement"].upload_courant_field(
-                    (self.mpdata.advector / self.g_factor_vec,)
-                )
-            self.particulator.run(steps=1)
-            self.save(step + 1)
-
-        Outputs = namedtuple("Outputs", "products attributes")
-        output_results = Outputs(self.output_products, self.output_attributes)
-        return output_results

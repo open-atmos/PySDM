@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Optional
 
 import numpy as np
 from numdifftools import Derivative
@@ -41,8 +41,10 @@ class Settings:
         dt: float = 1 * si.s,
         dz: float = 25 * si.m,
         z_max: float = 3000 * si.m,
+        z_part: Optional[tuple] = None,
         t_max: float = 60 * si.minutes,
         precip: bool = True,
+        enable_condensation: bool = True,
         formulae: Formulae = None,
         save_spec_and_attr_times=(),
     ):
@@ -55,7 +57,8 @@ class Settings:
         self.dt = dt
         self.dz = dz
         self.precip = precip
-
+        self.enable_condensation = enable_condensation
+        self.z_part = z_part
         self.z_max = z_max
         self.t_max = t_max
 

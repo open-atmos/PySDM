@@ -56,6 +56,7 @@ class Settings1D(SettingsSH):
             precip=precip,
             formulae=formulae or Formulae(terminal_velocity="PowerSeries"),
             save_spec_and_attr_times=save_spec_and_attr_times,
+            enable_condensation=False,
         )
         self.z_part = z_part
         z_frac = z_part[1] - z_part[0]

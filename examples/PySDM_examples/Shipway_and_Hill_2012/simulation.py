@@ -71,14 +71,15 @@ class Simulation:
         )
         self.builder.add_dynamic(AmbientThermodynamics())
 
-        self.builder.add_dynamic(
-            Condensation(
-                adaptive=settings.condensation_adaptive,
-                rtol_thd=settings.condensation_rtol_thd,
-                rtol_x=settings.condensation_rtol_x,
-                update_thd=settings.condensation_update_thd,
+        if settings.enable_condensation:
+            self.builder.add_dynamic(
+                Condensation(
+                    adaptive=settings.condensation_adaptive,
+                    rtol_thd=settings.condensation_rtol_thd,
+                    rtol_x=settings.condensation_rtol_x,
+                    update_thd=settings.condensation_update_thd,
+                )
             )
-        )
         self.builder.add_dynamic(EulerianAdvection(self.mpdata))
 
         self.products = []
@@ -98,6 +99,8 @@ class Simulation:
                 spectrum=settings.wet_radius_spectrum_per_mass_of_dry_air
             ),
             kappa=settings.kappa,
+            collisions_only=not settings.enable_condensation,
+            z_part=settings.z_part,
         )
         self.products += [
             PySDM_products.WaterMixingRatio(
@@ -112,11 +115,6 @@ class Simulation:
             ),
             PySDM_products.AmbientDryAirDensity(name="rhod"),
             PySDM_products.AmbientDryAirPotentialTemperature(name="thd"),
-            PySDM_products.ParticleSizeSpectrumPerVolume(
-                name="dry spectrum",
-                radius_bins_edges=settings.r_bins_edges_dry,
-                dry=True,
-            ),
             PySDM_products.ParticleSizeSpectrumPerVolume(
                 name="wet spectrum", radius_bins_edges=settings.r_bins_edges
             ),
@@ -144,29 +142,37 @@ class Simulation:
             PySDM_products.AmbientWaterVapourMixingRatio(
                 name="water_vapour_mixing_ratio"
             ),
-            PySDM_products.RipeningRate(name="ripening"),
-            PySDM_products.ActivatingRate(name="activating"),
-            PySDM_products.DeactivatingRate(name="deactivating"),
-            PySDM_products.PeakSupersaturation(unit="%"),
         ]
+        if settings.enable_condensation:
+            self.products.extend(
+                [
+                    PySDM_products.RipeningRate(name="ripening"),
+                    PySDM_products.ActivatingRate(name="activating"),
+                    PySDM_products.DeactivatingRate(name="deactivating"),
+                    PySDM_products.PeakSupersaturation(unit="%"),
+                    PySDM_products.ParticleSizeSpectrumPerVolume(
+                        name="dry spectrum",
+                        radius_bins_edges=settings.r_bins_edges_dry,
+                        dry=True,
+                    ),
+                ]
+            )
         if settings.precip:
-            self.products.append(
-                PySDM_products.CollisionRatePerGridbox(
-                    name="collision_rate",
-                ),
-            )
-            self.products.append(
-                PySDM_products.CollisionRateDeficitPerGridbox(
-                    name="collision_deficit",
-                ),
-            )
-            self.products.append(
-                PySDM_products.CoalescenceRatePerGridbox(
-                    name="coalescence_rate",
-                ),
+            self.products.extend(
+                [
+                    PySDM_products.CollisionRatePerGridbox(
+                        name="collision_rate",
+                    ),
+                    PySDM_products.CollisionRateDeficitPerGridbox(
+                        name="collision_deficit",
+                    ),
+                    PySDM_products.CoalescenceRatePerGridbox(
+                        name="coalescence_rate",
+                    ),
+                ]
             )
         self.particulator = self.builder.build(
-            attributes=self.attributes, products=self.products
+            attributes=self.attributes, products=tuple(self.products)
         )
 
         self.output_attributes = {
