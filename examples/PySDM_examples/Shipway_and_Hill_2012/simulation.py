@@ -13,7 +13,6 @@ from PySDM.dynamics import (
     Displacement,
     EulerianAdvection,
 )
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
@@ -195,7 +194,7 @@ class Simulation:
     def add_collision_dynamic(builder, settings, _):
         builder.add_dynamic(
             Coalescence(
-                collision_kernel=Geometric(collection_efficiency=1),
+                collision_kernel=settings.collision_kernel,
                 adaptive=settings.coalescence_adaptive,
             )
         )

@@ -2,7 +2,8 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM_examples.deJong_Azimi import Settings1D, Simulation
+from PySDM_examples.deJong_Azimi import Settings1D
+from PySDM_examples.Shipway_and_Hill_2012 import Simulation
 
 from PySDM.physics import si
 
@@ -18,9 +19,9 @@ class TestInitialCondition:  # pylint: disable=too-few-public-methods
         settings = Settings1D(
             n_sd_per_gridbox=10,
             rho_times_w_1=0 * si.m / si.s * si.kg / si.m**3,
+            z_part=z_part,
+            t_max=0,
         )
-        settings.z_part = z_part
-        settings.t_max = 0 * settings.dt
         simulation = Simulation(settings)
 
         # Act
