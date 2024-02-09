@@ -7,7 +7,7 @@ from PySDM.products.size_spectral.cloud_optical_depth import CloudOpticalDepth
 
 
 class CloudAlbedo(Product):
-    def __init__(self, *, unit="None", name=None):
+    def __init__(self, *, unit="dimensionless", name=None):
         super().__init__(name=name, unit=unit)
 
     def register(self, builder):

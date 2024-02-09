@@ -10,7 +10,7 @@ from PySDM.products.displacement.cloud_water_path import CloudWaterPath
 
 
 class CloudOpticalDepth(Product):
-    def __init__(self, *, unit="None", name=None):
+    def __init__(self, *, unit="dimensionless", name=None):
         super().__init__(name=name, unit=unit)
 
     def register(self, builder):
