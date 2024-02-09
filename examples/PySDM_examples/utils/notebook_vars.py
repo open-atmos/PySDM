@@ -23,7 +23,8 @@ def notebook_vars(file: Path, plot: bool):
                 if line.strip().startswith("show_plot("):
                     lines[i] = line.replace(
                         "show_plot(",
-                        "pyplot.show() #" if plot else "pyplot.gca().clear() #",
+                        "from matplotlib import pyplot; "
+                        + ("pyplot.show() #" if plot else "pyplot.gca().clear() #"),
                     )
 
             exec("\n".join(lines), context)  # pylint: disable=exec-used

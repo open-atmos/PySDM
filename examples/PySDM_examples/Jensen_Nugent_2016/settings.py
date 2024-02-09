@@ -10,6 +10,8 @@ class Settings:
         self.p0 = 938.5 * si.hPa
         self.RH0 = 0.8561
         self.T0 = 284.3 * si.K
+        self.z0 = 600 * si.m
+        self.t_end_of_ascent = 1500 * si.s if cloud_type == "Sc" else None
 
         self.kappa = 1.28  # Table 1 from Petters & Kreidenweis 2007
 
@@ -24,6 +26,7 @@ class Settings:
 
         self.vertical_velocity = {
             # Table 2 in the paper
+            "Sc": lambda t: (1 if t < self.t_end_of_ascent else -1) * 0.4 * si.m / si.s,
             "Sc": lambda t: (1 if t < 1500 * si.s else -1) * 0.4 * si.m / si.s,
             "Cu": 2 * si.m / si.s,
         }[cloud_type]
