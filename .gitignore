@@ -1,4 +1,9 @@
 PySDM_examples/utils/temporary_files/*
+*.pdf
+*.nc
+*.pkl
+*.vtu
+*.vts
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
