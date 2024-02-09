@@ -4,7 +4,7 @@ from PySDM.physics import si, in_unit
 from PySDM.physics.constants import PER_CENT
 
 
-def figure(output, settings, simulation):
+def figure(*, output, settings, simulation, drop_ids, xlim_um: tuple):
     cloud_base = 300 * si.m
     y_axis = np.asarray(output["products"]["z"]) - settings.z0 - cloud_base
 
@@ -29,13 +29,7 @@ def figure(output, settings, simulation):
     axs["S"].set_xlabel("S (%)")
     axs["S"].legend()
 
-    for drop_id in (
-        18,
-        29,
-        70,
-        89,
-        -1,
-    ):  # TODO: bug! why rightmost drop is not 500 nm ???
+    for drop_id in drop_ids:  # TODO: bug! why rightmost drop is not 500 nm ???
         for label, mask in masks.items():
             axs["r"].plot(
                 in_unit(np.asarray(output["attributes"]["radius"][drop_id]), si.um)[
@@ -50,7 +44,7 @@ def figure(output, settings, simulation):
                 color=colors[label],
             )
     axs["r"].legend()
-    axs["r"].set_xlim(0, 15)
+    axs["r"].set_xlim(*xlim_um)
     axs["r"].set_xlabel("r$_c$ (µm)")
     axs["r"].set_ylabel("height above cloud base (m)")
 

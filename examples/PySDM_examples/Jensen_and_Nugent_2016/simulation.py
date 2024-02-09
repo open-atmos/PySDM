@@ -1,19 +1,17 @@
 import numpy as np
 from PySDM_examples.utils import BasicSimulation
-from PySDM_examples.Jensen_and_Nugent_2016 import Settings
+from PySDM_examples.Jensen_and_Nugent_2016 import Settings, table_3
 from PySDM import Builder
-from PySDM import Builder, Formulae
 from PySDM.physics import si
 from PySDM.backends import CPU
 from PySDM.products import PeakSupersaturation, ParcelDisplacement, Time
-from PySDM.products import PeakSupersaturation, ParcelDisplacement
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics
 from PySDM.initialisation.sampling.spectral_sampling import Logarithmic
 
 
 class Simulation(BasicSimulation):
-    def __init__(self, settings: Settings, n_gccn: int = 0):
+    def __init__(self, settings: Settings, gccn: bool = False):
         const = settings.formulae.constants
         pvs_Celsius = settings.formulae.saturation_vapour_pressure.pvs_Celsius
         initial_water_vapour_mixing_ratio = const.eps / (
@@ -30,6 +28,8 @@ class Simulation(BasicSimulation):
             z0=settings.z0,
         )
 
+        n_gccn = np.count_nonzero(table_3.NA) if gccn else 0
+
         builder = Builder(
             n_sd=100 + n_gccn, backend=CPU(formulae=settings.formulae), environment=env
         )
@@ -44,10 +44,14 @@ class Simulation(BasicSimulation):
             spectrum=settings.dry_radii_spectrum, size_range=(0.01 * si.um, 0.5 * si.um)
         ).sample(builder.particulator.n_sd - n_gccn)
 
-        for _ in range(n_gccn):
-            # TODO: add super particles representing Giant Cloud Condensation Nuclei
-            self.r_dry = np.concatenate([self.r_dry, [1 * si.um]])
-            n_in_unit_volume = np.concatenate([n_in_unit_volume, [1]])
+        if gccn:
+            nonzero_concentration_mask = np.nonzero(table_3.NA)
+            self.r_dry = np.concatenate(
+                [self.r_dry, table_3.RD[nonzero_concentration_mask]]
+            )
+            n_in_unit_volume = np.concatenate(
+                [n_in_unit_volume, table_3.NA[nonzero_concentration_mask]]
+            )  # TODO: check which temp, pres, RH assumed in the paper for NA???
 
         pd0 = settings.formulae.trivia.p_d(
             settings.p0, initial_water_vapour_mixing_ratio
@@ -77,7 +81,7 @@ class Simulation(BasicSimulation):
         }
 
     def run(
-        self, *, n_steps, steps_per_output_interval
+        self, *, n_steps: int = 2250, steps_per_output_interval: int = 10
     ):  # TODO: essentially copied from G & P 2023
         output_products = super()._run(n_steps, steps_per_output_interval)
         return {"products": output_products, "attributes": self.output_attributes}
