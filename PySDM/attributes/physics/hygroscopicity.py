@@ -3,6 +3,7 @@ kappa-Koehler hygroscopicity representation:
  the `PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume` base attribute
  and the derived `PySDM.attributes.physics.hygroscopicity.Kappa` attribute
 """
+
 from ..impl.derived_attribute import DerivedAttribute
 from ..impl.extensive_attribute import ExtensiveAttribute
 

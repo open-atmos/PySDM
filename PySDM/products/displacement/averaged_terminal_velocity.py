@@ -1,6 +1,7 @@
 """
 average terminal with weighting either by number or volume
 """
+
 import numpy as np
 
 from PySDM.products.impl.moment_product import MomentProduct

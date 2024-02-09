@@ -1,6 +1,7 @@
 """
 CPU implementation of shuffling and sorting backend methods
 """
+
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods

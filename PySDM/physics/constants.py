@@ -3,6 +3,7 @@ Collection of constants with dimensional analysis handled with
 [Pint](https://pypi.org/project/Pint/)'s package `UnitRegistry` for test
 purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 """
+
 import os
 import time
 
@@ -20,6 +21,10 @@ if not DIMENSIONAL_ANALYSIS:
 
 def convert_to(value, unit):
     value /= unit
+
+
+def in_unit(value, unit):
+    return value / unit
 
 
 sqrt_two = np.sqrt(2)
@@ -47,6 +52,10 @@ default_random_seed = (
 PPT = 1e-12
 PPB = 1e-9
 PPM = 1e-6
+
+PER_CENT = 1e-2
+PER_MILLE = 1e-3
+PER_MEG = PPM
 
 T0 = sci.zero_Celsius * si.kelvin
 

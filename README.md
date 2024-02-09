@@ -37,9 +37,16 @@ The package features a Pythonic high-performance implementation of the
 
 There is a growing set of example Jupyter notebooks exemplifying how to perform 
   various types of calculations and simulations using PySDM.
-Most of the example notebooks reproduce resutls and plot from literature, see below for 
+Most of the example notebooks reproduce results and plot from literature, see below for 
   a list of examples and links to the notebooks (which can be either executed or viewed 
   "in the cloud").
+
+There are also a growing set of [tutorials](https://github.com/open-atmos/PySDM/tree/main/tutorials), also in the form of Jupyter notebooks.
+These tutorials are intended for teaching purposes and include short explanations of cloud microphysical 
+  concepts paired with widgets for running interactive simulations using PySDM.
+Each tutorial also comes with a set of questions at the end that can be used as homework problems.
+Like the examples, these tutorials can be executed or viewed "in the cloud" making it an especially 
+  easy way for students to get started.
 
 PySDM has two alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
@@ -93,9 +100,9 @@ Running the example Jupyter notebooks requires the ``PySDM_examples`` package to
 The suggested install and launch steps are:
 ```
 git clone https://github.com/open-atmos/PySDM.git
-cd examples
-pip install -e .
-jupyter-notebook
+pip install -e PySDM
+pip install -e PySDM/examples
+jupyter-notebook PySDM/examples/PySDM_examples
 ```
 Alternatively, one can also install the examples package from pypi.org by 
 using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
@@ -240,8 +247,8 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").Particl
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
-builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
+env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
 particulator = builder.build(attributes, products)
@@ -260,8 +267,8 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
-builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
-builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
+env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
+builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU(), 'environment', env));
 builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
@@ -284,8 +291,8 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
-builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
+env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3)
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
@@ -387,14 +394,13 @@ The component submodules used to create this simulation are visualized below:
     COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
     BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
     ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
-    N_SD["n_sd :int"] -->|passed as arg to| BUILDER_INIT
-    BUILDER_INSTANCE -..-|has a method| BUILDER_SET_ENV(["Builder.set_environment()"])
-    BUILDER_INIT(["Builder.__init__()"]) ----->|instantiates| BUILDER_INSTANCE
+    N_SD["n_sd :int"] ---->|passed as arg to| BUILDER_INIT
+    BUILDER_INIT(["Builder.__init__()"]) --->|instantiates| BUILDER_INSTANCE
     BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
-    ENV_INIT(["Box.__init__()"]) --->|instantiates| ENV
-    DT[dt :float] ----->|passed as arg to| ENV_INIT
-    DV[dv :float] ----->|passed as arg to| ENV_INIT
-    ENV[":Box"] -->|passed as arg to| BUILDER_SET_ENV
+    ENV_INIT(["Box.__init__()"]) -->|instantiates| ENV
+    DT[dt :float] -->|passed as arg to| ENV_INIT
+    DV[dv :float] -->|passed as arg to| ENV_INIT
+    ENV[":Box"] -->|passed as arg to| BUILDER_INIT
     B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
     KERNEL_INIT -->|instantiates| KERNEL
     KERNEL[collision_kernel: Golovin] -->|passed as arg to| COAL_INIT(["Coalesncence.__init__()"])
@@ -413,7 +419,7 @@ The component submodules used to create this simulation are visualized below:
     volume -->|added as element of| ATTRIBUTES
     BUILDER_BUILD -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
     PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
-    BACKEND_INSTANCE["backend :CPU"] -->|passed as arg to| BUILDER_INIT
+    BACKEND_INSTANCE["backend :CPU"] ---->|passed as arg to| BUILDER_INIT
     PRODUCTS -.-|accessible via| PARTICULATOR_PROD
     NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES 
     EDGES[radius_bins_edges: np.ndarray] -->|passed as arg to| SPECTRUM_INIT
@@ -424,7 +430,6 @@ The component submodules used to create this simulation are visualized below:
     click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click BUILDER_SET_ENV "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
     click ENV "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
     click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
@@ -495,8 +500,7 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
-builder.set_environment(env)
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
@@ -577,8 +581,7 @@ output_points = 40;
 n_sd = 256;
 
 formulae = Formulae();
-builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
-builder.set_environment(env);
+builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environment', env));
 builder.add_dynamic(AmbientThermodynamics());
 builder.add_dynamic(Condensation());
 
@@ -678,8 +681,7 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
-builder.set_environment(env)
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
@@ -783,20 +785,23 @@ We look forward to your contributions and feedback.
 The development and maintenance of PySDM is led by [Sylwester Arabas](https://github.com/slayoo/).
 [Piotr Bartman](https://github.com/piotrbartman/) had been the architect and main developer 
 of technological solutions in PySDM. 
-The suite of examples shipped with PySDM includes contributions from researchers 
+PySDM includes contributions from researchers 
 from [Jagiellonian University](https://en.uj.edu.pl/en) departments of computer science, physics and chemistry;
-and from 
-[Caltech's Climate Modelling Alliance](https://clima.caltech.edu/).
+from [Caltech's Climate Modelling Alliance](https://clima.caltech.edu/),
+from [University of Warsaw](https://en.uw.edu.pl/) (dept. physics), and
+from [AGH University of Krakow](https://agh.edu.pl/en) (dept. physics \& applied computer science) where release maintenance takes place currently.
 
 Development of PySDM had been initially supported by the EU through a grant of the 
-[Foundation for Polish Science](https://www.fnp.org.pl/)) (POIR.04.04.00-00-5E1C/18) 
+[Foundation for Polish Science](https://www.fnp.org.pl/)) (grant no. POIR.04.04.00-00-5E1C/18) 
 realised at the [Jagiellonian University](https://en.uj.edu.pl/en).
-The immersion freezing support in PySDM is developed with support from the
+The immersion freezing support in PySDM was developed with support from the
 US Department of Energy [Atmospheric System Research](https://asr.science.energy.gov/) programme
-through a grant realised at the 
+through a grant (no. DE-SC0021034) realised at the 
 [University of Illinois at Urbana-Champaign](https://illinois.edu/).
+Development of isotopic fractionation representation and mixed-phase support is carried out with support from
+the [Polish National Science Centre](https://ncn.gov.pl/en) (grant no. 2020/39/D/ST10/01220).
 
-copyright: [Jagiellonian University](https://en.uj.edu.pl/en)    
+copyright: [Jagiellonian University](https://en.uj.edu.pl/en) (2019-2023) & [AGH University of Krakow](https://agh.edu.pl/en) (2023-...)    
 licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Related resources and open-source projects
@@ -822,6 +827,8 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://github.com/darothen/superdroplet
 - NTLP (FORTRAN)   
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
+- CLEO (C++)
+  https://yoctoyotta1024.github.io/CLEO/
 
 ### non-SDM probabilistic particle-based coagulation solvers
 

@@ -1,6 +1,7 @@
 """
 storage internals for the ThrustRTC backend
 """
+
 import numpy as np
 
 from PySDM.backends.impl_common.storage_utils import (
@@ -37,6 +38,14 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             """,
         )
 
+        __add_elementwise_with_multiplier_body = trtc.For(
+            ("output", "addend", "multiplier"),
+            "i",
+            """
+                output[i] += multiplier * addend[i];
+            """,
+        )
+
         __add_body = trtc.For(
             ["output", "addend"],
             "i",
@@ -48,11 +57,21 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def add(output, addend):
+            args = (output, addend)
             if hasattr(addend, "data"):
                 loop = Impl.__add_elementwise_body
+            elif (
+                isinstance(addend, tuple)
+                and len(addend) == 3
+                and isinstance(addend[0], float)
+                and addend[1] == "*"
+                and isinstance(addend[2], Storage)
+            ):
+                loop = Impl.__add_elementwise_with_multiplier_body
+                args = (output, addend[2], addend[0])
             else:
                 loop = Impl.__add_body
-            loop.launch_n(output.shape[0], Impl.thrust((output, addend)))
+            loop.launch_n(n=output.shape[0], args=Impl.thrust(args))
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)

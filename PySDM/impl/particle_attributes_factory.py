@@ -1,6 +1,7 @@
 """
 factory logic for creating `PySDM.impl.particle_attributes.ParticleAttributes` instances
 """
+
 import numpy as np
 
 from PySDM.attributes.impl import (
@@ -42,12 +43,12 @@ class ParticleAttributesFactory:
 
         for attr in req_attr.values():
             if isinstance(attr, (DerivedAttribute, DummyAttribute)):
+                if attr.name in attributes:
+                    raise ValueError(
+                        f"attribute '{attr.name}' is a dummy/derived one,"
+                        f" but values were provided"
+                    )
                 attr.allocate(idx)
-            if isinstance(attr, DummyAttribute) and attr.name in attributes:
-                raise ValueError(
-                    f"attribute '{attr.name}' indicated as dummy"
-                    f" but values were provided"
-                )
 
         extensive_keys = {}
         maximum_keys = {}

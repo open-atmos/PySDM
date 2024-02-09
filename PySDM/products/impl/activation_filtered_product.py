@@ -1,6 +1,7 @@
 """
 common base class for products filtering droplets based on their activation state
 """
+
 import numpy as np
 
 

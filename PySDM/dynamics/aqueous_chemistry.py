@@ -1,6 +1,7 @@
 """
 Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
 """
+
 from collections import namedtuple
 
 import numpy as np
@@ -77,6 +78,7 @@ class AqueousChemistry:  # pylint: disable=too-many-instance-attributes
 
         for key in AQUEOUS_COMPOUNDS:
             builder.request_attribute("conc_" + key)
+        builder.request_attribute("pH")
 
         for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
             self.kinetic_consts[key] = self.particulator.Storage.empty(

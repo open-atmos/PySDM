@@ -1,6 +1,7 @@
 """
 particle dry volume (subject to evolution due to collisions or aqueous chemistry)
 """
+
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
@@ -15,8 +16,8 @@ class DryVolumeDynamic(DerivedAttribute):
 
     def recalculate(self):
         dynamic = self.particulator.dynamics["AqueousChemistry"]
-        self.data.data[:] = self.moles_sulphur_p6.data.data[:]
-        self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho
+        self.data.fill(self.moles_sulphur_p6.data)
+        self.data *= dynamic.dry_molar_mass / dynamic.dry_rho
 
 
 class DryVolume(ExtensiveAttribute):
@@ -33,9 +34,10 @@ class OrganicFraction(DerivedAttribute):
     def __init__(self, builder):
         self.volume_dry_org = builder.get_attribute("dry volume organic")
         self.volume_dry = builder.get_attribute("dry volume")
-        dependencies = [self.volume_dry_org, self.volume_dry]
         super().__init__(
-            builder, name="dry volume organic fraction", dependencies=dependencies
+            builder,
+            name="dry volume organic fraction",
+            dependencies=(self.volume_dry_org, self.volume_dry),
         )
 
     def recalculate(self):

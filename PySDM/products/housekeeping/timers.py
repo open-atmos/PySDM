@@ -1,6 +1,7 @@
 """
 CPU- and wall-time counters (fetching a value resets the counter)
 """
+
 import time
 from abc import abstractmethod
 

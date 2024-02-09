@@ -2,6 +2,7 @@
 logic for handling particle attributes within
  `PySDM.particulator.Particulator`
 """
+
 from typing import Dict
 
 import numpy as np

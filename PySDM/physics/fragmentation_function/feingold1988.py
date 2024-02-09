@@ -1,6 +1,7 @@
 """
 Scaled exponential PDF
 """
+
 import numpy as np
 
 

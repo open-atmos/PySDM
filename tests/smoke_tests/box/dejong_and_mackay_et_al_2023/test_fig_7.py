@@ -10,7 +10,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponentia
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics import si
 
-CMAP = matplotlib.cm.get_cmap("viridis")
+CMAP = matplotlib.colormaps["viridis"]
 N_SD = 2**12
 DT = 1 * si.s
 
@@ -68,9 +68,11 @@ class TestFig7:
                 data_x[lbl],
                 data_y[lbl][0] * settings.rho,
                 color=CMAP(i / len(nf_vals)),
-                label=lbl
-                if lbl not in pyplot.gca().get_legend_handles_labels()[1]
-                else "",
+                label=(
+                    lbl
+                    if lbl not in pyplot.gca().get_legend_handles_labels()[1]
+                    else ""
+                ),
             )
         pyplot.xscale("log")
         pyplot.xlabel("particle radius (um)")
@@ -149,9 +151,11 @@ class TestFig7:
                 data_y[lbl][0] * settings.rho,
                 color=CMAP(i / len(mu_vals)),
                 linestyle="-",
-                label=lbl
-                if lbl not in pyplot.gca().get_legend_handles_labels()[1]
-                else "",
+                label=(
+                    lbl
+                    if lbl not in pyplot.gca().get_legend_handles_labels()[1]
+                    else ""
+                ),
             )
 
         pyplot.xscale("log")

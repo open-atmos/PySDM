@@ -16,9 +16,8 @@ dT = -2
 class TestCoolingRate:
     @staticmethod
     def _make_particulator():
-        builder = Builder(n_sd=n_sd, backend=CPU())
         env = Box(dt=dt, dv=np.nan)
-        builder.set_environment(env)
+        builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
         env["T"] = T
         return builder.build(
             attributes={

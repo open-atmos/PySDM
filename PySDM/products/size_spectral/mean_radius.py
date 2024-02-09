@@ -1,6 +1,7 @@
 """
 mean radius of particles within a grid cell (optionally restricted to a given size range)
 """
+
 import numpy as np
 
 from PySDM.products.impl.moment_product import MomentProduct

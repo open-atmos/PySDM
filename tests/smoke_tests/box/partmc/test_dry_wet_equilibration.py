@@ -1,5 +1,6 @@
 """ comparing kappa-Koehler wet radius equilibration in PySDM and PartMC
   (based on PyPartMC-examples notebook by Zach D'Aquino) """
+
 # pylint: disable=missing-function-docstring,no-member
 import platform
 from collections import namedtuple
@@ -25,9 +26,8 @@ y_unit = 1 / si.cm**3
 
 def pysdm(dry_diam, temp, rel_humid, kpa):
     r_dry = dry_diam / 2
-    builder = Builder(n_sd=0, backend=CPU())
     environment = Box(dt=np.nan, dv=np.nan)
-    environment.register(builder)
+    _ = Builder(n_sd=0, backend=CPU(), environment=environment)
     environment["T"] = temp
     environment["RH"] = rel_humid
     kappa_times_dry_volume = kpa * (np.pi / 6) * dry_diam**3

@@ -27,8 +27,8 @@ class TestSDMSingleCell:
             "multiplicity": n_2,
             "volume": v_2,
             "heat": const * T_2 * v_2,
-            "temperature": T_2,
         }
+        particulator.request_attribute("temperature")
         particulator.build(attributes)
 
         # Act

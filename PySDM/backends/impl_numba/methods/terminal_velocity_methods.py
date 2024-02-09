@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for terminal velocities
 """
+
 from functools import cached_property
 
 import numba

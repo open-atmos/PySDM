@@ -1,6 +1,7 @@
 """
 constant rate formulation (for tests)
 """
+
 import numpy as np
 
 

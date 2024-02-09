@@ -46,16 +46,17 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
+        env = Box(dv=None, dt=None)
         builder = Builder(
             volume.size,
             backend_class(
                 Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
             ),
+            environment=env,
         )
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )
@@ -107,16 +108,17 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
+        env = Box(dv=None, dt=None)
         builder = Builder(
             volume.size,
             backend_class(
                 Formulae(fragmentation_function=fragmentation_fn.__class__.__name__),
                 double_precision=True,
             ),
+            environment=env,
         )
         sut = fragmentation_fn
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )
@@ -160,16 +162,18 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
+
+        env = Box(dv=None, dt=None)
         builder = Builder(
             volume.size,
             backend_class(
                 Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
             ),
+            environment=env,
         )
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )
@@ -218,16 +222,18 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
+
+        env = Box(dv=None, dt=None)
         builder = Builder(
             volume.size,
             backend_class(
                 Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
             ),
+            environment=env,
         )
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )
@@ -293,11 +299,11 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             ]
         )
         fragments = np.asarray([-1.0])
-        builder = Builder(volume.size, backend)
+        env = Box(dv=None, dt=None)
+        builder = Builder(volume.size, backend, environment=env)
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )
@@ -374,16 +380,18 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         expected_frag_mass = np.sum(water_mass) / expected_nf
 
         fragments = np.asarray([-1.0])
+
+        env = Box(dv=None, dt=None)
         builder = Builder(
             water_mass.size,
             backend_class(
                 Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
             ),
+            environment=env,
         )
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(
             attributes={
                 "water mass": water_mass,

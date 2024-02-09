@@ -62,7 +62,7 @@ def test_fig_6_reduced_resolution(backend_class, plot=False):
         pyplot.step(
             data_x[lbl],
             data_y[lbl][0] * settings.rho,
-            color=matplotlib.cm.get_cmap("viridis")(i / len(EC_VALS)),
+            color=matplotlib.colormaps["viridis"](i / len(EC_VALS)),
             label=lbl if lbl not in pyplot.gca().get_legend_handles_labels()[1] else "",
         )
 

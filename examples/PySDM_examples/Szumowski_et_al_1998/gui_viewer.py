@@ -93,13 +93,15 @@ class GUIViewer:
                 self.spectrumPlots[key] = (
                     _SpectrumPlot(r_bins, self.settings.spectrum_per_mass_of_dry_air)
                     if key == "size"
-                    else _TemperaturePlot(
-                        self.settings.T_bins_edges, self.settings.formulae
-                    )
-                    if key == "temperature"
-                    else _TerminalVelocityPlot(
-                        self.settings.terminal_velocity_radius_bin_edges,
-                        self.settings.formulae,
+                    else (
+                        _TemperaturePlot(
+                            self.settings.T_bins_edges, self.settings.formulae
+                        )
+                        if key == "temperature"
+                        else _TerminalVelocityPlot(
+                            self.settings.terminal_velocity_radius_bin_edges,
+                            self.settings.formulae,
+                        )
                     )
                 )
                 clear_output()

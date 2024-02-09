@@ -2,6 +2,7 @@
 ThrustRTC import logic implementing the switch between the genuine ThrustRTC and FakeThrustRTC;
 default nice_thrust flags
 """
+
 import os
 from warnings import warn
 
