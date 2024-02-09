@@ -125,3 +125,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def mixing_ratio_to_specific_content(mixing_ratio):
         return mixing_ratio / (1 + mixing_ratio)
+
+    @staticmethod
+    def dn_dlogr(r, dn_dr):
+        return np.log(10) * r * dn_dr

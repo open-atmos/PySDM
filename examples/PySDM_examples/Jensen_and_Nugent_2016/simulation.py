@@ -1,6 +1,6 @@
 import numpy as np
 from PySDM_examples.utils import BasicSimulation
-from PySDM_examples.Jensen_Nugent_2016 import Settings
+from PySDM_examples.Jensen_and_Nugent_2016 import Settings
 from PySDM import Builder
 from PySDM import Builder, Formulae
 from PySDM.physics import si
