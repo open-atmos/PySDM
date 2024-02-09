@@ -12,15 +12,11 @@ from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
 
 
 class Kinematic1D(Moist):
-    def __init__(
-        self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0, z_part=None, collisions_only=False
-    ):
+    def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0):
         super().__init__(dt, mesh, [])
         self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.formulae = None
-        self.z_part = z_part
-        self.collisions_only = collisions_only
 
     def register(self, builder):
         super().register(builder)
@@ -36,7 +32,13 @@ class Kinematic1D(Moist):
         return self.thd0
 
     def init_attributes(
-        self, *, spatial_discretisation, spectral_discretisation, kappa
+        self,
+        *,
+        spatial_discretisation,
+        spectral_discretisation,
+        kappa,
+        z_part=None,
+        collisions_only=False
     ):
         super().sync()
         self.notify()
@@ -47,7 +49,7 @@ class Kinematic1D(Moist):
                 backend=self.particulator.backend,
                 grid=self.mesh.grid,
                 n_sd=self.particulator.n_sd,
-                z_part=self.z_part,
+                z_part=z_part,
             )
             (
                 attributes["cell id"],
@@ -55,7 +57,7 @@ class Kinematic1D(Moist):
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
 
-            if self.collisions_only:
+            if collisions_only:
                 v_wet, n_per_kg = spectral_discretisation.sample(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
                 )
