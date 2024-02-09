@@ -1,6 +1,7 @@
 """
 Power series expression
 """
+
 import numpy as np
 
 from PySDM.physics import constants as const
