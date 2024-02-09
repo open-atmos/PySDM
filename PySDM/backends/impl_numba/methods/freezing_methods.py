@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 """
+
 import numba
 import numpy as np
 

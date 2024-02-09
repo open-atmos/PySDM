@@ -1,6 +1,7 @@
 """
 GPU implementation of backend methods for terminal velocities
 """
+
 from functools import cached_property
 
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS

@@ -1,6 +1,7 @@
 """
 TODO #744
 """
+
 from .always_n import AlwaysN
 from .constant_mass import ConstantMass
 from .expon_frag import ExponFrag

@@ -2,6 +2,7 @@
 standard deviation of radius/area/volume of particles within a grid cell,
 for activated, unactivated or both
 """
+
 import numpy as np
 
 from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct

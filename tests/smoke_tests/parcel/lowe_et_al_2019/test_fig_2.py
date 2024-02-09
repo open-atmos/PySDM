@@ -29,28 +29,28 @@ class TestFig2:  # pylint: disable=too-few-public-methods
                 0.075,
                 169,
             ),
-            (
+            (  # TODO #1247 SS_max & SS_100m & Nc_100m doesn't match for this case
                 paper_aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME),
                 "Constant",
                 0.182,
                 0.055,
                 422,
             ),
-            (
+            (  # TODO #1247 SS_100m & Nc_100m doesn't match for this case
                 paper_aerosol.AerosolBoreal(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 0.137,
                 0.055,
                 525,
             ),
-            (
+            (  # TODO #1247 SS_100m & Nc_100m doesn't match for this case
                 paper_aerosol.AerosolNascent(water_molar_volume=WATER_MOLAR_VOLUME),
                 "Constant",
                 0.407,
                 0.122,
                 68,
             ),
-            (
+            (  # TODO #1247 SS_100m & Nc_100m doesn't match for this case
                 paper_aerosol.AerosolNascent(water_molar_volume=WATER_MOLAR_VOLUME),
                 "CompressedFilmOvadnevaite",
                 0.314,
@@ -59,18 +59,15 @@ class TestFig2:  # pylint: disable=too-few-public-methods
             ),
         ),
     )
-    @pytest.mark.xfail(strict=True)  # TODO #604
+    # TODO #1247 AerosolMarine passes, but others fail
+    # TODO #1246 general mismatches in parcel profiles
+    @pytest.mark.xfail()
     def test_peak_supersaturation_and_final_concentration(
         *, aerosol, surface_tension, s_max, s_100m, n_100m
     ):
         # arrange
-        dt = 1 * si.s
-        w = 0.32 * si.m / si.s
-        z_max = 200 * si.m
-        n_steps = int(z_max / w / dt)
-        dz = z_max / n_steps
         settings = Settings(
-            dz=dz,
+            dz=1 * si.m,
             n_sd_per_mode=32,
             model=surface_tension,
             aerosol=aerosol,

@@ -1,6 +1,7 @@
 """
 CPU Numpy-based implementation of Storage class
 """
+
 import numpy as np
 
 from PySDM.backends.impl_common.storage_utils import (

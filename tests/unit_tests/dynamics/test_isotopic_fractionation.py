@@ -1,6 +1,7 @@
 """
 unit test for the IsotopicFractionation dynamic
 """
+
 from contextlib import nullcontext
 
 import numpy as np

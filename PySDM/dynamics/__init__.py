@@ -3,6 +3,7 @@ Classes representing physicochemical processes:
 `PySDM.dynamics.collisions.collision.Collision`,
 `PySDM.dynamics.condensation.Condensation`, ...
 """
+
 from PySDM.dynamics.isotopic_fractionation import IsotopicFractionation
 
 # isort: split

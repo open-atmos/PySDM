@@ -1,6 +1,7 @@
 """
 concentration of frozen particles (unactivated, activated or both)
 """
+
 import numpy as np
 
 from PySDM.products.impl.concentration_product import ConcentrationProduct

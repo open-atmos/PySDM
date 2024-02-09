@@ -4,6 +4,7 @@ highest supersaturation encountered while solving for condensation/evaporation (
  `PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity`;
  fetching a value resets the maximum value)
 """
+
 import numpy as np
 
 from PySDM.products.impl.product import Product

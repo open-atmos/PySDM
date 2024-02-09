@@ -1,6 +1,7 @@
 """
 Bare zero-dimensional framework
 """
+
 import numpy as np
 
 from PySDM.impl.mesh import Mesh

@@ -1,6 +1,7 @@
 """
 factory for arbitrary-moment product classes
 """
+
 from PySDM.products.impl.moment_product import MomentProduct
 
 

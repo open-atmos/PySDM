@@ -1,6 +1,7 @@
 """
 The Builder class handling creation of  `PySDM.particulator.Particulator` instances
 """
+
 import inspect
 import warnings
 
@@ -109,10 +110,10 @@ class Builder:
                 LiquidSpheres.__name__,
                 MixedPhaseSpheres.__name__,
             ), "implied volume-to-mass conversion is only supported for spherical particles"
-            attributes[
-                "water mass"
-            ] = self.particulator.formulae.particle_shape_and_density.volume_to_mass(
-                attributes["volume"]
+            attributes["water mass"] = (
+                self.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                    attributes["volume"]
+                )
             )
             del attributes["volume"]
             self.request_attribute("volume")

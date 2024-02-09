@@ -1,6 +1,7 @@
 """
 basic geometric kernel
 """
+
 from PySDM.dynamics.collisions.collision_kernels.impl.gravitational import Gravitational
 from PySDM.physics import constants as const
 

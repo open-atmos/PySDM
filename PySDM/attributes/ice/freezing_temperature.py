@@ -2,6 +2,7 @@
 particle freezing temperature (assigned at initialisation, modified through collisions only,
  used in singular regime)
 """
+
 from PySDM.attributes.impl import MaximumAttribute
 
 

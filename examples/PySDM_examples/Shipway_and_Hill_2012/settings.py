@@ -1,9 +1,9 @@
 from typing import Iterable
 
 import numpy as np
+from numdifftools import Derivative
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
-from scipy.misc import derivative
 
 from PySDM import Formulae
 from PySDM.dynamics import condensation
@@ -60,8 +60,8 @@ class Settings:
         self.t_max = t_max
 
         t_1 = 600 * si.s
-        self.rho_times_w = (
-            lambda t: rho_times_w_1 * np.sin(np.pi * t / t_1) if t < t_1 else 0
+        self.rho_times_w = lambda t: (
+            rho_times_w_1 * np.sin(np.pi * t / t_1) if t < t_1 else 0
         )
         apprx_w1 = rho_times_w_1 / self.formulae.constants.rho_STP
         self.particle_reservoir_depth = (
@@ -106,9 +106,9 @@ class Settings:
             water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
                 z_above_reservoir
             )
-            d_water_vapour_mixing_ratio__dz = derivative(
-                self.water_vapour_mixing_ratio, z_above_reservoir
-            )
+            d_water_vapour_mixing_ratio__dz = Derivative(
+                self.water_vapour_mixing_ratio
+            )(z_above_reservoir)
             T = self.formulae.state_variable_triplet.T(
                 rhod[0], self.thd(z_above_reservoir)
             )

@@ -1,6 +1,7 @@
 """
 Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
 """
+
 from collections import namedtuple
 
 import numpy as np

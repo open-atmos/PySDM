@@ -3,6 +3,7 @@ Numba-based implementation of ThrustRTC API involving translation of C++ code
  to njitted (and multi-threaded) Python code - a hacky workaround enabling
  testing ThrustRTC code on machines with no GPU/CUDA
 """
+
 # pylint: disable=no-member,unsupported-assignment-operation,unsubscriptable-object,no-value-for-parameter
 import types
 import warnings

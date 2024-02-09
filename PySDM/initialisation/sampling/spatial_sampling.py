@@ -1,6 +1,7 @@
 """
 spatial sampling logic (i.e., physical x-y-z coordinates)
 """
+
 # TODO #305 QUASIRANDOM & GRID
 #  http://www.ii.uj.edu.pl/~arabas/workshop_2019/files/talk_Shima.pdf
 

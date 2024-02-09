@@ -162,11 +162,11 @@ class Simulation:
                 )
 
             if self.settings.freezing_singular:
-                attributes[
-                    "freezing temperature"
-                ] = formulae.freezing_temperature_spectrum.invcdf(
-                    np.random.random(immersed_surface_area.size),  # TODO #599: seed
-                    immersed_surface_area,
+                attributes["freezing temperature"] = (
+                    formulae.freezing_temperature_spectrum.invcdf(
+                        np.random.random(immersed_surface_area.size),  # TODO #599: seed
+                        immersed_surface_area,
+                    )
                 )
             else:
                 attributes["immersed surface area"] = immersed_surface_area

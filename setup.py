@@ -1,7 +1,9 @@
 """
 the magick behind "pip install PySDM"
 """
+
 import os
+import platform
 
 from setuptools import find_packages, setup
 
@@ -13,6 +15,7 @@ def get_long_description():
 
 
 CI = "CI" in os.environ
+_32bit = platform.architecture()[0] == "32bit"
 
 setup(
     name="PySDM",
@@ -23,23 +26,23 @@ setup(
     install_requires=[
         "ThrustRTC==0.3.20",
         "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
-        "numba" + ("==0.56.4" if CI else ">=0.51.2"),
-        "numpy" + ("==1.21.6" if CI else ""),
-        "Pint" + ("==0.17" if CI else ""),
+        "numba" + ("==0.58.1" if CI and not _32bit else ">=0.51.2"),
+        "numpy" + ("==1.24.4" if CI else ""),
+        "Pint" + ("==0.21.1" if CI else ""),
         "chempy" + ("==0.8.3" if CI else ""),
-        "scipy" + ("==1.7.3" if CI else ""),
+        "scipy" + ("==1.10.1" if CI and not _32bit else ""),
         "pyevtk" + ("==1.2.0" if CI else ""),
     ],
     extras_require={
         "tests": [
-            "matplotlib" + ("==3.5.3" if CI else ""),
+            "matplotlib",
             "jupyter-core<5.0.0",
             "ipywidgets!=8.0.3",
-            "ghapi",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==1.0.1",
+            "PyPartMC==1.0.2",
         ]
+        + ([] if _32bit else ["pyrcel"])
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
     author_email="sylwester.arabas@agh.edu.pl",

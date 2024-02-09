@@ -28,10 +28,7 @@ class Settings(StratoCumulus):
     def __init__(
         self,
         formulae=None,
-        rhod_w_max: float = 0.6
-        * si.metres
-        / si.seconds
-        * (si.kilogram / si.metre**3),
+        rhod_w_max: float = 0.6 * si.metres / si.seconds * (si.kilogram / si.metre**3),
     ):
         super().__init__(formulae or Formulae(), rhod_w_max=rhod_w_max)
 

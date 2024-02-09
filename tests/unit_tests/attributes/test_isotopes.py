@@ -1,6 +1,7 @@
 """
 unit tests for isotope-related attributes
 """
+
 import numpy as np
 import pytest
 

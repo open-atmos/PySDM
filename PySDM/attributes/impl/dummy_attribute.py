@@ -1,5 +1,6 @@
 """ logic around `PySDM.attributes.impl.dummy_attribute.DummyAttribute` - parent class
 for do-nothing attributes """
+
 import warnings
 
 import numpy as np

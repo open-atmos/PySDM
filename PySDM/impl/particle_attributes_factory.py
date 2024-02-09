@@ -1,6 +1,7 @@
 """
 factory logic for creating `PySDM.impl.particle_attributes.ParticleAttributes` instances
 """
+
 import numpy as np
 
 from PySDM.attributes.impl import (

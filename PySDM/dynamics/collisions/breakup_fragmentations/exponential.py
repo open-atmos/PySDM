@@ -1,6 +1,7 @@
 """
 P(x) = exp(-x / lambda); lambda specified in volume units
 """
+
 # TODO #796: introduce common code with Feingold fragmentation, including possible limiter
 from .impl import VolumeBasedFragmentationFunction
 

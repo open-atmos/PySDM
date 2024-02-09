@@ -1,6 +1,7 @@
 """
 Provides radius bin-resolved average terminal velocity (average is particle-number weighted)
 """
+
 import numpy as np
 
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct

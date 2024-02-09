@@ -2,6 +2,7 @@
 lognormal spectrum implemented using
  [SciPy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html)
 """
+
 import math
 
 from scipy.stats import lognorm
