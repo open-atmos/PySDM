@@ -5,7 +5,7 @@ import pytest
 from scipy import signal
 
 from PySDM_examples.utils import notebook_vars
-from PySDM_examples import Jensen_Nugent_2016
+from PySDM_examples import Jensen_and_Nugent_2016
 from PySDM.physics.constants import PER_CENT
 
 from PySDM.physics import si
@@ -16,7 +16,7 @@ PLOT = False
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Jensen_Nugent_2016.__file__).parent / "Fig_3.ipynb", plot=PLOT
+        file=Path(Jensen_and_Nugent_2016.__file__).parent / "Fig_3.ipynb", plot=PLOT
     )
 
 
