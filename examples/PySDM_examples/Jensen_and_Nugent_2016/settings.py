@@ -7,6 +7,7 @@ from pystrict import strict
 @strict
 class Settings:
     def __init__(self, *, aerosol: str, cloud_type: str):
+        # TODO #1266 reuse these values in the Yang et al. '18 example which is based on J&N'16
         self.p0 = 938.5 * si.hPa
         self.RH0 = 0.8561
         self.T0 = 284.3 * si.K
