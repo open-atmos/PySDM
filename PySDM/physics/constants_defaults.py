@@ -212,6 +212,16 @@ MERLIVAT_NIEF_1967_ALPHA_I_2H_T2 = 16289 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_I_2H_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_I_2H_T0 = -0.0945
 
+""" [Lamb et al. (2017)](https://doi.org/10.1073/pnas.1618374114) """
+LAMB_ET_AL_2017_ALPHA_I_2H_T2 = 13525 * si.K**2
+LAMB_ET_AL_2017_ALPHA_I_2H_T1 = 0 * si.K
+LAMB_ET_AL_2017_ALPHA_I_2H_T0 = -0.0559
+
+""" [Ellehoj et al. (2013)](https://doi.org/10.1002/rcm.6668) """
+ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T2 = 48888 * si.K**2
+ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T1 = -203.1 * si.K
+ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0 = 0.2133
+
 """ [Majoube (1971)](https://doi.org/10.1051/jcp/1971681423) """
 # values taken from Jouzel 1986 (eqs. 1)
 MAJOUBE_1971_ALPHA_L_18O_T2 = 1137 * si.K**2
