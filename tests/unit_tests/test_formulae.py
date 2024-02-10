@@ -78,3 +78,15 @@ class TestFormulae:
         # assert
         temp = 300 * si.K
         assert sut.latent_heat__lv(temp) == f.latent_heat.lv(temp)
+
+    @staticmethod
+    def test_get_constant():
+        # arrange
+        rho_w = 666 * si.kg / si.m**3
+
+        # act
+        sut = formulae.Formulae(constants={"rho_w": rho_w})
+
+        # assert
+        assert sut.get_constant("rho_w") == rho_w
+

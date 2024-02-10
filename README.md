@@ -322,7 +322,7 @@ In the listing below, its usage is interleaved with plotting logic
 
 ```Julia
 using Plots; plotlyjs()
-rho_w = particulator.formulae.constants.rho_w
+rho_w = particulator.formulae.get_constant("rho_w")
 
 for step = 0:1200:3600
     particulator.run(step - particulator.n_steps)
