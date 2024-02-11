@@ -22,6 +22,11 @@
       [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb)
       [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb)
       [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb)    
+- [Lamb et al. 2017](https://doi.org/10.1073/pnas.1618374114):
+  - Fig. 4:
+      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Lamb_et_al_2017/Fig_4.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Lamb_et_al_2017/Fig_4.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Graf_et_al_2019/Lamb_et_al_2017/Fig_4.ipynb)    
 - [Pierchala et al. 2022](https://doi.org/10.1016/j.gca.2022.01.020):
   - Fig. 3:
       [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb)
