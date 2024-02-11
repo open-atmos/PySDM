@@ -96,7 +96,7 @@ class Simulation(BasicSimulation):
                 name="reff", count_activated=True, count_unactivated=False
             ),
             PySDM_products.LiquidWaterPath(name="lwp"),
-            # PySDM_products.CloudOpticalDepth(name="tau"),
+            PySDM_products.CloudOpticalDepth(name="tau"),
             # PySDM_products.CloudAlbedo(name="albedo"),
         )
 

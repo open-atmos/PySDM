@@ -17,6 +17,7 @@ class CloudOpticalDepth(Product):
         pass
 
     def _impl(self, **kwargs):
+        # todo how to use other products inside this product?
         return self.formulae.optical_depth.tau(
             CloudWaterPath(),
             ActivatedEffectiveRadius(count_unactivated=False, count_activated=True),

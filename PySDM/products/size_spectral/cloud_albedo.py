@@ -14,4 +14,5 @@ class CloudAlbedo(Product):
         pass
 
     def _impl(self, **kwargs):
+        # todo how to use other products inside this product?
         return self.formulae.cloud_albedo.albedo(CloudOpticalDepth())
