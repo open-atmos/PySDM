@@ -36,6 +36,3 @@ from .total_particle_concentration import TotalParticleConcentration
 from .total_particle_specific_concentration import TotalParticleSpecificConcentration
 from .water_mixing_ratio import WaterMixingRatio
 from .liquid_water_content import LiquidWaterContent
-
-from .cloud_optical_depth import CloudOpticalDepth
-from .cloud_albedo import CloudAlbedo

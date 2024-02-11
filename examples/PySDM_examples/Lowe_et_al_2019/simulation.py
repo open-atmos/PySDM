@@ -89,7 +89,7 @@ class Simulation(BasicSimulation):
             PySDM_products.ParticleSizeSpectrumPerVolume(
                 radius_bins_edges=settings.wet_radius_bins_edges
             ),
-            PySDM_products.ActivableFraction(),
+            PySDM_products.ActivableFraction(name="Activated Fraction"),
             PySDM_products.WaterMixingRatio(),
             PySDM_products.AmbientDryAirDensity(name="rhod"),
             PySDM_products.ActivatedEffectiveRadius(
@@ -97,7 +97,7 @@ class Simulation(BasicSimulation):
             ),
             PySDM_products.LiquidWaterPath(name="lwp"),
             PySDM_products.CloudOpticalDepth(name="tau"),
-            # PySDM_products.CloudAlbedo(name="albedo"),
+            PySDM_products.CloudAlbedo(name="albedo"),
         )
 
         particulator = builder.build(attributes=attributes, products=products)
@@ -106,24 +106,33 @@ class Simulation(BasicSimulation):
 
     def _save_scalars(self, output):
         for k, v in self.particulator.products.items():
-            if len(v.shape) > 1 or k == "activable fraction":
+            if len(v.shape) > 1 or k in ("Activated Fraction", "tau", "albedo"):
                 continue
             value = v.get()
             if isinstance(value, np.ndarray) and value.size == 1:
                 value = value[0]
             output[k].append(value)
 
-    def _save_spectrum(self, output):
-        value = self.particulator.products["particle size spectrum per volume"].get()
-        output["spectrum"] = value
+    def _save_final_timestep_products(self, output):
+        output["spectrum"] = self.particulator.products[
+            "particle size spectrum per volume"
+        ].get()
+
+        for name, args_call in {
+            "Activated Fraction": lambda: {"S_max": np.nanmax(output["S_max"])},
+            "lwp": lambda: {},
+            "tau": lambda: {
+                "effective_radius": output["reff"][-1],
+                "liquid_water_path": output["lwp"][0],
+            },
+            "albedo": lambda: {"optical_depth": output["tau"]},
+        }.items():
+            output[name] = self.particulator.products[name].get(**args_call())
 
     def run(self):
         output = {k: [] for k in self.particulator.products}
         for step in self.settings.output_steps:
             self.particulator.run(step - self.particulator.n_steps)
             self._save_scalars(output)
-        self._save_spectrum(output)
-        output["Activated Fraction"] = self.particulator.products[
-            "activable fraction"
-        ].get(S_max=np.nanmax(output["S_max"]))
+        self._save_final_timestep_products(output)
         return output

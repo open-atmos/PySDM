@@ -1,7 +1,6 @@
 """
 cloud water path from integral over vertical domain
-liquid water path, only liquid
-ice water path, only ice
+liquid water path (only liquid, only ice or both)
 """
 
 import numpy as np
