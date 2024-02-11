@@ -49,7 +49,7 @@ TEST_SUITES = {
         "Van_Hook_1968",
         "Pierchala_et_al_2022",
         "Graf_et_al_2019",
-        "Lamb_et_al_2013",
+        "Lamb_et_al_2017",
         # "Rozanski_and_Sonntag_1982",  # TODO #1207
     ],
 }
