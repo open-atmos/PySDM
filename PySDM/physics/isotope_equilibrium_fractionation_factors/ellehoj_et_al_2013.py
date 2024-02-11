@@ -6,7 +6,7 @@ Equilibrium fractionation factors from
 import numpy as np
 
 
-class EllehojEtAl2013:
+class EllehojEtAl2013:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 

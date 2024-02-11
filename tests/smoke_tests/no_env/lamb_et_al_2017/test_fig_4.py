@@ -10,8 +10,6 @@ import pytest
 from PySDM_examples.utils.notebook_vars import notebook_vars
 from PySDM_examples import Lamb_et_al_2017
 
-from PySDM.physics.constants import PER_MEG, PER_MILLE
-
 PLOT = False
 
 
