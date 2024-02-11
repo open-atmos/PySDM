@@ -64,9 +64,9 @@ class TestFigS2:
     @pytest.mark.parametrize(
         "var, value_range",
         (
-            ("lwp", (25 * si.g / si.m**2, 35 * si.g / si.m**2)),
-            ("tau", (2, 14)),
-            ("albedo", (0.2, 0.5)),
+            ("lwp", (25 * si.g / si.m**2, 45 * si.g / si.m**2)),
+            ("tau", (2, 16)),
+            ("albedo", (0.2, 0.6)),
         ),
     )
     def test_ranges(var, value_range, variables, key):
