@@ -95,7 +95,7 @@ class Simulation(BasicSimulation):
             PySDM_products.ActivatedEffectiveRadius(
                 name="reff", count_activated=True, count_unactivated=False
             ),
-            PySDM_products.LiquidWaterPath(name="lwp"),
+            PySDM_products.ParcelLiquidWaterPath(name="lwp"),
             PySDM_products.CloudOpticalDepth(name="tau"),
             PySDM_products.CloudAlbedo(name="albedo"),
         )
@@ -106,7 +106,7 @@ class Simulation(BasicSimulation):
 
     def _save_scalars(self, output):
         for k, v in self.particulator.products.items():
-            if len(v.shape) > 1 or k in ("Activated Fraction", "tau", "albedo"):
+            if len(v.shape) > 1 or k in ("lwp", "Activated Fraction", "tau", "albedo"):
                 continue
             value = v.get()
             if isinstance(value, np.ndarray) and value.size == 1:

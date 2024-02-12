@@ -11,3 +11,4 @@ from .freezing import *
 from .housekeeping import *
 from .size_spectral import *
 from .optical import *
+from .parcel import *
