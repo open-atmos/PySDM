@@ -14,6 +14,7 @@ class ParcelCloudWaterPath(MomentProduct):
         self.liquid = liquid
         self.ice = ice
         self.environment = None
+        self.previous_z = None
         self._reset_counters()
 
     def _reset_counters(self):

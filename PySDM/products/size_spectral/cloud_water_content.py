@@ -13,7 +13,9 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 
 class CloudWaterContent(MomentProduct):
-    def __init__(self, unit="kg/m^3", name=None, specific=False, liquid=True, ice=True):
+    def __init__(
+        self, unit="kg/m^3", name=None, specific=False, liquid=True, ice=True
+    ):  # pylint: disable=too-many-arguments
         super().__init__(unit=unit, name=name)
         self.specific = specific
         self.liquid = liquid
