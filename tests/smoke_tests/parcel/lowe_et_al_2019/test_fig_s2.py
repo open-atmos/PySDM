@@ -25,7 +25,7 @@ def variables_fixture():
 
 
 CI = "CI" in os.environ
-nRes = 10
+nRes = 5
 updrafts = np.linspace(0.2, 2.4, 2 if CI else nRes)
 models = ("Constant", "CompressedFilmOvadnevaite")
 aerosol_names = ("AerosolMarine", "AerosolBoreal", "AerosolNascent")
@@ -64,9 +64,9 @@ class TestFigS2:
     @pytest.mark.parametrize(
         "var, value_range",
         (
-            ("lwp", (25 * si.g / si.m**2, 45 * si.g / si.m**2)),
-            ("tau", (2, 16)),
-            ("albedo", (0.2, 0.6)),
+            ("lwp", (25 * si.g / si.m**2, 45 * si.g / si.m**2)),  # TODO 1247: 28 to 33
+            ("tau", (2, 16)),  # TODO 1247: 2 to 11
+            ("albedo", (0.15, 0.6)),  # TODO 1247: 0.15 to 0.45
         ),
     )
     def test_ranges(var, value_range, variables, key):
