@@ -43,11 +43,22 @@ class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
         self._download_to_buffer(self.particulator.environment["rhod"])
         rhod = self.buffer.copy()
 
+        self._download_to_buffer(
+            self.particulator.environment["water_vapour_mixing_ratio"]
+        )
+        water_vapour_mixing_ratio = self.buffer.copy()
+
         self._download_to_buffer(self.particulator.environment["z"])
         current_z = self.buffer.copy()
 
+        formulae = self.particulator.formulae
+        rho_a = (
+            formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio(
+                rhod, water_vapour_mixing_ratio
+            )
+        )
         cwc = avg_mass * tot_numb / self.particulator.mesh.dv
-        self.cwp += cwc * rhod * (current_z - self.previous_z)
+        self.cwp += cwc * rho_a * (current_z - self.previous_z)
 
         self.previous_z = current_z
 
