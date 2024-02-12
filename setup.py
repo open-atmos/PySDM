@@ -40,7 +40,7 @@ setup(
             "ipywidgets!=8.0.3",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==1.0.2",
+            "PyPartMC==1.0.3",
         ]
         + ([] if _32bit else ["pyrcel"])
     },
