@@ -95,7 +95,9 @@ class Simulation(BasicSimulation):
             PySDM_products.ActivatedEffectiveRadius(
                 name="reff", count_activated=True, count_unactivated=False
             ),
-            PySDM_products.ParcelLiquidWaterPath(name="lwp"),
+            PySDM_products.ParcelLiquidWaterPath(
+                name="lwp", count_activated=True, count_unactivated=False
+            ),
             PySDM_products.CloudOpticalDepth(name="tau"),
             PySDM_products.CloudAlbedo(name="albedo"),
         )
