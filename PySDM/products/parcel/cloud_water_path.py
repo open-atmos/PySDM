@@ -3,8 +3,6 @@ cloud water path integrated over parcel displacement taking into account changes
 in parcel volume along the way
 """
 
-import numpy as np
-
 from PySDM.environments.parcel import Parcel
 
 from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct

@@ -37,6 +37,7 @@ from .total_particle_specific_concentration import TotalParticleSpecificConcentr
 from .water_mixing_ratio import WaterMixingRatio
 from .cloud_water_content import (
     CloudWaterContent,
+    SpecificCloudWaterContent,
     LiquidWaterContent,
     SpecificLiquidWaterContent,
     IceWaterContent,
