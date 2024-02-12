@@ -26,6 +26,7 @@ from PySDM.products import (
     GaseousMoleFraction,
     MeanVolumeRadius,
     NumberSizeSpectrum,
+    ParcelLiquidWaterPath,
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
     ParticleVolumeVersusRadiusLogarithmSpectrum,
@@ -69,6 +70,7 @@ _ARGUMENTS = {
     AreaStandardDeviation: {"count_activated": True, "count_unactivated": False},
     VolumeStandardDeviation: {"count_activated": True, "count_unactivated": False},
     ActivatedEffectiveRadius: {"count_activated": True, "count_unactivated": False},
+    ParcelLiquidWaterPath: {"count_activated": True, "count_unactivated": False},
 }
 
 
