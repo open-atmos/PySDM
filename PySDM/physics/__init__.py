@@ -9,7 +9,7 @@ Physical constants and formulae (mostly one-liners)
   - it enforces floating-point cast on all constant values making the code behave
     in the same way on both CPU and GPU backends (yes, please use `const.ONE/const.TWO`
     instead of `1/2`);
-  - it enables dimensional analysis logic if the code in question is embedded 
+  - it enables dimensional analysis logic if the code in question is embedded
     in `with DimensionalAnalysis:` block - allows checking physical unit consistency
     within unit tests (disable by default, no runtime overhead);
   - last but not least, it requires all the constants to be named
