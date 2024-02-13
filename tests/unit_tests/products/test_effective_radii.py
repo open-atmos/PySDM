@@ -9,14 +9,18 @@ from PySDM.backends import CPU
 from PySDM.products import EffectiveRadius, ActivatedEffectiveRadius
 
 
-def test_effective_radii():
+def test_effective_radii(backend_class):
     # arrange
     env = Box(dt=np.nan, dv=np.nan)
     wet_radii = np.asarray([0.01 * si.um, 0.05 * si.um, 0.09 * si.um, 1 * si.um])
     dry_radii = np.asarray([0.009 * si.um] * len(wet_radii))
     kappa = 1.666
 
-    builder = Builder(n_sd=len(wet_radii), backend=CPU(), environment=env)
+    builder = Builder(
+        n_sd=len(wet_radii),
+        backend=backend_class(double_precision=True),
+        environment=env,
+    )
     dry_volume = builder.formulae.trivia.volume(radius=dry_radii)
     env["T"] = 300 * si.K
     particulator = builder.build(
