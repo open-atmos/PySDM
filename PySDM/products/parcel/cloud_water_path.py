@@ -21,7 +21,7 @@ class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
         _ActivationFilteredProduct.__init__(
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
-        self.previous_z = 0.0
+        self.previous = {"z": 0.0, "dv": 0.0}
         self.cwp = 0.0
 
     def register(self, builder):
@@ -32,19 +32,22 @@ class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
         self.particulator.observers.append(self)
 
     def notify(self):
-        _ActivationFilteredProduct.impl(self, attr="water mass", rank=1)
-        avg_mass = self.buffer.copy()
+        if self.previous["dv"] > 0:
+            _ActivationFilteredProduct.impl(self, attr="water mass", rank=1)
+            avg_mass = self.buffer.copy()
 
-        _ActivationFilteredProduct.impl(self, attr="water mass", rank=0)
-        tot_numb = self.buffer.copy()
+            _ActivationFilteredProduct.impl(self, attr="water mass", rank=0)
+            tot_numb = self.buffer.copy()
 
-        self._download_to_buffer(self.particulator.environment["z"])
-        current_z = self.buffer.copy()
+            self._download_to_buffer(self.particulator.environment["z"])
+            current_z = self.buffer.copy()
 
-        cwc = avg_mass * tot_numb / self.particulator.mesh.dv
-        self.cwp += cwc * (current_z - self.previous_z)
+            dv_mean = (self.particulator.mesh.dv + self.previous["dv"]) / 2
+            cwc = avg_mass * tot_numb / dv_mean
+            self.cwp += cwc * (current_z - self.previous["z"])
 
-        self.previous_z = current_z
+        self.previous["z"] = current_z
+        self.previous["dv"] = self.particulator.mesh.dv
 
     def _impl(self, **kwargs):
         return self.cwp
