@@ -64,11 +64,12 @@ class TestFigS2:
     @pytest.mark.parametrize(
         "var, value_range",
         (
-            ("lwp", (25 * si.g / si.m**2, 45 * si.g / si.m**2)),  # TODO 1247: 28 to 33
-            ("tau", (2, 16)),  # TODO 1247: 2 to 11
-            ("albedo", (0.15, 0.6)),  # TODO 1247: 0.15 to 0.45
+            ("lwp", (28 * si.g / si.m**2, 35 * si.g / si.m**2)),  # TODO #1247: 28 to 33
+            ("tau", (2, 13)),  # TODO #1247: 2 to 11
+            ("albedo", (0.15, 0.5)),  # TODO #1247: 0.15 to 0.45
         ),
     )
+    # TODO #1246: range mismatch possibly related to supersaturation profile discrepancies
     def test_ranges(var, value_range, variables, key):
         assert value_range[0] < variables["optical_products"][key][var] < value_range[1]
 
