@@ -30,7 +30,6 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         constants: Optional[dict] = None,
         seed: int = None,
         fastmath: bool = True,
-        cloud_albedo: str = "Bohren1987",
         condensation_coordinate: str = "VolumeLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
         latent_heat: str = "Kirchhoff",
@@ -49,14 +48,15 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_meteoric_water_line_excess: str = "Null",
         isotope_ratio_evolution: str = "Null",
-        optical_depth: str = "Stephens1978",
+        optical_albedo: str = "Null",
+        optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
         # in PyCharm and alike, all these fields are later overwritten within this ctor
-        self.cloud_albedo = cloud_albedo
+        self.optical_albedo = optical_albedo
         self.optical_depth = optical_depth
         self.condensation_coordinate = condensation_coordinate
         self.saturation_vapour_pressure = saturation_vapour_pressure
