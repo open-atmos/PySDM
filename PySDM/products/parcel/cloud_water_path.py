@@ -39,6 +39,9 @@ class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
             _ActivationFilteredProduct.impl(self, attr="water mass", rank=0)
             tot_numb = self.buffer.copy()
 
+            self._download_to_buffer(self.particulator.environment["z"])
+            current_z = self.buffer.copy()
+
             dv_mean = (self.particulator.mesh.dv + self.previous["dv"]) / 2
             cwc = avg_mass * tot_numb / dv_mean
             self.cwp += cwc * (current_z - self.previous["z"])
