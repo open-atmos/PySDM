@@ -5,7 +5,6 @@ import numpy as np
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.backends import CPU
 from PySDM.products import EffectiveRadius, ActivatedEffectiveRadius
 
 
@@ -47,7 +46,7 @@ def test_effective_radii(backend_class):
     )
 
     # act
-    sut = {k: particulator.products[k].get()[0] for k in particulator.products}
+    sut = {k: product.get()[0] for k, product in particulator.products.items()}
 
     # assert
     assert np.isnan(sut["a"])
