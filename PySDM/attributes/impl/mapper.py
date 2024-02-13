@@ -51,8 +51,8 @@ attributes = {
     "volume": lambda _, __: Volume,
     "dry volume organic": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic")
-        if "Condensation" in dynamics
-        and formulae.surface_tension.__name__ == Constant.__name__
+        # if "Condensation" in dynamics
+        if formulae.surface_tension.__name__ == Constant.__name__
         else DryVolumeOrganic
     ),
     "dry volume": lambda dynamics, formulae: (
@@ -60,8 +60,8 @@ attributes = {
     ),
     "dry volume organic fraction": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic fraction")
-        if "Condensation" in dynamics
-        and formulae.surface_tension.__name__ == Constant.__name__
+        # if "Condensation" in dynamics
+        if formulae.surface_tension.__name__ == Constant.__name__
         else OrganicFraction
     ),
     "kappa times dry volume": lambda _, __: KappaTimesDryVolume,
@@ -124,6 +124,6 @@ attributes = {
 def get_class(name, dynamics, formulae):
     if name not in attributes:
         raise ValueError(
-            f"Unknown attribute name: {name}; valid names: {', '.join(attributes)}"
+            f"Unknown attribute name: {name}; valid names: {', '.join(sorted(attributes))}"
         )
     return attributes[name](dynamics, formulae)
