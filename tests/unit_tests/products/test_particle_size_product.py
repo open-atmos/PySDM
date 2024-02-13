@@ -100,7 +100,6 @@ def test_particle_size_product(
             "multiplicity": np.asarray(n),
             "volume": volume,
             "dry volume": dry_volume,
-            "dry volume organic": np.full_like(r, 0),
             "kappa times dry volume": KAPPA * dry_volume,
         },
         products=(
