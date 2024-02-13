@@ -51,7 +51,6 @@ attributes = {
     "volume": lambda _, __: Volume,
     "dry volume organic": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic")
-        # if "Condensation" in dynamics
         if formulae.surface_tension.__name__ == Constant.__name__
         else DryVolumeOrganic
     ),
@@ -60,7 +59,6 @@ attributes = {
     ),
     "dry volume organic fraction": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic fraction")
-        # if "Condensation" in dynamics
         if formulae.surface_tension.__name__ == Constant.__name__
         else OrganicFraction
     ),
