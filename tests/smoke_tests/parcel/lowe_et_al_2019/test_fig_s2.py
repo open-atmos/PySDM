@@ -25,7 +25,7 @@ def variables_fixture():
 
 
 CI = "CI" in os.environ
-nRes = 2
+nRes = 10
 updrafts = np.linspace(0.2, 2.4, 2 if CI else nRes)
 models = ("Constant", "CompressedFilmOvadnevaite")
 aerosol_names = ("AerosolMarine", "AerosolBoreal", "AerosolNascent")

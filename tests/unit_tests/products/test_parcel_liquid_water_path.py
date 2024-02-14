@@ -14,7 +14,9 @@ from PySDM import Builder
 from PySDM.physics import si
 
 
-def test_parcel_liquid_water_path(backend_class, plot=False):
+def test_parcel_liquid_water_path(
+    backend_class, plot=False
+):  # pylint: disable=too-many-locals
     # arrange
     n_sd = 1
     n_steps = 32
@@ -50,7 +52,7 @@ def test_parcel_liquid_water_path(backend_class, plot=False):
 
     # act
     data = {product: [] for product in particulator.products}
-    for step in range(n_steps):
+    for _ in range(n_steps):
         particulator.run(steps=1)
         for key, product in particulator.products.items():
             value = product.get()
