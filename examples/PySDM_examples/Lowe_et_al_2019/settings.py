@@ -29,6 +29,8 @@ class Settings:
             diffusion_thermics="LoweEtAl2019",
             latent_heat="Lowe2019",
             saturation_vapour_pressure="Lowe1977",
+            optical_albedo="Bohren1987",
+            optical_depth="Stephens1978",
         )
         const = self.formulae.constants
         self.aerosol = aerosol
