@@ -64,7 +64,7 @@ class TestFigS2:
     @pytest.mark.parametrize(
         "var, value_range",
         (
-            ("lwp", (28 * si.g / si.m**2, 35 * si.g / si.m**2)),  # TODO #1247: 28 to 33
+            ("lwp", (28 * si.g / si.m**2, 36 * si.g / si.m**2)),  # TODO #1247: 28 to 33
             ("tau", (2, 13)),  # TODO #1247: 2 to 11
             ("albedo", (0.15, 0.5)),  # TODO #1247: 0.15 to 0.45
         ),

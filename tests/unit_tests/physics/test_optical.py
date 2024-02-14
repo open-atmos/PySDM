@@ -36,7 +36,7 @@ class TestOptical:
             formulae = Formulae(optical_depth=paper)
             si = constants_defaults.si
             liquid_water_path = 30 * si.g / si.m**2
-            effective_radius = 1 * si.um
+            effective_radius = 10 * si.um
 
             # act
             tau = formulae.optical_depth.tau(
