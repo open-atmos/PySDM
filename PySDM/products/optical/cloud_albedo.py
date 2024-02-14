@@ -10,4 +10,4 @@ class CloudAlbedo(Product):
         super().__init__(name=name, unit=unit)
 
     def _impl(self, **kwargs):
-        return self.formulae.cloud_albedo.albedo(kwargs["optical_depth"])
+        return self.formulae.optical_albedo.albedo(kwargs["optical_depth"])

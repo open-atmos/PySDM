@@ -127,7 +127,7 @@ class Simulation(BasicSimulation):
                 "effective_radius": output["reff"][-1],
                 "liquid_water_path": output["lwp"][0],
             },
-            "albedo": lambda: {"optical_thickness": output["tau"]},
+            "albedo": lambda: {"optical_depth": output["tau"]},
         }.items():
             output[name] = self.particulator.products[name].get(**args_call())
 
