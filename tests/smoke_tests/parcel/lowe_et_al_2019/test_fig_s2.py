@@ -65,21 +65,19 @@ class TestFigS2:
         "var, value_range",
         (
             ("lwp", (28 * si.g / si.m**2, 36 * si.g / si.m**2)),  # TODO #1247: 28 to 33
-            # ("tau", (2, 13)),  # TODO #1247: 2 to 11
-            # ("albedo", (0.15, 0.5)),  # TODO #1247: 0.15 to 0.45
+            ("tau", (2, 13)),  # TODO #1247: 2 to 11
+            ("albedo", (0.15, 0.5)),  # TODO #1247: 0.15 to 0.45
         ),
     )
     # TODO #1246: range mismatch possibly related to supersaturation profile discrepancies
     def test_ranges(var, value_range, variables, key):
         assert value_range[0] < variables["output"][key][var] < value_range[1]
 
-    # @staticmethod
-    # @pytest.mark.parametrize("var, sgn", (("lwp", -1), ("tau", 1), ("albedo", 1)))
-    # def test_monotonicity(var, sgn, variables, model, aerosol_class_name):
-    #     tmp = [
-    #         variables["output"][keygen(updraft, model, aerosol_class_name)][
-    #             var
-    #         ]
-    #         for updraft in updrafts
-    #     ]
-    #     assert (np.diff(tmp) * sgn > 0).all()
+    @staticmethod
+    @pytest.mark.parametrize("var, sgn", (("lwp", -1), ("tau", 1), ("albedo", 1)))
+    def test_monotonicity(var, sgn, variables, model, aerosol_class_name):
+        tmp = [
+            variables["output"][keygen(updraft, model, aerosol_class_name)][var]
+            for updraft in updrafts
+        ]
+        assert (np.diff(tmp) * sgn > 0).all()
