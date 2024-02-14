@@ -14,7 +14,7 @@ from PySDM import Builder
 from PySDM.physics import si
 
 
-def test_parcel_liquid_water_path(backend_class, plot=True):
+def test_parcel_liquid_water_path(backend_class, plot=False):
     # arrange
     n_sd = 1
     n_steps = 32
@@ -89,4 +89,4 @@ def test_parcel_liquid_water_path(backend_class, plot=True):
         pyplot.clf()
 
     # assert
-    # TODO
+    np.testing.assert_allclose(cumsum, data["LWP"], atol=2e-10)
