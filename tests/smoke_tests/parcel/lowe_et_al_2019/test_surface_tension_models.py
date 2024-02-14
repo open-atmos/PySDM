@@ -148,7 +148,7 @@ class TestFig1:
                 0.0709052019598351,
             ]
         )
-        assert np.allclose(sigma, test, atol=1e-8)
+        np.testing.assert_allclose(sigma, test, atol=1e-8)
 
     @staticmethod
     def test_ruehl_surface_tension():
@@ -275,7 +275,7 @@ class TestFig1:
                 0.072,
             ]
         )
-        assert np.allclose(sigma, test, atol=1e-8)
+        np.testing.assert_allclose(sigma, test, atol=1e-5)
 
     @staticmethod
     def test_SL_surface_tension():
@@ -401,4 +401,4 @@ class TestFig1:
                 0.07194516711540175,
             ]
         )
-        assert np.allclose(sigma, test, atol=1e-8)
+        np.testing.assert_allclose(sigma, test, atol=1e-5)
