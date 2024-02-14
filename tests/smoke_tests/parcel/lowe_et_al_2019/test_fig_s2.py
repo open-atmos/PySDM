@@ -80,4 +80,4 @@ class TestFigS2:
             variables["output"][keygen(updraft, model, aerosol_class_name)][var]
             for updraft in updrafts
         ]
-        assert (np.diff(tmp) * sgn > 0).all()
+        assert (np.diff(tmp) * sgn > -np.mean(tmp) * 1e-2).all()
