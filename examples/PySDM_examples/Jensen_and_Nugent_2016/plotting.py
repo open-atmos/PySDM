@@ -4,13 +4,18 @@ from PySDM.physics import si, in_unit
 from PySDM.physics.constants import PER_CENT
 
 
-def figure(*, output, settings, simulation, drop_ids, xlim_um: tuple):
+def figure(
+    *, output, settings, simulation, drop_ids, xlim_r_um: tuple, xlim_S_percent: tuple
+):
     cloud_base = 300 * si.m
     y_axis = np.asarray(output["products"]["z"]) - settings.z0 - cloud_base
 
     masks = {}
-    masks["ascent"] = np.asarray(output["products"]["t"]) < settings.t_end_of_ascent
-    masks["descent"] = masks["ascent"] == False
+    if settings.t_end_of_ascent is None:
+        masks["ascent"] = np.full_like(output["products"]["t"], True, dtype=bool)
+    else:
+        masks["ascent"] = np.asarray(output["products"]["t"]) < settings.t_end_of_ascent
+        masks["descent"] = masks["ascent"] == False
 
     colors = {"ascent": "r", "descent": "b"}
 
@@ -25,7 +30,7 @@ def figure(*, output, settings, simulation, drop_ids, xlim_um: tuple):
             label=label,
             color=colors[label],
         )
-    axs["S"].set_xlim(-1, 1)
+    axs["S"].set_xlim(*xlim_S_percent)
     axs["S"].set_xlabel("S (%)")
     axs["S"].legend()
 
@@ -44,7 +49,7 @@ def figure(*, output, settings, simulation, drop_ids, xlim_um: tuple):
                 color=colors[label],
             )
     axs["r"].legend()
-    axs["r"].set_xlim(*xlim_um)
+    axs["r"].set_xlim(*xlim_r_um)
     axs["r"].set_xlabel("r$_c$ (µm)")
     axs["r"].set_ylabel("height above cloud base (m)")
 
