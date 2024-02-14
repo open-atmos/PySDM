@@ -4,19 +4,36 @@ with reference to [Grabowski et al. (2011)](https://doi:10.1016/j.atmosres.2010.
 """
 
 import numpy as np
+from .pruppacher_and_klett_2005 import PruppacherKlett
 
 
-class JensenAndNugent:
+class JensenAndNugent(PruppacherKlett):
+    """note the use of Rd instead of Rv!"""
+
     def __init__(self, _):
         pass
 
     @staticmethod
     def lambdaD(const, D, T):
-        return 10e-5 * ((0.15 * T) - 1.9)
+        return D / np.sqrt(2 * const.Rd * T)
 
     @staticmethod
-    def D(const, D, r, lmbd, T):
-        return lmbd / (
-            (r / ((0.104 * const.si.um) + r))
-            + ((lmbd / 0.036 * r) * (np.sqrt((2 * const.pi) / (const.Rd * T))))
+    def lambdaK(const, T, p):
+        return (
+            ((1.5e-11) * np.power(T, 3))
+            - (4.8e-8 * np.power(T, 2))
+            + (10e-4 * T)
+            - (3.9 * 10e-4)
         )
+
+    @staticmethod
+    def K(const, K, r, lmbd):
+        return const.K0
+        # TODO
+        # return lmbd / (
+        #     (r / ((0.216 * const.si.um) + r))
+        #     + (
+        #         (lmbd / 0.7 * r * (0.001293 * const.si.g / const.si.m**3))
+        #         * (np.sqrt((2 * const.pi) / (const.Rd * T)))
+        #     )
+        # )

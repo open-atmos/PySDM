@@ -11,20 +11,15 @@ class JensenAndNugent:
         pass
 
     @staticmethod
-    def lambdaK(const, T, p):
-        return (
-            ((1.5e-11) * np.power(T, 3))
-            - (4.8e-8 * np.power(T, 2))
-            + (10e-4 * T)
-            - (3.9 * 10e-4)
+    def D(const, T, p):
+        return const.diffussion_thermics_D_G11_A * (
+            const.diffussion_thermics_D_G11_B * T + const.diffussion_thermics_D_G11_C
         )
 
-    @staticmethod
-    def K(_, const, K, T, r, lmbd):
-        return lmbd / (
-            (r / ((0.216 * const.si.um) + r))
-            + (
-                (lmbd / 0.7 * r * (0.001293 * const.si.g / const.si.m**3))
-                * (np.sqrt((2 * const.pi) / (const.Rd * T)))
-            )
+    def K(const, T, p):  # pylint: disable=unused-argument
+        return (
+            const.diffussion_thermics_K_G11_A * T**3
+            + const.diffussion_thermics_K_G11_B * T**2
+            + const.diffussion_thermics_K_G11_C * T
+            + const.diffussion_thermics_K_G11_D
         )

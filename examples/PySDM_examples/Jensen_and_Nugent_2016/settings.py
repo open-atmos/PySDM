@@ -13,11 +13,14 @@ class Settings:
         self.T0 = 284.3 * si.K
         self.z0 = 600 * si.m
         self.t_end_of_ascent = 1500 * si.s if cloud_type == "Sc" else None
+        self.dt = 1 * si.s  # TODO: not found in the paper yet
 
         self.kappa = 1.28  # Table 1 from Petters & Kreidenweis 2007
 
         self.formulae = Formulae(
             saturation_vapour_pressure="FlatauWalkoCotton",  # TODO: Bolton
+            diffusion_kinetics="JensenAndNugent",
+            diffusion_thermics="JensenAndNugent",
             constants={
                 # values from appendix B
                 "MAC": 0.036,
@@ -28,7 +31,6 @@ class Settings:
         self.vertical_velocity = {
             # Table 2 in the paper
             "Sc": lambda t: (1 if t < self.t_end_of_ascent else -1) * 0.4 * si.m / si.s,
-            "Sc": lambda t: (1 if t < 1500 * si.s else -1) * 0.4 * si.m / si.s,
             "Cu": 2 * si.m / si.s,
         }[cloud_type]
 

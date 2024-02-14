@@ -9,6 +9,8 @@ from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics
 from PySDM.initialisation.sampling.spectral_sampling import Logarithmic
 
+N_SD_NON_GCCN = 100
+
 
 class Simulation(BasicSimulation):
     def __init__(self, settings: Settings, gccn: bool = False):
@@ -19,7 +21,7 @@ class Simulation(BasicSimulation):
         )
 
         env = Parcel(
-            dt=1 * si.s,  # TODO: not found in the paper yet
+            dt=settings.dt,
             mass_of_dry_air=666 * si.kg,
             p0=settings.p0,
             initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
@@ -31,7 +33,9 @@ class Simulation(BasicSimulation):
         n_gccn = np.count_nonzero(table_3.NA) if gccn else 0
 
         builder = Builder(
-            n_sd=100 + n_gccn, backend=CPU(formulae=settings.formulae), environment=env
+            n_sd=N_SD_NON_GCCN + n_gccn,
+            backend=CPU(formulae=settings.formulae),
+            environment=env,
         )
         builder.request_attribute("radius")
 

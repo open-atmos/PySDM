@@ -307,6 +307,16 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 
+""" TODO """
+diffussion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
+diffussion_thermics_D_G11_B = 0.15 / si.K
+diffussion_thermics_D_G11_C = -1.9
+
+diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
+diffussion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
+diffussion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
+diffussion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
+
 
 def compute_derived_values(c: dict):
     c["eps"] = c["Mv"] / c["Md"]
