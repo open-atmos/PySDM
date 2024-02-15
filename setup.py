@@ -36,13 +36,15 @@ setup(
     extras_require={
         "tests": [
             "matplotlib",
-            "jupyter-core<5.0.0",
-            "ipywidgets!=8.0.3",
             "pytest",
             "pytest-timeout",
             "PyPartMC==1.0.3",
         ]
-        + ([] if _32bit else ["pyrcel"])
+        + ([] if _32bit else [
+            "pyrcel",
+            "jupyter-core<5.0.0",
+            "ipywidgets!=8.0.3",
+        ])
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
     author_email="sylwester.arabas@agh.edu.pl",
