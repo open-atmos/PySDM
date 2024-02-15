@@ -46,6 +46,7 @@ setup(
             "jupyter-client" + ("==7.4.9" if CI else ""),
             "jupyter-core" + ("==4.12.0" if CI else ""),
             "jupyter-server" + ("==1.24.0" if CI else ""),
+            "notebook" + ("==6.5.6" if CI else ""),
         ] if _32bit else [
             "pyrcel",
             "jupyter-core<5.0.0",
