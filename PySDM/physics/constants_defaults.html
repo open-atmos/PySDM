@@ -54,6 +54,7 @@ from .constants import (  # pylint: disable=unused-import
     PPM,
     T0,
     THREE,
+    ONE,
     TWO,
     TWO_THIRDS,
     M,
@@ -351,6 +352,9 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 
+&#34;&#34;&#34; [Bohren 1987](https://doi.org/10.1119/1.15109) &#34;&#34;&#34;
+asymmetry_g = 0.85  # forward scattering from cloud droplets
+
 
 def compute_derived_values(c: dict):
     c[&#34;eps&#34;] = c[&#34;Mv&#34;] / c[&#34;Md&#34;]
@@ -359,7 +363,7 @@ def compute_derived_values(c: dict):
 
     c[&#34;Rd_over_c_pd&#34;] = c[&#34;Rd&#34;] / c[&#34;c_pd&#34;]
 
-    c[&#34;nu_w&#34;] = c[&#34;Mv&#34;] / c[&#34;rho_w&#34;]
+    c[&#34;water_molar_volume&#34;] = c[&#34;Mv&#34;] / c[&#34;rho_w&#34;]
     c[&#34;rho_STP&#34;] = c[&#34;p_STP&#34;] / c[&#34;Rd&#34;] / c[&#34;T_STP&#34;]
     c[&#34;H_u&#34;] = c[&#34;M&#34;] / c[&#34;p_STP&#34;]</code></pre>
 </details>
@@ -376,6 +380,10 @@ def compute_derived_values(c: dict):
 <dt id="PySDM.physics.constants_defaults.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF"><code class="name">var <span class="ident">BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF</span></code></dt>
 <dd>
 <div class="desc"><p><a href="https://doi.org/10.1126/science.133.3465.170">Craig 1961</a></p></div>
+</dd>
+<dt id="PySDM.physics.constants_defaults.CRAIG_1961_INTERCEPT_COEFF"><code class="name">var <span class="ident">CRAIG_1961_INTERCEPT_COEFF</span></code></dt>
+<dd>
+<div class="desc"><p><a href="https://doi.org/10.1119/1.15109">Bohren 1987</a></p></div>
 </dd>
 <dt id="PySDM.physics.constants_defaults.ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0"><code class="name">var <span class="ident">ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0</span></code></dt>
 <dd>
@@ -430,7 +438,7 @@ def compute_derived_values(c: dict):
 
     c[&#34;Rd_over_c_pd&#34;] = c[&#34;Rd&#34;] / c[&#34;c_pd&#34;]
 
-    c[&#34;nu_w&#34;] = c[&#34;Mv&#34;] / c[&#34;rho_w&#34;]
+    c[&#34;water_molar_volume&#34;] = c[&#34;Mv&#34;] / c[&#34;rho_w&#34;]
     c[&#34;rho_STP&#34;] = c[&#34;p_STP&#34;] / c[&#34;Rd&#34;] / c[&#34;T_STP&#34;]
     c[&#34;H_u&#34;] = c[&#34;M&#34;] / c[&#34;p_STP&#34;]</code></pre>
 </details>
@@ -455,6 +463,7 @@ def compute_derived_values(c: dict):
 <ul class="">
 <li><code><a title="PySDM.physics.constants_defaults.BARKAN_AND_LUZ_2005_EXPONENT" href="#PySDM.physics.constants_defaults.BARKAN_AND_LUZ_2005_EXPONENT">BARKAN_AND_LUZ_2005_EXPONENT</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF" href="#PySDM.physics.constants_defaults.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF">BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF</a></code></li>
+<li><code><a title="PySDM.physics.constants_defaults.CRAIG_1961_INTERCEPT_COEFF" href="#PySDM.physics.constants_defaults.CRAIG_1961_INTERCEPT_COEFF">CRAIG_1961_INTERCEPT_COEFF</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0" href="#PySDM.physics.constants_defaults.ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0">ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3" href="#PySDM.physics.constants_defaults.HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3">HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.LAMB_ET_AL_2017_ALPHA_I_2H_T0" href="#PySDM.physics.constants_defaults.LAMB_ET_AL_2017_ALPHA_I_2H_T0">LAMB_ET_AL_2017_ALPHA_I_2H_T0</a></code></li>

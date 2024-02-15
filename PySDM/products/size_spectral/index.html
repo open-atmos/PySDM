@@ -36,6 +36,7 @@ from .arbitrary_moment import (
     ZerothMoment,
 )
 from .effective_radius import EffectiveRadius
+from .effective_radius_activated import ActivatedEffectiveRadius
 from .mean_radius import MeanRadius
 from .mean_radius_activated import ActivatedMeanRadius
 from .mean_volume_radius import MeanVolumeRadius
@@ -62,7 +63,15 @@ from .size_standard_deviation import (
 )
 from .total_particle_concentration import TotalParticleConcentration
 from .total_particle_specific_concentration import TotalParticleSpecificConcentration
-from .water_mixing_ratio import WaterMixingRatio</code></pre>
+from .water_mixing_ratio import WaterMixingRatio
+from .cloud_water_content import (
+    CloudWaterContent,
+    SpecificCloudWaterContent,
+    LiquidWaterContent,
+    SpecificLiquidWaterContent,
+    IceWaterContent,
+    SpecificIceWaterContent,
+)</code></pre>
 </details>
 </section>
 <section>
@@ -72,10 +81,18 @@ from .water_mixing_ratio import WaterMixingRatio</code></pre>
 <dd>
 <div class="desc"><p>factory for arbitrary-moment product classes</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.products.size_spectral.cloud_water_content" href="cloud_water_content.html">PySDM.products.size_spectral.cloud_water_content</a></code></dt>
+<dd>
+<div class="desc"><p>cloud water content products, Specific means per mass of dry air …</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral.effective_radius" href="effective_radius.html">PySDM.products.size_spectral.effective_radius</a></code></dt>
 <dd>
 <div class="desc"><p>effective radius of particles within a grid cell (ratio of third to second moments,
 optionally restricted to a given size range)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.products.size_spectral.effective_radius_activated" href="effective_radius_activated.html">PySDM.products.size_spectral.effective_radius_activated</a></code></dt>
+<dd>
+<div class="desc"><p>effective radius of particles within a grid cell, for activated, unactivated or both</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral.mean_radius" href="mean_radius.html">PySDM.products.size_spectral.mean_radius</a></code></dt>
 <dd>
@@ -158,7 +175,9 @@ for activated, unactivated or both</p></div>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="PySDM.products.size_spectral.arbitrary_moment" href="arbitrary_moment.html">PySDM.products.size_spectral.arbitrary_moment</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.cloud_water_content" href="cloud_water_content.html">PySDM.products.size_spectral.cloud_water_content</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.effective_radius" href="effective_radius.html">PySDM.products.size_spectral.effective_radius</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.effective_radius_activated" href="effective_radius_activated.html">PySDM.products.size_spectral.effective_radius_activated</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.mean_radius" href="mean_radius.html">PySDM.products.size_spectral.mean_radius</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.mean_radius_activated" href="mean_radius_activated.html">PySDM.products.size_spectral.mean_radius_activated</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.mean_volume_radius" href="mean_volume_radius.html">PySDM.products.size_spectral.mean_volume_radius</a></code></li>

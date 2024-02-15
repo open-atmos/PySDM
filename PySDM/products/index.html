@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products API documentation</title>
-<meta name="description" content="Simulation output products such as:
-`PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum`,
-..." />
+<meta name="description" content="Simulation output products" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -24,17 +22,13 @@
 <h1 class="title">Module <code>PySDM.products</code></h1>
 </header>
 <section id="section-intro">
-<p>Simulation output products such as:
-<code><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum" href="size_spectral/particle_size_spectrum.html#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum">ParticleSizeSpectrum</a></code>,
-&hellip;</p>
+<p>Simulation output products</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Simulation output products such as:
-`PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum`,
-...
+Simulation output products
 &#34;&#34;&#34;
 
 from .ambient_thermodynamics import *
@@ -44,7 +38,9 @@ from .condensation import *
 from .displacement import *
 from .freezing import *
 from .housekeeping import *
-from .size_spectral import *</code></pre>
+from .size_spectral import *
+from .optical import *
+from .parcel import *</code></pre>
 </details>
 </section>
 <section>
@@ -82,6 +78,14 @@ from .size_spectral import *</code></pre>
 <dd>
 <div class="desc"><p>commons, not intended to be imported from user code</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.products.optical" href="optical/index.html">PySDM.products.optical</a></code></dt>
+<dd>
+<div class="desc"><p>cloud optical properties</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.products.parcel" href="parcel/index.html">PySDM.products.parcel</a></code></dt>
+<dd>
+<div class="desc"><p>products specific to the parcel environment</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral" href="size_spectral/index.html">PySDM.products.size_spectral</a></code></dt>
 <dd>
 <div class="desc"><p>products expressing particle size-spectral quantities</p></div>
@@ -116,6 +120,8 @@ from .size_spectral import *</code></pre>
 <li><code><a title="PySDM.products.freezing" href="freezing/index.html">PySDM.products.freezing</a></code></li>
 <li><code><a title="PySDM.products.housekeeping" href="housekeeping/index.html">PySDM.products.housekeeping</a></code></li>
 <li><code><a title="PySDM.products.impl" href="impl/index.html">PySDM.products.impl</a></code></li>
+<li><code><a title="PySDM.products.optical" href="optical/index.html">PySDM.products.optical</a></code></li>
+<li><code><a title="PySDM.products.parcel" href="parcel/index.html">PySDM.products.parcel</a></code></li>
 <li><code><a title="PySDM.products.size_spectral" href="size_spectral/index.html">PySDM.products.size_spectral</a></code></li>
 </ul>
 </li>

@@ -80,8 +80,7 @@ attributes = {
     &#34;volume&#34;: lambda _, __: Volume,
     &#34;dry volume organic&#34;: lambda dynamics, formulae: (
         make_dummy_attribute_factory(&#34;dry volume organic&#34;)
-        if &#34;Condensation&#34; in dynamics
-        and formulae.surface_tension.__name__ == Constant.__name__
+        if formulae.surface_tension.__name__ == Constant.__name__
         else DryVolumeOrganic
     ),
     &#34;dry volume&#34;: lambda dynamics, formulae: (
@@ -89,8 +88,7 @@ attributes = {
     ),
     &#34;dry volume organic fraction&#34;: lambda dynamics, formulae: (
         make_dummy_attribute_factory(&#34;dry volume organic fraction&#34;)
-        if &#34;Condensation&#34; in dynamics
-        and formulae.surface_tension.__name__ == Constant.__name__
+        if formulae.surface_tension.__name__ == Constant.__name__
         else OrganicFraction
     ),
     &#34;kappa times dry volume&#34;: lambda _, __: KappaTimesDryVolume,
@@ -153,7 +151,7 @@ attributes = {
 def get_class(name, dynamics, formulae):
     if name not in attributes:
         raise ValueError(
-            f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(attributes)}&#34;
+            f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(sorted(attributes))}&#34;
         )
     return attributes[name](dynamics, formulae)</code></pre>
 </details>
@@ -177,7 +175,7 @@ def get_class(name, dynamics, formulae):
 <pre><code class="python">def get_class(name, dynamics, formulae):
     if name not in attributes:
         raise ValueError(
-            f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(attributes)}&#34;
+            f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(sorted(attributes))}&#34;
         )
     return attributes[name](dynamics, formulae)</code></pre>
 </details>

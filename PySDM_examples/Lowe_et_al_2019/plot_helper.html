@@ -45,7 +45,7 @@ def plot_profiles(subplot_list, updraft_list, forg_list, output, save=False):
         for i, w in enumerate(updraft_list):
             for _, Forg in enumerate(forg_list):
                 key = subplot + f&#34;_w{w:.2f}_f{Forg:.2f}_&#34;
-                var = &#34;n_c_cm3&#34;
+                var = &#34;CDNC_cm3&#34;
                 z = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][&#34;z&#34;])
                 CDNC_film = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][var])
                 CDNC_bulk = np.array(output[key + &#34;Constant&#34;][var])
@@ -88,7 +88,7 @@ def plot_contours(
                     CDNC_film = output[key + &#34;CompressedFilmOvadnevaite&#34;][var][0] * Naer
                     CDNC_bulk = output[key + &#34;Constant&#34;][var][0] * Naer
                 else:
-                    var = &#34;n_c_cm3&#34;
+                    var = &#34;CDNC_cm3&#34;
                     z = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][&#34;z&#34;])
                     wz = np.where(z == z[-1])[0][0]
                     CDNC_film = np.array(
@@ -243,7 +243,7 @@ def plot_contours(
                     CDNC_film = output[key + &#34;CompressedFilmOvadnevaite&#34;][var][0] * Naer
                     CDNC_bulk = output[key + &#34;Constant&#34;][var][0] * Naer
                 else:
-                    var = &#34;n_c_cm3&#34;
+                    var = &#34;CDNC_cm3&#34;
                     z = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][&#34;z&#34;])
                     wz = np.where(z == z[-1])[0][0]
                     CDNC_film = np.array(
@@ -388,7 +388,7 @@ def plot_contours(
         for i, w in enumerate(updraft_list):
             for _, Forg in enumerate(forg_list):
                 key = subplot + f&#34;_w{w:.2f}_f{Forg:.2f}_&#34;
-                var = &#34;n_c_cm3&#34;
+                var = &#34;CDNC_cm3&#34;
                 z = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][&#34;z&#34;])
                 CDNC_film = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][var])
                 CDNC_bulk = np.array(output[key + &#34;Constant&#34;][var])

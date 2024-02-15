@@ -27,8 +27,8 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import numpy as np
+from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 from pystrict import strict
-from scipy import constants as sci
 
 from PySDM import Formulae
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
@@ -46,31 +46,19 @@ class Settings:
         model: str,
         spectral_sampling: type(spec_sampling.SpectralSampling),
         w: float = 0.32 * si.m / si.s,
-        delta_min: float = 0.1,  # 0.2 in paper, but 0.1 matches plot fig 1c/d
-        MAC: float = 1,
-        HAC: float = 1,
-        c_pd: float = 1005 * si.joule / si.kilogram / si.kelvin,
-        g_std: float = sci.g * si.metre / si.second**2,
-        scipy_ode_solver: bool = False,
     ):
         assert model in (&#34;Constant&#34;, &#34;CompressedFilmOvadnevaite&#34;)
         self.model = model
         self.n_sd_per_mode = n_sd_per_mode
-        self.scipy_ode_solver = scipy_ode_solver
         self.formulae = Formulae(
             surface_tension=model,
-            constants={
-                &#34;sgm_org&#34;: 40 * si.mN / si.m,
-                &#34;delta_min&#34;: delta_min * si.nm,
-                &#34;MAC&#34;: MAC,
-                &#34;HAC&#34;: HAC,
-                &#34;c_pd&#34;: c_pd,
-                &#34;g_std&#34;: g_std,
-            },
+            constants=LOWE_CONSTS,
             diffusion_kinetics=&#34;LoweEtAl2019&#34;,
             diffusion_thermics=&#34;LoweEtAl2019&#34;,
             latent_heat=&#34;Lowe2019&#34;,
             saturation_vapour_pressure=&#34;Lowe1977&#34;,
+            optical_albedo=&#34;Bohren1987&#34;,
+            optical_depth=&#34;Stephens1978&#34;,
         )
         const = self.formulae.constants
         self.aerosol = aerosol
@@ -81,8 +69,6 @@ class Settings:
         self.t_max = max_altitude / self.w
         self.dt = dz / self.w
         self.output_interval = 1 * self.dt
-
-        self.g = 9.81 * si.m / si.s**2
 
         self.p0 = 980 * si.mbar
         self.T0 = 280 * si.K
@@ -136,7 +122,7 @@ class Settings:
 <dl>
 <dt id="PySDM_examples.Lowe_et_al_2019.settings.Settings"><code class="flex name class">
 <span>class <span class="ident">Settings</span></span>
-<span>(</span><span>dz: float, n_sd_per_mode: int, aerosol: <a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a>, model: str, spectral_sampling: type, w: float = 0.32, delta_min: float = 0.1, MAC: float = 1, HAC: float = 1, c_pd: float = 1005.0, g_std: float = 9.80665, scipy_ode_solver: bool = False)</span>
+<span>(</span><span>dz: float, n_sd_per_mode: int, aerosol: <a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="../../PySDM/initialisation/aerosol_composition/dry_aerosol.html#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a>, model: str, spectral_sampling: type, w: float = 0.32)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -154,31 +140,19 @@ class Settings:
         model: str,
         spectral_sampling: type(spec_sampling.SpectralSampling),
         w: float = 0.32 * si.m / si.s,
-        delta_min: float = 0.1,  # 0.2 in paper, but 0.1 matches plot fig 1c/d
-        MAC: float = 1,
-        HAC: float = 1,
-        c_pd: float = 1005 * si.joule / si.kilogram / si.kelvin,
-        g_std: float = sci.g * si.metre / si.second**2,
-        scipy_ode_solver: bool = False,
     ):
         assert model in (&#34;Constant&#34;, &#34;CompressedFilmOvadnevaite&#34;)
         self.model = model
         self.n_sd_per_mode = n_sd_per_mode
-        self.scipy_ode_solver = scipy_ode_solver
         self.formulae = Formulae(
             surface_tension=model,
-            constants={
-                &#34;sgm_org&#34;: 40 * si.mN / si.m,
-                &#34;delta_min&#34;: delta_min * si.nm,
-                &#34;MAC&#34;: MAC,
-                &#34;HAC&#34;: HAC,
-                &#34;c_pd&#34;: c_pd,
-                &#34;g_std&#34;: g_std,
-            },
+            constants=LOWE_CONSTS,
             diffusion_kinetics=&#34;LoweEtAl2019&#34;,
             diffusion_thermics=&#34;LoweEtAl2019&#34;,
             latent_heat=&#34;Lowe2019&#34;,
             saturation_vapour_pressure=&#34;Lowe1977&#34;,
+            optical_albedo=&#34;Bohren1987&#34;,
+            optical_depth=&#34;Stephens1978&#34;,
         )
         const = self.formulae.constants
         self.aerosol = aerosol
@@ -189,8 +163,6 @@ class Settings:
         self.t_max = max_altitude / self.w
         self.dt = dz / self.w
         self.output_interval = 1 * self.dt
-
-        self.g = 9.81 * si.m / si.s**2
 
         self.p0 = 980 * si.mbar
         self.T0 = 280 * si.K
