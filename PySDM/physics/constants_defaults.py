@@ -20,6 +20,7 @@ from .constants import (  # pylint: disable=unused-import
     PPM,
     T0,
     THREE,
+    ONE,
     TWO,
     TWO_THIRDS,
     M,
@@ -317,6 +318,9 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 
+""" [Bohren 1987](https://doi.org/10.1119/1.15109) """
+asymmetry_g = 0.85  # forward scattering from cloud droplets
+
 
 def compute_derived_values(c: dict):
     c["eps"] = c["Mv"] / c["Md"]
@@ -325,6 +329,6 @@ def compute_derived_values(c: dict):
 
     c["Rd_over_c_pd"] = c["Rd"] / c["c_pd"]
 
-    c["nu_w"] = c["Mv"] / c["rho_w"]
+    c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]

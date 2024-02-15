@@ -34,6 +34,7 @@ PI_4_3 = PI * 4 / 3
 LN_2 = np.log(2)
 ZERO_MASS = 0 * si.kg
 ZERO_VOLUME = 0 * si.m**3
+ONE = 1
 TWO = 2
 THREE = 3
 FOUR = 4

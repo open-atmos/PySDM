@@ -34,7 +34,9 @@ class SzyszkowskiLangmuir:  # pylint: disable=too-few-public-methods
         else:
             # C_bulk is the concentration of the organic in the bulk phase
             # Cb_iso = C_bulk / (1-f_surf)
-            Cb_iso = (f_org * v_dry / const.RUEHL_nu_org) / (v_wet / const.nu_w)
+            Cb_iso = (f_org * v_dry / const.RUEHL_nu_org) / (
+                v_wet / const.water_molar_volume
+            )
 
             # A is the area that one molecule of organic occupies at the droplet surface
             # A_iso = A*f_surf (m^2)

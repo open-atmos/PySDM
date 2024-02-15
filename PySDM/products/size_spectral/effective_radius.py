@@ -25,12 +25,15 @@ class EffectiveRadius(MomentProduct):
 
     @staticmethod
     @numba.njit(**JIT_FLAGS)
-    def __get_impl(buffer, tmp):
-        buffer[:] = np.where(
-            tmp[:] > 0,
-            buffer[:]
+    def nan_aware_reff_impl(input_volume_output_reff, volume_2_3):
+        """computes the effective radius (<r^3>/<r^2>) based on <v^(2/3)> and <v>"""
+        input_volume_output_reff[:] = np.where(
+            volume_2_3[:] > 0,
+            input_volume_output_reff[:]
             * GEOM_FACTOR
-            / (tmp[:] + (tmp[:] == 0)),  # (+ x==0) to avoid div-by-zero warnings
+            / (
+                volume_2_3[:] + (volume_2_3[:] == 0)
+            ),  # (+ x==0) to avoid div-by-zero warnings
             np.nan,
         )
 
@@ -49,5 +52,7 @@ class EffectiveRadius(MomentProduct):
             filter_range=self.volume_range,
             filter_attr="volume",
         )
-        EffectiveRadius.__get_impl(self.buffer, tmp)
+        EffectiveRadius.nan_aware_reff_impl(
+            input_volume_output_reff=self.buffer, volume_2_3=tmp
+        )
         return self.buffer

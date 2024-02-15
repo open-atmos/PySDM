@@ -24,7 +24,6 @@ def test_critical_supersaturation():
             "volume": np.linspace(0.01, 10, n_sd) * si.um**3,
             "dry volume": vdry,
             "kappa times dry volume": 0.9 * vdry,
-            "dry volume organic": np.zeros(n_sd),
         },
         products=(ActivableFraction(),),
     )

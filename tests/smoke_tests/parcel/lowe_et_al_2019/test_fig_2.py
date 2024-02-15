@@ -3,11 +3,14 @@ import numpy as np
 import pytest
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation
 from PySDM_examples.Lowe_et_al_2019 import aerosol as paper_aerosol
+from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
+from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling
-from PySDM.physics import constants_defaults, si
+from PySDM.physics import si
 
-WATER_MOLAR_VOLUME = constants_defaults.Mv / constants_defaults.rho_w
+FORMULAE = Formulae(constants=LOWE_CONSTS)
+WATER_MOLAR_VOLUME = FORMULAE.constants.water_molar_volume
 
 
 class TestFig2:  # pylint: disable=too-few-public-methods
@@ -84,7 +87,9 @@ class TestFig2:  # pylint: disable=too-few-public-methods
         print(i_100m, output["z"][i_100m])
         print(np.nanmax(output["S_max"]), s_max)
         print(output["S_max"][i_100m], s_100m)
-        print(output["n_c_cm3"][i_100m], n_100m)
+        print(output["CDNC_cm3"][i_100m], n_100m)
         np.testing.assert_approx_equal(np.nanmax(output["S_max"]), s_max, significant=2)
         np.testing.assert_approx_equal(output["S_max"][i_100m], s_100m, significant=2)
-        np.testing.assert_approx_equal(output["n_c_cm3"][i_100m], n_100m, significant=2)
+        np.testing.assert_approx_equal(
+            output["CDNC_cm3"][i_100m], n_100m, significant=2
+        )
