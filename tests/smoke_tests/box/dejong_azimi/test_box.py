@@ -38,11 +38,11 @@ def test_settings_a(variables):
 
     # Moments: initial M0 and M1
     for i in range(2):
-        M_pysdm = (
+        M_pysdm = in_unit(
             variables["res_a"].moments[:, i]
             * variables["settings_a"].dv
-            * si.cm**3
-            * (si.m**3 / si.cm**3 * 1e6) ** i
+            * variables["settings_a"].rho ** i,
+            si.ug**i / si.cm**3,
         )
         M_cloudy_a = deJong_Azimi.cloudy_data_0d.MOM_data["Golovin"]["aMoments"][i]
         M_cloudy_b = (
@@ -72,11 +72,11 @@ def test_settings_b(variables):
 def test_settings_c(variables):
     # Moments: initial
     for i in range(3):
-        M_pysdm = (
+        M_pysdm = in_unit(
             variables["res_c"].moments[:, i]
             * variables["settings_c"].dv
-            * si.cm**3
-            * (si.m**3 / si.cm**3 * 1e6) ** i
+            * variables["settings_c"].rho ** i,
+            si.ug**i / si.cm**3,
         )
         M_cloudy_a = deJong_Azimi.cloudy_data_0d.MOM_data["Geometric"]["aMoments"][i]
         M_cloudy_b = (
