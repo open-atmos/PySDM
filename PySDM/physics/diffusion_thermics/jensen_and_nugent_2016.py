@@ -9,11 +9,12 @@ class JensenAndNugent:  # TODO #1266: rename to Grabowski et al. 2011
         pass
 
     @staticmethod
-    def D(const, T, p):
+    def D(const, T, p):  # pylint: disable=unused-argument
         return const.diffussion_thermics_D_G11_A * (
             const.diffussion_thermics_D_G11_B * T + const.diffussion_thermics_D_G11_C
         )
 
+    @staticmethod
     def K(const, T, p):  # pylint: disable=unused-argument
         return (
             const.diffussion_thermics_K_G11_A * T**3

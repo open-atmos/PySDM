@@ -18,7 +18,7 @@ class JensenAndNugent(PruppacherKlett):  # TODO #1266: rename to Grabowski et al
         return D / np.sqrt(2 * const.Rd * T)
 
     @staticmethod
-    def lambdaK(const, T, p):
+    def lambdaK(const, T, p):  # pylint: disable=unused-argument
         return (
             ((1.5e-11) * np.power(T, 3))
             - (4.8e-8 * np.power(T, 2))
@@ -27,7 +27,7 @@ class JensenAndNugent(PruppacherKlett):  # TODO #1266: rename to Grabowski et al
         )
 
     @staticmethod
-    def K(const, K, r, lmbd):
+    def K(const, K, r, lmbd):  # pylint: disable=unused-argument
         return const.K0
         # TODO #1266
         # return lmbd / (
