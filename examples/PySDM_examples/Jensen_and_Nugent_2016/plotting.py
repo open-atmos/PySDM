@@ -21,11 +21,13 @@ def figure(
         masks["ascent"] = np.full_like(output["products"]["t"], True, dtype=bool)
     else:
         masks["ascent"] = np.asarray(output["products"]["t"]) < settings.t_end_of_ascent
-        masks["descent"] = masks["ascent"] is False
+        masks["descent"] = masks["ascent"] == False
 
     colors = {"ascent": "r", "descent": "b"}
 
-    axs = pyplot.subplot_mosaic(mosaic=[["r", "S"]], width_ratios=[3, 1], sharey=True)
+    fig, axs = pyplot.subplot_mosaic(
+        mosaic=[["r", "S"]], width_ratios=[3, 1], sharey=True
+    )
 
     for label, mask in masks.items():
         axs["S"].plot(
