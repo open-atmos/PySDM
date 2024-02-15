@@ -13,12 +13,12 @@ class Settings:
         self.T0 = 284.3 * si.K
         self.z0 = 600 * si.m
         self.t_end_of_ascent = 1500 * si.s if cloud_type == "Sc" else None
-        self.dt = 1 * si.s  # TODO: not found in the paper yet
+        self.dt = 1 * si.s  # TODO #1266: not found in the paper yet
 
         self.kappa = 1.28  # Table 1 from Petters & Kreidenweis 2007
 
         self.formulae = Formulae(
-            saturation_vapour_pressure="FlatauWalkoCotton",  # TODO: Bolton
+            saturation_vapour_pressure="FlatauWalkoCotton",  # TODO #1266: Bolton
             diffusion_kinetics="JensenAndNugent",
             diffusion_thermics="JensenAndNugent",
             constants={

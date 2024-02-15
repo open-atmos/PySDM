@@ -9,6 +9,7 @@ from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics
 from PySDM.initialisation.sampling.spectral_sampling import Logarithmic
 
+# note: 100 in caption of Table 1
 N_SD_NON_GCCN = 100
 
 
@@ -37,15 +38,18 @@ class Simulation(BasicSimulation):
             backend=CPU(formulae=settings.formulae),
             environment=env,
         )
-        builder.request_attribute("radius")
+
+        additional_derived_attributes = ("radius",)
+        for additional_derived_attribute in additional_derived_attributes:
+            builder.request_attribute(additional_derived_attribute)
 
         builder.add_dynamic(
             AmbientThermodynamics()
-        )  # TODO: order matters here, but error message is not saying it!
+        )  # TODO #1266: order matters here, but error message is not saying it!
         builder.add_dynamic(Condensation())
 
         self.r_dry, n_in_unit_volume = Logarithmic(
-            spectrum=settings.dry_radii_spectrum, size_range=(0.01 * si.um, 0.5 * si.um)
+            spectrum=settings.dry_radii_spectrum,
         ).sample(builder.particulator.n_sd - n_gccn)
 
         if gccn:
@@ -55,7 +59,7 @@ class Simulation(BasicSimulation):
             )
             n_in_unit_volume = np.concatenate(
                 [n_in_unit_volume, table_3.NA[nonzero_concentration_mask]]
-            )  # TODO: check which temp, pres, RH assumed in the paper for NA???
+            )  # TODO #1266: check which temp, pres, RH assumed in the paper for NA???
 
         pd0 = settings.formulae.trivia.p_d(
             settings.p0, initial_water_vapour_mixing_ratio
@@ -79,18 +83,19 @@ class Simulation(BasicSimulation):
             )
         )
 
-        # TODO: copied from G & P 2023
+        # TODO #1266: copied from G & P 2023
         self.output_attributes = {
-            "radius": tuple([] for _ in range(self.particulator.n_sd)),
+            attr: tuple([] for _ in range(self.particulator.n_sd))
+            for attr in additional_derived_attributes
         }
 
     def run(
         self, *, n_steps: int = 2250, steps_per_output_interval: int = 10
-    ):  # TODO: essentially copied from G & P 2023
+    ):  # TODO #1266: essentially copied from G & P 2023
         output_products = super()._run(n_steps, steps_per_output_interval)
         return {"products": output_products, "attributes": self.output_attributes}
 
-    def _save(self, output):  # TODO: copied from G&P 2023
+    def _save(self, output):  # TODO #1266: copied from G&P 2023
         for key, attr in self.output_attributes.items():
             attr_data = self.particulator.attributes[key].to_ndarray()
             for drop_id in range(self.particulator.n_sd):

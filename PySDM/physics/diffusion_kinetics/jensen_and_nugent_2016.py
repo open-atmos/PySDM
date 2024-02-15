@@ -7,7 +7,7 @@ import numpy as np
 from .pruppacher_and_klett_2005 import PruppacherKlett
 
 
-class JensenAndNugent(PruppacherKlett):
+class JensenAndNugent(PruppacherKlett):  # TODO #1266: rename to Grabowski et al. 2011
     """note the use of Rd instead of Rv!"""
 
     def __init__(self, _):
@@ -29,7 +29,7 @@ class JensenAndNugent(PruppacherKlett):
     @staticmethod
     def K(const, K, r, lmbd):
         return const.K0
-        # TODO
+        # TODO #1266
         # return lmbd / (
         #     (r / ((0.216 * const.si.um) + r))
         #     + (

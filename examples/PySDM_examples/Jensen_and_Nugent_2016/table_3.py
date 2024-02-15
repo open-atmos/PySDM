@@ -2,8 +2,6 @@ import numpy as np
 
 from PySDM.physics import si
 
-RD = np.linspace(0.8, 9, num=42, endpoint=True) * si.um
-
 NA = (
     np.asarray(
         [
@@ -53,3 +51,5 @@ NA = (
     )
     / si.m**3
 )
+
+RD = np.linspace(0.8, 9, num=len(NA), endpoint=True) * si.um

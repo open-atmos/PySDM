@@ -3,10 +3,8 @@ as in Jensen and Nugent 2016 (eq. 12-13)
 with reference to [Grabowski et al. (2011)](https://doi:10.1016/j.atmosres.2010.10.020)
 """
 
-import numpy as np
 
-
-class JensenAndNugent:
+class JensenAndNugent:  # TODO #1266: rename to Grabowski et al. 2011
     def __init__(self, _):
         pass
 

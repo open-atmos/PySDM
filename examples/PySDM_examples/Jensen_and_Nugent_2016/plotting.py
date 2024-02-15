@@ -5,7 +5,13 @@ from PySDM.physics.constants import PER_CENT
 
 
 def figure(
-    *, output, settings, simulation, drop_ids, xlim_r_um: tuple, xlim_S_percent: tuple
+    *,
+    output,
+    settings,
+    simulation,
+    plot_drops_with_dry_radii_um,
+    xlim_r_um: tuple,
+    xlim_S_percent: tuple,
 ):
     cloud_base = 300 * si.m
     y_axis = np.asarray(output["products"]["z"]) - settings.z0 - cloud_base
@@ -34,7 +40,16 @@ def figure(
     axs["S"].set_xlabel("S (%)")
     axs["S"].legend()
 
-    for drop_id in drop_ids:  # TODO: bug! why rightmost drop is not 500 nm ???
+    drop_ids = []
+    for drop_size_um in plot_drops_with_dry_radii_um:
+        drop_id = (np.abs(simulation.r_dry - drop_size_um * si.um)).argmin()
+        drop_ids.append(drop_id)
+
+    for (
+        drop_id
+    ) in (
+        drop_ids
+    ):  # TODO #1266: bug! why rightmost drop is not 500 nm if size range is set to end at 500 nm???
         for label, mask in masks.items():
             axs["r"].plot(
                 in_unit(np.asarray(output["attributes"]["radius"][drop_id]), si.um)[
@@ -42,7 +57,7 @@ def figure(
                 ],
                 y_axis[mask],
                 label=(
-                    f"{in_unit(simulation.r_dry[drop_id], si.nm):.3g} nm"
+                    f"{in_unit(simulation.r_dry[drop_id], si.um):.2} µm"
                     if label == "ascent"
                     else ""
                 ),
