@@ -21,7 +21,7 @@ def figure(
         masks["ascent"] = np.full_like(output["products"]["t"], True, dtype=bool)
     else:
         masks["ascent"] = np.asarray(output["products"]["t"]) < settings.t_end_of_ascent
-        masks["descent"] = not masks["ascent"]
+        masks["descent"] = np.logical_not(masks["ascent"])
 
     colors = {"ascent": "r", "descent": "b"}
 
