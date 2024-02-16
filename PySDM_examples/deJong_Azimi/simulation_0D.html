@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.initialisation.sampling.spatial_sampling API documentation</title>
-<meta name="description" content="spatial sampling logic (i.e., physical x-y-z coordinates)" />
+<title>PySDM_examples.deJong_Azimi.simulation_0D API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,44 +19,69 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.initialisation.sampling.spatial_sampling</code></h1>
+<h1 class="title">Module <code>PySDM_examples.deJong_Azimi.simulation_0D</code></h1>
 </header>
 <section id="section-intro">
-<p>spatial sampling logic (i.e., physical x-y-z coordinates)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;
-spatial sampling logic (i.e., physical x-y-z coordinates)
-&#34;&#34;&#34;
+<pre><code class="python">from collections import namedtuple
 
-# TODO #305 QUASIRANDOM &amp; GRID
-#  http://www.ii.uj.edu.pl/~arabas/workshop_2019/files/talk_Shima.pdf
+import numpy as np
+
+from PySDM.backends import CPU
+from PySDM.builder import Builder
+from PySDM.dynamics import Coalescence
+from PySDM.environments import Box
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.products.size_spectral import (
+    ParticleVolumeVersusRadiusLogarithmSpectrum,
+    VolumeFirstMoment,
+    VolumeSecondMoment,
+    ZerothMoment,
+)
 
 
-class Pseudorandom:  # pylint: disable=too-few-public-methods
-    @staticmethod
-    def sample(*, backend, grid, n_sd, z_part=None):
-        dimension = len(grid)
-        n_elements = dimension * n_sd
+def run_box(settings, backend_class=CPU):
+    env = Box(dv=settings.dv, dt=settings.dt)
+    builder = Builder(
+        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=env
+    )
+    env[&#34;rhod&#34;] = settings.rhod
+    attributes = {}
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
+        settings.spectrum
+    ).sample(settings.n_sd)
+    builder.add_dynamic(
+        Coalescence(
+            collision_kernel=settings.kernel,
+            coalescence_efficiency=settings.coal_eff,
+            adaptive=settings.adaptive,
+        )
+    )
+    products = (
+        ParticleVolumeVersusRadiusLogarithmSpectrum(
+            radius_bins_edges=settings.radius_bins_edges, name=&#34;dv/dlnr&#34;
+        ),
+        ZerothMoment(name=&#34;M0&#34;),
+        VolumeFirstMoment(name=&#34;M1&#34;),
+        VolumeSecondMoment(name=&#34;M2&#34;),
+    )
+    particulator = builder.build(attributes, products)
 
-        storage = backend.Storage.empty(n_elements, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
-        positions = storage.to_ndarray().reshape(dimension, n_sd)
+    y = np.ndarray((len(settings.steps), len(settings.radius_bins_edges) - 1))
+    mom = np.ndarray((len(settings.steps), 3))
+    for i, step in enumerate(settings.steps):
+        particulator.run(step - particulator.n_steps)
+        y[i] = particulator.products[&#34;dv/dlnr&#34;].get()[0]
+        mom[i, 0] = particulator.products[&#34;M0&#34;].get()
+        mom[i, 1] = particulator.products[&#34;M1&#34;].get()
+        mom[i, 2] = particulator.products[&#34;M2&#34;].get()
 
-        if z_part is None:
-            for dim in range(dimension):
-                positions[dim, :] *= grid[dim]
-        else:
-            assert dimension == 1
-            iz_min = int(grid[0] * z_part[0])
-            iz_max = int(grid[0] * z_part[1])
-            for dim in range(dimension):
-                positions[dim, :] *= iz_max - iz_min
-                positions[dim, :] += iz_min
-
-        return positions</code></pre>
+    return namedtuple(&#34;_&#34;, (&#34;radius_bins_left_edges&#34;, &#34;dv_dlnr&#34;, &#34;moments&#34;))(
+        radius_bins_left_edges=settings.radius_bins_edges[:-1], dv_dlnr=y, moments=mom
+    )</code></pre>
 </details>
 </section>
 <section>
@@ -64,12 +89,10 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.initialisation.sampling.spatial_sampling.Pseudorandom"><code class="flex name class">
-<span>class <span class="ident">Pseudorandom</span></span>
+<dt id="PySDM_examples.deJong_Azimi.simulation_0D.run_box"><code class="name flex">
+<span>def <span class="ident">run_box</span></span>(<span>settings, backend_class=PySDM.backends.numba.Numba)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -77,66 +100,50 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Pseudorandom:  # pylint: disable=too-few-public-methods
-    @staticmethod
-    def sample(*, backend, grid, n_sd, z_part=None):
-        dimension = len(grid)
-        n_elements = dimension * n_sd
+<pre><code class="python">def run_box(settings, backend_class=CPU):
+    env = Box(dv=settings.dv, dt=settings.dt)
+    builder = Builder(
+        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=env
+    )
+    env[&#34;rhod&#34;] = settings.rhod
+    attributes = {}
+    attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = ConstantMultiplicity(
+        settings.spectrum
+    ).sample(settings.n_sd)
+    builder.add_dynamic(
+        Coalescence(
+            collision_kernel=settings.kernel,
+            coalescence_efficiency=settings.coal_eff,
+            adaptive=settings.adaptive,
+        )
+    )
+    products = (
+        ParticleVolumeVersusRadiusLogarithmSpectrum(
+            radius_bins_edges=settings.radius_bins_edges, name=&#34;dv/dlnr&#34;
+        ),
+        ZerothMoment(name=&#34;M0&#34;),
+        VolumeFirstMoment(name=&#34;M1&#34;),
+        VolumeSecondMoment(name=&#34;M2&#34;),
+    )
+    particulator = builder.build(attributes, products)
 
-        storage = backend.Storage.empty(n_elements, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
-        positions = storage.to_ndarray().reshape(dimension, n_sd)
+    y = np.ndarray((len(settings.steps), len(settings.radius_bins_edges) - 1))
+    mom = np.ndarray((len(settings.steps), 3))
+    for i, step in enumerate(settings.steps):
+        particulator.run(step - particulator.n_steps)
+        y[i] = particulator.products[&#34;dv/dlnr&#34;].get()[0]
+        mom[i, 0] = particulator.products[&#34;M0&#34;].get()
+        mom[i, 1] = particulator.products[&#34;M1&#34;].get()
+        mom[i, 2] = particulator.products[&#34;M2&#34;].get()
 
-        if z_part is None:
-            for dim in range(dimension):
-                positions[dim, :] *= grid[dim]
-        else:
-            assert dimension == 1
-            iz_min = int(grid[0] * z_part[0])
-            iz_max = int(grid[0] * z_part[1])
-            for dim in range(dimension):
-                positions[dim, :] *= iz_max - iz_min
-                positions[dim, :] += iz_min
-
-        return positions</code></pre>
-</details>
-<h3>Static methods</h3>
-<dl>
-<dt id="PySDM.initialisation.sampling.spatial_sampling.Pseudorandom.sample"><code class="name flex">
-<span>def <span class="ident">sample</span></span>(<span>*, backend, grid, n_sd, z_part=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def sample(*, backend, grid, n_sd, z_part=None):
-    dimension = len(grid)
-    n_elements = dimension * n_sd
-
-    storage = backend.Storage.empty(n_elements, dtype=float)
-    backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
-    positions = storage.to_ndarray().reshape(dimension, n_sd)
-
-    if z_part is None:
-        for dim in range(dimension):
-            positions[dim, :] *= grid[dim]
-    else:
-        assert dimension == 1
-        iz_min = int(grid[0] * z_part[0])
-        iz_max = int(grid[0] * z_part[1])
-        for dim in range(dimension):
-            positions[dim, :] *= iz_max - iz_min
-            positions[dim, :] += iz_min
-
-    return positions</code></pre>
+    return namedtuple(&#34;_&#34;, (&#34;radius_bins_left_edges&#34;, &#34;dv_dlnr&#34;, &#34;moments&#34;))(
+        radius_bins_left_edges=settings.radius_bins_edges[:-1], dv_dlnr=y, moments=mom
+    )</code></pre>
 </details>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -147,17 +154,12 @@ def sample(*, backend, grid, n_sd, z_part=None):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.initialisation.sampling" href="index.html">PySDM.initialisation.sampling</a></code></li>
+<li><code><a title="PySDM_examples.deJong_Azimi" href="index.html">PySDM_examples.deJong_Azimi</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="PySDM.initialisation.sampling.spatial_sampling.Pseudorandom" href="#PySDM.initialisation.sampling.spatial_sampling.Pseudorandom">Pseudorandom</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.initialisation.sampling.spatial_sampling.Pseudorandom.sample" href="#PySDM.initialisation.sampling.spatial_sampling.Pseudorandom.sample">sample</a></code></li>
-</ul>
-</li>
+<li><code><a title="PySDM_examples.deJong_Azimi.simulation_0D.run_box" href="#PySDM_examples.deJong_Azimi.simulation_0D.run_box">run_box</a></code></li>
 </ul>
 </li>
 </ul>

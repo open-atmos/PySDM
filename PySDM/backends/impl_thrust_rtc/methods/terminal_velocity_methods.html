@@ -159,6 +159,30 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         factor_device = trtc.DVInt64(factor)
         self.__interpolation_body.launch_n(
             len(radius), (output.data, radius.data, factor_device, b.data, c.data)
+        )
+
+    @cached_property
+    def __power_series_body(self):
+        # TODO #599 r&lt;0
+        return trtc.For(
+            (&#34;output&#34;, &#34;radius&#34;, &#34;num_terms&#34;, &#34;prefactors&#34;, &#34;powers&#34;),
+            &#34;i&#34;,
+            &#34;&#34;&#34;
+            output[i] = 0.0
+            int kmax = num_terms
+            for (auto k = 0; k &lt; kmax; k+=1) {
+                auto sumterm = prefactors[k] * pow(radius[i], 3*powers[k])
+                output[i] = output[i] + sumterm
+            &#34;&#34;&#34;,
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def power_series(self, *, values, radius, num_terms, prefactors, powers):
+        prefactors = self._get_floating_point(prefactors)
+        powers = self._get_floating_point(powers)
+        num_terms = self._get_floating_point(num_terms)
+        self.__power_series_body.launch_n(
+            values.size(), (values, radius, num_terms, prefactors, powers)
         )</code></pre>
 </details>
 </section>
@@ -299,6 +323,30 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         factor_device = trtc.DVInt64(factor)
         self.__interpolation_body.launch_n(
             len(radius), (output.data, radius.data, factor_device, b.data, c.data)
+        )
+
+    @cached_property
+    def __power_series_body(self):
+        # TODO #599 r&lt;0
+        return trtc.For(
+            (&#34;output&#34;, &#34;radius&#34;, &#34;num_terms&#34;, &#34;prefactors&#34;, &#34;powers&#34;),
+            &#34;i&#34;,
+            &#34;&#34;&#34;
+            output[i] = 0.0
+            int kmax = num_terms
+            for (auto k = 0; k &lt; kmax; k+=1) {
+                auto sumterm = prefactors[k] * pow(radius[i], 3*powers[k])
+                output[i] = output[i] + sumterm
+            &#34;&#34;&#34;,
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def power_series(self, *, values, radius, num_terms, prefactors, powers):
+        prefactors = self._get_floating_point(prefactors)
+        powers = self._get_floating_point(powers)
+        num_terms = self._get_floating_point(num_terms)
+        self.__power_series_body.launch_n(
+            values.size(), (values, radius, num_terms, prefactors, powers)
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -384,6 +432,24 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
     )</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.power_series"><code class="name flex">
+<span>def <span class="ident">power_series</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -407,6 +473,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
 <ul class="">
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation" href="#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation">interpolation</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency" href="#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency">linear_collection_efficiency</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.power_series" href="#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.power_series">power_series</a></code></li>
 </ul>
 </li>
 </ul>

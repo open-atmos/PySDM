@@ -26,7 +26,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Iterable
+<pre><code class="python">from typing import Iterable, Optional
 
 import numpy as np
 from numdifftools import Derivative
@@ -37,6 +37,7 @@ from PySDM import Formulae
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
 from PySDM.physics import si
+from PySDM.dynamics.collisions.collision_kernels import Geometric
 
 
 class Settings:
@@ -69,10 +70,13 @@ class Settings:
         dt: float = 1 * si.s,
         dz: float = 25 * si.m,
         z_max: float = 3000 * si.m,
+        z_part: Optional[tuple] = None,
         t_max: float = 60 * si.minutes,
         precip: bool = True,
+        enable_condensation: bool = True,
         formulae: Formulae = None,
-        save_spec_and_attr_times=()
+        save_spec_and_attr_times=(),
+        collision_kernel=None
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
@@ -83,9 +87,11 @@ class Settings:
         self.dt = dt
         self.dz = dz
         self.precip = precip
-
+        self.enable_condensation = enable_condensation
+        self.z_part = z_part
         self.z_max = z_max
         self.t_max = t_max
+        self.collision_kernel = collision_kernel or Geometric(collection_efficiency=1)
 
         t_1 = 600 * si.s
         self.rho_times_w = lambda t: (
@@ -222,7 +228,7 @@ class Settings:
 <dl>
 <dt id="PySDM_examples.Shipway_and_Hill_2012.settings.Settings"><code class="flex name class">
 <span>class <span class="ident">Settings</span></span>
-<span>(</span><span>*, n_sd_per_gridbox: int, p0: float = 100700.0, kappa: float = 1, rho_times_w_1: float = 2.0, particles_per_volume_STP: int = 49999999.99999999, dt: float = 1.0, dz: float = 25.0, z_max: float = 3000.0, t_max: float = 3600.0, precip: bool = True, formulae: <a title="PySDM.formulae.Formulae" href="../../PySDM/formulae.html#PySDM.formulae.Formulae">Formulae</a> = None, save_spec_and_attr_times=())</span>
+<span>(</span><span>*, n_sd_per_gridbox: int, p0: float = 100700.0, kappa: float = 1, rho_times_w_1: float = 2.0, particles_per_volume_STP: int = 49999999.99999999, dt: float = 1.0, dz: float = 25.0, z_max: float = 3000.0, z_part: Optional[None] = None, t_max: float = 3600.0, precip: bool = True, enable_condensation: bool = True, formulae: <a title="PySDM.formulae.Formulae" href="../../PySDM/formulae.html#PySDM.formulae.Formulae">Formulae</a> = None, save_spec_and_attr_times=(), collision_kernel=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -260,10 +266,13 @@ class Settings:
         dt: float = 1 * si.s,
         dz: float = 25 * si.m,
         z_max: float = 3000 * si.m,
+        z_part: Optional[tuple] = None,
         t_max: float = 60 * si.minutes,
         precip: bool = True,
+        enable_condensation: bool = True,
         formulae: Formulae = None,
-        save_spec_and_attr_times=()
+        save_spec_and_attr_times=(),
+        collision_kernel=None
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
@@ -274,9 +283,11 @@ class Settings:
         self.dt = dt
         self.dz = dz
         self.precip = precip
-
+        self.enable_condensation = enable_condensation
+        self.z_part = z_part
         self.z_max = z_max
         self.t_max = t_max
+        self.collision_kernel = collision_kernel or Geometric(collection_efficiency=1)
 
         t_1 = 600 * si.s
         self.rho_times_w = lambda t: (
@@ -403,6 +414,7 @@ class Settings:
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
+<li><a title="PySDM_examples.deJong_Azimi.settings1D.Settings1D" href="../deJong_Azimi/settings1D.html#PySDM_examples.deJong_Azimi.settings1D.Settings1D">Settings1D</a></li>
 <li><a title="PySDM_examples.deJong_Mackay_et_al_2023.settings1D.Settings1D" href="../deJong_Mackay_et_al_2023/settings1D.html#PySDM_examples.deJong_Mackay_et_al_2023.settings1D.Settings1D">Settings1D</a></li>
 </ul>
 <h3>Instance variables</h3>

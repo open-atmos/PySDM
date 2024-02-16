@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>PySDM_examples.deJong_Azimi.cloudy_data_0d API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PySDM_examples.deJong_Azimi.cloudy_data_0d</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import numpy as np
+
+MOM_data = {
+    &#34;Golovin&#34;: {
+        &#34;t&#34;: np.array(
+            [
+                0.0,
+                10.0,
+                20.0,
+                30.0,
+                40.0,
+                50.0,
+                60.0,
+                70.0,
+                80.0,
+                90.0,
+                100.0,
+                110.0,
+                120.0,
+            ]
+        ),
+        &#34;aM0&#34;: np.array(
+            [
+                100.0,
+                60.41666666666108,
+                36.50173611110569,
+                22.05313223379227,
+                13.32376739124922,
+                8.049776132212969,
+                4.863406413211965,
+                2.938308041315548,
+                1.775227774961471,
+                1.072533447372555,
+                0.6479889577875856,
+                0.39149332866333514,
+                0.23652721940076313,
+            ]
+        ),
+        &#34;aM1&#34;: np.array(
+            [
+                10.0,
+                10.0,
+                10.0,
+                10.000000000000002,
+                10.000000000000002,
+                9.999999999999991,
+                10.000000000000007,
+                10.000000000000002,
+                9.999999999999956,
+                9.999999999999966,
+                9.999999999999872,
+                10.000000000000062,
+                10.000000000000108,
+            ]
+        ),
+        &#34;aM2&#34;: np.array(
+            [
+                2.0,
+                5.333333333333704,
+                14.222222222223586,
+                37.92592592592996,
+                101.13580246914695,
+                269.69547325105935,
+                719.1879286694924,
+                1917.8344764519795,
+                5114.225270538599,
+                13637.934054769523,
+                36367.82414605215,
+                96980.86438947004,
+                258615.63837192673,
+            ]
+        ),
+        &#34;aDists&#34;: np.array(
+            [
+                [100.0, 0.1, 1.0],
+                [4.863406413211965, 69.86262088575636, 0.029431646782264554],
+                [0.2365272194007631, 25819.285405029976, 0.0016374749145528168],
+            ]
+        ),
+        &#34;bM0&#34;: np.array(
+            [
+                [
+                    100.0,
+                    56.396636657301194,
+                    31.895287187247146,
+                    18.294957761981376,
+                    10.660817516471703,
+                    6.290591039424345,
+                    3.7443020392268367,
+                    2.2413636351719695,
+                    1.3464994349989194,
+                    0.8107024270698977,
+                    0.48877185047542177,
+                    0.2949239965078066,
+                    0.17804598720980272,
+                ],
+                [
+                    1.0e-6,
+                    4.0200190988219875,
+                    4.606433069139865,
+                    3.758158525366545,
+                    2.6629362775448184,
+                    1.7591745237414111,
+                    1.1190966122081454,
+                    0.696938913153295,
+                    0.42872454995378795,
+                    0.2618284523381802,
+                    0.15921539069060084,
+                    0.09656819650467219,
+                    0.058480487065190184,
+                ],
+            ]
+        ),
+        &#34;bM1&#34;: np.array(
+            [
+                [
+                    10.0,
+                    6.354890848885312,
+                    3.815306159255158,
+                    2.2491773102504062,
+                    1.3276630984776567,
+                    0.7884211778943261,
+                    0.4708461282568907,
+                    0.28236149853196507,
+                    0.16980173598586254,
+                    0.10229476631106786,
+                    0.06169480173887945,
+                    0.03723418494509775,
+                    0.022481089449094008,
+                ],
+                [
+                    1.0e-5,
+                    3.6451213684882426,
+                    6.184706455055038,
+                    7.75083495382188,
+                    8.672348657723711,
+                    9.211590117984043,
+                    9.529164800771182,
+                    9.717649154060018,
+                    9.83020871507534,
+                    9.89771554128402,
+                    9.938315405635903,
+                    9.962775953501628,
+                    9.977529002206483,
+                ],
+            ]
+        ),
+        &#34;bM2&#34;: np.array(
+            [
+                [
+                    2.0,
+                    1.3279917682405473,
+                    0.815368316209652,
+                    0.484406234346711,
+                    0.2866707891616959,
+                    0.1703612676331259,
+                    0.10175389387661611,
+                    0.06101894293570185,
+                    0.03669236327334466,
+                    0.022103697711640027,
+                    0.013330436832490668,
+                    0.00804502307966626,
+                    0.0048573143944901,
+                ],
+                [
+                    0.0002,
+                    4.005880364582517,
+                    13.40830335654937,
+                    37.445419449158464,
+                    100.85962493652575,
+                    269.5533461366049,
+                    719.1621396161328,
+                    1917.977828184842,
+                    5114.73836146586,
+                    13639.390826596753,
+                    36371.78858209591,
+                    96991.55465118046,
+                    258644.4048115109,
+                ],
+            ]
+        ),
+        &#34;bDists1&#34;: np.array(
+            [
+                [100.0, 3.7443020392268367, 0.17804598720980272],
+                [0.1, 0.09035855289429393, 0.08979659938892945],
+                [1.0, 1.3916783213625432, 1.4061293503242225],
+            ]
+        ).T,
+        &#34;bDists2&#34;: np.array(
+            [
+                [1.0e-6, 1.1190998946220907, 0.05848079412663001],
+                [1.0, 66.94723995610593, 25749.457224681548],
+                [3.0, 0.12718999335996053, 0.00662584618581055],
+            ]
+        ).T,
+    },
+    &#34;Geometric&#34;: {
+        &#34;t&#34;: np.array(
+            [
+                0.0,
+                20.0,
+                40.0,
+                60.0,
+                80.0,
+                100.0,
+                120.0,
+                140.0,
+                160.0,
+                180.0,
+                200.0,
+                220.0,
+                240.0,
+            ]
+        ),
+        &#34;aM0&#34;: np.array(
+            [
+                100.0,
+                83.09411530706723,
+                69.0668818692553,
+                57.42833556073367,
+                47.771892319320436,
+                39.760132461015466,
+                33.11299776856557,
+                27.59799298461195,
+                23.022057367028655,
+                19.22483391072762,
+                16.073111976893788,
+                13.456251155748634,
+                11.282412772916492,
+            ]
+        ),
+        &#34;aM1&#34;: np.array(
+            [
+                10.0,
+                9.999999999999998,
+                9.999999999999995,
+                9.999999999999998,
+                10.000000000000002,
+                10.000000000000004,
+                9.999999999999996,
+                9.999999999999996,
+                9.999999999999998,
+                9.999999999999998,
+                9.999999999999998,
+                9.999999999999988,
+                9.99999999999999,
+            ]
+        ),
+        &#34;aM2&#34;: np.array(
+            [
+                2.0,
+                2.8852151953194194,
+                4.151238620053756,
+                5.950500062169887,
+                8.485178624869318,
+                12.0129886133155,
+                16.84418831764611,
+                23.32258967740333,
+                31.78481092193408,
+                42.500028311068455,
+                55.60685101272762,
+                71.07585744751505,
+                88.7218493043981,
+            ]
+        ),
+        &#34;aDists&#34;: np.array(
+            [
+                [100.0, 0.1, 1.0],
+                [33.12307697837833, 1.386085645680255, 0.21781072474918567],
+                [11.288994413248544, 8.001687588099609, 0.11070395858333783],
+            ]
+        ),
+        &#34;bM0&#34;: np.array(
+            [
+                [
+                    100.0,
+                    83.08735661284119,
+                    69.025406058178,
+                    57.28710188741288,
+                    47.43565678877952,
+                    39.167760941853565,
+                    32.289941767938586,
+                    26.61554482816344,
+                    21.95171830328991,
+                    18.122227928945424,
+                    14.977334881119972,
+                    12.392963329500928,
+                    10.267170524593165,
+                ],
+                [
+                    1.0e-6,
+                    0.006754965534216085,
+                    0.0414689469896406,
+                    0.14122472581368004,
+                    0.33622210669071656,
+                    0.5923365303626719,
+                    0.822966528248585,
+                    0.9822712716512826,
+                    1.0700559173008375,
+                    1.1022183815198043,
+                    1.0953066097618704,
+                    1.062767038894064,
+                    1.014700508663851,
+                ],
+            ]
+        ),
+        &#34;bM1&#34;: np.array(
+            [
+                [
+                    10.0,
+                    9.998176966812272,
+                    9.983636638206804,
+                    9.914575608610326,
+                    9.648425409616147,
+                    9.022885248658554,
+                    8.145992984487792,
+                    7.201239010259968,
+                    6.289684097629613,
+                    5.449920021025792,
+                    4.694685159768059,
+                    4.0259638571565235,
+                    3.4404908668086382,
+                ],
+                [
+                    3.0e-6,
+                    0.001826033187727366,
+                    0.016366361793195474,
+                    0.08542739138967238,
+                    0.3515775903838529,
+                    0.9771177513414488,
+                    1.8540100155122126,
+                    2.798763989740037,
+                    3.7103189023703886,
+                    4.55008297897421,
+                    5.3053178402319405,
+                    5.974039142843473,
+                    6.559512133191355,
+                ],
+            ]
+        ),
+        &#34;bM2&#34;: np.array(
+            [
+                [
+                    2.0,
+                    2.884419791825751,
+                    4.140031572580394,
+                    5.841267749589132,
+                    7.602242548420331,
+                    8.443150132466357,
+                    8.291305172948194,
+                    7.649776302203622,
+                    6.858287226599269,
+                    6.056020626291585,
+                    5.296417497830004,
+                    4.600656776850216,
+                    3.976052070235482,
+                ],
+                [
+                    1.2e-5,
+                    0.0008129200697375103,
+                    0.011232418249945829,
+                    0.10926457152459564,
+                    0.8829072854441761,
+                    3.5698485088870786,
+                    8.556214924636981,
+                    15.693719076620901,
+                    25.002698714778422,
+                    36.65139187807145,
+                    50.772315702453426,
+                    67.35212811578029,
+                    86.19438593789097,
+                ],
+            ]
+        ),
+        &#34;bDists1&#34;: np.array(
+            [
+                [100.0, 0.1, 1.0],
+                [10.267170524593165, 0.8205678828026997, 0.4083712124798814],
+            ]
+        ),
+        &#34;bDists2&#34;: np.array(
+            [
+                [1.0e-6, 1.0, 3.0],
+                [1.014700508663851, 6.675884373858597, 0.968333274304494],
+            ]
+        ),
+    },
+}
+
+for kernel, data in MOM_data.items():
+    for prefix in (&#34;a&#34;, &#34;b&#34;):
+        data[f&#34;{prefix}Moments&#34;] = np.array([data[f&#34;{prefix}M{i}&#34;] for i in range(3)])</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PySDM_examples.deJong_Azimi" href="index.html">PySDM_examples.deJong_Azimi</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
