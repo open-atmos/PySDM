@@ -46,3 +46,23 @@ class TerminalVelocityMethods(BackendMethods):
         self.terminal_velocity_body(
             values=values, radius=radius, k1=k1, k2=k2, k3=k3, r1=r1, r2=r2
         )
+
+    @cached_property
+    def power_series_body(self):
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def power_series_body(*, values, radius, num_terms, prefactors, powers):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                values[i] = 0.0
+                for j in range(num_terms):
+                    values[i] = values[i] + prefactors[j] * radius[i] ** (powers[j] * 3)
+
+        return power_series_body
+
+    def power_series(self, *, values, radius, num_terms, prefactors, powers):
+        self.power_series_body(
+            values=values,
+            radius=radius,
+            num_terms=num_terms,
+            prefactors=prefactors,
+            powers=powers,
+        )

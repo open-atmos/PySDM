@@ -66,6 +66,12 @@
       [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_6_7_8.ipynb)
       [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_6_7_8.ipynb)
 
+- deJong and Azimi (Ongoing research: Box model, coalescence only):
+    - Figs. 1-2 (validation of moment-based method against PySDM with Golovin and Geometric kernels):
+      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Azimi/box.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/deJong_Azimi/box.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Azimi/box.ipynb)
+
 ### 0D box-model immersion freezing-only examples:
 - [Alpert & Knopf 2016](https://doi.org/10.5194/acp-16-2083-2016) (stochastic immersion freezing with monodisperse vs. lognormal immersed surface areas):
   - Fig. 1:
@@ -187,6 +193,12 @@
       [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb)
       [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb)
       [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb)
+
+- deJong and Azimi (Ongoing research: Similar kinematic setup as in Shipway and Hill, but with no condensation (coalescence only) and with power-series representation of the terminal velocity):
+    - Fig 3:
+      [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Azimi/rainshaft.ipynb)
+      [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/deJong_Azimi/rainshaft.ipynb)
+      [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/deJong_Azimi/rainshaft.ipynb)
 
 ### 2D kinematic (prescribed-flow) Sc-mimicking aerosol collisional processing (warm-rain) examples:
 - [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) 

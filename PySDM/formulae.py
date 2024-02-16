@@ -19,7 +19,7 @@ from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, RogersYau
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
@@ -124,6 +124,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "GunnKinzer1949": GunnKinzer1949,
             "RogersYau": RogersYau,
             "TpDependent": TpDependent,
+            "PowerSeries": PowerSeries,
         }[terminal_velocity]
 
     def __str__(self):
