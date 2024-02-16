@@ -38,7 +38,7 @@ def variables_fixture():
     )
 
 
-class TestFig3:
+class TestFig4:
     @staticmethod
     def test_height_range(variables):
         """note: in the plot the y-axis has cloud-base height subtracted, here not"""
