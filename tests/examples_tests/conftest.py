@@ -30,7 +30,7 @@ TEST_SUITES = {
         "Yang_et_al_2018",
         "Singer_Ward",
         "Grabowski_and_Pawlowska_2023",
-        "Jensen_and_Nugent_2016",
+        "Jensen_and_Nugent_2017",
     ],
     "coagulation": ["Bartman_et_al_2021", "Berry_1967", "Shima_et_al_2009"],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
