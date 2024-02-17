@@ -19,3 +19,11 @@ class PruppacherKlett:
         return D / (
             (r / (r + const.dv_pk05)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC
         )
+
+    @staticmethod
+    def lambdaK(_, T, p):  # pylint: disable=unused-argument
+        return -1
+
+    @staticmethod
+    def K(const, K, r, lmbd):  # pylint: disable=unused-argument
+        return K  # TODO #1266
