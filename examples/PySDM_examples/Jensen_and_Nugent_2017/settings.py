@@ -19,8 +19,8 @@ class Settings:
 
         self.formulae = Formulae(
             saturation_vapour_pressure="FlatauWalkoCotton",  # TODO #1266: Bolton
-            diffusion_kinetics="JensenAndNugent",
-            diffusion_thermics="JensenAndNugent",
+            diffusion_kinetics="JensenAndNugent2017",
+            diffusion_thermics="GrabowskiEtAl2011",
             constants={
                 # values from appendix B
                 "MAC": 0.036,

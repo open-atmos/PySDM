@@ -1,10 +1,9 @@
 """
-as in Jensen and Nugent 2016 (eq. 12-13)
-with reference to [Grabowski et al. (2011)](https://doi:10.1016/j.atmosres.2010.10.020)
+as in [Grabowski et al. (2011)](https://doi.org/10.1016/j.atmosres.2010.10.020)
 """
 
 
-class JensenAndNugent:  # TODO #1266: rename to Grabowski et al. 2011
+class GrabowskiEtAl2011:
     def __init__(self, _):
         pass
 
