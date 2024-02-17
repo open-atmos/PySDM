@@ -49,7 +49,15 @@ class PruppacherKlett:
     def D(const, D, r, lmbd):
         return D / (
             (r / (r + const.dv_pk05)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC
-        )</code></pre>
+        )
+
+    @staticmethod
+    def lambdaK(_, T, p):  # pylint: disable=unused-argument
+        return -1
+
+    @staticmethod
+    def K(const, K, r, lmbd):  # pylint: disable=unused-argument
+        return K  # TODO #1266</code></pre>
 </details>
 </section>
 <section>
@@ -83,10 +91,19 @@ class PruppacherKlett:
     def D(const, D, r, lmbd):
         return D / (
             (r / (r + const.dv_pk05)) + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC
-        )</code></pre>
+        )
+
+    @staticmethod
+    def lambdaK(_, T, p):  # pylint: disable=unused-argument
+        return -1
+
+    @staticmethod
+    def K(const, K, r, lmbd):  # pylint: disable=unused-argument
+        return K  # TODO #1266</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
+<li><a title="PySDM.physics.diffusion_kinetics.grabowski_et_al_2011.GrabowskiEtAl2011" href="grabowski_et_al_2011.html#PySDM.physics.diffusion_kinetics.grabowski_et_al_2011.GrabowskiEtAl2011">GrabowskiEtAl2011</a></li>
 <li><a title="PySDM.physics.diffusion_kinetics.lowe_et_al_2019.LoweEtAl2019" href="lowe_et_al_2019.html#PySDM.physics.diffusion_kinetics.lowe_et_al_2019.LoweEtAl2019">LoweEtAl2019</a></li>
 </ul>
 <h3>Static methods</h3>
@@ -107,6 +124,20 @@ def D(const, D, r, lmbd):
     )</code></pre>
 </details>
 </dd>
+<dt id="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.K"><code class="name flex">
+<span>def <span class="ident">K</span></span>(<span>const, K, r, lmbd)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def K(const, K, r, lmbd):  # pylint: disable=unused-argument
+    return K  # TODO #1266</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaD"><code class="name flex">
 <span>def <span class="ident">lambdaD</span></span>(<span>const, D, T)</span>
 </code></dt>
@@ -119,6 +150,20 @@ def D(const, D, r, lmbd):
 <pre><code class="python">@staticmethod
 def lambdaD(const, D, T):
     return D / np.sqrt(2 * const.Rv * T)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaK"><code class="name flex">
+<span>def <span class="ident">lambdaK</span></span>(<span>_, T, p)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def lambdaK(_, T, p):  # pylint: disable=unused-argument
+    return -1</code></pre>
 </details>
 </dd>
 </dl>
@@ -143,7 +188,9 @@ def lambdaD(const, D, T):
 <h4><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett">PruppacherKlett</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.D" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.D">D</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.K" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.K">K</a></code></li>
 <li><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaD" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaD">lambdaD</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaK" href="#PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005.PruppacherKlett.lambdaK">lambdaK</a></code></li>
 </ul>
 </li>
 </ul>

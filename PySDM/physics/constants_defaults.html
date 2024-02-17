@@ -355,6 +355,16 @@ CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 &#34;&#34;&#34; [Bohren 1987](https://doi.org/10.1119/1.15109) &#34;&#34;&#34;
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 
+&#34;&#34;&#34; TODO #1266 &#34;&#34;&#34;
+diffussion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
+diffussion_thermics_D_G11_B = 0.15 / si.K
+diffussion_thermics_D_G11_C = -1.9
+
+diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
+diffussion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
+diffussion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
+diffussion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
+
 
 def compute_derived_values(c: dict):
     c[&#34;eps&#34;] = c[&#34;Mv&#34;] / c[&#34;Md&#34;]
@@ -417,6 +427,10 @@ def compute_derived_values(c: dict):
 <dd>
 <div class="desc"><p><a href="https://doi.org/10.3402/tellusa.v19i1.9756">eq. 5 in Merlivat and Nief (1967)</a></p></div>
 </dd>
+<dt id="PySDM.physics.constants_defaults.asymmetry_g"><code class="name">var <span class="ident">asymmetry_g</span></code></dt>
+<dd>
+<div class="desc"><p>TODO #1266</p></div>
+</dd>
 </dl>
 </section>
 <section>
@@ -472,6 +486,7 @@ def compute_derived_values(c: dict):
 <li><code><a title="PySDM.physics.constants_defaults.MERLIVAT_NIEF_1967_ALPHA_I_2H_T0" href="#PySDM.physics.constants_defaults.MERLIVAT_NIEF_1967_ALPHA_I_2H_T0">MERLIVAT_NIEF_1967_ALPHA_I_2H_T0</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.VAN_HOOK_1968_ALPHA_L_DOD_C" href="#PySDM.physics.constants_defaults.VAN_HOOK_1968_ALPHA_L_DOD_C">VAN_HOOK_1968_ALPHA_L_DOD_C</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.VEDDER_1987_A" href="#PySDM.physics.constants_defaults.VEDDER_1987_A">VEDDER_1987_A</a></code></li>
+<li><code><a title="PySDM.physics.constants_defaults.asymmetry_g" href="#PySDM.physics.constants_defaults.asymmetry_g">asymmetry_g</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>

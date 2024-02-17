@@ -52,7 +52,8 @@ def notebook_vars(file: Path, plot: bool):
                 if line.strip().startswith(&#34;show_plot(&#34;):
                     lines[i] = line.replace(
                         &#34;show_plot(&#34;,
-                        &#34;pyplot.show() #&#34; if plot else &#34;pyplot.gca().clear() #&#34;,
+                        &#34;from matplotlib import pyplot; &#34;
+                        + (&#34;pyplot.show() #&#34; if plot else &#34;pyplot.gca().clear() #&#34;),
                     )
 
             exec(&#34;\n&#34;.join(lines), context)  # pylint: disable=exec-used
@@ -98,7 +99,8 @@ to match the smoke-test conventions.</p></div>
                 if line.strip().startswith(&#34;show_plot(&#34;):
                     lines[i] = line.replace(
                         &#34;show_plot(&#34;,
-                        &#34;pyplot.show() #&#34; if plot else &#34;pyplot.gca().clear() #&#34;,
+                        &#34;from matplotlib import pyplot; &#34;
+                        + (&#34;pyplot.show() #&#34; if plot else &#34;pyplot.gca().clear() #&#34;),
                     )
 
             exec(&#34;\n&#34;.join(lines), context)  # pylint: disable=exec-used

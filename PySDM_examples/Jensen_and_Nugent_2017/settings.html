@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.diffusion_kinetics API documentation</title>
-<meta name="description" content="Formulae for handling transition-régime corrections in condensational growth/evaporation" />
+<title>PySDM_examples.Jensen_and_Nugent_2017.settings API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,64 +19,149 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.diffusion_kinetics</code></h1>
+<h1 class="title">Module <code>PySDM_examples.Jensen_and_Nugent_2017.settings</code></h1>
 </header>
 <section id="section-intro">
-<p>Formulae for handling transition-régime corrections in condensational growth/evaporation</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;
-Formulae for handling transition-régime corrections in condensational growth/evaporation
-&#34;&#34;&#34;
+<pre><code class="python">from pystrict import strict
+from PySDM import Formulae
+from PySDM.physics import si
+from PySDM.initialisation.spectra import Lognormal, Sum
 
-from .fuchs_sutugin import FuchsSutugin
-from .lowe_et_al_2019 import LoweEtAl2019
-from .neglect import Neglect
-from .grabowski_et_al_2011 import GrabowskiEtAl2011
-from .jensen_and_nugent_2017 import JensenAndNugent2017</code></pre>
+
+@strict
+class Settings:
+    def __init__(self, *, aerosol: str, cloud_type: str):
+        # TODO #1266 reuse these values in the Yang et al. &#39;18 example which is based on J&amp;N&#39;16
+        self.p0 = 938.5 * si.hPa
+        self.RH0 = 0.8561
+        self.T0 = 284.3 * si.K
+        self.z0 = 600 * si.m
+        self.t_end_of_ascent = 1500 * si.s if cloud_type == &#34;Sc&#34; else None
+        self.dt = 1 * si.s  # TODO #1266: not found in the paper yet
+
+        self.kappa = 1.28  # Table 1 from Petters &amp; Kreidenweis 2007
+
+        self.formulae = Formulae(
+            saturation_vapour_pressure=&#34;FlatauWalkoCotton&#34;,  # TODO #1266: Bolton
+            diffusion_kinetics=&#34;JensenAndNugent2017&#34;,
+            diffusion_thermics=&#34;GrabowskiEtAl2011&#34;,
+            constants={
+                # values from appendix B
+                &#34;MAC&#34;: 0.036,
+                &#34;HAC&#34;: 0.7,
+            },
+        )
+
+        self.vertical_velocity = {
+            # Table 2 in the paper
+            &#34;Sc&#34;: lambda t: (1 if t &lt; self.t_end_of_ascent else -1) * 0.4 * si.m / si.s,
+            &#34;Cu&#34;: 2 * si.m / si.s,
+        }[cloud_type]
+
+        self.dry_radii_spectrum = {
+            # Table 1 in the paper
+            &#34;modified polluted&#34;: Sum(
+                (
+                    Lognormal(
+                        norm_factor=48 / si.cm**3, m_mode=0.029 * si.um, s_geom=1.36
+                    ),
+                    Lognormal(
+                        norm_factor=114 / si.cm**3, m_mode=0.071 * si.um, s_geom=1.57
+                    ),
+                )
+            ),
+            &#34;pristine&#34;: Sum(
+                (
+                    Lognormal(
+                        norm_factor=125 / si.cm**3, m_mode=0.011 * si.um, s_geom=1.2
+                    ),
+                    Lognormal(
+                        norm_factor=65 / si.cm**3, m_mode=0.06 * si.um, s_geom=1.7
+                    ),
+                )
+            ),
+        }[aerosol]</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin" href="fuchs_sutugin.html">PySDM.physics.diffusion_kinetics.fuchs_sutugin</a></code></dt>
+<dt id="PySDM_examples.Jensen_and_Nugent_2017.settings.Settings"><code class="flex name class">
+<span>class <span class="ident">Settings</span></span>
+<span>(</span><span>*, aerosol: str, cloud_type: str)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Fuch-Sutugin transition-regime correction as advocated for cloud modelling
-in <a href="https://doi.org/10.5194/acp-5-461-2005">Laaksonen et al. 2005</a></p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.diffusion_kinetics.grabowski_et_al_2011" href="grabowski_et_al_2011.html">PySDM.physics.diffusion_kinetics.grabowski_et_al_2011</a></code></dt>
-<dd>
-<div class="desc"><p>as in <a href="https://doi.org/10.1016/j.atmosres.2010.10.020">Grabowski et al. (2011)</a></p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.diffusion_kinetics.jensen_and_nugent_2017" href="jensen_and_nugent_2017.html">PySDM.physics.diffusion_kinetics.jensen_and_nugent_2017</a></code></dt>
-<dd>
-<div class="desc"><p>as in <a href="https://doi.org/10.1175/JAS-D-15-0370.1">Jensen and Nugent 2017</a>
-(which refers to [Grabowski et al …</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.diffusion_kinetics.lowe_et_al_2019" href="lowe_et_al_2019.html">PySDM.physics.diffusion_kinetics.lowe_et_al_2019</a></code></dt>
-<dd>
-<div class="desc"><p>as in <a href="https://doi.org/10.1038/s41467-019-12982-0">Lowe et al. 2019</a>
-uses eq. 13-14 in Pruppacher &amp; Klett 2005 with Delta v = 0
-and no corrections for …</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.diffusion_kinetics.neglect" href="neglect.html">PySDM.physics.diffusion_kinetics.neglect</a></code></dt>
-<dd>
-<div class="desc"><p>no transition-regime corrections formulation</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005" href="pruppacher_and_klett_2005.html">PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005</a></code></dt>
-<dd>
-<div class="desc"><p>as in Pruppacher and Klett 2005 (eq. 13-14)
-with reference to <a href="https://doi.org/10.1063/1.1840906">Okuyama and Zung 1967</a></p></div>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@strict
+class Settings:
+    def __init__(self, *, aerosol: str, cloud_type: str):
+        # TODO #1266 reuse these values in the Yang et al. &#39;18 example which is based on J&amp;N&#39;16
+        self.p0 = 938.5 * si.hPa
+        self.RH0 = 0.8561
+        self.T0 = 284.3 * si.K
+        self.z0 = 600 * si.m
+        self.t_end_of_ascent = 1500 * si.s if cloud_type == &#34;Sc&#34; else None
+        self.dt = 1 * si.s  # TODO #1266: not found in the paper yet
+
+        self.kappa = 1.28  # Table 1 from Petters &amp; Kreidenweis 2007
+
+        self.formulae = Formulae(
+            saturation_vapour_pressure=&#34;FlatauWalkoCotton&#34;,  # TODO #1266: Bolton
+            diffusion_kinetics=&#34;JensenAndNugent2017&#34;,
+            diffusion_thermics=&#34;GrabowskiEtAl2011&#34;,
+            constants={
+                # values from appendix B
+                &#34;MAC&#34;: 0.036,
+                &#34;HAC&#34;: 0.7,
+            },
+        )
+
+        self.vertical_velocity = {
+            # Table 2 in the paper
+            &#34;Sc&#34;: lambda t: (1 if t &lt; self.t_end_of_ascent else -1) * 0.4 * si.m / si.s,
+            &#34;Cu&#34;: 2 * si.m / si.s,
+        }[cloud_type]
+
+        self.dry_radii_spectrum = {
+            # Table 1 in the paper
+            &#34;modified polluted&#34;: Sum(
+                (
+                    Lognormal(
+                        norm_factor=48 / si.cm**3, m_mode=0.029 * si.um, s_geom=1.36
+                    ),
+                    Lognormal(
+                        norm_factor=114 / si.cm**3, m_mode=0.071 * si.um, s_geom=1.57
+                    ),
+                )
+            ),
+            &#34;pristine&#34;: Sum(
+                (
+                    Lognormal(
+                        norm_factor=125 / si.cm**3, m_mode=0.011 * si.um, s_geom=1.2
+                    ),
+                    Lognormal(
+                        norm_factor=65 / si.cm**3, m_mode=0.06 * si.um, s_geom=1.7
+                    ),
+                )
+            ),
+        }[aerosol]</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -87,17 +172,14 @@ with reference to <a href="https://doi.org/10.1063/1.1840906">Okuyama and Zung 1
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics" href="../index.html">PySDM.physics</a></code></li>
+<li><code><a title="PySDM_examples.Jensen_and_Nugent_2017" href="index.html">PySDM_examples.Jensen_and_Nugent_2017</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin" href="fuchs_sutugin.html">PySDM.physics.diffusion_kinetics.fuchs_sutugin</a></code></li>
-<li><code><a title="PySDM.physics.diffusion_kinetics.grabowski_et_al_2011" href="grabowski_et_al_2011.html">PySDM.physics.diffusion_kinetics.grabowski_et_al_2011</a></code></li>
-<li><code><a title="PySDM.physics.diffusion_kinetics.jensen_and_nugent_2017" href="jensen_and_nugent_2017.html">PySDM.physics.diffusion_kinetics.jensen_and_nugent_2017</a></code></li>
-<li><code><a title="PySDM.physics.diffusion_kinetics.lowe_et_al_2019" href="lowe_et_al_2019.html">PySDM.physics.diffusion_kinetics.lowe_et_al_2019</a></code></li>
-<li><code><a title="PySDM.physics.diffusion_kinetics.neglect" href="neglect.html">PySDM.physics.diffusion_kinetics.neglect</a></code></li>
-<li><code><a title="PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005" href="pruppacher_and_klett_2005.html">PySDM.physics.diffusion_kinetics.pruppacher_and_klett_2005</a></code></li>
+<li>
+<h4><code><a title="PySDM_examples.Jensen_and_Nugent_2017.settings.Settings" href="#PySDM_examples.Jensen_and_Nugent_2017.settings.Settings">Settings</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

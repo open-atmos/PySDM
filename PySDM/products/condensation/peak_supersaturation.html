@@ -52,6 +52,10 @@ class PeakSupersaturation(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
+
+        assert (
+            &#34;Condensation&#34; in self.particulator.dynamics
+        ), &#34;It seems the Condensation dynamic was not added when building particulator&#34;
         self.condensation = self.particulator.dynamics[&#34;Condensation&#34;]
         self.RH_max = np.full_like(self.buffer, np.nan)
 
@@ -93,6 +97,10 @@ class PeakSupersaturation(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
+
+        assert (
+            &#34;Condensation&#34; in self.particulator.dynamics
+        ), &#34;It seems the Condensation dynamic was not added when building particulator&#34;
         self.condensation = self.particulator.dynamics[&#34;Condensation&#34;]
         self.RH_max = np.full_like(self.buffer, np.nan)
 
@@ -137,6 +145,10 @@ class PeakSupersaturation(Product):
 <pre><code class="python">def register(self, builder):
     super().register(builder)
     self.particulator.observers.append(self)
+
+    assert (
+        &#34;Condensation&#34; in self.particulator.dynamics
+    ), &#34;It seems the Condensation dynamic was not added when building particulator&#34;
     self.condensation = self.particulator.dynamics[&#34;Condensation&#34;]
     self.RH_max = np.full_like(self.buffer, np.nan)</code></pre>
 </details>

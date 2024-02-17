@@ -154,7 +154,11 @@ class Trivia:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def mixing_ratio_to_specific_content(mixing_ratio):
-        return mixing_ratio / (1 + mixing_ratio)</code></pre>
+        return mixing_ratio / (1 + mixing_ratio)
+
+    @staticmethod
+    def dn_dlogr(r, dn_dr):
+        return np.log(10) * r * dn_dr</code></pre>
 </details>
 </section>
 <section>
@@ -293,7 +297,11 @@ class Trivia:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def mixing_ratio_to_specific_content(mixing_ratio):
-        return mixing_ratio / (1 + mixing_ratio)</code></pre>
+        return mixing_ratio / (1 + mixing_ratio)
+
+    @staticmethod
+    def dn_dlogr(r, dn_dr):
+        return np.log(10) * r * dn_dr</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -337,6 +345,20 @@ def area(const, radius):
 <pre><code class="python">@staticmethod
 def arrhenius(const, A, Ea, T):
     return A * np.exp(-Ea / (const.R_str * T))</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.dn_dlogr"><code class="name flex">
+<span>def <span class="ident">dn_dlogr</span></span>(<span>r, dn_dr)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def dn_dlogr(r, dn_dr):
+    return np.log(10) * r * dn_dr</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.erfinv_approx"><code class="name flex">
@@ -674,6 +696,7 @@ def within_tolerance(error_estimate, value, rtol):
 <li><code><a title="PySDM.physics.trivia.Trivia.H2pH" href="#PySDM.physics.trivia.Trivia.H2pH">H2pH</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.area" href="#PySDM.physics.trivia.Trivia.area">area</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.arrhenius" href="#PySDM.physics.trivia.Trivia.arrhenius">arrhenius</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.dn_dlogr" href="#PySDM.physics.trivia.Trivia.dn_dlogr">dn_dlogr</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.erfinv_approx" href="#PySDM.physics.trivia.Trivia.erfinv_approx">erfinv_approx</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.explicit_euler" href="#PySDM.physics.trivia.Trivia.explicit_euler">explicit_euler</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point" href="#PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point">frozen_and_above_freezing_point</a></code></li>

@@ -86,7 +86,8 @@ class DeterministicSpectralSampling(
         diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
         if diff &gt; self.error_threshold:
             raise ValueError(
-                f&#34;{100*diff}% error in total real-droplet number due to sampling&#34;
+                f&#34;{diff * 100:.3g}% error in total real-droplet number due to sampling &#34;
+                f&#34;({len(x)} samples)&#34;
             )
 
         return x, y_float
@@ -250,7 +251,8 @@ class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
         diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
         if diff &gt; self.error_threshold:
             raise ValueError(
-                f&#34;{100*diff}% error in total real-droplet number due to sampling&#34;
+                f&#34;{diff * 100:.3g}% error in total real-droplet number due to sampling &#34;
+                f&#34;({len(x)} samples)&#34;
             )
 
         return x, y_float</code></pre>
