@@ -26,7 +26,7 @@ def figure(
     colors = {"ascent": "r", "descent": "b"}
 
     _, axs = pyplot.subplot_mosaic(
-        mosaic=[["r", "S"]], width_ratios=[3, 1], sharey=True
+        mosaic=[["r", "S"]], width_ratios=[3, 1], sharey=True, tight_layout=True
     )
 
     for label, mask in masks.items():
