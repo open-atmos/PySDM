@@ -54,7 +54,7 @@ def figure(
     colors = {&#34;ascent&#34;: &#34;r&#34;, &#34;descent&#34;: &#34;b&#34;}
 
     _, axs = pyplot.subplot_mosaic(
-        mosaic=[[&#34;r&#34;, &#34;S&#34;]], width_ratios=[3, 1], sharey=True
+        mosaic=[[&#34;r&#34;, &#34;S&#34;]], width_ratios=[3, 1], sharey=True, tight_layout=True
     )
 
     for label, mask in masks.items():
@@ -138,7 +138,7 @@ def figure(
     colors = {&#34;ascent&#34;: &#34;r&#34;, &#34;descent&#34;: &#34;b&#34;}
 
     _, axs = pyplot.subplot_mosaic(
-        mosaic=[[&#34;r&#34;, &#34;S&#34;]], width_ratios=[3, 1], sharey=True
+        mosaic=[[&#34;r&#34;, &#34;S&#34;]], width_ratios=[3, 1], sharey=True, tight_layout=True
     )
 
     for label, mask in masks.items():
