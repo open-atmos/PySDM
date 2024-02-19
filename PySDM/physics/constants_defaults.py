@@ -23,6 +23,7 @@ from .constants import (  # pylint: disable=unused-import
     ONE,
     TWO,
     TWO_THIRDS,
+    ONE_HALF,
     M,
     si,
 )
@@ -330,6 +331,22 @@ diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
 diffussion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
 diffussion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
 diffussion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
+
+"""
+[Pruppacher & Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036<1255:AWTIOT>2.0.CO;2)
+"""
+PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_CONSTSMALL = 1.0 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_COEFFSMALL = 0.108 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_POWSMALL = 2 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_CONSTBIG = 0.78 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_COEFFBIG = 0.308 * si.dimensionless
+
+"""[Zografos et al. (1987)](https://doi.org/10.1016/0045-7825(87)90003-X) Table 1"""
+ZOGRAFOS_1987_COEFF_T3 = 2.5914e-15 * si.K ** (-3) * si.Pa * si.s
+ZOGRAFOS_1987_COEFF_T2 = -1.4346e-11 * si.K ** (-2) * si.Pa * si.s
+ZOGRAFOS_1987_COEFF_T1 = 5.0523e-8 / si.K * si.Pa * si.s
+ZOGRAFOS_1987_COEFF_T0 = 4.1130e-6 * si.Pa * si.s
 
 
 def compute_derived_values(c: dict):
