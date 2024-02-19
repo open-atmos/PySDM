@@ -28,17 +28,18 @@ def find_cloud_base_index(products):
 
 
 def find_max_alt_index(products):
+    print(np.argmax(products["z"]))
     return np.argmax(products["z"])
 
 
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_4.ipynb", plot=PLOT
+        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_5.ipynb", plot=PLOT
     )
 
 
-class TestFig4:
+class TestFig5:
     @staticmethod
     def test_height_range(variables):
         """note: in the plot the y-axis has cloud-base height subtracted, here not"""
@@ -63,10 +64,10 @@ class TestFig4:
     def test_supersaturation_maximum(variables):
         supersaturation = np.asarray(variables["output"]["products"]["S_max"])
         assert signal.argrelextrema(supersaturation, np.greater)[0].shape[0] == 1
-        assert 0.35 * PER_CENT < np.nanmax(supersaturation) < 0.5 * PER_CENT
+        assert 0.35 * PER_CENT < np.nanmax(supersaturation) < 0.6 * PER_CENT
 
     @staticmethod
-    @pytest.mark.parametrize("drop_id", range(int(0.777 * N_SD), N_SD))
+    @pytest.mark.parametrize("drop_id", range(int(0.8 * N_SD), N_SD))
     def test_radii(variables, drop_id):
         """checks that the largest aerosol activate and still grow upon descent"""
         # arrange
@@ -86,6 +87,6 @@ class TestFig4:
     def test_maximal_size_of_largest_droplet(variables):
         np.testing.assert_approx_equal(
             max(variables["output"]["attributes"]["radius"][-1]),
-            64 * si.um,
+            62 * si.um,
             significant=2,
         )

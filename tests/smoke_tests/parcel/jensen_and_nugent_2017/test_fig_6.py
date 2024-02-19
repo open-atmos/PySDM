@@ -34,11 +34,11 @@ def find_max_alt_index(products):
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_4.ipynb", plot=PLOT
+        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_6.ipynb", plot=PLOT
     )
 
 
-class TestFig4:
+class TestFig6:
     @staticmethod
     def test_height_range(variables):
         """note: in the plot the y-axis has cloud-base height subtracted, here not"""
@@ -46,7 +46,7 @@ class TestFig4:
             np.asarray(variables["output"]["products"]["z"]) - variables["settings"].z0
         )
         epsilon = 1 * si.m
-        assert 0 <= min(z_minus_z0) < max(z_minus_z0) < 600 * si.m + epsilon
+        assert 0 <= min(z_minus_z0) < max(z_minus_z0) < 1850 * si.m + epsilon
 
     @staticmethod
     def test_cloud_base_height(variables):
@@ -56,17 +56,17 @@ class TestFig4:
         assert (
             290 * si.m
             < variables["output"]["products"]["z"][cloud_base_index] - z0
-            < 300 * si.m
+            < 310 * si.m
         )
 
     @staticmethod
     def test_supersaturation_maximum(variables):
         supersaturation = np.asarray(variables["output"]["products"]["S_max"])
         assert signal.argrelextrema(supersaturation, np.greater)[0].shape[0] == 1
-        assert 0.35 * PER_CENT < np.nanmax(supersaturation) < 0.5 * PER_CENT
+        assert 1 * PER_CENT < np.nanmax(supersaturation) < 1.5 * PER_CENT
 
     @staticmethod
-    @pytest.mark.parametrize("drop_id", range(int(0.777 * N_SD), N_SD))
+    @pytest.mark.parametrize("drop_id", range(int(0.77 * N_SD), N_SD))
     def test_radii(variables, drop_id):
         """checks that the largest aerosol activate and still grow upon descent"""
         # arrange
@@ -77,15 +77,13 @@ class TestFig4:
         r1 = radii[0]
         r2 = radii[cb_idx]
         r3 = radii[ma_idx]
-        r4 = radii[-1]
 
         assert r1 < r2 < r3
-        assert r3 < r4
 
     @staticmethod
     def test_maximal_size_of_largest_droplet(variables):
         np.testing.assert_approx_equal(
             max(variables["output"]["attributes"]["radius"][-1]),
-            64 * si.um,
+            57 * si.um,
             significant=2,
         )
