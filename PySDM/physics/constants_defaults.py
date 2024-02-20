@@ -342,3 +342,13 @@ def compute_derived_values(c: dict):
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
+
+
+B80W_G0 = -2.9912729e3 * si.hPa
+B80W_G1 = -6.0170128e3 * si.hPa / si.K
+B80W_G2 = 1.887643854e1 * si.hPa / si.K**2
+B80W_G3 = -2.8354721e-2 * si.hPa / si.K**3
+B80W_G4 = 1.7838301e-5 * si.hPa / si.K**4
+B80W_G5 = -8.4150417e-10 * si.hPa / si.K**5
+B80W_G6 = 4.4412543e-13 * si.hPa / si.K**6
+B80W_G7 = 2.858487 * si.hPa / si.K**7

@@ -13,9 +13,13 @@ from PySDM.physics.constants import PER_CENT
 from PySDM.physics import si
 
 PLOT = False
+N_SD = Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN + np.count_nonzero(
+    Jensen_and_Nugent_2017.table_3.NA
+)
 
 
 def find_cloud_base_index(products):
+    cloud_base_index = -1
     for index, value in enumerate(products["S_max"]):
         if value > 0:
             cloud_base_index = index
@@ -24,20 +28,21 @@ def find_cloud_base_index(products):
 
 
 def find_max_alt_index(products):
+    print(np.argmax(products["z"]))
     return np.argmax(products["z"])
 
 
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_3.ipynb", plot=PLOT
+        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_5.ipynb", plot=PLOT
     )
 
 
-class TestFig3:
+class TestFig5:
     @staticmethod
     def test_height_range(variables):
-        """note: in the plot the y axis has cloud-base height subtracted, here not"""
+        """note: in the plot the y-axis has cloud-base height subtracted, here not"""
         z_minus_z0 = (
             np.asarray(variables["output"]["products"]["z"]) - variables["settings"].z0
         )
@@ -46,14 +51,6 @@ class TestFig3:
 
     @staticmethod
     def test_cloud_base_height(variables):
-        """|------------------> integration
-           0         z0           CB
-        ---|----------|------------|-------------> z
-                      ..............**********
-                      subsaturation  supersaturation
-        note: in the paper, the CB is defined as altitude where
-              maximal supersaturation is attained
-        """
         cloud_base_index = find_cloud_base_index(variables["output"]["products"])
 
         z0 = variables["settings"].z0
@@ -67,18 +64,12 @@ class TestFig3:
     def test_supersaturation_maximum(variables):
         supersaturation = np.asarray(variables["output"]["products"]["S_max"])
         assert signal.argrelextrema(supersaturation, np.greater)[0].shape[0] == 1
-        assert 0.35 * PER_CENT < np.nanmax(supersaturation) < 0.5 * PER_CENT
+        assert 0.35 * PER_CENT < np.nanmax(supersaturation) < 0.6 * PER_CENT
 
     @staticmethod
-    @pytest.mark.parametrize(
-        "drop_id",
-        range(
-            Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN // 4,
-            Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN,
-        ),
-    )
+    @pytest.mark.parametrize("drop_id", range(int(0.8 * N_SD), N_SD))
     def test_radii(variables, drop_id):
-        """checks that 75% of the largest aerosol activate and shrink upon descent"""
+        """checks that the largest aerosol activate and still grow upon descent"""
         # arrange
         cb_idx = find_cloud_base_index(variables["output"]["products"])
         ma_idx = find_max_alt_index(variables["output"]["products"])
@@ -90,12 +81,12 @@ class TestFig3:
         r4 = radii[-1]
 
         assert r1 < r2 < r3
-        assert r3 > r4
+        assert r3 < r4
 
     @staticmethod
     def test_maximal_size_of_largest_droplet(variables):
         np.testing.assert_approx_equal(
             max(variables["output"]["attributes"]["radius"][-1]),
-            12 * si.um,
+            62 * si.um,
             significant=2,
         )

@@ -1,15 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-
 from pathlib import Path
-
 import numpy as np
 import pytest
 from scipy import signal
-
 from PySDM_examples.utils import notebook_vars
 from PySDM_examples import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
-
 from PySDM.physics import si
 
 PLOT = False
@@ -51,7 +47,6 @@ class TestFig4:
     @staticmethod
     def test_cloud_base_height(variables):
         cloud_base_index = find_cloud_base_index(variables["output"]["products"])
-
         z0 = variables["settings"].z0
         assert (
             290 * si.m
@@ -72,7 +67,6 @@ class TestFig4:
         # arrange
         cb_idx = find_cloud_base_index(variables["output"]["products"])
         ma_idx = find_max_alt_index(variables["output"]["products"])
-
         radii = variables["output"]["attributes"]["radius"][drop_id]
         r1 = radii[0]
         r2 = radii[cb_idx]
@@ -81,3 +75,11 @@ class TestFig4:
 
         assert r1 < r2 < r3
         assert r3 < r4
+
+    @staticmethod
+    def test_maximal_size_of_largest_droplet(variables):
+        np.testing.assert_approx_equal(
+            max(variables["output"]["attributes"]["radius"][-1]),
+            64 * si.um,
+            significant=2,
+        )
