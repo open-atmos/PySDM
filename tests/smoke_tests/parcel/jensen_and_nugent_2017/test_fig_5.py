@@ -9,27 +9,13 @@ from scipy import signal
 from PySDM_examples.utils import notebook_vars
 from PySDM_examples import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
-
 from PySDM.physics import si
+from .test_fig_4 import find_cloud_base_index, find_max_alt_index
 
 PLOT = False
 N_SD = Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN + np.count_nonzero(
     Jensen_and_Nugent_2017.table_3.NA
 )
-
-
-def find_cloud_base_index(products):
-    cloud_base_index = -1
-    for index, value in enumerate(products["S_max"]):
-        if value > 0:
-            cloud_base_index = index
-            break
-    return cloud_base_index
-
-
-def find_max_alt_index(products):
-    print(np.argmax(products["z"]))
-    return np.argmax(products["z"])
 
 
 @pytest.fixture(scope="session", name="variables")
