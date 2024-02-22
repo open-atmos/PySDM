@@ -22,3 +22,7 @@ class Bolton1980:
             + ((T**4) * const.B80W_G6)
             + (np.log(T) * const.B80W_G7)
         )
+
+    @staticmethod
+    def ice_Celsius(const, T):  # pylint: disable=unused-argument
+        return -1
