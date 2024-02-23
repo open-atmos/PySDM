@@ -14,6 +14,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
         self.dimensionless = 1.0
         for prefix in ("nano", "micro", "milli", "centi", "", "hecto", "kilo"):
             for unit in (
+                "bar",
                 "metre",
                 "gram",
                 "hertz",
@@ -35,6 +36,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
 
         for prefix in ("n", "u", "m", "c", "", "h", "k"):
             for unit in (
+                "b",
                 "m",
                 "g",
                 "Hz",
