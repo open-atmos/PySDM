@@ -26,7 +26,10 @@ class IndexMethods(ThrustRTCBackendMethods):
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def shuffle_global(idx, length, u01):
+    def shuffle_global(idx, length, u01, cutoff=None):
+        if cutoff is not None:
+            raise NotImplementedError()
+
         # WARNING: ineffective implementation
 
         # TODO #328 : Thrust modifies key array, conflicts with rand_reuse logic

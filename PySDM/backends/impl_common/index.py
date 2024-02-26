@@ -38,11 +38,19 @@ def make_Index(backend):
         def sort_by_key(self, keys):
             backend.sort_by_key(self, keys)
 
-        def shuffle(self, temporary, parts=None):
+        def shuffle(self, temporary, parts=None, merge_shuffle=False):
             if parts is None:
-                backend.shuffle_global(
-                    idx=self.data, length=self.length, u01=temporary.data
-                )
+                if merge_shuffle:
+                    backend.shuffle_global(
+                        idx=self.data,
+                        length=self.length,
+                        u01=temporary.data,
+                        cutoff=0x100000,
+                    )
+                else:
+                    backend.shuffle_global(
+                        idx=self.data, length=self.length, u01=temporary.data
+                    )
             else:
                 backend.shuffle_local(
                     idx=self.data, u01=temporary.data, cell_start=parts.data

@@ -1,7 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
+from matplotlib import pyplot
+from scipy import stats
 
+from PySDM import Formulae
 from PySDM.backends import CPU, GPU, ThrustRTC
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
@@ -17,6 +20,16 @@ def make_indexed_storage(backend, iterable, idx=None):
         result = make_IndexedStorage(backend).indexed(idx, index)
     else:
         result = index
+    return result
+
+
+def calculate_permutation_index(permutation, length):
+    result = 0
+    for i in range(length):
+        result = result * (length - i)
+        for j in range(i + 1, length):
+            if permutation[i] > permutation[j]:
+                result += 1
     return result
 
 
@@ -166,7 +179,7 @@ class TestParticleAttributes:
         sut.permutation(u01, local=False)
 
         # Assert
-        expected = np.array([1, 3, 5, 7, 6, 0, 4, 2])
+        expected = np.array([5, 3, 0, 7, 6, 1, 4, 2])
         np.testing.assert_array_equal(sut._ParticleAttributes__idx, expected)
         assert not sut._ParticleAttributes__sorted
 
@@ -280,3 +293,65 @@ class TestParticleAttributes:
         np.testing.assert_array_equal(
             sut._ParticleAttributes__idx.to_ndarray(), expected
         )
+
+    @staticmethod
+    @pytest.mark.parametrize("seed", (1, 2, 3))
+    # pylint: disable=redefined-outer-name
+    def test_permutation_global_uniform_distribution(
+        seed, backend_class=CPU, plot=False
+    ):
+        n_sd = 4
+        possible_permutations_num = np.math.factorial(n_sd)
+        coverage = 1000
+
+        random_numbers = np.linspace(
+            0.0, 1.0, n_sd * possible_permutations_num * coverage
+        )
+        np.random.seed(seed)
+        np.random.shuffle(random_numbers)
+
+        # Arrange
+        particulator = DummyParticulator(CPU, n_sd=n_sd, formulae=Formulae(seed=seed))
+
+        sut = ParticleAttributesFactory.empty_particles(particulator, n_sd)
+        idx_length = len(sut._ParticleAttributes__idx)
+        sut._ParticleAttributes__tmp_idx = make_indexed_storage(
+            particulator.backend, [0] * idx_length
+        )
+        sut._ParticleAttributes__sorted = True
+        sut._ParticleAttributes__n_sd = particulator.n_sd
+
+        # Act
+        permutation_ids = np.zeros((possible_permutations_num * coverage,))
+
+        for i in range(possible_permutations_num * coverage):
+            u01 = make_indexed_storage(
+                particulator.backend, random_numbers[i * n_sd : (i + 1) * n_sd]
+            )
+            sut.permutation(u01, local=False)
+            permutation_ids[i] = calculate_permutation_index(
+                sut._ParticleAttributes__idx, idx_length
+            )
+
+        # Plot
+        counts, _ = np.histogram(permutation_ids, bins=possible_permutations_num)
+        _, uniformity = stats.chisquare(counts)
+
+        avg = np.mean(counts)
+        std = np.std(counts)
+
+        pyplot.plot(counts, marker=".")
+        pyplot.xlabel("permutation id")
+        pyplot.ylabel("occurrence count")
+        pyplot.xlim(0, possible_permutations_num)
+        pyplot.axhline(coverage, color="black", label="coverage")
+        pyplot.axhline(avg, color="green", label="mean +/- std")
+        for offset in (-std, +std):
+            pyplot.axhline(avg + offset, color="green", linestyle="--")
+        pyplot.legend()
+        if plot:
+            pyplot.show()
+
+        # Assert
+        assert abs(avg - coverage) / coverage < 1e-6
+        assert uniformity > 0.9

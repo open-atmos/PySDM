@@ -234,7 +234,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
     def toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
         self, is_first_in_pair, u01
     ):
-        self.particulator.attributes.permutation(u01, self.croupier == "local")
+        self.particulator.attributes.permutation(
+            u01, self.croupier == "local", merge_shuffle=False
+        )
         is_first_in_pair.update(
             self.particulator.attributes.cell_start,
             self.particulator.attributes.cell_idx,
