@@ -344,16 +344,18 @@ def compute_derived_values(c: dict):
     c["H_u"] = c["M"] / c["p_STP"]
 
 
-W76W_G0 = -2.9912729e3
+W76W_G0 = -2.9912729e3 * si.K**2
 W76W_G1 = -6.0170128e3 * si.K
-W76W_G2 = 1.887643854e1 * si.K**2
-W76W_G3 = -2.8354721e-2 * si.K**3
-W76W_G4 = 1.7838301e-5 * si.K**4
-W76W_G5 = -8.4150417e-10 * si.K**5
-W76W_G6 = 4.4412543e-13 * si.K**6
+W76W_G2 = 1.887643854e1
+W76W_G3 = -2.8354721e-2 * si.K**-1
+W76W_G4 = 1.7838301e-5 * si.K**-2
+W76W_G5 = -8.4150417e-10 * si.K**-3
+W76W_G6 = 4.4412543e-13 * si.K**-4
 W76W_G7 = 2.858487
-W76W_G8 = 1 * si.mb
+W76W_G8 = 1 * si.Pa
 
-B80W_G0 = 6.112
-B80W_G1 = 17.67
-B80W_G2 = 243.5
+B80W_G0 = 6.112 * si.hPa
+B80W_G1 = 17.67 * si.dimensionless
+B80W_G2 = 243.5 * si.K
+
+one_kelvin = 1 * si.K

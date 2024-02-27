@@ -49,7 +49,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
                 "Pa",
                 "l",
                 "h",
-                "bar",
+                "bar",  # note: "b" is barn !!!
                 "N",
                 "W",
             ):
