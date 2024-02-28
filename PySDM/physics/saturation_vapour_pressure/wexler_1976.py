@@ -1,3 +1,7 @@
+"""
+[Wexler 1976](https://nvlpubs.nist.gov/nistpubs/jres/80A/jresv80An5-6p775_A1b.pdf)
+"""
+
 import numpy as np
 
 
