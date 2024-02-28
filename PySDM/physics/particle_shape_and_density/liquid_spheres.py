@@ -1,5 +1,6 @@
 """
 spherical particles with constant density of water
+Reynolds number calculation assumes length scale is particle diameter
 """
 
 import numpy as np
@@ -24,3 +25,15 @@ class LiquidSpheres:
     @staticmethod
     def radius_to_mass(const, radius):
         return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)
+
+    @staticmethod
+    def reynolds_number(
+        const, radius, velocity_wrt_air_motion, air_dynamic_viscosity, air_density
+    ):
+        return (
+            const.TWO
+            * radius
+            * velocity_wrt_air_motion
+            * air_density
+            / air_dynamic_viscosity
+        )

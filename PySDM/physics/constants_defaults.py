@@ -135,11 +135,11 @@ T_tri = 273.16 * si.kelvin
 l_tri = 2.5e6 * si.joule / si.kilogram
 
 # Seinfeld and Pandis, Appendix 16.1, 16A.2
-# default constant values according to Lowe et al (2019), from ICPM code
+# default constant values according to Lowe et al. (2019), from ICPM code
 l_l19_a = 0.167 * si.dimensionless
 l_l19_b = 3.65e-4 / si.kelvin
 
-# Thermal diffusivity constants from Lowe et al (2019)
+# Thermal diffusivity constants from Lowe et al. (2019)
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
@@ -147,7 +147,7 @@ k_l19_c = 0.017 / si.kelvin
 # Delta v for diffusivity in Pruppacher & Klett eq. 13-14
 dv_pk05 = 0.0 * si.metres
 
-# Seinfeld & Pandis eq. 15.65
+# Seinfeld & Pandis eq. 15.65 (Hall & Pruppacher 1976)
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
 d_l19_b = 1.94
 
@@ -347,6 +347,12 @@ ZOGRAFOS_1987_COEFF_T3 = 2.5914e-15 * si.K ** (-3) * si.Pa * si.s
 ZOGRAFOS_1987_COEFF_T2 = -1.4346e-11 * si.K ** (-2) * si.Pa * si.s
 ZOGRAFOS_1987_COEFF_T1 = 5.0523e-8 / si.K * si.Pa * si.s
 ZOGRAFOS_1987_COEFF_T0 = 4.1130e-6 * si.Pa * si.s
+
+
+""" Froessling 1938 coefficients as given on page 61 in
+    [Squires 1952](https://doi.org/10.1071/CH9520059) """
+FROESSLING_1938_A = 1
+FROESSLING_1938_B = 0.276
 
 
 def compute_derived_values(c: dict):

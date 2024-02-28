@@ -38,3 +38,23 @@ class TestParticleShapeAndDensity:
 
             # Assert
             assert mass.check("[mass]")
+
+    @staticmethod
+    @pytest.mark.parametrize("variant", ("LiquidSpheres",))
+    def test_reynolds_number(variant):
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae(particle_shape_and_density=variant)
+            si = constants_defaults.si
+            sut = formulae.particle_shape_and_density.reynolds_number
+
+            # Act
+            re = sut(
+                radius=10 * si.um,
+                air_dynamic_viscosity=20 * si.uPa * si.s,
+                velocity_wrt_air_motion=1 * si.cm / si.s,
+                air_density=1 * si.kg / si.m**3,
+            )
+
+            # Assert
+            assert re.check("[]")

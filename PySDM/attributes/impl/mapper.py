@@ -29,6 +29,7 @@ from PySDM.attributes.physics import (
     Volume,
     WaterMass,
     WetToCriticalVolumeRatio,
+    ReynoldsNumber,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.attributes.physics.dry_volume import (
@@ -116,6 +117,7 @@ attributes = {
     "moles_1H": lambda _, __: Moles1H,
     "moles_16O": lambda _, __: Moles16O,
     "moles light water": lambda _, __: MolesLightWater,
+    "Reynolds number": lambda _, __: ReynoldsNumber,
 }
 
 
