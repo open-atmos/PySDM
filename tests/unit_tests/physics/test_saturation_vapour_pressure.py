@@ -12,7 +12,8 @@ from PySDM.physics import saturation_vapour_pressure, si
 
 
 class TestSaturationVapourPressure:
-    def test_saturation_vapour_pressure(plot=True):
+    @staticmethod
+    def test_saturation_vapour_pressure(plot=False):
         # Arrange
         choices = _choices(saturation_vapour_pressure)
         formulae = {k: Formulae(saturation_vapour_pressure=k) for k in choices}
