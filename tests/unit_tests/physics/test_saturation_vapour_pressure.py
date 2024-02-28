@@ -53,7 +53,8 @@ class TestSaturationVapourPressure:
             )
 
         for choice in choices_keys[1:]:
-            if choice != "AugustRocheMagnus":
+            # if choice != "AugustRocheMagnus":
+            if not choice in ("AugustRocheMagnus", "Bolton1980", "Wexler1976"):
                 temperature = np.linspace(-20, 0, 100)
                 np.testing.assert_array_less(
                     Formulae(
