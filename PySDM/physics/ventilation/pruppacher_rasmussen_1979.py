@@ -22,14 +22,10 @@ class PruppacherAndRasmussen1979:  # pylint: disable=too-few-public-methods
             + const.PRUPPACHER_RASMUSSEN_1979_COEFFSMALL
             * np.power(sqrt_re_times_cbrt_sc, const.PRUPPACHER_RASMUSSEN_1979_POWSMALL)
         ) * np.maximum(
-            0, const.PRUPPACHER_RASMUSSEN_1979_XTHRES - sqrt_re_times_cbrt_sc
-        ) / (
-            const.PRUPPACHER_RASMUSSEN_1979_XTHRES - sqrt_re_times_cbrt_sc
+            0, np.sign(const.PRUPPACHER_RASMUSSEN_1979_XTHRES - sqrt_re_times_cbrt_sc)
         ) + (
             const.PRUPPACHER_RASMUSSEN_1979_CONSTBIG
             + const.PRUPPACHER_RASMUSSEN_1979_COEFFBIG * sqrt_re_times_cbrt_sc
         ) * np.maximum(
-            0, sqrt_re_times_cbrt_sc - const.PRUPPACHER_RASMUSSEN_1979_XTHRES
-        ) / (
-            sqrt_re_times_cbrt_sc - const.PRUPPACHER_RASMUSSEN_1979_XTHRES
+            0, np.sign(sqrt_re_times_cbrt_sc - const.PRUPPACHER_RASMUSSEN_1979_XTHRES)
         )

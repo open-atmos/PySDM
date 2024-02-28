@@ -90,3 +90,17 @@ class TestVentilationCoefficient:
             if paper == reference:
                 continue
             assert (abs(1 - coeff / coeffs[reference]) < 0.15).all()
+
+    @staticmethod
+    def test_pruppacher_and_rasmussen_1979_finite_value_at_threshold():
+        # arrange
+        formulae = Formulae(ventilation="PruppacherAndRasmussen1979")
+        sut = formulae.ventilation.ventilation_coefficient
+
+        # act
+        f = sut(
+            sqrt_re_times_cbrt_sc=constants_defaults.PRUPPACHER_RASMUSSEN_1979_XTHRES
+        )
+
+        # assert
+        assert np.isfinite(f)
