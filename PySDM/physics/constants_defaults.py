@@ -323,7 +323,7 @@ asymmetry_g = 0.85  # forward scattering from cloud droplets
 
 """ TODO #1266 """
 diffussion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
-diffussion_thermics_D_G11_B = 0.15 / si.K
+diffussion_thermics_D_G11_B = 0.015 / si.K
 diffussion_thermics_D_G11_C = -1.9
 
 diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4

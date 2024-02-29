@@ -6,4 +6,3 @@ from .fuchs_sutugin import FuchsSutugin
 from .lowe_et_al_2019 import LoweEtAl2019
 from .neglect import Neglect
 from .grabowski_et_al_2011 import GrabowskiEtAl2011
-from .jensen_and_nugent_2017 import JensenAndNugent2017
