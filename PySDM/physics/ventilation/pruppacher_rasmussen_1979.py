@@ -17,15 +17,17 @@ class PruppacherAndRasmussen1979:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def ventilation_coefficient(const, sqrt_re_times_cbrt_sc):
-        return (
-            const.PRUPPACHER_RASMUSSEN_1979_CONSTSMALL
-            + const.PRUPPACHER_RASMUSSEN_1979_COEFFSMALL
-            * np.power(sqrt_re_times_cbrt_sc, const.PRUPPACHER_RASMUSSEN_1979_POWSMALL)
-        ) * np.maximum(
-            0, np.sign(const.PRUPPACHER_RASMUSSEN_1979_XTHRES - sqrt_re_times_cbrt_sc)
-        ) + (
-            const.PRUPPACHER_RASMUSSEN_1979_CONSTBIG
-            + const.PRUPPACHER_RASMUSSEN_1979_COEFFBIG * sqrt_re_times_cbrt_sc
-        ) * np.maximum(
-            0, np.sign(sqrt_re_times_cbrt_sc - const.PRUPPACHER_RASMUSSEN_1979_XTHRES)
+        return np.where(
+            sqrt_re_times_cbrt_sc < const.PRUPPACHER_RASMUSSEN_1979_XTHRES,
+            (
+                const.PRUPPACHER_RASMUSSEN_1979_CONSTSMALL
+                + const.PRUPPACHER_RASMUSSEN_1979_COEFFSMALL
+                * np.power(
+                    sqrt_re_times_cbrt_sc, const.PRUPPACHER_RASMUSSEN_1979_POWSMALL
+                )
+            ),
+            (
+                const.PRUPPACHER_RASMUSSEN_1979_CONSTBIG
+                + const.PRUPPACHER_RASMUSSEN_1979_COEFFBIG * sqrt_re_times_cbrt_sc
+            ),
         )
