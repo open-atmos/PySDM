@@ -30,7 +30,8 @@ def find_max_alt_index(products):
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_4.ipynb", plot=PLOT
+        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_4_and_7.ipynb",
+        plot=PLOT,
     )
 
 
