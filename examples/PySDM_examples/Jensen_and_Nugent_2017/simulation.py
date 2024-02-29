@@ -40,7 +40,7 @@ class Simulation(BasicSimulation):
             environment=env,
         )
 
-        additional_derived_attributes = ("radius",)
+        additional_derived_attributes = ("radius", "equilibrium supersaturation")
         for additional_derived_attribute in additional_derived_attributes:
             builder.request_attribute(additional_derived_attribute)
 

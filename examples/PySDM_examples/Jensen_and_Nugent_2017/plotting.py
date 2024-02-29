@@ -3,6 +3,16 @@ import numpy as np
 from PySDM.physics import si, in_unit
 from PySDM.physics.constants import PER_CENT
 
+CLOUD_BASE = 300 * si.m
+
+
+def find_drop_ids_by_dry_size(plot_drops_with_dry_radii_um, simulation_r_dry):
+    drop_ids = []
+    for drop_size_um in plot_drops_with_dry_radii_um:
+        drop_id = (np.abs(simulation_r_dry - drop_size_um * si.um)).argmin()
+        drop_ids.append(drop_id)
+    return drop_ids
+
 
 def figure(
     *,
@@ -12,9 +22,9 @@ def figure(
     plot_drops_with_dry_radii_um,
     xlim_r_um: tuple,
     xlim_S_percent: tuple,
+    return_masks: bool = False,
 ):
-    cloud_base = 300 * si.m
-    y_axis = np.asarray(output["products"]["z"]) - settings.z0 - cloud_base
+    y_axis = np.asarray(output["products"]["z"]) - settings.z0 - CLOUD_BASE
 
     masks = {}
     if settings.t_end_of_ascent is None:
@@ -40,10 +50,10 @@ def figure(
     axs["S"].set_xlabel("S (%)")
     axs["S"].legend()
 
-    drop_ids = []
-    for drop_size_um in plot_drops_with_dry_radii_um:
-        drop_id = (np.abs(simulation.r_dry - drop_size_um * si.um)).argmin()
-        drop_ids.append(drop_id)
+    drop_ids = find_drop_ids_by_dry_size(
+        plot_drops_with_dry_radii_um=plot_drops_with_dry_radii_um,
+        simulation_r_dry=simulation.r_dry,
+    )
 
     for (
         drop_id
@@ -70,3 +80,6 @@ def figure(
 
     for ax in axs.values():
         ax.grid()
+
+    if return_masks:
+        return masks
