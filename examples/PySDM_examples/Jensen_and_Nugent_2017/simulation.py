@@ -7,7 +7,8 @@ from PySDM.physics import si
 from PySDM.backends import CPU
 from PySDM.products import PeakSupersaturation, ParcelDisplacement, Time
 from PySDM.environments import Parcel
-from PySDM.dynamics import Condensation, AmbientThermodynamics
+from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence
+from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import Logarithmic
 
 # note: 100 in caption of Table 1
@@ -15,7 +16,12 @@ N_SD_NON_GCCN = 100
 
 
 class Simulation(BasicSimulation):
-    def __init__(self, settings: Settings, gccn: bool = False):
+    def __init__(
+        self,
+        settings: Settings,
+        gccn: bool = False,
+        gravitational_coalsecence: bool = False,
+    ):
         const = settings.formulae.constants
         pvs_Celsius = settings.formulae.saturation_vapour_pressure.pvs_Celsius
         initial_water_vapour_mixing_ratio = const.eps / (
@@ -48,6 +54,8 @@ class Simulation(BasicSimulation):
             AmbientThermodynamics()
         )  # TODO #1266: order matters here, but error message is not saying it!
         builder.add_dynamic(Condensation())
+        if gravitational_coalsecence:
+            builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
 
         self.r_dry, n_in_unit_volume = Logarithmic(
             spectrum=settings.dry_radii_spectrum,
