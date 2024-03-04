@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pystrict import strict
 from PySDM import Formulae
 from PySDM.physics import si
@@ -6,14 +8,14 @@ from PySDM.initialisation.spectra import Lognormal, Sum
 
 @strict
 class Settings:
-    def __init__(self, *, aerosol: str, cloud_type: str):
+    def __init__(self, *, aerosol: str, cloud_type: str, dt: Optional[float] = None):
         # TODO #1266 reuse these values in the Yang et al. '18 example which is based on J&N'16
         self.p0 = 938.5 * si.hPa
         self.RH0 = 0.8561
         self.T0 = 284.3 * si.K
         self.z0 = 600 * si.m
         self.t_end_of_ascent = 1500 * si.s if cloud_type == "Sc" else None
-        self.dt = 1 * si.s  # TODO #1266: not found in the paper yet
+        self.dt = dt or 1 * si.s  # TODO #1266: not found in the paper yet
 
         self.kappa = 1.28  # Table 1 from Petters & Kreidenweis 2007
 

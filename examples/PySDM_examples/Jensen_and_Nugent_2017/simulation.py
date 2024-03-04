@@ -101,7 +101,9 @@ class Simulation(BasicSimulation):
     def run(
         self, *, n_steps: int = 2250, steps_per_output_interval: int = 10
     ):  # TODO #1266: essentially copied from G & P 2023
-        output_products = super()._run(n_steps, steps_per_output_interval)
+        output_products = super()._run(
+            nt=n_steps, steps_per_output_interval=steps_per_output_interval
+        )
         return {"products": output_products, "attributes": self.output_attributes}
 
     def _save(self, output):  # TODO #1266: copied from G&P 2023
