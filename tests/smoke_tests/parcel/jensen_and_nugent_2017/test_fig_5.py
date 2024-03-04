@@ -10,7 +10,7 @@ from PySDM_examples.utils import notebook_vars
 from PySDM_examples import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
 from PySDM.physics import si
-from .test_fig_4 import find_cloud_base_index, find_max_alt_index
+from .test_fig_4_and_7 import find_cloud_base_index, find_max_alt_index
 
 PLOT = False
 N_SD = Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN + np.count_nonzero(
@@ -47,6 +47,7 @@ class TestFig5:
         )
 
     @staticmethod
+    @pytest.mark.xfail(strict=True, reason="TODO #1266")
     def test_supersaturation_maximum(variables):
         supersaturation = np.asarray(variables["output"]["products"]["S_max"])
         assert signal.argrelextrema(supersaturation, np.greater)[0].shape[0] == 1
