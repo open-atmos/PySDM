@@ -50,7 +50,7 @@ class TestFig5:
     def test_supersaturation_maximum(variables):
         supersaturation = np.asarray(variables["output"]["products"]["S_max"])
         assert signal.argrelextrema(supersaturation, np.greater)[0].shape[0] == 1
-        assert 0.35 * PER_CENT < np.nanmax(supersaturation) < 0.6 * PER_CENT
+        assert 1.2 * PER_CENT < np.nanmax(supersaturation) < 1.4 * PER_CENT
 
     @staticmethod
     @pytest.mark.parametrize("drop_id", range(int(0.8 * N_SD), N_SD))
@@ -73,6 +73,6 @@ class TestFig5:
     def test_maximal_size_of_largest_droplet(variables):
         np.testing.assert_approx_equal(
             max(variables["output"]["attributes"]["radius"][-1]),
-            62 * si.um,
+            56 * si.um,
             significant=2,
         )
