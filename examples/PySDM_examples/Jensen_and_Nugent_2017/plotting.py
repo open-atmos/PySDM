@@ -83,3 +83,4 @@ def figure(
 
     if return_masks:
         return masks
+    return None

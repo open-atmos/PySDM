@@ -9,7 +9,7 @@ from PySDM.physics.constants import PER_CENT
 from PySDM.physics import si
 from .test_fig_3 import find_cloud_base_index, find_max_alt_index
 
-PLOT = True
+PLOT = False
 N_SD = Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN + np.count_nonzero(
     Jensen_and_Nugent_2017.table_3.NA
 )
