@@ -7,12 +7,12 @@ from PySDM_examples.utils import notebook_vars
 from PySDM_examples import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
 from PySDM.physics import si
+from .test_fig_3 import find_cloud_base_index, find_max_alt_index
 
 PLOT = True
 N_SD = Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN + np.count_nonzero(
     Jensen_and_Nugent_2017.table_3.NA
 )
-from .test_fig_3 import find_cloud_base_index, find_max_alt_index
 
 
 @pytest.fixture(scope="session", name="variables")
@@ -93,36 +93,51 @@ class TestFig4And7:
 
         @staticmethod
         def test_initial_size_of_largest_droplet(variables):
-            assert (
-                18 * si.um
-                < min(variables["output"]["attributes"]["radius"][-1])
-                < 20 * si.um,
+            np.testing.assert_approx_equal(
+                min(variables["output"]["attributes"]["radius"][-1]),
+                19 * si.um,
+                significant=2,
             )
 
     class TestFig7:
         @staticmethod
         @pytest.mark.parametrize(
-            "mask_label, var, dry_radius_um, min, max",
+            "mask_label,dry_radius_um, min_value, max_value",
             (
-                ("ascent", "SS_eq", 0.1, 0, 0.1 * PER_CENT),
-                ("ascent", "SS_eq", 2, -0.75 * PER_CENT, 0),
-                ("ascent", "SS_eq", 9, -2 * PER_CENT, -0.6 * PER_CENT),
-                ("descent", "SS_eq", 0.1, 0, 0.1 * PER_CENT),
-                ("descent", "SS_eq", 2, -0.75 * PER_CENT, 0),
-                ("descent", "SS_eq", 9, -1 * PER_CENT, -0.25 * PER_CENT),
-                ("ascent", "SS_ef", 0.1, 0, 0.5 * PER_CENT),
-                ("ascent", "SS_ef", 2, 0, 1 * PER_CENT),
-                ("ascent", "SS_ef", 9, 0.75 * PER_CENT, 2.5 * PER_CENT),
-                ("descent", "SS_ef", 0.1, -0.2 * PER_CENT, 0.1 * PER_CENT),
-                ("descent", "SS_ef", 2, -0.5 * PER_CENT, 0.25 * PER_CENT),
-                ("descent", "SS_ef", 9, 0.3 * PER_CENT, 0.8 * PER_CENT),
+                ("ascent", 0.1, 0, 0.1 * PER_CENT),
+                ("ascent", 2, -0.75 * PER_CENT, 0),
+                ("ascent", 9, -2 * PER_CENT, -0.6 * PER_CENT),
+                ("descent", 0.1, 0, 0.1 * PER_CENT),
+                ("descent", 2, -0.75 * PER_CENT, 0),
+                ("descent", 9, -1 * PER_CENT, -0.25 * PER_CENT),
             ),
         )
         def test_equilibrium_supersaturation(
-            variables, mask_label, var, dry_radius_um, min, max
+            variables, mask_label, dry_radius_um, min_value, max_value
         ):
             mask = np.logical_and(
                 variables["masks"][mask_label], variables["height_above_cloud_base"] > 0
             )
-            assert (variables[var][dry_radius_um][mask] > min).all()
-            assert (variables[var][dry_radius_um][mask] < max).all()
+            assert (variables["SS_eq"][dry_radius_um][mask] > min_value).all()
+            assert (variables["SS_eq"][dry_radius_um][mask] < max_value).all()
+
+        @staticmethod
+        @pytest.mark.parametrize(
+            "mask_label, dry_radius_um, min_value, max_value",
+            (
+                ("ascent", 0.1, 0, 0.5 * PER_CENT),
+                ("ascent", 2, 0, 1 * PER_CENT),
+                ("ascent", 9, 0.75 * PER_CENT, 2.5 * PER_CENT),
+                ("descent", 0.1, -0.2 * PER_CENT, 0.1 * PER_CENT),
+                ("descent", 2, -0.5 * PER_CENT, 0.25 * PER_CENT),
+                ("descent", 9, 0.3 * PER_CENT, 0.8 * PER_CENT),
+            ),
+        )
+        def test_effective_supersaturation(
+            variables, mask_label, dry_radius_um, min_value, max_value
+        ):
+            mask = np.logical_and(
+                variables["masks"][mask_label], variables["height_above_cloud_base"] > 0
+            )
+            assert (variables["SS_ef"][dry_radius_um][mask] > min_value).all()
+            assert (variables["SS_ef"][dry_radius_um][mask] < max_value).all()
