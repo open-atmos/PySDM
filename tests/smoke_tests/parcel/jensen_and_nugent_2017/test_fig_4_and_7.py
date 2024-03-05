@@ -99,45 +99,30 @@ class TestFig4And7:
                 significant=2,
             )
 
-    class TestFig7:
+    class TestFig7:  # pylint: disable=too-few-public-methods
         @staticmethod
         @pytest.mark.parametrize(
-            "mask_label,dry_radius_um, min_value, max_value",
+            "mask_label, var, dry_radius_um, value_range",
             (
-                ("ascent", 0.1, 0, 0.1 * PER_CENT),
-                ("ascent", 2, -0.75 * PER_CENT, 0),
-                ("ascent", 9, -2 * PER_CENT, -0.6 * PER_CENT),
-                ("descent", 0.1, 0, 0.1 * PER_CENT),
-                ("descent", 2, -0.75 * PER_CENT, 0),
-                ("descent", 9, -1 * PER_CENT, -0.25 * PER_CENT),
+                ("ascent", "SS_eq", 0.1, (0, 0.1 * PER_CENT)),
+                ("ascent", "SS_eq", 2, (-0.75 * PER_CENT, 0)),
+                ("ascent", "SS_eq", 9, (-2 * PER_CENT, -0.6 * PER_CENT)),
+                ("descent", "SS_eq", 0.1, (0, 0.1 * PER_CENT)),
+                ("descent", "SS_eq", 2, (-0.75 * PER_CENT, 0)),
+                ("descent", "SS_eq", 9, (-1 * PER_CENT, -0.25 * PER_CENT)),
+                ("ascent", "SS_ef", 0.1, (0, 0.5 * PER_CENT)),
+                ("ascent", "SS_ef", 2, (0, 1 * PER_CENT)),
+                ("ascent", "SS_ef", 9, (0.75 * PER_CENT, 2.5 * PER_CENT)),
+                ("descent", "SS_ef", 0.1, (-0.2 * PER_CENT, 0.1 * PER_CENT)),
+                ("descent", "SS_ef", 2, (-0.5 * PER_CENT, 0.25 * PER_CENT)),
+                ("descent", "SS_ef", 9, (0.3 * PER_CENT, 0.8 * PER_CENT)),
             ),
         )
         def test_equilibrium_supersaturation(
-            variables, mask_label, dry_radius_um, min_value, max_value
+            variables, *, mask_label, var, dry_radius_um, value_range
         ):
             mask = np.logical_and(
                 variables["masks"][mask_label], variables["height_above_cloud_base"] > 0
             )
-            assert (variables["SS_eq"][dry_radius_um][mask] > min_value).all()
-            assert (variables["SS_eq"][dry_radius_um][mask] < max_value).all()
-
-        @staticmethod
-        @pytest.mark.parametrize(
-            "mask_label, dry_radius_um, min_value, max_value",
-            (
-                ("ascent", 0.1, 0, 0.5 * PER_CENT),
-                ("ascent", 2, 0, 1 * PER_CENT),
-                ("ascent", 9, 0.75 * PER_CENT, 2.5 * PER_CENT),
-                ("descent", 0.1, -0.2 * PER_CENT, 0.1 * PER_CENT),
-                ("descent", 2, -0.5 * PER_CENT, 0.25 * PER_CENT),
-                ("descent", 9, 0.3 * PER_CENT, 0.8 * PER_CENT),
-            ),
-        )
-        def test_effective_supersaturation(
-            variables, mask_label, dry_radius_um, min_value, max_value
-        ):
-            mask = np.logical_and(
-                variables["masks"][mask_label], variables["height_above_cloud_base"] > 0
-            )
-            assert (variables["SS_ef"][dry_radius_um][mask] > min_value).all()
-            assert (variables["SS_ef"][dry_radius_um][mask] < max_value).all()
+            assert (variables[var][dry_radius_um][mask] > value_range[0]).all()
+            assert (variables[var][dry_radius_um][mask] < value_range[1]).all()
