@@ -35,7 +35,7 @@ install:
 
 test_script:
   - ps: |
-      iex "$env:PYTHON -m pytest -We -p no:unraisableexception tests/unit_tests"
+      iex "$env:PYTHON -m pytest --durations=10 -We -p no:unraisableexception tests/unit_tests"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
 #on_finish:
