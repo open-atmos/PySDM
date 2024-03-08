@@ -66,3 +66,15 @@ class TestFormulae:
                 f_org if isinstance(f_org, float) else f_org[i],
             )
         np.testing.assert_array_equal(actual, expected)
+
+    @staticmethod
+    def test_numba_jit_compatible_representation():
+        # arrange
+        f = formulae.Formulae()
+
+        # act
+        sut = f.numba_jit_compatible_representation
+
+        # assert
+        temp = 300 * si.K
+        assert sut.latent_heat__lv(temp) == f.latent_heat.lv(temp)

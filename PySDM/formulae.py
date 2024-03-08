@@ -8,7 +8,7 @@ import numbers
 import re
 import warnings
 from collections import namedtuple
-from functools import lru_cache, partial
+from functools import lru_cache, partial, cached_property
 from types import SimpleNamespace
 from typing import Optional
 
@@ -80,7 +80,11 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
 
-        components = tuple(i for i in dir(self) if not i.startswith("__"))
+        self._components = tuple(
+            i
+            for i in dir(self)
+            if not i.startswith("__") and i != "numba_jit_compatible_representation"
+        )
 
         constants_defaults = {
             k: getattr(defaults, k)
@@ -106,7 +110,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         )
 
         # each `component` corresponds to one subdirectory of PySDM/physics
-        for component in components:
+        for component in self._components:
             setattr(
                 self,
                 component,
@@ -127,10 +131,14 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "PowerSeries": PowerSeries,
         }[terminal_velocity]
 
+    @cached_property
     def __str__(self):
         description = []
         for attr in dir(self):
-            if not attr.startswith("_"):
+            if (
+                not attr.startswith("_")
+                and attr != "numba_jit_compatible_representation"
+            ):
                 attr_value = getattr(self, attr)
                 if attr_value.__class__ in (bool, int, float):
                     value = attr_value
@@ -142,6 +150,20 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                     value = attr_value.__class__.__name__
                 description.append(f"{attr}: {value}")
         return ", ".join(description)
+
+    @cached_property
+    def numba_jit_compatible_representation(self):
+        """returns a named tuple that provides access to all formulae from within
+        Numba-JIT-compiled code, e.g. with obj.latent_heat__lv(T)"""
+        functions = {}
+        for component in ["trivia"] + list(self._components):
+            for item in dir(getattr(self, component)):
+                attr = getattr(getattr(self, component), item)
+                if not item.startswith("__") and callable(attr):
+                    functions[component + "__" + item] = attr
+        for attr in ("constants", "fastmath"):
+            functions[attr] = getattr(self, attr)
+        return namedtuple("NumbaCompatibleFormulae", functions.keys())(**functions)
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
