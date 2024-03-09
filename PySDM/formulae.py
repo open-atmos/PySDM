@@ -131,7 +131,6 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "PowerSeries": PowerSeries,
         }[terminal_velocity]
 
-    @cached_property
     def __str__(self):
         description = []
         for attr in dir(self):
