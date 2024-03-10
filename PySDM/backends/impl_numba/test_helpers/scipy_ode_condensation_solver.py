@@ -83,31 +83,19 @@ def _condensation(
 
 @lru_cache()
 def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-locals
-    x = formulae.condensation_coordinate.x
-    volume_of_x = formulae.condensation_coordinate.volume
-    volume_to_mass = formulae.particle_shape_and_density.volume_to_mass
-    mass_to_volume = formulae.particle_shape_and_density.mass_to_volume
-    dx_dt = formulae.condensation_coordinate.dx_dt
-    pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
-    lv = formulae.latent_heat.lv
-    r_dr_dt = formulae.drop_growth.r_dr_dt
-    RH_eq = formulae.hygroscopicity.RH_eq
-    sigma = formulae.surface_tension.sigma
-    phys_radius = formulae.trivia.radius
-    phys_T = formulae.state_variable_triplet.T
-    phys_p = formulae.state_variable_triplet.p
-    phys_pv = formulae.state_variable_triplet.pv
-    phys_dthd_dt = formulae.state_variable_triplet.dthd_dt
-    phys_lambdaD = formulae.diffusion_kinetics.lambdaD
-    phys_lambdaK = formulae.diffusion_kinetics.lambdaK
-    phys_diff_kin_D = formulae.diffusion_kinetics.D
-    phys_diff_kin_K = formulae.diffusion_kinetics.K
-    phys_D = formulae.diffusion_thermics.D
-    phys_K = formulae.diffusion_thermics.K
+    jit_formulae = formulae.numba_jit_compatible_representation
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _liquid_water_mixing_ratio(n, x, m_d_mean):
-        return np.sum(n * volume_to_mass(volume_of_x(x))) / m_d_mean
+        return (
+            np.sum(
+                n
+                * jit_formulae.particle_shape_and_density__volume_to_mass(
+                    jit_formulae.condensation_coordinate__volume(x)
+                )
+            )
+            / m_d_mean
+        )
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _impl(  # pylint: disable=too-many-arguments,too-many-locals
@@ -128,20 +116,22 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         pvs,
         lv,
     ):
-        DTp = phys_D(T, p)
-        KTp = phys_K(T, p)
-        lambdaD = phys_lambdaD(DTp, T)
-        lambdaK = phys_lambdaK(T, p)
+        DTp = jit_formulae.diffusion_thermics__D(T, p)
+        KTp = jit_formulae.diffusion_thermics__K(T, p)
+        lambdaD = jit_formulae.diffusion_kinetics__lambdaD(DTp, T)
+        lambdaK = jit_formulae.diffusion_kinetics__lambdaK(T, p)
         for i, x_i in enumerate(x):
-            v = volume_of_x(x_i)
-            r = phys_radius(v)
-            Dr = phys_diff_kin_D(DTp, r, lambdaD)
-            Kr = phys_diff_kin_K(KTp, r, lambdaK)
-            sgm = sigma(T, v, dry_volume[i], f_org[i])
-            dy_dt[idx_x + i] = dx_dt(
+            v = jit_formulae.condensation_coordinate__volume(x_i)
+            r = jit_formulae.trivia__radius(v)
+            Dr = jit_formulae.diffusion_kinetics__D(DTp, r, lambdaD)
+            Kr = jit_formulae.diffusion_kinetics__K(KTp, r, lambdaK)
+            sgm = jit_formulae.surface_tension__sigma(T, v, dry_volume[i], f_org[i])
+            dy_dt[idx_x + i] = jit_formulae.condensation_coordinate__dx_dt(
                 x_i,
-                r_dr_dt(
-                    RH_eq(r, T, kappa[i], dry_volume[i] / PI_4_3, sgm),
+                jit_formulae.drop_growth__r_dr_dt(
+                    jit_formulae.hygroscopicity__RH_eq(
+                        r, T, kappa[i], dry_volume[i] / PI_4_3, sgm
+                    ),
                     T,
                     RH,
                     lv,
@@ -152,9 +142,16 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             )
         d_water_vapour_mixing_ratio__dt = (
             dot_water_vapour_mixing_ratio
-            - np.sum(n * volume_to_mass(volume_of_x(x)) * dy_dt[idx_x:]) / m_d_mean
+            - np.sum(
+                n
+                * jit_formulae.particle_shape_and_density__volume_to_mass(
+                    jit_formulae.condensation_coordinate__volume(x)
+                )
+                * dy_dt[idx_x:]
+            )
+            / m_d_mean
         )
-        dy_dt[idx_thd] = dot_thd + phys_dthd_dt(
+        dy_dt[idx_thd] = dot_thd + jit_formulae.state_variable_triplet__dthd_dt(
             rhod, thd, T, d_water_vapour_mixing_ratio__dt, lv
         )
 
@@ -182,10 +179,10 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             - _liquid_water_mixing_ratio(n, x, m_d_mean)
         )
         rhod += drhod_dt * t
-        T = phys_T(rhod, thd)
-        p = phys_p(rhod, T, water_vapour_mixing_ratio)
-        pv = phys_pv(p, water_vapour_mixing_ratio)
-        pvs = pvs_C(T - T0)
+        T = jit_formulae.state_variable_triplet__T(rhod, thd)
+        p = jit_formulae.state_variable_triplet__p(rhod, T, water_vapour_mixing_ratio)
+        pv = jit_formulae.state_variable_triplet__pv(p, water_vapour_mixing_ratio)
+        pvs = jit_formulae.saturation_vapour_pressure__pvs_Celsius(T - T0)
         RH = pv / pvs
 
         dy_dt = np.empty_like(y)
@@ -205,18 +202,13 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             m_d_mean,
             rhod,
             pvs,
-            lv(T),
+            jit_formulae.latent_heat__lv(T),
         )
         return dy_dt
 
     def solve(  # pylint: disable=too-many-arguments,too-many-locals
-        water_mass,
-        __,
-        multiplicity,
-        vdry,
+        attributes,
         cell_idx,
-        kappa,
-        f_org,
         thd,
         water_vapour_mixing_ratio,
         rhod,
@@ -232,16 +224,22 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         n_sd_in_cell = len(cell_idx)
         y0 = np.empty(n_sd_in_cell + idx_x)
         y0[idx_thd] = thd
-        y0[idx_x:] = x(mass_to_volume(water_mass[cell_idx]))
+        y0[idx_x:] = jit_formulae.condensation_coordinate__x(
+            jit_formulae.particle_shape_and_density__mass_to_volume(
+                attributes.water_mass[cell_idx]
+            )
+        )
         total_water_mixing_ratio = (
             water_vapour_mixing_ratio
-            + _liquid_water_mixing_ratio(multiplicity[cell_idx], y0[idx_x:], m_d_mean)
+            + _liquid_water_mixing_ratio(
+                attributes.multiplicity[cell_idx], y0[idx_x:], m_d_mean
+            )
         )
         args = (
-            kappa[cell_idx],
-            f_org[cell_idx],
-            vdry[cell_idx],
-            multiplicity[cell_idx],
+            attributes.kappa[cell_idx],
+            attributes.f_org[cell_idx],
+            attributes.vdry[cell_idx],
+            attributes.multiplicity[cell_idx],
             dthd_dt,
             d_water_vapour_mixing_ratio__dt,
             drhod_dt,
@@ -272,8 +270,15 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 
         m_new = 0
         for i in range(n_sd_in_cell):
-            water_mass[cell_idx[i]] = volume_to_mass(volume_of_x(y1[idx_x + i]))
-            m_new += multiplicity[cell_idx[i]] * water_mass[cell_idx[i]]
+            attributes.water_mass[cell_idx[i]] = (
+                jit_formulae.particle_shape_and_density__volume_to_mass(
+                    jit_formulae.condensation_coordinate__volume(y1[idx_x + i])
+                )
+            )
+            m_new += (
+                attributes.multiplicity[cell_idx[i]]
+                * attributes.water_mass[cell_idx[i]]
+            )
 
         return (
             integ.success,
