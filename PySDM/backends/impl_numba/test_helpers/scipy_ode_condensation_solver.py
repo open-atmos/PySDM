@@ -12,6 +12,12 @@ import scipy.integrate
 
 from PySDM.backends import Numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
+from PySDM.backends.impl_numba.methods.condensation_methods import (
+    _RelativeTolerances,
+    _Attributes,
+    _CellData,
+    _Counters,
+)
 from PySDM.physics.constants_defaults import PI_4_3, T0
 
 idx_thd = 0
@@ -35,31 +41,39 @@ def _condensation(
         n_threads=1,
         n_cell=particulator.mesh.n_cell,
         cell_start_arg=particulator.attributes.cell_start.data,
-        water_mass=particulator.attributes["water mass"].data,
-        v_cr=None,
-        multiplicity=particulator.attributes["multiplicity"].data,
-        vdry=particulator.attributes["dry volume"].data,
+        attributes=_Attributes(
+            water_mass=particulator.attributes["water mass"].data,
+            v_cr=None,
+            multiplicity=particulator.attributes["multiplicity"].data,
+            vdry=particulator.attributes["dry volume"].data,
+            kappa=particulator.attributes["kappa"].data,
+            f_org=particulator.attributes["dry volume organic fraction"].data,
+        ),
         idx=particulator.attributes._ParticleAttributes__idx.data,
-        rhod=particulator.environment["rhod"].data,
-        thd=particulator.environment["thd"].data,
-        water_vapour_mixing_ratio=particulator.environment[
-            "water_vapour_mixing_ratio"
-        ].data,
-        dv_mean=particulator.environment.dv,
-        prhod=particulator.environment.get_predicted("rhod").data,
-        pthd=particulator.environment.get_predicted("thd").data,
-        predicted_water_vapour_mixing_ratio=particulator.environment.get_predicted(
-            "water_vapour_mixing_ratio"
-        ).data,
-        kappa=particulator.attributes["kappa"].data,
-        f_org=particulator.attributes["dry volume organic fraction"].data,
-        rtol_x=rtol_x,
-        rtol_thd=rtol_thd,
+        cell_data=_CellData(
+            rhod=particulator.environment["rhod"].data,
+            thd=particulator.environment["thd"].data,
+            water_vapour_mixing_ratio=particulator.environment[
+                "water_vapour_mixing_ratio"
+            ].data,
+            dv_mean=particulator.environment.dv,
+            prhod=particulator.environment.get_predicted("rhod").data,
+            pthd=particulator.environment.get_predicted("thd").data,
+            predicted_water_vapour_mixing_ratio=particulator.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ).data,
+        ),
+        rtols=_RelativeTolerances(
+            x=rtol_x,
+            thd=rtol_thd,
+        ),
         timestep=particulator.dt,
-        counter_n_substeps=counters["n_substeps"],
-        counter_n_activating=counters["n_activating"],
-        counter_n_deactivating=counters["n_deactivating"],
-        counter_n_ripening=counters["n_ripening"],
+        counters=_Counters(
+            n_substeps=counters["n_substeps"],
+            n_activating=counters["n_activating"],
+            n_deactivating=counters["n_deactivating"],
+            n_ripening=counters["n_ripening"],
+        ),
         cell_order=cell_order,
         RH_max=RH_max.data,
         success=success.data,
