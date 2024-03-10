@@ -217,9 +217,8 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         drhod_dt,
         m_d_mean,
         ___,
-        ____,
         dt,
-        _____,
+        ____,
     ):
         n_sd_in_cell = len(cell_idx)
         y0 = np.empty(n_sd_in_cell + idx_x)
