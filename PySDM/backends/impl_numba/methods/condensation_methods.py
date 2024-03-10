@@ -103,52 +103,60 @@ class CondensationMethods(BackendMethods):
         RH_max,
         success,
     ):
+        # arrays within namedtuples in prange loops do not work
+        # https://github.com/numba/numba/issues/5872
+        cdt_predicted_water_vapour_mixing_ratio = (
+            cell_data.predicted_water_vapour_mixing_ratio
+        )
+        cdt_pthd = cell_data.pthd
+        cnt_n_substeps = counters.n_substeps
+        cnt_n_activating = counters.n_activating
+        cnt_n_deactivating = counters.n_deactivating
+        cnt_n_ripening = counters.n_ripening
+
         for thread_id in numba.prange(n_threads):  # pylint: disable=not-an-iterable
             for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
-
                 cell_start = cell_start_arg[cell_id]
                 cell_end = cell_start_arg[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start
                 if n_sd_in_cell == 0:
                     continue
 
-                dthd_dt = (cell_data.pthd[cell_id] - cell_data.thd[cell_id]) / timestep
-                d_water_vapour_mixing_ratio__dt = (
-                    cell_data.predicted_water_vapour_mixing_ratio[cell_id]
-                    - cell_data.water_vapour_mixing_ratio[cell_id]
-                ) / timestep
-                drhod_dt = (
-                    cell_data.prhod[cell_id] - cell_data.rhod[cell_id]
-                ) / timestep
-                md = (
-                    (cell_data.prhod[cell_id] + cell_data.rhod[cell_id])
-                    / 2
-                    * cell_data.dv_mean
-                )
-
                 (
                     success[cell_id],
-                    cell_data.predicted_water_vapour_mixing_ratio[cell_id],
-                    cell_data.pthd[cell_id],
-                    counters.n_substeps[cell_id],
-                    counters.n_activating[cell_id],
-                    counters.n_deactivating[cell_id],
-                    counters.n_ripening[cell_id],
+                    cdt_predicted_water_vapour_mixing_ratio[cell_id],
+                    cdt_pthd[cell_id],
+                    cnt_n_substeps[cell_id],
+                    cnt_n_activating[cell_id],
+                    cnt_n_deactivating[cell_id],
+                    cnt_n_ripening[cell_id],
                     RH_max[cell_id],
                 ) = solver(
-                    attributes,
-                    idx[cell_start:cell_end],
-                    cell_data.thd[cell_id],
-                    cell_data.water_vapour_mixing_ratio[cell_id],
-                    cell_data.rhod[cell_id],
-                    dthd_dt,
-                    d_water_vapour_mixing_ratio__dt,
-                    drhod_dt,
-                    md,
-                    rtols,
-                    timestep,
-                    counters.n_substeps[cell_id],
+                    attributes=attributes,
+                    cell_idx=idx[cell_start:cell_end],
+                    thd=cell_data.thd[cell_id],
+                    water_vapour_mixing_ratio=cell_data.water_vapour_mixing_ratio[
+                        cell_id
+                    ],
+                    rhod=cell_data.rhod[cell_id],
+                    dthd_dt=(cell_data.pthd[cell_id] - cell_data.thd[cell_id])
+                    / timestep,
+                    d_water_vapour_mixing_ratio__dt=(
+                        cell_data.predicted_water_vapour_mixing_ratio[cell_id]
+                        - cell_data.water_vapour_mixing_ratio[cell_id]
+                    )
+                    / timestep,
+                    drhod_dt=(cell_data.prhod[cell_id] - cell_data.rhod[cell_id])
+                    / timestep,
+                    m_d=(
+                        (cell_data.prhod[cell_id] + cell_data.rhod[cell_id])
+                        / 2
+                        * cell_data.dv_mean
+                    ),
+                    rtols=rtols,
+                    timestep=timestep,
+                    n_substeps=counters.n_substeps[cell_id],
                 )
 
     @staticmethod
