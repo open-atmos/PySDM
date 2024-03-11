@@ -539,7 +539,7 @@ class CondensationMethods(BackendMethods):
         max_iters,
     ):
         return CondensationMethods.make_condensation_solver_impl(
-            formulae=self.formulae.numba_jit_compatible_representation,
+            formulae=self.formulae.flatten,
             timestep=timestep,
             dt_range=dt_range,
             adaptive=adaptive,

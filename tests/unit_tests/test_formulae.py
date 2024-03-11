@@ -68,12 +68,12 @@ class TestFormulae:
         np.testing.assert_array_equal(actual, expected)
 
     @staticmethod
-    def test_numba_jit_compatible_representation():
+    def test_flatten():
         # arrange
         f = formulae.Formulae()
 
         # act
-        sut = f.numba_jit_compatible_representation
+        sut = f.flatten
 
         # assert
         temp = 300 * si.K

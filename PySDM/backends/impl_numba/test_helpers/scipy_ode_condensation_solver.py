@@ -83,7 +83,7 @@ def _condensation(
 
 @lru_cache()
 def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-locals
-    jit_formulae = formulae.numba_jit_compatible_representation
+    jit_formulae = formulae.flatten
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
     def _liquid_water_mixing_ratio(n, x, m_d_mean):

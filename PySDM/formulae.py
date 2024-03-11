@@ -81,9 +81,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.particle_shape_and_density = particle_shape_and_density
 
         self._components = tuple(
-            i
-            for i in dir(self)
-            if not i.startswith("__") and i != "numba_jit_compatible_representation"
+            i for i in dir(self) if not i.startswith("__") and i != "flatten"
         )
 
         constants_defaults = {
@@ -134,10 +132,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
     def __str__(self):
         description = []
         for attr in dir(self):
-            if (
-                not attr.startswith("_")
-                and attr != "numba_jit_compatible_representation"
-            ):
+            if not attr.startswith("_") and attr != "flatten":
                 attr_value = getattr(self, attr)
                 if attr_value.__class__ in (bool, int, float):
                     value = attr_value
@@ -151,9 +146,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         return ", ".join(description)
 
     @cached_property
-    def numba_jit_compatible_representation(self):
-        """returns a named tuple that provides access to all formulae from within
-        Numba-JIT-compiled code, e.g. with obj.latent_heat__lv(T)"""
+    def flatten(self):
+        """returns a "flattened" representation providing access to all formulae from within
+        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)"""
         functions = {}
         for component in ["trivia"] + list(self._components):
             for item in dir(getattr(self, component)):
@@ -162,7 +157,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                     functions[component + "__" + item] = attr
         for attr in ("constants", "fastmath"):
             functions[attr] = getattr(self, attr)
-        return namedtuple("NumbaCompatibleFormulae", functions.keys())(**functions)
+        return namedtuple("FlattenedFormulae", functions.keys())(**functions)
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
