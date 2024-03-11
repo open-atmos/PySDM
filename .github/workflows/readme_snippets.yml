@@ -53,6 +53,9 @@ jobs:
       - run: julia readme.jl
 
   matlab:
+    strategy:
+      matrix:
+        matlab-release: [R2021a, R2023b]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -65,7 +68,7 @@ jobs:
       - run: cat -n readme.m
       - uses: matlab-actions/setup-matlab@v0
         with:
-          release: R2021a
+          release: ${{ matlab.release }}
       - uses: matlab-actions/run-command@v0
         with:
           command: readme
