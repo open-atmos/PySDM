@@ -37,7 +37,7 @@ import numbers
 import re
 import warnings
 from collections import namedtuple
-from functools import lru_cache, partial
+from functools import lru_cache, partial, cached_property
 from types import SimpleNamespace
 from typing import Optional
 
@@ -109,7 +109,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
 
-        components = tuple(i for i in dir(self) if not i.startswith(&#34;__&#34;))
+        self._components = tuple(
+            i for i in dir(self) if not i.startswith(&#34;__&#34;) and i != &#34;flatten&#34;
+        )
 
         constants_defaults = {
             k: getattr(defaults, k)
@@ -135,7 +137,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         )
 
         # each `component` corresponds to one subdirectory of PySDM/physics
-        for component in components:
+        for component in self._components:
             setattr(
                 self,
                 component,
@@ -159,7 +161,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
     def __str__(self):
         description = []
         for attr in dir(self):
-            if not attr.startswith(&#34;_&#34;):
+            if not attr.startswith(&#34;_&#34;) and attr != &#34;flatten&#34;:
                 attr_value = getattr(self, attr)
                 if attr_value.__class__ in (bool, int, float):
                     value = attr_value
@@ -171,6 +173,20 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                     value = attr_value.__class__.__name__
                 description.append(f&#34;{attr}: {value}&#34;)
         return &#34;, &#34;.join(description)
+
+    @cached_property
+    def flatten(self):
+        &#34;&#34;&#34;returns a &#34;flattened&#34; representation providing access to all formulae from within
+        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)&#34;&#34;&#34;
+        functions = {}
+        for component in [&#34;trivia&#34;] + list(self._components):
+            for item in dir(getattr(self, component)):
+                attr = getattr(getattr(self, component), item)
+                if not item.startswith(&#34;__&#34;) and callable(attr):
+                    functions[component + &#34;__&#34; + item] = attr
+        for attr in (&#34;constants&#34;, &#34;fastmath&#34;):
+            functions[attr] = getattr(self, attr)
+        return namedtuple(&#34;FlattenedFormulae&#34;, functions.keys())(**functions)
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
@@ -392,7 +408,9 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
 
-        components = tuple(i for i in dir(self) if not i.startswith(&#34;__&#34;))
+        self._components = tuple(
+            i for i in dir(self) if not i.startswith(&#34;__&#34;) and i != &#34;flatten&#34;
+        )
 
         constants_defaults = {
             k: getattr(defaults, k)
@@ -418,7 +436,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         )
 
         # each `component` corresponds to one subdirectory of PySDM/physics
-        for component in components:
+        for component in self._components:
             setattr(
                 self,
                 component,
@@ -442,7 +460,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
     def __str__(self):
         description = []
         for attr in dir(self):
-            if not attr.startswith(&#34;_&#34;):
+            if not attr.startswith(&#34;_&#34;) and attr != &#34;flatten&#34;:
                 attr_value = getattr(self, attr)
                 if attr_value.__class__ in (bool, int, float):
                     value = attr_value
@@ -453,8 +471,65 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
                 else:
                     value = attr_value.__class__.__name__
                 description.append(f&#34;{attr}: {value}&#34;)
-        return &#34;, &#34;.join(description)</code></pre>
+        return &#34;, &#34;.join(description)
+
+    @cached_property
+    def flatten(self):
+        &#34;&#34;&#34;returns a &#34;flattened&#34; representation providing access to all formulae from within
+        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)&#34;&#34;&#34;
+        functions = {}
+        for component in [&#34;trivia&#34;] + list(self._components):
+            for item in dir(getattr(self, component)):
+                attr = getattr(getattr(self, component), item)
+                if not item.startswith(&#34;__&#34;) and callable(attr):
+                    functions[component + &#34;__&#34; + item] = attr
+        for attr in (&#34;constants&#34;, &#34;fastmath&#34;):
+            functions[attr] = getattr(self, attr)
+        return namedtuple(&#34;FlattenedFormulae&#34;, functions.keys())(**functions)</code></pre>
 </details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="PySDM.formulae.Formulae.flatten"><code class="name">var <span class="ident">flatten</span></code></dt>
+<dd>
+<div class="desc"><p>returns a "flattened" representation providing access to all formulae from within
+one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -474,6 +549,9 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
 <ul>
 <li>
 <h4><code><a title="PySDM.formulae.Formulae" href="#PySDM.formulae.Formulae">Formulae</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.formulae.Formulae.flatten" href="#PySDM.formulae.Formulae.flatten">flatten</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
