@@ -266,7 +266,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
-      - uses: actions/setup-python@v4.1.1
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v4.1.4
