@@ -68,7 +68,7 @@ jobs:
       - run: cat -n readme.m
       - uses: matlab-actions/setup-matlab@v0
         with:
-          release: ${{ matlab.release }}
+          release: ${{ matrix.matlab-release }}
       - uses: matlab-actions/run-command@v0
         with:
           command: readme
