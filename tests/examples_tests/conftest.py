@@ -32,9 +32,10 @@ TEST_SUITES = {
         "Grabowski_and_Pawlowska_2023",
         "Jensen_and_Nugent_2017",
     ],
-    "coagulation": ["Bartman_et_al_2021", "Berry_1967", "Shima_et_al_2009"],
+    "coagulation": ["Berry_1967", "Shima_et_al_2009"],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process": [
+        "Bartman_et_al_2021",
         "Morrison_and_Grabowski_2007",
         "Arabas_et_al_2015",
         "Bartman_2020_MasterThesis",

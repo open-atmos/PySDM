@@ -58,17 +58,15 @@ class TestParcelSanityChecks:
             r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry
         )
 
-        attributes = {
-            "multiplicity": discretise_multiplicities(
-                specific_concentration * env.mass_of_dry_air
-            ),
-            "dry volume": v_dry,
-            "kappa times dry volume": kappa * v_dry,
-            "volume": formulae.trivia.volume(radius=r_wet),
-        }
-
         particulator = builder.build(
-            attributes,
+            attributes={
+                "multiplicity": discretise_multiplicities(
+                    specific_concentration * env.mass_of_dry_air
+                ),
+                "dry volume": v_dry,
+                "kappa times dry volume": kappa * v_dry,
+                "volume": formulae.trivia.volume(radius=r_wet),
+            },
             products=(
                 products.PeakSupersaturation(name="S_max", unit="%"),
                 products.EffectiveRadius(
