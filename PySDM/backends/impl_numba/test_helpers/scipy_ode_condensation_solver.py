@@ -206,7 +206,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         )
         return dy_dt
 
-    def solve(  # pylint: disable=too-many-arguments,too-many-locals
+    def solve(  # pylint: disable=too-many-arguments,too-many-locals,unused-argument
         attributes,
         cell_idx,
         thd,
@@ -215,10 +215,10 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         dthd_dt,
         d_water_vapour_mixing_ratio__dt,
         drhod_dt,
-        m_d_mean,
-        ___,
-        dt,
-        ____,
+        m_d,
+        rtols,
+        timestep,
+        n_substeps,
     ):
         n_sd_in_cell = len(cell_idx)
         y0 = np.empty(n_sd_in_cell + idx_x)
@@ -231,7 +231,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         total_water_mixing_ratio = (
             water_vapour_mixing_ratio
             + _liquid_water_mixing_ratio(
-                attributes.multiplicity[cell_idx], y0[idx_x:], m_d_mean
+                attributes.multiplicity[cell_idx], y0[idx_x:], m_d
             )
         )
         args = (
@@ -242,7 +242,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             dthd_dt,
             d_water_vapour_mixing_ratio__dt,
             drhod_dt,
-            m_d_mean,
+            m_d,
             rhod,
             total_water_mixing_ratio,
         )
@@ -257,8 +257,8 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             integ = scipy.integrate.solve_ivp(
                 fun=_odesys,
                 args=args,
-                t_span=(0, dt),
-                t_eval=(dt,),
+                t_span=(0, timestep),
+                t_eval=(timestep,),
                 y0=y0,
                 rtol=rtol,
                 atol=0,
@@ -281,7 +281,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 
         return (
             integ.success,
-            total_water_mixing_ratio - m_new / m_d_mean,
+            total_water_mixing_ratio - m_new / m_d,
             y1[idx_thd],
             1,
             1,
