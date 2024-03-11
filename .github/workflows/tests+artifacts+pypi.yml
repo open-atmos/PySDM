@@ -18,8 +18,8 @@ jobs:
   precommit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v4.1.1
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.8
       - run: |
@@ -49,7 +49,7 @@ jobs:
         pip install pytest-cov
         pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
     - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4.1.1
       with:
         fail_ci_if_error: true
         verbose: true
@@ -60,11 +60,11 @@ jobs:
         platform: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
           persist-credentials: false
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
       - run: |
@@ -83,12 +83,12 @@ jobs:
   pylint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.1
       with:
         submodules: recursive
         fetch-depth: 0 
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5.0.0
       with:
         python-version: 3.9
     - name: Install dependencies
@@ -113,7 +113,7 @@ jobs:
   zenodo_json:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
       - uses: notiz-dev/github-action-json-property@release
         with: 
           path: '.zenodo.json'
@@ -133,11 +133,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -183,11 +183,11 @@ jobs:
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
       - run: |
@@ -220,7 +220,7 @@ jobs:
   devops:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
@@ -236,11 +236,11 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: "3.11"
 
@@ -253,7 +253,7 @@ jobs:
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | grep -v "no previously-included files matching" | wc -l`
           twine check --strict dist/*
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4.3.1
         with:
           path: ${{ matrix.packages-dir}}/dist
           name: dist
@@ -266,10 +266,10 @@ jobs:
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4.1.1
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.4
         with:
           name: dist
           path: dist     
@@ -283,7 +283,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.4
         with:
           name: dist
           path: dist     
