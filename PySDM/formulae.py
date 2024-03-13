@@ -262,16 +262,18 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     for pkg in ("np", "math"):
         source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")
-    source = re.sub("^return ", "", source)
+    source = re.sub(pattern="^return ", repl="", string=source)
     for arg in inspect.signature(fun).parameters:
         if arg not in ("_", "const"):
             source = re.sub(
-                f"{prae}({arg}){post}", f"\\1({real_t})({args[arg]})\\3", source
+                pattern=f"{prae}({arg}){post}",
+                repl=f"\\1({real_t})({args[arg]})\\3",
+                string=source,
             )
     source = re.sub(
-        f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
-        "\\1(" + real_t + ")({constants.\\2:" + real_fmt + "})\\3",
-        source,
+        pattern=f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
+        repl="\\1(" + real_t + ")({constants.\\2:" + real_fmt + "})\\3",
+        string=source,
     )
     assert constants
     source = eval(f'f"""{source}"""')  # pylint: disable=eval-used
