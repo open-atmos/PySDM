@@ -141,5 +141,5 @@ class Trivia:  # pylint: disable=too-many-public-methods
         )
 
     @staticmethod
-    def sqrt_re_times_cbrt_sc(Re, Sc):
-        return np.sqrt(Re) * np.cbrt(Sc)
+    def sqrt_re_times_cbrt_sc(const, Re, Sc):
+        return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)

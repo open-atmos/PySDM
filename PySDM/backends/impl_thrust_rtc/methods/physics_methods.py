@@ -236,8 +236,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        return body
-
     def reynolds_number(
         self,
         *,
