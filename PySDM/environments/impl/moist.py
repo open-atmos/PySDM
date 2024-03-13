@@ -18,18 +18,22 @@ class Moist:
         self.variables = variables
         self._values = None
         self._tmp = None
+        self._nan_field = None
 
     def register(self, builder):
         self.particulator = builder.particulator
         self.particulator.observers.append(self)
 
-        if self.particulator.formulae.ventilation.__class__.__name__ != "Neglect":
+        if self.particulator.formulae.ventilation.__name__ != "Neglect":
             for var in ("air density", "air dynamic viscosity"):
                 if var not in self.variables:
                     self.variables += [var]
 
         self._values = {"predicted": None, "current": self._allocate(self.variables)}
         self._tmp = self._allocate(self.variables)
+
+        self._nan_field = self._allocate(("_",))["_"]
+        self._nan_field.fill(np.nan)
 
     def _allocate(self, variables):
         result = {}
@@ -38,7 +42,12 @@ class Moist:
         return result
 
     def __getitem__(self, index):
-        return self._values["current"][index]
+        """returns a Storage representing the variable (field) at a given index or
+        otherwise a NaN-filled Storage if the index is not found (in order to simplify
+        generic code which uses optional variables, e.g. air viscosity, etc.)"""
+        if index in self._values["current"]:
+            return self._values["current"][index]
+        return self._nan_field
 
     def get_predicted(self, index):
         if self._values["predicted"] is None:
