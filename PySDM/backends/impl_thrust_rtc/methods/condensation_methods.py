@@ -297,6 +297,8 @@ class CondensationMethods(
                 "rhod_copy",
                 "dt",
                 "RH_max",
+                "air_density",
+                "air_dynamic_viscosity",
             ),
             name_iter="i",
             body=f"""
@@ -326,6 +328,11 @@ class CondensationMethods(
                 T='T[i]', p='p[i]')};
             lambdaD[i] = {phys.diffusion_kinetics.lambdaD.c_inline(
                 D='DTp[i]', T='T[i]')};
+            schmidt_number[i] = {phys.trivia.air_schmidt_number.c_inline(
+                dynamic_viscosity="air_dynamic_viscosity[i]",
+                diffusivity="DTp[i]",
+                density="air_density[i]",
+            )};
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -456,6 +463,8 @@ class CondensationMethods(
                     self.rhod_copy.data,
                     dvfloat(timestep),
                     RH_max.data,
+                    air_density.data,
+                    air_dynamic_viscosity.data,
                 ),
             )
             self.__update_drop_masses.launch_n(

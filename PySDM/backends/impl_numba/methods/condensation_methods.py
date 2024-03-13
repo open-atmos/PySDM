@@ -297,9 +297,9 @@ class CondensationMethods(BackendMethods):
                 DTp = formulae.diffusion_thermics__D(T, p)
                 RH = pv / pvs
                 Sc = formulae.trivia__air_schmidt_number(
-                    air_dynamic_viscosity=air_dynamic_viscosity,
-                    diffusivity_of_condensible_vapor_in_air=DTp,
-                    air_density=air_density,
+                    dynamic_viscosity=air_dynamic_viscosity,
+                    diffusivity=DTp,
+                    density=air_density,
                 )
                 (
                     ml_new,
