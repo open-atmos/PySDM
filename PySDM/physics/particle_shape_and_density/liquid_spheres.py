@@ -28,12 +28,8 @@ class LiquidSpheres:
 
     @staticmethod
     def reynolds_number(
-        const, radius, velocity_wrt_air_motion, air_dynamic_viscosity, air_density
+        const, radius, velocity_wrt_air, air_dynamic_viscosity, air_density
     ):
         return (
-            const.TWO
-            * radius
-            * velocity_wrt_air_motion
-            * air_density
-            / air_dynamic_viscosity
+            const.TWO * radius * velocity_wrt_air * air_density / air_dynamic_viscosity
         )

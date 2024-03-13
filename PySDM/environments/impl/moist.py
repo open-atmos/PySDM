@@ -22,6 +22,12 @@ class Moist:
     def register(self, builder):
         self.particulator = builder.particulator
         self.particulator.observers.append(self)
+
+        if self.particulator.formulae.ventilation.__class__.__name__ != "Neglect":
+            for var in ("air density", "air dynamic viscosity"):
+                if var not in self.variables:
+                    self.variables += [var]
+
         self._values = {"predicted": None, "current": self._allocate(self.variables)}
         self._tmp = self._allocate(self.variables)
 
@@ -62,6 +68,17 @@ class Moist:
                 RH=target["RH"],
                 water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
                 a_w_ice=target["a_w_ice"],
+            )
+        if "air density" in self.variables:
+            self.particulator.backend.air_density(
+                water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
+                rhod=target["rhod"],
+                output=target["air density"],
+            )
+        if "air dynamic viscosity" in self.variables:
+            self.particulator.backend.air_dynamic_viscosity(
+                temperature=target["T"],
+                output=target["air dynamic viscosity"],
             )
         self._values["predicted"] = target
 
