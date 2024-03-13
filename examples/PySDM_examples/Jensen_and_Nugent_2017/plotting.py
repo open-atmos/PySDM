@@ -14,6 +14,28 @@ def find_drop_ids_by_dry_size(plot_drops_with_dry_radii_um, simulation_r_dry):
     return drop_ids
 
 
+def compute_table_values(height_above_cb_m, height_cb_m, products, ascent_mask):
+    """constructing data for Table 4"""
+    data = {"ascent": [], "descent": []}
+    for level_idx, height_m in enumerate(products["z"]):
+        rounded_height_above_cb_m = np.round(height_m - height_cb_m)
+        if rounded_height_above_cb_m in height_above_cb_m:
+            r_mean = products["r_mean_act"][level_idx]
+            r_standard_deviation = products["r_std_act"][level_idx]
+            r_relative_dispersion = r_standard_deviation / r_mean
+
+            data["ascent" if ascent_mask[level_idx] else "descent"].append(
+                (
+                    f"{rounded_height_above_cb_m:.0f}",
+                    f"{in_unit(r_mean, si.um):.2f}",
+                    f"{in_unit(r_standard_deviation, si.um):.2f}",
+                    f"{r_relative_dispersion:.3f}",
+                )
+            )
+    data["ascent"].append(data["descent"][0])
+    return data
+
+
 def figure(
     *,
     output,
@@ -47,8 +69,8 @@ def figure(
             color=colors[label],
         )
     axs["S"].set_xlim(*xlim_S_percent)
-    axs["S"].set_xlabel("S (%)")
-    axs["S"].legend()
+    axs["S"].set_xlabel("S (%)", fontsize="15")
+    axs["S"].legend(fontsize="10")
 
     drop_ids = find_drop_ids_by_dry_size(
         plot_drops_with_dry_radii_um=plot_drops_with_dry_radii_um,
@@ -75,8 +97,10 @@ def figure(
             )
     axs["r"].legend()
     axs["r"].set_xlim(*xlim_r_um)
-    axs["r"].set_xlabel("r$_c$ (µm)")
-    axs["r"].set_ylabel("height above cloud base (m)")
+    axs["r"].set_xlabel("r$_c$ (µm)", fontsize="15")
+    axs["r"].set_ylabel("Height above cloud base (m)", fontsize="15")
+    # pyplot.xticks(fontsize=12)
+    # pyplot.yticks(fontsize=12)
 
     for ax in axs.values():
         ax.grid()

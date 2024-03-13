@@ -5,7 +5,13 @@ from PySDM_examples.Jensen_and_Nugent_2017 import table_3
 from PySDM import Builder
 from PySDM.physics import si
 from PySDM.backends import CPU
-from PySDM.products import PeakSupersaturation, ParcelDisplacement, Time
+from PySDM.products import (
+    PeakSupersaturation,
+    ParcelDisplacement,
+    Time,
+    ActivatedMeanRadius,
+    RadiusStandardDeviation,
+)
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence
 from PySDM.dynamics.collisions.collision_kernels import Geometric
@@ -88,6 +94,12 @@ class Simulation(BasicSimulation):
                     PeakSupersaturation(name="S_max"),
                     ParcelDisplacement(name="z"),
                     Time(name="t"),
+                    ActivatedMeanRadius(
+                        name="r_mean_act", count_activated=True, count_unactivated=False
+                    ),
+                    RadiusStandardDeviation(
+                        name="r_std_act", count_activated=True, count_unactivated=False
+                    ),
                 ),
             )
         )

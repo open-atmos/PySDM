@@ -7,7 +7,7 @@ from PySDM_examples.utils import notebook_vars
 from PySDM_examples import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
 from PySDM.physics import si
-from .test_fig_3 import find_cloud_base_index, find_max_alt_index
+from .test_fig_3_and_tab_4_upper_rows import find_cloud_base_index, find_max_alt_index
 
 PLOT = False
 N_SD = Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN + np.count_nonzero(
@@ -18,7 +18,8 @@ N_SD = Jensen_and_Nugent_2017.simulation.N_SD_NON_GCCN + np.count_nonzero(
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_4_and_7.ipynb",
+        file=Path(Jensen_and_Nugent_2017.__file__).parent
+        / "Fig_4_and_7_and_Tab_4_bottom_rows.ipynb",
         plot=PLOT,
     )
 
