@@ -51,9 +51,9 @@ class TestParticleShapeAndDensity:
             # Act
             re = sut(
                 radius=10 * si.um,
-                air_dynamic_viscosity=20 * si.uPa * si.s,
+                dynamic_viscosity=20 * si.uPa * si.s,
                 velocity_wrt_air=1 * si.cm / si.s,
-                air_density=1 * si.kg / si.m**3,
+                density=1 * si.kg / si.m**3,
             )
 
             # Assert

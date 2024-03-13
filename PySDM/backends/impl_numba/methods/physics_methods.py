@@ -184,20 +184,13 @@ class PhysicsMethods(BackendMethods):
         return body
 
     def reynolds_number(
-        self,
-        *,
-        output,
-        cell_id,
-        air_dynamic_viscosity,
-        air_density,
-        radius,
-        velocity_wrt_air
+        self, *, output, cell_id, dynamic_viscosity, density, radius, velocity_wrt_air
     ):
         self.__reynolds_number_body(
             output.data,
             cell_id.data,
-            air_dynamic_viscosity.data,
-            air_density.data,
+            dynamic_viscosity.data,
+            density.data,
             radius.data,
             velocity_wrt_air.data,
         )

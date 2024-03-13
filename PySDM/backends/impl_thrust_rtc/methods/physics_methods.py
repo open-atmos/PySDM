@@ -241,8 +241,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         *,
         output,
         cell_id,
-        air_dynamic_viscosity,
-        air_density,
+        dynamic_viscosity,
+        density,
         radius,
         velocity_wrt_air,
     ):
@@ -251,8 +251,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             args=(
                 output.data,
                 cell_id.data,
-                air_dynamic_viscosity.data,
-                air_density.data,
+                dynamic_viscosity.data,
+                density.data,
                 radius.data,
                 velocity_wrt_air.data,
             ),
