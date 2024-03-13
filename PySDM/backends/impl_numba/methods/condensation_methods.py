@@ -377,7 +377,7 @@ class CondensationMethods(BackendMethods):
         RH_rtol,
     ):
         @numba.njit(**jit_flags)
-        def minfun(  # pylint: disable=too-many-arguments
+        def minfun(  # pylint: disable=too-many-arguments,too-many-locals
             x_new,
             x_old,
             timestep,

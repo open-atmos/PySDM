@@ -165,7 +165,7 @@ class PhysicsMethods(BackendMethods):
         formulae = self.formulae.flatten
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": formulae.fastmath})
-        def body(
+        def body(  # pylint: disable=too-many-arguments
             output,
             cell_id,
             air_dynamic_viscosity,

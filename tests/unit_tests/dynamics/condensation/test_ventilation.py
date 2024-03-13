@@ -1,3 +1,5 @@
+""" exemplifies and does basic tests of ventilation logic in condensation/evaporation """
+
 import pytest
 import numpy as np
 
