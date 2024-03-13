@@ -52,7 +52,7 @@ class TestParticleShapeAndDensity:
             re = sut(
                 radius=10 * si.um,
                 air_dynamic_viscosity=20 * si.uPa * si.s,
-                velocity_wrt_air_motion=1 * si.cm / si.s,
+                velocity_wrt_air=1 * si.cm / si.s,
                 air_density=1 * si.kg / si.m**3,
             )
 

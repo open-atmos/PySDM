@@ -177,8 +177,8 @@ class PhysicsMethods(BackendMethods):
                 output[i] = formulae.particle_shape_and_density__reynolds_number(
                     radius=radius[i],
                     velocity_wrt_air=velocity_wrt_air[i],
-                    air_dynamic_viscosity=air_dynamic_viscosity[cell_id[i]],
-                    air_density=air_density[cell_id[i]],
+                    dynamic_viscosity=air_dynamic_viscosity[cell_id[i]],
+                    density=air_density[cell_id[i]],
                 )
 
         return body

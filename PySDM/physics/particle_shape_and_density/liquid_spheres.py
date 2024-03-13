@@ -27,9 +27,5 @@ class LiquidSpheres:
         return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)
 
     @staticmethod
-    def reynolds_number(
-        const, radius, velocity_wrt_air, air_dynamic_viscosity, air_density
-    ):
-        return (
-            const.TWO * radius * velocity_wrt_air * air_density / air_dynamic_viscosity
-        )
+    def reynolds_number(_, radius, velocity_wrt_air, dynamic_viscosity, density):
+        return 2 * radius * velocity_wrt_air * density / dynamic_viscosity

@@ -228,8 +228,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             output[i] = {self.formulae.particle_shape_and_density.reynolds_number.c_inline(
                 radius="radius[i]",
                 velocity_wrt_air="velocity_wrt_air[i]",
-                air_dynamic_viscosity="air_dynamic_viscosity[cell_id[i]]",
-                air_density="air_density[cell_id[i]]",
+                dynamic_viscosity="air_dynamic_viscosity[cell_id[i]]",
+                density="air_density[cell_id[i]]",
             )};
             """.replace(
                 "real_type", self._get_c_type()

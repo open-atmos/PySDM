@@ -20,10 +20,8 @@ class ReynoldsNumber(DerivedAttribute):
         self.particulator.backend.reynolds_number(
             output=self.data,
             cell_id=self.cell_id.get(),
-            air_dynamic_viscosity=self.particulator.environment[
-                "air dynamic viscosity"
-            ],
-            air_density=self.particulator.environment["air density"],
+            dynamic_viscosity=self.particulator.environment["air dynamic viscosity"],
+            density=self.particulator.environment["air density"],
             radius=self.radius.data,
             velocity_wrt_air=self.velocity_wrt_air.data,
         )

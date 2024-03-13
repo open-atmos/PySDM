@@ -73,6 +73,3 @@ def test_ventilation(backend_class, variant, scipy_solver):
         for key, particulator in particulators.items()
     }
     assert 0.95 < mass_ratios[variant] < mass_ratios["Neglect"] < 1
-
-
-# TODO: test in 1d column env!
