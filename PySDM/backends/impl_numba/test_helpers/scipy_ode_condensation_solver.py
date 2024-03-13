@@ -129,9 +129,9 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         lambdaD = jit_formulae.diffusion_kinetics__lambdaD(DTp, T)
         lambdaK = jit_formulae.diffusion_kinetics__lambdaK(T, p)
         schmidt_number = jit_formulae.trivia__air_schmidt_number(
-            air_dynamic_viscosity=air_dynamic_viscosity,
-            diffusivity_of_condensible_vapor_in_air=DTp,
-            air_density=air_density,
+            dynamic_viscosity=air_dynamic_viscosity,
+            diffusivity=DTp,
+            density=air_density,
         )
         for i, x_i in enumerate(x):
             v = jit_formulae.condensation_coordinate__volume(x_i)

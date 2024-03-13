@@ -65,9 +65,9 @@ class TestTrivia:
 
             # Act
             sc = sut(
-                air_dynamic_viscosity=eta_air,
-                diffusivity_of_condensible_vapor_in_air=constants_defaults.D0,
-                air_density=1 * si.kg / si.m**3,
+                dynamic_viscosity=eta_air,
+                diffusivity=constants_defaults.D0,
+                density=1 * si.kg / si.m**3,
             )
 
             # Assert
