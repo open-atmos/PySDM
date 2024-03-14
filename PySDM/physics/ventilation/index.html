@@ -31,15 +31,28 @@
 Ventilation coefficient formulae
 &#34;&#34;&#34;
 
-from .neglect import Neglect</code></pre>
+from .neglect import Neglect
+from .pruppacher_rasmussen_1979 import PruppacherAndRasmussen1979
+from .froessling_1938 import Froessling1938</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
+<dt><code class="name"><a title="PySDM.physics.ventilation.froessling_1938" href="froessling_1938.html">PySDM.physics.ventilation.froessling_1938</a></code></dt>
+<dd>
+<div class="desc"><p>based on Froessling ,N. (1938) Beitr. Geophys. 52 pp. 170-216
+as referenced in <a href="https://doi.org/10.1071/CH9520059">Squires 1952</a></p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.physics.ventilation.neglect" href="neglect.html">PySDM.physics.ventilation.neglect</a></code></dt>
 <dd>
 <div class="desc"><p>constant ventilation coefficient of unity (i.e., neglect ventilation effects)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.physics.ventilation.pruppacher_rasmussen_1979" href="pruppacher_rasmussen_1979.html">PySDM.physics.ventilation.pruppacher_rasmussen_1979</a></code></dt>
+<dd>
+<div class="desc"><p>ventilation coefficient as a function of dimensionless Reynolds (Re) and Schmidt (Sc)
+numbers for liquid drops following
+[Pruppacher &amp; Rasmussen …</p></div>
 </dd>
 </dl>
 </section>
@@ -63,7 +76,9 @@ from .neglect import Neglect</code></pre>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
+<li><code><a title="PySDM.physics.ventilation.froessling_1938" href="froessling_1938.html">PySDM.physics.ventilation.froessling_1938</a></code></li>
 <li><code><a title="PySDM.physics.ventilation.neglect" href="neglect.html">PySDM.physics.ventilation.neglect</a></code></li>
+<li><code><a title="PySDM.physics.ventilation.pruppacher_rasmussen_1979" href="pruppacher_rasmussen_1979.html">PySDM.physics.ventilation.pruppacher_rasmussen_1979</a></code></li>
 </ul>
 </li>
 </ul>

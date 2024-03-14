@@ -158,7 +158,15 @@ class Trivia:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def dn_dlogr(r, dn_dr):
-        return np.log(10) * r * dn_dr</code></pre>
+        return np.log(10) * r * dn_dr
+
+    @staticmethod
+    def air_schmidt_number(dynamic_viscosity, diffusivity, density):
+        return dynamic_viscosity / diffusivity / density
+
+    @staticmethod
+    def sqrt_re_times_cbrt_sc(const, Re, Sc):
+        return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)</code></pre>
 </details>
 </section>
 <section>
@@ -301,7 +309,15 @@ class Trivia:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def dn_dlogr(r, dn_dr):
-        return np.log(10) * r * dn_dr</code></pre>
+        return np.log(10) * r * dn_dr
+
+    @staticmethod
+    def air_schmidt_number(dynamic_viscosity, diffusivity, density):
+        return dynamic_viscosity / diffusivity / density
+
+    @staticmethod
+    def sqrt_re_times_cbrt_sc(const, Re, Sc):
+        return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -317,6 +333,20 @@ class Trivia:  # pylint: disable=too-many-public-methods
 <pre><code class="python">@staticmethod
 def H2pH(H):
     return -np.log10(H * 1e-3)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.air_schmidt_number"><code class="name flex">
+<span>def <span class="ident">air_schmidt_number</span></span>(<span>dynamic_viscosity, diffusivity, density)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def air_schmidt_number(dynamic_viscosity, diffusivity, density):
+    return dynamic_viscosity / diffusivity / density</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.area"><code class="name flex">
@@ -574,6 +604,20 @@ def sphere_surface(const, diameter):
     return const.PI * diameter**2</code></pre>
 </details>
 </dd>
+<dt id="PySDM.physics.trivia.Trivia.sqrt_re_times_cbrt_sc"><code class="name flex">
+<span>def <span class="ident">sqrt_re_times_cbrt_sc</span></span>(<span>const, Re, Sc)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def sqrt_re_times_cbrt_sc(const, Re, Sc):
+    return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.trivia.Trivia.tdep2enthalpy"><code class="name flex">
 <span>def <span class="ident">tdep2enthalpy</span></span>(<span>const, tdep)</span>
 </code></dt>
@@ -694,6 +738,7 @@ def within_tolerance(error_estimate, value, rtol):
 <h4><code><a title="PySDM.physics.trivia.Trivia" href="#PySDM.physics.trivia.Trivia">Trivia</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.physics.trivia.Trivia.H2pH" href="#PySDM.physics.trivia.Trivia.H2pH">H2pH</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.air_schmidt_number" href="#PySDM.physics.trivia.Trivia.air_schmidt_number">air_schmidt_number</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.area" href="#PySDM.physics.trivia.Trivia.area">area</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.arrhenius" href="#PySDM.physics.trivia.Trivia.arrhenius">arrhenius</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.dn_dlogr" href="#PySDM.physics.trivia.Trivia.dn_dlogr">dn_dlogr</a></code></li>
@@ -710,6 +755,7 @@ def within_tolerance(error_estimate, value, rtol):
 <li><code><a title="PySDM.physics.trivia.Trivia.p_d" href="#PySDM.physics.trivia.Trivia.p_d">p_d</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.radius" href="#PySDM.physics.trivia.Trivia.radius">radius</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.sphere_surface" href="#PySDM.physics.trivia.Trivia.sphere_surface">sphere_surface</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.sqrt_re_times_cbrt_sc" href="#PySDM.physics.trivia.Trivia.sqrt_re_times_cbrt_sc">sqrt_re_times_cbrt_sc</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.tdep2enthalpy" href="#PySDM.physics.trivia.Trivia.tdep2enthalpy">tdep2enthalpy</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.th_std" href="#PySDM.physics.trivia.Trivia.th_std">th_std</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.unfrozen_and_saturated" href="#PySDM.physics.trivia.Trivia.unfrozen_and_saturated">unfrozen_and_saturated</a></code></li>

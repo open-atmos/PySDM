@@ -58,6 +58,7 @@ from PySDM.attributes.physics import (
     Volume,
     WaterMass,
     WetToCriticalVolumeRatio,
+    ReynoldsNumber,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.attributes.physics.dry_volume import (
@@ -74,6 +75,7 @@ from PySDM.attributes.physics.relative_fall_velocity import RelativeFallMomentum
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.physics.surface_tension import Constant
+from PySDM.physics.ventilation import Neglect
 
 attributes = {
     &#34;multiplicity&#34;: lambda _, __: Multiplicities,
@@ -145,6 +147,11 @@ attributes = {
     &#34;moles_1H&#34;: lambda _, __: Moles1H,
     &#34;moles_16O&#34;: lambda _, __: Moles16O,
     &#34;moles light water&#34;: lambda _, __: MolesLightWater,
+    &#34;Reynolds number&#34;: lambda _, formulae: (
+        make_dummy_attribute_factory(&#34;Reynolds number&#34;)
+        if formulae.ventilation.__name__ == Neglect.__name__
+        else ReynoldsNumber
+    ),
 }
 
 

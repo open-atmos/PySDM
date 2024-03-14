@@ -100,6 +100,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         builder.request_attribute(&#34;critical volume&#34;)
         builder.request_attribute(&#34;kappa&#34;)
         builder.request_attribute(&#34;dry volume organic fraction&#34;)
+        builder.request_attribute(&#34;Reynolds number&#34;)
 
         for counter in (&#34;n_substeps&#34;, &#34;n_activating&#34;, &#34;n_deactivating&#34;, &#34;n_ripening&#34;):
             self.counters[counter] = self.particulator.Storage.empty(
@@ -230,6 +231,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         builder.request_attribute(&#34;critical volume&#34;)
         builder.request_attribute(&#34;kappa&#34;)
         builder.request_attribute(&#34;dry volume organic fraction&#34;)
+        builder.request_attribute(&#34;Reynolds number&#34;)
 
         for counter in (&#34;n_substeps&#34;, &#34;n_activating&#34;, &#34;n_deactivating&#34;, &#34;n_ripening&#34;):
             self.counters[counter] = self.particulator.Storage.empty(
@@ -313,6 +315,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
     builder.request_attribute(&#34;critical volume&#34;)
     builder.request_attribute(&#34;kappa&#34;)
     builder.request_attribute(&#34;dry volume organic fraction&#34;)
+    builder.request_attribute(&#34;Reynolds number&#34;)
 
     for counter in (&#34;n_substeps&#34;, &#34;n_activating&#34;, &#34;n_deactivating&#34;, &#34;n_ripening&#34;):
         self.counters[counter] = self.particulator.Storage.empty(

@@ -47,12 +47,22 @@ class Moist:
         self.variables = variables
         self._values = None
         self._tmp = None
+        self._nan_field = None
 
     def register(self, builder):
         self.particulator = builder.particulator
         self.particulator.observers.append(self)
+
+        if self.particulator.formulae.ventilation.__name__ != &#34;Neglect&#34;:
+            for var in (&#34;air density&#34;, &#34;air dynamic viscosity&#34;):
+                if var not in self.variables:
+                    self.variables += [var]
+
         self._values = {&#34;predicted&#34;: None, &#34;current&#34;: self._allocate(self.variables)}
         self._tmp = self._allocate(self.variables)
+
+        self._nan_field = self._allocate((&#34;_&#34;,))[&#34;_&#34;]
+        self._nan_field.fill(np.nan)
 
     def _allocate(self, variables):
         result = {}
@@ -61,7 +71,12 @@ class Moist:
         return result
 
     def __getitem__(self, index):
-        return self._values[&#34;current&#34;][index]
+        &#34;&#34;&#34;returns a Storage representing the variable (field) at a given index or
+        otherwise a NaN-filled Storage if the index is not found (in order to simplify
+        generic code which uses optional variables, e.g. air viscosity, etc.)&#34;&#34;&#34;
+        if index in self._values[&#34;current&#34;]:
+            return self._values[&#34;current&#34;][index]
+        return self._nan_field
 
     def get_predicted(self, index):
         if self._values[&#34;predicted&#34;] is None:
@@ -91,6 +106,17 @@ class Moist:
                 RH=target[&#34;RH&#34;],
                 water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
                 a_w_ice=target[&#34;a_w_ice&#34;],
+            )
+        if &#34;air density&#34; in self.variables:
+            self.particulator.backend.air_density(
+                water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
+                rhod=target[&#34;rhod&#34;],
+                output=target[&#34;air density&#34;],
+            )
+        if &#34;air dynamic viscosity&#34; in self.variables:
+            self.particulator.backend.air_dynamic_viscosity(
+                temperature=target[&#34;T&#34;],
+                output=target[&#34;air dynamic viscosity&#34;],
             )
         self._values[&#34;predicted&#34;] = target
 
@@ -141,12 +167,22 @@ class Moist:
         self.variables = variables
         self._values = None
         self._tmp = None
+        self._nan_field = None
 
     def register(self, builder):
         self.particulator = builder.particulator
         self.particulator.observers.append(self)
+
+        if self.particulator.formulae.ventilation.__name__ != &#34;Neglect&#34;:
+            for var in (&#34;air density&#34;, &#34;air dynamic viscosity&#34;):
+                if var not in self.variables:
+                    self.variables += [var]
+
         self._values = {&#34;predicted&#34;: None, &#34;current&#34;: self._allocate(self.variables)}
         self._tmp = self._allocate(self.variables)
+
+        self._nan_field = self._allocate((&#34;_&#34;,))[&#34;_&#34;]
+        self._nan_field.fill(np.nan)
 
     def _allocate(self, variables):
         result = {}
@@ -155,7 +191,12 @@ class Moist:
         return result
 
     def __getitem__(self, index):
-        return self._values[&#34;current&#34;][index]
+        &#34;&#34;&#34;returns a Storage representing the variable (field) at a given index or
+        otherwise a NaN-filled Storage if the index is not found (in order to simplify
+        generic code which uses optional variables, e.g. air viscosity, etc.)&#34;&#34;&#34;
+        if index in self._values[&#34;current&#34;]:
+            return self._values[&#34;current&#34;][index]
+        return self._nan_field
 
     def get_predicted(self, index):
         if self._values[&#34;predicted&#34;] is None:
@@ -185,6 +226,17 @@ class Moist:
                 RH=target[&#34;RH&#34;],
                 water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
                 a_w_ice=target[&#34;a_w_ice&#34;],
+            )
+        if &#34;air density&#34; in self.variables:
+            self.particulator.backend.air_density(
+                water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
+                rhod=target[&#34;rhod&#34;],
+                output=target[&#34;air density&#34;],
+            )
+        if &#34;air dynamic viscosity&#34; in self.variables:
+            self.particulator.backend.air_dynamic_viscosity(
+                temperature=target[&#34;T&#34;],
+                output=target[&#34;air dynamic viscosity&#34;],
             )
         self._values[&#34;predicted&#34;] = target
 
@@ -288,8 +340,17 @@ def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
     self.particulator.observers.append(self)
+
+    if self.particulator.formulae.ventilation.__name__ != &#34;Neglect&#34;:
+        for var in (&#34;air density&#34;, &#34;air dynamic viscosity&#34;):
+            if var not in self.variables:
+                self.variables += [var]
+
     self._values = {&#34;predicted&#34;: None, &#34;current&#34;: self._allocate(self.variables)}
-    self._tmp = self._allocate(self.variables)</code></pre>
+    self._tmp = self._allocate(self.variables)
+
+    self._nan_field = self._allocate((&#34;_&#34;,))[&#34;_&#34;]
+    self._nan_field.fill(np.nan)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.environments.impl.moist.Moist.sync"><code class="name flex">
@@ -321,6 +382,17 @@ def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
             RH=target[&#34;RH&#34;],
             water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
             a_w_ice=target[&#34;a_w_ice&#34;],
+        )
+    if &#34;air density&#34; in self.variables:
+        self.particulator.backend.air_density(
+            water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
+            rhod=target[&#34;rhod&#34;],
+            output=target[&#34;air density&#34;],
+        )
+    if &#34;air dynamic viscosity&#34; in self.variables:
+        self.particulator.backend.air_dynamic_viscosity(
+            temperature=target[&#34;T&#34;],
+            output=target[&#34;air dynamic viscosity&#34;],
         )
     self._values[&#34;predicted&#34;] = target</code></pre>
 </details>

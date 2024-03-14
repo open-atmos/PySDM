@@ -172,6 +172,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             RH_max=RH_max,
             success=success,
             cell_id=self.attributes[&#34;cell id&#34;],
+            reynolds_number=self.attributes[&#34;Reynolds number&#34;],
+            air_density=self.environment[&#34;air density&#34;],
+            air_dynamic_viscosity=self.environment[&#34;air dynamic viscosity&#34;],
         )
         self.attributes.mark_updated(&#34;water mass&#34;)
 
@@ -625,6 +628,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             RH_max=RH_max,
             success=success,
             cell_id=self.attributes[&#34;cell id&#34;],
+            reynolds_number=self.attributes[&#34;Reynolds number&#34;],
+            air_density=self.environment[&#34;air density&#34;],
+            air_dynamic_viscosity=self.environment[&#34;air dynamic viscosity&#34;],
         )
         self.attributes.mark_updated(&#34;water mass&#34;)
 
@@ -1194,6 +1200,9 @@ This function should only change environment's predicted <code>thd</code> and
         RH_max=RH_max,
         success=success,
         cell_id=self.attributes[&#34;cell id&#34;],
+        reynolds_number=self.attributes[&#34;Reynolds number&#34;],
+        air_density=self.environment[&#34;air density&#34;],
+        air_dynamic_viscosity=self.environment[&#34;air dynamic viscosity&#34;],
     )
     self.attributes.mark_updated(&#34;water mass&#34;)</code></pre>
 </details>

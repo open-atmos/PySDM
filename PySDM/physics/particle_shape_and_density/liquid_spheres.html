@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.particle_shape_and_density.liquid_spheres API documentation</title>
-<meta name="description" content="spherical particles with constant density of water" />
+<meta name="description" content="spherical particles with constant density of water
+Reynolds number calculation assumes length scale is particle diameter" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +23,15 @@
 <h1 class="title">Module <code>PySDM.physics.particle_shape_and_density.liquid_spheres</code></h1>
 </header>
 <section id="section-intro">
-<p>spherical particles with constant density of water</p>
+<p>spherical particles with constant density of water
+Reynolds number calculation assumes length scale is particle diameter</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
 spherical particles with constant density of water
+Reynolds number calculation assumes length scale is particle diameter
 &#34;&#34;&#34;
 
 import numpy as np
@@ -52,7 +55,11 @@ class LiquidSpheres:
 
     @staticmethod
     def radius_to_mass(const, radius):
-        return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)</code></pre>
+        return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)
+
+    @staticmethod
+    def reynolds_number(_, radius, velocity_wrt_air, dynamic_viscosity, density):
+        return 2 * radius * velocity_wrt_air * density / dynamic_viscosity</code></pre>
 </details>
 </section>
 <section>
@@ -92,7 +99,11 @@ class LiquidSpheres:
 
     @staticmethod
     def radius_to_mass(const, radius):
-        return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)</code></pre>
+        return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)
+
+    @staticmethod
+    def reynolds_number(_, radius, velocity_wrt_air, dynamic_viscosity, density):
+        return 2 * radius * velocity_wrt_air * density / dynamic_viscosity</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -122,6 +133,20 @@ def mass_to_volume(const, mass):
 <pre><code class="python">@staticmethod
 def radius_to_mass(const, radius):
     return const.rho_w * const.PI_4_3 * np.power(radius, const.THREE)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.reynolds_number"><code class="name flex">
+<span>def <span class="ident">reynolds_number</span></span>(<span>_, radius, velocity_wrt_air, dynamic_viscosity, density)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def reynolds_number(_, radius, velocity_wrt_air, dynamic_viscosity, density):
+    return 2 * radius * velocity_wrt_air * density / dynamic_viscosity</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.supports_mixed_phase"><code class="name flex">
@@ -175,6 +200,7 @@ def volume_to_mass(const, volume):
 <ul class="">
 <li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.mass_to_volume" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.mass_to_volume">mass_to_volume</a></code></li>
 <li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.radius_to_mass" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.radius_to_mass">radius_to_mass</a></code></li>
+<li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.reynolds_number" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.reynolds_number">reynolds_number</a></code></li>
 <li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.supports_mixed_phase" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.supports_mixed_phase">supports_mixed_phase</a></code></li>
 <li><code><a title="PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.volume_to_mass" href="#PySDM.physics.particle_shape_and_density.liquid_spheres.LiquidSpheres.volume_to_mass">volume_to_mass</a></code></li>
 </ul>

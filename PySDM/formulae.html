@@ -81,6 +81,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         optical_depth: str = &#34;Null&#34;,
         particle_shape_and_density: str = &#34;LiquidSpheres&#34;,
         terminal_velocity: str = &#34;GunnKinzer1949&#34;,
+        air_dynamic_viscosity: str = &#34;ZografosEtAl1987&#34;,
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -108,6 +109,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
+        self.air_dynamic_viscosity = air_dynamic_viscosity
 
         self._components = tuple(
             i for i in dir(self) if not i.startswith(&#34;__&#34;) and i != &#34;flatten&#34;
@@ -289,16 +291,18 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     for pkg in (&#34;np&#34;, &#34;math&#34;):
         source = source.replace(f&#34;{pkg}.&#34;, &#34;&#34;)
     source = source.replace(&#34;, )&#34;, &#34;)&#34;)
-    source = re.sub(&#34;^return &#34;, &#34;&#34;, source)
+    source = re.sub(pattern=&#34;^return &#34;, repl=&#34;&#34;, string=source)
     for arg in inspect.signature(fun).parameters:
         if arg not in (&#34;_&#34;, &#34;const&#34;):
             source = re.sub(
-                f&#34;{prae}({arg}){post}&#34;, f&#34;\\1({real_t})({args[arg]})\\3&#34;, source
+                pattern=f&#34;{prae}({arg}){post}&#34;,
+                repl=f&#34;\\1({real_t})({args[arg]})\\3&#34;,
+                string=source,
             )
     source = re.sub(
-        f&#34;{prae}const\\.([^\\d\\W]\\w*]*){post}&#34;,
-        &#34;\\1(&#34; + real_t + &#34;)({constants.\\2:&#34; + real_fmt + &#34;})\\3&#34;,
-        source,
+        pattern=f&#34;{prae}const\\.([^\\d\\W]\\w*]*){post}&#34;,
+        repl=&#34;\\1(&#34; + real_t + &#34;)({constants.\\2:&#34; + real_fmt + &#34;})\\3&#34;,
+        string=source,
     )
     assert constants
     source = eval(f&#39;f&#34;&#34;&#34;{source}&#34;&#34;&#34;&#39;)  # pylint: disable=eval-used
@@ -343,7 +347,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
 <dl>
 <dt id="PySDM.formulae.Formulae"><code class="flex name class">
 <span>class <span class="ident">Formulae</span></span>
-<span>(</span><span>*, constants: Optional[dict] = None, seed: int = None, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'LibcloudphPlusPlus', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null', fragmentation_function: str = 'AlwaysN', isotope_equilibrium_fractionation_factors: str = 'Null', isotope_meteoric_water_line_excess: str = 'Null', isotope_ratio_evolution: str = 'Null', optical_albedo: str = 'Null', optical_depth: str = 'Null', particle_shape_and_density: str = 'LiquidSpheres', terminal_velocity: str = 'GunnKinzer1949', handle_all_breakups: bool = False)</span>
+<span>(</span><span>*, constants: Optional[dict] = None, seed: int = None, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'LibcloudphPlusPlus', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null', fragmentation_function: str = 'AlwaysN', isotope_equilibrium_fractionation_factors: str = 'Null', isotope_meteoric_water_line_excess: str = 'Null', isotope_ratio_evolution: str = 'Null', optical_albedo: str = 'Null', optical_depth: str = 'Null', particle_shape_and_density: str = 'LiquidSpheres', terminal_velocity: str = 'GunnKinzer1949', air_dynamic_viscosity: str = 'ZografosEtAl1987', handle_all_breakups: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -380,6 +384,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         optical_depth: str = &#34;Null&#34;,
         particle_shape_and_density: str = &#34;LiquidSpheres&#34;,
         terminal_velocity: str = &#34;GunnKinzer1949&#34;,
+        air_dynamic_viscosity: str = &#34;ZografosEtAl1987&#34;,
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -407,6 +412,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
+        self.air_dynamic_viscosity = air_dynamic_viscosity
 
         self._components = tuple(
             i for i in dir(self) if not i.startswith(&#34;__&#34;) and i != &#34;flatten&#34;
