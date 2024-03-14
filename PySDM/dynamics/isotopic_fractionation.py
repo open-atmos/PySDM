@@ -35,4 +35,4 @@ class IsotopicFractionation:
             builder.request_attribute(f"moles_{isotope}")
 
     def __call__(self):
-        self.particulator.isotopic_fractionation()
+        self.particulator.isotopic_fractionation(self.isotopes)
