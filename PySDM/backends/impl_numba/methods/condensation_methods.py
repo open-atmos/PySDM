@@ -20,7 +20,15 @@ _Counters = namedtuple(
 )
 _Attributes = namedtuple(
     typename="_Attributes",
-    field_names=("water_mass", "v_cr", "multiplicity", "vdry", "kappa", "f_org"),
+    field_names=(
+        "water_mass",
+        "v_cr",
+        "multiplicity",
+        "vdry",
+        "kappa",
+        "f_org",
+        "reynolds_number",
+    ),
 )
 _CellData = namedtuple(
     typename="_CellData",
@@ -32,6 +40,8 @@ _CellData = namedtuple(
         "prhod",
         "pthd",
         "predicted_water_vapour_mixing_ratio",
+        "air_density",
+        "air_dynamic_viscosity",
     ),
 )
 _RelativeTolerances = namedtuple(
@@ -56,6 +66,7 @@ class CondensationMethods(BackendMethods):
                 vdry=kwargs["vdry"].data,
                 kappa=kwargs["kappa"].data,
                 f_org=kwargs["f_org"].data,
+                reynolds_number=kwargs["reynolds_number"].data,
             ),
             idx=kwargs["idx"].data,
             cell_data=_CellData(
@@ -68,6 +79,8 @@ class CondensationMethods(BackendMethods):
                 predicted_water_vapour_mixing_ratio=(
                     kwargs["predicted_water_vapour_mixing_ratio"].data
                 ),
+                air_density=kwargs["air_density"].data,
+                air_dynamic_viscosity=kwargs["air_dynamic_viscosity"].data,
             ),
             rtols=_RelativeTolerances(
                 x=kwargs["rtol_x"],
@@ -154,6 +167,8 @@ class CondensationMethods(BackendMethods):
                         / 2
                         * cell_data.dv_mean
                     ),
+                    air_density=cell_data.air_density[cell_id],
+                    air_dynamic_viscosity=cell_data.air_dynamic_viscosity[cell_id],
                     rtols=rtols,
                     timestep=timestep,
                     n_substeps=counters.n_substeps[cell_id],
@@ -249,6 +264,8 @@ class CondensationMethods(BackendMethods):
             d_water_vapour_mixing_ratio__dt_predicted,
             drhod_dt,
             m_d,
+            air_density,
+            air_dynamic_viscosity,
             rtol_x,
             timestep,
             n_substeps,
@@ -277,7 +294,13 @@ class CondensationMethods(BackendMethods):
                 pvs = formulae.saturation_vapour_pressure__pvs_Celsius(
                     T - formulae.constants.T0
                 )
+                DTp = formulae.diffusion_thermics__D(T, p)
                 RH = pv / pvs
+                Sc = formulae.trivia__air_schmidt_number(
+                    dynamic_viscosity=air_dynamic_viscosity,
+                    diffusivity=DTp,
+                    density=air_density,
+                )
                 (
                     ml_new,
                     success_within_substep,
@@ -291,10 +314,11 @@ class CondensationMethods(BackendMethods):
                     T,
                     p,
                     RH,
+                    Sc,
                     cell_idx,
                     lv,
                     pvs,
-                    formulae.diffusion_thermics__D(T, p),
+                    DTp,
                     formulae.diffusion_thermics__K(T, p),
                     rtol_x,
                 )
@@ -353,8 +377,20 @@ class CondensationMethods(BackendMethods):
         RH_rtol,
     ):
         @numba.njit(**jit_flags)
-        def minfun(  # pylint: disable=too-many-arguments
-            x_new, x_old, timestep, kappa, f_org, rd3, temperature, RH, lv, pvs, D, K
+        def minfun(  # pylint: disable=too-many-arguments,too-many-locals
+            x_new,
+            x_old,
+            timestep,
+            kappa,
+            f_org,
+            rd3,
+            temperature,
+            RH,
+            lv,
+            pvs,
+            D,
+            K,
+            ventilation_factor,
         ):
             volume = formulae.condensation_coordinate__volume(x_new)
             RH_eq = formulae.hygroscopicity__RH_eq(
@@ -367,7 +403,14 @@ class CondensationMethods(BackendMethods):
                 ),
             )
             r_dr_dt = formulae.drop_growth__r_dr_dt(
-                RH_eq, temperature, RH, lv, pvs, D, K
+                RH_eq,
+                temperature,
+                RH,
+                lv,
+                pvs,
+                D,
+                K,
+                ventilation_factor,
             )
             return (
                 x_old
@@ -383,6 +426,7 @@ class CondensationMethods(BackendMethods):
             T,
             p,
             RH,
+            Sc,
             cell_idx,
             lv,
             pvs,
@@ -420,6 +464,12 @@ class CondensationMethods(BackendMethods):
                 ):
                     Dr = formulae.diffusion_kinetics__D(DTp, r_old, lambdaD)
                     Kr = formulae.diffusion_kinetics__K(KTp, r_old, lambdaK)
+                    ventilation_factor = formulae.ventilation__ventilation_coefficient(
+                        sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
+                            Re=attributes.reynolds_number[drop],
+                            Sc=Sc,
+                        )
+                    )
                     args = (
                         x_old,
                         timestep,
@@ -432,9 +482,17 @@ class CondensationMethods(BackendMethods):
                         pvs,
                         Dr,
                         Kr,
+                        ventilation_factor,
                     )
                     r_dr_dt_old = formulae.drop_growth__r_dr_dt(
-                        RH_eq, T, RH, lv, pvs, Dr, Kr
+                        RH_eq,
+                        T,
+                        RH,
+                        lv,
+                        pvs,
+                        Dr,
+                        Kr,
+                        ventilation_factor,
                     )
                     dx_old = timestep * formulae.condensation_coordinate__dx_dt(
                         x_old, r_dr_dt_old
@@ -601,6 +659,8 @@ class CondensationMethods(BackendMethods):
             d_water_vapour_mixing_ratio__dt,
             drhod_dt,
             m_d,
+            air_density,
+            air_dynamic_viscosity,
             rtols,
             timestep,
             n_substeps,
@@ -615,6 +675,8 @@ class CondensationMethods(BackendMethods):
                 d_water_vapour_mixing_ratio__dt,
                 drhod_dt,
                 m_d,
+                air_density,
+                air_dynamic_viscosity,
                 rtols.x,
             )
             success = True

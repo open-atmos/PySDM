@@ -4,6 +4,8 @@ import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.physics import constants_defaults
 
 
 class TestTrivia:
@@ -51,3 +53,22 @@ class TestTrivia:
 
         # assert
         assert delta == ARBITRARY_VALUE
+
+    @staticmethod
+    def test_schmidt_number():
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae()
+            si = constants_defaults.si
+            sut = formulae.trivia.air_schmidt_number
+            eta_air = formulae.air_dynamic_viscosity.eta_air(temperature=300 * si.K)
+
+            # Act
+            sc = sut(
+                dynamic_viscosity=eta_air,
+                diffusivity=constants_defaults.D0,
+                density=1 * si.kg / si.m**3,
+            )
+
+            # Assert
+            assert sc.check("[]")

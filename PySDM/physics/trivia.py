@@ -129,3 +129,11 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def dn_dlogr(r, dn_dr):
         return np.log(10) * r * dn_dr
+
+    @staticmethod
+    def air_schmidt_number(dynamic_viscosity, diffusivity, density):
+        return dynamic_viscosity / diffusivity / density
+
+    @staticmethod
+    def sqrt_re_times_cbrt_sc(const, Re, Sc):
+        return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)
