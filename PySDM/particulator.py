@@ -143,6 +143,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             RH_max=RH_max,
             success=success,
             cell_id=self.attributes["cell id"],
+            reynolds_number=self.attributes["Reynolds number"],
+            air_density=self.environment["air density"],
+            air_dynamic_viscosity=self.environment["air dynamic viscosity"],
         )
         self.attributes.mark_updated("water mass")
 

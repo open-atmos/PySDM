@@ -198,7 +198,8 @@ def make(self):
         arctanh as atanh,
         arcsinh as asinh,
         sinh,
-        maximum, minimum
+        maximum, minimum,
+        where,  # TODO #1295
     )
     import numba
 

@@ -52,6 +52,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
+        air_dynamic_viscosity: str = "ZografosEtAl1987",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -79,6 +80,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.particle_shape_and_density = particle_shape_and_density
+        self.air_dynamic_viscosity = air_dynamic_viscosity
 
         self._components = tuple(
             i for i in dir(self) if not i.startswith("__") and i != "flatten"
@@ -260,16 +262,18 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     for pkg in ("np", "math"):
         source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")
-    source = re.sub("^return ", "", source)
+    source = re.sub(pattern="^return ", repl="", string=source)
     for arg in inspect.signature(fun).parameters:
         if arg not in ("_", "const"):
             source = re.sub(
-                f"{prae}({arg}){post}", f"\\1({real_t})({args[arg]})\\3", source
+                pattern=f"{prae}({arg}){post}",
+                repl=f"\\1({real_t})({args[arg]})\\3",
+                string=source,
             )
     source = re.sub(
-        f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
-        "\\1(" + real_t + ")({constants.\\2:" + real_fmt + "})\\3",
-        source,
+        pattern=f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
+        repl="\\1(" + real_t + ")({constants.\\2:" + real_fmt + "})\\3",
+        string=source,
     )
     assert constants
     source = eval(f'f"""{source}"""')  # pylint: disable=eval-used

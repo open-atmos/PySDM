@@ -48,6 +48,7 @@ def _condensation(
             vdry=particulator.attributes["dry volume"].data,
             kappa=particulator.attributes["kappa"].data,
             f_org=particulator.attributes["dry volume organic fraction"].data,
+            reynolds_number=particulator.attributes["Reynolds number"].data,
         ),
         idx=particulator.attributes._ParticleAttributes__idx.data,
         cell_data=_CellData(
@@ -62,6 +63,10 @@ def _condensation(
             predicted_water_vapour_mixing_ratio=particulator.environment.get_predicted(
                 "water_vapour_mixing_ratio"
             ).data,
+            air_density=particulator.environment["air density"].data,
+            air_dynamic_viscosity=particulator.environment[
+                "air dynamic viscosity"
+            ].data,
         ),
         rtols=_RelativeTolerances(
             x=rtol_x,
@@ -105,6 +110,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         p,
         n,
         RH,
+        reynolds_number,
         kappa,
         f_org,
         dry_volume,
@@ -112,6 +118,8 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         dot_thd,
         dot_water_vapour_mixing_ratio,
         m_d_mean,
+        air_density,
+        air_dynamic_viscosity,
         rhod,
         pvs,
         lv,
@@ -120,11 +128,22 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         KTp = jit_formulae.diffusion_thermics__K(T, p)
         lambdaD = jit_formulae.diffusion_kinetics__lambdaD(DTp, T)
         lambdaK = jit_formulae.diffusion_kinetics__lambdaK(T, p)
+        schmidt_number = jit_formulae.trivia__air_schmidt_number(
+            dynamic_viscosity=air_dynamic_viscosity,
+            diffusivity=DTp,
+            density=air_density,
+        )
         for i, x_i in enumerate(x):
             v = jit_formulae.condensation_coordinate__volume(x_i)
             r = jit_formulae.trivia__radius(v)
             Dr = jit_formulae.diffusion_kinetics__D(DTp, r, lambdaD)
             Kr = jit_formulae.diffusion_kinetics__K(KTp, r, lambdaK)
+            ventilation_factor = jit_formulae.ventilation__ventilation_coefficient(
+                sqrt_re_times_cbrt_sc=jit_formulae.trivia__sqrt_re_times_cbrt_sc(
+                    Re=reynolds_number[i],
+                    Sc=schmidt_number,
+                )
+            )
             sgm = jit_formulae.surface_tension__sigma(T, v, dry_volume[i], f_org[i])
             dy_dt[idx_x + i] = jit_formulae.condensation_coordinate__dx_dt(
                 x_i,
@@ -138,6 +157,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
                     pvs,
                     Dr,
                     Kr,
+                    ventilation_factor,
                 ),
             )
         d_water_vapour_mixing_ratio__dt = (
@@ -163,10 +183,13 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         f_org,
         dry_volume,
         n,
+        reynolds_number,
         dthd_dt,
         d_water_vapour_mixing_ratio__dt,
         drhod_dt,
         m_d_mean,
+        air_density,
+        air_dynamic_viscosity,
         rhod,
         qt,
     ):
@@ -193,6 +216,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             p,
             n,
             RH,
+            reynolds_number,
             kappa,
             f_org,
             dry_volume,
@@ -200,6 +224,8 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             dthd_dt,
             d_water_vapour_mixing_ratio__dt,
             m_d_mean,
+            air_density,
+            air_dynamic_viscosity,
             rhod,
             pvs,
             jit_formulae.latent_heat__lv(T),
@@ -216,6 +242,8 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         d_water_vapour_mixing_ratio__dt,
         drhod_dt,
         m_d,
+        air_density,
+        air_dynamic_viscosity,
         rtols,
         timestep,
         n_substeps,
@@ -239,10 +267,13 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             attributes.f_org[cell_idx],
             attributes.vdry[cell_idx],
             attributes.multiplicity[cell_idx],
+            attributes.reynolds_number[cell_idx],
             dthd_dt,
             d_water_vapour_mixing_ratio__dt,
             drhod_dt,
             m_d,
+            air_density,
+            air_dynamic_viscosity,
             rhod,
             total_water_mixing_ratio,
         )

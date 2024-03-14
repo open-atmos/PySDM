@@ -69,6 +69,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         builder.request_attribute("critical volume")
         builder.request_attribute("kappa")
         builder.request_attribute("dry volume organic fraction")
+        builder.request_attribute("Reynolds number")
 
         for counter in ("n_substeps", "n_activating", "n_deactivating", "n_ripening"):
             self.counters[counter] = self.particulator.Storage.empty(
