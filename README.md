@@ -322,13 +322,14 @@ In the listing below, its usage is interleaved with plotting logic
 
 ```Julia
 using Plots; plotlyjs()
-rho_w = particulator.formulae.get_constant("rho_w")
 
 for step = 0:1200:3600
     particulator.run(step - particulator.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particulator.products["dv/dlnr"].get()[:] * rho_w / si.g,
+        particulator.formulae.particle_shape_and_density.volume_to_mass(
+            particulator.products["dv/dlnr"].get()[:]
+        )/ si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -343,12 +344,12 @@ savefig("plot.svg")
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-rho_w = particulator.formulae.constants.rho_w
-
 for step = 0:1200:3600
     particulator.run(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
-    y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
+    y = particulator.formulae.particle_shape_and_density.volume_to_mass( ...
+        particulator.products{"dv/dlnr"}.get() ...
+    ) / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
@@ -368,13 +369,16 @@ legend()
 
 ```Python
 from matplotlib import pyplot
-rho_w = particulator.formulae.constants.rho_w
 
 for step in [0, 1200, 2400, 3600]:
     particulator.run(step - particulator.n_steps)
-    pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particulator.products['dv/dlnr'].get()[0] * rho_w / si.g,
-                where='post', label=f"t = {step}s")
+    pyplot.step(
+        x=radius_bins_edges[:-1] / si.um,
+        y=particulator.formulae.particle_shape_and_density.volume_to_mass(
+            particulator.products['dv/dlnr'].get()[0]
+        ) / si.g,
+        where='post', label=f"t = {step}s"
+    )
 
 pyplot.xscale('log')
 pyplot.xlabel('particle radius [µm]')
