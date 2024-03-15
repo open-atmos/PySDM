@@ -83,7 +83,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.air_dynamic_viscosity = air_dynamic_viscosity
 
         self._components = tuple(
-            i for i in dir(self) if not i.startswith("__") and i != "flatten"
+            i
+            for i in dir(self)
+            if not i.startswith("__") and i not in ("flatten", "get_constant")
         )
 
         constants_defaults = {
@@ -160,6 +162,11 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         for attr in ("constants", "fastmath"):
             functions[attr] = getattr(self, attr)
         return namedtuple("FlattenedFormulae", functions.keys())(**functions)
+
+    def get_constant(self, key: str):
+        """getter-like method for cases where using the `constants` named tuple is not possible
+        (e.g., if calling from a language which does not support named tuples)"""
+        return getattr(self.constants, key)
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
