@@ -83,7 +83,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.air_dynamic_viscosity = air_dynamic_viscosity
 
         self._components = tuple(
-            i for i in dir(self) if not i.startswith("__") and i not in ("flatten", "get_constant")
+            i
+            for i in dir(self)
+            if not i.startswith("__") and i not in ("flatten", "get_constant")
         )
 
         constants_defaults = {

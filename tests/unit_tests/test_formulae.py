@@ -89,4 +89,3 @@ class TestFormulae:
 
         # assert
         assert sut.get_constant("rho_w") == rho_w
-
