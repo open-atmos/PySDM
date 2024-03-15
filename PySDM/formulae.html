@@ -112,7 +112,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.air_dynamic_viscosity = air_dynamic_viscosity
 
         self._components = tuple(
-            i for i in dir(self) if not i.startswith(&#34;__&#34;) and i != &#34;flatten&#34;
+            i
+            for i in dir(self)
+            if not i.startswith(&#34;__&#34;) and i not in (&#34;flatten&#34;, &#34;get_constant&#34;)
         )
 
         constants_defaults = {
@@ -189,6 +191,11 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         for attr in (&#34;constants&#34;, &#34;fastmath&#34;):
             functions[attr] = getattr(self, attr)
         return namedtuple(&#34;FlattenedFormulae&#34;, functions.keys())(**functions)
+
+    def get_constant(self, key: str):
+        &#34;&#34;&#34;getter-like method for cases where using the `constants` named tuple is not possible
+        (e.g., if calling from a language which does not support named tuples)&#34;&#34;&#34;
+        return getattr(self.constants, key)
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
@@ -415,7 +422,9 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         self.air_dynamic_viscosity = air_dynamic_viscosity
 
         self._components = tuple(
-            i for i in dir(self) if not i.startswith(&#34;__&#34;) and i != &#34;flatten&#34;
+            i
+            for i in dir(self)
+            if not i.startswith(&#34;__&#34;) and i not in (&#34;flatten&#34;, &#34;get_constant&#34;)
         )
 
         constants_defaults = {
@@ -491,7 +500,12 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
                     functions[component + &#34;__&#34; + item] = attr
         for attr in (&#34;constants&#34;, &#34;fastmath&#34;):
             functions[attr] = getattr(self, attr)
-        return namedtuple(&#34;FlattenedFormulae&#34;, functions.keys())(**functions)</code></pre>
+        return namedtuple(&#34;FlattenedFormulae&#34;, functions.keys())(**functions)
+
+    def get_constant(self, key: str):
+        &#34;&#34;&#34;getter-like method for cases where using the `constants` named tuple is not possible
+        (e.g., if calling from a language which does not support named tuples)&#34;&#34;&#34;
+        return getattr(self.constants, key)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -536,6 +550,25 @@ one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)</p></div>
 </details>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.formulae.Formulae.get_constant"><code class="name flex">
+<span>def <span class="ident">get_constant</span></span>(<span>self, key: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>getter-like method for cases where using the <code>constants</code> named tuple is not possible
+(e.g., if calling from a language which does not support named tuples)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_constant(self, key: str):
+    &#34;&#34;&#34;getter-like method for cases where using the `constants` named tuple is not possible
+    (e.g., if calling from a language which does not support named tuples)&#34;&#34;&#34;
+    return getattr(self.constants, key)</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -557,6 +590,7 @@ one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)</p></div>
 <h4><code><a title="PySDM.formulae.Formulae" href="#PySDM.formulae.Formulae">Formulae</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.formulae.Formulae.flatten" href="#PySDM.formulae.Formulae.flatten">flatten</a></code></li>
+<li><code><a title="PySDM.formulae.Formulae.get_constant" href="#PySDM.formulae.Formulae.get_constant">get_constant</a></code></li>
 </ul>
 </li>
 </ul>
