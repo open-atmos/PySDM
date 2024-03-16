@@ -2,8 +2,6 @@
 CPU implementation of backend methods wrapping basic physics formulae
 """
 
-from functools import cached_property
-
 import numba
 from numba import prange
 
@@ -127,70 +125,3 @@ class PhysicsMethods(BackendMethods):
 
     def mass_of_water_volume(self, mass, volume):
         self.mass_of_volume_body(mass.data, volume.data)
-
-    @cached_property
-    def __air_density_body(self):
-        formulae = self.formulae.flatten
-
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": formulae.fastmath})
-        def body(output, rhod, water_vapour_mixing_ratio):
-            for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-                output[i] = (
-                    formulae.state_variable_triplet__rho_of_rhod_and_water_vapour_mixing_ratio(
-                        rhod[i], water_vapour_mixing_ratio[i]
-                    )
-                )
-
-        return body
-
-    def air_density(self, *, output, rhod, water_vapour_mixing_ratio):
-        self.__air_density_body(output.data, rhod.data, water_vapour_mixing_ratio.data)
-
-    @cached_property
-    def __air_dynamic_viscosity_body(self):
-        formulae = self.formulae.flatten
-
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": formulae.fastmath})
-        def body(output, temperature):
-            for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-                output[i] = formulae.air_dynamic_viscosity__eta_air(temperature[i])
-
-        return body
-
-    def air_dynamic_viscosity(self, *, output, temperature):
-        self.__air_dynamic_viscosity_body(output.data, temperature.data)
-
-    @cached_property
-    def __reynolds_number_body(self):
-        formulae = self.formulae.flatten
-
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": formulae.fastmath})
-        def body(  # pylint: disable=too-many-arguments
-            output,
-            cell_id,
-            air_dynamic_viscosity,
-            air_density,
-            radius,
-            velocity_wrt_air,
-        ):
-            for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-                output[i] = formulae.particle_shape_and_density__reynolds_number(
-                    radius=radius[i],
-                    velocity_wrt_air=velocity_wrt_air[i],
-                    dynamic_viscosity=air_dynamic_viscosity[cell_id[i]],
-                    density=air_density[cell_id[i]],
-                )
-
-        return body
-
-    def reynolds_number(
-        self, *, output, cell_id, dynamic_viscosity, density, radius, velocity_wrt_air
-    ):
-        self.__reynolds_number_body(
-            output.data,
-            cell_id.data,
-            dynamic_viscosity.data,
-            density.data,
-            radius.data,
-            velocity_wrt_air.data,
-        )

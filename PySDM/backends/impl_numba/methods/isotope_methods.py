@@ -12,18 +12,18 @@ from PySDM.backends.impl_numba import conf
 
 class IsotopeMethods(BackendMethods):
     @cached_property
-    def __isotopic_delta_body(self):
-        phys_isotopic_delta = self.formulae.trivia.isotopic_ratio_2_delta
+    def _isotopic_delta_body(self):
+        ff = self.formulae_flattened
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def isotopic_delta(output, ratio, reference_ratio):
+        def body(output, ratio, reference_ratio):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-                output[i] = phys_isotopic_delta(ratio[i], reference_ratio)
+                output[i] = ff.trivia__isotopic_ratio_2_delta(ratio[i], reference_ratio)
 
-        return isotopic_delta
+        return body
 
     def isotopic_delta(self, output, ratio, reference_ratio):
-        self.__isotopic_delta_body(output.data, ratio.data, reference_ratio)
+        self._isotopic_delta_body(output.data, ratio.data, reference_ratio)
 
     def isotopic_fractionation(self):
         pass
