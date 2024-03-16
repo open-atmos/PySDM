@@ -62,7 +62,7 @@ class Moist:
         target["water_vapour_mixing_ratio"].ravel(self.get_water_vapour_mixing_ratio())
         target["thd"].ravel(self.get_thd())
 
-        self.particulator.backend.temperature_pressure_RH(
+        self.particulator.backend.temperature_pressure_rh(
             rhod=target["rhod"],
             thd=target["thd"],
             water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],

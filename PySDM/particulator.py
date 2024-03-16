@@ -91,7 +91,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def update_TpRH(self):
-        self.backend.temperature_pressure_RH(
+        self.backend.temperature_pressure_rh(
             # input
             rhod=self.environment.get_predicted("rhod"),
             thd=self.environment.get_predicted("thd"),
