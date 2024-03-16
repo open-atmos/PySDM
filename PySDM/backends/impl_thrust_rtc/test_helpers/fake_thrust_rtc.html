@@ -177,7 +177,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             dtype = np.bool_
         else:
             raise NotImplementedError(f&#34;Unsupported type {elem_cls}&#34;)
-        result = np.empty(size, dtype=dtype)
+        result = np.full(
+            size, np.nan if elem_cls in (&#34;float&#34;, &#34;double&#34;) else -666, dtype=dtype
+        )
         return FakeThrustRTC.DVVector(result)
 
     @staticmethod
@@ -416,7 +418,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             dtype = np.bool_
         else:
             raise NotImplementedError(f&#34;Unsupported type {elem_cls}&#34;)
-        result = np.empty(size, dtype=dtype)
+        result = np.full(
+            size, np.nan if elem_cls in (&#34;float&#34;, &#34;double&#34;) else -666, dtype=dtype
+        )
         return FakeThrustRTC.DVVector(result)
 
     @staticmethod
@@ -903,7 +907,9 @@ def device_vector(elem_cls, size):
         dtype = np.bool_
     else:
         raise NotImplementedError(f&#34;Unsupported type {elem_cls}&#34;)
-    result = np.empty(size, dtype=dtype)
+    result = np.full(
+        size, np.nan if elem_cls in (&#34;float&#34;, &#34;double&#34;) else -666, dtype=dtype
+    )
     return FakeThrustRTC.DVVector(result)</code></pre>
 </details>
 </dd>
