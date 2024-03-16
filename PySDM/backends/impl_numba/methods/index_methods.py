@@ -36,9 +36,8 @@ class IndexMethods(BackendMethods):
     def shuffle_local(self):
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def body(idx, u01, cell_start):
-            for c in numba.prange(
-                len(cell_start) - 1
-            ):  # pylint: disable=not-an-iterable
+            # pylint: disable=not-an-iterable
+            for c in numba.prange(len(cell_start) - 1):
                 for i in range(cell_start[c + 1] - 1, cell_start[c], -1):
                     j = int(
                         cell_start[c] + u01[i] * (cell_start[c + 1] - cell_start[c])

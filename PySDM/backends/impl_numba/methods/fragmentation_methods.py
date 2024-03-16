@@ -72,8 +72,7 @@ def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
         Rd[i] = 1.0 - Rs[i] - Rf[i]
 
 
-class FragmentationMethods(BackendMethods):  # pylint: disable=too-many-statements
-
+class FragmentationMethods(BackendMethods):
     @cached_property
     def _fragmentation_limiters_body(self):
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
@@ -378,7 +377,7 @@ class FragmentationMethods(BackendMethods):  # pylint: disable=too-many-statemen
         return body
 
     @cached_property
-    def _ll82_fragmentation_body(self):
+    def _ll82_fragmentation_body(self):  # pylint: disable=too-many-statements
         ff = self.formulae_flattened
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
