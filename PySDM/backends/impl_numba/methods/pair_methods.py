@@ -2,9 +2,10 @@
 CPU implementation of pairwise operations backend methods
 """
 
+from functools import cached_property
+
 import numba
 import numpy as np
-from functools import cached_property
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba import conf
@@ -43,6 +44,7 @@ class PairMethods(BackendMethods):
 
         return body
 
+    # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
         return self._find_pairs_body(
             cell_start=cell_start.data,
