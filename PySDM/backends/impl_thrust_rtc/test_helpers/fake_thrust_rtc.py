@@ -145,7 +145,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             dtype = np.bool_
         else:
             raise NotImplementedError(f"Unsupported type {elem_cls}")
-        result = np.empty(size, dtype=dtype)
+        result = np.full(
+            size, np.nan if elem_cls in ("float", "double") else -666, dtype=dtype
+        )
         return FakeThrustRTC.DVVector(result)
 
     @staticmethod
