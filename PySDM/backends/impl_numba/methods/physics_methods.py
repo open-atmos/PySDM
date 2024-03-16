@@ -2,9 +2,10 @@
 CPU implementation of backend methods wrapping basic physics formulae
 """
 
+from functools import cached_property
+
 import numba
 from numba import prange
-from functools import cached_property
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba import conf
@@ -128,7 +129,7 @@ class PhysicsMethods(BackendMethods):
         return body
 
     def mass_of_water_volume(self, mass, volume):
-        self.mass_of_volume_body(mass.data, volume.data)
+        self._mass_of_volume_body(mass.data, volume.data)
 
     @cached_property
     def __air_density_body(self):
