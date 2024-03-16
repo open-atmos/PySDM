@@ -50,9 +50,9 @@ class TestPairMethods:
         idx = backend.Storage.from_ndarray(np.asarray(_idx))
 
         sut = (
-            backend.sum_pair_body
+            backend._sum_pair_body
             if "NUMBA_DISABLE_JIT" in os.environ
-            else backend.sum_pair_body.py_func
+            else backend._sum_pair_body.py_func
         )
         # Act
         sut(
