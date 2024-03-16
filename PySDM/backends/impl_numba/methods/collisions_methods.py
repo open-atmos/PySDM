@@ -247,7 +247,6 @@ class CollisionsMethods(BackendMethods):
     @cached_property
     def _collision_coalescence_breakup_body(self):
         _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
-        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def body(
