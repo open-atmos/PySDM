@@ -71,6 +71,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self["z"][:] = params[3]
         self["t"][:] = params[4]
 
+        self._tmp["water_vapour_mixing_ratio"][:] = params[0]
         self.sync_parcel_vars()
         Moist.sync(self)
         self.notify()
