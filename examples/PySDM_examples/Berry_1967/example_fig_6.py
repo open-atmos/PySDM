@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 from PySDM.backends import CPU
 from PySDM.physics import constants as const
 
-backend = CPU
+backend = CPU()
 um = const.si.um
 
 
