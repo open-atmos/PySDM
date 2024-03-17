@@ -19,19 +19,12 @@ class PhysicsMethods(BackendMethods):
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p
         phys_pv = self.formulae.state_variable_triplet.pv
-        explicit_euler = self.formulae.trivia.explicit_euler
         phys_sigma = self.formulae.surface_tension.sigma
         phys_volume = self.formulae.trivia.volume
         phys_r_cr = self.formulae.hygroscopicity.r_cr
         phys_mass_to_volume = self.formulae.particle_shape_and_density.mass_to_volume
         phys_volume_to_mass = self.formulae.particle_shape_and_density.volume_to_mass
         const = self.formulae.constants
-
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def explicit_euler_body(y, dt, dy_dt):
-            y[:] = explicit_euler(y, dt, dy_dt)
-
-        self.explicit_euler_body = explicit_euler_body
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def critical_volume(*, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
@@ -52,6 +45,14 @@ class PhysicsMethods(BackendMethods):
         def temperature_pressure_RH_body(
             *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
         ):
+            if len(T.shape) == 1 and T.shape[0] == 1:  # TODO #1302
+                i = 0
+                T[i] = phys_T(rhod[i], thd[i])
+                p[i] = phys_p(rhod[i], T[i], water_vapour_mixing_ratio[i])
+                RH[i] = phys_pv(p[i], water_vapour_mixing_ratio[i]) / pvs_C(
+                    T[i] - const.T0
+                )
+                return
             for i in prange(T.shape[0]):  # pylint: disable=not-an-iterable
                 T[i] = phys_T(rhod[i], thd[i])
                 p[i] = phys_p(rhod[i], T[i], water_vapour_mixing_ratio[i])
@@ -65,6 +66,13 @@ class PhysicsMethods(BackendMethods):
         def a_w_ice_body(
             *, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out
         ):
+            if len(T_in.shape) == 1 and T_in.shape[0] == 1:  # TODO #1302
+                i = 0
+                pvi = pvi_C(T_in[i] - const.T0)
+                pv = phys_pv(p_in[i], water_vapour_mixing_ratio_in[i])
+                pvs = pv / RH_in[i]
+                a_w_ice_out[i] = pvi / pvs
+                return
             for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
                 pvi = pvi_C(T_in[i] - const.T0)
                 pv = phys_pv(p_in[i], water_vapour_mixing_ratio_in[i])
