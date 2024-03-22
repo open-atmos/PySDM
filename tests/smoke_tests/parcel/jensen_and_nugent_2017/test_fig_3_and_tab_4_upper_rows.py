@@ -101,3 +101,43 @@ class TestFig3:
             12 * si.um,
             significant=2,
         )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "mask_label, height, MeanRadius, Drop_spectral_width, Drop_dispersion",
+        (
+            ("ascent", 50, 5.28, 0.44, 0.083),
+            ("ascent", 100, 6.75, 0.38, 0.057),
+            ("ascent", 150, 7.75, 0.36, 0.046),
+            ("ascent", 200, 8.54, 0.34, 0.039),
+            ("ascent", 250, 9.20, 0.32, 0.035),
+            ("ascent", 300, 9.77, 0.31, 0.032),
+            ("descent", 300, 9.77, 0.31, 0.032),
+            ("descent", 250, 9.23, 0.33, 0.036),
+            ("descent", 200, 8.54, 0.36, 0.042),
+            ("descent", 150, 7.80, 0.39, 0.051),
+            ("descent", 100, 6.82, 0.45, 0.066),
+            ("descent", 50, 5.43, 0.57, 0.105),
+        ),
+    )
+    def test_table_4_upper_rows(
+        variables, mask_label, height, MeanRadius, Drop_spectral_width, Drop_dispersion
+    ):
+        # arrange
+        tolerance = 0.075
+
+        # act
+        actual = variables["table_values"]
+
+        # assert
+        for row in actual[mask_label]:
+            if int(row[0]) == height:
+                np.testing.assert_allclose(
+                    actual=float(row[1]), desired=MeanRadius, rtol=tolerance
+                )
+                np.testing.assert_allclose(
+                    actual=float(row[2]), desired=Drop_spectral_width, rtol=tolerance
+                )
+                np.testing.assert_allclose(
+                    actual=float(row[3]), desired=Drop_dispersion, rtol=tolerance
+                )
