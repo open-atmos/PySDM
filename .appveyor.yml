@@ -4,7 +4,7 @@ branches:
 environment:
   matrix:
   - platform: x86
-  - platform: x64
+#  - platform: x64
   
 build: false
 
