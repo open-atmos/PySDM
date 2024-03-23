@@ -128,11 +128,10 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         )
         drhod_dz = drho_dz
 
-        self.particulator.backend.explicit_euler(self._tmp["t"], dt, 1)
-        self.particulator.backend.explicit_euler(self._tmp["z"], dt, dz_dt)
-        self.particulator.backend.explicit_euler(
-            self._tmp["rhod"], dt, dz_dt * drhod_dz
-        )
+        for key, deriv in {"t": 1, "z": dz_dt, "rhod": dz_dt * drhod_dz}.items():
+            self._tmp[key][:] = self.formulae.trivia.explicit_euler(
+                y=self._tmp[key][0], dt=dt, dy_dt=deriv
+            )
 
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp["rhod"][0] + self["rhod"][0]) / 2, self.mass_of_dry_air

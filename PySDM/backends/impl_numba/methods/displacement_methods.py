@@ -108,7 +108,7 @@ class DisplacementMethods(BackendMethods):
     def calculate_displacement(
         self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
-        n_dims = len(courant.shape)
+        n_dims = len(courant.shape)  # TODO #1302
         scheme = self.formulae.particle_advection.displacement
         if n_dims == 1:
             DisplacementMethods.calculate_displacement_body_1d(
