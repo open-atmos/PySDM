@@ -597,7 +597,7 @@ class CondensationMethods(BackendMethods):
         max_iters,
     ):
         return CondensationMethods.make_condensation_solver_impl(
-            formulae=self.formulae.flatten,
+            formulae=self.formulae_flattened,
             timestep=timestep,
             dt_range=dt_range,
             adaptive=adaptive,
