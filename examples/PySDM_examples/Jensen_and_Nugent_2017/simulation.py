@@ -5,9 +5,16 @@ from PySDM_examples.Jensen_and_Nugent_2017 import table_3
 from PySDM import Builder
 from PySDM.physics import si
 from PySDM.backends import CPU
-from PySDM.products import PeakSupersaturation, ParcelDisplacement, Time
+from PySDM.products import (
+    PeakSupersaturation,
+    ParcelDisplacement,
+    Time,
+    ActivatedMeanRadius,
+    RadiusStandardDeviation,
+)
 from PySDM.environments import Parcel
-from PySDM.dynamics import Condensation, AmbientThermodynamics
+from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence
+from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import Logarithmic
 
 # note: 100 in caption of Table 1
@@ -15,7 +22,12 @@ N_SD_NON_GCCN = 100
 
 
 class Simulation(BasicSimulation):
-    def __init__(self, settings: Settings, gccn: bool = False):
+    def __init__(
+        self,
+        settings: Settings,
+        gccn: bool = False,
+        gravitational_coalsecence: bool = False,
+    ):
         const = settings.formulae.constants
         pvs_Celsius = settings.formulae.saturation_vapour_pressure.pvs_Celsius
         initial_water_vapour_mixing_ratio = const.eps / (
@@ -40,7 +52,7 @@ class Simulation(BasicSimulation):
             environment=env,
         )
 
-        additional_derived_attributes = ("radius",)
+        additional_derived_attributes = ("radius", "equilibrium supersaturation")
         for additional_derived_attribute in additional_derived_attributes:
             builder.request_attribute(additional_derived_attribute)
 
@@ -48,6 +60,8 @@ class Simulation(BasicSimulation):
             AmbientThermodynamics()
         )  # TODO #1266: order matters here, but error message is not saying it!
         builder.add_dynamic(Condensation())
+        if gravitational_coalsecence:
+            builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
 
         self.r_dry, n_in_unit_volume = Logarithmic(
             spectrum=settings.dry_radii_spectrum,
@@ -80,6 +94,12 @@ class Simulation(BasicSimulation):
                     PeakSupersaturation(name="S_max"),
                     ParcelDisplacement(name="z"),
                     Time(name="t"),
+                    ActivatedMeanRadius(
+                        name="r_mean_act", count_activated=True, count_unactivated=False
+                    ),
+                    RadiusStandardDeviation(
+                        name="r_std_act", count_activated=True, count_unactivated=False
+                    ),
                 ),
             )
         )
@@ -93,7 +113,9 @@ class Simulation(BasicSimulation):
     def run(
         self, *, n_steps: int = 2250, steps_per_output_interval: int = 10
     ):  # TODO #1266: essentially copied from G & P 2023
-        output_products = super()._run(n_steps, steps_per_output_interval)
+        output_products = super()._run(
+            nt=n_steps, steps_per_output_interval=steps_per_output_interval
+        )
         return {"products": output_products, "attributes": self.output_attributes}
 
     def _save(self, output):  # TODO #1266: copied from G&P 2023
