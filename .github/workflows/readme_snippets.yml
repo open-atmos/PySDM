@@ -14,10 +14,14 @@ on:
 
 jobs:
   python:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.1
-      - uses: actions/setup-python@v5.0.0
+      - if: matrix.platform != 'macos-14'
+        uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
       - run: pip install -e .[tests]
