@@ -120,7 +120,7 @@ class TestConstants:
         np.testing.assert_approx_equal(
             desired=constants_defaults.Mv,
             actual=Substance.from_formula("H2O").mass * si.gram / si.mole,
-            significant=4.5,
+            significant=5.5,
         )
 
     @staticmethod
