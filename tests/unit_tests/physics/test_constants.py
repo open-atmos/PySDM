@@ -118,8 +118,8 @@ class TestConstants:
     @staticmethod
     def test_isotope_molar_masses_vsmow_vs_mean_water_molar_mass():
         np.testing.assert_approx_equal(
-            desired=constants_defaults.Mv,
-            actual=Substance.from_formula("H2O").mass * si.gram / si.mole,
+            actual=Formulae().constants.Mv,
+            desired=Substance.from_formula("H2O").mass * si.gram / si.mole,
             significant=5.5,
         )
 

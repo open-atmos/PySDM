@@ -6,6 +6,7 @@ from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.physics import si
+from PySDM_examples import Jensen_and_Nugent_2017
 
 
 @strict
@@ -47,10 +48,10 @@ class Settings:
         self.rtol_thd = condensation.DEFAULTS.rtol_thd
         self.dt_cond_range = condensation.DEFAULTS.cond_range
 
-        self.T0 = 284.3 * si.kelvin
-        self.RH0 = 0.856
-        self.p0 = 938.5 * si.hectopascals
-        self.z0 = 600 * si.metres
+        self.T0 = Jensen_and_Nugent_2017.INITIAL_TEMPERATURE
+        self.RH0 = Jensen_and_Nugent_2017.INITIAL_RELATIVE_HUMIDITY
+        self.p0 = Jensen_and_Nugent_2017.INITIAL_PRESSURE
+        self.z0 = Jensen_and_Nugent_2017.INITIAL_ALTITUDE
         self.kappa = 0.53  # Petters and S. M. Kreidenweis mean growth-factor derived
 
         self.t0 = 1200 * si.second
