@@ -72,6 +72,7 @@ Md = (
 )
 
 # https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf
+# heavy-to-light isotope abundance ratios
 VSMOW_R_2H = 155.76 * PPM
 VSMOW_R_3H = 1.85e-11 * PPM
 VSMOW_R_18O = 2005.20 * PPM
@@ -86,19 +87,6 @@ M_3H = 3.01604927792 * si.g / si.mole
 M_16O = 15.99491461957 * si.g / si.mole
 M_17O = 16.99913175651 * si.g / si.mole
 M_18O = 17.99915961287 * si.g / si.mole
-
-Mv = (
-    1
-    - Trivia.mixing_ratio_to_specific_content(
-        VSMOW_R_2H / 2 + VSMOW_R_3H / 2 + VSMOW_R_17O + VSMOW_R_18O
-    )
-) * (
-    (M_1H * 2 + M_16O)
-    + (M_2H + M_1H + M_16O) * VSMOW_R_2H
-    + (M_3H + M_1H + M_16O) * VSMOW_R_3H
-    + (M_1H * 2 + M_17O) * VSMOW_R_17O
-    + (M_1H * 2 + M_18O) * VSMOW_R_18O
-)
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
@@ -390,6 +378,39 @@ FROESSLING_1938_B = 0.276
 
 
 def compute_derived_values(c: dict):
+    &#34;&#34;&#34;
+    computes derived quantities such as molar mass ratios, etc.
+
+    water molar mass is computed from from molecular masses and VSMOW isotope abundances
+    (and neglecting molecular binding energies)
+    for discussion, see:
+    - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
+    - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
+    &#34;&#34;&#34;
+
+    c[&#34;Mv&#34;] = (
+        (
+            1
+            - 2 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_2H&#34;])
+            - 2 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_3H&#34;])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_17O&#34;])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_18O&#34;])
+        )
+        * (c[&#34;M_1H&#34;] * 2 + c[&#34;M_16O&#34;])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_2H&#34;])
+        * (c[&#34;M_2H&#34;] + c[&#34;M_1H&#34;] + c[&#34;M_16O&#34;])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_3H&#34;])
+        * (c[&#34;M_3H&#34;] + c[&#34;M_1H&#34;] + c[&#34;M_16O&#34;])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_17O&#34;])
+        * (c[&#34;M_1H&#34;] * 2 + c[&#34;M_17O&#34;])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_18O&#34;])
+        * (c[&#34;M_1H&#34;] * 2 + c[&#34;M_18O&#34;])
+    )
+
     c[&#34;eps&#34;] = c[&#34;Mv&#34;] / c[&#34;Md&#34;]
     c[&#34;Rd&#34;] = c[&#34;R_str&#34;] / c[&#34;Md&#34;]
     c[&#34;Rv&#34;] = c[&#34;R_str&#34;] / c[&#34;Mv&#34;]
@@ -476,12 +497,50 @@ def compute_derived_values(c: dict):
 <span>def <span class="ident">compute_derived_values</span></span>(<span>c: dict)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>computes derived quantities such as molar mass ratios, etc.</p>
+<p>water molar mass is computed from from molecular masses and VSMOW isotope abundances
+(and neglecting molecular binding energies)
+for discussion, see:
+- caption of Table 2.1 in <a href="https://doi.org/10.1142/p027">Gat 2010</a>
+- <a href="http://www.iapws.org/relguide/fundam.pdf">IAPWS Guidelines</a></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def compute_derived_values(c: dict):
+    &#34;&#34;&#34;
+    computes derived quantities such as molar mass ratios, etc.
+
+    water molar mass is computed from from molecular masses and VSMOW isotope abundances
+    (and neglecting molecular binding energies)
+    for discussion, see:
+    - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
+    - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
+    &#34;&#34;&#34;
+
+    c[&#34;Mv&#34;] = (
+        (
+            1
+            - 2 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_2H&#34;])
+            - 2 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_3H&#34;])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_17O&#34;])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_18O&#34;])
+        )
+        * (c[&#34;M_1H&#34;] * 2 + c[&#34;M_16O&#34;])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_2H&#34;])
+        * (c[&#34;M_2H&#34;] + c[&#34;M_1H&#34;] + c[&#34;M_16O&#34;])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_3H&#34;])
+        * (c[&#34;M_3H&#34;] + c[&#34;M_1H&#34;] + c[&#34;M_16O&#34;])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_17O&#34;])
+        * (c[&#34;M_1H&#34;] * 2 + c[&#34;M_17O&#34;])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c[&#34;VSMOW_R_18O&#34;])
+        * (c[&#34;M_1H&#34;] * 2 + c[&#34;M_18O&#34;])
+    )
+
     c[&#34;eps&#34;] = c[&#34;Mv&#34;] / c[&#34;Md&#34;]
     c[&#34;Rd&#34;] = c[&#34;R_str&#34;] / c[&#34;Md&#34;]
     c[&#34;Rv&#34;] = c[&#34;R_str&#34;] / c[&#34;Mv&#34;]
