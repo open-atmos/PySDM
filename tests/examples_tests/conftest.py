@@ -26,6 +26,7 @@ TEST_SUITES = {
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
         "Pierchala_et_al_2022",
+        "Gedzelman_and_Arnold_1994",
         "Graf_et_al_2019",
         "Lamb_et_al_2017",
         # "Rozanski_and_Sonntag_1982",  # TODO #1207
