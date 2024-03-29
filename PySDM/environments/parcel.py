@@ -1,6 +1,7 @@
 """
 Zero-dimensional adiabatic parcel framework
 """
+
 from typing import List, Optional
 
 import numpy as np
