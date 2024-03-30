@@ -35,39 +35,77 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 
 def make_arbitrary_moment_product(**kwargs):
+    &#34;&#34;&#34;returns a product class to be instantiated and passed to a builder&#34;&#34;&#34;
     for arg in kwargs:
-        assert arg in (&#34;rank&#34;, &#34;attr&#34;, &#34;attr_unit&#34;)
+        assert arg in (
+            &#34;rank&#34;,
+            &#34;attr&#34;,
+            &#34;attr_unit&#34;,
+            &#34;skip_division_by_m0&#34;,
+            &#34;skip_division_by_dv&#34;,
+        )
 
     class ArbitraryMoment(MomentProduct):
         def __init__(
-            self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+            self,
+            name=None,
+            unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+            + (&#34;&#34; if kwargs[&#34;skip_division_by_dv&#34;] else &#34; / m**3&#34;),
         ):
             super().__init__(name=name, unit=unit)
-            self.attr = kwargs[&#34;attr&#34;]
-            self.rank = kwargs[&#34;rank&#34;]
 
-        def _impl(self, **kwargs):
+        def _impl(self, **_):
             self._download_moment_to_buffer(
-                attr=self.attr, rank=self.rank, skip_division_by_m0=True
+                attr=kwargs[&#34;attr&#34;],
+                rank=kwargs[&#34;rank&#34;],
+                skip_division_by_m0=kwargs[&#34;skip_division_by_m0&#34;],
             )
+            if not kwargs[&#34;skip_division_by_dv&#34;]:
+                self.buffer /= self.particulator.mesh.dv
             return self.buffer
 
     return ArbitraryMoment
 
 
-ZerothMoment = make_arbitrary_moment_product(rank=0, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
+ZerothMoment = make_arbitrary_moment_product(
+    rank=0,
+    attr=&#34;volume&#34;,
+    attr_unit=&#34;m^3&#34;,
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
+)
 
 VolumeFirstMoment = make_arbitrary_moment_product(
-    rank=1, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;
+    rank=1,
+    attr=&#34;volume&#34;,
+    attr_unit=&#34;m^3&#34;,
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
 )
 
 VolumeSecondMoment = make_arbitrary_moment_product(
-    rank=2, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;
+    rank=2,
+    attr=&#34;volume&#34;,
+    attr_unit=&#34;m^3&#34;,
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
 )
 
-RadiusSixthMoment = make_arbitrary_moment_product(rank=6, attr=&#34;radius&#34;, attr_unit=&#34;m&#34;)
+RadiusSixthMoment = make_arbitrary_moment_product(
+    rank=6,
+    attr=&#34;radius&#34;,
+    attr_unit=&#34;m&#34;,
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
+)
 
-RadiusFirstMoment = make_arbitrary_moment_product(rank=1, attr=&#34;radius&#34;, attr_unit=&#34;m&#34;)</code></pre>
+RadiusFirstMoment = make_arbitrary_moment_product(
+    rank=1,
+    attr=&#34;radius&#34;,
+    attr_unit=&#34;m&#34;,
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
+)</code></pre>
 </details>
 </section>
 <section>
@@ -81,27 +119,39 @@ RadiusFirstMoment = make_arbitrary_moment_product(rank=1, attr=&#34;radius&#34;,
 <span>def <span class="ident">make_arbitrary_moment_product</span></span>(<span>**kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>returns a product class to be instantiated and passed to a builder</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def make_arbitrary_moment_product(**kwargs):
+    &#34;&#34;&#34;returns a product class to be instantiated and passed to a builder&#34;&#34;&#34;
     for arg in kwargs:
-        assert arg in (&#34;rank&#34;, &#34;attr&#34;, &#34;attr_unit&#34;)
+        assert arg in (
+            &#34;rank&#34;,
+            &#34;attr&#34;,
+            &#34;attr_unit&#34;,
+            &#34;skip_division_by_m0&#34;,
+            &#34;skip_division_by_dv&#34;,
+        )
 
     class ArbitraryMoment(MomentProduct):
         def __init__(
-            self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+            self,
+            name=None,
+            unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+            + (&#34;&#34; if kwargs[&#34;skip_division_by_dv&#34;] else &#34; / m**3&#34;),
         ):
             super().__init__(name=name, unit=unit)
-            self.attr = kwargs[&#34;attr&#34;]
-            self.rank = kwargs[&#34;rank&#34;]
 
-        def _impl(self, **kwargs):
+        def _impl(self, **_):
             self._download_moment_to_buffer(
-                attr=self.attr, rank=self.rank, skip_division_by_m0=True
+                attr=kwargs[&#34;attr&#34;],
+                rank=kwargs[&#34;rank&#34;],
+                skip_division_by_m0=kwargs[&#34;skip_division_by_m0&#34;],
             )
+            if not kwargs[&#34;skip_division_by_dv&#34;]:
+                self.buffer /= self.particulator.mesh.dv
             return self.buffer
 
     return ArbitraryMoment</code></pre>
@@ -125,16 +175,21 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
     def __init__(
-        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        self,
+        name=None,
+        unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        + (&#34;&#34; if kwargs[&#34;skip_division_by_dv&#34;] else &#34; / m**3&#34;),
     ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#34;attr&#34;]
-        self.rank = kwargs[&#34;rank&#34;]
 
-    def _impl(self, **kwargs):
+    def _impl(self, **_):
         self._download_moment_to_buffer(
-            attr=self.attr, rank=self.rank, skip_division_by_m0=True
+            attr=kwargs[&#34;attr&#34;],
+            rank=kwargs[&#34;rank&#34;],
+            skip_division_by_m0=kwargs[&#34;skip_division_by_m0&#34;],
         )
+        if not kwargs[&#34;skip_division_by_dv&#34;]:
+            self.buffer /= self.particulator.mesh.dv
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -157,16 +212,21 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
     def __init__(
-        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        self,
+        name=None,
+        unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        + (&#34;&#34; if kwargs[&#34;skip_division_by_dv&#34;] else &#34; / m**3&#34;),
     ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#34;attr&#34;]
-        self.rank = kwargs[&#34;rank&#34;]
 
-    def _impl(self, **kwargs):
+    def _impl(self, **_):
         self._download_moment_to_buffer(
-            attr=self.attr, rank=self.rank, skip_division_by_m0=True
+            attr=kwargs[&#34;attr&#34;],
+            rank=kwargs[&#34;rank&#34;],
+            skip_division_by_m0=kwargs[&#34;skip_division_by_m0&#34;],
         )
+        if not kwargs[&#34;skip_division_by_dv&#34;]:
+            self.buffer /= self.particulator.mesh.dv
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -189,16 +249,21 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
     def __init__(
-        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        self,
+        name=None,
+        unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        + (&#34;&#34; if kwargs[&#34;skip_division_by_dv&#34;] else &#34; / m**3&#34;),
     ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#34;attr&#34;]
-        self.rank = kwargs[&#34;rank&#34;]
 
-    def _impl(self, **kwargs):
+    def _impl(self, **_):
         self._download_moment_to_buffer(
-            attr=self.attr, rank=self.rank, skip_division_by_m0=True
+            attr=kwargs[&#34;attr&#34;],
+            rank=kwargs[&#34;rank&#34;],
+            skip_division_by_m0=kwargs[&#34;skip_division_by_m0&#34;],
         )
+        if not kwargs[&#34;skip_division_by_dv&#34;]:
+            self.buffer /= self.particulator.mesh.dv
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -221,16 +286,21 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
     def __init__(
-        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        self,
+        name=None,
+        unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        + (&#34;&#34; if kwargs[&#34;skip_division_by_dv&#34;] else &#34; / m**3&#34;),
     ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#34;attr&#34;]
-        self.rank = kwargs[&#34;rank&#34;]
 
-    def _impl(self, **kwargs):
+    def _impl(self, **_):
         self._download_moment_to_buffer(
-            attr=self.attr, rank=self.rank, skip_division_by_m0=True
+            attr=kwargs[&#34;attr&#34;],
+            rank=kwargs[&#34;rank&#34;],
+            skip_division_by_m0=kwargs[&#34;skip_division_by_m0&#34;],
         )
+        if not kwargs[&#34;skip_division_by_dv&#34;]:
+            self.buffer /= self.particulator.mesh.dv
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -253,16 +323,21 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
     def __init__(
-        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        self,
+        name=None,
+        unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        + (&#34;&#34; if kwargs[&#34;skip_division_by_dv&#34;] else &#34; / m**3&#34;),
     ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#34;attr&#34;]
-        self.rank = kwargs[&#34;rank&#34;]
 
-    def _impl(self, **kwargs):
+    def _impl(self, **_):
         self._download_moment_to_buffer(
-            attr=self.attr, rank=self.rank, skip_division_by_m0=True
+            attr=kwargs[&#34;attr&#34;],
+            rank=kwargs[&#34;rank&#34;],
+            skip_division_by_m0=kwargs[&#34;skip_division_by_m0&#34;],
         )
+        if not kwargs[&#34;skip_division_by_dv&#34;]:
+            self.buffer /= self.particulator.mesh.dv
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>

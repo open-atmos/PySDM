@@ -54,10 +54,16 @@ def make_core(settings, coal_eff):
         adaptive=settings.adaptive,
     )
     builder.add_dynamic(collision)
-    M0 = am.make_arbitrary_moment_product(rank=0, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
-    M1 = am.make_arbitrary_moment_product(rank=1, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
-    M2 = am.make_arbitrary_moment_product(rank=2, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
-    products = (M0(name=&#34;M0&#34;), M1(name=&#34;M1&#34;), M2(name=&#34;M2&#34;))
+    common_args = {
+        &#34;attr&#34;: &#34;volume&#34;,
+        &#34;attr_unit&#34;: &#34;m^3&#34;,
+        &#34;skip_division_by_m0&#34;: True,
+        &#34;skip_division_by_dv&#34;: True,
+    }
+    products = tuple(
+        am.make_arbitrary_moment_product(rank=rank, **common_args)(name=f&#34;M{rank}&#34;)
+        for rank in range(3)
+    )
     return builder.build(attributes, products)</code></pre>
 </details>
 </section>
@@ -97,10 +103,16 @@ def make_core(settings, coal_eff):
         adaptive=settings.adaptive,
     )
     builder.add_dynamic(collision)
-    M0 = am.make_arbitrary_moment_product(rank=0, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
-    M1 = am.make_arbitrary_moment_product(rank=1, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
-    M2 = am.make_arbitrary_moment_product(rank=2, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;)
-    products = (M0(name=&#34;M0&#34;), M1(name=&#34;M1&#34;), M2(name=&#34;M2&#34;))
+    common_args = {
+        &#34;attr&#34;: &#34;volume&#34;,
+        &#34;attr_unit&#34;: &#34;m^3&#34;,
+        &#34;skip_division_by_m0&#34;: True,
+        &#34;skip_division_by_dv&#34;: True,
+    }
+    products = tuple(
+        am.make_arbitrary_moment_product(rank=rank, **common_args)(name=f&#34;M{rank}&#34;)
+        for rank in range(3)
+    )
     return builder.build(attributes, products)</code></pre>
 </details>
 </dd>
