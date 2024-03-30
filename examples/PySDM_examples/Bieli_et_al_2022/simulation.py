@@ -26,7 +26,12 @@ def make_core(settings, coal_eff):
         adaptive=settings.adaptive,
     )
     builder.add_dynamic(collision)
-    common_args = {"attr": "volume", "attr_unit": "m^3", "skip_division_by_m0": True}
+    common_args = {
+        "attr": "volume",
+        "attr_unit": "m^3",
+        "skip_division_by_m0": True,
+        "skip_division_by_dv": True,
+    }
     products = tuple(
         am.make_arbitrary_moment_product(rank=rank, **common_args)(name=f"M{rank}")
         for rank in range(3)
