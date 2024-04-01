@@ -129,7 +129,7 @@ class TestConstants:
         (("Rd", 287 * si.J / si.K / si.kg), ("Rv", 461 * si.J / si.K / si.kg)),
     )
     def test_gas_constants_vs_ams_glossary(item, value):
-        # https://glossary.ametsoc.org/wiki/Gas_constant
+        """vs. https://glossary.ametsoc.org/wiki/Gas_constant"""
         np.testing.assert_allclose(
             actual=getattr(Formulae().constants, item), desired=value, rtol=5e-3, atol=0
         )
@@ -146,4 +146,26 @@ class TestConstants:
             + physical_constants["neutron molar mass"][0]
             + physical_constants["neutron molar mass"][0]
             + physical_constants["electron molar mass"][0]
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "quantity, expected_value",
+        (
+            ("1/D_light_H2O__over__D_2H_enriched", 0.9835),
+            ("1/D_light_H2O__over__D_18O_enriched", 0.9687),
+        ),
+    )
+    def test_isotopic_diffusion_coefficients_ratios(quantity, expected_value):
+        """test against values given below eq. (22) in
+        [Horita et al. 2008](https://doi.org/10.1080/10256010801887174)"""
+        # arrange
+        const = Formulae(constants={"Md": constants_defaults.Md * 0.9986}).constants
+
+        # act
+        sut = getattr(const, quantity[2:])
+
+        # assert
+        np.testing.assert_approx_equal(
+            actual=1 / sut, desired=expected_value, significant=4
         )
