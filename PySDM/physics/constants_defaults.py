@@ -382,6 +382,7 @@ def compute_derived_values(c: dict):
         assuming same collision diameters for different isotopic water molecules:
 
         eq. (8) in [Stewart 1975](https://doi.org/10.1029/JC080i009p01133),
+        eq. (6) in [Cappa et al. 2003](https://doi.org/10.1029/2003JD003597)
         eq. (22) in [Horita et al. 2008](https://doi.org/10.1080/10256010801887174)
         """
         molar_mass_light = 2 * c["M_1H"] + c["M_16O"]
