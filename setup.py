@@ -30,7 +30,7 @@ setup(
         "numpy" + ("==1.24.4" if CI else ""),
         "Pint" + ("==0.21.1" if CI else ""),
         "chempy" + ("==0.8.3" if CI else ""),
-        "scipy" + ("==1.10.1" if CI and not _32bit else ""),
+        "scipy" + ("==1.12.0" if CI and not _32bit else ">=1.12.0"),
         "pyevtk" + ("==1.2.0" if CI else ""),
     ],
     extras_require={
