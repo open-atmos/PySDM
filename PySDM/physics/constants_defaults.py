@@ -343,6 +343,19 @@ FROESSLING_1938_A = 1
 FROESSLING_1938_B = 0.276
 
 
+""" fit coefficients from [Hellmann & Harvey 2020](https://doi.org/10.1029/2020GL089999) """
+HELLMANN_HARVEY_T_UNIT = 100 * si.K
+HELLMANN_HARVEY_EQ6_COEFF0 = 0.98258
+HELLMANN_HARVEY_EQ6_COEFF1 = -0.02546
+HELLMANN_HARVEY_EQ6_COEFF2 = 0.02421
+HELLMANN_HARVEY_EQ7_COEFF0 = 0.98284
+HELLMANN_HARVEY_EQ7_COEFF1 = 0.003517
+HELLMANN_HARVEY_EQ7_COEFF2 = -0.001996
+HELLMANN_HARVEY_EQ8_COEFF0 = 0.96671
+HELLMANN_HARVEY_EQ8_COEFF1 = 0.007406
+HELLMANN_HARVEY_EQ8_COEFF2 = -0.004861
+
+
 def compute_derived_values(c: dict):
     """
     computes derived quantities such as molar mass ratios, etc.
@@ -375,27 +388,6 @@ def compute_derived_values(c: dict):
         + 1
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         * (c["M_1H"] * 2 + c["M_18O"])
-    )
-
-    def isotopic_diffusivity_ratio(molar_mass_heavy):
-        """ratio of vapour diffusivity in air for light and heavy isotopes
-        assuming same collision diameters for different isotopic water molecules:
-
-        eq. (8) in [Stewart 1975](https://doi.org/10.1029/JC080i009p01133),
-        eq. (6) in [Cappa et al. 2003](https://doi.org/10.1029/2003JD003597)
-        eq. (22) in [Horita et al. 2008](https://doi.org/10.1080/10256010801887174)
-        """
-        molar_mass_light = 2 * c["M_1H"] + c["M_16O"]
-        return (
-            (molar_mass_heavy * (c["Md"] + molar_mass_light))
-            / (molar_mass_light * (c["Md"] + molar_mass_heavy))
-        ) ** 0.5
-
-    c["D_light_H2O__over__D_2H_enriched"] = isotopic_diffusivity_ratio(
-        c["M_2H"] + c["M_1H"] + c["M_16O"]
-    )
-    c["D_light_H2O__over__D_18O_enriched"] = isotopic_diffusivity_ratio(
-        2 * c["M_1H"] + c["M_18O"]
     )
 
     c["eps"] = c["Mv"] / c["Md"]

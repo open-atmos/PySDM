@@ -23,12 +23,12 @@ def notebook_local_variables_fixture():
 @pytest.mark.parametrize(
     "x, y, var",
     (
-        (0.99, 0.3, "eq_22"),
-        (0.898, 2 / 3, "eq_22"),
-        (0.875, 1, "eq_22"),
-        (0.8925, 0, "eq_23"),
-        (0.88, 2 / 3, "eq_23"),
-        (0.875, 1, "eq_23"),
+        (0.99, 0.27, "eq_22"),
+        (0.898, 0.62, "eq_22"),
+        (0.875, 0.95, "eq_22"),
+        (0.8875, 0, "eq_23"),
+        (0.88, 0.3, "eq_23"),
+        (0.85, 1, "eq_23"),
     ),
 )
 def test_fig_2(notebook_local_variables, x, y, var):

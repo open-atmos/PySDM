@@ -147,25 +147,3 @@ class TestConstants:
             + physical_constants["neutron molar mass"][0]
             + physical_constants["electron molar mass"][0]
         )
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        "quantity, expected_value",
-        (
-            ("1/D_light_H2O__over__D_2H_enriched", 0.9835),
-            ("1/D_light_H2O__over__D_18O_enriched", 0.9687),
-        ),
-    )
-    def test_isotopic_diffusion_coefficients_ratios(quantity, expected_value):
-        """test against values given below eq. (22) in
-        [Horita et al. 2008](https://doi.org/10.1080/10256010801887174)"""
-        # arrange
-        const = Formulae(constants={"Md": constants_defaults.Md * 0.9986}).constants
-
-        # act
-        sut = getattr(const, quantity[2:])
-
-        # assert
-        np.testing.assert_approx_equal(
-            actual=1 / sut, desired=expected_value, significant=4
-        )

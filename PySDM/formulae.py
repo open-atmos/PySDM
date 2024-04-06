@@ -48,6 +48,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_meteoric_water_line_excess: str = "Null",
         isotope_ratio_evolution: str = "Null",
+        isotope_diffusivity_ratios: str = "Null",
         optical_albedo: str = "Null",
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
@@ -79,6 +80,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         )
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
         self.isotope_ratio_evolution = isotope_ratio_evolution
+        self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
 
