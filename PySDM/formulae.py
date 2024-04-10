@@ -302,7 +302,7 @@ def _pick(value: str, choices: dict, constants: namedtuple):
             )
         parent_classes.append(choices[cls])
 
-    class Cls(*parent_classes):
+    class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
         def __init__(self, const):
             for cls in parent_classes:
                 cls.__init__(self, const)
