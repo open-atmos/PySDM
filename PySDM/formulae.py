@@ -302,6 +302,9 @@ def _pick(value: str, choices: dict, constants: namedtuple):
             )
         parent_classes.append(choices[cls])
 
+    if len(parent_classes) == 1:
+        return parent_classes[0](constants)
+
     class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
         def __init__(self, const):
             for cls in parent_classes:
