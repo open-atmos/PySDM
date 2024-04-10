@@ -320,7 +320,7 @@ def _pick(value: str, choices: dict, constants: namedtuple):
             f"Unknown setting: '{name}'; choices are: {tuple(choices.keys())}"
         )
 
-    obj.__name__ = value
+    obj.__name__ = value  # pylint: disable=attribute-defined-outside-init
     return obj
 
 
