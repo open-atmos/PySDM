@@ -107,8 +107,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.handle_all_breakups = handle_all_breakups
         dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
 
-        self.trivia = _magick(
-            "Trivia", physics.trivia, fastmath, constants, dimensional_analysis
+        self.trivia = _boost(
+            physics.trivia.Trivia(constants), fastmath, constants, dimensional_analysis
         )
 
         # each `component` corresponds to one subdirectory of PySDM/physics
@@ -288,13 +288,26 @@ def _c_inline(fun, return_type=None, constants=None, **args):
 
 
 def _pick(value: str, choices: dict, constants: namedtuple):
-    """selects a given physics logic and instantiates it passing the constants catalogue"""
-    for name, cls in choices.items():
-        if name == value:
-            return cls(constants)
-    raise ValueError(
-        f"Unknown setting: '{value}'; choices are: {tuple(choices.keys())}"
-    )
+    """
+    selects a given physics logic and instantiates it passing the constants catalogue
+
+    `value` is expected to be string containing a plus-separated list of class names
+    """
+    parent_class_names = value.split("+")
+    parent_classes = []
+    for cls in parent_class_names:
+        if cls not in choices:
+            raise ValueError(
+                f"Unknown setting: '{cls}'; choices are: {tuple(choices.keys())}"
+            )
+        parent_classes.append(choices[cls])
+
+    class Cls(*parent_classes):
+        def __init__(self, const):
+            for cls in parent_classes:
+                cls.__init__(self, const)
+
+    return Cls(constants)
 
 
 def _choices(module):

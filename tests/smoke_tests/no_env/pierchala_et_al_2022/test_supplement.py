@@ -9,7 +9,9 @@ from PySDM import Formulae
 def test_cracow_water_excesses():
     """checking if d-excess and 17O-excess values match those computed from deltas"""
     # arrange
-    formulae = Formulae(isotope_meteoric_water_line_excess="PierchalaEtAl2022")
+    formulae = Formulae(
+        isotope_meteoric_water_line_excess="Dansgaard1964+BarkanAndLuz2007"
+    )
     sut = formulae.isotope_meteoric_water_line_excess
 
     # act/assert
