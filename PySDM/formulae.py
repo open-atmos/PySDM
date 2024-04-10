@@ -224,7 +224,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
     """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
-    formulae = {"__name__": str(obj)}
+    formulae = {"__name__": obj.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
         if item.startswith("__") or not callable(attr):
@@ -303,14 +303,17 @@ def _pick(value: str, choices: dict, constants: namedtuple):
         parent_classes.append(choices[cls])
 
     if len(parent_classes) == 1:
-        return parent_classes[0](constants)
+        obj = parent_classes[0](constants)
+        obj.__name__ = value
+        return obj
 
     class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
         def __init__(self, const):
             for cls in parent_classes:
                 cls.__init__(self, const)
 
-        def __str__(self):
+        @property
+        def __name__(self):
             return value
 
     return Cls(constants)

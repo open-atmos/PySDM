@@ -11,6 +11,10 @@ class Trivia:  # pylint: disable=too-many-public-methods
     def __init__(self, _):
         pass
 
+    @property
+    def __name__(self):
+        return "Trivia"
+
     @staticmethod
     def volume_of_density_mass(rho, m):
         return m / rho
