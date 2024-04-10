@@ -224,7 +224,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
     """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
-    formulae = {"__name__": obj.__class__.__name__}
+    formulae = {"__name__": str(obj)}
     for item in dir(obj):
         attr = getattr(obj, item)
         if item.startswith("__") or not callable(attr):
