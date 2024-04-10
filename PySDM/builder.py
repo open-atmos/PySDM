@@ -107,8 +107,8 @@ class Builder:
 
         if "volume" in attributes and "water mass" not in attributes:
             assert self.particulator.formulae.particle_shape_and_density.__name__ in (
-                LiquidSpheres.__name__,
-                MixedPhaseSpheres.__name__,
+                str(LiquidSpheres),
+                str(MixedPhaseSpheres),
             ), "implied volume-to-mass conversion is only supported for spherical particles"
             attributes["water mass"] = (
                 self.particulator.formulae.particle_shape_and_density.volume_to_mass(

@@ -307,6 +307,9 @@ def _pick(value: str, choices: dict, constants: namedtuple):
             for cls in parent_classes:
                 cls.__init__(self, const)
 
+        def __str__(self):
+            return value
+
     return Cls(constants)
 
 
