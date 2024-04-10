@@ -289,39 +289,39 @@ def _c_inline(fun, return_type=None, constants=None, **args):
 
 def _pick(value: str, choices: dict, constants: namedtuple):
     """
-    selects a given physics logic and instantiates it passing the constants catalogue
-
+    selects a given physics logic and instantiates it passing the constants catalogue;
     `value` is expected to be string containing a plus-separated list of class names
     """
+
+    obj = None
     if "+" not in value:
         for name, cls in choices.items():
             if name == value:
                 obj = cls(constants)
-                obj.__name__ = value
-                return obj
+    else:
+        parent_classes = []
+        for name in value.split("+"):
+            if name not in choices:
+                parent_classes.clear()
+                break
+            parent_classes.append(choices[name])
+
+        if len(parent_classes) > 0:
+
+            class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
+                def __init__(self, const):
+                    for cls in parent_classes:
+                        cls.__init__(self, const)
+
+            obj = Cls(constants)
+
+    if obj is None:
         raise ValueError(
-            f"Unknown setting: '{value}'; choices are: {tuple(choices.keys())}"
+            f"Unknown setting: '{name}'; choices are: {tuple(choices.keys())}"
         )
 
-    parent_class_names = value.split("+")
-    parent_classes = []
-    for cls in parent_class_names:
-        if cls not in choices:
-            raise ValueError(
-                f"Unknown setting: '{cls}'; choices are: {tuple(choices.keys())}"
-            )
-        parent_classes.append(choices[cls])
-
-    class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
-        def __init__(self, const):
-            for cls in parent_classes:
-                cls.__init__(self, const)
-
-        @property
-        def __name__(self):
-            return value
-
-    return Cls(constants)
+    obj.__name__ = value
+    return obj
 
 
 def _choices(module):
