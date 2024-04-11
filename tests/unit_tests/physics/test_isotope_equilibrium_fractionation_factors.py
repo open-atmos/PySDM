@@ -43,7 +43,7 @@ CASES = (
 )
 """values from Fig. 1 in [Bolot et al. 2013](https://doi.org/10.5194/acp-13-7903-2013)"""
 
-PAPERS = ("BolotEtAl2013", "VanHook1968")
+PAPERS = ("MerlivatAndNief1967+Majoube1970+Majoube1971", "VanHook1968")
 
 # TODO #1208: tests for VanHook1968 H2_17O, HOT
 
