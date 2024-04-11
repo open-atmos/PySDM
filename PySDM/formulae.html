@@ -253,7 +253,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
     &#34;&#34;&#34;returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached&#34;&#34;&#34;
-    formulae = {&#34;__name__&#34;: obj.__class__.__name__}
+    formulae = {&#34;__name__&#34;: obj.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
         if item.startswith(&#34;__&#34;) or not callable(attr):
@@ -317,13 +317,40 @@ def _c_inline(fun, return_type=None, constants=None, **args):
 
 
 def _pick(value: str, choices: dict, constants: namedtuple):
-    &#34;&#34;&#34;selects a given physics logic and instantiates it passing the constants catalogue&#34;&#34;&#34;
-    for name, cls in choices.items():
-        if name == value:
-            return cls(constants)
-    raise ValueError(
-        f&#34;Unknown setting: &#39;{value}&#39;; choices are: {tuple(choices.keys())}&#34;
-    )
+    &#34;&#34;&#34;
+    selects a given physics logic and instantiates it passing the constants catalogue;
+    `value` is expected to be string containing a plus-separated list of class names
+    &#34;&#34;&#34;
+
+    obj = None
+    if &#34;+&#34; not in value:
+        for name, cls in choices.items():
+            if name == value:
+                obj = cls(constants)
+    else:
+        parent_classes = []
+        for name in value.split(&#34;+&#34;):
+            if name not in choices:
+                parent_classes.clear()
+                break
+            parent_classes.append(choices[name])
+
+        if len(parent_classes) &gt; 0:
+
+            class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
+                def __init__(self, const):
+                    for cls in parent_classes:
+                        cls.__init__(self, const)
+
+            obj = Cls(constants)
+
+    if obj is None:
+        raise ValueError(
+            f&#34;Unknown setting: &#39;{name}&#39;; choices are: {tuple(choices.keys())}&#34;
+        )
+
+    obj.__name__ = value  # pylint: disable=attribute-defined-outside-init
+    return obj
 
 
 def _choices(module):
