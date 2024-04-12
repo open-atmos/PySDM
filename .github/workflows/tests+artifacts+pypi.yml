@@ -132,7 +132,7 @@ jobs:
             python-version: "3.8"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 60
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4.1.1
         with:
@@ -215,7 +215,6 @@ jobs:
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBA_OPT: 1
         run: |
           python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
           python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
