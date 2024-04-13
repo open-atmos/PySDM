@@ -191,8 +191,7 @@ jobs:
           echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
           echo toml_ci_md5=$(cat pyproject.toml setup.py .github/workflows/tests+artifacts+pypi.yml \
           | python -c "import hashlib;print(hashlib.md5(open('/dev/stdin','rb').read()).hexdigest())") >> $GITHUB_ENV
-      - id: cache
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
           path: ${{ env.pip_user_site }}
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
@@ -201,7 +200,7 @@ jobs:
           python -m pip install --upgrade --user pip
           python -m pip install -e . ./examples
           python -m pip install -r tests/devops_tests/requirements.txt
-      - id: cache-save
+      - if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: ${{ env.pip_user_site }}
