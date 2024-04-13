@@ -184,10 +184,10 @@ jobs:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.8", "3.11"]
-        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
+        test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 50
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4.1.1
         with:
