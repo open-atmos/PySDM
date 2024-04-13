@@ -48,6 +48,7 @@ TEST_SUITES = {
         "Bartman_2020_MasterThesis",
         "Bulenok_2023_MasterThesis",
         "deJong_Azimi",
+        "Shipway_and_Hill_2012",
     ],
     "multi-process_b": [
         "Bartman_et_al_2021",
@@ -55,7 +56,6 @@ TEST_SUITES = {
         "Arabas_et_al_2015",
         "Arabas_et_al_2023",
         "Szumowski_et_al_1998",
-        "Shipway_and_Hill_2012",
         "utils",
     ],
 }
