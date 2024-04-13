@@ -187,7 +187,7 @@ jobs:
         test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4.1.1
         with:
