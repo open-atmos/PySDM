@@ -165,7 +165,7 @@ jobs:
       - if: matrix.test-suite == 'tutorials_tests'
         run: pip install -r tests/devops_tests/requirements.txt 
 
-      - name: *** run pytest
+      - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUMBA_OPT: 1
