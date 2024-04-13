@@ -147,7 +147,7 @@ jobs:
       # sanity check if we do not depend on something from tests extras
       - run: python -We -c "import PySDM"
 
-      - if: startsWith(matrix.test-suite, 'smoke_tests')
+      - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
         run: pip install -e ./examples
 
       - run: pip install -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
