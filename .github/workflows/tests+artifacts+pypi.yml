@@ -142,29 +142,23 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: |
-          pip install -e .
+      - run: pip install -e .
 
       # sanity check if we do not depend on something from tests extras
-      - run: |
-          python -We -c "import PySDM"
+      - run: python -We -c "import PySDM"
 
       - if: startsWith(matrix.test-suite, 'smoke_tests')
         run: pip install -e ./examples
 
-      - run: pip install -e .[tests]
-
-      # ensure previous pip did not overwrite the package
-      - run: |
-          pip install -e .
-
-      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
-      - if: startsWith(matrix.platform, 'ubuntu-')
-        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+      - run: pip install -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
 
       # install devops_tests for tutorials_tests
       - if: matrix.test-suite == 'tutorials_tests'
         run: pip install -r tests/devops_tests/requirements.txt 
+
+      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
       - name: Run pytest
         env:
@@ -235,9 +229,12 @@ jobs:
           echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
           echo toml_ci_md5=$(cat pyproject.toml setup.py .github/workflows/tests+artifacts+pypi.yml \
           | python -c "import hashlib;print(hashlib.md5(open('/dev/stdin','rb').read()).hexdigest())") >> $GITHUB_ENV
+      - run: |
+          rm -rf $pip_user_site/*
       - id: cache
         uses: actions/cache/restore@v4
         with:
+          fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
