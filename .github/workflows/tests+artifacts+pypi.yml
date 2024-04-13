@@ -230,7 +230,7 @@ jobs:
           echo toml_ci_md5=$(cat pyproject.toml setup.py .github/workflows/tests+artifacts+pypi.yml \
           | python -c "import hashlib;print(hashlib.md5(open('/dev/stdin','rb').read()).hexdigest())") >> $GITHUB_ENV
       - run: |
-          rm -rf $pip_user_site/*
+          rm -rf $pip_user_site
       - id: cache
         uses: actions/cache/restore@v4
         with:
