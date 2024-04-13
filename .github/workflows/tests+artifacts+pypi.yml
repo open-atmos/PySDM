@@ -132,7 +132,7 @@ jobs:
             python-version: "3.8"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 35
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4.1.1
         with:
@@ -165,7 +165,8 @@ jobs:
       - if: matrix.test-suite == 'tutorials_tests'
         run: pip install -r tests/devops_tests/requirements.txt 
 
-      - env:
+      - name: *** run pytest
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUMBA_OPT: 1
         run: |
@@ -186,6 +187,7 @@ jobs:
         test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4.1.1
         with:
