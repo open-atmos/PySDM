@@ -105,7 +105,7 @@ class TestFormulae:
     @staticmethod
     def test_pick_reports_correct_missing_name():
         # arrange
-        class Cls:  # pylit:disable=too-few-public-methods
+        class Cls:  # pylint:disable=too-few-public-methods
             def __init__(self, _):
                 pass
 
