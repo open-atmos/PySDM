@@ -32,6 +32,7 @@ from . import (
     isotope_meteoric_water_line_excess,
     isotope_ratio_evolution,
     isotope_diffusivity_ratios,
+    isotope_relaxation_timescale,
     latent_heat,
     optical_albedo,
     optical_depth,
