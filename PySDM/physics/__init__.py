@@ -16,7 +16,7 @@ Physical constants and formulae (mostly one-liners)
     (thus resulting in more readable, and more reusable code).
 """
 
-from . import (
+from . import (  # pylint: disable=import-self
     condensation_coordinate,
     constants_defaults,
     diffusion_kinetics,
