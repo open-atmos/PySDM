@@ -1,3 +1,7 @@
+"""
+tests for isotope relaxation timescale formulae
+"""
+
 import pytest
 
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
