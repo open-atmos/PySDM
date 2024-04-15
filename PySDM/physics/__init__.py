@@ -16,7 +16,7 @@ Physical constants and formulae (mostly one-liners)
     (thus resulting in more readable, and more reusable code).
 """
 
-from PySDM.physics import (
+from . import (
     condensation_coordinate,
     constants_defaults,
     diffusion_kinetics,
