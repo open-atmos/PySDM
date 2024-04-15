@@ -1,7 +1,11 @@
+"""
+Rogers & Yau "A short course in cloud physics" (equations: 8.5, 8.6, 8.8)
+"""
+
 import numpy as np
 
 
-class RogersYau:
+class RogersYau:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
