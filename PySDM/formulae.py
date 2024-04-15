@@ -304,8 +304,7 @@ def _pick(value: str, choices: dict, constants: namedtuple):
             if name == value:
                 obj = cls(constants)
                 break
-            else:
-                name = value
+            name = value
     else:
         parent_classes = []
         for name in value.split("+"):
@@ -325,7 +324,7 @@ def _pick(value: str, choices: dict, constants: namedtuple):
 
     if obj is None:
         raise ValueError(
-            f"Unknown setting: '{name}'; choices are: {tuple(choices.keys())}"
+            f"Unknown setting: {name}; choices are: {', '.join(choices.keys())}"
         )
 
     obj.__name__ = value  # pylint: disable=attribute-defined-outside-init
