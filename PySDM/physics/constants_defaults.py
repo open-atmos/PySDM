@@ -311,14 +311,14 @@ CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 
 """ TODO #1266 """
-diffussion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
-diffussion_thermics_D_G11_B = 0.015 / si.K
-diffussion_thermics_D_G11_C = -1.9
+diffusion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
+diffusion_thermics_D_G11_B = 0.015 / si.K
+diffusion_thermics_D_G11_C = -1.9
 
-diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
-diffussion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
-diffussion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
-diffussion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
+diffusion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
+diffusion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
+diffusion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
+diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 """
 [Pruppacher & Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036<1255:AWTIOT>2.0.CO;2)
@@ -354,6 +354,14 @@ HELLMANN_HARVEY_EQ7_COEFF2 = -0.001996
 HELLMANN_HARVEY_EQ8_COEFF0 = 0.96671
 HELLMANN_HARVEY_EQ8_COEFF1 = 0.007406
 HELLMANN_HARVEY_EQ8_COEFF2 = -0.004861
+
+
+""" terminal velocity formulation from Rogers & Yau (equations: 8.5, 8.6, 8.8) """
+ROGERS_YAU_TERM_VEL_SMALL_K = 1.19e6 / si.cm / si.s
+ROGERS_YAU_TERM_VEL_MEDIUM_K = 8e3 / si.s
+ROGERS_YAU_TERM_VEL_LARGE_K = 2.01e3 * si.cm**0.5 / si.s
+ROGERS_YAU_TERM_VEL_SMALL_R_LIMIT = 35 * si.um
+ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT = 600 * si.um
 
 
 def compute_derived_values(c: dict):
