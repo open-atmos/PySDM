@@ -303,6 +303,9 @@ def _pick(value: str, choices: dict, constants: namedtuple):
         for name, cls in choices.items():
             if name == value:
                 obj = cls(constants)
+                break
+            else:
+                name = value
     else:
         parent_classes = []
         for name in value.split("+"):
