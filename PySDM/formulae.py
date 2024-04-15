@@ -83,6 +83,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
+        self.terminal_velocity = terminal_velocity
 
         self._components = tuple(
             i

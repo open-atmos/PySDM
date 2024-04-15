@@ -43,5 +43,6 @@ from . import (
     trivia,
     ventilation,
     air_dynamic_viscosity,
+    terminal_velocity,
 )
 from .constants import convert_to, in_unit, si
