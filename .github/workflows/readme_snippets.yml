@@ -24,9 +24,9 @@ jobs:
         uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
+      - run: pip install setuptools  # for Python 3.12 on macos-14
       - run: pip install -e .[tests]
       - run: pip install pytest-codeblocks pytest
-      - run: pip install setuptools  # for Python 3.12 on macos-14
       - run: pip install "pyparsing<3.0.0"  # https://github.com/matplotlib/matplotlib/issues/25204
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('README.md'); f=open('readme.py', 'w'); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
       - run: python -We readme.py
