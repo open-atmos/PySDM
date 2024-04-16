@@ -18,7 +18,7 @@ class GrabowskiEtAl2011:
     def K(const, T, p):  # pylint: disable=unused-argument
         """eq (12)"""
         return (
-            const.diffussion_thermics_K_G11_A * T**3
+            const.diffusion_thermics_K_G11_A * T**3
             + const.diffusion_thermics_K_G11_B * T**2
             + const.diffusion_thermics_K_G11_C * T
             + const.diffusion_thermics_K_G11_D
