@@ -27,7 +27,7 @@ def notebook_local_variables_fixture():
         (0.898, 0.62, "eq_22"),
         (0.875, 0.95, "eq_22"),
         (0.8875, 0, "eq_23"),
-        (0.88, 0.3, "eq_23"),
+        (0.88, 0.32, "eq_23"),
         (0.85, 1, "eq_23"),
     ),
 )
@@ -36,8 +36,8 @@ def test_fig_2(notebook_local_variables, x, y, var):
     discrepancies, the comparison is rough and effectively just a regression test
     (expected values roughly correspond to the paper plot, but are based on PySDM output)
     """
-    plot_x = notebook_local_variables["x"]
-    plot_y = notebook_local_variables[f"y_{var}"]
+    plot_x = notebook_local_variables["fig2_x"]
+    plot_y = notebook_local_variables[f"fig2_y"][var]
     eps = (plot_x[1] - plot_x[0]) / 2
     index = np.where(abs(plot_x - x) < eps)
     np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
