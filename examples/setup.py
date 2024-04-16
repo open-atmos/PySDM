@@ -37,7 +37,6 @@ setup(
         "tests": [
             "pytest",
             "nbconvert",
-            "jupyter-server" + "<2.14.0" if CI else "",
             "jupyter-core" + "<5.0.0" if CI else "",
             # https://github.com/jupyter/nbformat/issues/232
             "jsonschema" + "==3.2.0" if CI else "",
