@@ -148,4 +148,4 @@ class TestIsotopeDiffusivityRatios:
             pyplot.clf()
 
         # assert
-        # TODO (pyplot ylim?)
+        # TODO #1307 (pyplot ylim?)

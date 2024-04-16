@@ -302,6 +302,7 @@ jobs:
   pkg_install_check:
     strategy:
       matrix:
+<<<<<<< HEAD
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
         python-version: ["3.8", "3.11", "system"]
         exclude:
@@ -315,6 +316,10 @@ jobs:
             python-version: "3.8"
           - platform: macos-14
             python-version: "3.11"
+=======
+        platform: [ubuntu-latest, macos-12, windows-latest]
+        python-version: ["3.8", "3.11"]
+>>>>>>> 1fd8c4c4 (todo labels, separate pip-install action steps to facilitate debugging)
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
