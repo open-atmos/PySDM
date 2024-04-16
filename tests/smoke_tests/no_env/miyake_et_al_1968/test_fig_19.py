@@ -20,34 +20,41 @@ def notebook_local_variables_fixture():
     )
 
 
-# TODO!
 class TestFig19:
     @staticmethod
-    @pytest.mark.parametrize(
-        "T, alpha_i_2H, paper",
-        (
-            (180, 1.50, "MerlivatAndNief1967"),
-            (220, 1.27, "MerlivatAndNief1967"),
-            (273, 1.13, "MerlivatAndNief1967"),
-            (193, 1.60, "EllehojEtAl2013"),
-            (220, 1.35, "EllehojEtAl2013"),
-            (273, 1.13, "EllehojEtAl2013"),
-            (180, 1.44, "LambEtAl2017"),
-            (220, 1.25, "LambEtAl2017"),
-            (273, 1.13, "LambEtAl2017"),
-        ),
-    )
-    def test_values_match(notebook_local_variables, T, alpha_i_2H, paper):
+    def test_values(notebook_local_variables):
         plot_x = notebook_local_variables["plot_x"]
-        plot_y = notebook_local_variables["plot_y"][paper]
-        eps = 5e-1
-        index = np.where(abs(plot_x - T) < eps)
-        np.testing.assert_approx_equal(
-            actual=plot_y[index], desired=alpha_i_2H, significant=3
-        )
+        assert 0.6 < min(plot_x) < 0.8
+        assert 1.9 < max(plot_x) < 2.1
+
+        for plot_y in notebook_local_variables["plot_y"].values():
+            assert 0 < min(plot_y) < 5
+            assert 1.3 < max(plot_y) < 20
+
+    @staticmethod
+    def test_temperature_dependence(notebook_local_variables):
+        for variant in notebook_local_variables["VENTILATION_VARIANTS"]:
+            for iso in ("18O", "17O", "2H"):
+                assert (
+                    notebook_local_variables["plot_y"][f"{variant}-{283.15}-{iso}"]
+                    < notebook_local_variables["plot_y"][f"{variant}-{293.15}-{iso}"]
+                ).all()
+
+    @staticmethod
+    def test_isotope_dependence(notebook_local_variables):
+        for temp in (283.15, 293.15):
+            for variant in notebook_local_variables["VENTILATION_VARIANTS"]:
+                assert (
+                    notebook_local_variables["plot_y"][f"{variant}-{temp}-18O"]
+                    > notebook_local_variables["plot_y"][f"{variant}-{temp}-17O"]
+                ).all()
+                assert (
+                    notebook_local_variables["plot_y"][f"{variant}-{temp}-17O"]
+                    > notebook_local_variables["plot_y"][f"{variant}-{temp}-2H"]
+                ).all()
 
     @staticmethod
     def test_monotonic(notebook_local_variables):
-        assert (np.diff(notebook_local_variables["T"]) > 0).all()
-        for paper in notebook_local_variables["PAPERS"]:
-            assert (np.diff(notebook_local_variables["alphas"][paper]) < 0).all()
+        assert (np.diff(notebook_local_variables["plot_x"]) > 0).all()
+        for key in notebook_local_variables["plot_y"]:
+            assert (np.diff(notebook_local_variables["plot_y"][key]) < 0).all()
