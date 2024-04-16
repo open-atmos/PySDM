@@ -29,6 +29,7 @@ TEST_SUITES = {
         "Gedzelman_and_Arnold_1994",
         "Graf_et_al_2019",
         "Lamb_et_al_2017",
+        "Miyake_et_al_1968",
         # "Rozanski_and_Sonntag_1982",  # TODO #1207
     ],
     "condensation_a": [
