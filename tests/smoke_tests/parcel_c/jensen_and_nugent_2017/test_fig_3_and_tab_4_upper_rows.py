@@ -120,10 +120,10 @@ class TestFig3:
             ("descent", 50, (5.43, 0.57, 0.105)),
         ),
     )
-    def test_table_4_upper_rows(variables, mask_label, height, mr_dsp_dd):
+    def test_table_4_upper_rows(variables, mask_label, height, mr_sw_rd):
         # arrange
         tolerance = 0.075
-        mean_radius, spectral_width, relative_dispersion = *mr_sw_rd
+        mean_radius, spectral_width, relative_dispersion = mr_sw_rd
 
         # act
         actual = variables["table_values"]

@@ -156,7 +156,7 @@ class TestFig4And7:
         ):
             # arrange
             tolerance = 0.075
-            mean_radius, spectral_width, relative_dispersion = *mr_sw_rd
+            mean_radius, spectral_width, relative_dispersion = mr_sw_rd
 
             # act
             actual = variables["table_values"]
