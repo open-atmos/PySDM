@@ -132,11 +132,7 @@ jobs:
             python-version: "3.8"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-<<<<<<< HEAD
-    timeout-minutes: 100
-=======
     timeout-minutes: 40
->>>>>>> upstream/main
     steps:
       - uses: actions/checkout@v4.1.1
         with:
