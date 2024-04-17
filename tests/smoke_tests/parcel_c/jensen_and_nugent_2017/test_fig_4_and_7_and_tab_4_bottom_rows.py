@@ -132,32 +132,31 @@ class TestFig4And7:
 
         @staticmethod
         @pytest.mark.parametrize(
-            "mask_label, height, MeanRadius, Drop_spectral_width, Drop_dispersion",
+            "mask_label, height, mr_sw_rd",
             (
-                ("ascent", 50, 5.26, 0.45, 0.093),
-                ("ascent", 100, 6.73, 0.45, 0.066),
-                ("ascent", 150, 7.73, 0.43, 0.055),
-                ("ascent", 200, 8.52, 0.41, 0.048),
-                ("ascent", 250, 9.19, 0.41, 0.044),
-                ("ascent", 300, 9.77, 0.40, 0.041),
-                ("descent", 300, 9.77, 0.40, 0.041),
-                ("descent", 250, 9.21, 0.43, 0.047),
-                ("descent", 200, 8.56, 0.46, 0.054),
-                ("descent", 150, 7.78, 0.51, 0.065),
-                ("descent", 100, 6.79, 0.57, 0.084),
-                ("descent", 50, 5.38, 0.69, 0.129),
+                ("ascent", 50, (5.26, 0.45, 0.093)),
+                ("ascent", 100, (6.73, 0.45, 0.066)),
+                ("ascent", 150, (7.73, 0.43, 0.055)),
+                ("ascent", 200, (8.52, 0.41, 0.048)),
+                ("ascent", 250, (9.19, 0.41, 0.044)),
+                ("ascent", 300, (9.77, 0.40, 0.041)),
+                ("descent", 300, (9.77, 0.40, 0.041)),
+                ("descent", 250, (9.21, 0.43, 0.047)),
+                ("descent", 200, (8.56, 0.46, 0.054)),
+                ("descent", 150, (7.78, 0.51, 0.065)),
+                ("descent", 100, (6.79, 0.57, 0.084)),
+                ("descent", 50, (5.38, 0.69, 0.129)),
             ),
         )
         def test_table_4_bottom_rows(
             variables,
             mask_label,
             height,
-            MeanRadius,
-            Drop_spectral_width,
-            Drop_dispersion,
+            mr_sw_rd,
         ):
             # arrange
             tolerance = 0.075
+            mean_radius, spectral_width, relative_dispersion = *mr_sw_rd
 
             # act
             actual = variables["table_values"]
@@ -166,13 +165,15 @@ class TestFig4And7:
             for row in actual[mask_label]:
                 if int(row[0]) == height:
                     np.testing.assert_allclose(
-                        actual=float(row[1]), desired=MeanRadius, rtol=tolerance
+                        actual=float(row[1]), desired=mean_radius, rtol=tolerance
                     )
                     np.testing.assert_allclose(
                         actual=float(row[2]),
-                        desired=Drop_spectral_width,
+                        desired=spectral_width,
                         rtol=tolerance,
                     )
                     np.testing.assert_allclose(
-                        actual=float(row[3]), desired=Drop_dispersion, rtol=tolerance
+                        actual=float(row[3]),
+                        desired=relative_dispersion,
+                        rtol=tolerance,
                     )
