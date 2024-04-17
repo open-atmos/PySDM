@@ -4,6 +4,7 @@ the magick behind "pip install PySDM"
 
 import os
 import platform
+import sys
 
 from setuptools import find_packages, setup
 
@@ -26,11 +27,33 @@ setup(
     install_requires=[
         "ThrustRTC==0.3.20",
         "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
-        "numba" + ("==0.58.1" if CI and not _32bit else ">=0.51.2"),
+        "numba"
+        + (
+            {
+                8: "==0.58.1",
+                9: "==0.58.1",
+                10: "==0.58.1",
+                11: "==0.58.1",
+                12: "==0.59.1",
+            }[sys.version_info.minor]
+            if CI and not _32bit
+            else ">=0.51.2"
+        ),
         "numpy" + ("==1.24.4" if CI else ""),
         "Pint" + ("==0.21.1" if CI else ""),
         "chempy" + ("==0.8.3" if CI else ""),
-        "scipy" + ("==1.10.1" if CI and not _32bit else ""),
+        "scipy"
+        + (
+            {
+                8: "==1.10.1",
+                9: "==1.10.1",
+                10: "==1.10.1",
+                11: "==1.10.1",
+                12: "==1.13.0",
+            }[sys.version_info.minor]
+            if CI and not _32bit
+            else ""
+        ),
         "pyevtk" + ("==1.2.0" if CI else ""),
     ],
     extras_require={
@@ -38,7 +61,7 @@ setup(
             "matplotlib",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==1.1.2",
+            "PyPartMC==1.1.4",
         ]
         + (
             [

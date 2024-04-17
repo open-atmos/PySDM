@@ -79,7 +79,7 @@ class Straub2010Nf(VolumeBasedFragmentationFunction):
         self.arrays["gam"].divide_if_not_zero(self.arrays["tmp"])
 
         for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
-            self.straub_tmp[key] *= 0.0
+            self.straub_tmp[key].fill(0)
 
         self.particulator.backend.straub_fragmentation(
             n_fragment=nf,

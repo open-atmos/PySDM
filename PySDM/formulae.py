@@ -224,7 +224,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
     """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
-    formulae = {"__name__": obj.__class__.__name__}
+    formulae = {"__name__": obj.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
         if item.startswith("__") or not callable(attr):
@@ -288,13 +288,40 @@ def _c_inline(fun, return_type=None, constants=None, **args):
 
 
 def _pick(value: str, choices: dict, constants: namedtuple):
-    """selects a given physics logic and instantiates it passing the constants catalogue"""
-    for name, cls in choices.items():
-        if name == value:
-            return cls(constants)
-    raise ValueError(
-        f"Unknown setting: '{value}'; choices are: {tuple(choices.keys())}"
-    )
+    """
+    selects a given physics logic and instantiates it passing the constants catalogue;
+    `value` is expected to be string containing a plus-separated list of class names
+    """
+
+    obj = None
+    if "+" not in value:
+        for name, cls in choices.items():
+            if name == value:
+                obj = cls(constants)
+    else:
+        parent_classes = []
+        for name in value.split("+"):
+            if name not in choices:
+                parent_classes.clear()
+                break
+            parent_classes.append(choices[name])
+
+        if len(parent_classes) > 0:
+
+            class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
+                def __init__(self, const):
+                    for cls in parent_classes:
+                        cls.__init__(self, const)
+
+            obj = Cls(constants)
+
+    if obj is None:
+        raise ValueError(
+            f"Unknown setting: '{name}'; choices are: {tuple(choices.keys())}"
+        )
+
+    obj.__name__ = value  # pylint: disable=attribute-defined-outside-init
+    return obj
 
 
 def _choices(module):

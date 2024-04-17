@@ -38,6 +38,7 @@ Md = (
 )
 
 # https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf
+# heavy-to-light isotope abundance ratios
 VSMOW_R_2H = 155.76 * PPM
 VSMOW_R_3H = 1.85e-11 * PPM
 VSMOW_R_18O = 2005.20 * PPM
@@ -52,19 +53,6 @@ M_3H = 3.01604927792 * si.g / si.mole
 M_16O = 15.99491461957 * si.g / si.mole
 M_17O = 16.99913175651 * si.g / si.mole
 M_18O = 17.99915961287 * si.g / si.mole
-
-Mv = (
-    1
-    - Trivia.mixing_ratio_to_specific_content(
-        VSMOW_R_2H / 2 + VSMOW_R_3H / 2 + VSMOW_R_17O + VSMOW_R_18O
-    )
-) * (
-    (M_1H * 2 + M_16O)
-    + (M_2H + M_1H + M_16O) * VSMOW_R_2H
-    + (M_3H + M_1H + M_16O) * VSMOW_R_3H
-    + (M_1H * 2 + M_17O) * VSMOW_R_17O
-    + (M_1H * 2 + M_18O) * VSMOW_R_18O
-)
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
@@ -356,6 +344,39 @@ FROESSLING_1938_B = 0.276
 
 
 def compute_derived_values(c: dict):
+    """
+    computes derived quantities such as molar mass ratios, etc.
+
+    water molar mass is computed from from molecular masses and VSMOW isotope abundances
+    (and neglecting molecular binding energies)
+    for discussion, see:
+    - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
+    - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
+    """
+
+    c["Mv"] = (
+        (
+            1
+            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+        )
+        * (c["M_1H"] * 2 + c["M_16O"])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+        * (c["M_2H"] + c["M_1H"] + c["M_16O"])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+        * (c["M_3H"] + c["M_1H"] + c["M_16O"])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
+        * (c["M_1H"] * 2 + c["M_17O"])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+        * (c["M_1H"] * 2 + c["M_18O"])
+    )
+
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
     c["Rv"] = c["R_str"] / c["Mv"]

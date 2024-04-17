@@ -1,5 +1,7 @@
 """ tests ensuring proper condensation solver operation in some parcel-model based cases """
 
+import numpy as np
+
 import pytest
 from matplotlib import pyplot
 from scipy import signal
@@ -177,3 +179,29 @@ class TestParcelSanityChecks:
             assert pred_thd_old != env.get_predicted("thd")[cell_id]
         else:
             assert pred_thd_old == env.get_predicted("thd")[cell_id]
+
+    @staticmethod
+    def test_zero_initial_delta_liquid_water_mixing_ratio(backend_class):
+        # arrange
+        env = Parcel(
+            dt=1 * si.s,
+            mass_of_dry_air=np.nan * si.mg,
+            p0=np.nan * si.hPa,
+            initial_water_vapour_mixing_ratio=44 * si.g / si.kg,
+            T0=np.nan * si.K,
+            w=np.nan * si.m / si.s,
+        )
+        builder = Builder(n_sd=1, backend=backend_class(), environment=env)
+        builder.add_dynamic(AmbientThermodynamics())
+        builder.add_dynamic(Condensation())
+
+        # act
+        _ = builder.build(
+            products=(),
+            attributes=builder.particulator.environment.init_attributes(
+                kappa=1, r_dry=0.25 * si.um, n_in_dv=1000
+            ),
+        )
+
+        # assert
+        assert env.delta_liquid_water_mixing_ratio == 0

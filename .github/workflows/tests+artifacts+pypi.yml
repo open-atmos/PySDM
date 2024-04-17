@@ -126,13 +126,17 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: ["3.8", "3.11"]
-        test-suite: ["unit_tests", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - test-suite: "devops_tests"
             python-version: "3.8"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
+<<<<<<< HEAD
     timeout-minutes: 100
+=======
+    timeout-minutes: 40
+>>>>>>> upstream/main
     steps:
       - uses: actions/checkout@v4.1.1
         with:
@@ -142,47 +146,80 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - run: |
-          pip install -e .
+      - run: pip install -e .
 
       # sanity check if we do not depend on something from tests extras
-      - run: |
-          python -We -c "import PySDM"
+      - run: python -We -c "import PySDM"
 
-      - run: |
-          pip install -e ./examples
-          pip install -e .[tests]
+      - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
+        run: pip install -e ./examples
 
-      # ensure previous pip did not overwrite the package
-      - run: |
-          pip install -e .
-
-      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
-      - if: startsWith(matrix.platform, 'ubuntu-')
-        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+      - run: pip install -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
 
       # install devops_tests for tutorials_tests
       - if: matrix.test-suite == 'tutorials_tests'
         run: pip install -r tests/devops_tests/requirements.txt 
 
-      - env:
+      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+
+      - name: Run pytest
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
+          NUMBA_OPT: 1
+        run: |
+          shopt -s extglob
+          pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
 
 #       - if: ${{ failure() }}
 #         uses: mxschmitt/action-tmate@v3
 #         with:
 #           limit-access-to-actor: true
 
-  examples:
-    needs: [pylint, precommit]
+  examples-setup:
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.8", "3.11"]
-        test-suite: [ "aqueous_chemistry", "freezing", "condensation", "coagulation", "breakup", "multi-process", "isotopes"]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: |
+          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests+artifacts+pypi.yml \
+          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        with:
+          path: ${{ env.pip_user_site }}
+          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+      - if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
+          python -m pip install -e . ./examples
+          python -m pip install -r tests/devops_tests/requirements.txt
+      - if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.pip_user_site }}
+          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+
+  examples:
+    needs: [pylint, precommit, examples-setup]
+    strategy:
+      matrix:
+        platform: [ubuntu-22.04, macos-12, windows-latest]
+        python-version: ["3.8", "3.11"]
+        test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4.1.1
         with:
@@ -192,10 +229,17 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: |
-          python -m pip install --upgrade --user pip
+          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests+artifacts+pypi.yml \
+          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
       - run: |
-          python -m pip install -e . ./examples
-          python -m pip install -r tests/devops_tests/requirements.txt
+          rm -rf $pip_user_site
+      - id: cache
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: ${{ env.pip_user_site }}
+          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
@@ -262,19 +306,37 @@ jobs:
   pkg_install_check:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.11"]
+        platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
+        python-version: ["3.8", "3.11", "system"]
+        exclude:
+          - platform: ubuntu-latest
+            python-version: system
+          - platform: macos-12
+            python-version: system
+          - platform: windows-latest
+            python-version: system
+          - platform: macos-14
+            python-version: "3.8"
+          - platform: macos-14
+            python-version: "3.11"
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
-      - uses: actions/setup-python@v5.0.0
+      - if: matrix.platform != 'macos-14'
+        uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
+      - if: matrix.platform == 'macos-14'
+        run: |
+          sudo ln -s `which python3` /usr/local/bin/python
+          echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
+          # Python 3.12 workaround  
+          python -m pip install --break-system-packages setuptools
       - uses: actions/download-artifact@v3
         with:
           name: dist
           path: dist     
-      - run: pip install dist/*.whl
+      - run: python -m pip install $PIP_INSTALL_ARGS dist/*.whl
       - run: python -c "import PySDM; print(PySDM.__version__)"
       - run: python -c "import PySDM_examples; print(PySDM_examples.__version__)"
 
