@@ -197,7 +197,7 @@ jobs:
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          python -m pip install --upgrade --user pip
+          python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
           python -m pip install -e . ./examples
           python -m pip install -r tests/devops_tests/requirements.txt
       - if: steps.cache.outputs.cache-hit != 'true'
@@ -302,19 +302,37 @@ jobs:
   pkg_install_check:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.8", "3.11"]
+        platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
+        python-version: ["3.8", "3.11", "system"]
+        exclude:
+          - platform: ubuntu-latest
+            python-version: system
+          - platform: macos-12
+            python-version: system
+          - platform: windows-latest
+            python-version: system
+          - platform: macos-14
+            python-version: "3.8"
+          - platform: macos-14
+            python-version: "3.11"
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
-      - uses: actions/setup-python@v5.0.0
+      - if: matrix.platform != 'macos-14'
+        uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
+      - if: matrix.platform == 'macos-14'
+        run: |
+          sudo ln -s `which python3` /usr/local/bin/python
+          echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
+          # Python 3.12 workaround  
+          python -m pip install --break-system-packages setuptools
       - uses: actions/download-artifact@v3
         with:
           name: dist
           path: dist     
-      - run: pip install dist/*.whl
+      - run: python -m pip install $PIP_INSTALL_ARGS dist/*.whl
       - run: python -c "import PySDM; print(PySDM.__version__)"
       - run: python -c "import PySDM_examples; print(PySDM_examples.__version__)"
 
