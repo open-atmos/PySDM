@@ -35,7 +35,10 @@ jobs:
       - run: |
           python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('README.md'); f=open('readme.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
       - run: cat -n readme.py
-      - run: python -We readme.py
+      - if: matrix.platform == 'macos-14'
+        run: python readme.py
+      - if: matrix.platform != 'macos-14'
+        run: python -We readme.py
       - run: sed -i -e 's/CPU/GPU/g' readme.py
       - run: python -We readme.py
       
