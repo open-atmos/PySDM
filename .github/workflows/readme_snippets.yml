@@ -47,7 +47,7 @@ jobs:
           python -We readme.py
       
       - name: artefacts
-        if: github.ref == 'refs/heads/main' && matrix.platform == 'macos-14'
+        if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest'
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
