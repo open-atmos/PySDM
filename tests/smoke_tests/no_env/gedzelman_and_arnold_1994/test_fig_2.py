@@ -37,7 +37,7 @@ def test_fig_2(notebook_local_variables, x, y, var):
     (expected values roughly correspond to the paper plot, but are based on PySDM output)
     """
     plot_x = notebook_local_variables["fig2_x"]
-    plot_y = notebook_local_variables[f"fig2_y"][var]
+    plot_y = notebook_local_variables["fig2_y"][var]
     eps = (plot_x[1] - plot_x[0]) / 2
     index = np.where(abs(plot_x - x) < eps)
     np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
