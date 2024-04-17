@@ -24,10 +24,14 @@ jobs:
         uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
-      - run: pip install setuptools  # for Python 3.12 on macos-14
-      - run: pip install -e .[tests]
-      - run: pip install pytest-codeblocks pytest
-      - run: pip install "pyparsing<3.0.0"  # https://github.com/matplotlib/matplotlib/issues/25204
+      - if: matrix.platform == 'macos-14'
+        run: |
+          sudo ln -s `which python3` /usr/local/bin/python
+          echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
+          python -m pip install --break-system-packages setuptools # Python 3.12 workaround  
+      - run: python -m pip install $PIP_INSTALL_ARGS -e .[tests]
+      - run: python -m pip install $PIP_INSTALL_ARGS pytest-codeblocks pytest
+      - run: python -m pip install $PIP_INSTALL_ARGS "pyparsing<3.0.0"  # https://github.com/matplotlib/matplotlib/issues/25204
       - run: |
           python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('README.md'); f=open('readme.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
       - run: cat -n readme.py
