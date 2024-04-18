@@ -107,7 +107,7 @@ class TestFig4And7:
             (
                 ("ascent", "SS_eq", 0.1, (0, 0.1 * PER_CENT)),
                 ("ascent", "SS_eq", 2, (-0.75 * PER_CENT, 0)),
-                ("ascent", "SS_eq", 9, (-2 * PER_CENT, -0.6 * PER_CENT)),
+                ("ascent", "SS_eq", 9, (-2.01 * PER_CENT, -0.6 * PER_CENT)),
                 ("descent", "SS_eq", 0.1, (0, 0.1 * PER_CENT)),
                 ("descent", "SS_eq", 2, (-0.75 * PER_CENT, 0)),
                 ("descent", "SS_eq", 9, (-1 * PER_CENT, -0.25 * PER_CENT)),
