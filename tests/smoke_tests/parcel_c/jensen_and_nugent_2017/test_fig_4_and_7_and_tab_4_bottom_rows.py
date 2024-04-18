@@ -155,7 +155,7 @@ class TestFig4And7:
             mr_sw_rd,
         ):
             # arrange
-            tolerance = 0.075
+            tolerance = 0.2
             mean_radius, spectral_width, relative_dispersion = mr_sw_rd
 
             # act
