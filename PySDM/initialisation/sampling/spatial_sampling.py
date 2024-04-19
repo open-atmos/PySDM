@@ -8,7 +8,7 @@ spatial sampling logic (i.e., physical x-y-z coordinates)
 
 class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def sample(*, backend, grid, n_sd, z_part= None, x_part= None):
+    def sample(*, backend, grid, n_sd, z_part=None, x_part=None):
         dimension = len(grid)
         n_elements = dimension * n_sd
 
@@ -20,7 +20,7 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
             if x_part is not None:
                 ix_min = int(grid[1] * x_part[0])
                 ix_max = int(grid[1] * x_part[1])
-                
+
                 for dim in range(dimension):
                     if dim:
                         positions[dim, :] *= ix_max - ix_min
@@ -33,7 +33,7 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
         else:
             iz_min = int(grid[0] * z_part[0])
             iz_max = int(grid[0] * z_part[1])
-            
+
             if x_part is not None:
                 ix_min = int(grid[1] * x_part[0])
                 ix_max = int(grid[1] * x_part[1])
