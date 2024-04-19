@@ -8,7 +8,7 @@ spatial sampling logic (i.e., physical x-y-z coordinates)
 
 class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def sample(*, backend, grid, n_sd, z_part=None):
+    def sample(*, backend, grid, n_sd, z_part= None, x_part= None):
         dimension = len(grid)
         n_elements = dimension * n_sd
 
@@ -17,14 +17,40 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
         positions = storage.to_ndarray().reshape(dimension, n_sd)
 
         if z_part is None:
-            for dim in range(dimension):
-                positions[dim, :] *= grid[dim]
+            if x_part is not None:
+                ix_min = int(grid[1] * x_part[0])
+                ix_max = int(grid[1] * x_part[1])
+                
+                for dim in range(dimension):
+                    if dim:
+                        positions[dim, :] *= ix_max - ix_min
+                        positions[dim, :] += ix_min
+                    else:
+                        positions[dim, :] *= grid[dim]
+            else:
+                for dim in range(dimension):
+                    positions[dim, :] *= grid[dim]
         else:
-            assert dimension == 1
             iz_min = int(grid[0] * z_part[0])
             iz_max = int(grid[0] * z_part[1])
-            for dim in range(dimension):
-                positions[dim, :] *= iz_max - iz_min
-                positions[dim, :] += iz_min
+            
+            if x_part is not None:
+                ix_min = int(grid[1] * x_part[0])
+                ix_max = int(grid[1] * x_part[1])
+
+                for dim in range(dimension):
+                    if dim:
+                        positions[dim, :] *= ix_max - ix_min
+                        positions[dim, :] += ix_min
+                    else:
+                        positions[dim, :] *= iz_max - iz_min
+                        positions[dim, :] += iz_min
+            else:
+                for dim in range(dimension):
+                    if dim:
+                        positions[dim, :] *= grid[dim]
+                    else:
+                        positions[dim, :] *= iz_max - iz_min
+                        positions[dim, :] += iz_min
 
         return positions
