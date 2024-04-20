@@ -312,7 +312,7 @@ asymmetry_g = 0.85  # forward scattering from cloud droplets
 
 """ TODO #1266 """
 diffussion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
-diffussion_thermics_D_G11_B = 0.15 / si.K
+diffussion_thermics_D_G11_B = 0.015 / si.K
 diffussion_thermics_D_G11_C = -1.9
 
 diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
@@ -386,3 +386,20 @@ def compute_derived_values(c: dict):
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
+
+
+W76W_G0 = -2.9912729e3 * si.K**2
+W76W_G1 = -6.0170128e3 * si.K
+W76W_G2 = 1.887643854e1
+W76W_G3 = -2.8354721e-2 * si.K**-1
+W76W_G4 = 1.7838301e-5 * si.K**-2
+W76W_G5 = -8.4150417e-10 * si.K**-3
+W76W_G6 = 4.4412543e-13 * si.K**-4
+W76W_G7 = 2.858487
+W76W_G8 = 1 * si.Pa
+
+B80W_G0 = 6.112 * si.hPa
+B80W_G1 = 17.67 * si.dimensionless
+B80W_G2 = 243.5 * si.K
+
+one_kelvin = 1 * si.K
