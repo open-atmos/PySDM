@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM_examples.Jensen_and_Nugent_2017.settings API documentation</title>
-<meta name="description" content="" />
+<title>PySDM.physics.saturation_vapour_pressure.bolton_1980 API documentation</title>
+<meta name="description" content="[Bolton 1980](https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,78 +19,34 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM_examples.Jensen_and_Nugent_2017.settings</code></h1>
+<h1 class="title">Module <code>PySDM.physics.saturation_vapour_pressure.bolton_1980</code></h1>
 </header>
 <section id="section-intro">
+<p><a href="https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2">Bolton 1980</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from typing import Optional
+<pre><code class="python">&#34;&#34;&#34;
+[Bolton 1980](https://doi.org/10.1175/1520-0493(1980)108&lt;1046:TCOEPT&gt;2.0.CO;2)
+&#34;&#34;&#34;
 
-from pystrict import strict
-from PySDM import Formulae
-from PySDM.physics import si
-from PySDM.initialisation.spectra import Lognormal, Sum
-
-INITIAL_RELATIVE_HUMIDITY = 0.8561
-INITIAL_TEMPERATURE = 284.3 * si.K
-INITIAL_PRESSURE = 938.5 * si.hPa
-INITIAL_ALTITUDE = 600 * si.metres
+import numpy as np
 
 
-@strict
-class Settings:
-    def __init__(self, *, aerosol: str, cloud_type: str, dt: Optional[float] = None):
-        self.p0 = INITIAL_PRESSURE
-        self.RH0 = INITIAL_RELATIVE_HUMIDITY
-        self.T0 = INITIAL_TEMPERATURE
-        self.z0 = INITIAL_ALTITUDE
-        self.t_end_of_ascent = 1500 * si.s if cloud_type == &#34;Sc&#34; else None
-        self.dt = dt or 1 * si.s  # TODO #1266: not found in the paper yet
+class Bolton1980:
+    def __init__(self, _):
+        pass
 
-        self.kappa = 1.28  # Table 1 from Petters &amp; Kreidenweis 2007
+    @staticmethod
+    def pvs_Celsius(const, T):
+        &#34;&#34;&#34;valid for -30 &lt;= T &lt;= 35 C, eq (10)&#34;&#34;&#34;
+        return const.B80W_G0 * np.exp((const.B80W_G1 * T) / (T + const.B80W_G2))
 
-        self.formulae = Formulae(
-            saturation_vapour_pressure=&#34;FlatauWalkoCotton&#34;,  # TODO #1266: Bolton
-            diffusion_kinetics=&#34;GrabowskiEtAl2011&#34;,
-            diffusion_thermics=&#34;GrabowskiEtAl2011&#34;,
-            constants={
-                # values from appendix B
-                &#34;MAC&#34;: 0.036,
-                &#34;HAC&#34;: 0.7,
-            },
-        )
-
-        self.vertical_velocity = {
-            # Table 2 in the paper
-            &#34;Sc&#34;: lambda t: (1 if t &lt; self.t_end_of_ascent else -1) * 0.4 * si.m / si.s,
-            &#34;Cu&#34;: 2 * si.m / si.s,
-        }[cloud_type]
-
-        self.dry_radii_spectrum = {
-            # Table 1 in the paper
-            &#34;modified polluted&#34;: Sum(
-                (
-                    Lognormal(
-                        norm_factor=48 / si.cm**3, m_mode=0.029 * si.um, s_geom=1.36
-                    ),
-                    Lognormal(
-                        norm_factor=114 / si.cm**3, m_mode=0.071 * si.um, s_geom=1.57
-                    ),
-                )
-            ),
-            &#34;pristine&#34;: Sum(
-                (
-                    Lognormal(
-                        norm_factor=125 / si.cm**3, m_mode=0.011 * si.um, s_geom=1.2
-                    ),
-                    Lognormal(
-                        norm_factor=65 / si.cm**3, m_mode=0.06 * si.um, s_geom=1.7
-                    ),
-                )
-            ),
-        }[aerosol]</code></pre>
+    @staticmethod
+    def ice_Celsius(const, T):
+        &#34;&#34;&#34;NaN with unit of pressure and correct dimension&#34;&#34;&#34;
+        return np.nan * T / const.B80W_G2 * const.B80W_G0</code></pre>
 </details>
 </section>
 <section>
@@ -102,9 +58,9 @@ class Settings:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM_examples.Jensen_and_Nugent_2017.settings.Settings"><code class="flex name class">
-<span>class <span class="ident">Settings</span></span>
-<span>(</span><span>*, aerosol: str, cloud_type: str, dt: Optional[float] = None)</span>
+<dt id="PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980"><code class="flex name class">
+<span>class <span class="ident">Bolton1980</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -112,59 +68,53 @@ class Settings:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@strict
-class Settings:
-    def __init__(self, *, aerosol: str, cloud_type: str, dt: Optional[float] = None):
-        self.p0 = INITIAL_PRESSURE
-        self.RH0 = INITIAL_RELATIVE_HUMIDITY
-        self.T0 = INITIAL_TEMPERATURE
-        self.z0 = INITIAL_ALTITUDE
-        self.t_end_of_ascent = 1500 * si.s if cloud_type == &#34;Sc&#34; else None
-        self.dt = dt or 1 * si.s  # TODO #1266: not found in the paper yet
+<pre><code class="python">class Bolton1980:
+    def __init__(self, _):
+        pass
 
-        self.kappa = 1.28  # Table 1 from Petters &amp; Kreidenweis 2007
+    @staticmethod
+    def pvs_Celsius(const, T):
+        &#34;&#34;&#34;valid for -30 &lt;= T &lt;= 35 C, eq (10)&#34;&#34;&#34;
+        return const.B80W_G0 * np.exp((const.B80W_G1 * T) / (T + const.B80W_G2))
 
-        self.formulae = Formulae(
-            saturation_vapour_pressure=&#34;FlatauWalkoCotton&#34;,  # TODO #1266: Bolton
-            diffusion_kinetics=&#34;GrabowskiEtAl2011&#34;,
-            diffusion_thermics=&#34;GrabowskiEtAl2011&#34;,
-            constants={
-                # values from appendix B
-                &#34;MAC&#34;: 0.036,
-                &#34;HAC&#34;: 0.7,
-            },
-        )
-
-        self.vertical_velocity = {
-            # Table 2 in the paper
-            &#34;Sc&#34;: lambda t: (1 if t &lt; self.t_end_of_ascent else -1) * 0.4 * si.m / si.s,
-            &#34;Cu&#34;: 2 * si.m / si.s,
-        }[cloud_type]
-
-        self.dry_radii_spectrum = {
-            # Table 1 in the paper
-            &#34;modified polluted&#34;: Sum(
-                (
-                    Lognormal(
-                        norm_factor=48 / si.cm**3, m_mode=0.029 * si.um, s_geom=1.36
-                    ),
-                    Lognormal(
-                        norm_factor=114 / si.cm**3, m_mode=0.071 * si.um, s_geom=1.57
-                    ),
-                )
-            ),
-            &#34;pristine&#34;: Sum(
-                (
-                    Lognormal(
-                        norm_factor=125 / si.cm**3, m_mode=0.011 * si.um, s_geom=1.2
-                    ),
-                    Lognormal(
-                        norm_factor=65 / si.cm**3, m_mode=0.06 * si.um, s_geom=1.7
-                    ),
-                )
-            ),
-        }[aerosol]</code></pre>
+    @staticmethod
+    def ice_Celsius(const, T):
+        &#34;&#34;&#34;NaN with unit of pressure and correct dimension&#34;&#34;&#34;
+        return np.nan * T / const.B80W_G2 * const.B80W_G0</code></pre>
 </details>
+<h3>Static methods</h3>
+<dl>
+<dt id="PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980.ice_Celsius"><code class="name flex">
+<span>def <span class="ident">ice_Celsius</span></span>(<span>const, T)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>NaN with unit of pressure and correct dimension</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def ice_Celsius(const, T):
+    &#34;&#34;&#34;NaN with unit of pressure and correct dimension&#34;&#34;&#34;
+    return np.nan * T / const.B80W_G2 * const.B80W_G0</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980.pvs_Celsius"><code class="name flex">
+<span>def <span class="ident">pvs_Celsius</span></span>(<span>const, T)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>valid for -30 &lt;= T &lt;= 35 C, eq (10)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def pvs_Celsius(const, T):
+    &#34;&#34;&#34;valid for -30 &lt;= T &lt;= 35 C, eq (10)&#34;&#34;&#34;
+    return const.B80W_G0 * np.exp((const.B80W_G1 * T) / (T + const.B80W_G2))</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -177,13 +127,17 @@ class Settings:
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM_examples.Jensen_and_Nugent_2017" href="index.html">PySDM_examples.Jensen_and_Nugent_2017</a></code></li>
+<li><code><a title="PySDM.physics.saturation_vapour_pressure" href="index.html">PySDM.physics.saturation_vapour_pressure</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM_examples.Jensen_and_Nugent_2017.settings.Settings" href="#PySDM_examples.Jensen_and_Nugent_2017.settings.Settings">Settings</a></code></h4>
+<h4><code><a title="PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980" href="#PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980">Bolton1980</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980.ice_Celsius" href="#PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980.ice_Celsius">ice_Celsius</a></code></li>
+<li><code><a title="PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980.pvs_Celsius" href="#PySDM.physics.saturation_vapour_pressure.bolton_1980.Bolton1980.pvs_Celsius">pvs_Celsius</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

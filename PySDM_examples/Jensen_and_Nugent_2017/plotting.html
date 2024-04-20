@@ -31,6 +31,38 @@ import numpy as np
 from PySDM.physics import si, in_unit
 from PySDM.physics.constants import PER_CENT
 
+CLOUD_BASE = 300 * si.m
+
+
+def find_drop_ids_by_dry_size(plot_drops_with_dry_radii_um, simulation_r_dry):
+    drop_ids = []
+    for drop_size_um in plot_drops_with_dry_radii_um:
+        drop_id = (np.abs(simulation_r_dry - drop_size_um * si.um)).argmin()
+        drop_ids.append(drop_id)
+    return drop_ids
+
+
+def compute_table_values(height_above_cb_m, height_cb_m, products, ascent_mask):
+    &#34;&#34;&#34;constructing data for Table 4&#34;&#34;&#34;
+    data = {&#34;ascent&#34;: [], &#34;descent&#34;: []}
+    for level_idx, height_m in enumerate(products[&#34;z&#34;]):
+        rounded_height_above_cb_m = np.round(height_m - height_cb_m)
+        if rounded_height_above_cb_m in height_above_cb_m:
+            r_mean = products[&#34;r_mean_act&#34;][level_idx]
+            r_standard_deviation = products[&#34;r_std_act&#34;][level_idx]
+            r_relative_dispersion = r_standard_deviation / r_mean
+
+            data[&#34;ascent&#34; if ascent_mask[level_idx] else &#34;descent&#34;].append(
+                (
+                    f&#34;{rounded_height_above_cb_m:.0f}&#34;,
+                    f&#34;{in_unit(r_mean, si.um):.2f}&#34;,
+                    f&#34;{in_unit(r_standard_deviation, si.um):.2f}&#34;,
+                    f&#34;{r_relative_dispersion:.3f}&#34;,
+                )
+            )
+    data[&#34;ascent&#34;].append(data[&#34;descent&#34;][0])
+    return data
+
 
 def figure(
     *,
@@ -40,9 +72,9 @@ def figure(
     plot_drops_with_dry_radii_um,
     xlim_r_um: tuple,
     xlim_S_percent: tuple,
+    return_masks: bool = False,
 ):
-    cloud_base = 300 * si.m
-    y_axis = np.asarray(output[&#34;products&#34;][&#34;z&#34;]) - settings.z0 - cloud_base
+    y_axis = np.asarray(output[&#34;products&#34;][&#34;z&#34;]) - settings.z0 - CLOUD_BASE
 
     masks = {}
     if settings.t_end_of_ascent is None:
@@ -65,13 +97,13 @@ def figure(
             color=colors[label],
         )
     axs[&#34;S&#34;].set_xlim(*xlim_S_percent)
-    axs[&#34;S&#34;].set_xlabel(&#34;S (%)&#34;)
-    axs[&#34;S&#34;].legend()
+    axs[&#34;S&#34;].set_xlabel(&#34;S (%)&#34;, fontsize=&#34;15&#34;)
+    axs[&#34;S&#34;].legend(fontsize=&#34;10&#34;)
 
-    drop_ids = []
-    for drop_size_um in plot_drops_with_dry_radii_um:
-        drop_id = (np.abs(simulation.r_dry - drop_size_um * si.um)).argmin()
-        drop_ids.append(drop_id)
+    drop_ids = find_drop_ids_by_dry_size(
+        plot_drops_with_dry_radii_um=plot_drops_with_dry_radii_um,
+        simulation_r_dry=simulation.r_dry,
+    )
 
     for (
         drop_id
@@ -93,11 +125,17 @@ def figure(
             )
     axs[&#34;r&#34;].legend()
     axs[&#34;r&#34;].set_xlim(*xlim_r_um)
-    axs[&#34;r&#34;].set_xlabel(&#34;r$_c$ (µm)&#34;)
-    axs[&#34;r&#34;].set_ylabel(&#34;height above cloud base (m)&#34;)
+    axs[&#34;r&#34;].set_xlabel(&#34;r$_c$ (µm)&#34;, fontsize=&#34;15&#34;)
+    axs[&#34;r&#34;].set_ylabel(&#34;Height above cloud base (m)&#34;, fontsize=&#34;15&#34;)
+    # pyplot.xticks(fontsize=12)
+    # pyplot.yticks(fontsize=12)
 
     for ax in axs.values():
-        ax.grid()</code></pre>
+        ax.grid()
+
+    if return_masks:
+        return masks
+    return None</code></pre>
 </details>
 </section>
 <section>
@@ -107,8 +145,39 @@ def figure(
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="PySDM_examples.Jensen_and_Nugent_2017.plotting.compute_table_values"><code class="name flex">
+<span>def <span class="ident">compute_table_values</span></span>(<span>height_above_cb_m, height_cb_m, products, ascent_mask)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>constructing data for Table 4</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_table_values(height_above_cb_m, height_cb_m, products, ascent_mask):
+    &#34;&#34;&#34;constructing data for Table 4&#34;&#34;&#34;
+    data = {&#34;ascent&#34;: [], &#34;descent&#34;: []}
+    for level_idx, height_m in enumerate(products[&#34;z&#34;]):
+        rounded_height_above_cb_m = np.round(height_m - height_cb_m)
+        if rounded_height_above_cb_m in height_above_cb_m:
+            r_mean = products[&#34;r_mean_act&#34;][level_idx]
+            r_standard_deviation = products[&#34;r_std_act&#34;][level_idx]
+            r_relative_dispersion = r_standard_deviation / r_mean
+
+            data[&#34;ascent&#34; if ascent_mask[level_idx] else &#34;descent&#34;].append(
+                (
+                    f&#34;{rounded_height_above_cb_m:.0f}&#34;,
+                    f&#34;{in_unit(r_mean, si.um):.2f}&#34;,
+                    f&#34;{in_unit(r_standard_deviation, si.um):.2f}&#34;,
+                    f&#34;{r_relative_dispersion:.3f}&#34;,
+                )
+            )
+    data[&#34;ascent&#34;].append(data[&#34;descent&#34;][0])
+    return data</code></pre>
+</details>
+</dd>
 <dt id="PySDM_examples.Jensen_and_Nugent_2017.plotting.figure"><code class="name flex">
-<span>def <span class="ident">figure</span></span>(<span>*, output, settings, simulation, plot_drops_with_dry_radii_um, xlim_r_um: tuple, xlim_S_percent: tuple)</span>
+<span>def <span class="ident">figure</span></span>(<span>*, output, settings, simulation, plot_drops_with_dry_radii_um, xlim_r_um: tuple, xlim_S_percent: tuple, return_masks: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -124,9 +193,9 @@ def figure(
     plot_drops_with_dry_radii_um,
     xlim_r_um: tuple,
     xlim_S_percent: tuple,
+    return_masks: bool = False,
 ):
-    cloud_base = 300 * si.m
-    y_axis = np.asarray(output[&#34;products&#34;][&#34;z&#34;]) - settings.z0 - cloud_base
+    y_axis = np.asarray(output[&#34;products&#34;][&#34;z&#34;]) - settings.z0 - CLOUD_BASE
 
     masks = {}
     if settings.t_end_of_ascent is None:
@@ -149,13 +218,13 @@ def figure(
             color=colors[label],
         )
     axs[&#34;S&#34;].set_xlim(*xlim_S_percent)
-    axs[&#34;S&#34;].set_xlabel(&#34;S (%)&#34;)
-    axs[&#34;S&#34;].legend()
+    axs[&#34;S&#34;].set_xlabel(&#34;S (%)&#34;, fontsize=&#34;15&#34;)
+    axs[&#34;S&#34;].legend(fontsize=&#34;10&#34;)
 
-    drop_ids = []
-    for drop_size_um in plot_drops_with_dry_radii_um:
-        drop_id = (np.abs(simulation.r_dry - drop_size_um * si.um)).argmin()
-        drop_ids.append(drop_id)
+    drop_ids = find_drop_ids_by_dry_size(
+        plot_drops_with_dry_radii_um=plot_drops_with_dry_radii_um,
+        simulation_r_dry=simulation.r_dry,
+    )
 
     for (
         drop_id
@@ -177,11 +246,34 @@ def figure(
             )
     axs[&#34;r&#34;].legend()
     axs[&#34;r&#34;].set_xlim(*xlim_r_um)
-    axs[&#34;r&#34;].set_xlabel(&#34;r$_c$ (µm)&#34;)
-    axs[&#34;r&#34;].set_ylabel(&#34;height above cloud base (m)&#34;)
+    axs[&#34;r&#34;].set_xlabel(&#34;r$_c$ (µm)&#34;, fontsize=&#34;15&#34;)
+    axs[&#34;r&#34;].set_ylabel(&#34;Height above cloud base (m)&#34;, fontsize=&#34;15&#34;)
+    # pyplot.xticks(fontsize=12)
+    # pyplot.yticks(fontsize=12)
 
     for ax in axs.values():
-        ax.grid()</code></pre>
+        ax.grid()
+
+    if return_masks:
+        return masks
+    return None</code></pre>
+</details>
+</dd>
+<dt id="PySDM_examples.Jensen_and_Nugent_2017.plotting.find_drop_ids_by_dry_size"><code class="name flex">
+<span>def <span class="ident">find_drop_ids_by_dry_size</span></span>(<span>plot_drops_with_dry_radii_um, simulation_r_dry)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_drop_ids_by_dry_size(plot_drops_with_dry_radii_um, simulation_r_dry):
+    drop_ids = []
+    for drop_size_um in plot_drops_with_dry_radii_um:
+        drop_id = (np.abs(simulation_r_dry - drop_size_um * si.um)).argmin()
+        drop_ids.append(drop_id)
+    return drop_ids</code></pre>
 </details>
 </dd>
 </dl>
@@ -202,7 +294,9 @@ def figure(
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="PySDM_examples.Jensen_and_Nugent_2017.plotting.compute_table_values" href="#PySDM_examples.Jensen_and_Nugent_2017.plotting.compute_table_values">compute_table_values</a></code></li>
 <li><code><a title="PySDM_examples.Jensen_and_Nugent_2017.plotting.figure" href="#PySDM_examples.Jensen_and_Nugent_2017.plotting.figure">figure</a></code></li>
+<li><code><a title="PySDM_examples.Jensen_and_Nugent_2017.plotting.find_drop_ids_by_dry_size" href="#PySDM_examples.Jensen_and_Nugent_2017.plotting.find_drop_ids_by_dry_size">find_drop_ids_by_dry_size</a></code></li>
 </ul>
 </li>
 </ul>
