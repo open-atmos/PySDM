@@ -39,7 +39,7 @@ class TestSpectraLognormal:
     def test_mean(m_mode, s_geom):
         # arrange
         sut = Lognormal(m_mode=m_mode, norm_factor=1, s_geom=s_geom)
-        x, dx = np.linspace(m_mode / 1000, m_mode * 1000, retstep=True, num=10000)
+        x = np.linspace(m_mode / 1000, m_mode * 1000, num=10000)
 
         # act
         mean = np.sum(sut.pdf(x) * x) / np.sum(sut.pdf(x))
