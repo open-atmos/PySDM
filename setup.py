@@ -61,7 +61,7 @@ setup(
             "matplotlib",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==1.1.4",
+            "PyPartMC==1.2.0",
         ]
         + (
             [
