@@ -1,3 +1,5 @@
+""" tests for drop growth formulae """
+
 import pytest
 from matplotlib import pyplot
 import numpy as np
@@ -11,6 +13,7 @@ class TestDropGrowth:
     @staticmethod
     @pytest.mark.parametrize("paper", _choices(drop_growth))
     def test_unit(paper):
+        """checks dimensionality of the returned value"""
         with DimensionalAnalysis():
             # arrange
             formulae = Formulae(drop_growth=paper)
@@ -32,6 +35,8 @@ class TestDropGrowth:
 
     @staticmethod
     def test_mason_1971_vs_1951_difference_vs_temperature(plot=False):
+        """checks the relative difference between Mason's 1951 and 1971 formulae
+        for a range of temperatures"""
         # arrange
         temperatures = constants_defaults.T0 + np.linspace(-10, 40) * si.K
         papers = ("Mason1951", "Mason1971")
