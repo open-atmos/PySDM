@@ -4,7 +4,7 @@ as derived in [Mason 1951](https://doi.org/10.1088/0370-1301/64/9/307)
 (note that Mason's work did not include the ventilation factor, it
 is included here for code maintainability - to reduce duplication at the
 calling scopes; it is not ignored and is used as a multiplicative factor
-in the same way as in `PySDM.physics.drop_growth.Mason1971`)
+in the same way as in `PySDM.physics.drop_growth.mason_1971.Mason1971`)
 """
 
 
