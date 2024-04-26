@@ -1,9 +1,7 @@
 """
 single-equation approximation of the vapour and heat diffusion problem
 as given in eq. 3.11 in [Mason 1971](https://archive.org/details/physicsofclouds0000maso)
-(note that Mason's work did not include the ventilation factor, it
-is included here for code maintainability - to reduce duplication at the
-calling scopes)
+(see also discussion of the ventilation effect on page 125)
 """
 
 
