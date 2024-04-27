@@ -831,8 +831,10 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://github.com/darothen/superdroplet
 - NTLP (FORTRAN)   
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
-- CLEO (C++)
+- CLEO (C++)    
   https://yoctoyotta1024.github.io/CLEO/
+- droplets.jl (Julia)   
+  https://github.com/emmacware/droplets.jl
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
@@ -844,3 +846,7 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 - pyrcel: https://github.com/darothen/pyrcel
 - PyBox: https://github.com/loftytopping/PyBox
 - py-cloud-parcel-model: https://github.com/emmasimp/py-cloud-parcel-model
+
+### non-Python cloud microphysics open-source software
+
+- CloudMicrophysics.jl: https://github.com/CliMA/CloudMicrophysics.jl
