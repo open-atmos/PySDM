@@ -129,7 +129,7 @@ class TestConstants:
         (("Rd", 287 * si.J / si.K / si.kg), ("Rv", 461 * si.J / si.K / si.kg)),
     )
     def test_gas_constants_vs_ams_glossary(item, value):
-        # https://glossary.ametsoc.org/wiki/Gas_constant
+        """vs. https://glossary.ametsoc.org/wiki/Gas_constant"""
         np.testing.assert_allclose(
             actual=getattr(Formulae().constants, item), desired=value, rtol=5e-3, atol=0
         )

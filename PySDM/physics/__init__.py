@@ -31,6 +31,8 @@ from . import (
     isotope_equilibrium_fractionation_factors,
     isotope_meteoric_water_line_excess,
     isotope_ratio_evolution,
+    isotope_diffusivity_ratios,
+    isotope_relaxation_timescale,
     latent_heat,
     optical_albedo,
     optical_depth,
@@ -42,5 +44,6 @@ from . import (
     trivia,
     ventilation,
     air_dynamic_viscosity,
+    terminal_velocity,
 )
 from .constants import convert_to, in_unit, si

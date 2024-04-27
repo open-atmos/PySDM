@@ -43,6 +43,7 @@ ONE_THIRD = 1 / 3
 ONE_HALF = 1 / 2
 TWO_THIRDS = 2 / 3
 ONE_AND_A_HALF = 3 / 2
+TWO_AND_A_HALF = 5 / 2
 NaN = np.nan
 
 default_random_seed = (

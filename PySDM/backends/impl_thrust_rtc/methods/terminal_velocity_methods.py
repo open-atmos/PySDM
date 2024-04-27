@@ -155,3 +155,21 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         self.__power_series_body.launch_n(
             values.size(), (values, radius, num_terms, prefactors, powers)
         )
+
+    @cached_property
+    def __terminal_velocity_body(self):
+        return trtc.For(
+            param_names=("values", "radius"),
+            name_iter="i",
+            body=f"""
+            values[i] = {self.formulae.terminal_velocity.v_term.c_inline(
+                radius="radius[i]"
+            )};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def terminal_velocity(self, *, values, radius):
+        self.__terminal_velocity_body.launch_n(n=values.size(), args=[values, radius])
