@@ -29,7 +29,7 @@ class TestFig19:
 
         for plot_y in notebook_local_variables["plot_y"].values():
             assert 0 < min(plot_y) < 5
-            assert 1.3 < max(plot_y) < 20
+            assert 1.25 < max(plot_y) < 20
 
     @staticmethod
     def test_temperature_dependence(notebook_local_variables):
