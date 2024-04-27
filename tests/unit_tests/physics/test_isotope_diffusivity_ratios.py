@@ -119,6 +119,7 @@ class TestIsotopeDiffusivityRatios:
     @staticmethod
     def test_all_on_one_plot(plot=False):
         temperature = np.linspace(270, 300) * si.K
+        min_value, max_value = np.inf, -np.inf
         for paper in _choices(isotope_diffusivity_ratios):
             formulae = Formulae(isotope_diffusivity_ratios=paper)
             for isotope_label in ("2H", "17O", "18O"):
@@ -130,6 +131,8 @@ class TestIsotopeDiffusivityRatios:
                     pass
                 else:
                     diffusivity_ratio = sut(temperature)
+                    min_value = min(np.amin(diffusivity_ratio), min_value)
+                    max_value = max(np.amax(diffusivity_ratio), max_value)
                     pyplot.plot(
                         temperature,
                         (
@@ -148,4 +151,4 @@ class TestIsotopeDiffusivityRatios:
             pyplot.clf()
 
         # assert
-        # TODO #1307 (pyplot ylim?)
+        assert 0.985 > max_value > min_value > 0.968
