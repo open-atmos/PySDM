@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007 API documentation</title>
-<meta name="description" content="Water isotopic line excess parameters defined in
-[Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180)" />
+<title>PySDM.impl.null_physics_class API documentation</title>
+<meta name="description" content="do-nothing null default" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,39 +19,22 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007</code></h1>
+<h1 class="title">Module <code>PySDM.impl.null_physics_class</code></h1>
 </header>
 <section id="section-intro">
-<p>Water isotopic line excess parameters defined in
-<a href="https://doi.org/10.1002/rcm.3180">Barkan and Luz 2007</a></p>
+<p>do-nothing null default</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Water isotopic line excess parameters defined in
-[Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180)
+do-nothing null default
 &#34;&#34;&#34;
 
-import numpy as np
 
-
-class BarkanAndLuz2007:  # pylint: disable=too-few-public-methods
+class Null:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
-        pass
-
-    @staticmethod
-    def excess_17O(const, delta_17O, delta_18O):
-        return np.log(
-            delta_17O + 1
-        ) - const.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF * np.log(delta_18O + 1)
-
-    @staticmethod
-    def d17O_of_d18O(const, delta_18O):
-        return (
-            np.exp(const.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF * np.log(delta_18O + 1))
-            - 1
-        )</code></pre>
+        pass</code></pre>
 </details>
 </section>
 <section>
@@ -64,8 +46,8 @@ class BarkanAndLuz2007:  # pylint: disable=too-few-public-methods
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007"><code class="flex name class">
-<span>class <span class="ident">BarkanAndLuz2007</span></span>
+<dt id="PySDM.impl.null_physics_class.Null"><code class="flex name class">
+<span>class <span class="ident">Null</span></span>
 <span>(</span><span>_)</span>
 </code></dt>
 <dd>
@@ -74,59 +56,10 @@ class BarkanAndLuz2007:  # pylint: disable=too-few-public-methods
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class BarkanAndLuz2007:  # pylint: disable=too-few-public-methods
+<pre><code class="python">class Null:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
-        pass
-
-    @staticmethod
-    def excess_17O(const, delta_17O, delta_18O):
-        return np.log(
-            delta_17O + 1
-        ) - const.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF * np.log(delta_18O + 1)
-
-    @staticmethod
-    def d17O_of_d18O(const, delta_18O):
-        return (
-            np.exp(const.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF * np.log(delta_18O + 1))
-            - 1
-        )</code></pre>
+        pass</code></pre>
 </details>
-<h3>Static methods</h3>
-<dl>
-<dt id="PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007.d17O_of_d18O"><code class="name flex">
-<span>def <span class="ident">d17O_of_d18O</span></span>(<span>const, delta_18O)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def d17O_of_d18O(const, delta_18O):
-    return (
-        np.exp(const.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF * np.log(delta_18O + 1))
-        - 1
-    )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007.excess_17O"><code class="name flex">
-<span>def <span class="ident">excess_17O</span></span>(<span>const, delta_17O, delta_18O)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def excess_17O(const, delta_17O, delta_18O):
-    return np.log(
-        delta_17O + 1
-    ) - const.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF * np.log(delta_18O + 1)</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -139,17 +72,13 @@ def excess_17O(const, delta_17O, delta_18O):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.isotope_meteoric_water_line_excess" href="index.html">PySDM.physics.isotope_meteoric_water_line_excess</a></code></li>
+<li><code><a title="PySDM.impl" href="index.html">PySDM.impl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007" href="#PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007">BarkanAndLuz2007</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007.d17O_of_d18O" href="#PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007.d17O_of_d18O">d17O_of_d18O</a></code></li>
-<li><code><a title="PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007.excess_17O" href="#PySDM.physics.isotope_meteoric_water_line_excess.barkan_and_luz_2007.BarkanAndLuz2007.excess_17O">excess_17O</a></code></li>
-</ul>
+<h4><code><a title="PySDM.impl.null_physics_class.Null" href="#PySDM.impl.null_physics_class.Null">Null</a></code></h4>
 </li>
 </ul>
 </li>

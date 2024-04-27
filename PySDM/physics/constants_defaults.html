@@ -344,15 +344,15 @@ CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 &#34;&#34;&#34; [Bohren 1987](https://doi.org/10.1119/1.15109) &#34;&#34;&#34;
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 
-&#34;&#34;&#34; TODO #1266 &#34;&#34;&#34;
-diffussion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
-diffussion_thermics_D_G11_B = 0.015 / si.K
-diffussion_thermics_D_G11_C = -1.9
+&#34;&#34;&#34; [Grabowski et al. 2011](https://doi.org/10.1016/j.atmosres.2010.10.020) &#34;&#34;&#34;
+diffusion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
+diffusion_thermics_D_G11_B = 0.015 / si.K
+diffusion_thermics_D_G11_C = -1.9
 
-diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
-diffussion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
-diffussion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
-diffussion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
+diffusion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
+diffusion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
+diffusion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
+diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 &#34;&#34;&#34;
 [Pruppacher &amp; Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036&lt;1255:AWTIOT&gt;2.0.CO;2)
@@ -377,11 +377,32 @@ FROESSLING_1938_A = 1
 FROESSLING_1938_B = 0.276
 
 
+&#34;&#34;&#34; fit coefficients from [Hellmann &amp; Harvey 2020](https://doi.org/10.1029/2020GL089999) &#34;&#34;&#34;
+HELLMANN_HARVEY_T_UNIT = 100 * si.K
+HELLMANN_HARVEY_EQ6_COEFF0 = 0.98258
+HELLMANN_HARVEY_EQ6_COEFF1 = -0.02546
+HELLMANN_HARVEY_EQ6_COEFF2 = 0.02421
+HELLMANN_HARVEY_EQ7_COEFF0 = 0.98284
+HELLMANN_HARVEY_EQ7_COEFF1 = 0.003517
+HELLMANN_HARVEY_EQ7_COEFF2 = -0.001996
+HELLMANN_HARVEY_EQ8_COEFF0 = 0.96671
+HELLMANN_HARVEY_EQ8_COEFF1 = 0.007406
+HELLMANN_HARVEY_EQ8_COEFF2 = -0.004861
+
+
+&#34;&#34;&#34; terminal velocity formulation from Rogers &amp; Yau (equations: 8.5, 8.6, 8.8) &#34;&#34;&#34;
+ROGERS_YAU_TERM_VEL_SMALL_K = 1.19e6 / si.cm / si.s
+ROGERS_YAU_TERM_VEL_MEDIUM_K = 8e3 / si.s
+ROGERS_YAU_TERM_VEL_LARGE_K = 2.01e3 * si.cm**0.5 / si.s
+ROGERS_YAU_TERM_VEL_SMALL_R_LIMIT = 35 * si.um
+ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT = 600 * si.um
+
+
 def compute_derived_values(c: dict):
     &#34;&#34;&#34;
     computes derived quantities such as molar mass ratios, etc.
 
-    water molar mass is computed from from molecular masses and VSMOW isotope abundances
+    water molar mass is computed from molecular masses and VSMOW isotope abundances
     (and neglecting molecular binding energies)
     for discussion, see:
     - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
@@ -460,6 +481,14 @@ one_kelvin = 1 * si.K</code></pre>
 <dd>
 <div class="desc"><p><a href="https://doi.org/10.1051/jcp/1971681423">Majoube (1971)</a></p></div>
 </dd>
+<dt id="PySDM.physics.constants_defaults.FROESSLING_1938_B"><code class="name">var <span class="ident">FROESSLING_1938_B</span></code></dt>
+<dd>
+<div class="desc"><p>fit coefficients from <a href="https://doi.org/10.1029/2020GL089999">Hellmann &amp; Harvey 2020</a></p></div>
+</dd>
+<dt id="PySDM.physics.constants_defaults.HELLMANN_HARVEY_EQ8_COEFF2"><code class="name">var <span class="ident">HELLMANN_HARVEY_EQ8_COEFF2</span></code></dt>
+<dd>
+<div class="desc"><p>terminal velocity formulation from Rogers &amp; Yau (equations: 8.5, 8.6, 8.8)</p></div>
+</dd>
 <dt id="PySDM.physics.constants_defaults.HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3"><code class="name">var <span class="ident">HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3</span></code></dt>
 <dd>
 <div class="desc"><p><a href="https://doi.org/10.1002/rcm.2250">Barkan and Luz 2005</a></p></div>
@@ -499,9 +528,9 @@ one_kelvin = 1 * si.K</code></pre>
 </dd>
 <dt id="PySDM.physics.constants_defaults.asymmetry_g"><code class="name">var <span class="ident">asymmetry_g</span></code></dt>
 <dd>
-<div class="desc"><p>TODO #1266</p></div>
+<div class="desc"><p><a href="https://doi.org/10.1016/j.atmosres.2010.10.020">Grabowski et al. 2011</a></p></div>
 </dd>
-<dt id="PySDM.physics.constants_defaults.diffussion_thermics_K_G11_D"><code class="name">var <span class="ident">diffussion_thermics_K_G11_D</span></code></dt>
+<dt id="PySDM.physics.constants_defaults.diffusion_thermics_K_G11_D"><code class="name">var <span class="ident">diffusion_thermics_K_G11_D</span></code></dt>
 <dd>
 <div class="desc"><p><a href="https://doi.org/10.1175/1520-0469(1979)036&lt;1255:AWTIOT&gt;2.0.CO;2">Pruppacher &amp; Rasmussen (1979))</a></p></div>
 </dd>
@@ -515,7 +544,7 @@ one_kelvin = 1 * si.K</code></pre>
 </code></dt>
 <dd>
 <div class="desc"><p>computes derived quantities such as molar mass ratios, etc.</p>
-<p>water molar mass is computed from from molecular masses and VSMOW isotope abundances
+<p>water molar mass is computed from molecular masses and VSMOW isotope abundances
 (and neglecting molecular binding energies)
 for discussion, see:
 - caption of Table 2.1 in <a href="https://doi.org/10.1142/p027">Gat 2010</a>
@@ -528,7 +557,7 @@ for discussion, see:
     &#34;&#34;&#34;
     computes derived quantities such as molar mass ratios, etc.
 
-    water molar mass is computed from from molecular masses and VSMOW isotope abundances
+    water molar mass is computed from molecular masses and VSMOW isotope abundances
     (and neglecting molecular binding energies)
     for discussion, see:
     - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
@@ -591,6 +620,8 @@ for discussion, see:
 <li><code><a title="PySDM.physics.constants_defaults.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF" href="#PySDM.physics.constants_defaults.BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF">BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.CRAIG_1961_INTERCEPT_COEFF" href="#PySDM.physics.constants_defaults.CRAIG_1961_INTERCEPT_COEFF">CRAIG_1961_INTERCEPT_COEFF</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0" href="#PySDM.physics.constants_defaults.ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0">ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0</a></code></li>
+<li><code><a title="PySDM.physics.constants_defaults.FROESSLING_1938_B" href="#PySDM.physics.constants_defaults.FROESSLING_1938_B">FROESSLING_1938_B</a></code></li>
+<li><code><a title="PySDM.physics.constants_defaults.HELLMANN_HARVEY_EQ8_COEFF2" href="#PySDM.physics.constants_defaults.HELLMANN_HARVEY_EQ8_COEFF2">HELLMANN_HARVEY_EQ8_COEFF2</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3" href="#PySDM.physics.constants_defaults.HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3">HORITA_AND_WESOLOWSKI_1994_ALPHA_L_2H_T_3</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.LAMB_ET_AL_2017_ALPHA_I_2H_T0" href="#PySDM.physics.constants_defaults.LAMB_ET_AL_2017_ALPHA_I_2H_T0">LAMB_ET_AL_2017_ALPHA_I_2H_T0</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.MAJOUBE_1970_ALPHA_I_18O_T0" href="#PySDM.physics.constants_defaults.MAJOUBE_1970_ALPHA_I_18O_T0">MAJOUBE_1970_ALPHA_I_18O_T0</a></code></li>
@@ -601,7 +632,7 @@ for discussion, see:
 <li><code><a title="PySDM.physics.constants_defaults.VEDDER_1987_A" href="#PySDM.physics.constants_defaults.VEDDER_1987_A">VEDDER_1987_A</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.ZOGRAFOS_1987_COEFF_T0" href="#PySDM.physics.constants_defaults.ZOGRAFOS_1987_COEFF_T0">ZOGRAFOS_1987_COEFF_T0</a></code></li>
 <li><code><a title="PySDM.physics.constants_defaults.asymmetry_g" href="#PySDM.physics.constants_defaults.asymmetry_g">asymmetry_g</a></code></li>
-<li><code><a title="PySDM.physics.constants_defaults.diffussion_thermics_K_G11_D" href="#PySDM.physics.constants_defaults.diffussion_thermics_K_G11_D">diffussion_thermics_K_G11_D</a></code></li>
+<li><code><a title="PySDM.physics.constants_defaults.diffusion_thermics_K_G11_D" href="#PySDM.physics.constants_defaults.diffusion_thermics_K_G11_D">diffusion_thermics_K_G11_D</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>

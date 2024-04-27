@@ -32,12 +32,12 @@ phase equilibrium, defined as ratios alpha of isotopic ratios R</p>
 <pre><code class="python">&#34;&#34;&#34; factors describing partitioning of water isotopologues under thermodynamic
 phase equilibrium, defined as ratios alpha of isotopic ratios R &#34;&#34;&#34;
 
+from PySDM.impl.null_physics_class import Null
 from .barkan_and_luz_2005 import BarkanAndLuz2005
 from .horita_and_wesolowski_1994 import HoritaAndWesolowski1994
 from .majoube_1970 import Majoube1970
 from .majoube_1971 import Majoube1971
 from .merlivat_and_nief_1967 import MerlivatAndNief1967
-from .null import Null
 from .van_hook_1968 import VanHook1968
 from .lamb_et_al_2017 import LambEtAl2017
 from .ellehoj_et_al_2013 import EllehojEtAl2013</code></pre>
@@ -80,10 +80,6 @@ from .ellehoj_et_al_2013 import EllehojEtAl2013</code></pre>
 <div class="desc"><p>Equilibrium fractionation factors from
 <a href="https://doi.org/10.3402/tellusa.v19i1.9756">Merlivat and Nief 1967</a></p></div>
 </dd>
-<dt><code class="name"><a title="PySDM.physics.isotope_equilibrium_fractionation_factors.null" href="null.html">PySDM.physics.isotope_equilibrium_fractionation_factors.null</a></code></dt>
-<dd>
-<div class="desc"><p>do-nothing null default</p></div>
-</dd>
 <dt><code class="name"><a title="PySDM.physics.isotope_equilibrium_fractionation_factors.van_hook_1968" href="van_hook_1968.html">PySDM.physics.isotope_equilibrium_fractionation_factors.van_hook_1968</a></code></dt>
 <dd>
 <div class="desc"><p>Vapour pressure factors from Table V in <a href="https://10.1021/j100850a028">Van Hook 1968</a></p></div>
@@ -117,7 +113,6 @@ from .ellehoj_et_al_2013 import EllehojEtAl2013</code></pre>
 <li><code><a title="PySDM.physics.isotope_equilibrium_fractionation_factors.majoube_1970" href="majoube_1970.html">PySDM.physics.isotope_equilibrium_fractionation_factors.majoube_1970</a></code></li>
 <li><code><a title="PySDM.physics.isotope_equilibrium_fractionation_factors.majoube_1971" href="majoube_1971.html">PySDM.physics.isotope_equilibrium_fractionation_factors.majoube_1971</a></code></li>
 <li><code><a title="PySDM.physics.isotope_equilibrium_fractionation_factors.merlivat_and_nief_1967" href="merlivat_and_nief_1967.html">PySDM.physics.isotope_equilibrium_fractionation_factors.merlivat_and_nief_1967</a></code></li>
-<li><code><a title="PySDM.physics.isotope_equilibrium_fractionation_factors.null" href="null.html">PySDM.physics.isotope_equilibrium_fractionation_factors.null</a></code></li>
 <li><code><a title="PySDM.physics.isotope_equilibrium_fractionation_factors.van_hook_1968" href="van_hook_1968.html">PySDM.physics.isotope_equilibrium_fractionation_factors.van_hook_1968</a></code></li>
 </ul>
 </li>

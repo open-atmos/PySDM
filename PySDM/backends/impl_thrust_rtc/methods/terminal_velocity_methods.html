@@ -183,7 +183,25 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         num_terms = self._get_floating_point(num_terms)
         self.__power_series_body.launch_n(
             values.size(), (values, radius, num_terms, prefactors, powers)
-        )</code></pre>
+        )
+
+    @cached_property
+    def __terminal_velocity_body(self):
+        return trtc.For(
+            param_names=(&#34;values&#34;, &#34;radius&#34;),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            values[i] = {self.formulae.terminal_velocity.v_term.c_inline(
+                radius=&#34;radius[i]&#34;
+            )};
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def terminal_velocity(self, *, values, radius):
+        self.__terminal_velocity_body.launch_n(n=values.size(), args=[values, radius])</code></pre>
 </details>
 </section>
 <section>
@@ -347,7 +365,25 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         num_terms = self._get_floating_point(num_terms)
         self.__power_series_body.launch_n(
             values.size(), (values, radius, num_terms, prefactors, powers)
-        )</code></pre>
+        )
+
+    @cached_property
+    def __terminal_velocity_body(self):
+        return trtc.For(
+            param_names=(&#34;values&#34;, &#34;radius&#34;),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            values[i] = {self.formulae.terminal_velocity.v_term.c_inline(
+                radius=&#34;radius[i]&#34;
+            )};
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def terminal_velocity(self, *, values, radius):
+        self.__terminal_velocity_body.launch_n(n=values.size(), args=[values, radius])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -450,6 +486,24 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity"><code class="name flex">
+<span>def <span class="ident">terminal_velocity</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -474,6 +528,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation" href="#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation">interpolation</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency" href="#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency">linear_collection_efficiency</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.power_series" href="#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.power_series">power_series</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity" href="#PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods.TerminalVelocityMethods.terminal_velocity">terminal_velocity</a></code></li>
 </ul>
 </li>
 </ul>

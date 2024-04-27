@@ -76,6 +76,8 @@ from . import (
     isotope_equilibrium_fractionation_factors,
     isotope_meteoric_water_line_excess,
     isotope_ratio_evolution,
+    isotope_diffusivity_ratios,
+    isotope_relaxation_timescale,
     latent_heat,
     optical_albedo,
     optical_depth,
@@ -87,6 +89,7 @@ from . import (
     trivia,
     ventilation,
     air_dynamic_viscosity,
+    terminal_velocity,
 )
 from .constants import convert_to, in_unit, si</code></pre>
 </details>
@@ -156,6 +159,10 @@ for use in unit tests which disables Numba and enables Pint</p></div>
 <div class="desc"><p>physics stuff not intended to be imported from user code
 (incl. the <code><a title="PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry" href="impl/fake_unit_registry.html#PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry">FakeUnitRegistry</a></code>)</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.physics.isotope_diffusivity_ratios" href="isotope_diffusivity_ratios/index.html">PySDM.physics.isotope_diffusivity_ratios</a></code></dt>
+<dd>
+<div class="desc"><p>heavy-to-light diffusivity ratios for water molecules</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.physics.isotope_equilibrium_fractionation_factors" href="isotope_equilibrium_fractionation_factors/index.html">PySDM.physics.isotope_equilibrium_fractionation_factors</a></code></dt>
 <dd>
 <div class="desc"><p>factors describing partitioning of water isotopologues under thermodynamic
@@ -168,6 +175,10 @@ phase equilibrium, defined as ratios alpha of isotopic ratios R</p></div>
 <dt><code class="name"><a title="PySDM.physics.isotope_ratio_evolution" href="isotope_ratio_evolution/index.html">PySDM.physics.isotope_ratio_evolution</a></code></dt>
 <dd>
 <div class="desc"><p>isotope-ratio evolution formulae (incl. Rayleigh distillation)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.physics.isotope_relaxation_timescale" href="isotope_relaxation_timescale/index.html">PySDM.physics.isotope_relaxation_timescale</a></code></dt>
+<dd>
+<div class="desc"><p>isotope relaxation timescale formulae</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.latent_heat" href="latent_heat/index.html">PySDM.physics.latent_heat</a></code></dt>
 <dd>
@@ -200,6 +211,10 @@ phase equilibrium, defined as ratios alpha of isotopic ratios R</p></div>
 <dt><code class="name"><a title="PySDM.physics.surface_tension" href="surface_tension/index.html">PySDM.physics.surface_tension</a></code></dt>
 <dd>
 <div class="desc"><p>Particle surface tension formulae</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.physics.terminal_velocity" href="terminal_velocity/index.html">PySDM.physics.terminal_velocity</a></code></dt>
+<dd>
+<div class="desc"><p>terminal velocity formulae</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.trivia" href="trivia.html">PySDM.physics.trivia</a></code></dt>
 <dd>
@@ -245,9 +260,11 @@ phase equilibrium, defined as ratios alpha of isotopic ratios R</p></div>
 <li><code><a title="PySDM.physics.hydrostatics" href="hydrostatics/index.html">PySDM.physics.hydrostatics</a></code></li>
 <li><code><a title="PySDM.physics.hygroscopicity" href="hygroscopicity/index.html">PySDM.physics.hygroscopicity</a></code></li>
 <li><code><a title="PySDM.physics.impl" href="impl/index.html">PySDM.physics.impl</a></code></li>
+<li><code><a title="PySDM.physics.isotope_diffusivity_ratios" href="isotope_diffusivity_ratios/index.html">PySDM.physics.isotope_diffusivity_ratios</a></code></li>
 <li><code><a title="PySDM.physics.isotope_equilibrium_fractionation_factors" href="isotope_equilibrium_fractionation_factors/index.html">PySDM.physics.isotope_equilibrium_fractionation_factors</a></code></li>
 <li><code><a title="PySDM.physics.isotope_meteoric_water_line_excess" href="isotope_meteoric_water_line_excess/index.html">PySDM.physics.isotope_meteoric_water_line_excess</a></code></li>
 <li><code><a title="PySDM.physics.isotope_ratio_evolution" href="isotope_ratio_evolution/index.html">PySDM.physics.isotope_ratio_evolution</a></code></li>
+<li><code><a title="PySDM.physics.isotope_relaxation_timescale" href="isotope_relaxation_timescale/index.html">PySDM.physics.isotope_relaxation_timescale</a></code></li>
 <li><code><a title="PySDM.physics.latent_heat" href="latent_heat/index.html">PySDM.physics.latent_heat</a></code></li>
 <li><code><a title="PySDM.physics.optical_albedo" href="optical_albedo/index.html">PySDM.physics.optical_albedo</a></code></li>
 <li><code><a title="PySDM.physics.optical_depth" href="optical_depth/index.html">PySDM.physics.optical_depth</a></code></li>
@@ -256,6 +273,7 @@ phase equilibrium, defined as ratios alpha of isotopic ratios R</p></div>
 <li><code><a title="PySDM.physics.saturation_vapour_pressure" href="saturation_vapour_pressure/index.html">PySDM.physics.saturation_vapour_pressure</a></code></li>
 <li><code><a title="PySDM.physics.state_variable_triplet" href="state_variable_triplet/index.html">PySDM.physics.state_variable_triplet</a></code></li>
 <li><code><a title="PySDM.physics.surface_tension" href="surface_tension/index.html">PySDM.physics.surface_tension</a></code></li>
+<li><code><a title="PySDM.physics.terminal_velocity" href="terminal_velocity/index.html">PySDM.physics.terminal_velocity</a></code></li>
 <li><code><a title="PySDM.physics.trivia" href="trivia.html">PySDM.physics.trivia</a></code></li>
 <li><code><a title="PySDM.physics.ventilation" href="ventilation/index.html">PySDM.physics.ventilation</a></code></li>
 </ul>

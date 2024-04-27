@@ -98,28 +98,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def __terminal_velocity_body(self):
-        return trtc.For(
-            (&#34;values&#34;, &#34;radius&#34;, &#34;k1&#34;, &#34;k2&#34;, &#34;k3&#34;, &#34;r1&#34;, &#34;r2&#34;),
-            &#34;i&#34;,
-            &#34;&#34;&#34;
-            if (radius[i] &lt; r1) {
-                values[i] = k1 * radius[i] * radius[i];
-            }
-            else {
-                if (radius[i] &lt; r2) {
-                    values[i] = k2 * radius[i];
-                }
-                else {
-                    values[i] = k3 * pow(radius[i], (real_type)(.5));
-                }
-            }
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @cached_property
     def __volume_of_mass_body(self):
         return trtc.For(
             param_names=(&#34;volume&#34;, &#34;mass&#34;),
@@ -172,17 +150,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
                 p.data,
                 RH.data,
             ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
-        k1 = self._get_floating_point(k1)
-        k2 = self._get_floating_point(k2)
-        k3 = self._get_floating_point(k3)
-        r1 = self._get_floating_point(r1)
-        r2 = self._get_floating_point(r2)
-        self.__terminal_velocity_body.launch_n(
-            values.size(), [values, radius, k1, k2, k3, r1, r2]
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -364,28 +331,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def __terminal_velocity_body(self):
-        return trtc.For(
-            (&#34;values&#34;, &#34;radius&#34;, &#34;k1&#34;, &#34;k2&#34;, &#34;k3&#34;, &#34;r1&#34;, &#34;r2&#34;),
-            &#34;i&#34;,
-            &#34;&#34;&#34;
-            if (radius[i] &lt; r1) {
-                values[i] = k1 * radius[i] * radius[i];
-            }
-            else {
-                if (radius[i] &lt; r2) {
-                    values[i] = k2 * radius[i];
-                }
-                else {
-                    values[i] = k3 * pow(radius[i], (real_type)(.5));
-                }
-            }
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @cached_property
     def __volume_of_mass_body(self):
         return trtc.For(
             param_names=(&#34;volume&#34;, &#34;mass&#34;),
@@ -438,17 +383,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
                 p.data,
                 RH.data,
             ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
-        k1 = self._get_floating_point(k1)
-        k2 = self._get_floating_point(k2)
-        k3 = self._get_floating_point(k3)
-        r1 = self._get_floating_point(r1)
-        r2 = self._get_floating_point(r2)
-        self.__terminal_velocity_body.launch_n(
-            values.size(), [values, radius, k1, k2, k3, r1, r2]
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -704,24 +638,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.terminal_velocity"><code class="name flex">
-<span>def <span class="ident">terminal_velocity</span></span>(<span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass"><code class="name flex">
 <span>def <span class="ident">volume_of_water_mass</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
@@ -768,7 +684,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume">mass_of_water_volume</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.reynolds_number" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.reynolds_number">reynolds_number</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH">temperature_pressure_RH</a></code></li>
-<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.terminal_velocity" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.terminal_velocity">terminal_velocity</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass">volume_of_water_mass</a></code></li>
 </ul>
 </li>
