@@ -310,7 +310,7 @@ CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 """ [Bohren 1987](https://doi.org/10.1119/1.15109) """
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 
-""" TODO #1266 """
+""" [Grabowski et al. 2011](https://doi.org/10.1016/j.atmosres.2010.10.020) """
 diffusion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
 diffusion_thermics_D_G11_B = 0.015 / si.K
 diffusion_thermics_D_G11_C = -1.9
