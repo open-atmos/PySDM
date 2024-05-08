@@ -835,6 +835,8 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://yoctoyotta1024.github.io/CLEO/
 - droplets.jl (Julia)   
   https://github.com/emmacware/droplets.jl
+- LacmoPy (Python/Numba)    
+  https://github.com/JanKBohrer/LacmoPy/blob/master/collision/all_or_nothing.py
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
