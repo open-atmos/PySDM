@@ -76,7 +76,7 @@ class NetCDFExporter_1d:  # pylint: disable=too-few-public-methods,too-many-inst
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 0:
-                dimensions = "time"
+                dimensions = ("time",)
             elif n_dimensions == 1:
                 dimensions = ("height", "time")
             elif n_dimensions == 2:
