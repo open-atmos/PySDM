@@ -1,7 +1,5 @@
 """
-Simulation output products such as:
-`PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum`,
-...
+Simulation output products
 """
 
 from .ambient_thermodynamics import *
@@ -12,3 +10,5 @@ from .displacement import *
 from .freezing import *
 from .housekeeping import *
 from .size_spectral import *
+from .optical import *
+from .parcel import *

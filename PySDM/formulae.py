@@ -8,7 +8,7 @@ import numbers
 import re
 import warnings
 from collections import namedtuple
-from functools import lru_cache, partial
+from functools import lru_cache, partial, cached_property
 from types import SimpleNamespace
 from typing import Optional
 
@@ -34,7 +34,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
         latent_heat: str = "Kirchhoff",
         hygroscopicity: str = "KappaKoehlerLeadingTerms",
-        drop_growth: str = "MaxwellMason",
+        drop_growth: str = "Mason1971",
         surface_tension: str = "Constant",
         diffusion_kinetics: str = "FuchsSutugin",
         diffusion_thermics: str = "Neglect",
@@ -48,12 +48,19 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_meteoric_water_line_excess: str = "Null",
         isotope_ratio_evolution: str = "Null",
+        isotope_diffusivity_ratios: str = "Null",
+        isotope_relaxation_timescale: str = "Null",
+        optical_albedo: str = "Null",
+        optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
+        air_dynamic_viscosity: str = "ZografosEtAl1987",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
         # in PyCharm and alike, all these fields are later overwritten within this ctor
+        self.optical_albedo = optical_albedo
+        self.optical_depth = optical_depth
         self.condensation_coordinate = condensation_coordinate
         self.saturation_vapour_pressure = saturation_vapour_pressure
         self.hygroscopicity = hygroscopicity
@@ -74,9 +81,17 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         )
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
         self.isotope_ratio_evolution = isotope_ratio_evolution
+        self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
+        self.isotope_relaxation_timescale = isotope_relaxation_timescale
         self.particle_shape_and_density = particle_shape_and_density
+        self.air_dynamic_viscosity = air_dynamic_viscosity
+        self.terminal_velocity = terminal_velocity
 
-        components = tuple(i for i in dir(self) if not i.startswith("__"))
+        self._components = tuple(
+            i
+            for i in dir(self)
+            if not i.startswith("__") and i not in ("flatten", "get_constant")
+        )
 
         constants_defaults = {
             k: getattr(defaults, k)
@@ -102,7 +117,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         )
 
         # each `component` corresponds to one subdirectory of PySDM/physics
-        for component in components:
+        for component in self._components:
             setattr(
                 self,
                 component,
@@ -126,7 +141,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
     def __str__(self):
         description = []
         for attr in dir(self):
-            if not attr.startswith("_"):
+            if not attr.startswith("_") and attr != "flatten":
                 attr_value = getattr(self, attr)
                 if attr_value.__class__ in (bool, int, float):
                     value = attr_value
@@ -138,6 +153,25 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                     value = attr_value.__class__.__name__
                 description.append(f"{attr}: {value}")
         return ", ".join(description)
+
+    @cached_property
+    def flatten(self):
+        """returns a "flattened" representation providing access to all formulae from within
+        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)"""
+        functions = {}
+        for component in ["trivia"] + list(self._components):
+            for item in dir(getattr(self, component)):
+                attr = getattr(getattr(self, component), item)
+                if not item.startswith("__") and callable(attr):
+                    functions[component + "__" + item] = attr
+        for attr in ("constants", "fastmath"):
+            functions[attr] = getattr(self, attr)
+        return namedtuple("FlattenedFormulae", functions.keys())(**functions)
+
+    def get_constant(self, key: str):
+        """getter-like method for cases where using the `constants` named tuple is not possible
+        (e.g., if calling from a language which does not support named tuples)"""
+        return getattr(self.constants, key)
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
@@ -195,7 +229,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
     """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
-    formulae = {"__name__": obj.__class__.__name__}
+    formulae = {"__name__": obj.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
         if item.startswith("__") or not callable(attr):
@@ -240,16 +274,18 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     for pkg in ("np", "math"):
         source = source.replace(f"{pkg}.", "")
     source = source.replace(", )", ")")
-    source = re.sub("^return ", "", source)
+    source = re.sub(pattern="^return ", repl="", string=source)
     for arg in inspect.signature(fun).parameters:
         if arg not in ("_", "const"):
             source = re.sub(
-                f"{prae}({arg}){post}", f"\\1({real_t})({args[arg]})\\3", source
+                pattern=f"{prae}({arg}){post}",
+                repl=f"\\1({real_t})({args[arg]})\\3",
+                string=source,
             )
     source = re.sub(
-        f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
-        "\\1(" + real_t + ")({constants.\\2:" + real_fmt + "})\\3",
-        source,
+        pattern=f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
+        repl="\\1(" + real_t + ")({constants.\\2:" + real_fmt + "})\\3",
+        string=source,
     )
     assert constants
     source = eval(f'f"""{source}"""')  # pylint: disable=eval-used
@@ -257,13 +293,42 @@ def _c_inline(fun, return_type=None, constants=None, **args):
 
 
 def _pick(value: str, choices: dict, constants: namedtuple):
-    """selects a given physics logic and instantiates it passing the constants catalogue"""
-    for name, cls in choices.items():
-        if name == value:
-            return cls(constants)
-    raise ValueError(
-        f"Unknown setting: '{value}'; choices are: {tuple(choices.keys())}"
-    )
+    """
+    selects a given physics logic and instantiates it passing the constants catalogue;
+    `value` is expected to be string containing a plus-separated list of class names
+    """
+
+    obj = None
+    if "+" not in value:
+        for name, cls in choices.items():
+            if name == value:
+                obj = cls(constants)
+                break
+            name = value
+    else:
+        parent_classes = []
+        for name in value.split("+"):
+            if name not in choices:
+                parent_classes.clear()
+                break
+            parent_classes.append(choices[name])
+
+        if len(parent_classes) > 0:
+
+            class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
+                def __init__(self, const):
+                    for cls in parent_classes:
+                        cls.__init__(self, const)
+
+            obj = Cls(constants)
+
+    if obj is None:
+        raise ValueError(
+            f"Unknown setting: {name}; choices are: {', '.join(choices.keys())}"
+        )
+
+    obj.__name__ = value  # pylint: disable=attribute-defined-outside-init
+    return obj
 
 
 def _choices(module):

@@ -20,8 +20,10 @@ from .constants import (  # pylint: disable=unused-import
     PPM,
     T0,
     THREE,
+    ONE,
     TWO,
     TWO_THIRDS,
+    ONE_HALF,
     M,
     si,
 )
@@ -36,6 +38,7 @@ Md = (
 )
 
 # https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf
+# heavy-to-light isotope abundance ratios
 VSMOW_R_2H = 155.76 * PPM
 VSMOW_R_3H = 1.85e-11 * PPM
 VSMOW_R_18O = 2005.20 * PPM
@@ -50,19 +53,6 @@ M_3H = 3.01604927792 * si.g / si.mole
 M_16O = 15.99491461957 * si.g / si.mole
 M_17O = 16.99913175651 * si.g / si.mole
 M_18O = 17.99915961287 * si.g / si.mole
-
-Mv = (
-    1
-    - Trivia.mixing_ratio_to_specific_content(
-        VSMOW_R_2H / 2 + VSMOW_R_3H / 2 + VSMOW_R_17O + VSMOW_R_18O
-    )
-) * (
-    (M_1H * 2 + M_16O)
-    + (M_2H + M_1H + M_16O) * VSMOW_R_2H
-    + (M_3H + M_1H + M_16O) * VSMOW_R_3H
-    + (M_1H * 2 + M_17O) * VSMOW_R_17O
-    + (M_1H * 2 + M_18O) * VSMOW_R_18O
-)
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
@@ -133,11 +123,11 @@ T_tri = 273.16 * si.kelvin
 l_tri = 2.5e6 * si.joule / si.kilogram
 
 # Seinfeld and Pandis, Appendix 16.1, 16A.2
-# default constant values according to Lowe et al (2019), from ICPM code
+# default constant values according to Lowe et al. (2019), from ICPM code
 l_l19_a = 0.167 * si.dimensionless
 l_l19_b = 3.65e-4 / si.kelvin
 
-# Thermal diffusivity constants from Lowe et al (2019)
+# Thermal diffusivity constants from Lowe et al. (2019)
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
@@ -145,7 +135,7 @@ k_l19_c = 0.017 / si.kelvin
 # Delta v for diffusivity in Pruppacher & Klett eq. 13-14
 dv_pk05 = 0.0 * si.metres
 
-# Seinfeld & Pandis eq. 15.65
+# Seinfeld & Pandis eq. 15.65 (Hall & Pruppacher 1976)
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
 d_l19_b = 1.94
 
@@ -211,6 +201,16 @@ MERLIVAT_NIEF_1967_ALPHA_L_2H_T0 = -0.1
 MERLIVAT_NIEF_1967_ALPHA_I_2H_T2 = 16289 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_I_2H_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_I_2H_T0 = -0.0945
+
+""" [Lamb et al. (2017)](https://doi.org/10.1073/pnas.1618374114) """
+LAMB_ET_AL_2017_ALPHA_I_2H_T2 = 13525 * si.K**2
+LAMB_ET_AL_2017_ALPHA_I_2H_T1 = 0 * si.K
+LAMB_ET_AL_2017_ALPHA_I_2H_T0 = -0.0559
+
+""" [Ellehoj et al. (2013)](https://doi.org/10.1002/rcm.6668) """
+ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T2 = 48888 * si.K**2
+ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T1 = -203.1 * si.K
+ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0 = 0.2133
 
 """ [Majoube (1971)](https://doi.org/10.1051/jcp/1971681423) """
 # values taken from Jouzel 1986 (eqs. 1)
@@ -307,14 +307,120 @@ BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 
+""" [Bohren 1987](https://doi.org/10.1119/1.15109) """
+asymmetry_g = 0.85  # forward scattering from cloud droplets
+
+""" [Grabowski et al. 2011](https://doi.org/10.1016/j.atmosres.2010.10.020) """
+diffusion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
+diffusion_thermics_D_G11_B = 0.015 / si.K
+diffusion_thermics_D_G11_C = -1.9
+
+diffusion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
+diffusion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
+diffusion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
+diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
+
+"""
+[Pruppacher & Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036<1255:AWTIOT>2.0.CO;2)
+"""
+PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_CONSTSMALL = 1.0 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_COEFFSMALL = 0.108 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_POWSMALL = 2 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_CONSTBIG = 0.78 * si.dimensionless
+PRUPPACHER_RASMUSSEN_1979_COEFFBIG = 0.308 * si.dimensionless
+
+"""[Zografos et al. (1987)](https://doi.org/10.1016/0045-7825(87)90003-X) Table 1"""
+ZOGRAFOS_1987_COEFF_T3 = 2.5914e-15 * si.K ** (-3) * si.Pa * si.s
+ZOGRAFOS_1987_COEFF_T2 = -1.4346e-11 * si.K ** (-2) * si.Pa * si.s
+ZOGRAFOS_1987_COEFF_T1 = 5.0523e-8 / si.K * si.Pa * si.s
+ZOGRAFOS_1987_COEFF_T0 = 4.1130e-6 * si.Pa * si.s
+
+
+""" Froessling 1938 coefficients as given on page 61 in
+    [Squires 1952](https://doi.org/10.1071/CH9520059) """
+FROESSLING_1938_A = 1
+FROESSLING_1938_B = 0.276
+
+
+""" fit coefficients from [Hellmann & Harvey 2020](https://doi.org/10.1029/2020GL089999) """
+HELLMANN_HARVEY_T_UNIT = 100 * si.K
+HELLMANN_HARVEY_EQ6_COEFF0 = 0.98258
+HELLMANN_HARVEY_EQ6_COEFF1 = -0.02546
+HELLMANN_HARVEY_EQ6_COEFF2 = 0.02421
+HELLMANN_HARVEY_EQ7_COEFF0 = 0.98284
+HELLMANN_HARVEY_EQ7_COEFF1 = 0.003517
+HELLMANN_HARVEY_EQ7_COEFF2 = -0.001996
+HELLMANN_HARVEY_EQ8_COEFF0 = 0.96671
+HELLMANN_HARVEY_EQ8_COEFF1 = 0.007406
+HELLMANN_HARVEY_EQ8_COEFF2 = -0.004861
+
+
+""" terminal velocity formulation from Rogers & Yau (equations: 8.5, 8.6, 8.8) """
+ROGERS_YAU_TERM_VEL_SMALL_K = 1.19e6 / si.cm / si.s
+ROGERS_YAU_TERM_VEL_MEDIUM_K = 8e3 / si.s
+ROGERS_YAU_TERM_VEL_LARGE_K = 2.01e3 * si.cm**0.5 / si.s
+ROGERS_YAU_TERM_VEL_SMALL_R_LIMIT = 35 * si.um
+ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT = 600 * si.um
+
 
 def compute_derived_values(c: dict):
+    """
+    computes derived quantities such as molar mass ratios, etc.
+
+    water molar mass is computed from molecular masses and VSMOW isotope abundances
+    (and neglecting molecular binding energies)
+    for discussion, see:
+    - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
+    - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
+    """
+
+    c["Mv"] = (
+        (
+            1
+            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+        )
+        * (c["M_1H"] * 2 + c["M_16O"])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+        * (c["M_2H"] + c["M_1H"] + c["M_16O"])
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+        * (c["M_3H"] + c["M_1H"] + c["M_16O"])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
+        * (c["M_1H"] * 2 + c["M_17O"])
+        + 1
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+        * (c["M_1H"] * 2 + c["M_18O"])
+    )
+
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
     c["Rv"] = c["R_str"] / c["Mv"]
 
     c["Rd_over_c_pd"] = c["Rd"] / c["c_pd"]
 
-    c["nu_w"] = c["Mv"] / c["rho_w"]
+    c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
+
+
+W76W_G0 = -2.9912729e3 * si.K**2
+W76W_G1 = -6.0170128e3 * si.K
+W76W_G2 = 1.887643854e1
+W76W_G3 = -2.8354721e-2 * si.K**-1
+W76W_G4 = 1.7838301e-5 * si.K**-2
+W76W_G5 = -8.4150417e-10 * si.K**-3
+W76W_G6 = 4.4412543e-13 * si.K**-4
+W76W_G7 = 2.858487
+W76W_G8 = 1 * si.Pa
+
+B80W_G0 = 6.112 * si.hPa
+B80W_G1 = 17.67 * si.dimensionless
+B80W_G2 = 243.5 * si.K
+
+one_kelvin = 1 * si.K

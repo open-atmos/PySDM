@@ -12,5 +12,4 @@ from .ice_nuclei_concentration import (
     IceNucleiConcentration,
     SpecificIceNucleiConcentration,
 )
-from .ice_water_content import IceWaterContent, SpecificIceWaterContent
 from .total_unfrozen_immersed_surface_area import TotalUnfrozenImmersedSurfaceArea

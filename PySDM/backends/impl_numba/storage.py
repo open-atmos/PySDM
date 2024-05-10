@@ -120,7 +120,7 @@ class Storage(StorageBase):
     @staticmethod
     def _get_empty_data(shape, dtype):
         if dtype in (float, Storage.FLOAT):
-            data = np.full(shape, -1.0, dtype=Storage.FLOAT)
+            data = np.full(shape, np.nan, dtype=Storage.FLOAT)
             dtype = Storage.FLOAT
         elif dtype in (int, Storage.INT):
             data = np.full(shape, -1, dtype=Storage.INT)

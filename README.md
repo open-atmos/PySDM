@@ -63,7 +63,7 @@ For an overview of PySDM features (and the preferred way to cite PySDM in papers
 - [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
   
 PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
-For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
+For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
 A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
 
@@ -321,14 +321,15 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-rho_w = pyimport("PySDM.physics.constants_defaults").rho_w
 using Plots; plotlyjs()
 
 for step = 0:1200:3600
     particulator.run(step - particulator.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particulator.products["dv/dlnr"].get()[:] * rho_w / si.g,
+        particulator.formulae.particle_shape_and_density.volume_to_mass(
+            particulator.products["dv/dlnr"].get()[:]
+        )/ si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -343,12 +344,12 @@ savefig("plot.svg")
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-rho_w = py.importlib.import_module('PySDM.physics.constants_defaults').rho_w;
-
 for step = 0:1200:3600
     particulator.run(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
-    y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
+    y = particulator.formulae.particle_shape_and_density.volume_to_mass( ...
+        particulator.products{"dv/dlnr"}.get() ...
+    ) / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
@@ -367,14 +368,17 @@ legend()
 <summary>Python (click to expand)</summary>
 
 ```Python
-from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
     particulator.run(step - particulator.n_steps)
-    pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particulator.products['dv/dlnr'].get()[0] * rho_w / si.g,
-                where='post', label=f"t = {step}s")
+    pyplot.step(
+        x=radius_bins_edges[:-1] / si.um,
+        y=particulator.formulae.particle_shape_and_density.volume_to_mass(
+            particulator.products['dv/dlnr'].get()[0]
+        ) / si.g,
+        where='post', label=f"t = {step}s"
+    )
 
 pyplot.xscale('log')
 pyplot.xlabel('particle radius [µm]')
@@ -827,8 +831,12 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://github.com/darothen/superdroplet
 - NTLP (FORTRAN)   
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
-- CLEO (C++)
+- CLEO (C++)    
   https://yoctoyotta1024.github.io/CLEO/
+- droplets.jl (Julia)   
+  https://github.com/emmacware/droplets.jl
+- LacmoPy (Python/Numba)    
+  https://github.com/JanKBohrer/LacmoPy/blob/master/collision/all_or_nothing.py
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
@@ -840,3 +848,7 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 - pyrcel: https://github.com/darothen/pyrcel
 - PyBox: https://github.com/loftytopping/PyBox
 - py-cloud-parcel-model: https://github.com/emmasimp/py-cloud-parcel-model
+
+### non-Python cloud microphysics open-source software
+
+- CloudMicrophysics.jl: https://github.com/CliMA/CloudMicrophysics.jl

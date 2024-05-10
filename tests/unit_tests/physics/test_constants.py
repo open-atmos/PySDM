@@ -118,9 +118,9 @@ class TestConstants:
     @staticmethod
     def test_isotope_molar_masses_vsmow_vs_mean_water_molar_mass():
         np.testing.assert_approx_equal(
-            desired=constants_defaults.Mv,
-            actual=Substance.from_formula("H2O").mass * si.gram / si.mole,
-            significant=4.5,
+            actual=Formulae().constants.Mv,
+            desired=Substance.from_formula("H2O").mass * si.gram / si.mole,
+            significant=5.5,
         )
 
     @staticmethod
@@ -129,7 +129,7 @@ class TestConstants:
         (("Rd", 287 * si.J / si.K / si.kg), ("Rv", 461 * si.J / si.K / si.kg)),
     )
     def test_gas_constants_vs_ams_glossary(item, value):
-        # https://glossary.ametsoc.org/wiki/Gas_constant
+        """vs. https://glossary.ametsoc.org/wiki/Gas_constant"""
         np.testing.assert_allclose(
             actual=getattr(Formulae().constants, item), desired=value, rtol=5e-3, atol=0
         )

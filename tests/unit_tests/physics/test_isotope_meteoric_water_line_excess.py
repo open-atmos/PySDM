@@ -101,3 +101,23 @@ class TestIsotopeMeteoricWaterLineExcess:
             desired=formulae.constants.CRAIG_1961_INTERCEPT_COEFF,
             significant=3,
         )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "delta_18O", (-3 * PER_MILLE, -1 * PER_MILLE, 1 * PER_MILLE, 3 * PER_MILLE)
+    )
+    def test_d17O_of_d18O(delta_18O):
+        # arrange
+        formulae = Formulae(isotope_meteoric_water_line_excess="BarkanAndLuz2007")
+        sut = formulae.isotope_meteoric_water_line_excess.d17O_of_d18O
+
+        # act
+        delta_17O = sut(delta_18O=delta_18O)
+
+        # assert
+        np.testing.assert_almost_equal(
+            actual=formulae.isotope_meteoric_water_line_excess.excess_17O(
+                delta_18O=delta_18O, delta_17O=delta_17O
+            ),
+            desired=0,
+        )

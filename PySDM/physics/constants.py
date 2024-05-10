@@ -34,13 +34,16 @@ PI_4_3 = PI * 4 / 3
 LN_2 = np.log(2)
 ZERO_MASS = 0 * si.kg
 ZERO_VOLUME = 0 * si.m**3
+ONE = 1
 TWO = 2
 THREE = 3
 FOUR = 4
 TWELVE = 12
 ONE_THIRD = 1 / 3
+ONE_HALF = 1 / 2
 TWO_THIRDS = 2 / 3
 ONE_AND_A_HALF = 3 / 2
+TWO_AND_A_HALF = 5 / 2
 NaN = np.nan
 
 default_random_seed = (

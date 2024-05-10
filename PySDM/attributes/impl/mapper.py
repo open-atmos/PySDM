@@ -29,6 +29,7 @@ from PySDM.attributes.physics import (
     Volume,
     WaterMass,
     WetToCriticalVolumeRatio,
+    ReynoldsNumber,
 )
 from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.attributes.physics.dry_volume import (
@@ -45,14 +46,14 @@ from PySDM.attributes.physics.relative_fall_velocity import RelativeFallMomentum
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.physics.surface_tension import Constant
+from PySDM.physics.ventilation import Neglect
 
 attributes = {
     "multiplicity": lambda _, __: Multiplicities,
     "volume": lambda _, __: Volume,
     "dry volume organic": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic")
-        if "Condensation" in dynamics
-        and formulae.surface_tension.__name__ == Constant.__name__
+        if formulae.surface_tension.__name__ == Constant.__name__
         else DryVolumeOrganic
     ),
     "dry volume": lambda dynamics, formulae: (
@@ -60,8 +61,7 @@ attributes = {
     ),
     "dry volume organic fraction": lambda dynamics, formulae: (
         make_dummy_attribute_factory("dry volume organic fraction")
-        if "Condensation" in dynamics
-        and formulae.surface_tension.__name__ == Constant.__name__
+        if formulae.surface_tension.__name__ == Constant.__name__
         else OrganicFraction
     ),
     "kappa times dry volume": lambda _, __: KappaTimesDryVolume,
@@ -118,12 +118,17 @@ attributes = {
     "moles_1H": lambda _, __: Moles1H,
     "moles_16O": lambda _, __: Moles16O,
     "moles light water": lambda _, __: MolesLightWater,
+    "Reynolds number": lambda _, formulae: (
+        make_dummy_attribute_factory("Reynolds number")
+        if formulae.ventilation.__name__ == Neglect.__name__
+        else ReynoldsNumber
+    ),
 }
 
 
 def get_class(name, dynamics, formulae):
     if name not in attributes:
         raise ValueError(
-            f"Unknown attribute name: {name}; valid names: {', '.join(attributes)}"
+            f"Unknown attribute name: {name}; valid names: {', '.join(sorted(attributes))}"
         )
     return attributes[name](dynamics, formulae)

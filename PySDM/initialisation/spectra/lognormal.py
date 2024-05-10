@@ -12,6 +12,9 @@ from PySDM.initialisation.impl.spectrum import Spectrum
 
 class Lognormal(Spectrum):
     def __init__(self, norm_factor: float, m_mode: float, s_geom: float):
+        """`norm_factor=1` corresponds to standard normalised probability density,
+        other settings allow to express, e.g., size or mass distributions;
+        `m_mode` is the median value, `s_geom` is the geometric standard deviation"""
         super().__init__(lognorm, (math.log(s_geom), 0, m_mode), norm_factor)
 
     @property
