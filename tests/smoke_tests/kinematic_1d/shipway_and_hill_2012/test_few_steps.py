@@ -80,7 +80,7 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
     assert max(mean_profile_over_last_steps("activating")) == 0
     assert max(mean_profile_over_last_steps("ripening")) > 0
     assert max(mean_profile_over_last_steps("deactivating")) > 0
-    assert max(mean_profile_over_last_steps("surface precipitation")) == 0
+    assert max(output["surface precipitation"]) == 0
 
 
 def test_fixed_thd():
