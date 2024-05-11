@@ -97,7 +97,8 @@ class NetCDFExporter_1d:  # pylint: disable=too-few-public-methods,too-many-inst
         for var in self.simulator.particulator.products.keys():
             n_dimensions = len(self.simulator.particulator.products[var].shape)
             if n_dimensions == 0:
-                self.vars[var][:] = self.data[var][-self.nz_export :]
+                print(var)
+                self.vars[var][:] = self.data[var][:]
             elif n_dimensions == 1:
                 self.vars[var][:, :] = self.data[var][-self.nz_export :, :]
             elif n_dimensions == 2:
