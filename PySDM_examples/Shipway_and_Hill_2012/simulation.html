@@ -196,6 +196,7 @@ class Simulation:
                     PySDM_products.CoalescenceRatePerGridbox(
                         name=&#34;coalescence_rate&#34;,
                     ),
+                    PySDM_products.SurfacePrecipitation(),
                 ]
             )
         self.particulator = self.builder.build(
@@ -210,7 +211,9 @@ class Simulation:
         }
         self.output_products = {}
         for k, v in self.particulator.products.items():
-            if len(v.shape) == 1:
+            if len(v.shape) == 0:
+                self.output_products[k] = np.zeros(self.nt + 1)
+            elif len(v.shape) == 1:
                 self.output_products[k] = np.zeros((self.mesh.grid[-1], self.nt + 1))
             elif len(v.shape) == 2:
                 number_of_time_sections = len(self.save_spec_and_attr_times)
@@ -231,7 +234,10 @@ class Simulation:
         for k, v in self.particulator.products.items():
             if len(v.shape) &gt; 1:
                 continue
-            self.output_products[k][:, step] = v.get()
+            if len(v.shape) == 1:
+                self.output_products[k][:, step] = v.get()
+            else:
+                self.output_products[k][step] = v.get()
 
     def save_spectrum(self, index):
         for k, v in self.particulator.products.items():
@@ -461,6 +467,7 @@ class Simulation:
                     PySDM_products.CoalescenceRatePerGridbox(
                         name=&#34;coalescence_rate&#34;,
                     ),
+                    PySDM_products.SurfacePrecipitation(),
                 ]
             )
         self.particulator = self.builder.build(
@@ -475,7 +482,9 @@ class Simulation:
         }
         self.output_products = {}
         for k, v in self.particulator.products.items():
-            if len(v.shape) == 1:
+            if len(v.shape) == 0:
+                self.output_products[k] = np.zeros(self.nt + 1)
+            elif len(v.shape) == 1:
                 self.output_products[k] = np.zeros((self.mesh.grid[-1], self.nt + 1))
             elif len(v.shape) == 2:
                 number_of_time_sections = len(self.save_spec_and_attr_times)
@@ -496,7 +505,10 @@ class Simulation:
         for k, v in self.particulator.products.items():
             if len(v.shape) &gt; 1:
                 continue
-            self.output_products[k][:, step] = v.get()
+            if len(v.shape) == 1:
+                self.output_products[k][:, step] = v.get()
+            else:
+                self.output_products[k][step] = v.get()
 
     def save_spectrum(self, index):
         for k, v in self.particulator.products.items():
@@ -680,7 +692,10 @@ def add_collision_dynamic(builder, settings, _):
     for k, v in self.particulator.products.items():
         if len(v.shape) &gt; 1:
             continue
-        self.output_products[k][:, step] = v.get()</code></pre>
+        if len(v.shape) == 1:
+            self.output_products[k][:, step] = v.get()
+        else:
+            self.output_products[k][step] = v.get()</code></pre>
 </details>
 </dd>
 <dt id="PySDM_examples.Shipway_and_Hill_2012.simulation.Simulation.save_spectrum"><code class="name flex">
