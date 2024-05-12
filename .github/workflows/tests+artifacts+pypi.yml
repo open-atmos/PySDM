@@ -236,6 +236,8 @@ jobs:
           fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+      - run: |
+          python -m pip install -e . -e ./examples 
 
       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
