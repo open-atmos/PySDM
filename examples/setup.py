@@ -33,7 +33,7 @@ setup(
         "numdifftools",
     ]
     + (
-        ["pyvinecopulib" + "==0.6.3" if CI else "", "vtk"]
+        ["pyvinecopulib" + "==0.6.4" if CI else "", "vtk"]
         if platform.architecture()[0] != "32bit"
         else []
     ),
