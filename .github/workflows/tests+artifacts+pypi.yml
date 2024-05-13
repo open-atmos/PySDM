@@ -198,11 +198,6 @@ jobs:
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
           python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
-          
-          python -m pip install "setuptools==64.0.0"
-          python -m pip install pyvinecopulib # requires newer setuptools
-          python -m pip install "setuptools==56.0.0"
-          
           python -m pip install -e . -e ./examples
           python -m pip install -r tests/devops_tests/requirements.txt
       - if: steps.cache.outputs.cache-hit != 'true'
