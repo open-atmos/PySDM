@@ -63,6 +63,7 @@ class ChemistryMethods(BackendMethods):
         multiplicity,
     ):
         assert n_cell == 1
+        assert n_threads == 1
         for i in range(n_cell):
             cell_id = cell_order[i]
 
