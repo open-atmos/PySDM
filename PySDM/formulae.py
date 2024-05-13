@@ -34,7 +34,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
         latent_heat: str = "Kirchhoff",
         hygroscopicity: str = "KappaKoehlerLeadingTerms",
-        drop_growth: str = "MaxwellMason",
+        drop_growth: str = "Mason1971",
         surface_tension: str = "Constant",
         diffusion_kinetics: str = "FuchsSutugin",
         diffusion_thermics: str = "Neglect",
@@ -48,6 +48,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_meteoric_water_line_excess: str = "Null",
         isotope_ratio_evolution: str = "Null",
+        isotope_diffusivity_ratios: str = "Null",
+        isotope_relaxation_timescale: str = "Null",
         optical_albedo: str = "Null",
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
@@ -79,8 +81,11 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         )
         self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
         self.isotope_ratio_evolution = isotope_ratio_evolution
+        self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
+        self.isotope_relaxation_timescale = isotope_relaxation_timescale
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
+        self.terminal_velocity = terminal_velocity
 
         self._components = tuple(
             i
@@ -298,6 +303,8 @@ def _pick(value: str, choices: dict, constants: namedtuple):
         for name, cls in choices.items():
             if name == value:
                 obj = cls(constants)
+                break
+            name = value
     else:
         parent_classes = []
         for name in value.split("+"):
@@ -317,7 +324,7 @@ def _pick(value: str, choices: dict, constants: namedtuple):
 
     if obj is None:
         raise ValueError(
-            f"Unknown setting: '{name}'; choices are: {tuple(choices.keys())}"
+            f"Unknown setting: {name}; choices are: {', '.join(choices.keys())}"
         )
 
     obj.__name__ = value  # pylint: disable=attribute-defined-outside-init

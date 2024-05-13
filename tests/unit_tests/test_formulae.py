@@ -101,3 +101,17 @@ class TestFormulae:
 
         # assert
         assert class_name == arg
+
+    @staticmethod
+    def test_pick_reports_correct_missing_name():
+        # arrange
+        class Cls:  # pylint:disable=too-few-public-methods
+            def __init__(self, _):
+                pass
+
+        # act
+        with pytest.raises(ValueError) as excinfo:
+            formulae._pick(value="C", choices={"A": Cls, "B": Cls}, constants=None)
+
+        # assert
+        assert str(excinfo.value) == "Unknown setting: C; choices are: A, B"

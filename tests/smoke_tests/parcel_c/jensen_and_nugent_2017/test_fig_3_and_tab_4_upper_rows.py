@@ -30,7 +30,9 @@ def find_max_alt_index(products):
 @pytest.fixture(scope="session", name="variables")
 def variables_fixture():
     return notebook_vars(
-        file=Path(Jensen_and_Nugent_2017.__file__).parent / "Fig_3.ipynb", plot=PLOT
+        file=Path(Jensen_and_Nugent_2017.__file__).parent
+        / "Fig_3_and_Tab_4_upper_rows.ipynb",
+        plot=PLOT,
     )
 
 
@@ -100,6 +102,41 @@ class TestFig3:
             significant=2,
         )
 
+    @staticmethod
+    @pytest.mark.parametrize(
+        "mask_label, height, mr_sw_rd",
+        (
+            ("ascent", 50, (5.28, 0.44, 0.083)),
+            ("ascent", 100, (6.75, 0.38, 0.057)),
+            ("ascent", 150, (7.75, 0.36, 0.046)),
+            ("ascent", 200, (8.54, 0.34, 0.039)),
+            ("ascent", 250, (9.20, 0.32, 0.035)),
+            ("ascent", 300, (9.77, 0.31, 0.032)),
+            ("descent", 300, (9.77, 0.31, 0.032)),
+            ("descent", 250, (9.23, 0.33, 0.036)),
+            ("descent", 200, (8.54, 0.36, 0.042)),
+            ("descent", 150, (7.80, 0.39, 0.051)),
+            ("descent", 100, (6.82, 0.45, 0.066)),
+            ("descent", 50, (5.43, 0.57, 0.105)),
+        ),
+    )
+    def test_table_4_upper_rows(variables, mask_label, height, mr_sw_rd):
+        # arrange
+        tolerance = 0.075
+        mean_radius, spectral_width, relative_dispersion = mr_sw_rd
 
-# TODO #1266: radius at -300 m, at ascent top, at cloud base (x2: first pass, end of descent)
-# TODO #1266: smoke test for radii in Fig 4 (new file)
+        # act
+        actual = variables["table_values"]
+
+        # assert
+        for row in actual[mask_label]:
+            if int(row[0]) == height:
+                np.testing.assert_allclose(
+                    actual=float(row[1]), desired=mean_radius, rtol=tolerance
+                )
+                np.testing.assert_allclose(
+                    actual=float(row[2]), desired=spectral_width, rtol=tolerance
+                )
+                np.testing.assert_allclose(
+                    actual=float(row[3]), desired=relative_dispersion, rtol=tolerance
+                )

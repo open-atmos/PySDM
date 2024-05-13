@@ -1,5 +1,5 @@
 """
-tests for ventliation coefficient implmentation
+tests for ventilation coefficient implementation
 """
 
 from matplotlib import pyplot
@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 from PySDM import Formulae
 from PySDM.formulae import _choices
-from PySDM.physics import ventilation, constants_defaults
+from PySDM.physics import ventilation, constants_defaults, in_unit
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
@@ -105,3 +105,64 @@ class TestVentilationCoefficient:
         # assert
         assert np.isfinite(f)
         assert 1.2 < f < 1.22
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "diameter_cm, first_factor_cm, temperature",
+        (
+            (0.01, 0.086, constants_defaults.T0),
+            (0.05, 1.01, constants_defaults.T0),
+            (0.1, 2.90, constants_defaults.T0),
+            (0.2, 8.80, constants_defaults.T0),
+            (0.3, 20.1, constants_defaults.T0),
+            (0.01, 0.082, constants_defaults.T0 + 10),
+            (0.05, 0.99, constants_defaults.T0 + 10),
+            (0.1, 2.80, constants_defaults.T0 + 10),
+            (0.2, 8.50, constants_defaults.T0 + 10),
+            (0.3, 19.3, constants_defaults.T0 + 10),
+            (0.01, 0.079, constants_defaults.T0 + 20),
+            (0.05, 0.97, constants_defaults.T0 + 20),
+            (0.1, 2.80, constants_defaults.T0 + 20),
+            (0.2, 8.30, constants_defaults.T0 + 20),
+            (0.3, 18.5, constants_defaults.T0 + 20),
+            (0.01, 0.076, constants_defaults.T0 + 30),
+            (0.05, 0.96, constants_defaults.T0 + 30),
+            (0.1, 2.70, constants_defaults.T0 + 30),
+            (0.2, 8.10, constants_defaults.T0 + 30),
+            (0.3, 17.8, constants_defaults.T0 + 30),
+            (0.01, 0.073, constants_defaults.T0 + 40),
+            (0.05, 0.94, constants_defaults.T0 + 40),
+            (0.1, 2.70, constants_defaults.T0 + 40),
+            (0.2, 8.00, constants_defaults.T0 + 40),
+            (0.3, 17.2, constants_defaults.T0 + 40),
+        ),
+    )
+    def test_table_1_from_kinzer_and_gunn_1951(
+        diameter_cm, temperature, first_factor_cm
+    ):
+        # arrange
+        formulae = Formulae(
+            ventilation="PruppacherAndRasmussen1979", terminal_velocity="RogersYau"
+        )
+        si = constants_defaults.si
+        const = formulae.constants
+        air_density = 1 * si.kg / si.m**3
+        radius = diameter_cm * si.cm / 2
+        dynamic_viscosity = formulae.air_dynamic_viscosity.eta_air(temperature)
+        Sc = formulae.trivia.air_schmidt_number(
+            dynamic_viscosity, const.D0, air_density
+        )
+        Re = formulae.particle_shape_and_density.reynolds_number(
+            radius,
+            formulae.terminal_velocity.v_term(radius),
+            dynamic_viscosity,
+            air_density,
+        )
+        vent_coeff = formulae.ventilation.ventilation_coefficient(
+            formulae.trivia.sqrt_re_times_cbrt_sc(Re, Sc)
+        )
+        np.testing.assert_allclose(
+            actual=in_unit(4 * np.pi * radius * vent_coeff, si.cm),
+            desired=first_factor_cm,
+            rtol=0.31,
+        )

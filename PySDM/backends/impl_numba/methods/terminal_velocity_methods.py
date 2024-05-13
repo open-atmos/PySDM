@@ -30,22 +30,17 @@ class TerminalVelocityMethods(BackendMethods):
 
     @cached_property
     def terminal_velocity_body(self):
+        v_term = self.formulae.terminal_velocity.v_term
+
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def terminal_velocity_body(*, values, radius, k1, k2, k3, r1, r2):
+        def terminal_velocity_body(*, values, radius):
             for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
-                if radius[i] < r1:
-                    values[i] = k1 * radius[i] ** 2
-                elif radius[i] < r2:
-                    values[i] = k2 * radius[i]
-                else:
-                    values[i] = k3 * radius[i] ** (1 / 2)
+                values[i] = v_term(radius[i])
 
         return terminal_velocity_body
 
-    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
-        self.terminal_velocity_body(
-            values=values, radius=radius, k1=k1, k2=k2, k3=k3, r1=r1, r2=r2
-        )
+    def terminal_velocity(self, *, values, radius):
+        self.terminal_velocity_body(values=values, radius=radius)
 
     @cached_property
     def power_series_body(self):

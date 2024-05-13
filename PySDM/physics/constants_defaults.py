@@ -310,15 +310,15 @@ CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 """ [Bohren 1987](https://doi.org/10.1119/1.15109) """
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 
-""" TODO #1266 """
-diffussion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
-diffussion_thermics_D_G11_B = 0.15 / si.K
-diffussion_thermics_D_G11_C = -1.9
+""" [Grabowski et al. 2011](https://doi.org/10.1016/j.atmosres.2010.10.020) """
+diffusion_thermics_D_G11_A = 1e-5 * si.m**2 / si.s
+diffusion_thermics_D_G11_B = 0.015 / si.K
+diffusion_thermics_D_G11_C = -1.9
 
-diffussion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
-diffussion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
-diffussion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
-diffussion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
+diffusion_thermics_K_G11_A = 1.5e-11 * si.W / si.m / si.K**4
+diffusion_thermics_K_G11_B = -4.8e-8 * si.W / si.m / si.K**3
+diffusion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
+diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 """
 [Pruppacher & Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036<1255:AWTIOT>2.0.CO;2)
@@ -343,11 +343,32 @@ FROESSLING_1938_A = 1
 FROESSLING_1938_B = 0.276
 
 
+""" fit coefficients from [Hellmann & Harvey 2020](https://doi.org/10.1029/2020GL089999) """
+HELLMANN_HARVEY_T_UNIT = 100 * si.K
+HELLMANN_HARVEY_EQ6_COEFF0 = 0.98258
+HELLMANN_HARVEY_EQ6_COEFF1 = -0.02546
+HELLMANN_HARVEY_EQ6_COEFF2 = 0.02421
+HELLMANN_HARVEY_EQ7_COEFF0 = 0.98284
+HELLMANN_HARVEY_EQ7_COEFF1 = 0.003517
+HELLMANN_HARVEY_EQ7_COEFF2 = -0.001996
+HELLMANN_HARVEY_EQ8_COEFF0 = 0.96671
+HELLMANN_HARVEY_EQ8_COEFF1 = 0.007406
+HELLMANN_HARVEY_EQ8_COEFF2 = -0.004861
+
+
+""" terminal velocity formulation from Rogers & Yau (equations: 8.5, 8.6, 8.8) """
+ROGERS_YAU_TERM_VEL_SMALL_K = 1.19e6 / si.cm / si.s
+ROGERS_YAU_TERM_VEL_MEDIUM_K = 8e3 / si.s
+ROGERS_YAU_TERM_VEL_LARGE_K = 2.01e3 * si.cm**0.5 / si.s
+ROGERS_YAU_TERM_VEL_SMALL_R_LIMIT = 35 * si.um
+ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT = 600 * si.um
+
+
 def compute_derived_values(c: dict):
     """
     computes derived quantities such as molar mass ratios, etc.
 
-    water molar mass is computed from from molecular masses and VSMOW isotope abundances
+    water molar mass is computed from molecular masses and VSMOW isotope abundances
     (and neglecting molecular binding energies)
     for discussion, see:
     - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
@@ -386,3 +407,20 @@ def compute_derived_values(c: dict):
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
+
+
+W76W_G0 = -2.9912729e3 * si.K**2
+W76W_G1 = -6.0170128e3 * si.K
+W76W_G2 = 1.887643854e1
+W76W_G3 = -2.8354721e-2 * si.K**-1
+W76W_G4 = 1.7838301e-5 * si.K**-2
+W76W_G5 = -8.4150417e-10 * si.K**-3
+W76W_G6 = 4.4412543e-13 * si.K**-4
+W76W_G7 = 2.858487
+W76W_G8 = 1 * si.Pa
+
+B80W_G0 = 6.112 * si.hPa
+B80W_G1 = 17.67 * si.dimensionless
+B80W_G2 = 243.5 * si.K
+
+one_kelvin = 1 * si.K

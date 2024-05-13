@@ -69,28 +69,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def __terminal_velocity_body(self):
-        return trtc.For(
-            ("values", "radius", "k1", "k2", "k3", "r1", "r2"),
-            "i",
-            """
-            if (radius[i] < r1) {
-                values[i] = k1 * radius[i] * radius[i];
-            }
-            else {
-                if (radius[i] < r2) {
-                    values[i] = k2 * radius[i];
-                }
-                else {
-                    values[i] = k3 * pow(radius[i], (real_type)(.5));
-                }
-            }
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
-        )
-
-    @cached_property
     def __volume_of_mass_body(self):
         return trtc.For(
             param_names=("volume", "mass"),
@@ -143,17 +121,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
                 p.data,
                 RH.data,
             ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
-        k1 = self._get_floating_point(k1)
-        k2 = self._get_floating_point(k2)
-        k3 = self._get_floating_point(k3)
-        r1 = self._get_floating_point(r1)
-        r2 = self._get_floating_point(r2)
-        self.__terminal_velocity_body.launch_n(
-            values.size(), [values, radius, k1, k2, k3, r1, r2]
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

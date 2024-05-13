@@ -63,7 +63,7 @@ For an overview of PySDM features (and the preferred way to cite PySDM in papers
 - [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
   
 PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
-For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
+For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
 A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
 
@@ -831,8 +831,12 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://github.com/darothen/superdroplet
 - NTLP (FORTRAN)   
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
-- CLEO (C++)
+- CLEO (C++)    
   https://yoctoyotta1024.github.io/CLEO/
+- droplets.jl (Julia)   
+  https://github.com/emmacware/droplets.jl
+- LacmoPy (Python/Numba)    
+  https://github.com/JanKBohrer/LacmoPy/blob/master/collision/all_or_nothing.py
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
@@ -844,3 +848,7 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 - pyrcel: https://github.com/darothen/pyrcel
 - PyBox: https://github.com/loftytopping/PyBox
 - py-cloud-parcel-model: https://github.com/emmasimp/py-cloud-parcel-model
+
+### non-Python cloud microphysics open-source software
+
+- CloudMicrophysics.jl: https://github.com/CliMA/CloudMicrophysics.jl

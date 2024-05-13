@@ -21,7 +21,9 @@ def test_approximation(backend_class, plot=False):
         * const.si.mm
         / 2
     )
-    particulator = DummyParticulator(backend_class, n_sd=len(r))
+    particulator = DummyParticulator(
+        backend_class, n_sd=len(r), formulae=Formulae(terminal_velocity="RogersYau")
+    )
     r = particulator.backend.Storage.from_ndarray(r)
     u = (
         np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565])

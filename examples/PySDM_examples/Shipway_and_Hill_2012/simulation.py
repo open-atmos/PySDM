@@ -168,6 +168,7 @@ class Simulation:
                     PySDM_products.CoalescenceRatePerGridbox(
                         name="coalescence_rate",
                     ),
+                    PySDM_products.SurfacePrecipitation(),
                 ]
             )
         self.particulator = self.builder.build(
@@ -182,7 +183,9 @@ class Simulation:
         }
         self.output_products = {}
         for k, v in self.particulator.products.items():
-            if len(v.shape) == 1:
+            if len(v.shape) == 0:
+                self.output_products[k] = np.zeros(self.nt + 1)
+            elif len(v.shape) == 1:
                 self.output_products[k] = np.zeros((self.mesh.grid[-1], self.nt + 1))
             elif len(v.shape) == 2:
                 number_of_time_sections = len(self.save_spec_and_attr_times)
@@ -203,7 +206,10 @@ class Simulation:
         for k, v in self.particulator.products.items():
             if len(v.shape) > 1:
                 continue
-            self.output_products[k][:, step] = v.get()
+            if len(v.shape) == 1:
+                self.output_products[k][:, step] = v.get()
+            else:
+                self.output_products[k][step] = v.get()
 
     def save_spectrum(self, index):
         for k, v in self.particulator.products.items():

@@ -58,7 +58,7 @@ jobs:
   pdoc:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-12, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.1
@@ -132,7 +132,7 @@ jobs:
             python-version: "3.8"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 40
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4.1.1
         with:
@@ -198,7 +198,12 @@ jobs:
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
           python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
-          python -m pip install -e . ./examples
+          
+          python -m pip install "setuptools==64.0.0"
+          python -m pip install pyvinecopulib # requires newer setuptools
+          python -m pip install "setuptools==56.0.0"
+          
+          python -m pip install -e . -e ./examples
           python -m pip install -r tests/devops_tests/requirements.txt
       - if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -215,7 +220,7 @@ jobs:
         test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 45
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4.1.1
         with:
