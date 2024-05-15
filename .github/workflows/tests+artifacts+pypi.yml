@@ -192,9 +192,11 @@ jobs:
           echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests+artifacts+pypi.yml \
           | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
       - uses: actions/cache@v4
+        id: cache
         with:
           path: ${{ env.pip_user_site }}
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          lookup-only: true
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
           python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
