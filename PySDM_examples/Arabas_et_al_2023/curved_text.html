@@ -219,12 +219,12 @@ added to the handles of a legend.</p>
 alpha: scalar or None
 animated: bool
 antialiased: bool
-backgroundcolor: color
+backgroundcolor: :mpltype:<code>color</code>
 bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
 clip_box: unknown
 clip_on: unknown
 clip_path: unknown
-color or c: color
+color or c: :mpltype:<code>color</code>
 figure: <code>~matplotlib.figure.Figure</code>
 fontfamily or family or fontname: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
 fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
@@ -254,7 +254,7 @@ text: object
 transform: <code>~matplotlib.transforms.Transform</code>
 transform_rotates_text: bool
 url: str
-usetex: bool or None
+usetex: bool, default: :rc:<code>text.usetex</code>
 verticalalignment or va: {'baseline', 'bottom', 'center', 'center_baseline', 'top'}
 visible: bool
 wrap: bool
@@ -460,12 +460,12 @@ angles of self.__Characters.</p></div>
 alpha: scalar or None
 animated: bool
 antialiased: bool
-backgroundcolor: color
+backgroundcolor: :mpltype:<code>color</code>
 bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
 clip_box: <code>~matplotlib.transforms.BboxBase</code> or None
 clip_on: bool
 clip_path: Patch or (Path, Transform) or None
-color or c: color
+color or c: :mpltype:<code>color</code>
 figure: <code>~matplotlib.figure.Figure</code>
 fontfamily or family or fontname: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
 fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
@@ -495,7 +495,7 @@ text: object
 transform: <code>~matplotlib.transforms.Transform</code>
 transform_rotates_text: bool
 url: str
-usetex: bool or None
+usetex: bool, default: :rc:<code>text.usetex</code>
 verticalalignment or va: {'baseline', 'bottom', 'center', 'center_baseline', 'top'}
 visible: bool
 wrap: bool
