@@ -55,3 +55,35 @@ def test_pseudorandom_zrange(z_range, backend_class):
     # assert
     np.testing.assert_array_less(positions, comp * z_range[1] * grid[0])
     np.testing.assert_array_less(comp * z_range[0] * grid[0], positions)
+
+
+@pytest.mark.parametrize(
+    "z_range, x_range",
+    [
+        pytest.param([0.0, 1.0], [0.0, 1.0], id="full range"),
+        pytest.param((0.5, 0.75), (0.5, 0.75), id="partial range"),
+    ],
+)
+def test_pseudorandom_x_z_range(z_range, x_range, backend_class):
+    # arrange
+    assert len(z_range) == 2
+    assert len(x_range) == 2
+    backend = backend_class(Formulae())
+    grid = (8, 8)
+    n_sd = 100
+
+    # act
+    positions = [
+        Pseudorandom.sample(
+            backend=backend, grid=grid, n_sd=n_sd, z_part=z_range, x_part=x_range
+        )
+    ]
+    comp = np.ones_like(positions)
+
+    # assert z positions
+    np.testing.assert_array_less(positions[0][0], comp[0][0] * z_range[1] * grid[0])
+    np.testing.assert_array_less(comp[0][0] * z_range[0] * grid[0], positions[0][0])
+
+    # assert x positions
+    np.testing.assert_array_less(positions[0][1], comp[0][1] * x_range[1] * grid[1])
+    np.testing.assert_array_less(comp[0][1] * x_range[0] * grid[1], positions[0][1])
