@@ -22,7 +22,7 @@ def plot_profiles(subplot_list, updraft_list, forg_list, output, save=False):
                 CDNC_film = np.array(output[key + "CompressedFilmOvadnevaite"][var])
                 CDNC_bulk = np.array(output[key + "Constant"][var])
 
-                cmap = matplotlib.cm.get_cmap("Spectral")
+                cmap = pyplot.get_cmap("Spectral")
                 if len(subplot_list) > 1:
                     ax = axes[k, i]
                 else:
