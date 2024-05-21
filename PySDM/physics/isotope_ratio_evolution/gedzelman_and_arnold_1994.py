@@ -3,6 +3,7 @@ eqs. (22) and (23) in [Gedzelman & Arnold 1994](https://doi.org/10.1029/93JD0351
 """
 
 
+# pylint: disable=too-few-public-methods
 class GedzelmanAndArnold1994:
     def __init__(self, _):
         pass
