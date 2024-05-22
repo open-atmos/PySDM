@@ -329,7 +329,7 @@ jobs:
           sudo ln -s `which python3` /usr/local/bin/python
           echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
           # Python 3.12 workaround  
-          python -m pip install --break-system-packages setuptools
+          python -m pip install --break-system-packages setuptools packaging
       - uses: actions/download-artifact@v3
         with:
           name: dist

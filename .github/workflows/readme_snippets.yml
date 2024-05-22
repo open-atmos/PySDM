@@ -28,7 +28,7 @@ jobs:
         run: |
           sudo ln -s `which python3` /usr/local/bin/python
           echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
-          python -m pip install --break-system-packages setuptools # Python 3.12 workaround  
+          python -m pip install --break-system-packages setuptools packaging # Python 3.12 workaround  
       - run: python -m pip install $PIP_INSTALL_ARGS -e .
       - run: python -m pip install $PIP_INSTALL_ARGS pytest-codeblocks pytest
       - run: python -m pip install $PIP_INSTALL_ARGS "pyparsing<3.0.0"  # https://github.com/matplotlib/matplotlib/issues/25204
