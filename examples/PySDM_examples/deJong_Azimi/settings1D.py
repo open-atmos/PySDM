@@ -33,7 +33,7 @@ class Settings1D(SettingsSH):
         n_sd_per_gridbox: int,
         p0: float = 1007 * si.hPa,  # as used in Olesik et al. 2022 (GMD)
         kappa: float = 1,
-        rho_times_w_1: float = 2 * si.m / si.s * si.kg / si.m**3,
+        rho_times_w_1: float = 0 * si.m / si.s * si.kg / si.m**3,
         particles_per_volume_STP: int = 100 / si.cm**3,
         dt: float = 1 * si.s,
         dz: float = 25 * si.m,

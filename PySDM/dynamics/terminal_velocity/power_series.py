@@ -11,13 +11,13 @@ class PowerSeries:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator, *, prefactors=None, powers=None):
         si = const.si
         self.particulator = particulator
-        prefactors = prefactors or [2.0e-1 * si.m / si.s / np.sqrt(si.m)]
+        prefactors = prefactors or [50.0 * si.m / si.s * si.kg ** (1 / 6)]
         self.prefactors = np.array(prefactors)
         powers = powers or [1 / 6]
         self.powers = np.array(powers)
         for i, p in enumerate(self.powers):
-            self.prefactors[i] *= (4 / 3 * const.PI) ** (p)
-            self.prefactors[i] /= (1 * si.um**3) ** (p)
+            self.prefactors[i] *= (4 / 3 * const.PI * 1000 * si.kg / si.m**3) ** (p)
+            # self.prefactors[i] /= (1 * si.um**3) ** (p)
         assert len(self.prefactors) == len(self.powers)
 
     def __call__(self, output, radius):
