@@ -26,8 +26,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import matplotlib
-import numpy as np
+<pre><code class="python">import numpy as np
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
 
@@ -50,7 +49,7 @@ def plot_profiles(subplot_list, updraft_list, forg_list, output, save=False):
                 CDNC_film = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][var])
                 CDNC_bulk = np.array(output[key + &#34;Constant&#34;][var])
 
-                cmap = matplotlib.cm.get_cmap(&#34;Spectral&#34;)
+                cmap = pyplot.get_cmap(&#34;Spectral&#34;)
                 if len(subplot_list) &gt; 1:
                     ax = axes[k, i]
                 else:
@@ -393,7 +392,7 @@ def plot_contours(
                 CDNC_film = np.array(output[key + &#34;CompressedFilmOvadnevaite&#34;][var])
                 CDNC_bulk = np.array(output[key + &#34;Constant&#34;][var])
 
-                cmap = matplotlib.cm.get_cmap(&#34;Spectral&#34;)
+                cmap = pyplot.get_cmap(&#34;Spectral&#34;)
                 if len(subplot_list) &gt; 1:
                     ax = axes[k, i]
                 else:
