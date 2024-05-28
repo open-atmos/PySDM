@@ -19,7 +19,7 @@ jobs:
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
       - if: matrix.platform != 'macos-14'
         uses: actions/setup-python@v5.0.0
         with:
@@ -57,7 +57,7 @@ jobs:
   julia:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
@@ -73,7 +73,7 @@ jobs:
   matlab:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.8
