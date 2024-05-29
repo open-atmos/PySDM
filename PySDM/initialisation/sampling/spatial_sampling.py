@@ -17,7 +17,7 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
 
         storage = backend.Storage.empty(n_dims * n_sd, dtype=float)
         backend.Random(seed=backend.formulae.seed, size=n_dims * n_sd)(storage)
-        positions = storage.to_ndarray().reshape(dimension, n_sd)
+        positions = storage.to_ndarray().reshape(n_dims, n_sd)
 
         if z_part is None:
             scale_fac.append(grid[0])
@@ -34,11 +34,11 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
             scale_fac.append(ix_max - ix_min)
             affine_fac.append(ix_min)
         else:
-            if dimension == 2:
+            if n_dims == 2:
                 scale_fac.append(grid[1])
                 affine_fac.append(0)
 
-        for dim in range(dimension):
+        for dim in range(n_dims):
             positions[dim, :] *= scale_fac[dim]
             positions[dim, :] += affine_fac[dim]
 
