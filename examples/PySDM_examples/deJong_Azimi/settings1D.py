@@ -62,9 +62,7 @@ class Settings1D(SettingsSH):
         )
         self.z_part = z_part
         z_frac = z_part[1] - z_part[0]
-        norm_factor = (
-            particles_per_volume_STP / self.formulae.constants.rho_STP * z_frac
-        )
+        norm_factor = particles_per_volume_STP * z_frac
         self.wet_radius_spectrum_per_mass_of_dry_air = spectra.Gamma(
             norm_factor=norm_factor,
             k=1.0,
