@@ -59,10 +59,10 @@ def test_pseudorandom_zrange(z_range, backend_class):
 
 @pytest.mark.parametrize(
     "z_range, x_range",
-    [
-        pytest.param([0.0, 1.0], [0.0, 1.0], id="full range"),
+    (
+        pytest.param((0.0, 1.0), (0.0, 1.0), id="full range"),
         pytest.param((0.5, 0.75), (0.5, 0.75), id="partial range"),
-    ],
+    ),
 )
 def test_pseudorandom_x_z_range(z_range, x_range, backend_class):
     # arrange
@@ -73,17 +73,15 @@ def test_pseudorandom_x_z_range(z_range, x_range, backend_class):
     n_sd = 100
 
     # act
-    positions = [
-        Pseudorandom.sample(
-            backend=backend, grid=grid, n_sd=n_sd, z_part=z_range, x_part=x_range
-        )
-    ]
-    comp = np.ones_like(positions)
+    positions = Pseudorandom.sample(
+        backend=backend, grid=grid, n_sd=n_sd, z_part=z_range, x_part=x_range
+    )
 
-    # assert z positions
-    np.testing.assert_array_less(positions[0][0], comp[0][0] * z_range[1] * grid[0])
-    np.testing.assert_array_less(comp[0][0] * z_range[0] * grid[0], positions[0][0])
+    for droplet in range(n_sd):
+        # assert z positions
+        np.testing.assert_array_less(positions[0][droplet], z_range[1] * grid[0])
+        np.testing.assert_array_less(z_range[0] * grid[0], positions[0][droplet])
 
-    # assert x positions
-    np.testing.assert_array_less(positions[0][1], comp[0][1] * x_range[1] * grid[1])
-    np.testing.assert_array_less(comp[0][1] * x_range[0] * grid[1], positions[0][1])
+        # assert x positions
+        np.testing.assert_array_less(positions[1][droplet], x_range[1] * grid[1])
+        np.testing.assert_array_less(x_range[0] * grid[1], positions[1][droplet])
