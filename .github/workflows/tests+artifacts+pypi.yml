@@ -18,7 +18,7 @@ jobs:
   precommit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.8
@@ -35,7 +35,7 @@ jobs:
     env:
       NUMBA_DISABLE_JIT: 1
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0
@@ -60,7 +60,7 @@ jobs:
         platform: [ubuntu-latest, macos-12, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           persist-credentials: false
@@ -83,7 +83,7 @@ jobs:
   pylint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0 
@@ -113,7 +113,7 @@ jobs:
   zenodo_json:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
       - uses: notiz-dev/github-action-json-property@release
         with: 
           path: '.zenodo.json'
@@ -133,7 +133,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -179,7 +179,7 @@ jobs:
         python-version: ["3.8", "3.11"]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -218,7 +218,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 50
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -262,7 +262,7 @@ jobs:
   devops:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
@@ -278,7 +278,7 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
