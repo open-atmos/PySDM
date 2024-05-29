@@ -35,7 +35,7 @@ jobs:
     env:
       NUMBA_DISABLE_JIT: 1
     steps:
-    - uses: actions/checkout@4.1.6
+    - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0
