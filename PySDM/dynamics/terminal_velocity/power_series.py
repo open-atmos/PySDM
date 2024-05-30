@@ -11,7 +11,7 @@ class PowerSeries:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator, *, prefactors=None, powers=None):
         si = const.si
         self.particulator = particulator
-        prefactors = prefactors or [50.0 * si.m / si.s * si.kg ** (1 / 6)]
+        prefactors = prefactors or [30.0 * si.m / si.s * si.kg ** (1 / 6)]
         self.prefactors = np.array(prefactors)
         powers = powers or [1 / 6]
         self.powers = np.array(powers)
