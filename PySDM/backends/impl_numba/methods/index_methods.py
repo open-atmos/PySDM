@@ -7,13 +7,12 @@ from functools import cached_property
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 
 
 class IndexMethods(BackendMethods):
     @cached_property
     def identity_index(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(idx):
             for i in numba.prange(len(idx)):  # pylint: disable=not-an-iterable
                 idx[i] = i
@@ -22,9 +21,7 @@ class IndexMethods(BackendMethods):
 
     @cached_property
     def shuffle_global(self):
-        @numba.njit(
-            **{**conf.JIT_FLAGS, "parallel": False, "fastmath": self.formulae.fastmath}
-        )
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
         def body(idx, length, u01):
             for i in range(length - 1, 0, -1):
                 j = int(u01[i] * (i + 1))
@@ -34,7 +31,7 @@ class IndexMethods(BackendMethods):
 
     @cached_property
     def shuffle_local(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(idx, u01, cell_start):
             # pylint: disable=not-an-iterable
             for c in numba.prange(len(cell_start) - 1):

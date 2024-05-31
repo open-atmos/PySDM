@@ -75,7 +75,7 @@ def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
 class FragmentationMethods(BackendMethods):
     @cached_property
     def _fragmentation_limiters_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments
         def body(n_fragment, frag_volume, vmin, nfmax, x_plus_y):
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
@@ -105,7 +105,7 @@ class FragmentationMethods(BackendMethods):
 
     @cached_property
     def _slams_fragmentation_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(n_fragment, frag_volume, x_plus_y, probs, rand):
             for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
                 probs[i] = 0.0
@@ -135,7 +135,7 @@ class FragmentationMethods(BackendMethods):
 
     @cached_property
     def _exp_fragmentation_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS})
+        @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments
         def body(*, scale, frag_volume, rand, tol=1e-5):
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
@@ -304,7 +304,7 @@ class FragmentationMethods(BackendMethods):
 
     @cached_property
     def _ll82_coalescence_check_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(*, Ec, dl):
             for i in numba.prange(len(Ec)):  # pylint: disable=not-an-iterable
                 if dl[i] < 0.4e-3:
@@ -322,7 +322,7 @@ class FragmentationMethods(BackendMethods):
     def _straub_fragmentation_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(
             *, CW, gam, ds, v_max, frag_volume, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
         ):  # pylint: disable=too-many-arguments,too-many-locals
@@ -380,7 +380,7 @@ class FragmentationMethods(BackendMethods):
     def _ll82_fragmentation_body(self):  # pylint: disable=too-many-statements
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(
             *, CKE, W, W2, St, ds, dl, dcoal, frag_volume, rand, Rf, Rs, Rd, tol
         ):  # pylint: disable=too-many-branches,too-many-locals,too-many-statements
@@ -477,7 +477,7 @@ class FragmentationMethods(BackendMethods):
     def _gauss_fragmentation_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(*, mu, sigma, frag_volume, rand):  # pylint: disable=too-many-arguments
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
                 frag_volume[i] = mu + sigma * ff.trivia__erfinv_approx(rand[i])
@@ -488,7 +488,7 @@ class FragmentationMethods(BackendMethods):
     def _feingold1988_fragmentation_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments
         def body(*, scale, frag_volume, x_plus_y, rand, fragtol):
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable

@@ -6,6 +6,7 @@ from PySDM.backends.impl_numba import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
 from PySDM.backends.impl_numba.storage import Storage as ImportedStorage
 from PySDM.formulae import Formulae
+from PySDM.backends.impl_numba.conf import JIT_FLAGS
 
 
 class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
@@ -27,11 +28,19 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
     default_croupier = "local"
 
-    def __init__(self, formulae=None, double_precision=True):
+    def __init__(self, formulae=None, double_precision=True, override_jit_flags=None):
         if not double_precision:
             raise NotImplementedError()
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
+
+        assert "fastmath" not in (override_jit_flags or {})
+        self.default_jit_flags = {
+            **JIT_FLAGS,
+            **{"fastmath": self.formulae.fastmath},
+            **(override_jit_flags or {}),
+        }
+
         methods.CollisionsMethods.__init__(self)
         methods.FragmentationMethods.__init__(self)
         methods.PairMethods.__init__(self)

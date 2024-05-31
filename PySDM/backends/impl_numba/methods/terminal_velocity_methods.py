@@ -7,13 +7,12 @@ from functools import cached_property
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 
 
 class TerminalVelocityMethods(BackendMethods):
     @cached_property
     def _interpolation_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(output, radius, factor, b, c):
             for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
                 if radius[i] < 0:
@@ -34,7 +33,7 @@ class TerminalVelocityMethods(BackendMethods):
     def _terminal_velocity_body(self):
         v_term = self.formulae.terminal_velocity.v_term
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(*, values, radius):
             for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
                 values[i] = v_term(radius[i])
@@ -46,7 +45,7 @@ class TerminalVelocityMethods(BackendMethods):
 
     @cached_property
     def _power_series_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(*, values, radius, num_terms, prefactors, powers):
             for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
                 values[i] = 0.0

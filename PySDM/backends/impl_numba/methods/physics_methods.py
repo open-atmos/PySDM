@@ -8,7 +8,6 @@ import numba
 from numba import prange
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 
 
 class PhysicsMethods(BackendMethods):
@@ -19,7 +18,7 @@ class PhysicsMethods(BackendMethods):
     def _critical_volume_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": ff.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(*, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
             for i in prange(len(v_cr)):  # pylint: disable=not-an-iterable
                 sigma = ff.surface_tension__sigma(
@@ -51,7 +50,7 @@ class PhysicsMethods(BackendMethods):
     def _temperature_pressure_rh_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(*, rhod, thd, water_vapour_mixing_ratio, T, p, RH):
             for i in prange(T.shape[0]):  # pylint: disable=not-an-iterable
                 T[i] = ff.state_variable_triplet__T(rhod[i], thd[i])
@@ -80,7 +79,7 @@ class PhysicsMethods(BackendMethods):
     def _a_w_ice_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(*, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out):
             for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
                 pvi = ff.saturation_vapour_pressure__ice_Celsius(
@@ -107,7 +106,7 @@ class PhysicsMethods(BackendMethods):
     def _volume_of_mass_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(volume, mass):
             for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
                 volume[i] = ff.particle_shape_and_density__mass_to_volume(mass[i])
@@ -121,7 +120,7 @@ class PhysicsMethods(BackendMethods):
     def _mass_of_volume_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(mass, volume):
             for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
                 mass[i] = ff.particle_shape_and_density__volume_to_mass(volume[i])
@@ -135,7 +134,7 @@ class PhysicsMethods(BackendMethods):
     def __air_density_body(self):
         formulae = self.formulae.flatten
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(output, rhod, water_vapour_mixing_ratio):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 output[i] = (
@@ -153,7 +152,7 @@ class PhysicsMethods(BackendMethods):
     def __air_dynamic_viscosity_body(self):
         formulae = self.formulae.flatten
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(output, temperature):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 output[i] = formulae.air_dynamic_viscosity__eta_air(temperature[i])
@@ -167,7 +166,7 @@ class PhysicsMethods(BackendMethods):
     def __reynolds_number_body(self):
         formulae = self.formulae.flatten
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(  # pylint: disable=too-many-arguments
             output,
             cell_id,
@@ -202,7 +201,7 @@ class PhysicsMethods(BackendMethods):
     def _explicit_euler_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(y, dt, dy_dt):
             y[:] = ff.trivia__explicit_euler(y, dt, dy_dt)
 

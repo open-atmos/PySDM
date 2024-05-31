@@ -7,14 +7,13 @@ from functools import cached_property
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
 
 
 class MomentsMethods(BackendMethods):
     @cached_property
     def _moments_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(
             *,
             moment_0,
@@ -101,7 +100,7 @@ class MomentsMethods(BackendMethods):
 
     @cached_property
     def _spectrum_moments_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(
             *,
             moment_0,

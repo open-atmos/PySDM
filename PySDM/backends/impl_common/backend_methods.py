@@ -13,3 +13,5 @@ class BackendMethods:
             self.formulae_flattened = None
         if not hasattr(self, "Storage"):
             self.Storage = None
+        if not hasattr(self, "default_jit_flags"):
+            self.default_jit_flags = None

@@ -248,7 +248,7 @@ class CollisionsMethods(BackendMethods):
     def _collision_coalescence_breakup_body(self):
         _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(
             *,
             multiplicity,
@@ -312,9 +312,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def _adaptive_sdm_end_body(self):
-        @numba.njit(
-            **{**conf.JIT_FLAGS, "parallel": False, "fastmath": self.formulae.fastmath}
-        )
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
         def body(dt_left, n_cell, cell_start):
             end = 0
             for i in range(n_cell - 1, -1, -1):
@@ -331,7 +329,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def _scale_prob_for_adaptive_sdm_gamma_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments,too-many-locals
         def body(
             prob,
@@ -411,7 +409,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def _collision_coalescence_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def body(
             *,
             multiplicity,
@@ -515,7 +513,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def _compute_gamma_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments,too-many-locals
         def body(
             prob,
@@ -626,7 +624,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def _normalize_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+        @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         # pylint: disable=too-many-arguments
         def body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
             n_cell = cell_start.shape[0] - 1
@@ -657,7 +655,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def remove_zero_n_or_flagged(self):
-        @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+        @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def body(multiplicity, idx, length) -> int:
             flag = len(idx)
             new_length = length
@@ -736,7 +734,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def _linear_collection_efficiency_body(self):
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments,too-many-locals
         def body(params, output, radii, is_first_in_pair, idx, length, unit):
             A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
