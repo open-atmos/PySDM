@@ -40,7 +40,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self.w = w if callable(w) else lambda _: w
 
         self.formulae = None
-        self.delta_liquid_water_mixing_ratio = None
+        self.delta_liquid_water_mixing_ratio = np.nan
         self.params = None
 
     @property
