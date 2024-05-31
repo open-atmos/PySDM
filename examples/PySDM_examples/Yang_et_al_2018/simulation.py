@@ -40,7 +40,11 @@ class Simulation:
             z0=settings.z0,
         )
         builder = Builder(
-            backend=backend(formulae=self.formulae), n_sd=settings.n_sd, environment=env
+            backend=backend(
+                formulae=self.formulae, override_jit_flags={"parallel": False}
+            ),
+            n_sd=settings.n_sd,
+            environment=env,
         )
 
         environment = builder.particulator.environment
