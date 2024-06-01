@@ -147,9 +147,7 @@ class DisplacementMethods(BackendMethods):
 
     @cached_property
     def _flag_precipitated_body(self):
-        @numba.njit(
-            **{**conf.JIT_FLAGS, "parallel": False, "fastmath": self.formulae.fastmath}
-        )
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
         # pylint: disable=too-many-arguments
         def body(
             cell_origin,
@@ -184,9 +182,7 @@ class DisplacementMethods(BackendMethods):
 
     @cached_property
     def _flag_out_of_column_body(self):
-        @numba.njit(
-            **{**conf.JIT_FLAGS, "parallel": False, "fastmath": self.formulae.fastmath}
-        )
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
         # pylint: disable=too-many-arguments
         def body(
             cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
@@ -239,8 +235,8 @@ class DisplacementMethods(BackendMethods):
         length,
         healthy,
         domain_top_level_index,
-    ) -> float:
-        return self._flag_out_of_column_body(
+    ):
+        self._flag_out_of_column_body(
             cell_origin.data,
             position_in_cell.data,
             idx.data,
