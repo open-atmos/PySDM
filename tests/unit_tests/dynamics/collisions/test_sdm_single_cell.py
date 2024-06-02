@@ -286,7 +286,7 @@ class TestSDMSingleCell:
         particles.build(attributes)
 
         class CountingRandom(
-            backend_instance.Random
+            backend_class.Random
         ):  # pylint: disable=too-few-public-methods
             calls = 0
 
