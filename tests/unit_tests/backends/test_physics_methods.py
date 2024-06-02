@@ -8,9 +8,9 @@ from PySDM.physics import si
 
 class TestPhysicsMethods:
     @staticmethod
-    def test_temperature_pressure_rh(backend_class):
+    def test_temperature_pressure_rh(backend_instance):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         sut = backend.temperature_pressure_rh
         rhod = backend.Storage.from_ndarray(np.asarray((1, 1.1)))
         thd = backend.Storage.from_ndarray(np.asarray((300.0, 301)))

@@ -7,10 +7,10 @@ from PySDM.environments import Box
 
 
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
-def test_radius(volume, backend_class):
+def test_radius(volume, backend_instance):
     # arrange
     env = Box(dt=None, dv=None)
-    builder = Builder(backend=backend_class(), n_sd=volume.size, environment=env)
+    builder = Builder(backend=backend_instance, n_sd=volume.size, environment=env)
     builder.request_attribute("radius")
     particulator = builder.build(
         attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
