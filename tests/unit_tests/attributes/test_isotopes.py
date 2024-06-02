@@ -22,12 +22,12 @@ def dummy_attrs(length):
 class TestIsotopes:
     @staticmethod
     @pytest.mark.parametrize("isotope", HEAVY_ISOTOPES)
-    def test_heavy_isotope_moles_attributes(backend_class, isotope):
+    def test_heavy_isotope_moles_attributes(backend_instance, isotope):
         # arrange
         values = [1, 2, 3]
         builder = Builder(
             n_sd=len(values),
-            backend=backend_class(),
+            backend=backend_instance,
             environment=Box(dt=np.nan, dv=np.nan),
         )
         particulator = builder.build(

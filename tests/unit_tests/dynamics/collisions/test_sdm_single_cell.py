@@ -14,11 +14,11 @@ from .conftest import backend_fill, get_dummy_particulator_and_coalescence
 
 class TestSDMSingleCell:
     @staticmethod
-    def test_single_collision(backend_class, v_2, T_2, n_2):
+    def test_single_collision(backend_instance, v_2, T_2, n_2):
         # Arrange
         const = 1.0
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n_2)
+            backend_instance, len(n_2)
         )
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, 1
@@ -79,9 +79,9 @@ class TestSDMSingleCell:
             pytest.param(3, np.array([2, 1])),
         ],
     )
-    def test_single_collision_same_n(backend_class, n_in, n_out):
+    def test_single_collision_same_n(backend_instance, n_in, n_out):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, 2)
+        particulator, sut = get_dummy_particulator_and_coalescence(backend_instance, 2)
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, 1
         )
@@ -107,10 +107,10 @@ class TestSDMSingleCell:
             pytest.param(7),
         ],
     )
-    def test_multi_collision(backend_class, v_2, n_2, p):
+    def test_multi_collision(backend_instance, v_2, n_2, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n_2)
+            backend_instance, len(n_2)
         )
 
         def _compute_gamma(prob, rand, is_first_in_pair, out):
@@ -159,10 +159,10 @@ class TestSDMSingleCell:
             pytest.param(np.array([1.0, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
         ],
     )
-    def test_multi_droplet(backend_class, v, n, p):
+    def test_multi_droplet(backend_instance, v, n, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n)
+            backend_instance, len(n)
         )
 
         def _compute_gamma(prob, rand, is_first_in_pair, out):
@@ -184,13 +184,15 @@ class TestSDMSingleCell:
         ) == np.sum(n * v)
 
     @staticmethod
-    def test_multi_step(backend_class):
+    def test_multi_step(backend_instance):
         # Arrange
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, n_sd)
+        particulator, sut = get_dummy_particulator_and_coalescence(
+            backend_instance, n_sd
+        )
 
         sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
             out, rand.to_ndarray() > 0.5, odd_zeros=True
@@ -213,9 +215,9 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
-    def test_compute_gamma(backend_class):
+    def test_compute_gamma(backend_instance):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
@@ -266,9 +268,9 @@ class TestSDMSingleCell:
         "adaptive",
         (pytest.param(True, id="adaptive_dt"), pytest.param(False, id="const_dt")),
     )
-    def test_rnd_reuse(backend_class, optimized_random, adaptive):
-        if backend_class is ThrustRTC:
-            return  # TODO #330
+    def test_rnd_reuse(backend_instance, optimized_random, adaptive):
+        if isinstance(backend_instnace, ThrustRTC):
+            pytest.skip("# TODO #330")
 
         # Arrange
         n_sd = 256
@@ -277,13 +279,16 @@ class TestSDMSingleCell:
         n_substeps = 5
 
         particles, sut = get_dummy_particulator_and_coalescence(
-            backend_class, n_sd, optimized_random=optimized_random, substeps=n_substeps
+            backend_instance,
+            n_sd,
+            optimized_random=optimized_random,
+            substeps=n_substeps,
         )
         attributes = {"multiplicity": n, "volume": v}
         particles.build(attributes)
 
         class CountingRandom(
-            backend_class.Random
+            backend_instance.Random
         ):  # pylint: disable=too-few-public-methods
             calls = 0
 

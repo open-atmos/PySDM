@@ -78,9 +78,9 @@ class TestPairMethods:
             ),
         ),
     )
-    def test_sum_pair(_data_in, _data_out, _idx, backend_class):
+    def test_sum_pair(_data_in, _data_out, _idx, backend_instance):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
 
         data_out = backend.Storage.from_ndarray(np.asarray(_data_out))
         data_in = backend.Storage.from_ndarray(np.asarray(_data_in))
@@ -102,9 +102,9 @@ class TestPairMethods:
 
     @staticmethod
     @pytest.mark.parametrize("length", (1, 2, 3, 4))
-    def test_find_pairs_length(backend_class, length):
+    def test_find_pairs_length(backend_instance, length):
         # arrange
-        backend = backend_class()
+        backend = backend_instance
         n_sd = 4
 
         cell_start = backend.Storage.from_ndarray(np.asarray([0, 0, 0, 0]))
