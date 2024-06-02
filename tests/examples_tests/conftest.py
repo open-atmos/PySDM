@@ -49,11 +49,11 @@ TEST_SUITES = {
     "multi-process_a": [
         "deJong_Azimi",
         "Arabas_et_al_2015",
-        "Bartman_2020_MasterThesis",
         "Bulenok_2023_MasterThesis",
     ],
     "multi-process_b": [
         "Arabas_et_al_2023",
+        "Bartman_2020_MasterThesis",
         "Bartman_et_al_2021",
         "Morrison_and_Grabowski_2007",
         "Shipway_and_Hill_2012",
