@@ -269,7 +269,7 @@ class TestSDMSingleCell:
         (pytest.param(True, id="adaptive_dt"), pytest.param(False, id="const_dt")),
     )
     def test_rnd_reuse(backend_instance, optimized_random, adaptive):
-        if isinstance(backend_instnace, ThrustRTC):
+        if isinstance(backend_instance, ThrustRTC):
             pytest.skip("# TODO #330")
 
         # Arrange
