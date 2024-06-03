@@ -36,13 +36,13 @@ def params_fixture(request):
     return request.param
 
 
-def test_init_to_terminal_velocity(params, backend_class):
+def test_init_to_terminal_velocity(params, backend_instance):
     """
     Fall momenta correctly initialized to the terminal velocity * mass.
     """
     env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(params["multiplicity"]), backend=backend_class(), environment=env
+        n_sd=len(params["multiplicity"]), backend=backend_instance, environment=env
     )
     builder.request_attribute("terminal velocity")
     particulator = builder.build(

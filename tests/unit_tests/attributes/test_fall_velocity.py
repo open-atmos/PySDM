@@ -53,14 +53,14 @@ def default_attributes_fixture(request):
     return request.param
 
 
-def test_fall_velocity_calculation(default_attributes, backend_class):
+def test_fall_velocity_calculation(default_attributes, backend_instance):
     """
     Test that fall velocity is the momentum divided by the mass.
     """
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_class(),
+        backend=backend_instance,
         environment=env,
     )
 
@@ -79,14 +79,14 @@ def test_fall_velocity_calculation(default_attributes, backend_class):
     )
 
 
-def test_conservation_of_momentum(default_attributes, backend_class):
+def test_conservation_of_momentum(default_attributes, backend_instance):
     """
     Test that conservation of momentum holds when many super-droplets coalesce
     """
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_class(),
+        backend=backend_instance,
         environment=env,
     )
 
@@ -122,14 +122,14 @@ def test_conservation_of_momentum(default_attributes, backend_class):
     assert np.isclose(total_final_momentum, total_initial_momentum)
 
 
-def test_attribute_selection(backend_class):
+def test_attribute_selection(backend_instance):
     """
     Test that the correct velocity attribute is selected by the mapper.
     `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity`
     should only be selected when `PySDM.dynamics.RelaxedVelocity` dynamic exists.
     """
     env = Box(dt=1, dv=1)
-    builder_no_relax = Builder(n_sd=1, backend=backend_class(), environment=env)
+    builder_no_relax = Builder(n_sd=1, backend=backend_instance, environment=env)
     builder_no_relax.request_attribute("relative fall velocity")
 
     # with no RelaxedVelocity, the builder should use TerminalVelocity
@@ -137,7 +137,7 @@ def test_attribute_selection(backend_class):
         builder_no_relax.req_attr["relative fall velocity"], TerminalVelocity
     )
     env = Box(dt=1, dv=1)
-    builder = Builder(n_sd=1, backend=backend_class(), environment=env)
+    builder = Builder(n_sd=1, backend=backend_instance, environment=env)
     builder.add_dynamic(RelaxedVelocity())
     builder.request_attribute("relative fall velocity")
 
@@ -146,6 +146,6 @@ def test_attribute_selection(backend_class):
 
     # requesting momentum with no dynamic issues a warning
     env = Box(dt=1, dv=1)
-    builder = Builder(n_sd=1, backend=backend_class(), environment=env)
+    builder = Builder(n_sd=1, backend=backend_instance, environment=env)
     with pytest.warns(UserWarning):
         builder.request_attribute("relative fall momentum")

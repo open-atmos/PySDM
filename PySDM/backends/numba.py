@@ -2,53 +2,54 @@
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 """
 
-from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods
-from PySDM.backends.impl_numba.methods.collisions_methods import CollisionsMethods
-from PySDM.backends.impl_numba.methods.condensation_methods import CondensationMethods
-from PySDM.backends.impl_numba.methods.displacement_methods import DisplacementMethods
-from PySDM.backends.impl_numba.methods.freezing_methods import FreezingMethods
-from PySDM.backends.impl_numba.methods.index_methods import IndexMethods
-from PySDM.backends.impl_numba.methods.isotope_methods import IsotopeMethods
-from PySDM.backends.impl_numba.methods.moments_methods import MomentsMethods
-from PySDM.backends.impl_numba.methods.pair_methods import PairMethods
-from PySDM.backends.impl_numba.methods.physics_methods import PhysicsMethods
-from PySDM.backends.impl_numba.methods.terminal_velocity_methods import (
-    TerminalVelocityMethods,
-)
+from PySDM.backends.impl_numba import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
 from PySDM.backends.impl_numba.storage import Storage as ImportedStorage
 from PySDM.formulae import Formulae
+from PySDM.backends.impl_numba.conf import JIT_FLAGS
 
 
 class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
-    CollisionsMethods,
-    PairMethods,
-    IndexMethods,
-    PhysicsMethods,
-    CondensationMethods,
-    ChemistryMethods,
-    MomentsMethods,
-    FreezingMethods,
-    DisplacementMethods,
-    TerminalVelocityMethods,
-    IsotopeMethods,
+    methods.CollisionsMethods,
+    methods.FragmentationMethods,
+    methods.PairMethods,
+    methods.IndexMethods,
+    methods.PhysicsMethods,
+    methods.CondensationMethods,
+    methods.ChemistryMethods,
+    methods.MomentsMethods,
+    methods.FreezingMethods,
+    methods.DisplacementMethods,
+    methods.TerminalVelocityMethods,
+    methods.IsotopeMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
 
     default_croupier = "local"
 
-    def __init__(self, formulae=None, double_precision=True):
+    def __init__(self, formulae=None, double_precision=True, override_jit_flags=None):
         if not double_precision:
             raise NotImplementedError()
         self.formulae = formulae or Formulae()
-        CollisionsMethods.__init__(self)
-        PairMethods.__init__(self)
-        IndexMethods.__init__(self)
-        PhysicsMethods.__init__(self)
-        CondensationMethods.__init__(self)
-        ChemistryMethods.__init__(self)
-        MomentsMethods.__init__(self)
-        FreezingMethods.__init__(self)
-        DisplacementMethods.__init__(self)
-        TerminalVelocityMethods.__init__(self)
+        self.formulae_flattened = self.formulae.flatten
+
+        assert "fastmath" not in (override_jit_flags or {})
+        self.default_jit_flags = {
+            **JIT_FLAGS,
+            **{"fastmath": self.formulae.fastmath},
+            **(override_jit_flags or {}),
+        }
+
+        methods.CollisionsMethods.__init__(self)
+        methods.FragmentationMethods.__init__(self)
+        methods.PairMethods.__init__(self)
+        methods.IndexMethods.__init__(self)
+        methods.PhysicsMethods.__init__(self)
+        methods.CondensationMethods.__init__(self)
+        methods.ChemistryMethods.__init__(self)
+        methods.MomentsMethods.__init__(self)
+        methods.FreezingMethods.__init__(self)
+        methods.DisplacementMethods.__init__(self)
+        methods.TerminalVelocityMethods.__init__(self)
+        methods.IsotopeMethods.__init__(self)
