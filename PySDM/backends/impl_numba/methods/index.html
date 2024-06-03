@@ -27,7 +27,20 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34; method classes of the CPU backend &#34;&#34;&#34;</code></pre>
+<pre><code class="python">&#34;&#34;&#34; method classes of the CPU backend &#34;&#34;&#34;
+
+from .chemistry_methods import ChemistryMethods
+from .collisions_methods import CollisionsMethods
+from .condensation_methods import CondensationMethods
+from .displacement_methods import DisplacementMethods
+from .fragmentation_methods import FragmentationMethods
+from .freezing_methods import FreezingMethods
+from .index_methods import IndexMethods
+from .isotope_methods import IsotopeMethods
+from .moments_methods import MomentsMethods
+from .pair_methods import PairMethods
+from .physics_methods import PhysicsMethods
+from .terminal_velocity_methods import TerminalVelocityMethods</code></pre>
 </details>
 </section>
 <section>
@@ -48,6 +61,10 @@
 <dt><code class="name"><a title="PySDM.backends.impl_numba.methods.displacement_methods" href="displacement_methods.html">PySDM.backends.impl_numba.methods.displacement_methods</a></code></dt>
 <dd>
 <div class="desc"><p>CPU implementation of backend methods for particle displacement (advection and sedimentation)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.backends.impl_numba.methods.fragmentation_methods" href="fragmentation_methods.html">PySDM.backends.impl_numba.methods.fragmentation_methods</a></code></dt>
+<dd>
+<div class="desc"><p>CPU implementation of backend methods supporting fragmentation functions</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.methods.freezing_methods" href="freezing_methods.html">PySDM.backends.impl_numba.methods.freezing_methods</a></code></dt>
 <dd>
@@ -103,6 +120,7 @@
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods" href="collisions_methods.html">PySDM.backends.impl_numba.methods.collisions_methods</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.condensation_methods" href="condensation_methods.html">PySDM.backends.impl_numba.methods.condensation_methods</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods" href="displacement_methods.html">PySDM.backends.impl_numba.methods.displacement_methods</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.fragmentation_methods" href="fragmentation_methods.html">PySDM.backends.impl_numba.methods.fragmentation_methods</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.freezing_methods" href="freezing_methods.html">PySDM.backends.impl_numba.methods.freezing_methods</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.index_methods" href="index_methods.html">PySDM.backends.impl_numba.methods.index_methods</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.isotope_methods" href="isotope_methods.html">PySDM.backends.impl_numba.methods.isotope_methods</a></code></li>

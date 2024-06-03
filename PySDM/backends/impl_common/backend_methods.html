@@ -40,8 +40,12 @@ class BackendMethods:
     def __init__(self):
         if not hasattr(self, &#34;formulae&#34;):
             self.formulae = None
+        if not hasattr(self, &#34;formulae_flattened&#34;):
+            self.formulae_flattened = None
         if not hasattr(self, &#34;Storage&#34;):
-            self.Storage = None</code></pre>
+            self.Storage = None
+        if not hasattr(self, &#34;default_jit_flags&#34;):
+            self.default_jit_flags = {}</code></pre>
 </details>
 </section>
 <section>
@@ -66,8 +70,12 @@ class BackendMethods:
     def __init__(self):
         if not hasattr(self, &#34;formulae&#34;):
             self.formulae = None
+        if not hasattr(self, &#34;formulae_flattened&#34;):
+            self.formulae_flattened = None
         if not hasattr(self, &#34;Storage&#34;):
-            self.Storage = None</code></pre>
+            self.Storage = None
+        if not hasattr(self, &#34;default_jit_flags&#34;):
+            self.default_jit_flags = {}</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -75,6 +83,7 @@ class BackendMethods:
 <li><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods" href="../impl_numba/methods/collisions_methods.html#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods">CollisionsMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.condensation_methods.CondensationMethods" href="../impl_numba/methods/condensation_methods.html#PySDM.backends.impl_numba.methods.condensation_methods.CondensationMethods">CondensationMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods" href="../impl_numba/methods/displacement_methods.html#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.fragmentation_methods.FragmentationMethods" href="../impl_numba/methods/fragmentation_methods.html#PySDM.backends.impl_numba.methods.fragmentation_methods.FragmentationMethods">FragmentationMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.freezing_methods.FreezingMethods" href="../impl_numba/methods/freezing_methods.html#PySDM.backends.impl_numba.methods.freezing_methods.FreezingMethods">FreezingMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.index_methods.IndexMethods" href="../impl_numba/methods/index_methods.html#PySDM.backends.impl_numba.methods.index_methods.IndexMethods">IndexMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.isotope_methods.IsotopeMethods" href="../impl_numba/methods/isotope_methods.html#PySDM.backends.impl_numba.methods.isotope_methods.IsotopeMethods">IsotopeMethods</a></li>

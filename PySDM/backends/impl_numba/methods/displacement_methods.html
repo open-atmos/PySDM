@@ -31,6 +31,8 @@
 CPU implementation of backend methods for particle displacement (advection and sedimentation)
 &#34;&#34;&#34;
 
+from functools import cached_property
+
 import numba
 
 from PySDM.backends.impl_numba import conf
@@ -172,59 +174,65 @@ class DisplacementMethods(BackendMethods):
         else:
             raise NotImplementedError()
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    # pylint: disable=too-many-arguments
-    def flag_precipitated_body(
-        cell_origin,
-        position_in_cell,
-        volume,
-        multiplicity,
-        idx,
-        length,
-        healthy,
-        precipitation_counting_level_index,
-        displacement,
-    ):
-        rainfall = 0.0
-        flag = len(idx)
-        for i in range(length):
-            position_within_column = (
-                cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-            )
-            if (
-                # falling
-                displacement[-1, idx[i]] &lt; 0
-                and
-                # and crossed precip-counting level
-                position_within_column &lt; precipitation_counting_level_index
-            ):
-                rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
-                idx[i] = flag
-                healthy[0] = 0
-        return rainfall
+    @cached_property
+    def _flag_precipitated_body(self):
+        @numba.njit(**{**self.default_jit_flags, &#34;parallel&#34;: False})
+        # pylint: disable=too-many-arguments
+        def body(
+            cell_origin,
+            position_in_cell,
+            volume,
+            multiplicity,
+            idx,
+            length,
+            healthy,
+            precipitation_counting_level_index,
+            displacement,
+        ):
+            rainfall = 0.0
+            flag = len(idx)
+            for i in range(length):
+                position_within_column = (
+                    cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
+                )
+                if (
+                    # falling
+                    displacement[-1, idx[i]] &lt; 0
+                    and
+                    # and crossed precip-counting level
+                    position_within_column &lt; precipitation_counting_level_index
+                ):
+                    rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
+                    idx[i] = flag
+                    healthy[0] = 0
+            return rainfall
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    # pylint: disable=too-many-arguments
-    def flag_out_of_column_body(
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-    ):
-        flag = len(idx)
-        for i in range(length):
-            position_within_column = (
-                cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-            )
-            if (
-                position_within_column &lt; 0
-                or position_within_column &gt; domain_top_level_index
-            ):
-                idx[i] = flag
-                healthy[0] = 0
+        return body
 
-    @staticmethod
+    @cached_property
+    def _flag_out_of_column_body(self):
+        @numba.njit(**{**self.default_jit_flags, &#34;parallel&#34;: False})
+        # pylint: disable=too-many-arguments
+        def body(
+            cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+        ):
+            flag = len(idx)
+            for i in range(length):
+                position_within_column = (
+                    cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
+                )
+                if (
+                    position_within_column &lt; 0
+                    or position_within_column &gt; domain_top_level_index
+                ):
+                    idx[i] = flag
+                    healthy[0] = 0
+
+        return body
+
     # pylint: disable=too-many-arguments
     def flag_precipitated(
+        self,
         cell_origin,
         position_in_cell,
         volume,
@@ -235,7 +243,7 @@ class DisplacementMethods(BackendMethods):
         precipitation_counting_level_index,
         displacement,
     ) -&gt; float:
-        return DisplacementMethods.flag_precipitated_body(
+        return self._flag_precipitated_body(
             cell_origin.data,
             position_in_cell.data,
             volume.data,
@@ -247,12 +255,17 @@ class DisplacementMethods(BackendMethods):
             displacement.data,
         )
 
-    @staticmethod
     # pylint: disable=too-many-arguments
     def flag_out_of_column(
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-    ) -&gt; float:
-        return DisplacementMethods.flag_out_of_column_body(
+        self,
+        cell_origin,
+        position_in_cell,
+        idx,
+        length,
+        healthy,
+        domain_top_level_index,
+    ):
+        self._flag_out_of_column_body(
             cell_origin.data,
             position_in_cell.data,
             idx.data,
@@ -426,59 +439,65 @@ def calculate_displacement_body_common(
         else:
             raise NotImplementedError()
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    # pylint: disable=too-many-arguments
-    def flag_precipitated_body(
-        cell_origin,
-        position_in_cell,
-        volume,
-        multiplicity,
-        idx,
-        length,
-        healthy,
-        precipitation_counting_level_index,
-        displacement,
-    ):
-        rainfall = 0.0
-        flag = len(idx)
-        for i in range(length):
-            position_within_column = (
-                cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-            )
-            if (
-                # falling
-                displacement[-1, idx[i]] &lt; 0
-                and
-                # and crossed precip-counting level
-                position_within_column &lt; precipitation_counting_level_index
-            ):
-                rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
-                idx[i] = flag
-                healthy[0] = 0
-        return rainfall
+    @cached_property
+    def _flag_precipitated_body(self):
+        @numba.njit(**{**self.default_jit_flags, &#34;parallel&#34;: False})
+        # pylint: disable=too-many-arguments
+        def body(
+            cell_origin,
+            position_in_cell,
+            volume,
+            multiplicity,
+            idx,
+            length,
+            healthy,
+            precipitation_counting_level_index,
+            displacement,
+        ):
+            rainfall = 0.0
+            flag = len(idx)
+            for i in range(length):
+                position_within_column = (
+                    cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
+                )
+                if (
+                    # falling
+                    displacement[-1, idx[i]] &lt; 0
+                    and
+                    # and crossed precip-counting level
+                    position_within_column &lt; precipitation_counting_level_index
+                ):
+                    rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
+                    idx[i] = flag
+                    healthy[0] = 0
+            return rainfall
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    # pylint: disable=too-many-arguments
-    def flag_out_of_column_body(
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-    ):
-        flag = len(idx)
-        for i in range(length):
-            position_within_column = (
-                cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-            )
-            if (
-                position_within_column &lt; 0
-                or position_within_column &gt; domain_top_level_index
-            ):
-                idx[i] = flag
-                healthy[0] = 0
+        return body
 
-    @staticmethod
+    @cached_property
+    def _flag_out_of_column_body(self):
+        @numba.njit(**{**self.default_jit_flags, &#34;parallel&#34;: False})
+        # pylint: disable=too-many-arguments
+        def body(
+            cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+        ):
+            flag = len(idx)
+            for i in range(length):
+                position_within_column = (
+                    cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
+                )
+                if (
+                    position_within_column &lt; 0
+                    or position_within_column &gt; domain_top_level_index
+                ):
+                    idx[i] = flag
+                    healthy[0] = 0
+
+        return body
+
     # pylint: disable=too-many-arguments
     def flag_precipitated(
+        self,
         cell_origin,
         position_in_cell,
         volume,
@@ -489,7 +508,7 @@ def calculate_displacement_body_common(
         precipitation_counting_level_index,
         displacement,
     ) -&gt; float:
-        return DisplacementMethods.flag_precipitated_body(
+        return self._flag_precipitated_body(
             cell_origin.data,
             position_in_cell.data,
             volume.data,
@@ -501,12 +520,17 @@ def calculate_displacement_body_common(
             displacement.data,
         )
 
-    @staticmethod
     # pylint: disable=too-many-arguments
     def flag_out_of_column(
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-    ) -&gt; float:
-        return DisplacementMethods.flag_out_of_column_body(
+        self,
+        cell_origin,
+        position_in_cell,
+        idx,
+        length,
+        healthy,
+        domain_top_level_index,
+    ):
+        self._flag_out_of_column_body(
             cell_origin.data,
             position_in_cell.data,
             idx.data,
@@ -638,135 +662,6 @@ def calculate_displacement_body_3d(
         )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column"><code class="name flex">
-<span>def <span class="ident">flag_out_of_column</span></span>(<span>cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index) ‑> float</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-# pylint: disable=too-many-arguments
-def flag_out_of_column(
-    cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-) -&gt; float:
-    return DisplacementMethods.flag_out_of_column_body(
-        cell_origin.data,
-        position_in_cell.data,
-        idx.data,
-        length,
-        healthy.data,
-        domain_top_level_index,
-    )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column_body"><code class="name flex">
-<span>def <span class="ident">flag_out_of_column_body</span></span>(<span>cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-# pylint: disable=too-many-arguments
-def flag_out_of_column_body(
-    cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-):
-    flag = len(idx)
-    for i in range(length):
-        position_within_column = (
-            cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-        )
-        if (
-            position_within_column &lt; 0
-            or position_within_column &gt; domain_top_level_index
-        ):
-            idx[i] = flag
-            healthy[0] = 0</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated"><code class="name flex">
-<span>def <span class="ident">flag_precipitated</span></span>(<span>cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy, precipitation_counting_level_index, displacement) ‑> float</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-# pylint: disable=too-many-arguments
-def flag_precipitated(
-    cell_origin,
-    position_in_cell,
-    volume,
-    multiplicity,
-    idx,
-    length,
-    healthy,
-    precipitation_counting_level_index,
-    displacement,
-) -&gt; float:
-    return DisplacementMethods.flag_precipitated_body(
-        cell_origin.data,
-        position_in_cell.data,
-        volume.data,
-        multiplicity.data,
-        idx.data,
-        length,
-        healthy.data,
-        precipitation_counting_level_index,
-        displacement.data,
-    )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated_body"><code class="name flex">
-<span>def <span class="ident">flag_precipitated_body</span></span>(<span>cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy, precipitation_counting_level_index, displacement)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-# pylint: disable=too-many-arguments
-def flag_precipitated_body(
-    cell_origin,
-    position_in_cell,
-    volume,
-    multiplicity,
-    idx,
-    length,
-    healthy,
-    precipitation_counting_level_index,
-    displacement,
-):
-    rainfall = 0.0
-    flag = len(idx)
-    for i in range(length):
-        position_within_column = (
-            cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-        )
-        if (
-            # falling
-            displacement[-1, idx[i]] &lt; 0
-            and
-            # and crossed precip-counting level
-            position_within_column &lt; precipitation_counting_level_index
-        ):
-            rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
-            idx[i] = flag
-            healthy[0] = 0
-    return rainfall</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Methods</h3>
 <dl>
@@ -818,6 +713,68 @@ def flag_precipitated_body(
         raise NotImplementedError()</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column"><code class="name flex">
+<span>def <span class="ident">flag_out_of_column</span></span>(<span>self, cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flag_out_of_column(
+    self,
+    cell_origin,
+    position_in_cell,
+    idx,
+    length,
+    healthy,
+    domain_top_level_index,
+):
+    self._flag_out_of_column_body(
+        cell_origin.data,
+        position_in_cell.data,
+        idx.data,
+        length,
+        healthy.data,
+        domain_top_level_index,
+    )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated"><code class="name flex">
+<span>def <span class="ident">flag_precipitated</span></span>(<span>self, cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy, precipitation_counting_level_index, displacement) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flag_precipitated(
+    self,
+    cell_origin,
+    position_in_cell,
+    volume,
+    multiplicity,
+    idx,
+    length,
+    healthy,
+    precipitation_counting_level_index,
+    displacement,
+) -&gt; float:
+    return self._flag_precipitated_body(
+        cell_origin.data,
+        position_in_cell.data,
+        volume.data,
+        multiplicity.data,
+        idx.data,
+        length,
+        healthy.data,
+        precipitation_counting_level_index,
+        displacement.data,
+    )</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -849,9 +806,7 @@ def flag_precipitated_body(
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_2d" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_2d">calculate_displacement_body_2d</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_3d" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_3d">calculate_displacement_body_3d</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column">flag_out_of_column</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column_body" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column_body">flag_out_of_column_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated">flag_precipitated</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated_body" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated_body">flag_precipitated_body</a></code></li>
 </ul>
 </li>
 </ul>

@@ -76,7 +76,9 @@ class Simulation(BasicSimulation):
 
         builder = Builder(
             n_sd=N_SD_NON_GCCN + n_gccn,
-            backend=CPU(formulae=settings.formulae),
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={&#34;parallel&#34;: False}
+            ),
             environment=env,
         )
 
@@ -200,7 +202,9 @@ class Simulation(BasicSimulation):
 
         builder = Builder(
             n_sd=N_SD_NON_GCCN + n_gccn,
-            backend=CPU(formulae=settings.formulae),
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={&#34;parallel&#34;: False}
+            ),
             environment=env,
         )
 

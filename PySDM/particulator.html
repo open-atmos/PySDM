@@ -120,7 +120,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def update_TpRH(self):
-        self.backend.temperature_pressure_RH(
+        self.backend.temperature_pressure_rh(
             # input
             rhod=self.environment.get_predicted(&#34;rhod&#34;),
             thd=self.environment.get_predicted(&#34;thd&#34;),
@@ -576,7 +576,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def update_TpRH(self):
-        self.backend.temperature_pressure_RH(
+        self.backend.temperature_pressure_rh(
             # input
             rhod=self.environment.get_predicted(&#34;rhod&#34;),
             thd=self.environment.get_predicted(&#34;thd&#34;),
@@ -1560,7 +1560,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def update_TpRH(self):
-    self.backend.temperature_pressure_RH(
+    self.backend.temperature_pressure_rh(
         # input
         rhod=self.environment.get_predicted(&#34;rhod&#34;),
         thd=self.environment.get_predicted(&#34;thd&#34;),

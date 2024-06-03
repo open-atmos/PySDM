@@ -148,7 +148,7 @@ alias for ThrustRTC
 <dl>
 <dt id="PySDM.backends.Numba"><code class="flex name class">
 <span>class <span class="ident">CPU</span></span>
-<span>(</span><span>formulae=None, double_precision=True)</span>
+<span>(</span><span>formulae=None, double_precision=True, override_jit_flags=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -157,41 +157,54 @@ alias for ThrustRTC
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
-    CollisionsMethods,
-    PairMethods,
-    IndexMethods,
-    PhysicsMethods,
-    CondensationMethods,
-    ChemistryMethods,
-    MomentsMethods,
-    FreezingMethods,
-    DisplacementMethods,
-    TerminalVelocityMethods,
-    IsotopeMethods,
+    methods.CollisionsMethods,
+    methods.FragmentationMethods,
+    methods.PairMethods,
+    methods.IndexMethods,
+    methods.PhysicsMethods,
+    methods.CondensationMethods,
+    methods.ChemistryMethods,
+    methods.MomentsMethods,
+    methods.FreezingMethods,
+    methods.DisplacementMethods,
+    methods.TerminalVelocityMethods,
+    methods.IsotopeMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
 
     default_croupier = &#34;local&#34;
 
-    def __init__(self, formulae=None, double_precision=True):
+    def __init__(self, formulae=None, double_precision=True, override_jit_flags=None):
         if not double_precision:
             raise NotImplementedError()
         self.formulae = formulae or Formulae()
-        CollisionsMethods.__init__(self)
-        PairMethods.__init__(self)
-        IndexMethods.__init__(self)
-        PhysicsMethods.__init__(self)
-        CondensationMethods.__init__(self)
-        ChemistryMethods.__init__(self)
-        MomentsMethods.__init__(self)
-        FreezingMethods.__init__(self)
-        DisplacementMethods.__init__(self)
-        TerminalVelocityMethods.__init__(self)</code></pre>
+        self.formulae_flattened = self.formulae.flatten
+
+        assert &#34;fastmath&#34; not in (override_jit_flags or {})
+        self.default_jit_flags = {
+            **JIT_FLAGS,
+            **{&#34;fastmath&#34;: self.formulae.fastmath},
+            **(override_jit_flags or {}),
+        }
+
+        methods.CollisionsMethods.__init__(self)
+        methods.FragmentationMethods.__init__(self)
+        methods.PairMethods.__init__(self)
+        methods.IndexMethods.__init__(self)
+        methods.PhysicsMethods.__init__(self)
+        methods.CondensationMethods.__init__(self)
+        methods.ChemistryMethods.__init__(self)
+        methods.MomentsMethods.__init__(self)
+        methods.FreezingMethods.__init__(self)
+        methods.DisplacementMethods.__init__(self)
+        methods.TerminalVelocityMethods.__init__(self)
+        methods.IsotopeMethods.__init__(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods" href="impl_numba/methods/collisions_methods.html#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods">CollisionsMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.fragmentation_methods.FragmentationMethods" href="impl_numba/methods/fragmentation_methods.html#PySDM.backends.impl_numba.methods.fragmentation_methods.FragmentationMethods">FragmentationMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods" href="impl_numba/methods/pair_methods.html#PySDM.backends.impl_numba.methods.pair_methods.PairMethods">PairMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.index_methods.IndexMethods" href="impl_numba/methods/index_methods.html#PySDM.backends.impl_numba.methods.index_methods.IndexMethods">IndexMethods</a></li>
 <li><a title="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods" href="impl_numba/methods/physics_methods.html#PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods">PhysicsMethods</a></li>

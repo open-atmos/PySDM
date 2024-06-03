@@ -31,25 +31,28 @@
 CPU implementation of pairwise operations backend methods
 &#34;&#34;&#34;
 
+from functools import cached_property
+
 import numba
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 
 
 class PairMethods(BackendMethods):
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def distance_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
+    @cached_property
+    def _distance_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
 
-    @staticmethod
-    def distance_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.distance_pair_body(
+        return body
+
+    def distance_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._distance_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -57,20 +60,21 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def find_pairs_body(
-        *, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length
-    ):
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
-            is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
-            is_first_in_pair[i] = is_in_same_cell and is_even_index
-        is_first_in_pair[length - 1] = False
+    @cached_property
+    def _find_pairs_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(*, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
+                is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
+                is_first_in_pair[i] = is_in_same_cell and is_even_index
+            is_first_in_pair[length - 1] = False
 
-    @staticmethod
-    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
-        return PairMethods.find_pairs_body(
+        return body
+
+    # pylint: disable=too-many-arguments
+    def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
+        return self._find_pairs_body(
             cell_start=cell_start.data,
             is_first_in_pair=is_first_in_pair.indicator.data,
             cell_id=cell_id.data,
@@ -79,17 +83,19 @@ class PairMethods(BackendMethods):
             length=len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = max(data_in[idx[i]], data_in[idx[i + 1]])
+    @cached_property
+    def _max_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = max(data_in[idx[i]], data_in[idx[i + 1]])
 
-    @staticmethod
-    def max_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.max_pair_body(
+        return body
+
+    def max_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._max_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -97,17 +103,19 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])
+    @cached_property
+    def _min_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])
 
-    @staticmethod
-    def min_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.min_pair_body(
+        return body
+
+    def min_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._min_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -115,20 +123,28 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if data_in[idx[i]] &lt; data_in[idx[i + 1]]:
-                    data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
-                else:
-                    data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]
+    @cached_property
+    def _sort_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    if data_in[idx[i]] &lt; data_in[idx[i + 1]]:
+                        data_out[i], data_out[i + 1] = (
+                            data_in[idx[i + 1]],
+                            data_in[idx[i]],
+                        )
+                    else:
+                        data_out[i], data_out[i + 1] = (
+                            data_in[idx[i]],
+                            data_in[idx[i + 1]],
+                        )
 
-    @staticmethod
-    def sort_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.sort_pair_body(
+        return body
+
+    def sort_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._sort_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -136,31 +152,35 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def sort_within_pair_by_attr_body(idx, length, is_first_in_pair, attr):
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if attr[idx[i]] &lt; attr[idx[i + 1]]:
-                    idx[i], idx[i + 1] = idx[i + 1], idx[i]
+    @cached_property
+    def _sort_within_pair_by_attr_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(idx, length, is_first_in_pair, attr):
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    if attr[idx[i]] &lt; attr[idx[i + 1]]:
+                        idx[i], idx[i + 1] = idx[i + 1], idx[i]
 
-    @staticmethod
-    def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
-        PairMethods.sort_within_pair_by_attr_body(
+        return body
+
+    def sort_within_pair_by_attr(self, idx, is_first_in_pair, attr):
+        self._sort_within_pair_by_attr_body(
             idx.data, len(idx), is_first_in_pair.indicator.data, attr.data
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]
+    @cached_property
+    def _sum_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]
 
-    @staticmethod
-    def sum_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.sum_pair_body(
+        return body
+
+    def sum_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._sum_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -168,17 +188,19 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def multiply_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = data_in[idx[i]] * data_in[idx[i + 1]]
+    @cached_property
+    def _multiply_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = data_in[idx[i]] * data_in[idx[i + 1]]
 
-    @staticmethod
-    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.multiply_pair_body(
+        return body
+
+    def multiply_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._multiply_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -206,17 +228,19 @@ class PairMethods(BackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PairMethods(BackendMethods):
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def distance_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
+    @cached_property
+    def _distance_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
 
-    @staticmethod
-    def distance_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.distance_pair_body(
+        return body
+
+    def distance_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._distance_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -224,20 +248,21 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def find_pairs_body(
-        *, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length
-    ):
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
-            is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
-            is_first_in_pair[i] = is_in_same_cell and is_even_index
-        is_first_in_pair[length - 1] = False
+    @cached_property
+    def _find_pairs_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(*, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
+                is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
+                is_first_in_pair[i] = is_in_same_cell and is_even_index
+            is_first_in_pair[length - 1] = False
 
-    @staticmethod
-    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
-        return PairMethods.find_pairs_body(
+        return body
+
+    # pylint: disable=too-many-arguments
+    def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
+        return self._find_pairs_body(
             cell_start=cell_start.data,
             is_first_in_pair=is_first_in_pair.indicator.data,
             cell_id=cell_id.data,
@@ -246,17 +271,19 @@ class PairMethods(BackendMethods):
             length=len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = max(data_in[idx[i]], data_in[idx[i + 1]])
+    @cached_property
+    def _max_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = max(data_in[idx[i]], data_in[idx[i + 1]])
 
-    @staticmethod
-    def max_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.max_pair_body(
+        return body
+
+    def max_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._max_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -264,17 +291,19 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])
+    @cached_property
+    def _min_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])
 
-    @staticmethod
-    def min_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.min_pair_body(
+        return body
+
+    def min_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._min_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -282,20 +311,28 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if data_in[idx[i]] &lt; data_in[idx[i + 1]]:
-                    data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
-                else:
-                    data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]
+    @cached_property
+    def _sort_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    if data_in[idx[i]] &lt; data_in[idx[i + 1]]:
+                        data_out[i], data_out[i + 1] = (
+                            data_in[idx[i + 1]],
+                            data_in[idx[i]],
+                        )
+                    else:
+                        data_out[i], data_out[i + 1] = (
+                            data_in[idx[i]],
+                            data_in[idx[i + 1]],
+                        )
 
-    @staticmethod
-    def sort_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.sort_pair_body(
+        return body
+
+    def sort_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._sort_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -303,31 +340,35 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def sort_within_pair_by_attr_body(idx, length, is_first_in_pair, attr):
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if attr[idx[i]] &lt; attr[idx[i + 1]]:
-                    idx[i], idx[i + 1] = idx[i + 1], idx[i]
+    @cached_property
+    def _sort_within_pair_by_attr_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(idx, length, is_first_in_pair, attr):
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    if attr[idx[i]] &lt; attr[idx[i + 1]]:
+                        idx[i], idx[i + 1] = idx[i + 1], idx[i]
 
-    @staticmethod
-    def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
-        PairMethods.sort_within_pair_by_attr_body(
+        return body
+
+    def sort_within_pair_by_attr(self, idx, is_first_in_pair, attr):
+        self._sort_within_pair_by_attr_body(
             idx.data, len(idx), is_first_in_pair.indicator.data, attr.data
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]
+    @cached_property
+    def _sum_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]
 
-    @staticmethod
-    def sum_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.sum_pair_body(
+        return body
+
+    def sum_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._sum_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -335,17 +376,19 @@ class PairMethods(BackendMethods):
             len(idx),
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def multiply_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-        data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                data_out[i // 2] = data_in[idx[i]] * data_in[idx[i + 1]]
+    @cached_property
+    def _multiply_pair_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(data_out, data_in, is_first_in_pair, idx, length):
+            data_out[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = data_in[idx[i]] * data_in[idx[i + 1]]
 
-    @staticmethod
-    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
-        return PairMethods.multiply_pair_body(
+        return body
+
+    def multiply_pair(self, data_out, data_in, is_first_in_pair, idx):
+        return self._multiply_pair_body(
             data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
@@ -361,10 +404,10 @@ class PairMethods(BackendMethods):
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.Numba" href="../../numba.html#PySDM.backends.numba.Numba">Numba</a></li>
 </ul>
-<h3>Static methods</h3>
+<h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.distance_pair"><code class="name flex">
-<span>def <span class="ident">distance_pair</span></span>(<span>data_out, data_in, is_first_in_pair, idx)</span>
+<span>def <span class="ident">distance_pair</span></span>(<span>self, data_out, data_in, is_first_in_pair, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -372,9 +415,8 @@ class PairMethods(BackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def distance_pair(data_out, data_in, is_first_in_pair, idx):
-    return PairMethods.distance_pair_body(
+<pre><code class="python">def distance_pair(self, data_out, data_in, is_first_in_pair, idx):
+    return self._distance_pair_body(
         data_out.data,
         data_in.data,
         is_first_in_pair.indicator.data,
@@ -383,26 +425,8 @@ def distance_pair(data_out, data_in, is_first_in_pair, idx):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.distance_pair_body"><code class="name flex">
-<span>def <span class="ident">distance_pair_body</span></span>(<span>data_out, data_in, is_first_in_pair, idx, length)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def distance_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-    data_out[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            data_out[i // 2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs"><code class="name flex">
-<span>def <span class="ident">find_pairs</span></span>(<span>cell_start, is_first_in_pair, cell_id, cell_idx, idx)</span>
+<span>def <span class="ident">find_pairs</span></span>(<span>self, cell_start, is_first_in_pair, cell_id, cell_idx, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -410,9 +434,8 @@ def distance_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
-    return PairMethods.find_pairs_body(
+<pre><code class="python">def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
+    return self._find_pairs_body(
         cell_start=cell_start.data,
         is_first_in_pair=is_first_in_pair.indicator.data,
         cell_id=cell_id.data,
@@ -422,29 +445,8 @@ def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs_body"><code class="name flex">
-<span>def <span class="ident">find_pairs_body</span></span>(<span>*, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def find_pairs_body(
-    *, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length
-):
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
-        is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
-        is_first_in_pair[i] = is_in_same_cell and is_even_index
-    is_first_in_pair[length - 1] = False</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair"><code class="name flex">
-<span>def <span class="ident">max_pair</span></span>(<span>data_out, data_in, is_first_in_pair, idx)</span>
+<span>def <span class="ident">max_pair</span></span>(<span>self, data_out, data_in, is_first_in_pair, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -452,37 +454,18 @@ def find_pairs_body(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def max_pair(data_out, data_in, is_first_in_pair, idx):
-    return PairMethods.max_pair_body(
+<pre><code class="python">def max_pair(self, data_out, data_in, is_first_in_pair, idx):
+    return self._max_pair_body(
         data_out.data,
         data_in.data,
         is_first_in_pair.indicator.data,
         idx.data,
         len(idx),
     )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair_body"><code class="name flex">
-<span>def <span class="ident">max_pair_body</span></span>(<span>data_out, data_in, is_first_in_pair, idx, length)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-    data_out[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            data_out[i // 2] = max(data_in[idx[i]], data_in[idx[i + 1]])</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.min_pair"><code class="name flex">
-<span>def <span class="ident">min_pair</span></span>(<span>data_out, data_in, is_first_in_pair, idx)</span>
+<span>def <span class="ident">min_pair</span></span>(<span>self, data_out, data_in, is_first_in_pair, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -490,37 +473,18 @@ def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def min_pair(data_out, data_in, is_first_in_pair, idx):
-    return PairMethods.min_pair_body(
+<pre><code class="python">def min_pair(self, data_out, data_in, is_first_in_pair, idx):
+    return self._min_pair_body(
         data_out.data,
         data_in.data,
         is_first_in_pair.indicator.data,
         idx.data,
         len(idx),
     )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.min_pair_body"><code class="name flex">
-<span>def <span class="ident">min_pair_body</span></span>(<span>data_out, data_in, is_first_in_pair, idx, length)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-    data_out[:] = 0
-    for i in numba.prange(length):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair"><code class="name flex">
-<span>def <span class="ident">multiply_pair</span></span>(<span>data_out, data_in, is_first_in_pair, idx)</span>
+<span>def <span class="ident">multiply_pair</span></span>(<span>self, data_out, data_in, is_first_in_pair, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -528,37 +492,18 @@ def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def multiply_pair(data_out, data_in, is_first_in_pair, idx):
-    return PairMethods.multiply_pair_body(
+<pre><code class="python">def multiply_pair(self, data_out, data_in, is_first_in_pair, idx):
+    return self._multiply_pair_body(
         data_out.data,
         data_in.data,
         is_first_in_pair.indicator.data,
         idx.data,
         len(idx),
     )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair_body"><code class="name flex">
-<span>def <span class="ident">multiply_pair_body</span></span>(<span>data_out, data_in, is_first_in_pair, idx, length)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def multiply_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-    data_out[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            data_out[i // 2] = data_in[idx[i]] * data_in[idx[i + 1]]</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair"><code class="name flex">
-<span>def <span class="ident">sort_pair</span></span>(<span>data_out, data_in, is_first_in_pair, idx)</span>
+<span>def <span class="ident">sort_pair</span></span>(<span>self, data_out, data_in, is_first_in_pair, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -566,9 +511,8 @@ def multiply_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def sort_pair(data_out, data_in, is_first_in_pair, idx):
-    return PairMethods.sort_pair_body(
+<pre><code class="python">def sort_pair(self, data_out, data_in, is_first_in_pair, idx):
+    return self._sort_pair_body(
         data_out.data,
         data_in.data,
         is_first_in_pair.indicator.data,
@@ -577,29 +521,8 @@ def sort_pair(data_out, data_in, is_first_in_pair, idx):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair_body"><code class="name flex">
-<span>def <span class="ident">sort_pair_body</span></span>(<span>data_out, data_in, is_first_in_pair, idx, length)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-    data_out[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            if data_in[idx[i]] &lt; data_in[idx[i + 1]]:
-                data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
-            else:
-                data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr"><code class="name flex">
-<span>def <span class="ident">sort_within_pair_by_attr</span></span>(<span>idx, is_first_in_pair, attr)</span>
+<span>def <span class="ident">sort_within_pair_by_attr</span></span>(<span>self, idx, is_first_in_pair, attr)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -607,33 +530,14 @@ def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
-    PairMethods.sort_within_pair_by_attr_body(
+<pre><code class="python">def sort_within_pair_by_attr(self, idx, is_first_in_pair, attr):
+    self._sort_within_pair_by_attr_body(
         idx.data, len(idx), is_first_in_pair.indicator.data, attr.data
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr_body"><code class="name flex">
-<span>def <span class="ident">sort_within_pair_by_attr_body</span></span>(<span>idx, length, is_first_in_pair, attr)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def sort_within_pair_by_attr_body(idx, length, is_first_in_pair, attr):
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            if attr[idx[i]] &lt; attr[idx[i + 1]]:
-                idx[i], idx[i + 1] = idx[i + 1], idx[i]</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sum_pair"><code class="name flex">
-<span>def <span class="ident">sum_pair</span></span>(<span>data_out, data_in, is_first_in_pair, idx)</span>
+<span>def <span class="ident">sum_pair</span></span>(<span>self, data_out, data_in, is_first_in_pair, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -641,33 +545,14 @@ def sort_within_pair_by_attr_body(idx, length, is_first_in_pair, attr):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def sum_pair(data_out, data_in, is_first_in_pair, idx):
-    return PairMethods.sum_pair_body(
+<pre><code class="python">def sum_pair(self, data_out, data_in, is_first_in_pair, idx):
+    return self._sum_pair_body(
         data_out.data,
         data_in.data,
         is_first_in_pair.indicator.data,
         idx.data,
         len(idx),
     )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sum_pair_body"><code class="name flex">
-<span>def <span class="ident">sum_pair_body</span></span>(<span>data_out, data_in, is_first_in_pair, idx, length)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
-    data_out[:] = 0
-    for i in numba.prange(length):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]</code></pre>
 </details>
 </dd>
 </dl>
@@ -692,21 +577,13 @@ def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <h4><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods">PairMethods</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.distance_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.distance_pair">distance_pair</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.distance_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.distance_pair_body">distance_pair_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs">find_pairs</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs_body">find_pairs_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair">max_pair</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair_body">max_pair_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.min_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.min_pair">min_pair</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.min_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.min_pair_body">min_pair_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair">multiply_pair</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair_body">multiply_pair_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair">sort_pair</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair_body">sort_pair_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr">sort_within_pair_by_attr</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr_body">sort_within_pair_by_attr_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sum_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sum_pair">sum_pair</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sum_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sum_pair_body">sum_pair_body</a></code></li>
 </ul>
 </li>
 </ul>

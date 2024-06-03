@@ -42,7 +42,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class PhysicsMethods(ThrustRTCBackendMethods):
     @cached_property
-    def _temperature_pressure_RH_body(self):
+    def _temperature_pressure_rh_body(self):
         return trtc.For(
             (&#34;rhod&#34;, &#34;thd&#34;, &#34;water_vapour_mixing_ratio&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;),
             &#34;i&#34;,
@@ -137,10 +137,10 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def temperature_pressure_RH(
+    def temperature_pressure_rh(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
     ):
-        self._temperature_pressure_RH_body.launch_n(
+        self._temperature_pressure_rh_body.launch_n(
             T.shape[0],
             (
                 rhod.data,
@@ -275,7 +275,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 </summary>
 <pre><code class="python">class PhysicsMethods(ThrustRTCBackendMethods):
     @cached_property
-    def _temperature_pressure_RH_body(self):
+    def _temperature_pressure_rh_body(self):
         return trtc.For(
             (&#34;rhod&#34;, &#34;thd&#34;, &#34;water_vapour_mixing_ratio&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;),
             &#34;i&#34;,
@@ -370,10 +370,10 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def temperature_pressure_RH(
+    def temperature_pressure_rh(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
     ):
-        self._temperature_pressure_RH_body.launch_n(
+        self._temperature_pressure_rh_body.launch_n(
             T.shape[0],
             (
                 rhod.data,
@@ -620,8 +620,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH"><code class="name flex">
-<span>def <span class="ident">temperature_pressure_RH</span></span>(<span>*args, **kwargs)</span>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_rh"><code class="name flex">
+<span>def <span class="ident">temperature_pressure_rh</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -683,7 +683,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.explicit_euler" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.explicit_euler">explicit_euler</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume">mass_of_water_volume</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.reynolds_number" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.reynolds_number">reynolds_number</a></code></li>
-<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_RH">temperature_pressure_RH</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_rh" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_rh">temperature_pressure_rh</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass" href="#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass">volume_of_water_mass</a></code></li>
 </ul>
 </li>

@@ -91,7 +91,7 @@ class Moist:
         target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
         target[&#34;thd&#34;].ravel(self.get_thd())
 
-        self.particulator.backend.temperature_pressure_RH(
+        self.particulator.backend.temperature_pressure_rh(
             rhod=target[&#34;rhod&#34;],
             thd=target[&#34;thd&#34;],
             water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
@@ -211,7 +211,7 @@ class Moist:
         target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
         target[&#34;thd&#34;].ravel(self.get_thd())
 
-        self.particulator.backend.temperature_pressure_RH(
+        self.particulator.backend.temperature_pressure_rh(
             rhod=target[&#34;rhod&#34;],
             thd=target[&#34;thd&#34;],
             water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
@@ -367,7 +367,7 @@ def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
     target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
     target[&#34;thd&#34;].ravel(self.get_thd())
 
-    self.particulator.backend.temperature_pressure_RH(
+    self.particulator.backend.temperature_pressure_rh(
         rhod=target[&#34;rhod&#34;],
         thd=target[&#34;thd&#34;],
         water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],

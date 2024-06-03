@@ -31,33 +31,46 @@
 CPU implementation of shuffling and sorting backend methods
 &#34;&#34;&#34;
 
+from functools import cached_property
+
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 
 
 class IndexMethods(BackendMethods):
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def identity_index(idx):
-        for i in numba.prange(len(idx)):  # pylint: disable=not-an-iterable
-            idx[i] = i
+    @cached_property
+    def identity_index(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(idx):
+            for i in numba.prange(len(idx)):  # pylint: disable=not-an-iterable
+                idx[i] = i
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    def shuffle_global(idx, length, u01):
-        for i in range(length - 1, 0, -1):
-            j = int(u01[i] * (i + 1))
-            idx[i], idx[j] = idx[j], idx[i]
+        return body
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def shuffle_local(idx, u01, cell_start):
-        for c in numba.prange(len(cell_start) - 1):  # pylint: disable=not-an-iterable
-            for i in range(cell_start[c + 1] - 1, cell_start[c], -1):
-                j = int(cell_start[c] + u01[i] * (cell_start[c + 1] - cell_start[c]))
+    @cached_property
+    def shuffle_global(self):
+        @numba.njit(**{**self.default_jit_flags, &#34;parallel&#34;: False})
+        def body(idx, length, u01):
+            for i in range(length - 1, 0, -1):
+                j = int(u01[i] * (i + 1))
                 idx[i], idx[j] = idx[j], idx[i]
+
+        return body
+
+    @cached_property
+    def shuffle_local(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(idx, u01, cell_start):
+            # pylint: disable=not-an-iterable
+            for c in numba.prange(len(cell_start) - 1):
+                for i in range(cell_start[c + 1] - 1, cell_start[c], -1):
+                    j = int(
+                        cell_start[c] + u01[i] * (cell_start[c + 1] - cell_start[c])
+                    )
+                    idx[i], idx[j] = idx[j], idx[i]
+
+        return body
 
     @staticmethod
     def sort_by_key(idx, attr):
@@ -83,26 +96,38 @@ class IndexMethods(BackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class IndexMethods(BackendMethods):
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def identity_index(idx):
-        for i in numba.prange(len(idx)):  # pylint: disable=not-an-iterable
-            idx[i] = i
+    @cached_property
+    def identity_index(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(idx):
+            for i in numba.prange(len(idx)):  # pylint: disable=not-an-iterable
+                idx[i] = i
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    def shuffle_global(idx, length, u01):
-        for i in range(length - 1, 0, -1):
-            j = int(u01[i] * (i + 1))
-            idx[i], idx[j] = idx[j], idx[i]
+        return body
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def shuffle_local(idx, u01, cell_start):
-        for c in numba.prange(len(cell_start) - 1):  # pylint: disable=not-an-iterable
-            for i in range(cell_start[c + 1] - 1, cell_start[c], -1):
-                j = int(cell_start[c] + u01[i] * (cell_start[c + 1] - cell_start[c]))
+    @cached_property
+    def shuffle_global(self):
+        @numba.njit(**{**self.default_jit_flags, &#34;parallel&#34;: False})
+        def body(idx, length, u01):
+            for i in range(length - 1, 0, -1):
+                j = int(u01[i] * (i + 1))
                 idx[i], idx[j] = idx[j], idx[i]
+
+        return body
+
+    @cached_property
+    def shuffle_local(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(idx, u01, cell_start):
+            # pylint: disable=not-an-iterable
+            for c in numba.prange(len(cell_start) - 1):
+                for i in range(cell_start[c + 1] - 1, cell_start[c], -1):
+                    j = int(
+                        cell_start[c] + u01[i] * (cell_start[c + 1] - cell_start[c])
+                    )
+                    idx[i], idx[j] = idx[j], idx[i]
+
+        return body
 
     @staticmethod
     def sort_by_key(idx, attr):
@@ -118,57 +143,6 @@ class IndexMethods(BackendMethods):
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.backends.impl_numba.methods.index_methods.IndexMethods.identity_index"><code class="name flex">
-<span>def <span class="ident">identity_index</span></span>(<span>idx)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def identity_index(idx):
-    for i in numba.prange(len(idx)):  # pylint: disable=not-an-iterable
-        idx[i] = i</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.index_methods.IndexMethods.shuffle_global"><code class="name flex">
-<span>def <span class="ident">shuffle_global</span></span>(<span>idx, length, u01)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def shuffle_global(idx, length, u01):
-    for i in range(length - 1, 0, -1):
-        j = int(u01[i] * (i + 1))
-        idx[i], idx[j] = idx[j], idx[i]</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.index_methods.IndexMethods.shuffle_local"><code class="name flex">
-<span>def <span class="ident">shuffle_local</span></span>(<span>idx, u01, cell_start)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def shuffle_local(idx, u01, cell_start):
-    for c in numba.prange(len(cell_start) - 1):  # pylint: disable=not-an-iterable
-        for i in range(cell_start[c + 1] - 1, cell_start[c], -1):
-            j = int(cell_start[c] + u01[i] * (cell_start[c + 1] - cell_start[c]))
-            idx[i], idx[j] = idx[j], idx[i]</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_numba.methods.index_methods.IndexMethods.sort_by_key"><code class="name flex">
 <span>def <span class="ident">sort_by_key</span></span>(<span>idx, attr)</span>
 </code></dt>
@@ -181,6 +155,126 @@ def shuffle_local(idx, u01, cell_start):
 <pre><code class="python">@staticmethod
 def sort_by_key(idx, attr):
     idx.data[:] = attr.data.argsort(kind=&#34;stable&#34;)[::-1]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="PySDM.backends.impl_numba.methods.index_methods.IndexMethods.identity_index"><code class="name">var <span class="ident">identity_index</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.methods.index_methods.IndexMethods.shuffle_global"><code class="name">var <span class="ident">shuffle_global</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.methods.index_methods.IndexMethods.shuffle_local"><code class="name">var <span class="ident">shuffle_local</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner=None):
+    if instance is None:
+        return self
+    if self.attrname is None:
+        raise TypeError(
+            &#34;Cannot use cached_property instance without calling __set_name__ on it.&#34;)
+    try:
+        cache = instance.__dict__
+    except AttributeError:  # not all objects have __dict__ (e.g. class defines slots)
+        msg = (
+            f&#34;No &#39;__dict__&#39; attribute on {type(instance).__name__!r} &#34;
+            f&#34;instance to cache {self.attrname!r} property.&#34;
+        )
+        raise TypeError(msg) from None
+    val = cache.get(self.attrname, _NOT_FOUND)
+    if val is _NOT_FOUND:
+        with self.lock:
+            # check if another thread filled cache while we awaited lock
+            val = cache.get(self.attrname, _NOT_FOUND)
+            if val is _NOT_FOUND:
+                val = self.func(instance)
+                try:
+                    cache[self.attrname] = val
+                except TypeError:
+                    msg = (
+                        f&#34;The &#39;__dict__&#39; attribute on {type(instance).__name__!r} instance &#34;
+                        f&#34;does not support item assignment for caching {self.attrname!r} property.&#34;
+                    )
+                    raise TypeError(msg) from None
+    return val</code></pre>
 </details>
 </dd>
 </dl>
