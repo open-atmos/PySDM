@@ -1,7 +1,7 @@
 PySDM_examples/utils/temporary_files/*
 *.pdf
 *.nc
-!deJong_Azimi/box*.nc
+!examples/PySDM_examples/deJong_Azimi/box*.nc
 *.pkl
 *.vtu
 *.vts
