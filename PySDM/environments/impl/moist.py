@@ -61,7 +61,7 @@ class Moist:
         return self._values["predicted"][index]
 
     def _recalculate_temperature_pressure_relative_humidity(self, target):
-        self.particulator.backend.temperature_pressure_RH(
+        self.particulator.backend.temperature_pressure_rh(
             rhod=target["rhod"],
             thd=target["thd"],
             water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
