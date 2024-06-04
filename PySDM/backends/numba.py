@@ -36,8 +36,8 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
         assert "fastmath" not in (override_jit_flags or {})
         self.default_jit_flags = {
-            **JIT_FLAGS,
-            **{"fastmath": self.formulae.fastmath},
+            **JIT_FLAGS,  # here parallel=False (for out-of-backend code)
+            **{"fastmath": self.formulae.fastmath, "parallel": True},
             **(override_jit_flags or {}),
         }
 

@@ -9,7 +9,7 @@ import warnings
 import numba
 
 JIT_FLAGS = {
-    "parallel": True,
+    "parallel": False,
     "fastmath": True,
     "error_model": "numpy",
     "cache": False,  # https://github.com/numba/numba/issues/2956
