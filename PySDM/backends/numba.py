@@ -2,10 +2,11 @@
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 """
 
+import os
+
+import numba
 import platform
 import warnings
-import numba
-import os
 
 from PySDM.backends.impl_numba import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
