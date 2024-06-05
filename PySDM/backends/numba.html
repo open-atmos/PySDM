@@ -31,6 +31,12 @@
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 &#34;&#34;&#34;
 
+import os
+import platform
+import warnings
+
+import numba
+
 from PySDM.backends.impl_numba import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
 from PySDM.backends.impl_numba.storage import Storage as ImportedStorage
@@ -63,10 +69,26 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 
+        parallel_default = True
+        if platform.machine() == &#34;arm64&#34;:
+            warnings.warn(
+                &#34;Disabling Numba threading due to ARM64 CPU (atomics do not work yet)&#34;
+            )
+            parallel_default = False  # TODO #1183 - atomics don&#39;t work on ARM64!
+
+        try:
+            numba.parfors.parfor.ensure_parallel_support()
+        except numba.core.errors.UnsupportedParforsError:
+            if &#34;CI&#34; not in os.environ:
+                warnings.warn(
+                    &#34;Numba version used does not support parallel for (32 bits?)&#34;
+                )
+            parallel_default = False
+
         assert &#34;fastmath&#34; not in (override_jit_flags or {})
         self.default_jit_flags = {
-            **JIT_FLAGS,
-            **{&#34;fastmath&#34;: self.formulae.fastmath},
+            **JIT_FLAGS,  # here parallel=False (for out-of-backend code)
+            **{&#34;fastmath&#34;: self.formulae.fastmath, &#34;parallel&#34;: parallel_default},
             **(override_jit_flags or {}),
         }
 
@@ -128,10 +150,26 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 
+        parallel_default = True
+        if platform.machine() == &#34;arm64&#34;:
+            warnings.warn(
+                &#34;Disabling Numba threading due to ARM64 CPU (atomics do not work yet)&#34;
+            )
+            parallel_default = False  # TODO #1183 - atomics don&#39;t work on ARM64!
+
+        try:
+            numba.parfors.parfor.ensure_parallel_support()
+        except numba.core.errors.UnsupportedParforsError:
+            if &#34;CI&#34; not in os.environ:
+                warnings.warn(
+                    &#34;Numba version used does not support parallel for (32 bits?)&#34;
+                )
+            parallel_default = False
+
         assert &#34;fastmath&#34; not in (override_jit_flags or {})
         self.default_jit_flags = {
-            **JIT_FLAGS,
-            **{&#34;fastmath&#34;: self.formulae.fastmath},
+            **JIT_FLAGS,  # here parallel=False (for out-of-backend code)
+            **{&#34;fastmath&#34;: self.formulae.fastmath, &#34;parallel&#34;: parallel_default},
             **(override_jit_flags or {}),
         }
 
