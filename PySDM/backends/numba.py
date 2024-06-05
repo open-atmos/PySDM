@@ -2,6 +2,12 @@
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 """
 
+import os
+import platform
+import warnings
+
+import numba
+
 from PySDM.backends.impl_numba import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
 from PySDM.backends.impl_numba.storage import Storage as ImportedStorage
@@ -34,10 +40,26 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 
+        parallel_default = True
+        if platform.machine() == "arm64":
+            warnings.warn(
+                "Disabling Numba threading due to ARM64 CPU (atomics do not work yet)"
+            )
+            parallel_default = False  # TODO #1183 - atomics don't work on ARM64!
+
+        try:
+            numba.parfors.parfor.ensure_parallel_support()
+        except numba.core.errors.UnsupportedParforsError:
+            if "CI" not in os.environ:
+                warnings.warn(
+                    "Numba version used does not support parallel for (32 bits?)"
+                )
+            parallel_default = False
+
         assert "fastmath" not in (override_jit_flags or {})
         self.default_jit_flags = {
-            **JIT_FLAGS,
-            **{"fastmath": self.formulae.fastmath},
+            **JIT_FLAGS,  # here parallel=False (for out-of-backend code)
+            **{"fastmath": self.formulae.fastmath, "parallel": parallel_default},
             **(override_jit_flags or {}),
         }
 
