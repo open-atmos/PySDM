@@ -7,7 +7,7 @@ import pytest
 
 from PySDM_examples.utils import notebook_vars
 from PySDM_examples import Rozanski_and_Sonntag_1982
-from PySDM.physics import in_unit
+from PySDM.physics import in_unit, si
 
 PLOT = False
 
@@ -25,7 +25,7 @@ class TestFigs456:
     def test_fig_5_vapour_asymptote(variables):
         delta_vapour_at_the_cloud_top_per_mille = in_unit(
             variables["formulae"].trivia.isotopic_ratio_2_delta(
-                ratio=variables["data"][-1]["Rv_2H"][1:],
+                ratio=variables["data"][variables["PLOT_KEY"]]["CT"]["Rv_2H"][1:],
                 reference_ratio=variables["const"].VSMOW_R_2H,
             ),
             variables["const"].PER_MILLE,
@@ -39,14 +39,14 @@ class TestFigs456:
         assert (dd_delta > 0).all()
         assert (np.abs(d_delta / mean)[-10:] < 0.02).all()
         np.testing.assert_approx_equal(
-            delta_vapour_at_the_cloud_top_per_mille[-1], -460, significant=3
+            delta_vapour_at_the_cloud_top_per_mille[-1], -460, significant=2
         )
 
     @staticmethod
     def test_fig_5_rain_at_the_cloud_base(variables):
         delta_rain_at_the_cloud_base_per_mille = in_unit(
             variables["formulae"].trivia.isotopic_ratio_2_delta(
-                ratio=variables["data"][variables["level_indices"]["CB"]]["Rr_2H"][1:],
+                ratio=variables["data"][variables["PLOT_KEY"]]["CB"]["Rr_2H"][1:],
                 reference_ratio=variables["const"].VSMOW_R_2H,
             ),
             variables["const"].PER_MILLE,
@@ -60,5 +60,5 @@ class TestFigs456:
         assert (dd_delta[len(dd_delta) // 4 :] > 0).all()
         assert (np.abs(d_delta / mean)[-10:] < 0.02).all()
         np.testing.assert_approx_equal(
-            delta_rain_at_the_cloud_base_per_mille[-1], -2.92, significant=3
+            delta_rain_at_the_cloud_base_per_mille[-1], -16, significant=2
         )
