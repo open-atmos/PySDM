@@ -7,7 +7,7 @@ import pytest
 
 from PySDM_examples.utils import notebook_vars
 from PySDM_examples import Rozanski_and_Sonntag_1982
-from PySDM.physics import in_unit, si
+from PySDM.physics import in_unit
 
 PLOT = False
 
