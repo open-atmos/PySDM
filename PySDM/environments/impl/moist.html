@@ -41,6 +41,9 @@ class Moist:
         variables += [&#34;water_vapour_mixing_ratio&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
         if mixed_phase:
             variables += [&#34;a_w_ice&#34;]
+        all_vars_unique = len(variables) == len(set(variables))
+        assert all_vars_unique
+
         self.particulator = None
         self.dt = dt
         self.mesh = mesh
@@ -86,11 +89,7 @@ class Moist:
             )
         return self._values[&#34;predicted&#34;][index]
 
-    def sync(self):
-        target = self._tmp
-        target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
-        target[&#34;thd&#34;].ravel(self.get_thd())
-
+    def _recalculate_temperature_pressure_relative_humidity(self, target):
         self.particulator.backend.temperature_pressure_rh(
             rhod=target[&#34;rhod&#34;],
             thd=target[&#34;thd&#34;],
@@ -99,6 +98,14 @@ class Moist:
             p=target[&#34;p&#34;],
             RH=target[&#34;RH&#34;],
         )
+
+    def sync(self):
+        target = self._tmp
+        target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
+        target[&#34;thd&#34;].ravel(self.get_thd())
+
+        self._recalculate_temperature_pressure_relative_humidity(target)
+
         if &#34;a_w_ice&#34; in self.variables:
             self.particulator.backend.a_w_ice(
                 T=target[&#34;T&#34;],
@@ -161,6 +168,9 @@ class Moist:
         variables += [&#34;water_vapour_mixing_ratio&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
         if mixed_phase:
             variables += [&#34;a_w_ice&#34;]
+        all_vars_unique = len(variables) == len(set(variables))
+        assert all_vars_unique
+
         self.particulator = None
         self.dt = dt
         self.mesh = mesh
@@ -206,11 +216,7 @@ class Moist:
             )
         return self._values[&#34;predicted&#34;][index]
 
-    def sync(self):
-        target = self._tmp
-        target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
-        target[&#34;thd&#34;].ravel(self.get_thd())
-
+    def _recalculate_temperature_pressure_relative_humidity(self, target):
         self.particulator.backend.temperature_pressure_rh(
             rhod=target[&#34;rhod&#34;],
             thd=target[&#34;thd&#34;],
@@ -219,6 +225,14 @@ class Moist:
             p=target[&#34;p&#34;],
             RH=target[&#34;RH&#34;],
         )
+
+    def sync(self):
+        target = self._tmp
+        target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
+        target[&#34;thd&#34;].ravel(self.get_thd())
+
+        self._recalculate_temperature_pressure_relative_humidity(target)
+
         if &#34;a_w_ice&#34; in self.variables:
             self.particulator.backend.a_w_ice(
                 T=target[&#34;T&#34;],
@@ -367,14 +381,8 @@ def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
     target[&#34;water_vapour_mixing_ratio&#34;].ravel(self.get_water_vapour_mixing_ratio())
     target[&#34;thd&#34;].ravel(self.get_thd())
 
-    self.particulator.backend.temperature_pressure_rh(
-        rhod=target[&#34;rhod&#34;],
-        thd=target[&#34;thd&#34;],
-        water_vapour_mixing_ratio=target[&#34;water_vapour_mixing_ratio&#34;],
-        T=target[&#34;T&#34;],
-        p=target[&#34;p&#34;],
-        RH=target[&#34;RH&#34;],
-    )
+    self._recalculate_temperature_pressure_relative_humidity(target)
+
     if &#34;a_w_ice&#34; in self.variables:
         self.particulator.backend.a_w_ice(
             T=target[&#34;T&#34;],

@@ -31,6 +31,8 @@
 Zero-dimensional adiabatic parcel framework
 &#34;&#34;&#34;
 
+from typing import List, Optional
+
 import numpy as np
 
 from PySDM.environments.impl.moist import Moist
@@ -53,10 +55,10 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         w: [float, callable],
         z0: float = 0,
         mixed_phase=False,
+        variables: Optional[List[str]] = None,
     ):
-        super().__init__(
-            dt, Mesh.mesh_0d(), [&#34;rhod&#34;, &#34;z&#34;, &#34;t&#34;], mixed_phase=mixed_phase
-        )
+        variables = (variables or []) + [&#34;rhod&#34;, &#34;z&#34;, &#34;t&#34;]
+        super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
         self.p0 = p0
         self.initial_water_vapour_mixing_ratio = initial_water_vapour_mixing_ratio
@@ -67,7 +69,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self.w = w if callable(w) else lambda _: w
 
         self.formulae = None
-        self.delta_liquid_water_mixing_ratio = None
+        self.delta_liquid_water_mixing_ratio = np.nan
         self.params = None
 
     @property
@@ -145,6 +147,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             - self.delta_liquid_water_mixing_ratio / 2
         )
 
+        # derivate evaluated at p_old, T_old, mixrat_mid, w_mid
         drho_dz = self.formulae.hydrostatics.drho_dz(
             g=self.formulae.constants.g_std,
             p=p,
@@ -198,7 +201,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
 <dl>
 <dt id="PySDM.environments.parcel.Parcel"><code class="flex name class">
 <span>class <span class="ident">Parcel</span></span>
-<span>(</span><span>*, dt, mass_of_dry_air: float, p0: float, initial_water_vapour_mixing_ratio: float, T0: float, w: [<class 'float'>, <built-in function callable>], z0: float = 0, mixed_phase=False)</span>
+<span>(</span><span>*, dt, mass_of_dry_air: float, p0: float, initial_water_vapour_mixing_ratio: float, T0: float, w: [<class 'float'>, <built-in function callable>], z0: float = 0, mixed_phase=False, variables: Optional[List[str]] = None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -218,10 +221,10 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         w: [float, callable],
         z0: float = 0,
         mixed_phase=False,
+        variables: Optional[List[str]] = None,
     ):
-        super().__init__(
-            dt, Mesh.mesh_0d(), [&#34;rhod&#34;, &#34;z&#34;, &#34;t&#34;], mixed_phase=mixed_phase
-        )
+        variables = (variables or []) + [&#34;rhod&#34;, &#34;z&#34;, &#34;t&#34;]
+        super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
         self.p0 = p0
         self.initial_water_vapour_mixing_ratio = initial_water_vapour_mixing_ratio
@@ -232,7 +235,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self.w = w if callable(w) else lambda _: w
 
         self.formulae = None
-        self.delta_liquid_water_mixing_ratio = None
+        self.delta_liquid_water_mixing_ratio = np.nan
         self.params = None
 
     @property
@@ -310,6 +313,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             - self.delta_liquid_water_mixing_ratio / 2
         )
 
+        # derivate evaluated at p_old, T_old, mixrat_mid, w_mid
         drho_dz = self.formulae.hydrostatics.drho_dz(
             g=self.formulae.constants.g_std,
             p=p,
@@ -396,6 +400,7 @@ def dv(self):
         - self.delta_liquid_water_mixing_ratio / 2
     )
 
+    # derivate evaluated at p_old, T_old, mixrat_mid, w_mid
     drho_dz = self.formulae.hydrostatics.drho_dz(
         g=self.formulae.constants.g_std,
         p=p,
