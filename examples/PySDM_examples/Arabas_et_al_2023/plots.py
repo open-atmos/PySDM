@@ -103,7 +103,7 @@ def make_freezing_spec_plot(
             _ = CurvedText(
                 x=T.squeeze(),
                 y=qi.squeeze(),
-                text=f"                      {multiplier}x median A",
+                text=f"                      {multiplier}x median S",
                 va="bottom",
                 color="black",
                 axes=prim,
