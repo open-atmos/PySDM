@@ -42,7 +42,7 @@ def constant_timescale_fixture(request):
     return request.param
 
 
-def test_small_timescale(default_attributes, constant_timescale, backend_class):
+def test_small_timescale(default_attributes, constant_timescale, backend_instance):
     """
     When the fall velocity is initialized to 0 and relaxation is very quick,
     the velocity should quickly approach the terminal velocity
@@ -51,7 +51,7 @@ def test_small_timescale(default_attributes, constant_timescale, backend_class):
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_class(),
+        backend=backend_instance,
         environment=env,
     )
 
@@ -74,7 +74,7 @@ def test_small_timescale(default_attributes, constant_timescale, backend_class):
     )
 
 
-def test_large_timescale(default_attributes, constant_timescale, backend_class):
+def test_large_timescale(default_attributes, constant_timescale, backend_instance):
     """
     When the fall velocity is initialized to 0 and relaxation is very slow,
     the velocity should remain 0
@@ -83,7 +83,7 @@ def test_large_timescale(default_attributes, constant_timescale, backend_class):
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_class(),
+        backend=backend_instance,
         environment=env,
     )
 
@@ -106,7 +106,7 @@ def test_large_timescale(default_attributes, constant_timescale, backend_class):
     )
 
 
-def test_behavior(default_attributes, constant_timescale, backend_class):
+def test_behavior(default_attributes, constant_timescale, backend_instance):
     """
     The fall velocity should approach the terminal velocity exponentially
     """
@@ -114,7 +114,7 @@ def test_behavior(default_attributes, constant_timescale, backend_class):
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_class(),
+        backend=backend_instance,
         environment=env,
     )
 
@@ -153,7 +153,7 @@ def test_behavior(default_attributes, constant_timescale, backend_class):
 
 
 @pytest.mark.parametrize("c", [0.1, 10])
-def test_timescale(default_attributes, c, constant_timescale, backend_class):
+def test_timescale(default_attributes, c, constant_timescale, backend_instance):
     """
     The non-constant timescale should be proportional to the sqrt of the radius. The
     proportionality constant should be the parameter for the dynamic.
@@ -163,7 +163,7 @@ def test_timescale(default_attributes, c, constant_timescale, backend_class):
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
-        backend=backend_class(),
+        backend=backend_instance,
         environment=env,
     )
 

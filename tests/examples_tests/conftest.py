@@ -30,7 +30,7 @@ TEST_SUITES = {
         "Graf_et_al_2019",
         "Lamb_et_al_2017",
         "Miyake_et_al_1968",
-        # "Rozanski_and_Sonntag_1982",  # TODO #1207
+        "Rozanski_and_Sonntag_1982",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
@@ -47,16 +47,16 @@ TEST_SUITES = {
     "coagulation": ["Berry_1967", "Shima_et_al_2009"],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process_a": [
-        "deJong_Azimi",
         "Arabas_et_al_2015",
-        "Bartman_2020_MasterThesis",
+        "Arabas_et_al_2023",
+        "deJong_Azimi",
         "Bulenok_2023_MasterThesis",
+        "Shipway_and_Hill_2012",
     ],
     "multi-process_b": [
-        "Arabas_et_al_2023",
+        "Bartman_2020_MasterThesis",
         "Bartman_et_al_2021",
         "Morrison_and_Grabowski_2007",
-        "Shipway_and_Hill_2012",
         "Szumowski_et_al_1998",
         "utils",
     ],

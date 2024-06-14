@@ -32,7 +32,11 @@ setup(
         "seaborn",
         "numdifftools",
     ]
-    + (["pyvinecopulib", "vtk"] if platform.architecture()[0] != "32bit" else []),
+    + (
+        ["pyvinecopulib" + "==0.6.4" if CI else "", "vtk"]
+        if platform.architecture()[0] != "32bit"
+        else []
+    ),
     extras_require={
         "tests": [
             "pytest",

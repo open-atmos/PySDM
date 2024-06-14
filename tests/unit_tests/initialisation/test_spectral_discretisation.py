@@ -24,10 +24,10 @@ formulae = Formulae()
         pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
     ),
 )
-def test_spectral_discretisation(discretisation, backend_class):
+def test_spectral_discretisation(discretisation, backend_instance):
     # Arrange
     n_sd = 100000
-    backend = backend_class()
+    backend = backend_instance
 
     # Act
     m, n = discretisation.sample(n_sd, backend=backend)

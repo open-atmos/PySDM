@@ -1,5 +1,7 @@
 """
 see derivation of eq. (12) in [Merlivat and Jouzel 1979](https://doi.org/10.1029/JC084iC08p05029)
+(for constant alpha leads to eq. (13) in
+[Gedzelman & Arnold 1994](https://doi.org/10.1029/93jd03518))
 """
 
 

@@ -19,7 +19,14 @@ class Simulation:
             self.n_substeps += 1
 
         builder = Builder(
-            backend=backend(formulae=settings.formulae),
+            backend=backend(
+                formulae=settings.formulae,
+                **(
+                    {"override_jit_flags": {"parallel": False}}
+                    if backend == CPU
+                    else {}
+                )
+            ),
             n_sd=1,
             environment=Parcel(
                 dt=dt_output / self.n_substeps,

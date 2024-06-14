@@ -2,7 +2,7 @@
 CPU implementation of backend methods for particle collisions
 """
 
-# pylint: disable=too-many-lines
+from functools import cached_property
 import numba
 import numpy as np
 
@@ -243,78 +243,13 @@ def break_up_while(
         warn("overflow", __file__)
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
-    i,
-    Nr1,
-    Nr2,
-    Nr3,
-    Nr4,
-    Nrt,
-    CW,
-    gam,
-):  # pylint: disable=too-many-branches`
-    if gam[i] * CW[i] >= 7.0:
-        Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0)
-    if CW[i] >= 21.0:
-        Nr2[i] = 0.22 * (CW[i] - 21.0)
-        if CW[i] <= 46.0:
-            Nr3[i] = 0.04 * (46.0 - CW[i])
-    else:
-        Nr3[i] = 1.0
-    Nr4[i] = 1.0
-    Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
-    i, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, d34, Nr1, Nr2, Nr3, Nr4
-):
-    # pylint: disable=too-many-arguments, too-many-locals
-    Nr1[i] = Nr1[i] * np.exp(3 * mu1 + 9 * np.power(sigma1, 2) / 2)
-    Nr2[i] = Nr2[i] * (mu2**3 + 3 * mu2 * sigma2**2)
-    Nr3[i] = Nr3[i] * (mu3**3 + 3 * mu3 * sigma3**2)
-    Nr4[i] = vl[i] * 6 / np.pi + ds[i] ** 3 - Nr1[i] - Nr2[i] - Nr3[i]
-    if Nr4[i] <= 0.0:
-        d34[i] = 0
-        Nr4[i] = 0
-    else:
-        d34[i] = np.exp(np.log(Nr4[i]) / 3)
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
-    i,
-    Rf,
-    Rs,
-    Rd,
-    CKE,
-    W,
-    W2,
-):  # pylint: disable=too-many-branches`
-    if CKE[i] >= 0.893e-6:
-        Rf[i] = 1.11e-4 * CKE[i] ** (-0.654)
-    else:
-        Rf[i] = 1.0
-    if W[i] >= 0.86:
-        Rs[i] = 0.685 * (1 - np.exp(-1.63 * (W2[i] - 0.86)))
-    else:
-        Rs[i] = 0.0
-    if (Rs[i] + Rf[i]) > 1.0:
-        Rd[i] = 0.0
-    else:
-        Rd[i] = 1.0 - Rs[i] - Rf[i]
-
-
 class CollisionsMethods(BackendMethods):
-    def __init__(self):  # pylint: disable=too-many-statements,too-many-locals
-        BackendMethods.__init__(self)
-
+    @cached_property
+    def _collision_coalescence_breakup_body(self):
         _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
-        const = self.formulae.constants
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def __collision_coalescence_breakup_body(
+        @numba.njit(**self.default_jit_flags)
+        def body(
             *,
             multiplicity,
             idx,
@@ -373,252 +308,66 @@ class CollisionsMethods(BackendMethods):
                     )
                 flag_zero_multiplicity(j, k, multiplicity, healthy)
 
-        self.__collision_coalescence_breakup_body = __collision_coalescence_breakup_body
+        return body
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def __ll82_coalescence_check_body(*, Ec, dl):
-            for i in numba.prange(len(Ec)):  # pylint: disable=not-an-iterable
-                if dl[i] < 0.4e-3:
-                    Ec[i] = 1.0
+    @cached_property
+    def _adaptive_sdm_end_body(self):
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
+        def body(dt_left, n_cell, cell_start):
+            end = 0
+            for i in range(n_cell - 1, -1, -1):
+                if dt_left[i] == 0:
+                    continue
+                end = cell_start[i + 1]
+                break
+            return end
 
-        self.__ll82_coalescence_check_body = __ll82_coalescence_check_body
-
-        if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
-            straub_sigma1 = self.formulae.fragmentation_function.params_sigma1
-            straub_mu1 = self.formulae.fragmentation_function.params_mu1
-            straub_sigma2 = self.formulae.fragmentation_function.params_sigma2
-            straub_mu2 = self.formulae.fragmentation_function.params_mu2
-            straub_sigma3 = self.formulae.fragmentation_function.params_sigma3
-            straub_mu3 = self.formulae.fragmentation_function.params_mu3
-            straub_erfinv = self.formulae.trivia.erfinv_approx
-
-            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-            def __straub_fragmentation_body(
-                *, CW, gam, ds, v_max, frag_volume, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
-            ):  # pylint: disable=too-many-arguments,too-many-locals
-                for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_volume)
-                ):
-                    straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
-                    sigma1 = straub_sigma1(CW[i])
-                    mu1 = straub_mu1(sigma1)
-                    sigma2 = straub_sigma2(CW[i])
-                    mu2 = straub_mu2(ds[i])
-                    sigma3 = straub_sigma3(CW[i])
-                    mu3 = straub_mu3(ds[i])
-                    straub_mass_remainder(
-                        i,
-                        v_max,
-                        ds,
-                        mu1,
-                        sigma1,
-                        mu2,
-                        sigma2,
-                        mu3,
-                        sigma3,
-                        d34,
-                        Nr1,
-                        Nr2,
-                        Nr3,
-                        Nr4,
-                    )
-                    Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
-
-                    if Nrt[i] == 0.0:
-                        diameter = 0.0
-                    else:
-                        if rand[i] < Nr1[i] / Nrt[i]:
-                            X = rand[i] * Nrt[i] / Nr1[i]
-                            lnarg = mu1 + np.sqrt(2) * sigma1 * straub_erfinv(X)
-                            diameter = np.exp(lnarg)
-                        elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
-                            X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i]
-                            diameter = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(X)
-                        elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
-                            X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i]
-                            diameter = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(X)
-                        else:
-                            diameter = d34[i]
-
-                    frag_volume[i] = diameter**3 * const.PI / 6
-
-            self.__straub_fragmentation_body = __straub_fragmentation_body
-        elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
-            ll82_params_f1 = self.formulae.fragmentation_function.params_f1
-            ll82_params_f2 = self.formulae.fragmentation_function.params_f2
-            ll82_params_f3 = self.formulae.fragmentation_function.params_f3
-            ll82_params_s1 = self.formulae.fragmentation_function.params_s1
-            ll82_params_s2 = self.formulae.fragmentation_function.params_s2
-            ll82_params_d1 = self.formulae.fragmentation_function.params_d1
-            ll82_params_d2 = self.formulae.fragmentation_function.params_d2
-            ll82_erfinv = self.formulae.fragmentation_function.erfinv
-
-            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-            def __ll82_fragmentation_body(
-                *, CKE, W, W2, St, ds, dl, dcoal, frag_volume, rand, Rf, Rs, Rd, tol
-            ):  # pylint: disable=too-many-branches,too-many-locals,too-many-statements
-                for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_volume)
-                ):
-                    if dl[i] <= 0.4e-3:
-                        frag_volume[i] = dcoal[i] ** 3 * const.PI / 6
-                    elif ds[i] == 0.0 or dl[i] == 0.0:
-                        frag_volume[i] = 1e-18
-                    else:
-                        ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
-                        if rand[i] <= Rf[i]:  # filament breakup
-                            (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
-                            (H2, mu2, sigma2) = ll82_params_f2(ds[i])
-                            (H3, mu3, sigma3) = ll82_params_f3(ds[i], dl[i])
-                            H1 = H1 * mu1
-                            H2 = H2 * mu2
-                            H3 = H3 * np.exp(mu3)
-                            Hsum = H1 + H2 + H3
-                            rand[i] = rand[i] / Rf[i]
-                            if rand[i] <= H1 / Hsum:
-                                X = max(rand[i] * Hsum / H1, tol)
-                                frag_volume[i] = mu1 + np.sqrt(
-                                    2
-                                ) * sigma1 * ll82_erfinv(2 * X - 1)
-                            elif rand[i] <= (H1 + H2) / Hsum:
-                                X = (rand[i] * Hsum - H1) / H2
-                                frag_volume[i] = mu2 + np.sqrt(
-                                    2
-                                ) * sigma2 * ll82_erfinv(2 * X - 1)
-                            else:
-                                X = min((rand[i] * Hsum - H1 - H2) / H3, 1.0 - tol)
-                                lnarg = mu3 + np.sqrt(2) * sigma3 * ll82_erfinv(
-                                    2 * X - 1
-                                )
-                                frag_volume[i] = np.exp(lnarg)
-
-                        elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
-                            (H1, mu1, sigma1) = ll82_params_s1(dl[i], ds[i], dcoal[i])
-                            (H2, mu2, sigma2) = ll82_params_s2(dl[i], ds[i], St[i])
-                            H1 = H1 * mu1
-                            H2 = H2 * np.exp(mu2)
-                            Hsum = H1 + H2
-                            rand[i] = (rand[i] - Rf[i]) / (Rs[i])
-                            if rand[i] <= H1 / Hsum:
-                                X = max(rand[i] * Hsum / H1, tol)
-                                frag_volume[i] = mu1 + np.sqrt(
-                                    2
-                                ) * sigma1 * ll82_erfinv(2 * X - 1)
-                            else:
-                                X = min((rand[i] * Hsum - H1) / H2, 1.0 - tol)
-                                lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
-                                    2 * X - 1
-                                )
-                                frag_volume[i] = np.exp(lnarg)
-
-                        else:  # disk breakup
-                            (H1, mu1, sigma1) = ll82_params_d1(
-                                W[i], dl[i], dcoal[i], CKE[i]
-                            )
-                            (H2, mu2, sigma2) = ll82_params_d2(ds[i], dl[i], CKE[i])
-                            H1 = H1 * mu1
-                            Hsum = H1 + H2
-                            rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
-                            if rand[i] <= H1 / Hsum:
-                                X = max(rand[i] * Hsum / H1, tol)
-                                frag_volume[i] = mu1 + np.sqrt(
-                                    2
-                                ) * sigma1 * ll82_erfinv(2 * X - 1)
-                            else:
-                                X = min((rand[i] * Hsum - H1) / H2, 1 - tol)
-                                lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
-                                    2 * X - 1
-                                )
-                                frag_volume[i] = np.exp(lnarg)
-
-                        frag_volume[i] = (
-                            frag_volume[i] * 0.01
-                        )  # diameter in cm; convert to m
-                        frag_volume[i] = frag_volume[i] ** 3 * const.PI / 6
-
-            self.__ll82_fragmentation_body = __ll82_fragmentation_body
-        elif self.formulae.fragmentation_function.__name__ == "Gaussian":
-            erfinv_approx = self.formulae.trivia.erfinv_approx
-
-            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-            def __gauss_fragmentation_body(
-                *, mu, sigma, frag_volume, rand
-            ):  # pylint: disable=too-many-arguments
-                for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_volume)
-                ):
-                    frag_volume[i] = mu + sigma * erfinv_approx(rand[i])
-
-            self.__gauss_fragmentation_body = __gauss_fragmentation_body
-        elif self.formulae.fragmentation_function.__name__ == "Feingold1988":
-            feingold1988_frag_volume = self.formulae.fragmentation_function.frag_volume
-
-            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-            # pylint: disable=too-many-arguments
-            def __feingold1988_fragmentation_body(
-                *, scale, frag_volume, x_plus_y, rand, fragtol
-            ):
-                for i in numba.prange(  # pylint: disable=not-an-iterable
-                    len(frag_volume)
-                ):
-                    frag_volume[i] = feingold1988_frag_volume(
-                        scale, rand[i], x_plus_y[i], fragtol
-                    )
-
-            self.__feingold1988_fragmentation_body = __feingold1988_fragmentation_body
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-    def __adaptive_sdm_end_body(dt_left, n_cell, cell_start):
-        end = 0
-        for i in range(n_cell - 1, -1, -1):
-            if dt_left[i] == 0:
-                continue
-            end = cell_start[i + 1]
-            break
-        return end
+        return body
 
     def adaptive_sdm_end(self, dt_left, cell_start):
-        return self.__adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)
+        return self._adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def __scale_prob_for_adaptive_sdm_gamma_body(
-        prob,
-        idx,
-        length,
-        multiplicity,
-        cell_id,
-        dt_left,
-        dt,
-        dt_range,
-        is_first_in_pair,
-        stats_n_substep,
-        stats_dt_min,
-    ):
-        dt_todo = np.empty_like(dt_left)
-        for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
-            dt_todo[cid] = min(dt_left[cid], dt_range[1])
-        for i in range(length // 2):  # TODO #571
-            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
-            if skip_pair:
-                continue
-            prop = multiplicity[j] // multiplicity[k]
-            dt_optimal = dt * prop / prob[i]
-            cid = cell_id[j]
-            dt_optimal = max(dt_optimal, dt_range[0])
-            dt_todo[cid] = min(dt_todo[cid], dt_optimal)
-            stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
-        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
-            if skip_pair:
-                continue
-            prob[i] *= dt_todo[cell_id[j]] / dt
-        for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
-            dt_left[cid] -= dt_todo[cid]
-            if dt_todo[cid] > 0:
-                stats_n_substep[cid] += 1
+    @cached_property
+    def _scale_prob_for_adaptive_sdm_gamma_body(self):
+        @numba.njit(**self.default_jit_flags)
+        # pylint: disable=too-many-arguments,too-many-locals
+        def body(
+            prob,
+            idx,
+            length,
+            multiplicity,
+            cell_id,
+            dt_left,
+            dt,
+            dt_range,
+            is_first_in_pair,
+            stats_n_substep,
+            stats_dt_min,
+        ):
+            dt_todo = np.empty_like(dt_left)
+            for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
+                dt_todo[cid] = min(dt_left[cid], dt_range[1])
+            for i in range(length // 2):  # TODO #571
+                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
+                if skip_pair:
+                    continue
+                prop = multiplicity[j] // multiplicity[k]
+                dt_optimal = dt * prop / prob[i]
+                cid = cell_id[j]
+                dt_optimal = max(dt_optimal, dt_range[0])
+                dt_todo[cid] = min(dt_todo[cid], dt_optimal)
+                stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
+            for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
+                j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
+                if skip_pair:
+                    continue
+                prob[i] *= dt_todo[cell_id[j]] / dt
+            for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
+                dt_left[cid] -= dt_todo[cid]
+                if dt_todo[cid] > 0:
+                    stats_n_substep[cid] += 1
+
+        return body
 
     def scale_prob_for_adaptive_sdm_gamma(
         self,
@@ -633,7 +382,7 @@ class CollisionsMethods(BackendMethods):
         stats_n_substep,
         stats_dt_min,
     ):
-        return self.__scale_prob_for_adaptive_sdm_gamma_body(
+        return self._scale_prob_for_adaptive_sdm_gamma_body(
             prob.data,
             multiplicity.idx.data,
             len(multiplicity),
@@ -647,38 +396,53 @@ class CollisionsMethods(BackendMethods):
             stats_dt_min.data,
         )
 
-    @staticmethod
-    # @numba.njit(**conf.JIT_FLAGS)  # note: as of Numba 0.51, np.dot() does not support ints
-    def __cell_id_body(cell_id, cell_origin, strides):
-        cell_id[:] = np.dot(strides, cell_origin)
+    @cached_property
+    def _cell_id_body(self):
+        # @numba.njit(**conf.JIT_FLAGS)  # note: as of Numba 0.51, np.dot() does not support ints
+        def body(cell_id, cell_origin, strides):
+            cell_id[:] = np.dot(strides, cell_origin)
+
+        return body
 
     def cell_id(self, cell_id, cell_origin, strides):
-        return self.__cell_id_body(cell_id.data, cell_origin.data, strides.data)
+        return self._cell_id_body(cell_id.data, cell_origin.data, strides.data)
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def __collision_coalescence_body(
-        *,
-        multiplicity,
-        idx,
-        length,
-        attributes,
-        gamma,
-        healthy,
-        cell_id,
-        coalescence_rate,
-        is_first_in_pair,
-    ):
-        for i in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
-            length // 2
+    @cached_property
+    def _collision_coalescence_body(self):
+        @numba.njit(**self.default_jit_flags)
+        def body(
+            *,
+            multiplicity,
+            idx,
+            length,
+            attributes,
+            gamma,
+            healthy,
+            cell_id,
+            coalescence_rate,
+            is_first_in_pair,
         ):
-            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
-            if skip_pair:
-                continue
-            coalesce(
-                i, j, k, cell_id[j], multiplicity, gamma, attributes, coalescence_rate
-            )
-            flag_zero_multiplicity(j, k, multiplicity, healthy)
+            for (
+                i
+            ) in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
+                length // 2
+            ):
+                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+                if skip_pair:
+                    continue
+                coalesce(
+                    i,
+                    j,
+                    k,
+                    cell_id[j],
+                    multiplicity,
+                    gamma,
+                    attributes,
+                    coalescence_rate,
+                )
+                flag_zero_multiplicity(j, k, multiplicity, healthy)
+
+        return body
 
     def collision_coalescence(
         self,
@@ -692,7 +456,7 @@ class CollisionsMethods(BackendMethods):
         coalescence_rate,
         is_first_in_pair,
     ):
-        self.__collision_coalescence_body(
+        self._collision_coalescence_body(
             multiplicity=multiplicity.data,
             idx=idx.data,
             length=len(idx),
@@ -726,7 +490,7 @@ class CollisionsMethods(BackendMethods):
         max_multiplicity,
     ):
         # pylint: disable=too-many-locals
-        self.__collision_coalescence_breakup_body(
+        self._collision_coalescence_breakup_body(
             multiplicity=multiplicity.data,
             idx=idx.data,
             length=len(idx),
@@ -747,269 +511,45 @@ class CollisionsMethods(BackendMethods):
             particle_mass=particle_mass.data,
         )
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS})
-    # pylint: disable=too-many-arguments
-    def __fragmentation_limiters(n_fragment, frag_volume, vmin, nfmax, x_plus_y):
-        for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
-            if x_plus_y[i] == 0.0:
-                frag_volume[i] = 0.0
-                n_fragment[i] = 1.0
-            else:
-                if np.isnan(frag_volume[i]) or frag_volume[i] == 0.0:
-                    frag_volume[i] = x_plus_y[i]
-                frag_volume[i] = min(frag_volume[i], x_plus_y[i])
-                if nfmax is not None and x_plus_y[i] / frag_volume[i] > nfmax:
-                    frag_volume[i] = x_plus_y[i] / nfmax
-                elif frag_volume[i] < vmin:
-                    frag_volume[i] = x_plus_y[i]
-                n_fragment[i] = x_plus_y[i] / frag_volume[i]
-
-    def fragmentation_limiters(self, *, n_fragment, frag_volume, vmin, nfmax, x_plus_y):
-        self.__fragmentation_limiters(
-            n_fragment=n_fragment.data,
-            frag_volume=frag_volume.data,
-            vmin=vmin,
-            nfmax=nfmax,
-            x_plus_y=x_plus_y.data,
-        )
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS})
-    def __slams_fragmentation_body(n_fragment, frag_volume, x_plus_y, probs, rand):
-        for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            probs[i] = 0.0
-            n_fragment[i] = 1
-            for n in range(22):
-                probs[i] += 0.91 * (n + 2) ** (-1.56)
-                if rand[i] < probs[i]:
-                    n_fragment[i] = n + 2
-                    break
-            frag_volume[i] = x_plus_y[i] / n_fragment[i]
-
-    def slams_fragmentation(
-        self, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
-    ):  # pylint: disable=too-many-arguments
-        self.__slams_fragmentation_body(
-            n_fragment.data, frag_volume.data, x_plus_y.data, probs.data, rand.data
-        )
-        self.__fragmentation_limiters(
-            n_fragment=n_fragment.data,
-            frag_volume=frag_volume.data,
-            vmin=vmin,
-            nfmax=nfmax,
-            x_plus_y=x_plus_y.data,
-        )
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS})
-    # pylint: disable=too-many-arguments
-    def __exp_fragmentation_body(*, scale, frag_volume, rand, tol=1e-5):
-        """
-        Exponential PDF
-        """
-        for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
-            frag_volume[i] = -scale * np.log(max(1 - rand[i], tol))
-
-    def exp_fragmentation(
-        self,
-        *,
-        n_fragment,
-        scale,
-        frag_volume,
-        x_plus_y,
-        rand,
-        vmin,
-        nfmax,
-        tol=1e-5,
-    ):
-        self.__exp_fragmentation_body(
-            scale=scale,
-            frag_volume=frag_volume.data,
-            rand=rand.data,
-            tol=tol,
-        )
-        self.__fragmentation_limiters(
-            n_fragment=n_fragment.data,
-            frag_volume=frag_volume.data,
-            x_plus_y=x_plus_y.data,
-            vmin=vmin,
-            nfmax=nfmax,
-        )
-
-    def feingold1988_fragmentation(
-        self,
-        *,
-        n_fragment,
-        scale,
-        frag_volume,
-        x_plus_y,
-        rand,
-        fragtol,
-        vmin,
-        nfmax,
-    ):
-        self.__feingold1988_fragmentation_body(
-            scale=scale,
-            frag_volume=frag_volume.data,
-            x_plus_y=x_plus_y.data,
-            rand=rand.data,
-            fragtol=fragtol,
-        )
-
-        self.__fragmentation_limiters(
-            n_fragment=n_fragment.data,
-            frag_volume=frag_volume.data,
-            x_plus_y=x_plus_y.data,
-            vmin=vmin,
-            nfmax=nfmax,
-        )
-
-    def gauss_fragmentation(
-        self, *, n_fragment, mu, sigma, frag_volume, x_plus_y, rand, vmin, nfmax
-    ):
-        self.__gauss_fragmentation_body(
-            mu=mu,
-            sigma=sigma,
-            frag_volume=frag_volume.data,
-            rand=rand.data,
-        )
-        self.__fragmentation_limiters(
-            n_fragment=n_fragment.data,
-            frag_volume=frag_volume.data,
-            x_plus_y=x_plus_y.data,
-            vmin=vmin,
-            nfmax=nfmax,
-        )
-
-    def straub_fragmentation(
+    @cached_property
+    def _compute_gamma_body(self):
+        @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments,too-many-locals
-        self,
-        *,
-        n_fragment,
-        CW,
-        gam,
-        ds,
-        frag_volume,
-        v_max,
-        x_plus_y,
-        rand,
-        vmin,
-        nfmax,
-        Nr1,
-        Nr2,
-        Nr3,
-        Nr4,
-        Nrt,
-        d34,
-    ):
-        self.__straub_fragmentation_body(
-            CW=CW.data,
-            gam=gam.data,
-            ds=ds.data,
-            frag_volume=frag_volume.data,
-            v_max=v_max.data,
-            rand=rand.data,
-            Nr1=Nr1.data,
-            Nr2=Nr2.data,
-            Nr3=Nr3.data,
-            Nr4=Nr4.data,
-            Nrt=Nrt.data,
-            d34=d34.data,
-        )
-        self.__fragmentation_limiters(
-            n_fragment=n_fragment.data,
-            frag_volume=frag_volume.data,
-            x_plus_y=x_plus_y.data,
-            vmin=vmin,
-            nfmax=nfmax,
-        )
+        def body(
+            prob,
+            rand,
+            idx,
+            length,
+            multiplicity,
+            cell_id,
+            collision_rate_deficit,
+            collision_rate,
+            is_first_in_pair,
+            out,
+        ):
+            """
+            return in "out" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
+            formula:
+            gamma = floor(prob) + 1 if rand <  prob - floor(prob)
+                  = floor(prob)     if rand >= prob - floor(prob)
 
-    def ll82_fragmentation(
-        # pylint: disable=too-many-arguments,too-many-locals
-        self,
-        *,
-        n_fragment,
-        CKE,
-        W,
-        W2,
-        St,
-        ds,
-        dl,
-        dcoal,
-        frag_volume,
-        x_plus_y,
-        rand,
-        vmin,
-        nfmax,
-        Rf,
-        Rs,
-        Rd,
-        tol=1e-8,
-    ):
-        self.__ll82_fragmentation_body(
-            CKE=CKE.data,
-            W=W.data,
-            W2=W2.data,
-            St=St.data,
-            ds=ds.data,
-            dl=dl.data,
-            dcoal=dcoal.data,
-            frag_volume=frag_volume.data,
-            rand=rand.data,
-            Rf=Rf.data,
-            Rs=Rs.data,
-            Rd=Rd.data,
-            tol=tol,
-        )
-        self.__fragmentation_limiters(
-            n_fragment=n_fragment.data,
-            frag_volume=frag_volume.data,
-            x_plus_y=x_plus_y.data,
-            vmin=vmin,
-            nfmax=nfmax,
-        )
+            out may point to the same array as prob
+            """
+            for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
+                out[i] = np.ceil(prob[i] - rand[i])
+                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, out)
+                if skip_pair:
+                    continue
+                prop = multiplicity[j] // multiplicity[k]
+                g = min(int(out[i]), prop)
+                cid = cell_id[j]
+                atomic_add(collision_rate, cid, g * multiplicity[k])
+                atomic_add(
+                    collision_rate_deficit, cid, (int(out[i]) - g) * multiplicity[k]
+                )
+                out[i] = g
 
-    def ll82_coalescence_check(self, *, Ec, dl):
-        self.__ll82_coalescence_check_body(
-            Ec=Ec.data,
-            dl=dl.data,
-        )
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def __compute_gamma_body(
-        prob,
-        rand,
-        idx,
-        length,
-        multiplicity,
-        cell_id,
-        collision_rate_deficit,
-        collision_rate,
-        is_first_in_pair,
-        out,
-    ):
-        """
-        return in "out" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
-        formula:
-        gamma = floor(prob) + 1 if rand <  prob - floor(prob)
-              = floor(prob)     if rand >= prob - floor(prob)
-
-        out may point to the same array as prob
-        """
-        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            out[i] = np.ceil(prob[i] - rand[i])
-            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, out)
-            if skip_pair:
-                continue
-            prop = multiplicity[j] // multiplicity[k]
-            g = min(int(out[i]), prop)
-            cid = cell_id[j]
-            atomic_add(collision_rate, cid, g * multiplicity[k])
-            atomic_add(collision_rate_deficit, cid, (int(out[i]) - g) * multiplicity[k])
-            out[i] = g
+        return body
 
     def compute_gamma(
         self,
@@ -1023,7 +563,7 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         out,
     ):
-        return self.__compute_gamma_body(
+        return self._compute_gamma_body(
             prob.data,
             rand.data,
             multiplicity.idx.data,
@@ -1082,27 +622,28 @@ class CollisionsMethods(BackendMethods):
 
         return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-    # pylint: disable=too-many-arguments
-    def __normalize_body(
-        prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv
-    ):
-        n_cell = cell_start.shape[0] - 1
-        for i in range(n_cell):
-            sd_num = cell_start[i + 1] - cell_start[i]
-            if sd_num < 2:
-                norm_factor[i] = 0
-            else:
-                norm_factor[i] = (
-                    timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-                )
-        for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
-            prob[d] *= norm_factor[cell_idx[cell_id[d]]]
+    @cached_property
+    def _normalize_body(self):
+        @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
+        # pylint: disable=too-many-arguments
+        def body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
+            n_cell = cell_start.shape[0] - 1
+            for i in range(n_cell):
+                sd_num = cell_start[i + 1] - cell_start[i]
+                if sd_num < 2:
+                    norm_factor[i] = 0
+                else:
+                    norm_factor[i] = (
+                        timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                    )
+            for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
+                prob[d] *= norm_factor[cell_idx[cell_id[d]]]
+
+        return body
 
     # pylint: disable=too-many-arguments
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-        return self.__normalize_body(
+        return self._normalize_body(
             prob.data,
             cell_id.data,
             cell_idx.data,
@@ -1112,20 +653,23 @@ class CollisionsMethods(BackendMethods):
             dv,
         )
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-    def remove_zero_n_or_flagged(multiplicity, idx, length) -> int:
-        flag = len(idx)
-        new_length = length
-        i = 0
-        while i < new_length:
-            if idx[i] == flag or multiplicity[idx[i]] == 0:
-                new_length -= 1
-                idx[i] = idx[new_length]
-                idx[new_length] = flag
-            else:
-                i += 1
-        return new_length
+    @cached_property
+    def remove_zero_n_or_flagged(self):
+        @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
+        def body(multiplicity, idx, length) -> int:
+            flag = len(idx)
+            new_length = length
+            i = 0
+            while i < new_length:
+                if idx[i] == flag or multiplicity[idx[i]] == 0:
+                    new_length -= 1
+                    idx[i] = idx[new_length]
+                    idx[new_length] = flag
+                else:
+                    i += 1
+            return new_length
+
+        return body
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -1188,37 +732,38 @@ class CollisionsMethods(BackendMethods):
 
         cell_start[:] = cell_end_thread[0, :]
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def linear_collection_efficiency_body(
-        params, output, radii, is_first_in_pair, idx, length, unit
-    ):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        output[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if radii[idx[i]] > radii[idx[i + 1]]:
-                    r = radii[idx[i]] / unit
-                    r_s = radii[idx[i + 1]] / unit
-                else:
-                    r = radii[idx[i + 1]] / unit
-                    r_s = radii[idx[i]] / unit
-                p = r_s / r
-                if p not in (0, 1):
-                    G = (G1 / r) ** Mg + G2 + G3 * r
-                    Gp = (1 - p) ** G
-                    if Gp != 0:
-                        D = D1 / r**D2
-                        E = E1 / r**E2
-                        F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p**F + E / Gp
-                        output[i // 2] = max(0, output[i // 2])
+    @cached_property
+    def _linear_collection_efficiency_body(self):
+        @numba.njit(**self.default_jit_flags)
+        # pylint: disable=too-many-arguments,too-many-locals
+        def body(params, output, radii, is_first_in_pair, idx, length, unit):
+            A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+            output[:] = 0
+            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+                if is_first_in_pair[i]:
+                    if radii[idx[i]] > radii[idx[i + 1]]:
+                        r = radii[idx[i]] / unit
+                        r_s = radii[idx[i + 1]] / unit
+                    else:
+                        r = radii[idx[i + 1]] / unit
+                        r_s = radii[idx[i]] / unit
+                    p = r_s / r
+                    if p not in (0, 1):
+                        G = (G1 / r) ** Mg + G2 + G3 * r
+                        Gp = (1 - p) ** G
+                        if Gp != 0:
+                            D = D1 / r**D2
+                            E = E1 / r**E2
+                            F = (F1 / r) ** Mf + F2
+                            output[i // 2] = A + B * p + D / p**F + E / Gp
+                            output[i // 2] = max(0, output[i // 2])
+
+        return body
 
     def linear_collection_efficiency(
         self, *, params, output, radii, is_first_in_pair, unit
     ):
-        return self.linear_collection_efficiency_body(
+        return self._linear_collection_efficiency_body(
             params,
             output.data,
             radii.data,

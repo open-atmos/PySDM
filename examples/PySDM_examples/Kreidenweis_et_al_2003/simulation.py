@@ -22,7 +22,11 @@ class Simulation(BasicSimulation):
         )
 
         builder = Builder(
-            n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae), environment=env
+            n_sd=settings.n_sd,
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
+            ),
+            environment=env,
         )
 
         attributes = env.init_attributes(

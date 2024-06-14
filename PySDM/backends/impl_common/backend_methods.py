@@ -9,5 +9,9 @@ class BackendMethods:
     def __init__(self):
         if not hasattr(self, "formulae"):
             self.formulae = None
+        if not hasattr(self, "formulae_flattened"):
+            self.formulae_flattened = None
         if not hasattr(self, "Storage"):
             self.Storage = None
+        if not hasattr(self, "default_jit_flags"):
+            self.default_jit_flags = {}
