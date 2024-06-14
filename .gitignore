@@ -2,6 +2,7 @@ PySDM_examples/utils/temporary_files/*
 *.pdf
 *.nc
 !examples/PySDM_examples/deJong_Azimi/box*.nc
+!examples/PySDM_examples/deJong_Azimi/rainshaft*.nc
 *.pkl
 *.vtu
 *.vts
