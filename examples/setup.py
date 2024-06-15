@@ -31,6 +31,7 @@ setup(
         "ipywidgets",
         "seaborn",
         "numdifftools",
+        "xarray",
     ]
     + (
         ["pyvinecopulib" + "==0.6.4" if CI else "", "vtk"]
