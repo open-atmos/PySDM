@@ -44,13 +44,14 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
 
         if self.specific:
             self._download_to_buffer(self.particulator.environment["rhod"])
-            vals[:] /= self.buffer.ravel()
 
         for i in range(len(self.attr_bins_edges) - 1):
             dr = self.formulae.trivia.radius(
                 volume=self.attr_bins_edges[i + 1]
             ) - self.formulae.trivia.radius(volume=self.attr_bins_edges[i])
             vals[:, i] /= dr
+            if self.specific:
+                vals[:, i] /= self.buffer.ravel()
 
         return np.squeeze(vals.reshape(self.shape))
 
