@@ -27,7 +27,7 @@ class Simulation(BasicSimulation):
         builder = Builder(
             n_sd=n_sd,
             backend=CPU(
-                formulae=settings.formulae, override_jit_fags={"parallel": False}
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
             environment=env,
         )
