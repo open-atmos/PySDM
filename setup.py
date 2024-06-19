@@ -39,7 +39,8 @@ setup(
             if CI and not _32bit
             else ">=0.51.2"
         ),
-        "numpy" + ("==1.24.4" if CI else ""),
+        # TODO #1344: (numpy 2.0.0 incompatibility in https://github.com/bjodah/chempy/issues/234)
+        "numpy" + ("==1.24.4" if CI else "<2.0.0"),
         "Pint" + ("==0.21.1" if CI else ""),
         "chempy" + ("==0.8.3" if CI else ""),
         "scipy"
