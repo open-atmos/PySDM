@@ -35,12 +35,12 @@ def make_default_product_collection(settings):
     cloud_range = (settings.aerosol_radius_threshold, settings.drizzle_radius_threshold)
     products = [
         # Note: consider better radius_bins_edges
-        PySDM_products.ParticleSizeSpectrumPerMass(
+        PySDM_products.ParticleSizeSpectrumPerMassOfDryAir(
             name=&#34;Particles Wet Size Spectrum&#34;,
             unit=&#34;mg^-1 um^-1&#34;,
             radius_bins_edges=settings.r_bins_edges,
         ),
-        PySDM_products.ParticleSizeSpectrumPerMass(
+        PySDM_products.ParticleSizeSpectrumPerMassOfDryAir(
             name=&#34;Particles Dry Size Spectrum&#34;,
             unit=&#34;mg^-1 um^-1&#34;,
             radius_bins_edges=settings.r_bins_edges,
@@ -150,12 +150,12 @@ def make_default_product_collection(settings):
     cloud_range = (settings.aerosol_radius_threshold, settings.drizzle_radius_threshold)
     products = [
         # Note: consider better radius_bins_edges
-        PySDM_products.ParticleSizeSpectrumPerMass(
+        PySDM_products.ParticleSizeSpectrumPerMassOfDryAir(
             name=&#34;Particles Wet Size Spectrum&#34;,
             unit=&#34;mg^-1 um^-1&#34;,
             radius_bins_edges=settings.r_bins_edges,
         ),
-        PySDM_products.ParticleSizeSpectrumPerMass(
+        PySDM_products.ParticleSizeSpectrumPerMassOfDryAir(
             name=&#34;Particles Dry Size Spectrum&#34;,
             unit=&#34;mg^-1 um^-1&#34;,
             radius_bins_edges=settings.r_bins_edges,

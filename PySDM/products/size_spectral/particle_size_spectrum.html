@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.size_spectral.particle_size_spectrum API documentation</title>
-<meta name="description" content="wet radius-binned particle size spectra (per mass of dry air or per volume of air)" />
+<meta name="description" content="wet- or dry-radius binned particle size spectra (per mass of dry air or per volume of air)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +22,13 @@
 <h1 class="title">Module <code>PySDM.products.size_spectral.particle_size_spectrum</code></h1>
 </header>
 <section id="section-intro">
-<p>wet radius-binned particle size spectra (per mass of dry air or per volume of air)</p>
+<p>wet- or dry-radius binned particle size spectra (per mass of dry air or per volume of air)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-wet radius-binned particle size spectra (per mass of dry air or per volume of air)
+wet- or dry-radius binned particle size spectra (per mass of dry air or per volume of air)
 &#34;&#34;&#34;
 
 from abc import ABC
@@ -39,19 +39,17 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
-    def __init__(
-        self, *, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False
-    ):
+    def __init__(self, *, radius_bins_edges, name, unit, dry=False, specific=False):
         self.volume_attr = &#34;dry volume&#34; if dry else &#34;volume&#34;
         self.radius_bins_edges = radius_bins_edges
-        self.normalise_by_dv = normalise_by_dv
+        self.specific = specific
         super().__init__(name=name, unit=unit, attr_unit=&#34;m^3&#34;)
 
     def register(self, builder):
         builder.request_attribute(self.volume_attr)
 
         volume_bins_edges = builder.particulator.formulae.trivia.volume(
-            self.radius_bins_edges
+            np.asarray(self.radius_bins_edges)
         )
         self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
             volume_bins_edges
@@ -71,26 +69,28 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
             self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        if self.normalise_by_dv:
-            vals[:] /= self.particulator.mesh.dv
+        vals[:] /= self.particulator.mesh.dv
 
-        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
-        rhod = self.buffer.ravel()
+        if self.specific:
+            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
+
         for i in range(len(self.attr_bins_edges) - 1):
             dr = self.formulae.trivia.radius(
                 volume=self.attr_bins_edges[i + 1]
             ) - self.formulae.trivia.radius(volume=self.attr_bins_edges[i])
-            vals[:, i] /= rhod * dr
+            vals[:, i] /= dr
+            if self.specific:
+                vals[:, i] /= self.buffer.ravel()
 
         return np.squeeze(vals.reshape(self.shape))
 
 
-class ParticleSizeSpectrumPerMass(ParticleSizeSpectrum):
+class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit=&#34;kg^-1 m^-1&#34;):
         super().__init__(
             radius_bins_edges=radius_bins_edges,
             dry=dry,
-            normalise_by_dv=True,
+            specific=True,
             name=name,
             unit=unit,
         )
@@ -101,7 +101,7 @@ class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
         super().__init__(
             radius_bins_edges=radius_bins_edges,
             dry=dry,
-            normalise_by_dv=False,
+            specific=False,
             name=name,
             unit=unit,
         )</code></pre>
@@ -118,7 +118,7 @@ class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
 <dl>
 <dt id="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum"><code class="flex name class">
 <span>class <span class="ident">ParticleSizeSpectrum</span></span>
-<span>(</span><span>*, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False)</span>
+<span>(</span><span>*, radius_bins_edges, name, unit, dry=False, specific=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -128,19 +128,17 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
-    def __init__(
-        self, *, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False
-    ):
+    def __init__(self, *, radius_bins_edges, name, unit, dry=False, specific=False):
         self.volume_attr = &#34;dry volume&#34; if dry else &#34;volume&#34;
         self.radius_bins_edges = radius_bins_edges
-        self.normalise_by_dv = normalise_by_dv
+        self.specific = specific
         super().__init__(name=name, unit=unit, attr_unit=&#34;m^3&#34;)
 
     def register(self, builder):
         builder.request_attribute(self.volume_attr)
 
         volume_bins_edges = builder.particulator.formulae.trivia.volume(
-            self.radius_bins_edges
+            np.asarray(self.radius_bins_edges)
         )
         self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
             volume_bins_edges
@@ -160,16 +158,18 @@ inheritance.</p></div>
             self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        if self.normalise_by_dv:
-            vals[:] /= self.particulator.mesh.dv
+        vals[:] /= self.particulator.mesh.dv
 
-        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
-        rhod = self.buffer.ravel()
+        if self.specific:
+            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
+
         for i in range(len(self.attr_bins_edges) - 1):
             dr = self.formulae.trivia.radius(
                 volume=self.attr_bins_edges[i + 1]
             ) - self.formulae.trivia.radius(volume=self.attr_bins_edges[i])
-            vals[:, i] /= rhod * dr
+            vals[:, i] /= dr
+            if self.specific:
+                vals[:, i] /= self.buffer.ravel()
 
         return np.squeeze(vals.reshape(self.shape))</code></pre>
 </details>
@@ -181,7 +181,7 @@ inheritance.</p></div>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMass" href="#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMass">ParticleSizeSpectrumPerMass</a></li>
+<li><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMassOfDryAir" href="#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMassOfDryAir">ParticleSizeSpectrumPerMassOfDryAir</a></li>
 <li><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerVolume" href="#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerVolume">ParticleSizeSpectrumPerVolume</a></li>
 </ul>
 <h3>Inherited members</h3>
@@ -193,8 +193,8 @@ inheritance.</p></div>
 </li>
 </ul>
 </dd>
-<dt id="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMass"><code class="flex name class">
-<span>class <span class="ident">ParticleSizeSpectrumPerMass</span></span>
+<dt id="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMassOfDryAir"><code class="flex name class">
+<span>class <span class="ident">ParticleSizeSpectrumPerMassOfDryAir</span></span>
 <span>(</span><span>radius_bins_edges, dry=False, name=None, unit='kg^-1 m^-1')</span>
 </code></dt>
 <dd>
@@ -204,12 +204,12 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ParticleSizeSpectrumPerMass(ParticleSizeSpectrum):
+<pre><code class="python">class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit=&#34;kg^-1 m^-1&#34;):
         super().__init__(
             radius_bins_edges=radius_bins_edges,
             dry=dry,
-            normalise_by_dv=True,
+            specific=True,
             name=name,
             unit=unit,
         )</code></pre>
@@ -246,7 +246,7 @@ inheritance.</p></div>
         super().__init__(
             radius_bins_edges=radius_bins_edges,
             dry=dry,
-            normalise_by_dv=False,
+            specific=False,
             name=name,
             unit=unit,
         )</code></pre>
@@ -287,7 +287,7 @@ inheritance.</p></div>
 <h4><code><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum" href="#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum">ParticleSizeSpectrum</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMass" href="#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMass">ParticleSizeSpectrumPerMass</a></code></h4>
+<h4><code><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMassOfDryAir" href="#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerMassOfDryAir">ParticleSizeSpectrumPerMassOfDryAir</a></code></h4>
 </li>
 <li>
 <h4><code><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerVolume" href="#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrumPerVolume">ParticleSizeSpectrumPerVolume</a></code></h4>
