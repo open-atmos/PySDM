@@ -25,7 +25,11 @@ class Simulation(BasicSimulation):
         )
         n_sd = sum(settings.n_sd_per_mode)
         builder = Builder(
-            n_sd=n_sd, backend=CPU(formulae=settings.formulae), environment=env
+            n_sd=n_sd,
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
+            ),
+            environment=env,
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
