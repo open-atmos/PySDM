@@ -16,13 +16,19 @@ from PySDM.products import (
 class TestParticleSizeSpectrum:
     @staticmethod
     @pytest.mark.parametrize(
-        "product_class, specific, unit",
+        "product_class, specific, unit, stp",
         (
-            (ParticleSizeSpectrumPerVolume, False, "1.0 / meter ** 4"),
-            (ParticleSizeSpectrumPerMassOfDryAir, True, "1.0 / kilogram / meter"),
+            (ParticleSizeSpectrumPerVolume, False, "1.0 / meter ** 4", True),
+            (ParticleSizeSpectrumPerVolume, False, "1.0 / meter ** 4", False),
+            (
+                ParticleSizeSpectrumPerMassOfDryAir,
+                True,
+                "1.0 / kilogram / meter",
+                False,
+            ),
         ),
     )
-    def test_specific_flag(product_class, specific, unit, backend_instance):
+    def test_specific_flag(product_class, specific, unit, backend_instance, stp):
         """checks if the reported concentration is correctly normalised per
         volume or mass of air, and per bin size"""
         # arrange
@@ -35,7 +41,7 @@ class TestParticleSizeSpectrum:
         n_sd = 1
         box = Box(dt=np.nan, dv=dv)
         builder = Builder(n_sd=n_sd, backend=backend_instance, environment=box)
-        sut = product_class(radius_bins_edges=(min_size, max_size))
+        sut = product_class(radius_bins_edges=(min_size, max_size), stp=stp)
         builder.build(
             products=(sut,),
             attributes={
@@ -56,7 +62,8 @@ class TestParticleSizeSpectrum:
             desired=multiplicity
             / dv
             / (max_size - min_size)
-            / (rhod if specific else 1),
+            / (rhod if specific or stp else 1)
+            * (backend_instance.formulae.constants.rho_STP if stp else 1),
             significant=10,
         )
 
