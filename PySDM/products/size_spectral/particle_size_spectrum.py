@@ -19,7 +19,7 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
         name: str,
         unit: str,
         dry: bool = False,
-        specific: bool = False
+        specific: bool = False,
     ):
         ConcentrationProduct.check_ctor_arguments(specific, stp)
         self.volume_attr = "dry volume" if dry else "volume"
@@ -74,7 +74,12 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
 
 class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
     def __init__(
-        self, *, radius_bins_edges, dry=False, name=None, unit="kg^-1 m^-1", stp=False
+        self,
+        *,
+        radius_bins_edges,
+        dry=False,
+        name=None,
+        unit="kg^-1 m^-1",
     ):
         super().__init__(
             radius_bins_edges=radius_bins_edges,
@@ -82,7 +87,7 @@ class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
             specific=True,
             name=name,
             unit=unit,
-            stp=stp,
+            stp=False,
         )
 
 

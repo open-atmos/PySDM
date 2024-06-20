@@ -11,6 +11,7 @@ from PySDM.products import (
     ParticleSizeSpectrumPerMassOfDryAir,
     ParticleSizeSpectrumPerVolume,
 )
+from PySDM.products.size_spectral.particle_size_spectrum import ParticleSizeSpectrum
 
 
 class TestParticleSizeSpectrum:
@@ -41,7 +42,9 @@ class TestParticleSizeSpectrum:
         n_sd = 1
         box = Box(dt=np.nan, dv=dv)
         builder = Builder(n_sd=n_sd, backend=backend_instance, environment=box)
-        sut = product_class(radius_bins_edges=(min_size, max_size), stp=stp)
+        sut = product_class(
+            radius_bins_edges=(min_size, max_size), **({"stp": stp} if stp else {})
+        )
         builder.build(
             products=(sut,),
             attributes={
@@ -110,3 +113,10 @@ class TestParticleSizeSpectrum:
             / (rhod if sut.specific else 1),
             significant=10,
         )
+
+    @staticmethod
+    def test_stp_flag_incompatible_with_specific():
+        with pytest.raises(Exception, match="precludes specific"):
+            ParticleSizeSpectrum(
+                stp=True, specific=True, name="", unit="", radius_bins_edges=()
+            )
