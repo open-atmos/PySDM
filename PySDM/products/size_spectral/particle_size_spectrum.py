@@ -74,7 +74,7 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
 
 class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
     def __init__(
-        self, radius_bins_edges, dry=False, name=None, unit="kg^-1 m^-1", stp=False
+        self, *, radius_bins_edges, dry=False, name=None, unit="kg^-1 m^-1", stp=False
     ):
         super().__init__(
             radius_bins_edges=radius_bins_edges,
@@ -88,7 +88,7 @@ class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
 
 class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
     def __init__(
-        self, radius_bins_edges, dry=False, name=None, unit="m^-3 m^-1", stp=False
+        self, *, radius_bins_edges, dry=False, name=None, unit="m^-3 m^-1", stp=False
     ):
         super().__init__(
             radius_bins_edges=radius_bins_edges,
