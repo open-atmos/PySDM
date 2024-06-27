@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc API documentation</title>
 <meta name="description" content="Numba-based implementation of ThrustRTC API involving translation of C++ code
-to njitted (and multi-threaded) Python code - a hacky workaround …" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+to njitted (and multi-threaded) Python code - a hacky workaround …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -26,248 +29,6 @@ to njitted (and multi-threaded) Python code - a hacky workaround …" />
 <p>Numba-based implementation of ThrustRTC API involving translation of C++ code
 to njitted (and multi-threaded) Python code - a hacky workaround enabling
 testing ThrustRTC code on machines with no GPU/CUDA</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-Numba-based implementation of ThrustRTC API involving translation of C++ code
- to njitted (and multi-threaded) Python code - a hacky workaround enabling
- testing ThrustRTC code on machines with no GPU/CUDA
-&#34;&#34;&#34;
-
-# pylint: disable=no-member,unsupported-assignment-operation,unsubscriptable-object,no-value-for-parameter
-import types
-import warnings
-
-import numpy as np
-from numba.core.errors import NumbaError
-
-from .cpp2python import to_numba
-
-
-class FakeThrustRTC:  # pylint: disable=too-many-public-methods
-    class DVRange:
-        def __init__(self, ndarray):
-            self.ndarray = ndarray
-            self.size = lambda: len(self.ndarray)
-            self.range = lambda start, stop: FakeThrustRTC.DVRange(
-                self.ndarray[start:stop]
-            )
-
-        def __setitem__(self, key, value):
-            self.ndarray[key] = value
-
-        def __getitem__(self, item):
-            return self.ndarray[item]
-
-    class DVVector:
-        DVRange = None
-        DVVector = None
-
-        def __init__(self, ndarray):
-            FakeThrustRTC.DVVector.DVVector = FakeThrustRTC.DVVector
-            FakeThrustRTC.DVVector.DVRange = FakeThrustRTC.DVRange
-            self.ndarray: np.ndarray = ndarray
-            self.size = lambda: len(self.ndarray)
-            self.range = lambda start, stop: FakeThrustRTC.DVRange(
-                self.ndarray[start:stop]
-            )
-            self.to_host = lambda: np.copy(self.ndarray)
-
-        def __setitem__(self, key, value):
-            if isinstance(value, FakeThrustRTC.Number):
-                value = value.ndarray
-            self.ndarray[key] = value
-
-        def __getitem__(self, item):
-            return self.ndarray[item]
-
-        def name_elem_cls(self):
-            return {&#34;f&#34;: &#34;float&#34;, &#34;d&#34;: &#34;double&#34;, &#34;l&#34;: &#34;long&#34;}[
-                np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_
-            ]
-
-    class Number:  # pylint: disable=too-few-public-methods
-        def __init__(self, number):
-            self.ndarray = number
-
-    @staticmethod
-    def DVInt64(number: int):  # pylint: disable=invalid-name
-        assert isinstance(number, int)
-        return FakeThrustRTC.Number(number)
-
-    @staticmethod
-    def DVDouble(number: float):  # pylint: disable=invalid-name
-        return FakeThrustRTC.Number(number)
-
-    @staticmethod
-    def DVBool(number: bool):  # pylint: disable=invalid-name
-        assert isinstance(number, bool)
-        return FakeThrustRTC.Number(number)
-
-    @staticmethod
-    def DVFloat(number: float):  # pylint: disable=invalid-name
-        return FakeThrustRTC.Number(number)
-
-    class For:  # pylint: disable=too-few-public-methods
-        def __init__(self, param_names, name_iter, body):
-            for name in param_names:
-                assert &#34;,&#34; not in name
-            d = {}
-            self.code = to_numba(
-                &#34;__internal_python_method__&#34;, param_names, name_iter, body
-            )
-            exec(self.code, d)  # pylint: disable=exec-used
-            self.make = types.MethodType(d[&#34;make&#34;], self)
-            self.__internal_python_method__ = (
-                self.make()  # pylint: disable=not-callable
-            )
-
-        def launch_n(self, n, args):
-            if n == 0:
-                raise SystemError(&#34;An internal error happened :) (size==0).&#34;)
-            try:
-                result = self.__internal_python_method__(
-                    n, *(arg.ndarray for arg in args)
-                )
-            except (NumbaError, IndexError) as error:
-                warnings.warn(
-                    f&#34;Error occurred while JIT-compiling/executing: {self.code}&#34;
-                )
-                raise error
-            return result
-
-    @staticmethod
-    def Sort(dvvector: DVVector):  # pylint: disable=invalid-name
-        dvvector.ndarray[:] = np.sort(dvvector.ndarray)
-
-    @staticmethod
-    def Copy(vector_in: DVVector, vector_out: DVVector):  # pylint: disable=invalid-name
-        if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
-            raise ValueError(
-                f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
-            )
-        vector_out.ndarray[:] = vector_in.ndarray
-
-    @staticmethod
-    def Fill(vector, value):  # pylint: disable=invalid-name
-        vector[:] = value
-
-    @staticmethod
-    def Find(vector: DVVector, value):  # pylint: disable=invalid-name
-        for i in range(len(vector.ndarray)):
-            if vector[i] == value.ndarray:
-                return i
-        return None
-
-    @staticmethod
-    def device_vector(elem_cls, size):
-        if not size &gt; 0:
-            raise ValueError(&#34;size must be &gt;0&#34;)
-        if elem_cls == &#34;double&#34;:
-            dtype = np.float64
-        elif elem_cls == &#34;float&#34;:
-            dtype = np.float32
-        elif elem_cls == &#34;int64_t&#34;:
-            dtype = np.int64
-        elif elem_cls == &#34;uint64_t&#34;:
-            dtype = np.uint64
-        elif elem_cls == &#34;bool&#34;:
-            dtype = np.bool_
-        else:
-            raise NotImplementedError(f&#34;Unsupported type {elem_cls}&#34;)
-        result = np.full(
-            size, np.nan if elem_cls in (&#34;float&#34;, &#34;double&#34;) else -666, dtype=dtype
-        )
-        return FakeThrustRTC.DVVector(result)
-
-    @staticmethod
-    def device_vector_from_numpy(ndarray):
-        result = np.copy(ndarray)
-        return FakeThrustRTC.DVVector(result)
-
-    @staticmethod
-    def Max_Element(dvvector):  # pylint: disable=invalid-name
-        np.amax(dvvector.ndarray)
-
-    @staticmethod
-    def Min_Element(dvvector):  # pylint: disable=invalid-name
-        np.amin(dvvector.ndarray)
-
-    @staticmethod
-    def DVPermutation(dvvector, idx):  # pylint: disable=invalid-name
-        _length = np.where(idx.ndarray == idx.size())[0]
-        length = _length[0] if len(_length) != 0 else idx.size()
-        result = dvvector.ndarray[idx.ndarray[:length]]
-        return FakeThrustRTC.DVVector(result)
-
-    @staticmethod
-    def Count(dvvector, value):  # pylint: disable=invalid-name
-        unique, counts = np.unique(dvvector.ndarray, return_counts=True)
-        results = dict(zip(unique, counts))
-        if value.ndarray in results:
-            return results[value.ndarray]
-        return 0
-
-    @staticmethod
-    def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
-        if operator == &#34;+&#34;:
-            return start.ndarray + dvvector.ndarray.sum()
-        if operator == &#34;-&#34;:
-            return start.ndarray - dvvector.ndarray.sum()
-        if operator == &#34;max&#34;:
-            return max(start.ndarray, np.amax(dvvector.ndarray))
-        if operator == &#34;min&#34;:
-            return min(start.ndarray, np.amin(dvvector.ndarray))
-        raise NotImplementedError()
-
-    @staticmethod
-    def Plus():  # pylint: disable=invalid-name
-        return &#34;+&#34;
-
-    @staticmethod
-    def Minus():  # pylint: disable=invalid-name
-        return &#34;-&#34;
-
-    @staticmethod
-    def Maximum():  # pylint: disable=invalid-name
-        return &#34;max&#34;
-
-    @staticmethod
-    def Minimum():  # pylint: disable=invalid-name
-        return &#34;min&#34;
-
-    @staticmethod
-    def Transform_Binary(vec_in1, vec_in2, vec_out, op):  # pylint: disable=invalid-name
-        if op == &#34;+&#34;:
-            vec_out.ndarray[:] = vec_in1.ndarray + vec_in2.ndarray
-        elif op == &#34;-&#34;:
-            vec_out.ndarray[:] = vec_in1.ndarray - vec_in2.ndarray
-        else:
-            raise NotImplementedError()
-
-    @staticmethod
-    def Wait():  # pylint: disable=invalid-name
-        pass
-
-    @staticmethod
-    def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
-        values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
-        # TODO #328 Thrust sorts keys as well
-
-    @staticmethod
-    def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
-        pass
-
-    @staticmethod
-    def Set_Verbose(_):  # pylint: disable=invalid-name
-        pass
-
-    @staticmethod
-    def Get_PTX_Arch():  # pylint: disable=invalid-name
-        return 666</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -535,398 +296,150 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Copy(vector_in: DVVector, vector_out: DVVector):  # pylint: disable=invalid-name
-    if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
-        raise ValueError(
-            f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
-        )
-    vector_out.ndarray[:] = vector_in.ndarray</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Count"><code class="name flex">
 <span>def <span class="ident">Count</span></span>(<span>dvvector, value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Count(dvvector, value):  # pylint: disable=invalid-name
-    unique, counts = np.unique(dvvector.ndarray, return_counts=True)
-    results = dict(zip(unique, counts))
-    if value.ndarray in results:
-        return results[value.ndarray]
-    return 0</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVBool"><code class="name flex">
 <span>def <span class="ident">DVBool</span></span>(<span>number: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def DVBool(number: bool):  # pylint: disable=invalid-name
-    assert isinstance(number, bool)
-    return FakeThrustRTC.Number(number)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVDouble"><code class="name flex">
 <span>def <span class="ident">DVDouble</span></span>(<span>number: float)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def DVDouble(number: float):  # pylint: disable=invalid-name
-    return FakeThrustRTC.Number(number)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVFloat"><code class="name flex">
 <span>def <span class="ident">DVFloat</span></span>(<span>number: float)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def DVFloat(number: float):  # pylint: disable=invalid-name
-    return FakeThrustRTC.Number(number)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVInt64"><code class="name flex">
 <span>def <span class="ident">DVInt64</span></span>(<span>number: int)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def DVInt64(number: int):  # pylint: disable=invalid-name
-    assert isinstance(number, int)
-    return FakeThrustRTC.Number(number)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVPermutation"><code class="name flex">
 <span>def <span class="ident">DVPermutation</span></span>(<span>dvvector, idx)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def DVPermutation(dvvector, idx):  # pylint: disable=invalid-name
-    _length = np.where(idx.ndarray == idx.size())[0]
-    length = _length[0] if len(_length) != 0 else idx.size()
-    result = dvvector.ndarray[idx.ndarray[:length]]
-    return FakeThrustRTC.DVVector(result)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Fill"><code class="name flex">
 <span>def <span class="ident">Fill</span></span>(<span>vector, value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Fill(vector, value):  # pylint: disable=invalid-name
-    vector[:] = value</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Find"><code class="name flex">
 <span>def <span class="ident">Find</span></span>(<span>vector: <a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">FakeThrustRTC.DVVector</a>, value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Find(vector: DVVector, value):  # pylint: disable=invalid-name
-    for i in range(len(vector.ndarray)):
-        if vector[i] == value.ndarray:
-            return i
-    return None</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Get_PTX_Arch"><code class="name flex">
 <span>def <span class="ident">Get_PTX_Arch</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Get_PTX_Arch():  # pylint: disable=invalid-name
-    return 666</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Max_Element"><code class="name flex">
 <span>def <span class="ident">Max_Element</span></span>(<span>dvvector)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Max_Element(dvvector):  # pylint: disable=invalid-name
-    np.amax(dvvector.ndarray)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Maximum"><code class="name flex">
 <span>def <span class="ident">Maximum</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Maximum():  # pylint: disable=invalid-name
-    return &#34;max&#34;</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Min_Element"><code class="name flex">
 <span>def <span class="ident">Min_Element</span></span>(<span>dvvector)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Min_Element(dvvector):  # pylint: disable=invalid-name
-    np.amin(dvvector.ndarray)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minimum"><code class="name flex">
 <span>def <span class="ident">Minimum</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Minimum():  # pylint: disable=invalid-name
-    return &#34;min&#34;</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minus"><code class="name flex">
 <span>def <span class="ident">Minus</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Minus():  # pylint: disable=invalid-name
-    return &#34;-&#34;</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Plus"><code class="name flex">
 <span>def <span class="ident">Plus</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Plus():  # pylint: disable=invalid-name
-    return &#34;+&#34;</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Reduce"><code class="name flex">
 <span>def <span class="ident">Reduce</span></span>(<span>dvvector, start, operator)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
-    if operator == &#34;+&#34;:
-        return start.ndarray + dvvector.ndarray.sum()
-    if operator == &#34;-&#34;:
-        return start.ndarray - dvvector.ndarray.sum()
-    if operator == &#34;max&#34;:
-        return max(start.ndarray, np.amax(dvvector.ndarray))
-    if operator == &#34;min&#34;:
-        return min(start.ndarray, np.amin(dvvector.ndarray))
-    raise NotImplementedError()</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Kernel_Debug"><code class="name flex">
 <span>def <span class="ident">Set_Kernel_Debug</span></span>(<span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
-    pass</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Set_Verbose"><code class="name flex">
 <span>def <span class="ident">Set_Verbose</span></span>(<span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Set_Verbose(_):  # pylint: disable=invalid-name
-    pass</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort"><code class="name flex">
 <span>def <span class="ident">Sort</span></span>(<span>dvvector: <a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">FakeThrustRTC.DVVector</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Sort(dvvector: DVVector):  # pylint: disable=invalid-name
-    dvvector.ndarray[:] = np.sort(dvvector.ndarray)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort_By_Key"><code class="name flex">
 <span>def <span class="ident">Sort_By_Key</span></span>(<span>keys, values)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
-    values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
-    # TODO #328 Thrust sorts keys as well</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Transform_Binary"><code class="name flex">
 <span>def <span class="ident">Transform_Binary</span></span>(<span>vec_in1, vec_in2, vec_out, op)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Transform_Binary(vec_in1, vec_in2, vec_out, op):  # pylint: disable=invalid-name
-    if op == &#34;+&#34;:
-        vec_out.ndarray[:] = vec_in1.ndarray + vec_in2.ndarray
-    elif op == &#34;-&#34;:
-        vec_out.ndarray[:] = vec_in1.ndarray - vec_in2.ndarray
-    else:
-        raise NotImplementedError()</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Wait"><code class="name flex">
 <span>def <span class="ident">Wait</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def Wait():  # pylint: disable=invalid-name
-    pass</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector"><code class="name flex">
 <span>def <span class="ident">device_vector</span></span>(<span>elem_cls, size)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def device_vector(elem_cls, size):
-    if not size &gt; 0:
-        raise ValueError(&#34;size must be &gt;0&#34;)
-    if elem_cls == &#34;double&#34;:
-        dtype = np.float64
-    elif elem_cls == &#34;float&#34;:
-        dtype = np.float32
-    elif elem_cls == &#34;int64_t&#34;:
-        dtype = np.int64
-    elif elem_cls == &#34;uint64_t&#34;:
-        dtype = np.uint64
-    elif elem_cls == &#34;bool&#34;:
-        dtype = np.bool_
-    else:
-        raise NotImplementedError(f&#34;Unsupported type {elem_cls}&#34;)
-    result = np.full(
-        size, np.nan if elem_cls in (&#34;float&#34;, &#34;double&#34;) else -666, dtype=dtype
-    )
-    return FakeThrustRTC.DVVector(result)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector_from_numpy"><code class="name flex">
 <span>def <span class="ident">device_vector_from_numpy</span></span>(<span>ndarray)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def device_vector_from_numpy(ndarray):
-    result = np.copy(ndarray)
-    return FakeThrustRTC.DVVector(result)</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -934,7 +447,6 @@ def device_vector_from_numpy(ndarray):
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -986,7 +498,7 @@ def device_vector_from_numpy(ndarray):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.builder API documentation</title>
 <meta name="description" content="The Builder class handling creation of
-`PySDM.particulator.Particulator` instances" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+`PySDM.particulator.Particulator` instances">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -25,166 +28,6 @@
 <section id="section-intro">
 <p>The Builder class handling creation of
 <code><a title="PySDM.particulator.Particulator" href="particulator.html#PySDM.particulator.Particulator">Particulator</a></code> instances</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-The Builder class handling creation of  `PySDM.particulator.Particulator` instances
-&#34;&#34;&#34;
-
-import inspect
-import warnings
-
-import numpy as np
-
-from PySDM.attributes.impl.mapper import get_class as attr_class
-from PySDM.attributes.numerics.cell_id import CellID
-from PySDM.attributes.physics import WaterMass
-from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
-from PySDM.impl.wall_timer import WallTimer
-from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
-    discretise_multiplicities,
-)
-from PySDM.particulator import Particulator
-from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
-
-
-def _warn_env_as_ctor_arg():
-    warnings.warn(
-        &#34;PySDM &gt; v2.31 Builder expects environment instance as argument&#34;,
-        DeprecationWarning,
-    )
-
-
-class Builder:
-    def __init__(self, n_sd, backend, environment=None):
-        assert not inspect.isclass(backend)
-        self.formulae = backend.formulae
-        self.particulator = Particulator(n_sd, backend)
-        self.req_attr = {
-            &#34;multiplicity&#34;: Multiplicities(self),
-            &#34;water mass&#34;: WaterMass(self),
-            &#34;cell id&#34;: CellID(self),
-        }
-        self.aerosol_radius_threshold = 0
-        self.condensation_params = None
-
-        if environment is None:
-            _warn_env_as_ctor_arg()
-        else:
-            self._set_environment(environment)
-
-    def _set_condensation_parameters(self, **kwargs):
-        self.condensation_params = kwargs
-
-    def set_environment(self, environment):
-        _warn_env_as_ctor_arg()
-        self._set_environment(environment)
-
-    def _set_environment(self, environment):
-        if self.particulator.environment is not None:
-            raise AssertionError(&#34;environment has already been set&#34;)
-        self.particulator.environment = environment
-        self.particulator.environment.register(self)
-
-    def add_dynamic(self, dynamic):
-        assert self.particulator.environment is not None
-        key = get_key(dynamic)
-        assert key not in self.particulator.dynamics
-        self.particulator.dynamics[key] = dynamic
-
-    def replace_dynamic(self, dynamic):
-        key = get_key(dynamic)
-        assert key in self.particulator.dynamics
-        self.particulator.dynamics.pop(key)
-        self.add_dynamic(dynamic)
-
-    def register_product(self, product, buffer):
-        if product.name in self.particulator.products:
-            raise ValueError(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
-        product.set_buffer(buffer)
-        product.register(self)
-        self.particulator.products[product.name] = product
-
-    def get_attribute(self, attribute_name):
-        self.request_attribute(attribute_name)
-        return self.req_attr[attribute_name]
-
-    def request_attribute(self, attribute, variant=None):
-        if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(
-                attribute, self.particulator.dynamics, self.formulae
-            )(self)
-        if variant is not None:
-            assert variant == self.req_attr[attribute]
-
-    def build(
-        self,
-        attributes: dict,
-        products: tuple = (),
-        int_caster=discretise_multiplicities,
-    ):
-        assert self.particulator.environment is not None
-
-        if &#34;n&#34; in attributes and &#34;multiplicity&#34; not in attributes:
-            attributes[&#34;multiplicity&#34;] = attributes[&#34;n&#34;]
-            del attributes[&#34;n&#34;]
-            warnings.warn(
-                &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
-                DeprecationWarning,
-            )
-
-        if &#34;volume&#34; in attributes and &#34;water mass&#34; not in attributes:
-            assert self.particulator.formulae.particle_shape_and_density.__name__ in (
-                LiquidSpheres.__name__,
-                MixedPhaseSpheres.__name__,
-            ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
-            attributes[&#34;water mass&#34;] = (
-                self.particulator.formulae.particle_shape_and_density.volume_to_mass(
-                    attributes[&#34;volume&#34;]
-                )
-            )
-            del attributes[&#34;volume&#34;]
-            self.request_attribute(&#34;volume&#34;)
-
-        for dynamic in self.particulator.dynamics.values():
-            dynamic.register(self)
-
-        single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
-        for product in products:
-            self.register_product(product, single_buffer_for_all_products)
-
-        for attribute in attributes:
-            self.request_attribute(attribute)
-        if &#34;Condensation&#34; in self.particulator.dynamics:
-            self.particulator.condensation_solver = (
-                self.particulator.backend.make_condensation_solver(
-                    self.particulator.dt,
-                    self.particulator.mesh.n_cell,
-                    **self.condensation_params,
-                )
-            )
-        attributes[&#34;multiplicity&#34;] = int_caster(attributes[&#34;multiplicity&#34;])
-        if self.particulator.mesh.dimension == 0:
-            attributes[&#34;cell id&#34;] = np.zeros_like(
-                attributes[&#34;multiplicity&#34;], dtype=np.int64
-            )
-        self.particulator.attributes = ParticleAttributesFactory.attributes(
-            self.particulator, self.req_attr, attributes
-        )
-        self.particulator.recalculate_cell_id()
-
-        for key in self.particulator.dynamics:
-            self.particulator.timers[key] = WallTimer()
-
-        return self.particulator
-
-
-def get_key(dynamic):
-    return inspect.getmro(type(dynamic))[-2].__name__</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -198,13 +41,6 @@ def get_key(dynamic):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_key(dynamic):
-    return inspect.getmro(type(dynamic))[-2].__name__</code></pre>
-</details>
 </dd>
 </dl>
 </section>
@@ -351,166 +187,42 @@ def get_key(dynamic):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def add_dynamic(self, dynamic):
-    assert self.particulator.environment is not None
-    key = get_key(dynamic)
-    assert key not in self.particulator.dynamics
-    self.particulator.dynamics[key] = dynamic</code></pre>
-</details>
 </dd>
 <dt id="PySDM.builder.Builder.build"><code class="name flex">
 <span>def <span class="ident">build</span></span>(<span>self, attributes: dict, products: tuple = (), int_caster=&lt;function discretise_multiplicities&gt;)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def build(
-    self,
-    attributes: dict,
-    products: tuple = (),
-    int_caster=discretise_multiplicities,
-):
-    assert self.particulator.environment is not None
-
-    if &#34;n&#34; in attributes and &#34;multiplicity&#34; not in attributes:
-        attributes[&#34;multiplicity&#34;] = attributes[&#34;n&#34;]
-        del attributes[&#34;n&#34;]
-        warnings.warn(
-            &#39;renaming attributes[&#34;n&#34;] to attributes[&#34;multiplicity&#34;]&#39;,
-            DeprecationWarning,
-        )
-
-    if &#34;volume&#34; in attributes and &#34;water mass&#34; not in attributes:
-        assert self.particulator.formulae.particle_shape_and_density.__name__ in (
-            LiquidSpheres.__name__,
-            MixedPhaseSpheres.__name__,
-        ), &#34;implied volume-to-mass conversion is only supported for spherical particles&#34;
-        attributes[&#34;water mass&#34;] = (
-            self.particulator.formulae.particle_shape_and_density.volume_to_mass(
-                attributes[&#34;volume&#34;]
-            )
-        )
-        del attributes[&#34;volume&#34;]
-        self.request_attribute(&#34;volume&#34;)
-
-    for dynamic in self.particulator.dynamics.values():
-        dynamic.register(self)
-
-    single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
-    for product in products:
-        self.register_product(product, single_buffer_for_all_products)
-
-    for attribute in attributes:
-        self.request_attribute(attribute)
-    if &#34;Condensation&#34; in self.particulator.dynamics:
-        self.particulator.condensation_solver = (
-            self.particulator.backend.make_condensation_solver(
-                self.particulator.dt,
-                self.particulator.mesh.n_cell,
-                **self.condensation_params,
-            )
-        )
-    attributes[&#34;multiplicity&#34;] = int_caster(attributes[&#34;multiplicity&#34;])
-    if self.particulator.mesh.dimension == 0:
-        attributes[&#34;cell id&#34;] = np.zeros_like(
-            attributes[&#34;multiplicity&#34;], dtype=np.int64
-        )
-    self.particulator.attributes = ParticleAttributesFactory.attributes(
-        self.particulator, self.req_attr, attributes
-    )
-    self.particulator.recalculate_cell_id()
-
-    for key in self.particulator.dynamics:
-        self.particulator.timers[key] = WallTimer()
-
-    return self.particulator</code></pre>
-</details>
 </dd>
 <dt id="PySDM.builder.Builder.get_attribute"><code class="name flex">
 <span>def <span class="ident">get_attribute</span></span>(<span>self, attribute_name)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_attribute(self, attribute_name):
-    self.request_attribute(attribute_name)
-    return self.req_attr[attribute_name]</code></pre>
-</details>
 </dd>
 <dt id="PySDM.builder.Builder.register_product"><code class="name flex">
 <span>def <span class="ident">register_product</span></span>(<span>self, product, buffer)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def register_product(self, product, buffer):
-    if product.name in self.particulator.products:
-        raise ValueError(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
-    product.set_buffer(buffer)
-    product.register(self)
-    self.particulator.products[product.name] = product</code></pre>
-</details>
 </dd>
 <dt id="PySDM.builder.Builder.replace_dynamic"><code class="name flex">
 <span>def <span class="ident">replace_dynamic</span></span>(<span>self, dynamic)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def replace_dynamic(self, dynamic):
-    key = get_key(dynamic)
-    assert key in self.particulator.dynamics
-    self.particulator.dynamics.pop(key)
-    self.add_dynamic(dynamic)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.builder.Builder.request_attribute"><code class="name flex">
 <span>def <span class="ident">request_attribute</span></span>(<span>self, attribute, variant=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def request_attribute(self, attribute, variant=None):
-    if attribute not in self.req_attr:
-        self.req_attr[attribute] = attr_class(
-            attribute, self.particulator.dynamics, self.formulae
-        )(self)
-    if variant is not None:
-        assert variant == self.req_attr[attribute]</code></pre>
-</details>
 </dd>
 <dt id="PySDM.builder.Builder.set_environment"><code class="name flex">
 <span>def <span class="ident">set_environment</span></span>(<span>self, environment)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_environment(self, environment):
-    _warn_env_as_ctor_arg()
-    self._set_environment(environment)</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -518,7 +230,6 @@ def get_key(dynamic):
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -553,7 +264,7 @@ def get_key(dynamic):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.backends.impl_numba.methods.collisions_methods API documentation</title>
-<meta name="description" content="CPU implementation of backend methods for particle collisions" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="CPU implementation of backend methods for particle collisions">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -23,785 +26,6 @@
 </header>
 <section id="section-intro">
 <p>CPU implementation of backend methods for particle collisions</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-CPU implementation of backend methods for particle collisions
-&#34;&#34;&#34;
-
-from functools import cached_property
-import numba
-import numpy as np
-
-from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
-from PySDM.backends.impl_numba.atomic_operations import atomic_add
-from PySDM.backends.impl_numba.storage import Storage
-from PySDM.backends.impl_numba.warnings import warn
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def pair_indices(i, idx, is_first_in_pair, prob_like):
-    &#34;&#34;&#34;given permutation array `idx` and `is_first_in_pair` flag array,
-    returns indices `j` and `k` of droplets within pair `i` and a `skip_pair` flag,
-    `j` points to the droplet that is first in pair (higher or equal multiplicity)
-    output is valid only if `2*i` or `2*i+1` points to a valid pair start index (within one cell)
-    otherwise the `skip_pair` flag is set to True and returned `j` &amp; `k` indices are set to -1.
-    In addition, the `prob_like` array is checked for zeros at position `i`, in which case
-    the `skip_pair` is also set to `True`
-    &#34;&#34;&#34;
-    skip_pair = False
-
-    if prob_like[i] == 0:
-        skip_pair = True
-        j, k = -1, -1
-    else:
-        offset = 1 - is_first_in_pair[2 * i]
-        j = idx[2 * i + offset]
-        k = idx[2 * i + 1 + offset]
-    return j, k, skip_pair
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def flag_zero_multiplicity(j, k, multiplicity, healthy):
-    if multiplicity[k] == 0 or multiplicity[j] == 0:
-        healthy[0] = 0
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def coalesce(  # pylint: disable=too-many-arguments
-    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
-):
-    atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
-    new_n = multiplicity[j] - gamma[i] * multiplicity[k]
-    if new_n &gt; 0:
-        multiplicity[j] = new_n
-        for a in range(len(attributes)):
-            attributes[a, k] += gamma[i] * attributes[a, j]
-    else:  # new_n == 0
-        multiplicity[j] = multiplicity[k] // 2
-        multiplicity[k] = multiplicity[k] - multiplicity[j]
-        for a in range(len(attributes)):
-            attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
-            attributes[a, k] = attributes[a, j]
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def compute_transfer_multiplicities(
-    gamma, j, k, multiplicity, particle_mass, fragment_mass_i, max_multiplicity
-):  # pylint: disable=too-many-arguments
-    overflow_flag = False
-    gamma_j_k = 0
-    take_from_j_test = multiplicity[k]
-    take_from_j = 0
-    new_mult_k_test = (
-        (particle_mass[j] + particle_mass[k]) / fragment_mass_i
-    ) * multiplicity[k]
-    new_mult_k = multiplicity[k]
-    for m in range(int(gamma)):
-        # check for overflow of multiplicity
-        if new_mult_k_test &gt; max_multiplicity:
-            overflow_flag = True
-            break
-
-        # check for new_n &gt;= 0
-        if take_from_j_test &gt; multiplicity[j]:
-            break
-
-        take_from_j = take_from_j_test
-        new_mult_k = new_mult_k_test
-        gamma_j_k = m + 1
-
-        take_from_j_test += new_mult_k_test
-        new_mult_k_test = (
-            new_mult_k_test * (particle_mass[j] / fragment_mass_i) + new_mult_k_test
-        )
-
-    return take_from_j, new_mult_k, gamma_j_k, overflow_flag
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def get_new_multiplicities_and_update_attributes(
-    j, k, attributes, multiplicity, take_from_j, new_mult_k
-):  # pylint: disable=too-many-arguments
-    for a in range(len(attributes)):
-        attributes[a, k] *= multiplicity[k]
-        attributes[a, k] += take_from_j * attributes[a, j]
-        attributes[a, k] /= new_mult_k
-
-    if multiplicity[j] &gt; take_from_j:
-        nj = multiplicity[j] - take_from_j
-        nk = new_mult_k
-
-    else:  # take_from_j == multiplicity[j]
-        nj = new_mult_k / 2
-        nk = nj
-        for a in range(len(attributes)):
-            attributes[a, j] = attributes[a, k]
-    return nj, nk
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def round_multiplicities_to_ints_and_update_attributes(
-    j,
-    k,
-    nj,
-    nk,
-    attributes,
-    multiplicity,
-):  # pylint: disable=too-many-arguments
-    multiplicity[j] = max(round(nj), 1)
-    multiplicity[k] = max(round(nk), 1)
-    factor_j = nj / multiplicity[j]
-    factor_k = nk / multiplicity[k]
-    for a in range(len(attributes)):
-        attributes[a, k] *= factor_k
-        attributes[a, j] *= factor_j
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
-    i,
-    j,
-    k,
-    cid,
-    multiplicity,
-    gamma,
-    attributes,
-    fragment_mass,
-    max_multiplicity,
-    breakup_rate,
-    breakup_rate_deficit,
-    warn_overflows,
-    particle_mass,
-):  # breakup0 guarantees take_from_j &lt;= multiplicity[j]
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = compute_transfer_multiplicities(
-        gamma[i],
-        j,
-        k,
-        multiplicity,
-        particle_mass,
-        fragment_mass[i],
-        max_multiplicity,
-    )
-    gamma_deficit = gamma[i] - gamma_j_k
-
-    # breakup1 also handles new_n[j] == 0 case via splitting
-    nj, nk = get_new_multiplicities_and_update_attributes(
-        j, k, attributes, multiplicity, take_from_j, new_mult_k
-    )
-
-    atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
-    atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-
-    # breakup2 also guarantees that no multiplicities are set to 0
-    round_multiplicities_to_ints_and_update_attributes(
-        j, k, nj, nk, attributes, multiplicity
-    )
-    if overflow_flag and warn_overflows:
-        warn(&#34;overflow&#34;, __file__)
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def break_up_while(
-    i,
-    j,
-    k,
-    cid,
-    multiplicity,
-    gamma,
-    attributes,
-    fragment_mass,
-    max_multiplicity,
-    breakup_rate,
-    breakup_rate_deficit,
-    warn_overflows,
-    particle_mass,
-):  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
-    gamma_deficit = gamma[i]
-    overflow_flag = False
-    while gamma_deficit &gt; 0:
-        if multiplicity[k] == multiplicity[j]:
-            take_from_j = multiplicity[j]
-            new_mult_k = (
-                (particle_mass[j] + particle_mass[k])
-                / fragment_mass[i]
-                * multiplicity[k]
-            )
-
-            # check for overflow
-            if new_mult_k &gt; max_multiplicity:
-                atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-                overflow_flag = True
-                break
-            gamma_j_k = gamma_deficit
-
-        else:
-            if multiplicity[k] &gt; multiplicity[j]:
-                j, k = k, j
-            (
-                take_from_j,
-                new_mult_k,
-                gamma_j_k,
-                overflow_flag,
-            ) = compute_transfer_multiplicities(
-                gamma_deficit,
-                j,
-                k,
-                multiplicity,
-                particle_mass,
-                fragment_mass[i],
-                max_multiplicity,
-            )
-
-        nj, nk = get_new_multiplicities_and_update_attributes(
-            j, k, attributes, multiplicity, take_from_j, new_mult_k
-        )
-
-        atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
-        gamma_deficit -= gamma_j_k
-        round_multiplicities_to_ints_and_update_attributes(
-            j, k, nj, nk, attributes, multiplicity
-        )
-
-    atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-
-    if overflow_flag and warn_overflows:
-        warn(&#34;overflow&#34;, __file__)
-
-
-class CollisionsMethods(BackendMethods):
-    @cached_property
-    def _collision_coalescence_breakup_body(self):
-        _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
-
-        @numba.njit(**self.default_jit_flags)
-        def body(
-            *,
-            multiplicity,
-            idx,
-            length,
-            attributes,
-            gamma,
-            rand,
-            Ec,
-            Eb,
-            fragment_mass,
-            healthy,
-            cell_id,
-            coalescence_rate,
-            breakup_rate,
-            breakup_rate_deficit,
-            is_first_in_pair,
-            max_multiplicity,
-            warn_overflows,
-            particle_mass,
-        ):
-            # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
-            for i in numba.prange(length // 2):
-                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
-                if skip_pair:
-                    continue
-                bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) &gt; 0
-                if bouncing:
-                    continue
-
-                if rand[i] - Ec[i] &lt; 0:
-                    coalesce(
-                        i,
-                        j,
-                        k,
-                        cell_id[j],
-                        multiplicity,
-                        gamma,
-                        attributes,
-                        coalescence_rate,
-                    )
-                else:
-                    _break_up(
-                        i,
-                        j,
-                        k,
-                        cell_id[j],
-                        multiplicity,
-                        gamma,
-                        attributes,
-                        fragment_mass,
-                        max_multiplicity,
-                        breakup_rate,
-                        breakup_rate_deficit,
-                        warn_overflows,
-                        particle_mass,
-                    )
-                flag_zero_multiplicity(j, k, multiplicity, healthy)
-
-        return body
-
-    @cached_property
-    def _adaptive_sdm_end_body(self):
-        @numba.njit(**{**self.default_jit_flags, &#34;parallel&#34;: False})
-        def body(dt_left, n_cell, cell_start):
-            end = 0
-            for i in range(n_cell - 1, -1, -1):
-                if dt_left[i] == 0:
-                    continue
-                end = cell_start[i + 1]
-                break
-            return end
-
-        return body
-
-    def adaptive_sdm_end(self, dt_left, cell_start):
-        return self._adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)
-
-    @cached_property
-    def _scale_prob_for_adaptive_sdm_gamma_body(self):
-        @numba.njit(**self.default_jit_flags)
-        # pylint: disable=too-many-arguments,too-many-locals
-        def body(
-            prob,
-            idx,
-            length,
-            multiplicity,
-            cell_id,
-            dt_left,
-            dt,
-            dt_range,
-            is_first_in_pair,
-            stats_n_substep,
-            stats_dt_min,
-        ):
-            dt_todo = np.empty_like(dt_left)
-            for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
-                dt_todo[cid] = min(dt_left[cid], dt_range[1])
-            for i in range(length // 2):  # TODO #571
-                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
-                if skip_pair:
-                    continue
-                prop = multiplicity[j] // multiplicity[k]
-                dt_optimal = dt * prop / prob[i]
-                cid = cell_id[j]
-                dt_optimal = max(dt_optimal, dt_range[0])
-                dt_todo[cid] = min(dt_todo[cid], dt_optimal)
-                stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
-            for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-                j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
-                if skip_pair:
-                    continue
-                prob[i] *= dt_todo[cell_id[j]] / dt
-            for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
-                dt_left[cid] -= dt_todo[cid]
-                if dt_todo[cid] &gt; 0:
-                    stats_n_substep[cid] += 1
-
-        return body
-
-    def scale_prob_for_adaptive_sdm_gamma(
-        self,
-        *,
-        prob,
-        multiplicity,
-        cell_id,
-        dt_left,
-        dt,
-        dt_range,
-        is_first_in_pair,
-        stats_n_substep,
-        stats_dt_min,
-    ):
-        return self._scale_prob_for_adaptive_sdm_gamma_body(
-            prob.data,
-            multiplicity.idx.data,
-            len(multiplicity),
-            multiplicity.data,
-            cell_id.data,
-            dt_left.data,
-            dt,
-            dt_range,
-            is_first_in_pair.indicator.data,
-            stats_n_substep.data,
-            stats_dt_min.data,
-        )
-
-    @cached_property
-    def _cell_id_body(self):
-        # @numba.njit(**conf.JIT_FLAGS)  # note: as of Numba 0.51, np.dot() does not support ints
-        def body(cell_id, cell_origin, strides):
-            cell_id[:] = np.dot(strides, cell_origin)
-
-        return body
-
-    def cell_id(self, cell_id, cell_origin, strides):
-        return self._cell_id_body(cell_id.data, cell_origin.data, strides.data)
-
-    @cached_property
-    def _collision_coalescence_body(self):
-        @numba.njit(**self.default_jit_flags)
-        def body(
-            *,
-            multiplicity,
-            idx,
-            length,
-            attributes,
-            gamma,
-            healthy,
-            cell_id,
-            coalescence_rate,
-            is_first_in_pair,
-        ):
-            for (
-                i
-            ) in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
-                length // 2
-            ):
-                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
-                if skip_pair:
-                    continue
-                coalesce(
-                    i,
-                    j,
-                    k,
-                    cell_id[j],
-                    multiplicity,
-                    gamma,
-                    attributes,
-                    coalescence_rate,
-                )
-                flag_zero_multiplicity(j, k, multiplicity, healthy)
-
-        return body
-
-    def collision_coalescence(
-        self,
-        *,
-        multiplicity,
-        idx,
-        attributes,
-        gamma,
-        healthy,
-        cell_id,
-        coalescence_rate,
-        is_first_in_pair,
-    ):
-        self._collision_coalescence_body(
-            multiplicity=multiplicity.data,
-            idx=idx.data,
-            length=len(idx),
-            attributes=attributes.data,
-            gamma=gamma.data,
-            healthy=healthy.data,
-            cell_id=cell_id.data,
-            coalescence_rate=coalescence_rate.data,
-            is_first_in_pair=is_first_in_pair.indicator.data,
-        )
-
-    def collision_coalescence_breakup(
-        self,
-        *,
-        multiplicity,
-        idx,
-        attributes,
-        gamma,
-        rand,
-        Ec,
-        Eb,
-        fragment_mass,
-        healthy,
-        cell_id,
-        coalescence_rate,
-        breakup_rate,
-        breakup_rate_deficit,
-        is_first_in_pair,
-        warn_overflows,
-        particle_mass,
-        max_multiplicity,
-    ):
-        # pylint: disable=too-many-locals
-        self._collision_coalescence_breakup_body(
-            multiplicity=multiplicity.data,
-            idx=idx.data,
-            length=len(idx),
-            attributes=attributes.data,
-            gamma=gamma.data,
-            rand=rand.data,
-            Ec=Ec.data,
-            Eb=Eb.data,
-            fragment_mass=fragment_mass.data,
-            healthy=healthy.data,
-            cell_id=cell_id.data,
-            coalescence_rate=coalescence_rate.data,
-            breakup_rate=breakup_rate.data,
-            breakup_rate_deficit=breakup_rate_deficit.data,
-            is_first_in_pair=is_first_in_pair.indicator.data,
-            max_multiplicity=max_multiplicity,
-            warn_overflows=warn_overflows,
-            particle_mass=particle_mass.data,
-        )
-
-    @cached_property
-    def _compute_gamma_body(self):
-        @numba.njit(**self.default_jit_flags)
-        # pylint: disable=too-many-arguments,too-many-locals
-        def body(
-            prob,
-            rand,
-            idx,
-            length,
-            multiplicity,
-            cell_id,
-            collision_rate_deficit,
-            collision_rate,
-            is_first_in_pair,
-            out,
-        ):
-            &#34;&#34;&#34;
-            return in &#34;out&#34; array gamma (see: http://doi.org/10.1002/qj.441, section 5)
-            formula:
-            gamma = floor(prob) + 1 if rand &lt;  prob - floor(prob)
-                  = floor(prob)     if rand &gt;= prob - floor(prob)
-
-            out may point to the same array as prob
-            &#34;&#34;&#34;
-            for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-                out[i] = np.ceil(prob[i] - rand[i])
-                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, out)
-                if skip_pair:
-                    continue
-                prop = multiplicity[j] // multiplicity[k]
-                g = min(int(out[i]), prop)
-                cid = cell_id[j]
-                atomic_add(collision_rate, cid, g * multiplicity[k])
-                atomic_add(
-                    collision_rate_deficit, cid, (int(out[i]) - g) * multiplicity[k]
-                )
-                out[i] = g
-
-        return body
-
-    def compute_gamma(
-        self,
-        *,
-        prob,
-        rand,
-        multiplicity,
-        cell_id,
-        collision_rate_deficit,
-        collision_rate,
-        is_first_in_pair,
-        out,
-    ):
-        return self._compute_gamma_body(
-            prob.data,
-            rand.data,
-            multiplicity.idx.data,
-            len(multiplicity),
-            multiplicity.data,
-            cell_id.data,
-            collision_rate_deficit.data,
-            collision_rate.data,
-            is_first_in_pair.indicator.data,
-            out.data,
-        )
-
-    @staticmethod
-    def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;default&#34;):
-        class CellCaretaker:  # pylint: disable=too-few-public-methods
-            def __init__(self, idx_shape, idx_dtype, cell_start_len, scheme):
-                if scheme == &#34;default&#34;:
-                    if conf.JIT_FLAGS[&#34;parallel&#34;]:
-                        scheme = &#34;counting_sort_parallel&#34;
-                    else:
-                        scheme = &#34;counting_sort&#34;
-                self.scheme = scheme
-                if scheme in (&#34;counting_sort&#34;, &#34;counting_sort_parallel&#34;):
-                    self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
-                if scheme == &#34;counting_sort_parallel&#34;:
-                    self.cell_starts = Storage.empty(
-                        (
-                            numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
-                            cell_start_len,
-                        ),
-                        dtype=int,
-                    )
-
-            def __call__(self, cell_id, cell_idx, cell_start, idx):
-                length = len(idx)
-                if self.scheme == &#34;counting_sort&#34;:
-                    CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data,
-                        idx.data,
-                        cell_id.data,
-                        cell_idx.data,
-                        length,
-                        cell_start.data,
-                    )
-                elif self.scheme == &#34;counting_sort_parallel&#34;:
-                    CollisionsMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data,
-                        idx.data,
-                        cell_id.data,
-                        cell_idx.data,
-                        length,
-                        cell_start.data,
-                        self.cell_starts.data,
-                    )
-                idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
-
-        return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)
-
-    @cached_property
-    def _normalize_body(self):
-        @numba.njit(**{**self.default_jit_flags, **{&#34;parallel&#34;: False}})
-        # pylint: disable=too-many-arguments
-        def body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-            n_cell = cell_start.shape[0] - 1
-            for i in range(n_cell):
-                sd_num = cell_start[i + 1] - cell_start[i]
-                if sd_num &lt; 2:
-                    norm_factor[i] = 0
-                else:
-                    norm_factor[i] = (
-                        timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-                    )
-            for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
-                prob[d] *= norm_factor[cell_idx[cell_id[d]]]
-
-        return body
-
-    # pylint: disable=too-many-arguments
-    def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-        return self._normalize_body(
-            prob.data,
-            cell_id.data,
-            cell_idx.data,
-            cell_start.data,
-            norm_factor.data,
-            timestep,
-            dv,
-        )
-
-    @cached_property
-    def remove_zero_n_or_flagged(self):
-        @numba.njit(**{**self.default_jit_flags, **{&#34;parallel&#34;: False}})
-        def body(multiplicity, idx, length) -&gt; int:
-            flag = len(idx)
-            new_length = length
-            i = 0
-            while i &lt; new_length:
-                if idx[i] == flag or multiplicity[idx[i]] == 0:
-                    new_length -= 1
-                    idx[i] = idx[new_length]
-                    idx[new_length] = flag
-                else:
-                    i += 1
-            return new_length
-
-        return body
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
-    def _counting_sort_by_cell_id_and_update_cell_start(
-        new_idx, idx, cell_id, cell_idx, length, cell_start
-    ):
-        cell_end = cell_start
-        # Warning: Assuming len(cell_end) == n_cell+1
-        cell_end[:] = 0
-        for i in range(length):
-            cell_end[cell_idx[cell_id[idx[i]]]] += 1
-        for i in range(1, len(cell_end)):
-            cell_end[i] += cell_end[i - 1]
-        for i in range(length - 1, -1, -1):
-            cell_end[cell_idx[cell_id[idx[i]]]] -= 1
-            new_idx[cell_end[cell_idx[cell_id[idx[i]]]]] = idx[i]
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
-    def _parallel_counting_sort_by_cell_id_and_update_cell_start(
-        new_idx, idx, cell_id, cell_idx, length, cell_start, cell_start_p
-    ):
-        cell_end_thread = cell_start_p
-        # Warning: Assuming len(cell_end) == n_cell+1
-        thread_num = cell_end_thread.shape[0]
-        for t in numba.prange(thread_num):  # pylint: disable=not-an-iterable
-            cell_end_thread[t, :] = 0
-            for i in range(
-                t * length // thread_num,
-                (t + 1) * length // thread_num if t &lt; thread_num - 1 else length,
-            ):
-                cell_end_thread[t, cell_idx[cell_id[idx[i]]]] += 1
-
-        cell_start[:] = np.sum(cell_end_thread, axis=0)
-        for i in range(1, len(cell_start)):
-            cell_start[i] += cell_start[i - 1]
-
-        tmp = cell_end_thread[0, :]
-        tmp[:] = cell_end_thread[thread_num - 1, :]
-        cell_end_thread[thread_num - 1, :] = cell_start[:]
-        for t in range(thread_num - 2, -1, -1):
-            cell_start[:] = cell_end_thread[t + 1, :] - tmp[:]
-            tmp[:] = cell_end_thread[t, :]
-            cell_end_thread[t, :] = cell_start[:]
-
-        for t in numba.prange(thread_num):  # pylint: disable=not-an-iterable
-            for i in range(
-                (
-                    (t + 1) * length // thread_num - 1
-                    if t &lt; thread_num - 1
-                    else length - 1
-                ),
-                t * length // thread_num - 1,
-                -1,
-            ):
-                cell_end_thread[t, cell_idx[cell_id[idx[i]]]] -= 1
-                new_idx[cell_end_thread[t, cell_idx[cell_id[idx[i]]]]] = idx[i]
-
-        cell_start[:] = cell_end_thread[0, :]
-
-    @cached_property
-    def _linear_collection_efficiency_body(self):
-        @numba.njit(**self.default_jit_flags)
-        # pylint: disable=too-many-arguments,too-many-locals
-        def body(params, output, radii, is_first_in_pair, idx, length, unit):
-            A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-            output[:] = 0
-            for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-                if is_first_in_pair[i]:
-                    if radii[idx[i]] &gt; radii[idx[i + 1]]:
-                        r = radii[idx[i]] / unit
-                        r_s = radii[idx[i + 1]] / unit
-                    else:
-                        r = radii[idx[i + 1]] / unit
-                        r_s = radii[idx[i]] / unit
-                    p = r_s / r
-                    if p not in (0, 1):
-                        G = (G1 / r) ** Mg + G2 + G3 * r
-                        Gp = (1 - p) ** G
-                        if Gp != 0:
-                            D = D1 / r**D2
-                            E = E1 / r**E2
-                            F = (F1 / r) ** Mf + F2
-                            output[i // 2] = A + B * p + D / p**F + E / Gp
-                            output[i // 2] = max(0, output[i // 2])
-
-        return body
-
-    def linear_collection_efficiency(
-        self, *, params, output, radii, is_first_in_pair, unit
-    ):
-        return self._linear_collection_efficiency_body(
-            params,
-            output.data,
-            radii.data,
-            is_first_in_pair.indicator.data,
-            radii.idx.data,
-            len(is_first_in_pair),
-            unit,
-        )</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -815,244 +39,36 @@ class CollisionsMethods(BackendMethods):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
-    i,
-    j,
-    k,
-    cid,
-    multiplicity,
-    gamma,
-    attributes,
-    fragment_mass,
-    max_multiplicity,
-    breakup_rate,
-    breakup_rate_deficit,
-    warn_overflows,
-    particle_mass,
-):  # breakup0 guarantees take_from_j &lt;= multiplicity[j]
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = compute_transfer_multiplicities(
-        gamma[i],
-        j,
-        k,
-        multiplicity,
-        particle_mass,
-        fragment_mass[i],
-        max_multiplicity,
-    )
-    gamma_deficit = gamma[i] - gamma_j_k
-
-    # breakup1 also handles new_n[j] == 0 case via splitting
-    nj, nk = get_new_multiplicities_and_update_attributes(
-        j, k, attributes, multiplicity, take_from_j, new_mult_k
-    )
-
-    atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
-    atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-
-    # breakup2 also guarantees that no multiplicities are set to 0
-    round_multiplicities_to_ints_and_update_attributes(
-        j, k, nj, nk, attributes, multiplicity
-    )
-    if overflow_flag and warn_overflows:
-        warn(&#34;overflow&#34;, __file__)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.break_up_while"><code class="name flex">
 <span>def <span class="ident">break_up_while</span></span>(<span>i, j, k, cid, multiplicity, gamma, attributes, fragment_mass, max_multiplicity, breakup_rate, breakup_rate_deficit, warn_overflows, particle_mass)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def break_up_while(
-    i,
-    j,
-    k,
-    cid,
-    multiplicity,
-    gamma,
-    attributes,
-    fragment_mass,
-    max_multiplicity,
-    breakup_rate,
-    breakup_rate_deficit,
-    warn_overflows,
-    particle_mass,
-):  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
-    gamma_deficit = gamma[i]
-    overflow_flag = False
-    while gamma_deficit &gt; 0:
-        if multiplicity[k] == multiplicity[j]:
-            take_from_j = multiplicity[j]
-            new_mult_k = (
-                (particle_mass[j] + particle_mass[k])
-                / fragment_mass[i]
-                * multiplicity[k]
-            )
-
-            # check for overflow
-            if new_mult_k &gt; max_multiplicity:
-                atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-                overflow_flag = True
-                break
-            gamma_j_k = gamma_deficit
-
-        else:
-            if multiplicity[k] &gt; multiplicity[j]:
-                j, k = k, j
-            (
-                take_from_j,
-                new_mult_k,
-                gamma_j_k,
-                overflow_flag,
-            ) = compute_transfer_multiplicities(
-                gamma_deficit,
-                j,
-                k,
-                multiplicity,
-                particle_mass,
-                fragment_mass[i],
-                max_multiplicity,
-            )
-
-        nj, nk = get_new_multiplicities_and_update_attributes(
-            j, k, attributes, multiplicity, take_from_j, new_mult_k
-        )
-
-        atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
-        gamma_deficit -= gamma_j_k
-        round_multiplicities_to_ints_and_update_attributes(
-            j, k, nj, nk, attributes, multiplicity
-        )
-
-    atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-
-    if overflow_flag and warn_overflows:
-        warn(&#34;overflow&#34;, __file__)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.coalesce"><code class="name flex">
 <span>def <span class="ident">coalesce</span></span>(<span>i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def coalesce(  # pylint: disable=too-many-arguments
-    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
-):
-    atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
-    new_n = multiplicity[j] - gamma[i] * multiplicity[k]
-    if new_n &gt; 0:
-        multiplicity[j] = new_n
-        for a in range(len(attributes)):
-            attributes[a, k] += gamma[i] * attributes[a, j]
-    else:  # new_n == 0
-        multiplicity[j] = multiplicity[k] // 2
-        multiplicity[k] = multiplicity[k] - multiplicity[j]
-        for a in range(len(attributes)):
-            attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
-            attributes[a, k] = attributes[a, j]</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.compute_transfer_multiplicities"><code class="name flex">
 <span>def <span class="ident">compute_transfer_multiplicities</span></span>(<span>gamma, j, k, multiplicity, particle_mass, fragment_mass_i, max_multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def compute_transfer_multiplicities(
-    gamma, j, k, multiplicity, particle_mass, fragment_mass_i, max_multiplicity
-):  # pylint: disable=too-many-arguments
-    overflow_flag = False
-    gamma_j_k = 0
-    take_from_j_test = multiplicity[k]
-    take_from_j = 0
-    new_mult_k_test = (
-        (particle_mass[j] + particle_mass[k]) / fragment_mass_i
-    ) * multiplicity[k]
-    new_mult_k = multiplicity[k]
-    for m in range(int(gamma)):
-        # check for overflow of multiplicity
-        if new_mult_k_test &gt; max_multiplicity:
-            overflow_flag = True
-            break
-
-        # check for new_n &gt;= 0
-        if take_from_j_test &gt; multiplicity[j]:
-            break
-
-        take_from_j = take_from_j_test
-        new_mult_k = new_mult_k_test
-        gamma_j_k = m + 1
-
-        take_from_j_test += new_mult_k_test
-        new_mult_k_test = (
-            new_mult_k_test * (particle_mass[j] / fragment_mass_i) + new_mult_k_test
-        )
-
-    return take_from_j, new_mult_k, gamma_j_k, overflow_flag</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.flag_zero_multiplicity"><code class="name flex">
 <span>def <span class="ident">flag_zero_multiplicity</span></span>(<span>j, k, multiplicity, healthy)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def flag_zero_multiplicity(j, k, multiplicity, healthy):
-    if multiplicity[k] == 0 or multiplicity[j] == 0:
-        healthy[0] = 0</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.get_new_multiplicities_and_update_attributes"><code class="name flex">
 <span>def <span class="ident">get_new_multiplicities_and_update_attributes</span></span>(<span>j, k, attributes, multiplicity, take_from_j, new_mult_k)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def get_new_multiplicities_and_update_attributes(
-    j, k, attributes, multiplicity, take_from_j, new_mult_k
-):  # pylint: disable=too-many-arguments
-    for a in range(len(attributes)):
-        attributes[a, k] *= multiplicity[k]
-        attributes[a, k] += take_from_j * attributes[a, j]
-        attributes[a, k] /= new_mult_k
-
-    if multiplicity[j] &gt; take_from_j:
-        nj = multiplicity[j] - take_from_j
-        nk = new_mult_k
-
-    else:  # take_from_j == multiplicity[j]
-        nj = new_mult_k / 2
-        nk = nj
-        for a in range(len(attributes)):
-            attributes[a, j] = attributes[a, k]
-    return nj, nk</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.pair_indices"><code class="name flex">
 <span>def <span class="ident">pair_indices</span></span>(<span>i, idx, is_first_in_pair, prob_like)</span>
@@ -1065,58 +81,12 @@ output is valid only if <code>2*i</code> or <code>2*i+1</code> points to a valid
 otherwise the <code>skip_pair</code> flag is set to True and returned <code>j</code> &amp; <code>k</code> indices are set to -1.
 In addition, the <code>prob_like</code> array is checked for zeros at position <code>i</code>, in which case
 the <code>skip_pair</code> is also set to <code>True</code></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def pair_indices(i, idx, is_first_in_pair, prob_like):
-    &#34;&#34;&#34;given permutation array `idx` and `is_first_in_pair` flag array,
-    returns indices `j` and `k` of droplets within pair `i` and a `skip_pair` flag,
-    `j` points to the droplet that is first in pair (higher or equal multiplicity)
-    output is valid only if `2*i` or `2*i+1` points to a valid pair start index (within one cell)
-    otherwise the `skip_pair` flag is set to True and returned `j` &amp; `k` indices are set to -1.
-    In addition, the `prob_like` array is checked for zeros at position `i`, in which case
-    the `skip_pair` is also set to `True`
-    &#34;&#34;&#34;
-    skip_pair = False
-
-    if prob_like[i] == 0:
-        skip_pair = True
-        j, k = -1, -1
-    else:
-        offset = 1 - is_first_in_pair[2 * i]
-        j = idx[2 * i + offset]
-        k = idx[2 * i + 1 + offset]
-    return j, k, skip_pair</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.round_multiplicities_to_ints_and_update_attributes"><code class="name flex">
 <span>def <span class="ident">round_multiplicities_to_ints_and_update_attributes</span></span>(<span>j, k, nj, nk, attributes, multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def round_multiplicities_to_ints_and_update_attributes(
-    j,
-    k,
-    nj,
-    nk,
-    attributes,
-    multiplicity,
-):  # pylint: disable=too-many-arguments
-    multiplicity[j] = max(round(nj), 1)
-    multiplicity[k] = max(round(nk), 1)
-    factor_j = nj / multiplicity[j]
-    factor_k = nk / multiplicity[k]
-    for a in range(len(attributes)):
-        attributes[a, k] *= factor_k
-        attributes[a, j] *= factor_j</code></pre>
-</details>
 </dd>
 </dl>
 </section>
@@ -1677,56 +647,6 @@ def round_multiplicities_to_ints_and_update_attributes(
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;default&#34;):
-    class CellCaretaker:  # pylint: disable=too-few-public-methods
-        def __init__(self, idx_shape, idx_dtype, cell_start_len, scheme):
-            if scheme == &#34;default&#34;:
-                if conf.JIT_FLAGS[&#34;parallel&#34;]:
-                    scheme = &#34;counting_sort_parallel&#34;
-                else:
-                    scheme = &#34;counting_sort&#34;
-            self.scheme = scheme
-            if scheme in (&#34;counting_sort&#34;, &#34;counting_sort_parallel&#34;):
-                self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
-            if scheme == &#34;counting_sort_parallel&#34;:
-                self.cell_starts = Storage.empty(
-                    (
-                        numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
-                        cell_start_len,
-                    ),
-                    dtype=int,
-                )
-
-        def __call__(self, cell_id, cell_idx, cell_start, idx):
-            length = len(idx)
-            if self.scheme == &#34;counting_sort&#34;:
-                CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
-                    self.tmp_idx.data,
-                    idx.data,
-                    cell_id.data,
-                    cell_idx.data,
-                    length,
-                    cell_start.data,
-                )
-            elif self.scheme == &#34;counting_sort_parallel&#34;:
-                CollisionsMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
-                    self.tmp_idx.data,
-                    idx.data,
-                    cell_id.data,
-                    cell_idx.data,
-                    length,
-                    cell_start.data,
-                    self.cell_starts.data,
-                )
-            idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
-
-    return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)</code></pre>
-</details>
 </dd>
 </dl>
 <h3>Instance variables</h3>
@@ -1778,229 +698,48 @@ def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;defaul
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def adaptive_sdm_end(self, dt_left, cell_start):
-    return self._adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id"><code class="name flex">
 <span>def <span class="ident">cell_id</span></span>(<span>self, cell_id, cell_origin, strides)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def cell_id(self, cell_id, cell_origin, strides):
-    return self._cell_id_body(cell_id.data, cell_origin.data, strides.data)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence"><code class="name flex">
 <span>def <span class="ident">collision_coalescence</span></span>(<span>self, *, multiplicity, idx, attributes, gamma, healthy, cell_id, coalescence_rate, is_first_in_pair)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def collision_coalescence(
-    self,
-    *,
-    multiplicity,
-    idx,
-    attributes,
-    gamma,
-    healthy,
-    cell_id,
-    coalescence_rate,
-    is_first_in_pair,
-):
-    self._collision_coalescence_body(
-        multiplicity=multiplicity.data,
-        idx=idx.data,
-        length=len(idx),
-        attributes=attributes.data,
-        gamma=gamma.data,
-        healthy=healthy.data,
-        cell_id=cell_id.data,
-        coalescence_rate=coalescence_rate.data,
-        is_first_in_pair=is_first_in_pair.indicator.data,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence_breakup"><code class="name flex">
 <span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, multiplicity, idx, attributes, gamma, rand, Ec, Eb, fragment_mass, healthy, cell_id, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, particle_mass, max_multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def collision_coalescence_breakup(
-    self,
-    *,
-    multiplicity,
-    idx,
-    attributes,
-    gamma,
-    rand,
-    Ec,
-    Eb,
-    fragment_mass,
-    healthy,
-    cell_id,
-    coalescence_rate,
-    breakup_rate,
-    breakup_rate_deficit,
-    is_first_in_pair,
-    warn_overflows,
-    particle_mass,
-    max_multiplicity,
-):
-    # pylint: disable=too-many-locals
-    self._collision_coalescence_breakup_body(
-        multiplicity=multiplicity.data,
-        idx=idx.data,
-        length=len(idx),
-        attributes=attributes.data,
-        gamma=gamma.data,
-        rand=rand.data,
-        Ec=Ec.data,
-        Eb=Eb.data,
-        fragment_mass=fragment_mass.data,
-        healthy=healthy.data,
-        cell_id=cell_id.data,
-        coalescence_rate=coalescence_rate.data,
-        breakup_rate=breakup_rate.data,
-        breakup_rate_deficit=breakup_rate_deficit.data,
-        is_first_in_pair=is_first_in_pair.indicator.data,
-        max_multiplicity=max_multiplicity,
-        warn_overflows=warn_overflows,
-        particle_mass=particle_mass.data,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma"><code class="name flex">
 <span>def <span class="ident">compute_gamma</span></span>(<span>self, *, prob, rand, multiplicity, cell_id, collision_rate_deficit, collision_rate, is_first_in_pair, out)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def compute_gamma(
-    self,
-    *,
-    prob,
-    rand,
-    multiplicity,
-    cell_id,
-    collision_rate_deficit,
-    collision_rate,
-    is_first_in_pair,
-    out,
-):
-    return self._compute_gamma_body(
-        prob.data,
-        rand.data,
-        multiplicity.idx.data,
-        len(multiplicity),
-        multiplicity.data,
-        cell_id.data,
-        collision_rate_deficit.data,
-        collision_rate.data,
-        is_first_in_pair.indicator.data,
-        out.data,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency"><code class="name flex">
 <span>def <span class="ident">linear_collection_efficiency</span></span>(<span>self, *, params, output, radii, is_first_in_pair, unit)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def linear_collection_efficiency(
-    self, *, params, output, radii, is_first_in_pair, unit
-):
-    return self._linear_collection_efficiency_body(
-        params,
-        output.data,
-        radii.data,
-        is_first_in_pair.indicator.data,
-        radii.idx.data,
-        len(is_first_in_pair),
-        unit,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize"><code class="name flex">
 <span>def <span class="ident">normalize</span></span>(<span>self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-    return self._normalize_body(
-        prob.data,
-        cell_id.data,
-        cell_idx.data,
-        cell_start.data,
-        norm_factor.data,
-        timestep,
-        dv,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma"><code class="name flex">
 <span>def <span class="ident">scale_prob_for_adaptive_sdm_gamma</span></span>(<span>self, *, prob, multiplicity, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def scale_prob_for_adaptive_sdm_gamma(
-    self,
-    *,
-    prob,
-    multiplicity,
-    cell_id,
-    dt_left,
-    dt,
-    dt_range,
-    is_first_in_pair,
-    stats_n_substep,
-    stats_dt_min,
-):
-    return self._scale_prob_for_adaptive_sdm_gamma_body(
-        prob.data,
-        multiplicity.idx.data,
-        len(multiplicity),
-        multiplicity.data,
-        cell_id.data,
-        dt_left.data,
-        dt,
-        dt_range,
-        is_first_in_pair.indicator.data,
-        stats_n_substep.data,
-        stats_dt_min.data,
-    )</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -2008,7 +747,6 @@ def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;defaul
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -2053,7 +791,7 @@ def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;defaul
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

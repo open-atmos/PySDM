@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.particulator API documentation</title>
-<meta name="description" content="The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -23,460 +26,6 @@
 </header>
 <section id="section-intro">
 <p>The very class exposing <code><a title="PySDM.particulator.Particulator.run" href="#PySDM.particulator.Particulator.run">Particulator.run()</a></code> method for launching simulations</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
-&#34;&#34;&#34;
-
-import numpy as np
-
-from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_common.index import make_Index
-from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
-from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
-from PySDM.impl.particle_attributes import ParticleAttributes
-
-
-class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance-attributes
-    def __init__(self, n_sd, backend: BackendMethods):
-        assert isinstance(backend, BackendMethods)
-        self.__n_sd = n_sd
-
-        self.backend = backend
-        self.formulae = backend.formulae
-        self.environment = None
-        self.attributes: (ParticleAttributes, None) = None
-        self.dynamics = {}
-        self.products = {}
-        self.observers = []
-
-        self.n_steps = 0
-
-        self.sorting_scheme = &#34;default&#34;
-        self.condensation_solver = None
-
-        self.Index = make_Index(backend)  # pylint: disable=invalid-name
-        self.PairIndicator = make_PairIndicator(backend)  # pylint: disable=invalid-name
-        self.PairwiseStorage = make_PairwiseStorage(  # pylint: disable=invalid-name
-            backend
-        )
-        self.IndexedStorage = make_IndexedStorage(  # pylint: disable=invalid-name
-            backend
-        )
-
-        self.timers = {}
-        self.null = self.Storage.empty(0, dtype=float)
-
-    def run(self, steps):
-        for _ in range(steps):
-            for key, dynamic in self.dynamics.items():
-                with self.timers[key]:
-                    dynamic()
-            self.n_steps += 1
-            self._notify_observers()
-
-    def _notify_observers(self):
-        reversed_order_so_that_environment_is_last = reversed(self.observers)
-        for observer in reversed_order_so_that_environment_is_last:
-            observer.notify()
-
-    @property
-    def Storage(self):
-        return self.backend.Storage
-
-    @property
-    def Random(self):
-        return self.backend.Random
-
-    @property
-    def n_sd(self) -&gt; int:
-        return self.__n_sd
-
-    @property
-    def dt(self) -&gt; float:
-        if self.environment is not None:
-            return self.environment.dt
-        return None
-
-    @property
-    def mesh(self):
-        if self.environment is not None:
-            return self.environment.mesh
-        return None
-
-    def normalize(self, prob, norm_factor):
-        self.backend.normalize(
-            prob=prob,
-            cell_id=self.attributes[&#34;cell id&#34;],
-            cell_idx=self.attributes.cell_idx,
-            cell_start=self.attributes.cell_start,
-            norm_factor=norm_factor,
-            timestep=self.dt,
-            dv=self.mesh.dv,
-        )
-
-    def update_TpRH(self):
-        self.backend.temperature_pressure_rh(
-            # input
-            rhod=self.environment.get_predicted(&#34;rhod&#34;),
-            thd=self.environment.get_predicted(&#34;thd&#34;),
-            water_vapour_mixing_ratio=self.environment.get_predicted(
-                &#34;water_vapour_mixing_ratio&#34;
-            ),
-            # output
-            T=self.environment.get_predicted(&#34;T&#34;),
-            p=self.environment.get_predicted(&#34;p&#34;),
-            RH=self.environment.get_predicted(&#34;RH&#34;),
-        )
-
-    def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
-        &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
-          in environment thermodynamic state, updates the environment state.
-        In the case of parcel environment, condensation is driven solely by changes in
-          the dry-air density (theta and water_vapour_mixing_ratio should not be changed
-          by other dynamics).
-        In the case of prescribed-flow/kinematic environments, the dry-air density is
-          constant in time throughout the simulation.
-        This function should only change environment&#39;s predicted `thd` and
-          `water_vapour_mixing_ratio` (and not `rhod`).
-        &#34;&#34;&#34;
-        self.backend.condensation(
-            solver=self.condensation_solver,
-            n_cell=self.mesh.n_cell,
-            cell_start_arg=self.attributes.cell_start,
-            water_mass=self.attributes[&#34;water mass&#34;],
-            multiplicity=self.attributes[&#34;multiplicity&#34;],
-            vdry=self.attributes[&#34;dry volume&#34;],
-            idx=self.attributes._ParticleAttributes__idx,
-            rhod=self.environment[&#34;rhod&#34;],
-            thd=self.environment[&#34;thd&#34;],
-            water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
-            dv=self.environment.dv,
-            prhod=self.environment.get_predicted(&#34;rhod&#34;),
-            pthd=self.environment.get_predicted(&#34;thd&#34;),
-            predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
-                &#34;water_vapour_mixing_ratio&#34;
-            ),
-            kappa=self.attributes[&#34;kappa&#34;],
-            f_org=self.attributes[&#34;dry volume organic fraction&#34;],
-            rtol_x=rtol_x,
-            rtol_thd=rtol_thd,
-            v_cr=self.attributes[&#34;critical volume&#34;],
-            timestep=self.dt,
-            counters=counters,
-            cell_order=cell_order,
-            RH_max=RH_max,
-            success=success,
-            cell_id=self.attributes[&#34;cell id&#34;],
-            reynolds_number=self.attributes[&#34;Reynolds number&#34;],
-            air_density=self.environment[&#34;air density&#34;],
-            air_dynamic_viscosity=self.environment[&#34;air dynamic viscosity&#34;],
-        )
-        self.attributes.mark_updated(&#34;water mass&#34;)
-
-    def collision_coalescence_breakup(
-        self,
-        *,
-        enable_breakup,
-        gamma,
-        rand,
-        Ec,
-        Eb,
-        fragment_mass,
-        coalescence_rate,
-        breakup_rate,
-        breakup_rate_deficit,
-        is_first_in_pair,
-        warn_overflows,
-        max_multiplicity,
-    ):
-        # pylint: disable=too-many-locals
-        idx = self.attributes._ParticleAttributes__idx
-        healthy = self.attributes._ParticleAttributes__healthy_memory
-        cell_id = self.attributes[&#34;cell id&#34;]
-        multiplicity = self.attributes[&#34;multiplicity&#34;]
-        attributes = self.attributes.get_extensive_attribute_storage()
-        if enable_breakup:
-            self.backend.collision_coalescence_breakup(
-                multiplicity=multiplicity,
-                idx=idx,
-                attributes=attributes,
-                gamma=gamma,
-                rand=rand,
-                Ec=Ec,
-                Eb=Eb,
-                fragment_mass=fragment_mass,
-                healthy=healthy,
-                cell_id=cell_id,
-                coalescence_rate=coalescence_rate,
-                breakup_rate=breakup_rate,
-                breakup_rate_deficit=breakup_rate_deficit,
-                is_first_in_pair=is_first_in_pair,
-                warn_overflows=warn_overflows,
-                particle_mass=self.attributes[&#34;water mass&#34;],
-                max_multiplicity=max_multiplicity,
-            )
-        else:
-            self.backend.collision_coalescence(
-                multiplicity=multiplicity,
-                idx=idx,
-                attributes=attributes,
-                gamma=gamma,
-                healthy=healthy,
-                cell_id=cell_id,
-                coalescence_rate=coalescence_rate,
-                is_first_in_pair=is_first_in_pair,
-            )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
-        )
-        self.attributes.sanitize()
-        self.attributes.mark_updated(&#34;multiplicity&#34;)
-        for key in self.attributes.get_extensive_attribute_keys():
-            self.attributes.mark_updated(key)
-
-    def oxidation(
-        self,
-        *,
-        kinetic_consts,
-        timestep,
-        equilibrium_consts,
-        dissociation_factors,
-        do_chemistry_flag,
-    ):
-        self.backend.oxidation(
-            n_sd=self.n_sd,
-            cell_ids=self.attributes[&#34;cell id&#34;],
-            do_chemistry_flag=do_chemistry_flag,
-            k0=kinetic_consts[&#34;k0&#34;],
-            k1=kinetic_consts[&#34;k1&#34;],
-            k2=kinetic_consts[&#34;k2&#34;],
-            k3=kinetic_consts[&#34;k3&#34;],
-            K_SO2=equilibrium_consts[&#34;K_SO2&#34;],
-            K_HSO3=equilibrium_consts[&#34;K_HSO3&#34;],
-            dissociation_factor_SO2=dissociation_factors[&#34;SO2&#34;],
-            timestep=timestep,
-            # input
-            droplet_volume=self.attributes[&#34;volume&#34;],
-            pH=self.attributes[&#34;pH&#34;],
-            # output
-            moles_O3=self.attributes[&#34;moles_O3&#34;],
-            moles_H2O2=self.attributes[&#34;moles_H2O2&#34;],
-            moles_S_IV=self.attributes[&#34;moles_S_IV&#34;],
-            moles_S_VI=self.attributes[&#34;moles_S_VI&#34;],
-        )
-        for attr in (&#34;moles_S_IV&#34;, &#34;moles_S_VI&#34;, &#34;moles_H2O2&#34;, &#34;moles_O3&#34;):
-            self.attributes.mark_updated(attr)
-
-    def dissolution(
-        self,
-        *,
-        gaseous_compounds,
-        system_type,
-        dissociation_factors,
-        timestep,
-        environment_mixing_ratios,
-        do_chemistry_flag,
-    ):
-        self.backend.dissolution(
-            n_cell=self.mesh.n_cell,
-            n_threads=1,
-            cell_order=np.arange(self.mesh.n_cell),
-            cell_start_arg=self.attributes.cell_start,
-            idx=self.attributes._ParticleAttributes__idx,
-            do_chemistry_flag=do_chemistry_flag,
-            mole_amounts={
-                key: self.attributes[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()
-            },
-            env_mixing_ratio=environment_mixing_ratios,
-            # note: assuming condensation was called
-            env_p=self.environment.get_predicted(&#34;p&#34;),
-            env_T=self.environment.get_predicted(&#34;T&#34;),
-            env_rho_d=self.environment.get_predicted(&#34;rhod&#34;),
-            timestep=timestep,
-            dv=self.mesh.dv,
-            droplet_volume=self.attributes[&#34;volume&#34;],
-            multiplicity=self.attributes[&#34;multiplicity&#34;],
-            system_type=system_type,
-            dissociation_factors=dissociation_factors,
-        )
-        for key in gaseous_compounds.keys():
-            self.attributes.mark_updated(f&#34;moles_{key}&#34;)
-
-    def chem_recalculate_cell_data(self, *, equilibrium_consts, kinetic_consts):
-        self.backend.chem_recalculate_cell_data(
-            equilibrium_consts=equilibrium_consts,
-            kinetic_consts=kinetic_consts,
-            temperature=self.environment.get_predicted(&#34;T&#34;),
-        )
-
-    def chem_recalculate_drop_data(self, *, dissociation_factors, equilibrium_consts):
-        self.backend.chem_recalculate_drop_data(
-            dissociation_factors=dissociation_factors,
-            equilibrium_consts=equilibrium_consts,
-            pH=self.attributes[&#34;pH&#34;],
-            cell_id=self.attributes[&#34;cell id&#34;],
-        )
-
-    def recalculate_cell_id(self):
-        if not self.attributes.has_attribute(&#34;cell origin&#34;):
-            return
-        self.backend.cell_id(
-            self.attributes[&#34;cell id&#34;],
-            self.attributes[&#34;cell origin&#34;],
-            self.backend.Storage.from_ndarray(self.environment.mesh.strides),
-        )
-        self.attributes._ParticleAttributes__sorted = False
-
-    def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.backend.sort_within_pair_by_attr(
-            self.attributes._ParticleAttributes__idx,
-            is_first_in_pair,
-            self.attributes[attr_name],
-        )
-
-    def moments(
-        self,
-        *,
-        moment_0,
-        moments,
-        specs: dict,
-        attr_name=&#34;water mass&#34;,
-        attr_range=(-np.inf, np.inf),
-        weighting_attribute=&#34;water mass&#34;,
-        weighting_rank=0,
-        skip_division_by_m0=False,
-    ):
-        &#34;&#34;&#34;
-        Writes to `moment_0` and `moment` the zero-th and the k-th statistical moments
-        of particle attributes computed filtering by value of the attribute `attr_name`
-        to fall within `attr_range`. The moment ranks are defined by `specs`.
-
-        Parameters:
-            specs: e.g., `specs={&#39;volume&#39;: (1,2,3), &#39;kappa&#39;: (1)}` computes three moments
-                of volume and one moment of kappa
-            skip_division_by_m0: if set to `True`, the values written to `moments` are
-                multiplied by the 0-th moment (e.g., total volume instead of mean volume)
-        &#34;&#34;&#34;
-        if len(specs) == 0:
-            raise ValueError(&#34;empty specs passed&#34;)
-        attr_data, ranks = [], []
-        for attr in specs:
-            for rank in specs[attr]:
-                attr_data.append(self.attributes[attr])
-                ranks.append(rank)
-        assert len(set(attr_data)) &lt;= 1
-        if len(attr_data) == 0:
-            attr_data = self.backend.Storage.empty((0,), dtype=float)
-        else:
-            attr_data = attr_data[0]
-
-        ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
-
-        self.backend.moments(
-            moment_0=moment_0,
-            moments=moments,
-            multiplicity=self.attributes[&#34;multiplicity&#34;],
-            attr_data=attr_data,
-            cell_id=self.attributes[&#34;cell id&#34;],
-            idx=self.attributes._ParticleAttributes__idx,
-            length=self.attributes.super_droplet_count,
-            ranks=ranks,
-            min_x=attr_range[0],
-            max_x=attr_range[1],
-            x_attr=self.attributes[attr_name],
-            weighting_attribute=self.attributes[weighting_attribute],
-            weighting_rank=weighting_rank,
-            skip_division_by_m0=skip_division_by_m0,
-        )
-
-    def spectrum_moments(
-        self,
-        *,
-        moment_0,
-        moments,
-        attr,
-        rank,
-        attr_bins,
-        attr_name=&#34;water mass&#34;,
-        weighting_attribute=&#34;water mass&#34;,
-        weighting_rank=0,
-    ):
-        attr_data = self.attributes[attr]
-        self.backend.spectrum_moments(
-            moment_0=moment_0,
-            moments=moments,
-            multiplicity=self.attributes[&#34;multiplicity&#34;],
-            attr_data=attr_data,
-            cell_id=self.attributes[&#34;cell id&#34;],
-            idx=self.attributes._ParticleAttributes__idx,
-            length=self.attributes.super_droplet_count,
-            rank=rank,
-            x_bins=attr_bins,
-            x_attr=self.attributes[attr_name],
-            weighting_attribute=self.attributes[weighting_attribute],
-            weighting_rank=weighting_rank,
-        )
-
-    def adaptive_sdm_end(self, dt_left):
-        return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)
-
-    def remove_precipitated(
-        self, *, displacement, precipitation_counting_level_index
-    ) -&gt; float:
-        res = self.backend.flag_precipitated(
-            cell_origin=self.attributes[&#34;cell origin&#34;],
-            position_in_cell=self.attributes[&#34;position in cell&#34;],
-            volume=self.attributes[&#34;volume&#34;],
-            multiplicity=self.attributes[&#34;multiplicity&#34;],
-            idx=self.attributes._ParticleAttributes__idx,
-            length=self.attributes.super_droplet_count,
-            healthy=self.attributes._ParticleAttributes__healthy_memory,
-            precipitation_counting_level_index=precipitation_counting_level_index,
-            displacement=displacement,
-        )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
-        )
-        self.attributes.sanitize()
-        return res
-
-    def flag_out_of_column(self):
-        self.backend.flag_out_of_column(
-            cell_origin=self.attributes[&#34;cell origin&#34;],
-            position_in_cell=self.attributes[&#34;position in cell&#34;],
-            idx=self.attributes._ParticleAttributes__idx,
-            length=self.attributes.super_droplet_count,
-            healthy=self.attributes._ParticleAttributes__healthy_memory,
-            domain_top_level_index=self.mesh.grid[-1],
-        )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
-        )
-        self.attributes.sanitize()
-
-    def calculate_displacement(
-        self, *, displacement, courant, cell_origin, position_in_cell, n_substeps
-    ):
-        for dim in range(len(self.environment.mesh.grid)):
-            self.backend.calculate_displacement(
-                dim=dim,
-                displacement=displacement,
-                courant=courant[dim],
-                cell_origin=cell_origin,
-                position_in_cell=position_in_cell,
-                n_substeps=n_substeps,
-            )
-
-    def isotopic_fractionation(self, heavy_isotopes: tuple):
-        self.backend.isotopic_fractionation()
-        for isotope in heavy_isotopes:
-            self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -935,7 +484,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="PySDM.particulator.Particulator.Random"><code class="name">var <span class="ident">Random</span></code></dt>
+<dt id="PySDM.particulator.Particulator.Random"><code class="name">prop <span class="ident">Random</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -947,7 +496,7 @@ def Random(self):
     return self.backend.Random</code></pre>
 </details>
 </dd>
-<dt id="PySDM.particulator.Particulator.Storage"><code class="name">var <span class="ident">Storage</span></code></dt>
+<dt id="PySDM.particulator.Particulator.Storage"><code class="name">prop <span class="ident">Storage</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -959,7 +508,7 @@ def Storage(self):
     return self.backend.Storage</code></pre>
 </details>
 </dd>
-<dt id="PySDM.particulator.Particulator.dt"><code class="name">var <span class="ident">dt</span> : float</code></dt>
+<dt id="PySDM.particulator.Particulator.dt"><code class="name">prop <span class="ident">dt</span> : float</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -973,7 +522,7 @@ def dt(self) -&gt; float:
     return None</code></pre>
 </details>
 </dd>
-<dt id="PySDM.particulator.Particulator.mesh"><code class="name">var <span class="ident">mesh</span></code></dt>
+<dt id="PySDM.particulator.Particulator.mesh"><code class="name">prop <span class="ident">mesh</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -987,7 +536,7 @@ def mesh(self):
     return None</code></pre>
 </details>
 </dd>
-<dt id="PySDM.particulator.Particulator.n_sd"><code class="name">var <span class="ident">n_sd</span> : int</code></dt>
+<dt id="PySDM.particulator.Particulator.n_sd"><code class="name">prop <span class="ident">n_sd</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -1007,142 +556,30 @@ def n_sd(self) -&gt; int:
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def adaptive_sdm_end(self, dt_left):
-    return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.calculate_displacement"><code class="name flex">
 <span>def <span class="ident">calculate_displacement</span></span>(<span>self, *, displacement, courant, cell_origin, position_in_cell, n_substeps)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def calculate_displacement(
-    self, *, displacement, courant, cell_origin, position_in_cell, n_substeps
-):
-    for dim in range(len(self.environment.mesh.grid)):
-        self.backend.calculate_displacement(
-            dim=dim,
-            displacement=displacement,
-            courant=courant[dim],
-            cell_origin=cell_origin,
-            position_in_cell=position_in_cell,
-            n_substeps=n_substeps,
-        )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.chem_recalculate_cell_data"><code class="name flex">
 <span>def <span class="ident">chem_recalculate_cell_data</span></span>(<span>self, *, equilibrium_consts, kinetic_consts)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def chem_recalculate_cell_data(self, *, equilibrium_consts, kinetic_consts):
-    self.backend.chem_recalculate_cell_data(
-        equilibrium_consts=equilibrium_consts,
-        kinetic_consts=kinetic_consts,
-        temperature=self.environment.get_predicted(&#34;T&#34;),
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.chem_recalculate_drop_data"><code class="name flex">
 <span>def <span class="ident">chem_recalculate_drop_data</span></span>(<span>self, *, dissociation_factors, equilibrium_consts)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def chem_recalculate_drop_data(self, *, dissociation_factors, equilibrium_consts):
-    self.backend.chem_recalculate_drop_data(
-        dissociation_factors=dissociation_factors,
-        equilibrium_consts=equilibrium_consts,
-        pH=self.attributes[&#34;pH&#34;],
-        cell_id=self.attributes[&#34;cell id&#34;],
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
 <span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, fragment_mass, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, max_multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def collision_coalescence_breakup(
-    self,
-    *,
-    enable_breakup,
-    gamma,
-    rand,
-    Ec,
-    Eb,
-    fragment_mass,
-    coalescence_rate,
-    breakup_rate,
-    breakup_rate_deficit,
-    is_first_in_pair,
-    warn_overflows,
-    max_multiplicity,
-):
-    # pylint: disable=too-many-locals
-    idx = self.attributes._ParticleAttributes__idx
-    healthy = self.attributes._ParticleAttributes__healthy_memory
-    cell_id = self.attributes[&#34;cell id&#34;]
-    multiplicity = self.attributes[&#34;multiplicity&#34;]
-    attributes = self.attributes.get_extensive_attribute_storage()
-    if enable_breakup:
-        self.backend.collision_coalescence_breakup(
-            multiplicity=multiplicity,
-            idx=idx,
-            attributes=attributes,
-            gamma=gamma,
-            rand=rand,
-            Ec=Ec,
-            Eb=Eb,
-            fragment_mass=fragment_mass,
-            healthy=healthy,
-            cell_id=cell_id,
-            coalescence_rate=coalescence_rate,
-            breakup_rate=breakup_rate,
-            breakup_rate_deficit=breakup_rate_deficit,
-            is_first_in_pair=is_first_in_pair,
-            warn_overflows=warn_overflows,
-            particle_mass=self.attributes[&#34;water mass&#34;],
-            max_multiplicity=max_multiplicity,
-        )
-    else:
-        self.backend.collision_coalescence(
-            multiplicity=multiplicity,
-            idx=idx,
-            attributes=attributes,
-            gamma=gamma,
-            healthy=healthy,
-            cell_id=cell_id,
-            coalescence_rate=coalescence_rate,
-            is_first_in_pair=is_first_in_pair,
-        )
-    self.attributes.healthy = bool(
-        self.attributes._ParticleAttributes__healthy_memory
-    )
-    self.attributes.sanitize()
-    self.attributes.mark_updated(&#34;multiplicity&#34;)
-    for key in self.attributes.get_extensive_attribute_keys():
-        self.attributes.mark_updated(key)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.condensation"><code class="name flex">
 <span>def <span class="ident">condensation</span></span>(<span>self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order)</span>
@@ -1157,139 +594,24 @@ In the case of prescribed-flow/kinematic environments, the dry-air density is
 constant in time throughout the simulation.
 This function should only change environment's predicted <code>thd</code> and
 <code>water_vapour_mixing_ratio</code> (and not <code>rhod</code>).</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
-    &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
-      in environment thermodynamic state, updates the environment state.
-    In the case of parcel environment, condensation is driven solely by changes in
-      the dry-air density (theta and water_vapour_mixing_ratio should not be changed
-      by other dynamics).
-    In the case of prescribed-flow/kinematic environments, the dry-air density is
-      constant in time throughout the simulation.
-    This function should only change environment&#39;s predicted `thd` and
-      `water_vapour_mixing_ratio` (and not `rhod`).
-    &#34;&#34;&#34;
-    self.backend.condensation(
-        solver=self.condensation_solver,
-        n_cell=self.mesh.n_cell,
-        cell_start_arg=self.attributes.cell_start,
-        water_mass=self.attributes[&#34;water mass&#34;],
-        multiplicity=self.attributes[&#34;multiplicity&#34;],
-        vdry=self.attributes[&#34;dry volume&#34;],
-        idx=self.attributes._ParticleAttributes__idx,
-        rhod=self.environment[&#34;rhod&#34;],
-        thd=self.environment[&#34;thd&#34;],
-        water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
-        dv=self.environment.dv,
-        prhod=self.environment.get_predicted(&#34;rhod&#34;),
-        pthd=self.environment.get_predicted(&#34;thd&#34;),
-        predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
-            &#34;water_vapour_mixing_ratio&#34;
-        ),
-        kappa=self.attributes[&#34;kappa&#34;],
-        f_org=self.attributes[&#34;dry volume organic fraction&#34;],
-        rtol_x=rtol_x,
-        rtol_thd=rtol_thd,
-        v_cr=self.attributes[&#34;critical volume&#34;],
-        timestep=self.dt,
-        counters=counters,
-        cell_order=cell_order,
-        RH_max=RH_max,
-        success=success,
-        cell_id=self.attributes[&#34;cell id&#34;],
-        reynolds_number=self.attributes[&#34;Reynolds number&#34;],
-        air_density=self.environment[&#34;air density&#34;],
-        air_dynamic_viscosity=self.environment[&#34;air dynamic viscosity&#34;],
-    )
-    self.attributes.mark_updated(&#34;water mass&#34;)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.dissolution"><code class="name flex">
 <span>def <span class="ident">dissolution</span></span>(<span>self, *, gaseous_compounds, system_type, dissociation_factors, timestep, environment_mixing_ratios, do_chemistry_flag)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def dissolution(
-    self,
-    *,
-    gaseous_compounds,
-    system_type,
-    dissociation_factors,
-    timestep,
-    environment_mixing_ratios,
-    do_chemistry_flag,
-):
-    self.backend.dissolution(
-        n_cell=self.mesh.n_cell,
-        n_threads=1,
-        cell_order=np.arange(self.mesh.n_cell),
-        cell_start_arg=self.attributes.cell_start,
-        idx=self.attributes._ParticleAttributes__idx,
-        do_chemistry_flag=do_chemistry_flag,
-        mole_amounts={
-            key: self.attributes[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()
-        },
-        env_mixing_ratio=environment_mixing_ratios,
-        # note: assuming condensation was called
-        env_p=self.environment.get_predicted(&#34;p&#34;),
-        env_T=self.environment.get_predicted(&#34;T&#34;),
-        env_rho_d=self.environment.get_predicted(&#34;rhod&#34;),
-        timestep=timestep,
-        dv=self.mesh.dv,
-        droplet_volume=self.attributes[&#34;volume&#34;],
-        multiplicity=self.attributes[&#34;multiplicity&#34;],
-        system_type=system_type,
-        dissociation_factors=dissociation_factors,
-    )
-    for key in gaseous_compounds.keys():
-        self.attributes.mark_updated(f&#34;moles_{key}&#34;)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.flag_out_of_column"><code class="name flex">
 <span>def <span class="ident">flag_out_of_column</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def flag_out_of_column(self):
-    self.backend.flag_out_of_column(
-        cell_origin=self.attributes[&#34;cell origin&#34;],
-        position_in_cell=self.attributes[&#34;position in cell&#34;],
-        idx=self.attributes._ParticleAttributes__idx,
-        length=self.attributes.super_droplet_count,
-        healthy=self.attributes._ParticleAttributes__healthy_memory,
-        domain_top_level_index=self.mesh.grid[-1],
-    )
-    self.attributes.healthy = bool(
-        self.attributes._ParticleAttributes__healthy_memory
-    )
-    self.attributes.sanitize()</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.isotopic_fractionation"><code class="name flex">
 <span>def <span class="ident">isotopic_fractionation</span></span>(<span>self, heavy_isotopes: tuple)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def isotopic_fractionation(self, heavy_isotopes: tuple):
-    self.backend.isotopic_fractionation()
-    for isotope in heavy_isotopes:
-        self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.moments"><code class="name flex">
 <span>def <span class="ident">moments</span></span>(<span>self, *, moment_0, moments, specs: dict, attr_name='water mass', attr_range=(-inf, inf), weighting_attribute='water mass', weighting_rank=0, skip_division_by_m0=False)</span>
@@ -1303,276 +625,54 @@ to fall within <code>attr_range</code>. The moment ranks are defined by <code>sp
 of volume and one moment of kappa
 skip_division_by_m0: if set to <code>True</code>, the values written to <code>moments</code> are
 multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def moments(
-    self,
-    *,
-    moment_0,
-    moments,
-    specs: dict,
-    attr_name=&#34;water mass&#34;,
-    attr_range=(-np.inf, np.inf),
-    weighting_attribute=&#34;water mass&#34;,
-    weighting_rank=0,
-    skip_division_by_m0=False,
-):
-    &#34;&#34;&#34;
-    Writes to `moment_0` and `moment` the zero-th and the k-th statistical moments
-    of particle attributes computed filtering by value of the attribute `attr_name`
-    to fall within `attr_range`. The moment ranks are defined by `specs`.
-
-    Parameters:
-        specs: e.g., `specs={&#39;volume&#39;: (1,2,3), &#39;kappa&#39;: (1)}` computes three moments
-            of volume and one moment of kappa
-        skip_division_by_m0: if set to `True`, the values written to `moments` are
-            multiplied by the 0-th moment (e.g., total volume instead of mean volume)
-    &#34;&#34;&#34;
-    if len(specs) == 0:
-        raise ValueError(&#34;empty specs passed&#34;)
-    attr_data, ranks = [], []
-    for attr in specs:
-        for rank in specs[attr]:
-            attr_data.append(self.attributes[attr])
-            ranks.append(rank)
-    assert len(set(attr_data)) &lt;= 1
-    if len(attr_data) == 0:
-        attr_data = self.backend.Storage.empty((0,), dtype=float)
-    else:
-        attr_data = attr_data[0]
-
-    ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
-
-    self.backend.moments(
-        moment_0=moment_0,
-        moments=moments,
-        multiplicity=self.attributes[&#34;multiplicity&#34;],
-        attr_data=attr_data,
-        cell_id=self.attributes[&#34;cell id&#34;],
-        idx=self.attributes._ParticleAttributes__idx,
-        length=self.attributes.super_droplet_count,
-        ranks=ranks,
-        min_x=attr_range[0],
-        max_x=attr_range[1],
-        x_attr=self.attributes[attr_name],
-        weighting_attribute=self.attributes[weighting_attribute],
-        weighting_rank=weighting_rank,
-        skip_division_by_m0=skip_division_by_m0,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.normalize"><code class="name flex">
 <span>def <span class="ident">normalize</span></span>(<span>self, prob, norm_factor)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def normalize(self, prob, norm_factor):
-    self.backend.normalize(
-        prob=prob,
-        cell_id=self.attributes[&#34;cell id&#34;],
-        cell_idx=self.attributes.cell_idx,
-        cell_start=self.attributes.cell_start,
-        norm_factor=norm_factor,
-        timestep=self.dt,
-        dv=self.mesh.dv,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.oxidation"><code class="name flex">
 <span>def <span class="ident">oxidation</span></span>(<span>self, *, kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def oxidation(
-    self,
-    *,
-    kinetic_consts,
-    timestep,
-    equilibrium_consts,
-    dissociation_factors,
-    do_chemistry_flag,
-):
-    self.backend.oxidation(
-        n_sd=self.n_sd,
-        cell_ids=self.attributes[&#34;cell id&#34;],
-        do_chemistry_flag=do_chemistry_flag,
-        k0=kinetic_consts[&#34;k0&#34;],
-        k1=kinetic_consts[&#34;k1&#34;],
-        k2=kinetic_consts[&#34;k2&#34;],
-        k3=kinetic_consts[&#34;k3&#34;],
-        K_SO2=equilibrium_consts[&#34;K_SO2&#34;],
-        K_HSO3=equilibrium_consts[&#34;K_HSO3&#34;],
-        dissociation_factor_SO2=dissociation_factors[&#34;SO2&#34;],
-        timestep=timestep,
-        # input
-        droplet_volume=self.attributes[&#34;volume&#34;],
-        pH=self.attributes[&#34;pH&#34;],
-        # output
-        moles_O3=self.attributes[&#34;moles_O3&#34;],
-        moles_H2O2=self.attributes[&#34;moles_H2O2&#34;],
-        moles_S_IV=self.attributes[&#34;moles_S_IV&#34;],
-        moles_S_VI=self.attributes[&#34;moles_S_VI&#34;],
-    )
-    for attr in (&#34;moles_S_IV&#34;, &#34;moles_S_VI&#34;, &#34;moles_H2O2&#34;, &#34;moles_O3&#34;):
-        self.attributes.mark_updated(attr)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.recalculate_cell_id"><code class="name flex">
 <span>def <span class="ident">recalculate_cell_id</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def recalculate_cell_id(self):
-    if not self.attributes.has_attribute(&#34;cell origin&#34;):
-        return
-    self.backend.cell_id(
-        self.attributes[&#34;cell id&#34;],
-        self.attributes[&#34;cell origin&#34;],
-        self.backend.Storage.from_ndarray(self.environment.mesh.strides),
-    )
-    self.attributes._ParticleAttributes__sorted = False</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.remove_precipitated"><code class="name flex">
 <span>def <span class="ident">remove_precipitated</span></span>(<span>self, *, displacement, precipitation_counting_level_index) ‑> float</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def remove_precipitated(
-    self, *, displacement, precipitation_counting_level_index
-) -&gt; float:
-    res = self.backend.flag_precipitated(
-        cell_origin=self.attributes[&#34;cell origin&#34;],
-        position_in_cell=self.attributes[&#34;position in cell&#34;],
-        volume=self.attributes[&#34;volume&#34;],
-        multiplicity=self.attributes[&#34;multiplicity&#34;],
-        idx=self.attributes._ParticleAttributes__idx,
-        length=self.attributes.super_droplet_count,
-        healthy=self.attributes._ParticleAttributes__healthy_memory,
-        precipitation_counting_level_index=precipitation_counting_level_index,
-        displacement=displacement,
-    )
-    self.attributes.healthy = bool(
-        self.attributes._ParticleAttributes__healthy_memory
-    )
-    self.attributes.sanitize()
-    return res</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>self, steps)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def run(self, steps):
-    for _ in range(steps):
-        for key, dynamic in self.dynamics.items():
-            with self.timers[key]:
-                dynamic()
-        self.n_steps += 1
-        self._notify_observers()</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.sort_within_pair_by_attr"><code class="name flex">
 <span>def <span class="ident">sort_within_pair_by_attr</span></span>(<span>self, is_first_in_pair, attr_name)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-    self.backend.sort_within_pair_by_attr(
-        self.attributes._ParticleAttributes__idx,
-        is_first_in_pair,
-        self.attributes[attr_name],
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.spectrum_moments"><code class="name flex">
 <span>def <span class="ident">spectrum_moments</span></span>(<span>self, *, moment_0, moments, attr, rank, attr_bins, attr_name='water mass', weighting_attribute='water mass', weighting_rank=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def spectrum_moments(
-    self,
-    *,
-    moment_0,
-    moments,
-    attr,
-    rank,
-    attr_bins,
-    attr_name=&#34;water mass&#34;,
-    weighting_attribute=&#34;water mass&#34;,
-    weighting_rank=0,
-):
-    attr_data = self.attributes[attr]
-    self.backend.spectrum_moments(
-        moment_0=moment_0,
-        moments=moments,
-        multiplicity=self.attributes[&#34;multiplicity&#34;],
-        attr_data=attr_data,
-        cell_id=self.attributes[&#34;cell id&#34;],
-        idx=self.attributes._ParticleAttributes__idx,
-        length=self.attributes.super_droplet_count,
-        rank=rank,
-        x_bins=attr_bins,
-        x_attr=self.attributes[attr_name],
-        weighting_attribute=self.attributes[weighting_attribute],
-        weighting_rank=weighting_rank,
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.particulator.Particulator.update_TpRH"><code class="name flex">
 <span>def <span class="ident">update_TpRH</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update_TpRH(self):
-    self.backend.temperature_pressure_rh(
-        # input
-        rhod=self.environment.get_predicted(&#34;rhod&#34;),
-        thd=self.environment.get_predicted(&#34;thd&#34;),
-        water_vapour_mixing_ratio=self.environment.get_predicted(
-            &#34;water_vapour_mixing_ratio&#34;
-        ),
-        # output
-        T=self.environment.get_predicted(&#34;T&#34;),
-        p=self.environment.get_predicted(&#34;p&#34;),
-        RH=self.environment.get_predicted(&#34;RH&#34;),
-    )</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -1580,7 +680,6 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -1626,7 +725,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

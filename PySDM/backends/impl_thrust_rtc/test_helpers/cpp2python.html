@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python API documentation</title>
 <meta name="description" content="a simplistic C++ to Python translation utils for use in
-`PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC`" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+`PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC`">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -25,235 +28,6 @@
 <section id="section-intro">
 <p>a simplistic C++ to Python translation utils for use in
 <code><a title="PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC" href="fake_thrust_rtc.html#PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC">FakeThrustRTC</a></code></p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-a simplistic C++ to Python translation utils for use in
- `PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC`
-&#34;&#34;&#34;
-
-import re
-
-from ...impl_numba.conf import JIT_FLAGS
-
-JIT_OPTS = &#34;error_model=&#39;numpy&#39;, fastmath=True&#34;
-
-CPPYTHON = {
-    &#34;int &#34;: &#34;&#34;,
-    &#34;void &#34;: &#34;&#34;,
-    &#34;int64_t *&#34;: &#34;&#34;,
-    &#34;int64_t &#34;: &#34;&#34;,
-    &#34;double *&#34;: &#34;&#34;,
-    &#34;double &#34;: &#34;&#34;,
-    &#34;float *&#34;: &#34;&#34;,
-    &#34;float &#34;: &#34;&#34;,
-    &#34;auto &#34;: &#34;&#34;,
-    &#34;bool &#34;: &#34;&#34;,
-    &#34;[1] = {}; // float&#34;: &#34;=np.empty(1, dtype=float)&#34;,
-    &#34;[1] = {}&#34;: &#34;=np.empty(1, dtype=np.int64)&#34;,
-    &#34;[] = {&#34;: &#34; = (&#34;,
-    &#34; {&#34;: &#34;:&#34;,
-    &#34;}; // array&#34;: &#34;)&#34;,
-    &#34;//&#34;: &#34;#&#34;,
-    &#34;||&#34;: &#34;or&#34;,
-    &#34;&amp;&amp;&#34;: &#34;and&#34;,
-    &#34;! &#34;: &#34;not &#34;,
-    &#34;&amp;&#34;: &#34;&#34;,
-    &#34;(int64_t)&#34;: &#34;np.int64&#34;,  # TODO #324 test depicting failure when set to int16
-    &#34;(double)&#34;: &#34;np.float64&#34;,
-    &#34;(float)&#34;: &#34;np.float32&#34;,
-    &#34;return;&#34;: &#34;continue&#34;,
-    &#34;void*&#34;: &#34;&#34;,
-    &#34;VectorView&lt;int64_t&gt; &#34;: &#34;&#34;,
-    &#34;VectorView&lt;float&gt; &#34;: &#34;&#34;,
-    &#34;VectorView&lt;double&gt; &#34;: &#34;&#34;,
-    &#34;VectorView&lt;bool&gt; &#34;: &#34;&#34;,
-    &#34;::&#34;: &#34;_&#34;,
-    &#34;(*&#34;: &#34;&#34;,
-    &#34;)(, )&#34;: &#34;&#34;,
-    &#34;else if&#34;: &#34;elif&#34;,
-    &#34;printf&#34;: &#34;print&#34;,
-    &#34;false&#34;: &#34;False&#34;,
-    &#34;true&#34;: &#34;True&#34;,
-}
-
-
-def extract_var(cpp, start_position, end_char):
-    stop = cpp.find(end_char, start_position)
-    return cpp[start_position + 1 : stop].strip()
-
-
-def for_to_python(cpp: str) -&gt; str:
-    &#34;&#34;&#34;
-    need &#39;;&#39; in code and be running after removing types
-
-    :param cpp:
-    :return python code:
-    &#34;&#34;&#34;
-    start = cpp.find(&#34;(&#34;)
-    var = extract_var(cpp, start, &#34;=&#34;)
-
-    start = cpp.find(&#34;=&#34;)
-    range_start = extract_var(cpp, start, &#34;;&#34;)
-
-    start = cpp.find(&#34;&lt;&#34;)
-    if start == -1:
-        start = cpp.find(&#34;&gt;&#34;)
-    sign = &#34;-&#34; if cpp[start] == &#34;&gt;&#34; else &#34;&#34;
-    range_stop = extract_var(cpp, start, &#34;;&#34;)
-
-    start = cpp.find(&#34;+=&#34;)
-    if start == -1:
-        start = cpp.find(&#34;-=&#34;)
-    start += 1
-
-    range_step = extract_var(cpp, start, &#34;)&#34;)
-
-    return f&#34;for {var} in range({range_start}, {range_stop}, {sign}{range_step}):&#34;
-
-
-def replace_fors(cpp) -&gt; str:
-    start = cpp.find(&#34;for &#34;)
-    while start &gt; -1:
-        stop = cpp.find(&#34;:&#34;, start)
-        cpp_for = cpp[start : stop + 1]
-        python_for = for_to_python(cpp_for)
-        cpp = cpp.replace(cpp_for, python_for.replace(&#34;for&#34;, &#34;__python_token__&#34;))
-        start = cpp.find(&#34;for &#34;, start + len(python_for))
-    return cpp.replace(&#34;__python_token__&#34;, &#34;for&#34;)
-
-
-def atomic_min_to_python(cpp: str) -&gt; str:
-    cpp = (
-        cpp.replace(&#34;unsigned int*&#34;, &#34;&#34;)
-        .replace(&#34;double*&#34;, &#34;&#34;)
-        .replace(&#34;float*&#34;, &#34;&#34;)
-        .replace(&#34; &#34;, &#34;&#34;)
-        .replace(&#34;()&#34;, &#34;&#34;)
-        .replace(&#34;&amp;&#34;, &#34;&#34;)
-    )
-    cpp = re.sub(
-        r&#34;atomicMin\((\w+)\[(\w+)],\s*__float_as_uint\(([^)]*)\)\);&#34;,
-        r&#34;np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);&#34;,
-        cpp,
-    )
-    return cpp
-
-
-def replace_atomic_mins(cpp: str) -&gt; (str, bool):
-    start = cpp.find(&#34;atomicMin&#34;)
-    parallel = start == -1
-    while start &gt; -1:
-        stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_min = cpp[start : stop + 1]
-        python_atomic_min = atomic_min_to_python(cpp_atomic_min)
-        cpp = cpp.replace(cpp_atomic_min, python_atomic_min)
-        start = cpp.find(&#34;atomicMin&#34;, start + len(python_atomic_min))
-    return cpp, parallel
-
-
-def atomic_add_to_python(cpp: str) -&gt; str:
-    cpp = (
-        cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;)
-        .replace(&#34;\n&#34;, &#34;&#34;)
-        .replace(&#34;unsigned long long int*&#34;, &#34;&#34;)
-        .replace(&#34;unsigned long long int&#34;, &#34;&#34;)
-        .replace(&#34;double*&#34;, &#34;&#34;)
-        .replace(&#34;float*&#34;, &#34;&#34;)
-        .replace(&#34; &#34;, &#34;&#34;)
-        .replace(&#34;()&#34;, &#34;&#34;)
-        .replace(&#34;&amp;&#34;, &#34;&#34;)
-        .replace(&#34;,&#34;, &#34;+=&#34;, 1)[1:-2]
-    )  # remove &#39;(&#39; and &#39;);&#39;
-    return cpp
-
-
-def replace_atomic_adds(cpp: str) -&gt; (str, bool):
-    start = cpp.find(&#34;atomicAdd&#34;)
-    parallel = start == -1
-    while start &gt; -1:
-        stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_add = cpp[start : stop + 1]
-        python_atomic_add = atomic_add_to_python(cpp_atomic_add)
-        cpp = cpp.replace(cpp_atomic_add, python_atomic_add)
-        start = cpp.find(&#34;atomicAdd&#34;, start + len(python_atomic_add))
-    return cpp, parallel
-
-
-def extract_struct_defs(cpp: str) -&gt; (str, str):
-    stop_string = &#34;};&#34;
-    structs = []
-    names = []
-
-    start = cpp.find(&#34;struct &#34;)
-    while start &gt; -1:
-        stop = cpp.find(stop_string, start)
-        struct = cpp[start : stop + len(stop_string)]
-        cpp = cpp.replace(struct, &#34;&#34;)
-        start = cpp.find(&#34;struct &#34;, start + 1)
-        structs.append(struct[struct.find(&#34;:&#34;) + 1 : -2])
-        names.append(re.match(r&#34;(struct )(.*)(:)&#34;, struct)[2])
-
-    for i, struct in enumerate(structs):
-        structs[i] = struct.replace(
-            &#34;static __device__ &#34;,
-            f&#34;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#34;,
-        )
-
-    return cpp, &#34;\n&#34;.join(structs)
-
-
-def to_numba(name, args, iter_var, body):
-    body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#34;&#34;, body)
-    body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#34;&#34;, body)
-    body = body.replace(&#34;\n&#34;, &#34;\n    &#34;)
-    for cpp, python in CPPYTHON.items():
-        body = body.replace(cpp, python)
-    body = replace_fors(body)
-    body, parallel_add = replace_atomic_adds(body)
-    body, parallel_min = replace_atomic_mins(body)
-    parallel = parallel_add and parallel_min
-
-    body, structs = extract_struct_defs(body)
-
-    result = (
-        f&#34;&#34;&#34;
-def make(self):
-    import numpy as np
-    from numpy import (
-        floor, ceil,
-        exp, log,
-        power, sqrt,
-        arctanh as atanh,
-        arcsinh as asinh,
-        sinh,
-        maximum, minimum,
-        where,  # TODO #1295
-    )
-    import numba
-
-    @numba.njit(parallel=False, {JIT_OPTS})
-    def ldexp(a, b):
-        return a * 2**b
-
-    {structs}
-    @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {JIT_OPTS})
-    def {name}(__python_n__, {str(args).replace(&#34;&#39;&#34;, &#34;&#34;).replace(&#39;&#34;&#39;, &#39;&#39;)[1:-1]}):
-        for {iter_var} in numba.prange(__python_n__):
-            {body}
-
-    return {name}
-&#34;&#34;&#34;.replace(
-            &#34;};&#34;, &#34;)&#34;
-        )
-        .replace(&#34;} &#34;, &#34;&#34;)
-        .replace(&#34;}&#34;, &#34;&#34;)
-    )
-
-    return result</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -267,97 +41,24 @@ def make(self):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def atomic_add_to_python(cpp: str) -&gt; str:
-    cpp = (
-        cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;)
-        .replace(&#34;\n&#34;, &#34;&#34;)
-        .replace(&#34;unsigned long long int*&#34;, &#34;&#34;)
-        .replace(&#34;unsigned long long int&#34;, &#34;&#34;)
-        .replace(&#34;double*&#34;, &#34;&#34;)
-        .replace(&#34;float*&#34;, &#34;&#34;)
-        .replace(&#34; &#34;, &#34;&#34;)
-        .replace(&#34;()&#34;, &#34;&#34;)
-        .replace(&#34;&amp;&#34;, &#34;&#34;)
-        .replace(&#34;,&#34;, &#34;+=&#34;, 1)[1:-2]
-    )  # remove &#39;(&#39; and &#39;);&#39;
-    return cpp</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.atomic_min_to_python"><code class="name flex">
 <span>def <span class="ident">atomic_min_to_python</span></span>(<span>cpp: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def atomic_min_to_python(cpp: str) -&gt; str:
-    cpp = (
-        cpp.replace(&#34;unsigned int*&#34;, &#34;&#34;)
-        .replace(&#34;double*&#34;, &#34;&#34;)
-        .replace(&#34;float*&#34;, &#34;&#34;)
-        .replace(&#34; &#34;, &#34;&#34;)
-        .replace(&#34;()&#34;, &#34;&#34;)
-        .replace(&#34;&amp;&#34;, &#34;&#34;)
-    )
-    cpp = re.sub(
-        r&#34;atomicMin\((\w+)\[(\w+)],\s*__float_as_uint\(([^)]*)\)\);&#34;,
-        r&#34;np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);&#34;,
-        cpp,
-    )
-    return cpp</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.extract_struct_defs"><code class="name flex">
 <span>def <span class="ident">extract_struct_defs</span></span>(<span>cpp: str) ‑> (<class 'str'>, <class 'str'>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def extract_struct_defs(cpp: str) -&gt; (str, str):
-    stop_string = &#34;};&#34;
-    structs = []
-    names = []
-
-    start = cpp.find(&#34;struct &#34;)
-    while start &gt; -1:
-        stop = cpp.find(stop_string, start)
-        struct = cpp[start : stop + len(stop_string)]
-        cpp = cpp.replace(struct, &#34;&#34;)
-        start = cpp.find(&#34;struct &#34;, start + 1)
-        structs.append(struct[struct.find(&#34;:&#34;) + 1 : -2])
-        names.append(re.match(r&#34;(struct )(.*)(:)&#34;, struct)[2])
-
-    for i, struct in enumerate(structs):
-        structs[i] = struct.replace(
-            &#34;static __device__ &#34;,
-            f&#34;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#34;,
-        )
-
-    return cpp, &#34;\n&#34;.join(structs)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.extract_var"><code class="name flex">
 <span>def <span class="ident">extract_var</span></span>(<span>cpp, start_position, end_char)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def extract_var(cpp, start_position, end_char):
-    stop = cpp.find(end_char, start_position)
-    return cpp[start_position + 1 : stop].strip()</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.for_to_python"><code class="name flex">
 <span>def <span class="ident">for_to_python</span></span>(<span>cpp: str) ‑> str</span>
@@ -366,159 +67,30 @@ def make(self):
 <div class="desc"><p>need ';' in code and be running after removing types</p>
 <p>:param cpp:
 :return python code:</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def for_to_python(cpp: str) -&gt; str:
-    &#34;&#34;&#34;
-    need &#39;;&#39; in code and be running after removing types
-
-    :param cpp:
-    :return python code:
-    &#34;&#34;&#34;
-    start = cpp.find(&#34;(&#34;)
-    var = extract_var(cpp, start, &#34;=&#34;)
-
-    start = cpp.find(&#34;=&#34;)
-    range_start = extract_var(cpp, start, &#34;;&#34;)
-
-    start = cpp.find(&#34;&lt;&#34;)
-    if start == -1:
-        start = cpp.find(&#34;&gt;&#34;)
-    sign = &#34;-&#34; if cpp[start] == &#34;&gt;&#34; else &#34;&#34;
-    range_stop = extract_var(cpp, start, &#34;;&#34;)
-
-    start = cpp.find(&#34;+=&#34;)
-    if start == -1:
-        start = cpp.find(&#34;-=&#34;)
-    start += 1
-
-    range_step = extract_var(cpp, start, &#34;)&#34;)
-
-    return f&#34;for {var} in range({range_start}, {range_stop}, {sign}{range_step}):&#34;</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.replace_atomic_adds"><code class="name flex">
 <span>def <span class="ident">replace_atomic_adds</span></span>(<span>cpp: str) ‑> (<class 'str'>, <class 'bool'>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def replace_atomic_adds(cpp: str) -&gt; (str, bool):
-    start = cpp.find(&#34;atomicAdd&#34;)
-    parallel = start == -1
-    while start &gt; -1:
-        stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_add = cpp[start : stop + 1]
-        python_atomic_add = atomic_add_to_python(cpp_atomic_add)
-        cpp = cpp.replace(cpp_atomic_add, python_atomic_add)
-        start = cpp.find(&#34;atomicAdd&#34;, start + len(python_atomic_add))
-    return cpp, parallel</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.replace_atomic_mins"><code class="name flex">
 <span>def <span class="ident">replace_atomic_mins</span></span>(<span>cpp: str) ‑> (<class 'str'>, <class 'bool'>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def replace_atomic_mins(cpp: str) -&gt; (str, bool):
-    start = cpp.find(&#34;atomicMin&#34;)
-    parallel = start == -1
-    while start &gt; -1:
-        stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_min = cpp[start : stop + 1]
-        python_atomic_min = atomic_min_to_python(cpp_atomic_min)
-        cpp = cpp.replace(cpp_atomic_min, python_atomic_min)
-        start = cpp.find(&#34;atomicMin&#34;, start + len(python_atomic_min))
-    return cpp, parallel</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.replace_fors"><code class="name flex">
 <span>def <span class="ident">replace_fors</span></span>(<span>cpp) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def replace_fors(cpp) -&gt; str:
-    start = cpp.find(&#34;for &#34;)
-    while start &gt; -1:
-        stop = cpp.find(&#34;:&#34;, start)
-        cpp_for = cpp[start : stop + 1]
-        python_for = for_to_python(cpp_for)
-        cpp = cpp.replace(cpp_for, python_for.replace(&#34;for&#34;, &#34;__python_token__&#34;))
-        start = cpp.find(&#34;for &#34;, start + len(python_for))
-    return cpp.replace(&#34;__python_token__&#34;, &#34;for&#34;)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.to_numba"><code class="name flex">
 <span>def <span class="ident">to_numba</span></span>(<span>name, args, iter_var, body)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def to_numba(name, args, iter_var, body):
-    body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#34;&#34;, body)
-    body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#34;&#34;, body)
-    body = body.replace(&#34;\n&#34;, &#34;\n    &#34;)
-    for cpp, python in CPPYTHON.items():
-        body = body.replace(cpp, python)
-    body = replace_fors(body)
-    body, parallel_add = replace_atomic_adds(body)
-    body, parallel_min = replace_atomic_mins(body)
-    parallel = parallel_add and parallel_min
-
-    body, structs = extract_struct_defs(body)
-
-    result = (
-        f&#34;&#34;&#34;
-def make(self):
-    import numpy as np
-    from numpy import (
-        floor, ceil,
-        exp, log,
-        power, sqrt,
-        arctanh as atanh,
-        arcsinh as asinh,
-        sinh,
-        maximum, minimum,
-        where,  # TODO #1295
-    )
-    import numba
-
-    @numba.njit(parallel=False, {JIT_OPTS})
-    def ldexp(a, b):
-        return a * 2**b
-
-    {structs}
-    @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {JIT_OPTS})
-    def {name}(__python_n__, {str(args).replace(&#34;&#39;&#34;, &#34;&#34;).replace(&#39;&#34;&#39;, &#39;&#39;)[1:-1]}):
-        for {iter_var} in numba.prange(__python_n__):
-            {body}
-
-    return {name}
-&#34;&#34;&#34;.replace(
-            &#34;};&#34;, &#34;)&#34;
-        )
-        .replace(&#34;} &#34;, &#34;&#34;)
-        .replace(&#34;}&#34;, &#34;&#34;)
-    )
-
-    return result</code></pre>
-</details>
 </dd>
 </dl>
 </section>
@@ -526,7 +98,6 @@ def make(self):
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -553,7 +124,7 @@ def make(self):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

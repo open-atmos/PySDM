@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.backends.impl_numba.toms748 API documentation</title>
 <meta name="description" content="Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski&#39;s
-libcloudph++ version (GPL) which in turn was based on …" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+libcloudph++ version (GPL) which in turn was based on …">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -27,228 +30,6 @@ libcloudph++ version (GPL) which in turn was based on …" />
 libcloudph++ version (GPL) which in turn was based on Boost implementation
 (Copyright John Maddock 2006 <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>)</p>
 <p><a href="https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp">https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp</a></p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python"># pylint: disable=invalid-name,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
-&#34;&#34;&#34;
-Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski&#39;s
-libcloudph++ version (GPL) which in turn was based on Boost implementation
-(Copyright John Maddock 2006 http://www.boost.org/LICENSE_1_0.txt)
-
-https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp
-&#34;&#34;&#34;
-
-from sys import float_info
-
-import numba
-from numpy import nan
-
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
-from PySDM.backends.impl_numba.warnings import warn
-
-float_info_epsilon = float_info.epsilon
-float_info_max = float_info.max
-float_info_min = float_info.min
-
-
-@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
-def bracket(f, args, a, b, c, fa, fb):
-    tol = float_info_epsilon * 2
-    if (b - a) &lt; 2 * tol * a:
-        c = a + (b - a) / 2
-    elif c &lt;= a + abs(a) * tol:
-        c = a + abs(a) * tol
-    elif c &gt;= b - abs(b) * tol:
-        c = b - abs(a) * tol
-    fc = f(c, *args)
-    if fc == 0:
-        a = c
-        fa = 0
-        d = 0
-        fd = 0
-    else:
-        if fa * fc &lt; 0:
-            d = b
-            fd = fb
-            b = c
-            fb = fc
-        else:
-            d = a
-            fd = fa
-            a = c
-            fa = fc
-    return a, b, fa, fb, d, fd
-
-
-@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def safe_div(num, denom, r):
-    if abs(denom) &lt; 1:
-        if abs(denom * float_info_max) &lt;= abs(num):
-            return r
-    return num / denom
-
-
-@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def secant_interpolate(a, b, fa, fb):
-    tol = float_info_epsilon * 5
-    c = a - (fa / (fb - fa)) * (b - a)
-    if c &lt;= a + abs(a) * tol or c &gt;= b - abs(b) * tol:
-        return (a + b) / 2
-    return c
-
-
-@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def quadratic_interpolate(a, b, d, fa, fb, fd, count):
-    B = safe_div(fb - fa, b - a, float_info_max)
-    A = safe_div(fd - fb, d - b, float_info_max)
-    A = safe_div(A - B, d - a, 0.0)
-
-    if A == 0:
-        return secant_interpolate(a, b, fa, fb)
-    if A * fa &gt; 0:
-        c = a
-    else:
-        c = b
-    for _ in range(1, count + 1):
-        c -= safe_div(
-            fa + (B + A * (c - b)) * (c - a), B + A * (2.0 * c - a - b), 1.0 + c - a
-        )
-    if (c &lt;= a) or (c &gt;= b):
-        c = secant_interpolate(a, b, fa, fb)
-    return c
-
-
-@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def cubic_interpolate(a, b, d, e, fa, fb, fd, fe):
-    q11 = (d - e) * fd / (fe - fd)
-    q21 = (b - d) * fb / (fd - fb)
-    q31 = (a - b) * fa / (fb - fa)
-    d21 = (b - d) * fd / (fd - fb)
-    d31 = (a - b) * fb / (fb - fa)
-
-    q22 = (d21 - q11) * fb / (fe - fb)
-    q32 = (d31 - q21) * fa / (fd - fa)
-    d32 = (d31 - q21) * fd / (fd - fa)
-    q33 = (d32 - q22) * fa / (fe - fa)
-    c = q31 + q32 + q33 + a
-
-    if (c &lt;= a) or (c &gt;= b):
-        c = quadratic_interpolate(a, b, d, fa, fb, fd, 3)
-    return c
-
-
-@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def tol_check(a, b, rtol, within_tolerance):
-    return within_tolerance(abs(a - b), min(abs(a), abs(b)), rtol)
-
-
-@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
-    count = max_iter
-    mu = 0.5
-    a = ax
-    b = bx
-    fa = fax
-    fb = fbx
-    if not a &lt; b:
-        return warn(&#34;TOMS748 problem: not a &lt; b&#34;, __file__, return_value=(nan, -1))
-
-    if tol_check(a, b, rtol, within_tolerance) or fa == 0 or fb == 0:
-        max_iter = 0
-        if fa == 0:
-            b = a
-        elif fb == 0:
-            a = b
-        return (a + b) / 2, max_iter
-
-    if not fa * fb &lt; 0:
-        return warn(
-            &#34;TOMS748 problem: not fa * fb &lt; 0&#34;, __file__, return_value=(nan, -1)
-        )
-
-    fe = e = fd = 1e5
-
-    if fa != 0:
-        c = secant_interpolate(a, b, fa, fb)
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        count -= 1
-
-        if count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
-            c = quadratic_interpolate(a, b, d, fa, fb, fd, 2)
-            e = d
-            fe = fd
-            a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-            count -= 1
-
-    while count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
-        a0 = a
-        b0 = b
-        min_diff = float_info_min * 32
-        prof = (
-            abs(fa - fb) &lt; min_diff
-            or abs(fa - fd) &lt; min_diff
-            or abs(fa - fe) &lt; min_diff
-            or abs(fb - fd) &lt; min_diff
-            or abs(fb - fe) &lt; min_diff
-            or abs(fd - fe) &lt; min_diff
-        )
-        if prof:
-            c = quadratic_interpolate(a, b, d, fa, fb, fd, 2)
-        else:
-            c = cubic_interpolate(a, b, d, e, fa, fb, fd, fe)
-        e = d
-        fe = fd
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
-            count -= 1
-            break
-        prof = (
-            abs(fa - fb) &lt; min_diff
-            or abs(fa - fd) &lt; min_diff
-            or abs(fa - fe) &lt; min_diff
-            or abs(fb - fd) &lt; min_diff
-            or abs(fb - fe) &lt; min_diff
-            or abs(fd - fe) &lt; min_diff
-        )
-        if prof:
-            c = quadratic_interpolate(a, b, d, fa, fb, fd, 3)
-        else:
-            c = cubic_interpolate(a, b, d, e, fa, fb, fd, fe)
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
-            count -= 1
-            break
-        if abs(fa) &lt; abs(fb):
-            u = a
-            fu = fa
-        else:
-            u = b
-            fu = fb
-        c = u - 2 * (fu / (fb - fa)) * (b - a)
-        if abs(c - u) &gt; (b - a) / 2:
-            c = a + (b - a) / 2
-        e = d
-        fe = fd
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
-            count -= 1
-            break
-        if (b - a) &lt; mu * (b0 - a0):
-            continue
-        e = d
-        fe = fd
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, a + (b - a) / 2, fa, fb)
-        count -= 1
-
-    max_iter -= count
-    if fa == 0:
-        b = a
-    elif fb == 0:
-        a = b
-    return (a + b) / 2, max_iter</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -262,260 +43,42 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
-def bracket(f, args, a, b, c, fa, fb):
-    tol = float_info_epsilon * 2
-    if (b - a) &lt; 2 * tol * a:
-        c = a + (b - a) / 2
-    elif c &lt;= a + abs(a) * tol:
-        c = a + abs(a) * tol
-    elif c &gt;= b - abs(b) * tol:
-        c = b - abs(a) * tol
-    fc = f(c, *args)
-    if fc == 0:
-        a = c
-        fa = 0
-        d = 0
-        fd = 0
-    else:
-        if fa * fc &lt; 0:
-            d = b
-            fd = fb
-            b = c
-            fb = fc
-        else:
-            d = a
-            fd = fa
-            a = c
-            fa = fc
-    return a, b, fa, fb, d, fd</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.toms748.cubic_interpolate"><code class="name flex">
 <span>def <span class="ident">cubic_interpolate</span></span>(<span>a, b, d, e, fa, fb, fd, fe)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def cubic_interpolate(a, b, d, e, fa, fb, fd, fe):
-    q11 = (d - e) * fd / (fe - fd)
-    q21 = (b - d) * fb / (fd - fb)
-    q31 = (a - b) * fa / (fb - fa)
-    d21 = (b - d) * fd / (fd - fb)
-    d31 = (a - b) * fb / (fb - fa)
-
-    q22 = (d21 - q11) * fb / (fe - fb)
-    q32 = (d31 - q21) * fa / (fd - fa)
-    d32 = (d31 - q21) * fd / (fd - fa)
-    q33 = (d32 - q22) * fa / (fe - fa)
-    c = q31 + q32 + q33 + a
-
-    if (c &lt;= a) or (c &gt;= b):
-        c = quadratic_interpolate(a, b, d, fa, fb, fd, 3)
-    return c</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.toms748.quadratic_interpolate"><code class="name flex">
 <span>def <span class="ident">quadratic_interpolate</span></span>(<span>a, b, d, fa, fb, fd, count)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def quadratic_interpolate(a, b, d, fa, fb, fd, count):
-    B = safe_div(fb - fa, b - a, float_info_max)
-    A = safe_div(fd - fb, d - b, float_info_max)
-    A = safe_div(A - B, d - a, 0.0)
-
-    if A == 0:
-        return secant_interpolate(a, b, fa, fb)
-    if A * fa &gt; 0:
-        c = a
-    else:
-        c = b
-    for _ in range(1, count + 1):
-        c -= safe_div(
-            fa + (B + A * (c - b)) * (c - a), B + A * (2.0 * c - a - b), 1.0 + c - a
-        )
-    if (c &lt;= a) or (c &gt;= b):
-        c = secant_interpolate(a, b, fa, fb)
-    return c</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.toms748.safe_div"><code class="name flex">
 <span>def <span class="ident">safe_div</span></span>(<span>num, denom, r)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def safe_div(num, denom, r):
-    if abs(denom) &lt; 1:
-        if abs(denom * float_info_max) &lt;= abs(num):
-            return r
-    return num / denom</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.toms748.secant_interpolate"><code class="name flex">
 <span>def <span class="ident">secant_interpolate</span></span>(<span>a, b, fa, fb)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def secant_interpolate(a, b, fa, fb):
-    tol = float_info_epsilon * 5
-    c = a - (fa / (fb - fa)) * (b - a)
-    if c &lt;= a + abs(a) * tol or c &gt;= b - abs(b) * tol:
-        return (a + b) / 2
-    return c</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.toms748.tol_check"><code class="name flex">
 <span>def <span class="ident">tol_check</span></span>(<span>a, b, rtol, within_tolerance)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def tol_check(a, b, rtol, within_tolerance):
-    return within_tolerance(abs(a - b), min(abs(a), abs(b)), rtol)</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_numba.toms748.toms748_solve"><code class="name flex">
 <span>def <span class="ident">toms748_solve</span></span>(<span>f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
-    count = max_iter
-    mu = 0.5
-    a = ax
-    b = bx
-    fa = fax
-    fb = fbx
-    if not a &lt; b:
-        return warn(&#34;TOMS748 problem: not a &lt; b&#34;, __file__, return_value=(nan, -1))
-
-    if tol_check(a, b, rtol, within_tolerance) or fa == 0 or fb == 0:
-        max_iter = 0
-        if fa == 0:
-            b = a
-        elif fb == 0:
-            a = b
-        return (a + b) / 2, max_iter
-
-    if not fa * fb &lt; 0:
-        return warn(
-            &#34;TOMS748 problem: not fa * fb &lt; 0&#34;, __file__, return_value=(nan, -1)
-        )
-
-    fe = e = fd = 1e5
-
-    if fa != 0:
-        c = secant_interpolate(a, b, fa, fb)
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        count -= 1
-
-        if count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
-            c = quadratic_interpolate(a, b, d, fa, fb, fd, 2)
-            e = d
-            fe = fd
-            a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-            count -= 1
-
-    while count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
-        a0 = a
-        b0 = b
-        min_diff = float_info_min * 32
-        prof = (
-            abs(fa - fb) &lt; min_diff
-            or abs(fa - fd) &lt; min_diff
-            or abs(fa - fe) &lt; min_diff
-            or abs(fb - fd) &lt; min_diff
-            or abs(fb - fe) &lt; min_diff
-            or abs(fd - fe) &lt; min_diff
-        )
-        if prof:
-            c = quadratic_interpolate(a, b, d, fa, fb, fd, 2)
-        else:
-            c = cubic_interpolate(a, b, d, e, fa, fb, fd, fe)
-        e = d
-        fe = fd
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
-            count -= 1
-            break
-        prof = (
-            abs(fa - fb) &lt; min_diff
-            or abs(fa - fd) &lt; min_diff
-            or abs(fa - fe) &lt; min_diff
-            or abs(fb - fd) &lt; min_diff
-            or abs(fb - fe) &lt; min_diff
-            or abs(fd - fe) &lt; min_diff
-        )
-        if prof:
-            c = quadratic_interpolate(a, b, d, fa, fb, fd, 3)
-        else:
-            c = cubic_interpolate(a, b, d, e, fa, fb, fd, fe)
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
-            count -= 1
-            break
-        if abs(fa) &lt; abs(fb):
-            u = a
-            fu = fa
-        else:
-            u = b
-            fu = fb
-        c = u - 2 * (fu / (fb - fa)) * (b - a)
-        if abs(c - u) &gt; (b - a) / 2:
-            c = a + (b - a) / 2
-        e = d
-        fe = fd
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
-            count -= 1
-            break
-        if (b - a) &lt; mu * (b0 - a0):
-            continue
-        e = d
-        fe = fd
-        a, b, fa, fb, d, fd = bracket(f, args, a, b, a + (b - a) / 2, fa, fb)
-        count -= 1
-
-    max_iter -= count
-    if fa == 0:
-        b = a
-    elif fb == 0:
-        a = b
-    return (a + b) / 2, max_iter</code></pre>
-</details>
 </dd>
 </dl>
 </section>
@@ -523,7 +86,6 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -548,7 +110,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

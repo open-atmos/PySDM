@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.formulae API documentation</title>
-<meta name="description" content="Logic for enabling common CPU/GPU physics formulae code" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="Logic for enabling common CPU/GPU physics formulae code">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -23,359 +26,6 @@
 </header>
 <section id="section-intro">
 <p>Logic for enabling common CPU/GPU physics formulae code</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-Logic for enabling common CPU/GPU physics formulae code
-&#34;&#34;&#34;
-
-import inspect
-import math
-import numbers
-import re
-import warnings
-from collections import namedtuple
-from functools import lru_cache, partial, cached_property
-from types import SimpleNamespace
-from typing import Optional
-
-import numba
-import numpy as np
-import pint
-from numba.core.errors import NumbaExperimentalFeatureWarning
-
-from PySDM import physics
-from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
-from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
-
-
-class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
-    def __init__(  # pylint: disable=too-many-locals
-        self,
-        *,
-        constants: Optional[dict] = None,
-        seed: int = None,
-        fastmath: bool = True,
-        condensation_coordinate: str = &#34;VolumeLogarithm&#34;,
-        saturation_vapour_pressure: str = &#34;FlatauWalkoCotton&#34;,
-        latent_heat: str = &#34;Kirchhoff&#34;,
-        hygroscopicity: str = &#34;KappaKoehlerLeadingTerms&#34;,
-        drop_growth: str = &#34;Mason1971&#34;,
-        surface_tension: str = &#34;Constant&#34;,
-        diffusion_kinetics: str = &#34;FuchsSutugin&#34;,
-        diffusion_thermics: str = &#34;Neglect&#34;,
-        ventilation: str = &#34;Neglect&#34;,
-        state_variable_triplet: str = &#34;LibcloudphPlusPlus&#34;,
-        particle_advection: str = &#34;ImplicitInSpace&#34;,
-        hydrostatics: str = &#34;Default&#34;,
-        freezing_temperature_spectrum: str = &#34;Null&#34;,
-        heterogeneous_ice_nucleation_rate: str = &#34;Null&#34;,
-        fragmentation_function: str = &#34;AlwaysN&#34;,
-        isotope_equilibrium_fractionation_factors: str = &#34;Null&#34;,
-        isotope_meteoric_water_line_excess: str = &#34;Null&#34;,
-        isotope_ratio_evolution: str = &#34;Null&#34;,
-        isotope_diffusivity_ratios: str = &#34;Null&#34;,
-        isotope_relaxation_timescale: str = &#34;Null&#34;,
-        optical_albedo: str = &#34;Null&#34;,
-        optical_depth: str = &#34;Null&#34;,
-        particle_shape_and_density: str = &#34;LiquidSpheres&#34;,
-        terminal_velocity: str = &#34;GunnKinzer1949&#34;,
-        air_dynamic_viscosity: str = &#34;ZografosEtAl1987&#34;,
-        handle_all_breakups: bool = False,
-    ):
-        # initialisation of the fields below is just to silence pylint and to enable code hints
-        # in PyCharm and alike, all these fields are later overwritten within this ctor
-        self.optical_albedo = optical_albedo
-        self.optical_depth = optical_depth
-        self.condensation_coordinate = condensation_coordinate
-        self.saturation_vapour_pressure = saturation_vapour_pressure
-        self.hygroscopicity = hygroscopicity
-        self.drop_growth = drop_growth
-        self.surface_tension = surface_tension
-        self.diffusion_kinetics = diffusion_kinetics
-        self.latent_heat = latent_heat
-        self.diffusion_thermics = diffusion_thermics
-        self.ventilation = ventilation
-        self.state_variable_triplet = state_variable_triplet
-        self.particle_advection = particle_advection
-        self.hydrostatics = hydrostatics
-        self.freezing_temperature_spectrum = freezing_temperature_spectrum
-        self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
-        self.fragmentation_function = fragmentation_function
-        self.isotope_equilibrium_fractionation_factors = (
-            isotope_equilibrium_fractionation_factors
-        )
-        self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
-        self.isotope_ratio_evolution = isotope_ratio_evolution
-        self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
-        self.isotope_relaxation_timescale = isotope_relaxation_timescale
-        self.particle_shape_and_density = particle_shape_and_density
-        self.air_dynamic_viscosity = air_dynamic_viscosity
-        self.terminal_velocity = terminal_velocity
-
-        self._components = tuple(
-            i
-            for i in dir(self)
-            if not i.startswith(&#34;__&#34;) and i not in (&#34;flatten&#34;, &#34;get_constant&#34;)
-        )
-
-        constants_defaults = {
-            k: getattr(defaults, k)
-            for defaults in (physics.constants, physics.constants_defaults)
-            for k in dir(defaults)
-            if isinstance(
-                getattr(defaults, k), (numbers.Number, pint.Quantity, pint.Unit)
-            )
-        }
-        constants_defaults = {**constants_defaults, **(constants or {})}
-        physics.constants_defaults.compute_derived_values(constants_defaults)
-        constants = namedtuple(&#34;Constants&#34;, tuple(constants_defaults.keys()))(
-            **constants_defaults
-        )
-        self.constants = constants
-        self.seed = seed or physics.constants.default_random_seed
-        self.fastmath = fastmath
-        self.handle_all_breakups = handle_all_breakups
-        dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
-
-        self.trivia = _magick(
-            &#34;Trivia&#34;, physics.trivia, fastmath, constants, dimensional_analysis
-        )
-
-        # each `component` corresponds to one subdirectory of PySDM/physics
-        for component in self._components:
-            setattr(
-                self,
-                component,
-                _magick(
-                    value=getattr(self, component),
-                    module=getattr(physics, component),
-                    fastmath=fastmath,
-                    constants=constants,
-                    dimensional_analysis=dimensional_analysis,
-                ),
-            )
-
-        # TODO #348
-        self.terminal_velocity_class = {
-            &#34;GunnKinzer1949&#34;: GunnKinzer1949,
-            &#34;RogersYau&#34;: RogersYau,
-            &#34;TpDependent&#34;: TpDependent,
-            &#34;PowerSeries&#34;: PowerSeries,
-        }[terminal_velocity]
-
-    def __str__(self):
-        description = []
-        for attr in dir(self):
-            if not attr.startswith(&#34;_&#34;) and attr != &#34;flatten&#34;:
-                attr_value = getattr(self, attr)
-                if attr_value.__class__ in (bool, int, float):
-                    value = attr_value
-                elif attr_value.__class__.__name__ == &#34;Constants&#34;:
-                    value = str(attr_value)
-                elif attr_value.__class__ in (SimpleNamespace,):
-                    value = attr_value.__name__
-                else:
-                    value = attr_value.__class__.__name__
-                description.append(f&#34;{attr}: {value}&#34;)
-        return &#34;, &#34;.join(description)
-
-    @cached_property
-    def flatten(self):
-        &#34;&#34;&#34;returns a &#34;flattened&#34; representation providing access to all formulae from within
-        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)&#34;&#34;&#34;
-        functions = {}
-        for component in [&#34;trivia&#34;] + list(self._components):
-            for item in dir(getattr(self, component)):
-                attr = getattr(getattr(self, component), item)
-                if not item.startswith(&#34;__&#34;) and callable(attr):
-                    functions[component + &#34;__&#34; + item] = attr
-        for attr in (&#34;constants&#34;, &#34;fastmath&#34;):
-            functions[attr] = getattr(self, attr)
-        return namedtuple(&#34;FlattenedFormulae&#34;, functions.keys())(**functions)
-
-    def get_constant(self, key: str):
-        &#34;&#34;&#34;getter-like method for cases where using the `constants` named tuple is not possible
-        (e.g., if calling from a language which does not support named tuples)&#34;&#34;&#34;
-        return getattr(self.constants, key)
-
-
-def _formula(func, constants, dimensional_analysis, **kw):
-    parameters_keys = tuple(inspect.signature(func).parameters.keys())
-    special_params = (&#34;_&#34;, &#34;const&#34;)
-
-    if dimensional_analysis:
-        first_param = parameters_keys[0]
-        if first_param in special_params:
-            return partial(func, constants)
-        return func
-
-    source = &#34;class _:\n&#34; + &#34;&#34;.join(inspect.getsourcelines(func)[0])
-    source = re.sub(r&#34;\(\n\s+&#34;, &#34;(&#34;, source)
-    source = re.sub(r&#34;\n\s+\):&#34;, &#34;):&#34;, source)
-    loc = {}
-    for arg_name in special_params:
-        source = source.replace(
-            f&#34;def {func.__name__}({arg_name},&#34;, f&#34;def {func.__name__}(&#34;
-        )
-
-    extras = func.__extras if hasattr(func, &#34;__extras&#34;) else {}
-    exec(  # pylint:disable=exec-used
-        source, {&#34;const&#34;: constants, &#34;np&#34;: np, &#34;math&#34;: math, **extras}, loc
-    )
-
-    n_params = len(parameters_keys) - (1 if parameters_keys[0] in special_params else 0)
-    function = getattr(loc[&#34;_&#34;], func.__name__)
-    if hasattr(func, &#34;__vectorize&#34;):
-        vectorizer = (
-            np.vectorize
-            if numba.config.DISABLE_JIT  # pylint: disable=no-member
-            else numba.vectorize(
-                &#34;float64(&#34; + &#34;,&#34;.join([&#34;float64&#34;] * n_params) + &#34;)&#34;,
-                target=&#34;cpu&#34;,
-                nopython=True,
-                **{
-                    k: v
-                    for k, v in conf.JIT_FLAGS.items()
-                    if k not in (&#34;parallel&#34;, &#34;error_model&#34;)
-                },
-            )
-        )
-        with warnings.catch_warnings():
-            warnings.simplefilter(&#34;ignore&#34;, category=NumbaExperimentalFeatureWarning)
-            return vectorizer(function)
-    return numba.njit(
-        getattr(loc[&#34;_&#34;], func.__name__),
-        **{
-            **conf.JIT_FLAGS,
-            **{&#34;parallel&#34;: False, &#34;inline&#34;: &#34;always&#34;, &#34;cache&#34;: False, **kw},
-        },
-    )
-
-
-def _boost(obj, fastmath, constants, dimensional_analysis):
-    &#34;&#34;&#34;returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached&#34;&#34;&#34;
-    formulae = {&#34;__name__&#34;: obj.__name__}
-    for item in dir(obj):
-        attr = getattr(obj, item)
-        if item.startswith(&#34;__&#34;) or not callable(attr):
-            pass
-        else:
-            formula = _formula(
-                attr,
-                constants=constants,
-                fastmath=fastmath,
-                dimensional_analysis=dimensional_analysis,
-            )
-            setattr(
-                formula, &#34;c_inline&#34;, partial(_c_inline, constants=constants, fun=attr)
-            )
-            formulae[attr.__name__] = formula
-    return SimpleNamespace(**formulae)
-
-
-def _c_inline(fun, return_type=None, constants=None, **args):
-    real_t = &#34;real_type&#34;
-    return_type = return_type or real_t
-    prae = r&#34;([,+\-*/( ]|^)&#34;
-    post = r&#34;([ )/*\-+,]|$)&#34;
-    real_fmt = &#34;.32g&#34;
-    source = &#34;&#34;
-    for line in inspect.getsourcelines(fun)[0]:
-        stripped = line.strip()
-        if stripped.startswith(&#34;@&#34;):
-            continue
-        if stripped.startswith(&#34;//&#34;):
-            continue
-        if stripped.startswith(&#34;def &#34;):
-            continue
-        if stripped.endswith(&#34;,&#34;):
-            stripped += &#34; &#34;
-        source += stripped
-    source = source.replace(&#34;np.power(&#34;, &#34;np.pow(&#34;)
-    source = source.replace(&#34;np.arctanh(&#34;, &#34;atanh(&#34;)
-    source = source.replace(&#34;np.arcsinh(&#34;, &#34;asinh(&#34;)
-    source = source.replace(&#34;np.minimum(&#34;, &#34;min(&#34;)
-    source = source.replace(&#34;np.maximum(&#34;, &#34;max(&#34;)
-    for pkg in (&#34;np&#34;, &#34;math&#34;):
-        source = source.replace(f&#34;{pkg}.&#34;, &#34;&#34;)
-    source = source.replace(&#34;, )&#34;, &#34;)&#34;)
-    source = re.sub(pattern=&#34;^return &#34;, repl=&#34;&#34;, string=source)
-    for arg in inspect.signature(fun).parameters:
-        if arg not in (&#34;_&#34;, &#34;const&#34;):
-            source = re.sub(
-                pattern=f&#34;{prae}({arg}){post}&#34;,
-                repl=f&#34;\\1({real_t})({args[arg]})\\3&#34;,
-                string=source,
-            )
-    source = re.sub(
-        pattern=f&#34;{prae}const\\.([^\\d\\W]\\w*]*){post}&#34;,
-        repl=&#34;\\1(&#34; + real_t + &#34;)({constants.\\2:&#34; + real_fmt + &#34;})\\3&#34;,
-        string=source,
-    )
-    assert constants
-    source = eval(f&#39;f&#34;&#34;&#34;{source}&#34;&#34;&#34;&#39;)  # pylint: disable=eval-used
-    return f&#34;({return_type})({source})&#34;
-
-
-def _pick(value: str, choices: dict, constants: namedtuple):
-    &#34;&#34;&#34;
-    selects a given physics logic and instantiates it passing the constants catalogue;
-    `value` is expected to be string containing a plus-separated list of class names
-    &#34;&#34;&#34;
-
-    obj = None
-    if &#34;+&#34; not in value:
-        for name, cls in choices.items():
-            if name == value:
-                obj = cls(constants)
-                break
-            name = value
-    else:
-        parent_classes = []
-        for name in value.split(&#34;+&#34;):
-            if name not in choices:
-                parent_classes.clear()
-                break
-            parent_classes.append(choices[name])
-
-        if len(parent_classes) &gt; 0:
-
-            class Cls(*parent_classes):  # pylint: disable=too-few-public-methods
-                def __init__(self, const):
-                    for cls in parent_classes:
-                        cls.__init__(self, const)
-
-            obj = Cls(constants)
-
-    if obj is None:
-        raise ValueError(
-            f&#34;Unknown setting: {name}; choices are: {&#39;, &#39;.join(choices.keys())}&#34;
-        )
-
-    obj.__name__ = value  # pylint: disable=attribute-defined-outside-init
-    return obj
-
-
-def _choices(module):
-    return {name: cls for name, cls in module.__dict__.items() if isinstance(cls, type)}
-
-
-@lru_cache()
-def _magick(value, module, fastmath, constants, dimensional_analysis):
-    &#34;&#34;&#34;
-    boosts (`PySDM.formulae.Formulae._boost`) the selected physics logic
-    &#34;&#34;&#34;
-    return _boost(
-        _pick(value, _choices(module), constants),
-        fastmath,
-        constants,
-        dimensional_analysis,
-    )</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -597,15 +247,6 @@ one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)</p></div>
 <dd>
 <div class="desc"><p>getter-like method for cases where using the <code>constants</code> named tuple is not possible
 (e.g., if calling from a language which does not support named tuples)</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_constant(self, key: str):
-    &#34;&#34;&#34;getter-like method for cases where using the `constants` named tuple is not possible
-    (e.g., if calling from a language which does not support named tuples)&#34;&#34;&#34;
-    return getattr(self.constants, key)</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -613,7 +254,6 @@ one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)</p></div>
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -638,7 +278,7 @@ one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)</p></div>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

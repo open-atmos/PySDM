@@ -2,19 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.backends.impl_numba.test_helpers.scipy_ode_condensation_solver API documentation</title>
 <meta name="description" content="condensation/evaporation solver drop-in replacement implemented using
-SciPy adaptive-timestep ODE solver, for use in tests only" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+SciPy adaptive-timestep ODE solver, for use in tests only">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -25,335 +28,6 @@ SciPy adaptive-timestep ODE solver, for use in tests only" />
 <section id="section-intro">
 <p>condensation/evaporation solver drop-in replacement implemented using
 SciPy adaptive-timestep ODE solver, for use in tests only</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-condensation/evaporation solver drop-in replacement implemented using
- SciPy adaptive-timestep ODE solver, for use in tests only
-&#34;&#34;&#34;
-
-import types
-from functools import lru_cache
-
-import numba
-import numpy as np
-import scipy.integrate
-
-from PySDM.backends import Numba
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
-from PySDM.backends.impl_numba.methods.condensation_methods import (
-    _RelativeTolerances,
-    _Attributes,
-    _CellData,
-    _Counters,
-)
-from PySDM.physics.constants_defaults import PI_4_3, T0
-
-idx_thd = 0
-idx_x = 1
-rtol = 1e-6
-
-
-def patch_particulator(particulator):
-    particulator.condensation_solver = _make_solve(particulator.formulae)
-    particulator.condensation = types.MethodType(_condensation, particulator)
-
-
-def _condensation(
-    particulator, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order
-):
-    func = Numba._condensation
-    if not numba.config.DISABLE_JIT:  # pylint: disable=no-member
-        func = func.py_func
-    func(
-        solver=particulator.condensation_solver,
-        n_threads=1,
-        n_cell=particulator.mesh.n_cell,
-        cell_start_arg=particulator.attributes.cell_start.data,
-        attributes=_Attributes(
-            water_mass=particulator.attributes[&#34;water mass&#34;].data,
-            v_cr=None,
-            multiplicity=particulator.attributes[&#34;multiplicity&#34;].data,
-            vdry=particulator.attributes[&#34;dry volume&#34;].data,
-            kappa=particulator.attributes[&#34;kappa&#34;].data,
-            f_org=particulator.attributes[&#34;dry volume organic fraction&#34;].data,
-            reynolds_number=particulator.attributes[&#34;Reynolds number&#34;].data,
-        ),
-        idx=particulator.attributes._ParticleAttributes__idx.data,
-        cell_data=_CellData(
-            rhod=particulator.environment[&#34;rhod&#34;].data,
-            thd=particulator.environment[&#34;thd&#34;].data,
-            water_vapour_mixing_ratio=particulator.environment[
-                &#34;water_vapour_mixing_ratio&#34;
-            ].data,
-            dv_mean=particulator.environment.dv,
-            prhod=particulator.environment.get_predicted(&#34;rhod&#34;).data,
-            pthd=particulator.environment.get_predicted(&#34;thd&#34;).data,
-            predicted_water_vapour_mixing_ratio=particulator.environment.get_predicted(
-                &#34;water_vapour_mixing_ratio&#34;
-            ).data,
-            air_density=particulator.environment[&#34;air density&#34;].data,
-            air_dynamic_viscosity=particulator.environment[
-                &#34;air dynamic viscosity&#34;
-            ].data,
-        ),
-        rtols=_RelativeTolerances(
-            x=rtol_x,
-            thd=rtol_thd,
-        ),
-        timestep=particulator.dt,
-        counters=_Counters(
-            n_substeps=counters[&#34;n_substeps&#34;],
-            n_activating=counters[&#34;n_activating&#34;],
-            n_deactivating=counters[&#34;n_deactivating&#34;],
-            n_ripening=counters[&#34;n_ripening&#34;],
-        ),
-        cell_order=cell_order,
-        RH_max=RH_max.data,
-        success=success.data,
-    )
-    particulator.attributes.mark_updated(&#34;water mass&#34;)
-
-
-@lru_cache()
-def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-locals
-    jit_formulae = formulae.flatten
-
-    @numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    def _liquid_water_mixing_ratio(n, x, m_d_mean):
-        return (
-            np.sum(
-                n
-                * jit_formulae.particle_shape_and_density__volume_to_mass(
-                    jit_formulae.condensation_coordinate__volume(x)
-                )
-            )
-            / m_d_mean
-        )
-
-    @numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    def _impl(  # pylint: disable=too-many-arguments,too-many-locals
-        dy_dt,
-        x,
-        T,
-        p,
-        n,
-        RH,
-        reynolds_number,
-        kappa,
-        f_org,
-        dry_volume,
-        thd,
-        dot_thd,
-        dot_water_vapour_mixing_ratio,
-        m_d_mean,
-        air_density,
-        air_dynamic_viscosity,
-        rhod,
-        pvs,
-        lv,
-    ):
-        DTp = jit_formulae.diffusion_thermics__D(T, p)
-        KTp = jit_formulae.diffusion_thermics__K(T, p)
-        lambdaD = jit_formulae.diffusion_kinetics__lambdaD(DTp, T)
-        lambdaK = jit_formulae.diffusion_kinetics__lambdaK(T, p)
-        schmidt_number = jit_formulae.trivia__air_schmidt_number(
-            dynamic_viscosity=air_dynamic_viscosity,
-            diffusivity=DTp,
-            density=air_density,
-        )
-        for i, x_i in enumerate(x):
-            v = jit_formulae.condensation_coordinate__volume(x_i)
-            r = jit_formulae.trivia__radius(v)
-            Dr = jit_formulae.diffusion_kinetics__D(DTp, r, lambdaD)
-            Kr = jit_formulae.diffusion_kinetics__K(KTp, r, lambdaK)
-            ventilation_factor = jit_formulae.ventilation__ventilation_coefficient(
-                sqrt_re_times_cbrt_sc=jit_formulae.trivia__sqrt_re_times_cbrt_sc(
-                    Re=reynolds_number[i],
-                    Sc=schmidt_number,
-                )
-            )
-            sgm = jit_formulae.surface_tension__sigma(T, v, dry_volume[i], f_org[i])
-            dy_dt[idx_x + i] = jit_formulae.condensation_coordinate__dx_dt(
-                x_i,
-                jit_formulae.drop_growth__r_dr_dt(
-                    jit_formulae.hygroscopicity__RH_eq(
-                        r, T, kappa[i], dry_volume[i] / PI_4_3, sgm
-                    ),
-                    T,
-                    RH,
-                    lv,
-                    pvs,
-                    Dr,
-                    Kr,
-                    ventilation_factor,
-                ),
-            )
-        d_water_vapour_mixing_ratio__dt = (
-            dot_water_vapour_mixing_ratio
-            - np.sum(
-                n
-                * jit_formulae.particle_shape_and_density__volume_to_mass(
-                    jit_formulae.condensation_coordinate__volume(x)
-                )
-                * dy_dt[idx_x:]
-            )
-            / m_d_mean
-        )
-        dy_dt[idx_thd] = dot_thd + jit_formulae.state_variable_triplet__dthd_dt(
-            rhod, thd, T, d_water_vapour_mixing_ratio__dt, lv
-        )
-
-    @numba.njit(**{**JIT_FLAGS, **{&#34;parallel&#34;: False}})
-    def _odesys(  # pylint: disable=too-many-arguments,too-many-locals
-        t,
-        y,
-        kappa,
-        f_org,
-        dry_volume,
-        n,
-        reynolds_number,
-        dthd_dt,
-        d_water_vapour_mixing_ratio__dt,
-        drhod_dt,
-        m_d_mean,
-        air_density,
-        air_dynamic_viscosity,
-        rhod,
-        qt,
-    ):
-        thd = y[idx_thd]
-        x = y[idx_x:]
-
-        water_vapour_mixing_ratio = (
-            qt
-            + d_water_vapour_mixing_ratio__dt * t
-            - _liquid_water_mixing_ratio(n, x, m_d_mean)
-        )
-        rhod += drhod_dt * t
-        T = jit_formulae.state_variable_triplet__T(rhod, thd)
-        p = jit_formulae.state_variable_triplet__p(rhod, T, water_vapour_mixing_ratio)
-        pv = jit_formulae.state_variable_triplet__pv(p, water_vapour_mixing_ratio)
-        pvs = jit_formulae.saturation_vapour_pressure__pvs_Celsius(T - T0)
-        RH = pv / pvs
-
-        dy_dt = np.empty_like(y)
-        _impl(
-            dy_dt,
-            x,
-            T,
-            p,
-            n,
-            RH,
-            reynolds_number,
-            kappa,
-            f_org,
-            dry_volume,
-            thd,
-            dthd_dt,
-            d_water_vapour_mixing_ratio__dt,
-            m_d_mean,
-            air_density,
-            air_dynamic_viscosity,
-            rhod,
-            pvs,
-            jit_formulae.latent_heat__lv(T),
-        )
-        return dy_dt
-
-    def solve(  # pylint: disable=too-many-arguments,too-many-locals,unused-argument
-        attributes,
-        cell_idx,
-        thd,
-        water_vapour_mixing_ratio,
-        rhod,
-        dthd_dt,
-        d_water_vapour_mixing_ratio__dt,
-        drhod_dt,
-        m_d,
-        air_density,
-        air_dynamic_viscosity,
-        rtols,
-        timestep,
-        n_substeps,
-    ):
-        n_sd_in_cell = len(cell_idx)
-        y0 = np.empty(n_sd_in_cell + idx_x)
-        y0[idx_thd] = thd
-        y0[idx_x:] = jit_formulae.condensation_coordinate__x(
-            jit_formulae.particle_shape_and_density__mass_to_volume(
-                attributes.water_mass[cell_idx]
-            )
-        )
-        total_water_mixing_ratio = (
-            water_vapour_mixing_ratio
-            + _liquid_water_mixing_ratio(
-                attributes.multiplicity[cell_idx], y0[idx_x:], m_d
-            )
-        )
-        args = (
-            attributes.kappa[cell_idx],
-            attributes.f_org[cell_idx],
-            attributes.vdry[cell_idx],
-            attributes.multiplicity[cell_idx],
-            attributes.reynolds_number[cell_idx],
-            dthd_dt,
-            d_water_vapour_mixing_ratio__dt,
-            drhod_dt,
-            m_d,
-            air_density,
-            air_dynamic_viscosity,
-            rhod,
-            total_water_mixing_ratio,
-        )
-        if (
-            dthd_dt == 0
-            and d_water_vapour_mixing_ratio__dt == 0
-            and drhod_dt == 0
-            and (_odesys(0, y0, *args)[idx_x:] == 0).all()
-        ):
-            y1 = y0
-        else:
-            integ = scipy.integrate.solve_ivp(
-                fun=_odesys,
-                args=args,
-                t_span=(0, timestep),
-                t_eval=(timestep,),
-                y0=y0,
-                rtol=rtol,
-                atol=0,
-                method=&#34;LSODA&#34;,
-            )
-            assert integ.success, integ.message
-            y1 = integ.y[:, 0]
-
-        m_new = 0
-        for i in range(n_sd_in_cell):
-            attributes.water_mass[cell_idx[i]] = (
-                jit_formulae.particle_shape_and_density__volume_to_mass(
-                    jit_formulae.condensation_coordinate__volume(y1[idx_x + i])
-                )
-            )
-            m_new += (
-                attributes.multiplicity[cell_idx[i]]
-                * attributes.water_mass[cell_idx[i]]
-            )
-
-        return (
-            integ.success,
-            total_water_mixing_ratio - m_new / m_d,
-            y1[idx_thd],
-            1,
-            1,
-            1,
-            1,
-            np.nan,
-        )
-
-    return solve</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -367,14 +41,6 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def patch_particulator(particulator):
-    particulator.condensation_solver = _make_solve(particulator.formulae)
-    particulator.condensation = types.MethodType(_condensation, particulator)</code></pre>
-</details>
 </dd>
 </dl>
 </section>
@@ -382,7 +48,6 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -401,7 +66,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>

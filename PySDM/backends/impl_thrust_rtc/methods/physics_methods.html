@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.10.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.1">
 <title>PySDM.backends.impl_thrust_rtc.methods.physics_methods API documentation</title>
-<meta name="description" content="GPU implementation of backend methods wrapping basic physics formulae" />
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
-<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
-<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<meta name="description" content="GPU implementation of backend methods wrapping basic physics formulae">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+})</script>
 </head>
 <body>
 <main>
@@ -23,237 +26,6 @@
 </header>
 <section id="section-intro">
 <p>GPU implementation of backend methods wrapping basic physics formulae</p>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">&#34;&#34;&#34;
-GPU implementation of backend methods wrapping basic physics formulae
-&#34;&#34;&#34;
-
-from functools import cached_property
-
-from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
-from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
-
-from ..conf import trtc
-from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
-
-
-class PhysicsMethods(ThrustRTCBackendMethods):
-    @cached_property
-    def _temperature_pressure_rh_body(self):
-        return trtc.For(
-            (&#34;rhod&#34;, &#34;thd&#34;, &#34;water_vapour_mixing_ratio&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;),
-            &#34;i&#34;,
-            f&#34;&#34;&#34;
-            T[i] = {self.formulae.state_variable_triplet.T.c_inline(
-                rhod=&#34;rhod[i]&#34;, thd=&#34;thd[i]&#34;)};
-            p[i] = {self.formulae.state_variable_triplet.p.c_inline(
-                rhod=&#34;rhod[i]&#34;,
-                T=&#34;T[i]&#34;,
-                water_vapour_mixing_ratio=&#34;water_vapour_mixing_ratio[i]&#34;
-            )};
-            RH[i] = {self.formulae.state_variable_triplet.pv.c_inline(
-                p=&#34;p[i]&#34;, water_vapour_mixing_ratio=&#34;water_vapour_mixing_ratio[i]&#34;
-            )} / {self.formulae.saturation_vapour_pressure.pvs_Celsius.c_inline(
-                T=&#34;T[i] - const.T0&#34;
-            )};
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @cached_property
-    def __explicit_euler_body(self):
-        return trtc.For(
-            (&#34;y&#34;, &#34;dt&#34;, &#34;dy_dt&#34;),
-            &#34;i&#34;,
-            f&#34;&#34;&#34;
-            y[i] = {self.formulae.trivia.explicit_euler.c_inline(y=&#34;y[i]&#34;, dt=&#34;dt&#34;, dy_dt=&#34;dy_dt&#34;)};
-        &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @cached_property
-    def __critical_volume_body(self):
-        return trtc.For(
-            (&#34;v_cr&#34;, &#34;kappa&#34;, &#34;f_org&#34;, &#34;v_dry&#34;, &#34;v_wet&#34;, &#34;T&#34;, &#34;cell&#34;),
-            &#34;i&#34;,
-            f&#34;&#34;&#34;
-            auto sigma = {self.formulae.surface_tension.sigma.c_inline(
-                T=&#34;T[cell[i]]&#34;, v_wet=&#34;v_wet[i]&#34;, v_dry=&#34;v_dry[i]&#34;, f_org=&#34;f_org[i]&#34;
-            )};
-            auto r_cr = {self.formulae.hygroscopicity.r_cr.c_inline(
-                kp=&#34;kappa[i]&#34;,
-                rd3=&#34;v_dry[i] / const.PI_4_3&#34;,
-                T=&#34;T[cell[i]]&#34;,
-                sgm=&#34;sigma&#34;
-            )};
-            v_cr[i] = {self.formulae.trivia.volume.c_inline(radius=&#34;r_cr&#34;)};
-        &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @cached_property
-    def __volume_of_mass_body(self):
-        return trtc.For(
-            param_names=(&#34;volume&#34;, &#34;mass&#34;),
-            name_iter=&#34;i&#34;,
-            body=f&#34;&#34;&#34;
-            volume[i] = {self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass=&#34;mass[i]&#34;)};
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @cached_property
-    def __mass_of_volume_body(self):
-        return trtc.For(
-            param_names=(&#34;mass&#34;, &#34;volume&#34;),
-            name_iter=&#34;i&#34;,
-            body=f&#34;&#34;&#34;
-            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume=&#34;volume[i]&#34;)};
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def critical_volume(self, *, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
-        self.__critical_volume_body.launch_n(
-            v_cr.shape[0],
-            (
-                v_cr.data,
-                kappa.data,
-                f_org.data,
-                v_dry.data,
-                v_wet.data,
-                T.data,
-                cell.data,
-            ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def temperature_pressure_rh(
-        self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
-    ):
-        self._temperature_pressure_rh_body.launch_n(
-            T.shape[0],
-            (
-                rhod.data,
-                thd.data,
-                water_vapour_mixing_ratio.data,
-                T.data,
-                p.data,
-                RH.data,
-            ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def explicit_euler(self, y, dt, dy_dt):
-        dt = self._get_floating_point(dt)
-        dy_dt = self._get_floating_point(dy_dt)
-        self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def volume_of_water_mass(self, volume, mass):
-        self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def mass_of_water_volume(self, mass, volume):
-        self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))
-
-    @cached_property
-    def __air_density_body(self):
-        return trtc.For(
-            param_names=(&#34;output&#34;, &#34;rhod&#34;, &#34;water_vapour_mixing_ratio&#34;),
-            name_iter=&#34;i&#34;,
-            body=f&#34;&#34;&#34;
-            output[i] = {self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio.c_inline(
-                rhod=&#34;rhod[i]&#34;,
-                water_vapour_mixing_ratio=&#34;water_vapour_mixing_ratio[i]&#34;
-            )};
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def air_density(self, output, rhod, water_vapour_mixing_ratio):
-        self.__air_density_body.launch_n(
-            n=output.shape[0],
-            args=(output.data, rhod.data, water_vapour_mixing_ratio.data),
-        )
-
-    @cached_property
-    def __air_dynamic_viscosity_body(self):
-        return trtc.For(
-            param_names=(&#34;output&#34;, &#34;temperature&#34;),
-            name_iter=&#34;i&#34;,
-            body=f&#34;&#34;&#34;
-            output[i] = {self.formulae.air_dynamic_viscosity.eta_air.c_inline(
-                temperature=&#34;temperature[i]&#34;
-            )};
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def air_dynamic_viscosity(self, output, temperature):
-        self.__air_dynamic_viscosity_body.launch_n(
-            n=output.shape[0], args=(output.data, temperature.data)
-        )
-
-    @cached_property
-    def __reynolds_number_body(self):
-        return trtc.For(
-            param_names=(
-                &#34;output&#34;,
-                &#34;cell_id&#34;,
-                &#34;air_dynamic_viscosity&#34;,
-                &#34;air_density&#34;,
-                &#34;radius&#34;,
-                &#34;velocity_wrt_air&#34;,
-            ),
-            name_iter=&#34;i&#34;,
-            body=f&#34;&#34;&#34;
-            output[i] = {self.formulae.particle_shape_and_density.reynolds_number.c_inline(
-                radius=&#34;radius[i]&#34;,
-                velocity_wrt_air=&#34;velocity_wrt_air[i]&#34;,
-                dynamic_viscosity=&#34;air_dynamic_viscosity[cell_id[i]]&#34;,
-                density=&#34;air_density[cell_id[i]]&#34;,
-            )};
-            &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
-
-    def reynolds_number(
-        self,
-        *,
-        output,
-        cell_id,
-        dynamic_viscosity,
-        density,
-        radius,
-        velocity_wrt_air,
-    ):
-        self.__reynolds_number_body.launch_n(
-            n=output.shape[0],
-            args=(
-                output.data,
-                cell_id.data,
-                dynamic_viscosity.data,
-                density.data,
-                radius.data,
-                velocity_wrt_air.data,
-            ),
-        )</code></pre>
-</details>
 </section>
 <section>
 </section>
@@ -503,158 +275,48 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.air_dynamic_viscosity"><code class="name flex">
 <span>def <span class="ident">air_dynamic_viscosity</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.critical_volume"><code class="name flex">
 <span>def <span class="ident">critical_volume</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.explicit_euler"><code class="name flex">
 <span>def <span class="ident">explicit_euler</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.mass_of_water_volume"><code class="name flex">
 <span>def <span class="ident">mass_of_water_volume</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.reynolds_number"><code class="name flex">
 <span>def <span class="ident">reynolds_number</span></span>(<span>self, *, output, cell_id, dynamic_viscosity, density, radius, velocity_wrt_air)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def reynolds_number(
-    self,
-    *,
-    output,
-    cell_id,
-    dynamic_viscosity,
-    density,
-    radius,
-    velocity_wrt_air,
-):
-    self.__reynolds_number_body.launch_n(
-        n=output.shape[0],
-        args=(
-            output.data,
-            cell_id.data,
-            dynamic_viscosity.data,
-            density.data,
-            radius.data,
-            velocity_wrt_air.data,
-        ),
-    )</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.temperature_pressure_rh"><code class="name flex">
 <span>def <span class="ident">temperature_pressure_rh</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods.volume_of_water_mass"><code class="name flex">
 <span>def <span class="ident">volume_of_water_mass</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
 </dd>
 </dl>
 </dd>
@@ -662,7 +324,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 </section>
 </article>
 <nav id="sidebar">
-<h1>Index</h1>
 <div class="toc">
 <ul></ul>
 </div>
@@ -693,7 +354,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
 </footer>
 </body>
 </html>
