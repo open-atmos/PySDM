@@ -33,7 +33,7 @@ class Settings1D(SettingsSH):
         n_sd_per_gridbox: int,
         p0: float = 1007 * si.hPa,  # as used in Olesik et al. 2022 (GMD)
         kappa: float = 1,
-        rho_times_w_1: float = 2 * si.m / si.s * si.kg / si.m**3,
+        rho_times_w_1: float = 0 * si.m / si.s * si.kg / si.m**3,
         particles_per_volume_STP: int = 100 / si.cm**3,
         dt: float = 1 * si.s,
         dz: float = 25 * si.m,
@@ -62,9 +62,7 @@ class Settings1D(SettingsSH):
         )
         self.z_part = z_part
         z_frac = z_part[1] - z_part[0]
-        norm_factor = (
-            particles_per_volume_STP / self.formulae.constants.rho_STP * z_frac
-        )
+        norm_factor = particles_per_volume_STP * z_frac
         self.wet_radius_spectrum_per_mass_of_dry_air = spectra.Gamma(
             norm_factor=norm_factor,
             k=1.0,
