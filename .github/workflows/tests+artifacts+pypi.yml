@@ -48,7 +48,7 @@ jobs:
         pip install -e ./examples
         pip install pytest-cov
         pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
-    - uses: codecov/codecov-action@v4.1.0
+    - uses: codecov/codecov-action@v4.5.0
       with:
         fail_ci_if_error: true
         verbose: true

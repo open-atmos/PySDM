@@ -28,7 +28,11 @@ class Simulation(BasicSimulation):
             mass_of_dry_air=44 * si.kg,
         )
         builder = Builder(
-            n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae), environment=env
+            n_sd=settings.n_sd,
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
+            ),
+            environment=env,
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(
