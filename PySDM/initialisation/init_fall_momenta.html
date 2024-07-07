@@ -37,7 +37,7 @@ of droplets</p>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="PySDM.initialisation.init_fall_momenta.init_fall_momenta"><code class="name flex">
-<span>def <span class="ident">init_fall_momenta</span></span>(<span>volume: numpy.ndarray, rho_w: float, zero: bool = False, terminal_velocity_approx=PySDM.dynamics.terminal_velocity.gunn_and_kinzer.GunnKinzer1949)</span>
+<span>def <span class="ident">init_fall_momenta</span></span>(<span>water_mass: numpy.ndarray, zero: bool = False, terminal_velocity_approx=PySDM.dynamics.terminal_velocity.gunn_and_kinzer.GunnKinzer1949)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Calculate default values of the
@@ -46,8 +46,7 @@ of droplets</p>
 <code><a title="PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity" href="../attributes/physics/relative_fall_velocity.html#PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity">RelativeFallVelocity</a></code> attribute)</p>
 <h2 id="parameters">Parameters</h2>
 <ul>
-<li>volume: a numpy array of superdroplet volumes</li>
-<li>rho_w: the density of water (generally found in formulae.constants)</li>
+<li>water_mass: a numpy array of superdroplet water masses</li>
 </ul>
 <h2 id="returns">Returns</h2>
 <ul>
