@@ -6,7 +6,6 @@ from matplotlib import pyplot
 from PySDM import Builder, Formulae
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
-from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 from PySDM.products import IceWaterContent
 
