@@ -172,8 +172,8 @@ class TestParticleAttributes:
 
     @staticmethod
     def test_permutation_local(backend_class):
-        if backend_class is GPU:  # TODO #358
-            return
+        if backend_class is GPU:
+            pytest.skip("TODO #358")
         n_sd = 8
         u01 = [0.1, 0.4, 0.2, 0.5, 0.9, 0.1, 0.6, 0.3]
         cell_start = [0, 0, 2, 5, 7, n_sd]
@@ -203,7 +203,7 @@ class TestParticleAttributes:
     @staticmethod
     def test_permutation_global_repeatable(backend_class):
         if backend_class is ThrustRTC:
-            return  # TODO #328
+            pytest.skip("TODO #328")
 
         n_sd = 800
         u01 = np.random.random(n_sd)
@@ -233,8 +233,8 @@ class TestParticleAttributes:
 
     @staticmethod
     def test_permutation_local_repeatable(backend_class):
-        if backend_class is GPU:  # TODO #358
-            return
+        if backend_class is GPU:
+            pytest.skip("TODO #358")
         n_sd = 800
         idx = range(n_sd)
         u01 = np.random.random(n_sd)

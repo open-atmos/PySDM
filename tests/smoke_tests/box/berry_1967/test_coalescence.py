@@ -22,10 +22,10 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 @pytest.mark.parametrize("adaptive", (True, False))
 @pytest.mark.parametrize("kernel", (Geometric(), Electric(), Hydrodynamic()))
 def test_coalescence(backend_class, kernel, croupier, adaptive):
-    if backend_class == ThrustRTC and croupier == "local":  # TODO #358
-        return
-    if backend_class == ThrustRTC and adaptive and croupier == "global":  # TODO #329
-        return
+    if backend_class == ThrustRTC and croupier == "local":
+        pytest.skip("TODO #358")
+    if backend_class == ThrustRTC and adaptive and croupier == "global":
+        pytest.skip("TODO #329")
     # Arrange
     s = Settings()
     s.formulae.seed = 0
