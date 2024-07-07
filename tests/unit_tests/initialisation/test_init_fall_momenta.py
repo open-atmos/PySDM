@@ -18,17 +18,15 @@ from PySDM.physics import si
         pytest.param(
             {
                 "multiplicity": np.array([1, 2, 3, 2]),
-                "volume": np.array(
+                "water mass": np.array(
                     [
-                        1 * si.mm**3,
-                        0.1 * si.mm**3,
-                        1 * si.mm**3,
-                        0.05 * si.mm**3,
+                        1 * si.mg,
+                        0.1 * si.mg,
+                        1 * si.mg,
+                        0.05 * si.mg,
                     ]
                 ),
-                "rho_w": 1000,  # TODO #798 - we plan to use masses instead of volumes soon
             },
-            id="",
         ),
     ),
 )
@@ -36,36 +34,38 @@ def params_fixture(request):
     return request.param
 
 
-def test_init_to_terminal_velocity(params, backend_instance):
-    """
-    Fall momenta correctly initialized to the terminal velocity * mass.
-    """
-    env = Box(dt=1, dv=1)
-    builder = Builder(
-        n_sd=len(params["multiplicity"]), backend=backend_instance, environment=env
-    )
-    builder.request_attribute("terminal velocity")
-    particulator = builder.build(
-        attributes={"multiplicity": params["multiplicity"], "volume": params["volume"]},
-        products=(),
-    )
+class TestInitFallMomenta:
+    @staticmethod
+    def test_init_to_terminal_velocity(params, backend_instance):
+        """
+        Fall momenta correctly initialized to the terminal velocity * mass.
+        """
+        env = Box(dt=1, dv=1)
+        builder = Builder(
+            n_sd=len(params["multiplicity"]), backend=backend_instance, environment=env
+        )
+        builder.request_attribute("terminal velocity")
+        particulator = builder.build(
+            attributes={
+                "multiplicity": params["multiplicity"],
+                "water mass": params["water mass"],
+            },
+            products=(),
+        )
 
-    terminal_momentum = (
-        particulator.attributes["terminal velocity"].to_ndarray()
-        * params["volume"]
-        * params["rho_w"]
-    )
+        terminal_momentum = (
+            particulator.attributes["terminal velocity"].to_ndarray()
+            * params["water mass"]
+        )
 
-    assert np.allclose(
-        init_fall_momenta(params["volume"], params["rho_w"]), terminal_momentum
-    )
+        assert np.allclose(init_fall_momenta(params["water mass"]), terminal_momentum)
 
+    @staticmethod
+    def test_init_to_zero(params):
+        """
+        Fall momenta correctly initialized to zero.
+        """
 
-def test_init_to_zero(params):
-    """
-    Fall momenta correctly initialized to zero.
-    """
+        fall_momenta = init_fall_momenta(params["water mass"], zero=True)
 
-    fall_momenta = init_fall_momenta(params["volume"], params["rho_w"], zero=True)
-
-    assert (fall_momenta == np.zeros_like(fall_momenta)).all()
+        assert (fall_momenta == np.zeros_like(fall_momenta)).all()
