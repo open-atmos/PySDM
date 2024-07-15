@@ -11,7 +11,7 @@ from PySDM.attributes.impl import (
     ExtensiveAttribute,
     MaximumAttribute,
 )
-from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.physics.multiplicity import Multiplicity
 from PySDM.impl.particle_attributes import ParticleAttributes
 
 
@@ -30,7 +30,7 @@ class ParticleAttributesFactory:
                 maximum_attr.append(attr_name)
             elif not isinstance(
                 req_attr[attr_name],
-                (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute),
+                (DerivedAttribute, Multiplicity, CellAttribute, DummyAttribute),
             ):
                 raise AssertionError()
 

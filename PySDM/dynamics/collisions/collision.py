@@ -14,7 +14,7 @@ from collections import namedtuple
 
 import numpy as np
 
-from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.impl.mapper import get_attribute_class
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
@@ -32,7 +32,7 @@ DEFAULTS = namedtuple(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     adaptive=True,
     substeps=1,
-    max_multiplicity=Multiplicities.MAX_VALUE // int(2e5),
+    max_multiplicity=get_attribute_class("multiplicity").MAX_VALUE // int(2e5),
 )
 
 

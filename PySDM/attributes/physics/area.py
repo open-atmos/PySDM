@@ -2,9 +2,11 @@
 particle wet radius (calculated from the volume)
 """
 
+import PySDM
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
+@PySDM.attribute()
 class Area(DerivedAttribute):
     def __init__(self, builder):
         self.volume = builder.get_attribute("volume")

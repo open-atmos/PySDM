@@ -7,10 +7,8 @@ import warnings
 
 import numpy as np
 
-from PySDM.attributes.impl.mapper import get_class as attr_class
-from PySDM.attributes.numerics.cell_id import CellID
-from PySDM.attributes.physics import WaterMass
-from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.impl.mapper import get_attribute_class
+from PySDM.attributes.numerics.cell_id import CellId
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
@@ -33,9 +31,9 @@ class Builder:
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
-            "multiplicity": Multiplicities(self),
-            "water mass": WaterMass(self),
-            "cell id": CellID(self),
+            "multiplicity": get_attribute_class("multiplicity")(self),
+            "water mass": get_attribute_class("water mass")(self),
+            "cell id": get_attribute_class("cell id")(self),
         }
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
@@ -83,7 +81,7 @@ class Builder:
 
     def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(
+            self.req_attr[attribute] = get_attribute_class(
                 attribute, self.particulator.dynamics, self.formulae
             )(self)
         if variant is not None:
