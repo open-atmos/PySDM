@@ -8,7 +8,6 @@ import warnings
 import numpy as np
 
 from PySDM.attributes.impl.mapper import get_attribute_class
-from PySDM.attributes.numerics.cell_id import CellId
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation.discretise_multiplicities import (  # TODO #324

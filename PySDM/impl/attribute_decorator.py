@@ -6,8 +6,11 @@ def attribute(*, name=None, variant=None, dummy_default=False, warn=False):
         assert name is None
     if dummy_default:
         assert variant is not None
+    if warn:
+        assert dummy_default
 
     def decorator(cls):
+        # pylint: disable=import-outside-toplevel
         from PySDM.attributes.impl.mapper import attributes
         from PySDM.attributes.impl.dummy_attribute import make_dummy_attribute_factory
 
