@@ -1,3 +1,7 @@
+"""
+utility routine converting "CamelCase" strings into space-separated ones (i.e., "camel case")
+"""
+
 import re
 
 CAMEL_CASE_PATTERN = re.compile(r"[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])")

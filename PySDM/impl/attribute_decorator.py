@@ -1,5 +1,17 @@
+""" definition of decorator used to register PySDM attribute classes """
+
 import warnings
 from PySDM.impl.camel_case import camel_case_to_words
+
+
+def make_dummy_attribute_factory(name):
+    # pylint: disable=import-outside-toplevel
+    from PySDM.attributes.impl.dummy_attribute import DummyAttribute
+
+    def _factory(builder):
+        return DummyAttribute(builder, name=name)
+
+    return _factory
 
 
 def register_attribute(*, name=None, variant=None, dummy_default=False, warn=False):
@@ -13,7 +25,6 @@ def register_attribute(*, name=None, variant=None, dummy_default=False, warn=Fal
     def decorator(cls):
         # pylint: disable=import-outside-toplevel
         from PySDM.attributes.impl.mapper import attributes
-        from PySDM.attributes.impl.dummy_attribute import make_dummy_attribute_factory
 
         key = name or camel_case_to_words(cls.__name__)
 

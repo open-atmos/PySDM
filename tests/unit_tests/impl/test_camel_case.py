@@ -1,3 +1,7 @@
+"""
+test checking CamelCase conversion routine
+"""
+
 from typing import Tuple
 import pytest
 from PySDM.impl.camel_case import camel_case_to_words

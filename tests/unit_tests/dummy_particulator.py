@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM import Builder, Particulator
+from PySDM.builder import Builder
+from PySDM.particulator import Particulator
 from PySDM.attributes.numerics import CellId
 from PySDM.attributes.physics import Multiplicity
 
