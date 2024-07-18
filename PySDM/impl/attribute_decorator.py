@@ -1,7 +1,8 @@
+import warnings
 from PySDM.impl.camel_case import camel_case_to_words
 
 
-def attribute(*, name=None, variant=None, dummy_default=False, warn=False):
+def register_attribute(*, name=None, variant=None, dummy_default=False, warn=False):
     if variant is None:
         assert name is None
     if dummy_default:
@@ -22,9 +23,13 @@ def attribute(*, name=None, variant=None, dummy_default=False, warn=False):
             raise ValueError(f"attribute {key} already exists!")
         attributes[key][cls] = variant or (lambda _, __: cls)
         if dummy_default:
-            attributes[key][make_dummy_attribute_factory(key, warn=warn)] = (
-                lambda _, __: not variant(_, __)
-            )
+            attributes[key][make_dummy_attribute_factory(key)] = lambda _, __: (
+                warnings.warn(
+                    f"dummy implementation used for requested attribute named '{name}'"
+                )
+                if warn
+                else None
+            ) is None and not variant(_, __)
         return cls
 
     return decorator

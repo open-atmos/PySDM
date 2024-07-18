@@ -6,7 +6,7 @@ import PySDM
 from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class Temperature(IntensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, base="heat", name="temperature")

@@ -6,7 +6,7 @@ import PySDM
 from PySDM.attributes.impl.cell_attribute import CellAttribute
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class CellOrigin(CellAttribute):
     def __init__(self, builder):
         super().__init__(

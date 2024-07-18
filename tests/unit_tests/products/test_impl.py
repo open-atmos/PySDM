@@ -2,7 +2,6 @@
 import inspect
 import sys
 from collections import namedtuple
-from typing import Tuple
 
 import numpy as np
 import pytest

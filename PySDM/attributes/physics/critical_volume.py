@@ -6,7 +6,7 @@ import PySDM
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class CriticalVolume(DerivedAttribute):
     def __init__(self, builder):
         self.cell_id = builder.get_attribute("cell id")

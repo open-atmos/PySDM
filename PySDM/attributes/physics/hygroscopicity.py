@@ -9,13 +9,13 @@ from ..impl.derived_attribute import DerivedAttribute
 from ..impl.extensive_attribute import ExtensiveAttribute
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class KappaTimesDryVolume(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name="kappa times dry volume")
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class Kappa(DerivedAttribute):
     def __init__(self, builder):
         self.kappa_times_dry_volume = builder.get_attribute("kappa times dry volume")

@@ -7,7 +7,7 @@ from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
-@PySDM.attribute(
+@PySDM.register_attribute(
     name="relative fall momentum",
     variant=lambda dynamics, _: "RelaxedVelocity" in dynamics,
     dummy_default=True,
@@ -20,7 +20,7 @@ class RelativeFallMomentum(ExtensiveAttribute):
         super().__init__(builder, name="relative fall momentum", dtype=float)
 
 
-@PySDM.attribute(
+@PySDM.register_attribute(
     name="relative fall velocity",
     variant=lambda dynamics, _: "RelaxedVelocity" in dynamics,
 )

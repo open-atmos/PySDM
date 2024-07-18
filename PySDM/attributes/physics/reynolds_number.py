@@ -6,7 +6,7 @@ import PySDM
 from ..impl.derived_attribute import DerivedAttribute
 
 
-@PySDM.attribute(
+@PySDM.register_attribute(
     name="Reynolds number",
     variant=lambda _, formulae: formulae.ventilation.__name__ == "Neglect",
     dummy_default=True,

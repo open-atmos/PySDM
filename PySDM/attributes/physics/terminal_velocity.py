@@ -6,11 +6,11 @@ import PySDM
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
-@PySDM.attribute(
+@PySDM.register_attribute(
     name="relative fall velocity",
     variant=lambda dynamics, _: "RelaxedVelocity" not in dynamics,
 )
-@PySDM.attribute()
+@PySDM.register_attribute()
 class TerminalVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.radius = builder.get_attribute("radius")

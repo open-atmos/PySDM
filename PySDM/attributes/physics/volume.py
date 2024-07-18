@@ -8,7 +8,7 @@ import PySDM
 from PySDM.attributes.impl import DerivedAttribute
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class Volume(DerivedAttribute):
     def __init__(self, builder):
         self.water_mass = builder.get_attribute("water mass")

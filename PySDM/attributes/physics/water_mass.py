@@ -8,7 +8,7 @@ import PySDM
 from PySDM.attributes.impl import ExtensiveAttribute
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class WaterMass(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name="water mass")

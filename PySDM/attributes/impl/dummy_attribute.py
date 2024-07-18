@@ -20,13 +20,8 @@ class DummyAttribute(Attribute):
         return self.data
 
 
-def make_dummy_attribute_factory(name, warn=False):
+def make_dummy_attribute_factory(name):
     def _factory(builder):
         return DummyAttribute(builder, name=name)
-
-    if warn:
-        warnings.warn(
-            f"dummy implementation used for requested attribute named '{name}'"
-        )
 
     return _factory

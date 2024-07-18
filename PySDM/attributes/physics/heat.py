@@ -6,7 +6,7 @@ import PySDM
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
-@PySDM.attribute()
+@PySDM.register_attribute()
 class Heat(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name="heat")

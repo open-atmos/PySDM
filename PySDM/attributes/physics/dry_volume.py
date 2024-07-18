@@ -7,7 +7,7 @@ from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
-@PySDM.attribute(
+@PySDM.register_attribute(
     name="dry volume", variant=lambda dynamics, _: "AqueousChemistry" in dynamics
 )
 class DryVolumeDynamic(DerivedAttribute):
@@ -24,7 +24,7 @@ class DryVolumeDynamic(DerivedAttribute):
         self.data *= dynamic.dry_molar_mass / dynamic.dry_rho
 
 
-@PySDM.attribute(
+@PySDM.register_attribute(
     name="dry volume", variant=lambda dynamics, _: "AqueousChemistry" not in dynamics
 )
 class DryVolume(ExtensiveAttribute):
@@ -37,7 +37,7 @@ class DryVolumeOrganic(ExtensiveAttribute):
         super().__init__(builder, name="dry volume organic")
 
 
-@PySDM.attribute(
+@PySDM.register_attribute(
     name="dry volume organic fraction",
     variant=lambda _, formulae: formulae.surface_tension.__name__ != "Constant",
     dummy_default=True,
