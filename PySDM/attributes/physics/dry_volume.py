@@ -32,6 +32,11 @@ class DryVolume(ExtensiveAttribute):
         super().__init__(builder, name="dry volume")
 
 
+@PySDM.register_attribute(
+    name="dry volume organic",
+    variant=lambda _, formulae: formulae.surface_tension.__name__ != "Constant",
+    dummy_default=True,
+)
 class DryVolumeOrganic(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name="dry volume organic")

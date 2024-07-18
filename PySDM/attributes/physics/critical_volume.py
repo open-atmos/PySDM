@@ -31,6 +31,7 @@ class CriticalVolume(DerivedAttribute):
         )
 
 
+@PySDM.register_attribute()
 class WetToCriticalVolumeRatio(DerivedAttribute):
     def __init__(self, builder):
         self.critical_volume = builder.get_attribute("critical volume")

@@ -21,7 +21,10 @@ derived attributes providing amounts of light isotopes in water (1H and 16O)
         moles_16O =  .5 * (moles_2H + moles_3H) + moles_H2O
 """
 
+import PySDM
 from PySDM.attributes.impl import DerivedAttribute
+from PySDM.attributes.impl.mole_amount import make_mole_amount_factory
+from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
 
 class Helper(DerivedAttribute):
@@ -39,6 +42,7 @@ class Helper(DerivedAttribute):
             self.data += (mult, "*", attr.data)
 
 
+@PySDM.register_attribute()
 class MolesLightWater(Helper):
     def __init__(self, builder):
         const = builder.formulae.constants
@@ -64,6 +68,7 @@ class MolesLightWater(Helper):
         )
 
 
+@PySDM.register_attribute(name="moles_1H")
 class Moles1H(Helper):
     def __init__(self, builder):
         super().__init__(
@@ -79,6 +84,7 @@ class Moles1H(Helper):
         )
 
 
+@PySDM.register_attribute(name="moles_16O")
 class Moles16O(Helper):
     def __init__(self, builder):
         super().__init__(
@@ -90,3 +96,7 @@ class Moles16O(Helper):
                 builder.get_attribute("moles light water"): 1.0,
             },
         )
+
+
+for isotope in HEAVY_ISOTOPES:
+    PySDM.register_attribute(name=f"moles_{isotope}")(make_mole_amount_factory(isotope))

@@ -2,7 +2,10 @@
 concentrations (intensive, derived attributes)
 """
 
+import PySDM
 from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
+from PySDM.attributes.impl.mole_amount import make_mole_amount_factory
+from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 
 
 class ConcentrationImpl(IntensiveAttribute):
@@ -15,3 +18,13 @@ def make_concentration_factory(what):
         return ConcentrationImpl(builder, what=what)
 
     return _factory
+
+
+for compound in AQUEOUS_COMPOUNDS:
+    PySDM.register_attribute(name=f"conc_{compound}")(
+        make_concentration_factory(compound)
+    )
+
+    PySDM.register_attribute(name=f"moles_{compound}")(
+        make_mole_amount_factory(compound)
+    )

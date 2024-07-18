@@ -2,9 +2,11 @@
 kappa-Koehler equilibrium supersaturation calculated for actual environment temperature
 """
 
+import PySDM
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
+@PySDM.register_attribute()
 class EquilibriumSupersaturation(DerivedAttribute):
     def __init__(self, builder):
         self.r_wet = builder.get_attribute("radius")

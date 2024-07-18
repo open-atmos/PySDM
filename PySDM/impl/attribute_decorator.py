@@ -3,8 +3,8 @@ from PySDM.impl.camel_case import camel_case_to_words
 
 
 def register_attribute(*, name=None, variant=None, dummy_default=False, warn=False):
-    if variant is None:
-        assert name is None
+    if variant is not None:
+        assert name is not None
     if dummy_default:
         assert variant is not None
     if warn:

@@ -2,9 +2,11 @@
 kappa-Koehler critical supersaturation calculated for actual environment temperature
 """
 
+import PySDM
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
+@PySDM.register_attribute()
 class CriticalSupersaturation(DerivedAttribute):
     def __init__(self, builder):
         self.v_crit = builder.get_attribute("critical volume")
