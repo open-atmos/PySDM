@@ -2,11 +2,10 @@
 particle Reynolds number
 """
 
-import PySDM
-from ..impl.derived_attribute import DerivedAttribute
+from ..impl import DerivedAttribute, register_attribute
 
 
-@PySDM.register_attribute(
+@register_attribute(
     name="Reynolds number",
     variant=lambda _, formulae: formulae.ventilation.__name__ != "Neglect",
     dummy_default=True,

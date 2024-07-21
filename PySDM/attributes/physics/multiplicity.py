@@ -4,11 +4,10 @@ super-particle multiplicity (aka weighting factor) - the number of real-world pa
 """
 
 import numpy as np
-import PySDM
-from PySDM.attributes.impl.base_attribute import BaseAttribute
+from PySDM.attributes.impl import BaseAttribute, register_attribute
 
 
-@PySDM.register_attribute()
+@register_attribute()
 class Multiplicity(BaseAttribute):
     TYPE = np.int64
     MAX_VALUE = np.iinfo(TYPE).max

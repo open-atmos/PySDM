@@ -5,7 +5,7 @@ from PySDM.impl.camel_case import camel_case_to_words
 
 
 def make_dummy_attribute_factory(name):
-    # pylint: disable=import-outside-toplevel,cyclic-import
+    # pylint: disable=import-outside-toplevel
     from PySDM.attributes.impl.dummy_attribute import DummyAttribute
 
     def _factory(builder):
@@ -23,7 +23,7 @@ def register_attribute(*, name=None, variant=None, dummy_default=False, warn=Fal
         assert dummy_default
 
     def decorator(cls):
-        # pylint: disable=import-outside-toplevel,cyclic-import
+        # pylint: disable=import-outside-toplevel
         from PySDM.attributes.impl.mapper import attributes
 
         key = name or camel_case_to_words(cls.__name__)

@@ -2,12 +2,14 @@
 particle dry volume (subject to evolution due to collisions or aqueous chemistry)
 """
 
-import PySDM
-from PySDM.attributes.impl.derived_attribute import DerivedAttribute
-from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.impl import (
+    DerivedAttribute,
+    ExtensiveAttribute,
+    register_attribute,
+)
 
 
-@PySDM.register_attribute(
+@register_attribute(
     name="dry volume", variant=lambda dynamics, _: "AqueousChemistry" in dynamics
 )
 class DryVolumeDynamic(DerivedAttribute):
@@ -24,7 +26,7 @@ class DryVolumeDynamic(DerivedAttribute):
         self.data *= dynamic.dry_molar_mass / dynamic.dry_rho
 
 
-@PySDM.register_attribute(
+@register_attribute(
     name="dry volume", variant=lambda dynamics, _: "AqueousChemistry" not in dynamics
 )
 class DryVolume(ExtensiveAttribute):
@@ -32,7 +34,7 @@ class DryVolume(ExtensiveAttribute):
         super().__init__(builder, name="dry volume")
 
 
-@PySDM.register_attribute(
+@register_attribute(
     name="dry volume organic",
     variant=lambda _, formulae: formulae.surface_tension.__name__ != "Constant",
     dummy_default=True,
@@ -42,7 +44,7 @@ class DryVolumeOrganic(ExtensiveAttribute):
         super().__init__(builder, name="dry volume organic")
 
 
-@PySDM.register_attribute(
+@register_attribute(
     name="dry volume organic fraction",
     variant=lambda _, formulae: formulae.surface_tension.__name__ != "Constant",
     dummy_default=True,

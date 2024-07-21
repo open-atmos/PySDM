@@ -9,3 +9,5 @@ from .derived_attribute import DerivedAttribute
 from .dummy_attribute import DummyAttribute
 from .extensive_attribute import ExtensiveAttribute
 from .maximum_attribute import MaximumAttribute
+from .register_attribute import register_attribute
+from .intensive_attribute import IntensiveAttribute

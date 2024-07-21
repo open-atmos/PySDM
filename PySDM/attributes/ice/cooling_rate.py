@@ -5,11 +5,10 @@ cooling rate estimated as the difference in current and previous grid-cell
 """
 
 import numpy as np
-import PySDM
-from PySDM.attributes.impl import DerivedAttribute
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 
-@PySDM.register_attribute()
+@register_attribute()
 class CoolingRate(DerivedAttribute):
     def __init__(self, builder):
         self.cell_id = builder.get_attribute("cell id")

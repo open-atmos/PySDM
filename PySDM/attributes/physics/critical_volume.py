@@ -2,11 +2,10 @@
 critical wet volume (kappa-Koehler, computed using actual temperature)
 """
 
-import PySDM
-from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 
-@PySDM.register_attribute()
+@register_attribute()
 class CriticalVolume(DerivedAttribute):
     def __init__(self, builder):
         self.cell_id = builder.get_attribute("cell id")
@@ -31,7 +30,7 @@ class CriticalVolume(DerivedAttribute):
         )
 
 
-@PySDM.register_attribute()
+@register_attribute()
 class WetToCriticalVolumeRatio(DerivedAttribute):
     def __init__(self, builder):
         self.critical_volume = builder.get_attribute("critical volume")

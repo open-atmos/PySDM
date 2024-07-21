@@ -2,11 +2,10 @@
 particle wet radius (calculated from the volume)
 """
 
-import PySDM
-from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 
-@PySDM.register_attribute()
+@register_attribute()
 class Radius(DerivedAttribute):
     def __init__(self, builder):
         self.volume = builder.get_attribute("volume")
@@ -18,7 +17,7 @@ class Radius(DerivedAttribute):
         self.data **= 1 / 3
 
 
-@PySDM.register_attribute()
+@register_attribute()
 class SquareRootOfRadius(DerivedAttribute):
     def __init__(self, builder):
         self.radius = builder.get_attribute("radius")

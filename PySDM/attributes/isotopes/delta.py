@@ -3,8 +3,7 @@ per-droplet isotopic ratio of heavy-to-light isotope number concentrations
 expressed vs the VSMOW reference in SI units (i.e., not per mille)
 """
 
-import PySDM
-from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
 
@@ -48,4 +47,4 @@ def make_delta_factory(what):
 
 
 for isotope in HEAVY_ISOTOPES:
-    PySDM.register_attribute(name=f"delta_{isotope}")(make_delta_factory(isotope))
+    register_attribute(name=f"delta_{isotope}")(make_delta_factory(isotope))

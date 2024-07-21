@@ -2,15 +2,14 @@
 particle terminal velocity (used for collision probability and particle displacement)
 """
 
-import PySDM
-from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 
-@PySDM.register_attribute(
+@register_attribute(
     name="relative fall velocity",
     variant=lambda dynamics, _: "RelaxedVelocity" not in dynamics,
 )
-@PySDM.register_attribute()
+@register_attribute()
 class TerminalVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.radius = builder.get_attribute("radius")
