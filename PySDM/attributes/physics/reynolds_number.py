@@ -8,7 +8,7 @@ from ..impl.derived_attribute import DerivedAttribute
 
 @PySDM.register_attribute(
     name="Reynolds number",
-    variant=lambda _, formulae: formulae.ventilation.__name__ == "Neglect",
+    variant=lambda _, formulae: formulae.ventilation.__name__ != "Neglect",
     dummy_default=True,
 )
 class ReynoldsNumber(DerivedAttribute):
