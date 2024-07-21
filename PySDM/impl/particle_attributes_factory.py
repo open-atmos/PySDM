@@ -12,7 +12,7 @@ from PySDM.attributes.impl import (
     MaximumAttribute,
 )
 from PySDM.impl.particle_attributes import ParticleAttributes
-from PySDM.attributes.impl.mapper import get_attribute_class
+from PySDM.attributes.impl import get_attribute_class
 
 
 class ParticleAttributesFactory:

@@ -14,7 +14,7 @@ from collections import namedtuple
 
 import numpy as np
 
-from PySDM.attributes.impl.mapper import get_attribute_class
+from PySDM.attributes.impl import get_attribute_class
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
