@@ -32,3 +32,15 @@ class TestAttributeRegistry:
 
         with pytest.raises(AssertionError):
             assert get_attribute_class("umaminess")
+
+    @staticmethod
+    def test_register_attribute_fail_on_repeated_name():
+        """checks if the decorator raises an exception if name olready used"""
+
+        @register_attribute()
+        class A:  # pylint: too-few-public-methods
+            """Dummy class"""
+
+        with pytest.raises(ValueError) as exception_info:
+            register_attribute()(A)
+        assert exception_info.match("already exists")
