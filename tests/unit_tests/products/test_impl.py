@@ -2,7 +2,6 @@
 import inspect
 import sys
 from collections import namedtuple
-from typing import Tuple
 
 import numpy as np
 import pytest
@@ -145,20 +144,6 @@ class TestProducts:
         # assert
         np.testing.assert_allclose(value1, count / n_steps / dt / dv / rhod)
         np.testing.assert_allclose(value2, count / n_steps / dt / dv / rhod)
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        "in_out_pair", (("CPUTime", "CPU time"), ("WallTime", "wall time"))
-    )
-    def test_camel_case_to_words(in_out_pair: Tuple[str, str]):
-        # arrange
-        test_input, expected_output = in_out_pair
-
-        # act
-        actual_output = Product._camel_case_to_words(test_input)
-
-        # assert
-        assert actual_output == expected_output
 
     @staticmethod
     def test_register_can_be_called_twice_on_r_eff():

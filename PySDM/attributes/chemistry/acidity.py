@@ -2,11 +2,12 @@
 pH calculated by finding equilibrium hydrogen ion concentration
 """
 
-from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 from PySDM.backends.impl_numba.methods.chemistry_methods import _conc
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 
 
+@register_attribute(name="pH")
 class Acidity(DerivedAttribute):
     def __init__(self, builder):
         self.conc = {}

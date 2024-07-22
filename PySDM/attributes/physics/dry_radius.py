@@ -2,9 +2,10 @@
 particle dry radius computed from dry volume
 """
 
-from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 
+@register_attribute()
 class DryRadius(DerivedAttribute):
     def __init__(self, builder):
         self.volume_dry = builder.get_attribute("dry volume")

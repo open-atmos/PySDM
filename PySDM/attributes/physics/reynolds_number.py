@@ -2,9 +2,14 @@
 particle Reynolds number
 """
 
-from ..impl.derived_attribute import DerivedAttribute
+from ..impl import DerivedAttribute, register_attribute
 
 
+@register_attribute(
+    name="Reynolds number",
+    variant=lambda _, formulae: formulae.ventilation.__name__ != "Neglect",
+    dummy_default=True,
+)
 class ReynoldsNumber(DerivedAttribute):
     def __init__(self, builder):
         self.radius = builder.get_attribute("radius")
