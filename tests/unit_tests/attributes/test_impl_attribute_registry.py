@@ -38,7 +38,7 @@ class TestAttributeRegistry:
         """checks if the decorator raises an exception if name olready used"""
 
         @register_attribute()
-        class A:  # pylint: too-few-public-methods
+        class A:  # pylint: disable=too-few-public-methods
             """Dummy class"""
 
         with pytest.raises(ValueError) as exception_info:
