@@ -837,6 +837,8 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://github.com/emmacware/droplets.jl
 - LacmoPy (Python/Numba)    
   https://github.com/JanKBohrer/LacmoPy/blob/master/collision/all_or_nothing.py
+- McSnow (FORTRAN):     
+  https://gitlab.dkrz.de/mcsnow/mcsnow/-/blob/master/src/mo_coll.f90
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
@@ -852,3 +854,5 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 ### non-Python cloud microphysics open-source software
 
 - CloudMicrophysics.jl: https://github.com/CliMA/CloudMicrophysics.jl
+- McSnow: https://gitlab.dkrz.de/mcsnow/mcsnow
+  
