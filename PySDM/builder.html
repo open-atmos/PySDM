@@ -63,9 +63,9 @@ hljs.highlightAll();
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
         self.req_attr = {
-            &#34;multiplicity&#34;: Multiplicities(self),
-            &#34;water mass&#34;: WaterMass(self),
-            &#34;cell id&#34;: CellID(self),
+            &#34;multiplicity&#34;: get_attribute_class(&#34;multiplicity&#34;)(self),
+            &#34;water mass&#34;: get_attribute_class(&#34;water mass&#34;)(self),
+            &#34;cell id&#34;: get_attribute_class(&#34;cell id&#34;)(self),
         }
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
@@ -113,7 +113,7 @@ hljs.highlightAll();
 
     def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(
+            self.req_attr[attribute] = get_attribute_class(
                 attribute, self.particulator.dynamics, self.formulae
             )(self)
         if variant is not None:

@@ -48,7 +48,8 @@ used in time-dependent regime)</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ImmersedSurfaceArea(ExtensiveAttribute):
+<pre><code class="python">@register_attribute()
+class ImmersedSurfaceArea(ExtensiveAttribute):
     def __init__(self, particles_builder):
         super().__init__(particles_builder, name=&#34;immersed surface area&#34;)</code></pre>
 </details>

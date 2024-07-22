@@ -48,7 +48,7 @@ hljs.highlightAll();
 </summary>
 <pre><code class="python">class Product:
     def __init__(self, *, unit: str, name: Optional[str] = None):
-        self.name = name or self._camel_case_to_words(self.__class__.__name__)
+        self.name = name or camel_case_to_words(self.__class__.__name__)
 
         self._unit = self._parse_unit(unit)
         self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
@@ -81,12 +81,6 @@ hljs.highlightAll();
         if unit in (&#34;PPT&#34;, &#34;ppt&#34;):
             return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
-
-    @staticmethod
-    def _camel_case_to_words(string: str):
-        words = _CAMEL_CASE_PATTERN.findall(string)
-        words = (word if word.isupper() else word.lower() for word in words)
-        return &#34; &#34;.join(words)
 
     def __check_unit(self):
         init = inspect.signature(self.__init__)

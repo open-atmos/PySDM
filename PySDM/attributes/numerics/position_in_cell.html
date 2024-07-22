@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PositionInCell(CellAttribute):
+<pre><code class="python">@register_attribute()
+class PositionInCell(CellAttribute):
     def __init__(self, builder):
         super().__init__(
             builder,

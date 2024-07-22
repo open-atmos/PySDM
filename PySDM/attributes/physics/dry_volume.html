@@ -46,7 +46,10 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class DryVolume(ExtensiveAttribute):
+<pre><code class="python">@register_attribute(
+    name=&#34;dry volume&#34;, variant=lambda dynamics, _: &#34;AqueousChemistry&#34; not in dynamics
+)
+class DryVolume(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name=&#34;dry volume&#34;)</code></pre>
 </details>
@@ -67,7 +70,10 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class DryVolumeDynamic(DerivedAttribute):
+<pre><code class="python">@register_attribute(
+    name=&#34;dry volume&#34;, variant=lambda dynamics, _: &#34;AqueousChemistry&#34; in dynamics
+)
+class DryVolumeDynamic(DerivedAttribute):
     def __init__(self, builder):
         self.particulator = builder.particulator
         self.moles_sulphur_p6 = builder.get_attribute(&#34;moles_S_VI&#34;)
@@ -105,7 +111,12 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class DryVolumeOrganic(ExtensiveAttribute):
+<pre><code class="python">@register_attribute(
+    name=&#34;dry volume organic&#34;,
+    variant=lambda _, formulae: formulae.surface_tension.__name__ != &#34;Constant&#34;,
+    dummy_default=True,
+)
+class DryVolumeOrganic(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name=&#34;dry volume organic&#34;)</code></pre>
 </details>
@@ -126,7 +137,12 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class OrganicFraction(DerivedAttribute):
+<pre><code class="python">@register_attribute(
+    name=&#34;dry volume organic fraction&#34;,
+    variant=lambda _, formulae: formulae.surface_tension.__name__ != &#34;Constant&#34;,
+    dummy_default=True,
+)
+class OrganicFraction(DerivedAttribute):
     def __init__(self, builder):
         self.volume_dry_org = builder.get_attribute(&#34;dry volume organic&#34;)
         self.volume_dry = builder.get_attribute(&#34;dry volume&#34;)

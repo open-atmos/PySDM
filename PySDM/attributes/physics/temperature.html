@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Temperature(IntensiveAttribute):
+<pre><code class="python">@register_attribute()
+class Temperature(IntensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, base=&#34;heat&#34;, name=&#34;temperature&#34;)</code></pre>
 </details>

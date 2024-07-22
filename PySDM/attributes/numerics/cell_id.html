@@ -36,8 +36,8 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.attributes.numerics.cell_id.CellID"><code class="flex name class">
-<span>class <span class="ident">CellID</span></span>
+<dt id="PySDM.attributes.numerics.cell_id.CellId"><code class="flex name class">
+<span>class <span class="ident">CellId</span></span>
 <span>(</span><span>builder)</span>
 </code></dt>
 <dd>
@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CellID(CellAttribute):
+<pre><code class="python">@register_attribute()
+class CellId(CellAttribute):
     def __init__(self, builder):
         super().__init__(builder, name=&#34;cell id&#34;, dtype=int)
 
@@ -61,7 +62,7 @@ hljs.highlightAll();
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.attributes.numerics.cell_id.CellID.recalculate"><code class="name flex">
+<dt id="PySDM.attributes.numerics.cell_id.CellId.recalculate"><code class="name flex">
 <span>def <span class="ident">recalculate</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -85,9 +86,9 @@ hljs.highlightAll();
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.attributes.numerics.cell_id.CellID" href="#PySDM.attributes.numerics.cell_id.CellID">CellID</a></code></h4>
+<h4><code><a title="PySDM.attributes.numerics.cell_id.CellId" href="#PySDM.attributes.numerics.cell_id.CellId">CellId</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.attributes.numerics.cell_id.CellID.recalculate" href="#PySDM.attributes.numerics.cell_id.CellID.recalculate">recalculate</a></code></li>
+<li><code><a title="PySDM.attributes.numerics.cell_id.CellId.recalculate" href="#PySDM.attributes.numerics.cell_id.CellId.recalculate">recalculate</a></code></li>
 </ul>
 </li>
 </ul>

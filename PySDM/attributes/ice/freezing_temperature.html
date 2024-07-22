@@ -48,7 +48,8 @@ used in singular regime)</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class FreezingTemperature(MaximumAttribute):
+<pre><code class="python">@register_attribute()
+class FreezingTemperature(MaximumAttribute):
     def __init__(self, builder):
         super().__init__(builder, name=&#34;freezing temperature&#34;)</code></pre>
 </details>

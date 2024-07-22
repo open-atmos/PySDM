@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>PySDM.attributes.physics.mass API documentation</title>
+<title>PySDM.attributes.physics.water_mass API documentation</title>
 <meta name="description" content="particle mass, derived attribute for coalescence
 in simulation involving mixed-phase clouds, positive values correspond to
 liquid water and negative …">
@@ -24,7 +24,7 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.attributes.physics.mass</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.physics.water_mass</code></h1>
 </header>
 <section id="section-intro">
 <p>particle mass, derived attribute for coalescence
@@ -40,7 +40,7 @@ liquid water and negative values to ice</p>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.attributes.physics.mass.WaterMass"><code class="flex name class">
+<dt id="PySDM.attributes.physics.water_mass.WaterMass"><code class="flex name class">
 <span>class <span class="ident">WaterMass</span></span>
 <span>(</span><span>builder)</span>
 </code></dt>
@@ -50,7 +50,8 @@ liquid water and negative values to ice</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class WaterMass(ExtensiveAttribute):
+<pre><code class="python">@register_attribute()
+class WaterMass(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name=&#34;water mass&#34;)</code></pre>
 </details>
@@ -77,7 +78,7 @@ liquid water and negative values to ice</p>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.attributes.physics.mass.WaterMass" href="#PySDM.attributes.physics.mass.WaterMass">WaterMass</a></code></h4>
+<h4><code><a title="PySDM.attributes.physics.water_mass.WaterMass" href="#PySDM.attributes.physics.water_mass.WaterMass">WaterMass</a></code></h4>
 </li>
 </ul>
 </li>

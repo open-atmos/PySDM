@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>PySDM.attributes.isotopes.moles_light_isotopes API documentation</title>
+<title>PySDM.attributes.isotopes.moles API documentation</title>
 <meta name="description" content="derived attributes providing amounts of light isotopes in water (1H and 16O) …">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -22,7 +22,7 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.attributes.isotopes.moles_light_isotopes</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.isotopes.moles</code></h1>
 </header>
 <section id="section-intro">
 <p>derived attributes providing amounts of light isotopes in water (1H and 16O)</p>
@@ -55,7 +55,7 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.attributes.isotopes.moles_light_isotopes.Helper"><code class="flex name class">
+<dt id="PySDM.attributes.isotopes.moles.Helper"><code class="flex name class">
 <span>class <span class="ident">Helper</span></span>
 <span>(</span><span>builder, name, attrs_to_multiplier)</span>
 </code></dt>
@@ -86,13 +86,13 @@ hljs.highlightAll();
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.isotopes.moles_light_isotopes.Moles16O" href="#PySDM.attributes.isotopes.moles_light_isotopes.Moles16O">Moles16O</a></li>
-<li><a title="PySDM.attributes.isotopes.moles_light_isotopes.Moles1H" href="#PySDM.attributes.isotopes.moles_light_isotopes.Moles1H">Moles1H</a></li>
-<li><a title="PySDM.attributes.isotopes.moles_light_isotopes.MolesLightWater" href="#PySDM.attributes.isotopes.moles_light_isotopes.MolesLightWater">MolesLightWater</a></li>
+<li><a title="PySDM.attributes.isotopes.moles.Moles16O" href="#PySDM.attributes.isotopes.moles.Moles16O">Moles16O</a></li>
+<li><a title="PySDM.attributes.isotopes.moles.Moles1H" href="#PySDM.attributes.isotopes.moles.Moles1H">Moles1H</a></li>
+<li><a title="PySDM.attributes.isotopes.moles.MolesLightWater" href="#PySDM.attributes.isotopes.moles.MolesLightWater">MolesLightWater</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.attributes.isotopes.moles_light_isotopes.Helper.recalculate"><code class="name flex">
+<dt id="PySDM.attributes.isotopes.moles.Helper.recalculate"><code class="name flex">
 <span>def <span class="ident">recalculate</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -100,7 +100,7 @@ hljs.highlightAll();
 </dd>
 </dl>
 </dd>
-<dt id="PySDM.attributes.isotopes.moles_light_isotopes.Moles16O"><code class="flex name class">
+<dt id="PySDM.attributes.isotopes.moles.Moles16O"><code class="flex name class">
 <span>class <span class="ident">Moles16O</span></span>
 <span>(</span><span>builder)</span>
 </code></dt>
@@ -110,7 +110,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Moles16O(Helper):
+<pre><code class="python">@register_attribute(name=&#34;moles_16O&#34;)
+class Moles16O(Helper):
     def __init__(self, builder):
         super().__init__(
             builder=builder,
@@ -124,12 +125,12 @@ hljs.highlightAll();
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.isotopes.moles_light_isotopes.Helper" href="#PySDM.attributes.isotopes.moles_light_isotopes.Helper">Helper</a></li>
+<li><a title="PySDM.attributes.isotopes.moles.Helper" href="#PySDM.attributes.isotopes.moles.Helper">Helper</a></li>
 <li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
 <li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
 </dd>
-<dt id="PySDM.attributes.isotopes.moles_light_isotopes.Moles1H"><code class="flex name class">
+<dt id="PySDM.attributes.isotopes.moles.Moles1H"><code class="flex name class">
 <span>class <span class="ident">Moles1H</span></span>
 <span>(</span><span>builder)</span>
 </code></dt>
@@ -139,7 +140,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Moles1H(Helper):
+<pre><code class="python">@register_attribute(name=&#34;moles_1H&#34;)
+class Moles1H(Helper):
     def __init__(self, builder):
         super().__init__(
             builder=builder,
@@ -155,12 +157,12 @@ hljs.highlightAll();
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.isotopes.moles_light_isotopes.Helper" href="#PySDM.attributes.isotopes.moles_light_isotopes.Helper">Helper</a></li>
+<li><a title="PySDM.attributes.isotopes.moles.Helper" href="#PySDM.attributes.isotopes.moles.Helper">Helper</a></li>
 <li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
 <li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
 </dd>
-<dt id="PySDM.attributes.isotopes.moles_light_isotopes.MolesLightWater"><code class="flex name class">
+<dt id="PySDM.attributes.isotopes.moles.MolesLightWater"><code class="flex name class">
 <span>class <span class="ident">MolesLightWater</span></span>
 <span>(</span><span>builder)</span>
 </code></dt>
@@ -170,7 +172,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MolesLightWater(Helper):
+<pre><code class="python">@register_attribute()
+class MolesLightWater(Helper):
     def __init__(self, builder):
         const = builder.formulae.constants
         M_H2O = 2 * const.M_1H + const.M_16O
@@ -196,7 +199,7 @@ hljs.highlightAll();
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.isotopes.moles_light_isotopes.Helper" href="#PySDM.attributes.isotopes.moles_light_isotopes.Helper">Helper</a></li>
+<li><a title="PySDM.attributes.isotopes.moles.Helper" href="#PySDM.attributes.isotopes.moles.Helper">Helper</a></li>
 <li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
 <li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
@@ -217,19 +220,19 @@ hljs.highlightAll();
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.attributes.isotopes.moles_light_isotopes.Helper" href="#PySDM.attributes.isotopes.moles_light_isotopes.Helper">Helper</a></code></h4>
+<h4><code><a title="PySDM.attributes.isotopes.moles.Helper" href="#PySDM.attributes.isotopes.moles.Helper">Helper</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.attributes.isotopes.moles_light_isotopes.Helper.recalculate" href="#PySDM.attributes.isotopes.moles_light_isotopes.Helper.recalculate">recalculate</a></code></li>
+<li><code><a title="PySDM.attributes.isotopes.moles.Helper.recalculate" href="#PySDM.attributes.isotopes.moles.Helper.recalculate">recalculate</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="PySDM.attributes.isotopes.moles_light_isotopes.Moles16O" href="#PySDM.attributes.isotopes.moles_light_isotopes.Moles16O">Moles16O</a></code></h4>
+<h4><code><a title="PySDM.attributes.isotopes.moles.Moles16O" href="#PySDM.attributes.isotopes.moles.Moles16O">Moles16O</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.attributes.isotopes.moles_light_isotopes.Moles1H" href="#PySDM.attributes.isotopes.moles_light_isotopes.Moles1H">Moles1H</a></code></h4>
+<h4><code><a title="PySDM.attributes.isotopes.moles.Moles1H" href="#PySDM.attributes.isotopes.moles.Moles1H">Moles1H</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.attributes.isotopes.moles_light_isotopes.MolesLightWater" href="#PySDM.attributes.isotopes.moles_light_isotopes.MolesLightWater">MolesLightWater</a></code></h4>
+<h4><code><a title="PySDM.attributes.isotopes.moles.MolesLightWater" href="#PySDM.attributes.isotopes.moles.MolesLightWater">MolesLightWater</a></code></h4>
 </li>
 </ul>
 </li>

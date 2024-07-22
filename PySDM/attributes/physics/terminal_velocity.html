@@ -46,7 +46,12 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class TerminalVelocity(DerivedAttribute):
+<pre><code class="python">@register_attribute(
+    name=&#34;relative fall velocity&#34;,
+    variant=lambda dynamics, _: &#34;RelaxedVelocity&#34; not in dynamics,
+)
+@register_attribute()
+class TerminalVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.radius = builder.get_attribute(&#34;radius&#34;)
         dependencies = [self.radius]

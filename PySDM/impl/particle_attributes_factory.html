@@ -60,7 +60,12 @@ hljs.highlightAll();
                 maximum_attr.append(attr_name)
             elif not isinstance(
                 req_attr[attr_name],
-                (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute),
+                (
+                    DerivedAttribute,
+                    get_attribute_class(&#34;multiplicity&#34;),
+                    CellAttribute,
+                    DummyAttribute,
+                ),
             ):
                 raise AssertionError()
 

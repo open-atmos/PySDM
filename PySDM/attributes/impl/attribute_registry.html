@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>PySDM.attributes.chemistry.acidity API documentation</title>
-<meta name="description" content="pH calculated by finding equilibrium hydrogen ion concentration">
+<title>PySDM.attributes.impl.attribute_registry API documentation</title>
+<meta name="description" content="definition of decorator used to register PySDM attribute classes">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -22,88 +22,33 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.attributes.chemistry.acidity</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.impl.attribute_registry</code></h1>
 </header>
 <section id="section-intro">
-<p>pH calculated by finding equilibrium hydrogen ion concentration</p>
+<p>definition of decorator used to register PySDM attribute classes</p>
 </section>
 <section>
 </section>
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.attributes.chemistry.acidity.Acidity"><code class="flex name class">
-<span>class <span class="ident">Acidity</span></span>
-<span>(</span><span>builder)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@register_attribute(name=&#34;pH&#34;)
-class Acidity(DerivedAttribute):
-    def __init__(self, builder):
-        self.conc = {}
-        for key, val in AQUEOUS_COMPOUNDS.items():
-            if len(val) &gt; 1:
-                self.conc[key] = builder.get_attribute(&#34;conc_&#34; + key)
-        super().__init__(builder, name=&#34;pH&#34;, dependencies=self.conc.values())
-        self.environment = builder.particulator.environment
-        self.cell_id = builder.get_attribute(&#34;cell id&#34;)
-
-    def allocate(self, idx):
-        super().allocate(idx)
-        self.data.fill(self.formulae.constants.pH_w)
-
-    def recalculate(self):
-        dynamic = self.particulator.dynamics[&#34;AqueousChemistry&#34;]
-
-        self.particulator.backend.equilibrate_H(
-            equilibrium_consts=dynamic.equilibrium_consts,
-            cell_id=self.cell_id.get(),
-            conc=_conc(
-                N_mIII=self.conc[&#34;N_mIII&#34;].get(),
-                N_V=self.conc[&#34;N_V&#34;].get(),
-                C_IV=self.conc[&#34;C_IV&#34;].get(),
-                S_IV=self.conc[&#34;S_IV&#34;].get(),
-                S_VI=self.conc[&#34;S_VI&#34;].get(),
-            ),
-            do_chemistry_flag=dynamic.do_chemistry_flag,
-            pH=self.data,
-            H_min=dynamic.pH_H_min,
-            H_max=dynamic.pH_H_max,
-            ionic_strength_threshold=dynamic.ionic_strength_threshold,
-            rtol=dynamic.pH_rtol,
-        )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
-<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.attributes.chemistry.acidity.Acidity.allocate"><code class="name flex">
-<span>def <span class="ident">allocate</span></span>(<span>self, idx)</span>
+<dt id="PySDM.attributes.impl.attribute_registry.get_attribute_class"><code class="name flex">
+<span>def <span class="ident">get_attribute_class</span></span>(<span>name, dynamics=None, formulae=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="PySDM.attributes.chemistry.acidity.Acidity.recalculate"><code class="name flex">
-<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
+<dt id="PySDM.attributes.impl.attribute_registry.register_attribute"><code class="name flex">
+<span>def <span class="ident">register_attribute</span></span>(<span>*, name=None, variant=None, dummy_default=False, warn=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -113,18 +58,13 @@ class Acidity(DerivedAttribute):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.attributes.chemistry" href="index.html">PySDM.attributes.chemistry</a></code></li>
+<li><code><a title="PySDM.attributes.impl" href="index.html">PySDM.attributes.impl</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="PySDM.attributes.chemistry.acidity.Acidity" href="#PySDM.attributes.chemistry.acidity.Acidity">Acidity</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.attributes.chemistry.acidity.Acidity.allocate" href="#PySDM.attributes.chemistry.acidity.Acidity.allocate">allocate</a></code></li>
-<li><code><a title="PySDM.attributes.chemistry.acidity.Acidity.recalculate" href="#PySDM.attributes.chemistry.acidity.Acidity.recalculate">recalculate</a></code></li>
-</ul>
-</li>
+<li><code><a title="PySDM.attributes.impl.attribute_registry.get_attribute_class" href="#PySDM.attributes.impl.attribute_registry.get_attribute_class">get_attribute_class</a></code></li>
+<li><code><a title="PySDM.attributes.impl.attribute_registry.register_attribute" href="#PySDM.attributes.impl.attribute_registry.register_attribute">register_attribute</a></code></li>
 </ul>
 </li>
 </ul>
