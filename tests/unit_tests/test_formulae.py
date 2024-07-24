@@ -127,3 +127,7 @@ class TestFormulae:
         assert (
             str(excinfo.value) == f"constant override provided for unknown key: {key}"
         )
+
+    @staticmethod
+    def test_derived_constant_overridable():
+        Formulae(constants={"Mv": np.nan})

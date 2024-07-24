@@ -104,6 +104,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             )
         }
 
+        physics.constants_defaults.compute_derived_values(constants_defaults)
         if constants is not None:
             for key in constants:
                 if key not in constants_defaults:
@@ -113,6 +114,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
 
         constants_defaults = {**constants_defaults, **(constants or {})}
         physics.constants_defaults.compute_derived_values(constants_defaults)
+
         constants = namedtuple("Constants", tuple(constants_defaults.keys()))(
             **constants_defaults
         )
