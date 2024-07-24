@@ -211,6 +211,13 @@
     [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb)
     [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb)  
 
+### 0D parcel-environment condensation/freezing example:
+- [Abade & Albuquerque 2024](https://doi.org/10.1002/qj.4775) (Adiabatic parcel, liquid/solid phase partitioning):
+  - Fig 2: 
+    [![View notebook](https://img.shields.io/static/v1?label=render%20on&logo=github&color=87ce3e&message=GitHub)](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/Abade_and_Albuquerque_2024/fig_2.ipynb)
+    [![launch on mybinder.org](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/open-atmos/PySDM.git/main?urlpath=lab/tree/examples/PySDM_examples/Abade_and_Albuquerque_2024/fig_2.ipynb)
+    [![launch on Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/open-atmos/PySDM/blob/main/examples/PySDM_examples/Abade_and_Albuquerque_2024/fig_2.ipynb)   
+
 ### OD parcel-environment iterative framework mimicking removal of precipitation
 - [Rozanski & Sonntag 1982](https://doi.org/10.1111/j.2153-3490.1982.tb01800.x):
   - Figs 4-6:
