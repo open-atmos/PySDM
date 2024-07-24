@@ -64,7 +64,6 @@ class TestDropGrowth:
         pyplot.xlabel("temperature [K]")
         pyplot.ylabel("r dr/dt relative difference (1971 vs. 1951) [%]")
         pyplot.grid()
-        pyplot.legend()
         if plot:
             pyplot.show()
         else:
