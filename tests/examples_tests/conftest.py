@@ -31,6 +31,7 @@ TEST_SUITES = {
         "Lamb_et_al_2017",
         "Miyake_et_al_1968",
         "Rozanski_and_Sonntag_1982",
+        "Abade_and_Albuquerque_2024",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
