@@ -38,7 +38,7 @@ hljs.highlightAll();
 <dl>
 <dt id="PySDM.formulae.Formulae"><code class="flex name class">
 <span>class <span class="ident">Formulae</span></span>
-<span>(</span><span>*, constants: Optional[dict] = None, seed: int = None, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'Mason1971', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'LibcloudphPlusPlus', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null', fragmentation_function: str = 'AlwaysN', isotope_equilibrium_fractionation_factors: str = 'Null', isotope_meteoric_water_line_excess: str = 'Null', isotope_ratio_evolution: str = 'Null', isotope_diffusivity_ratios: str = 'Null', isotope_relaxation_timescale: str = 'Null', optical_albedo: str = 'Null', optical_depth: str = 'Null', particle_shape_and_density: str = 'LiquidSpheres', terminal_velocity: str = 'GunnKinzer1949', air_dynamic_viscosity: str = 'ZografosEtAl1987', handle_all_breakups: bool = False)</span>
+<span>(</span><span>*, constants: Optional[dict] = None, seed: int = None, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'Mason1971', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'LibcloudphPlusPlus', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null', fragmentation_function: str = 'AlwaysN', isotope_equilibrium_fractionation_factors: str = 'Null', isotope_meteoric_water_line_excess: str = 'Null', isotope_ratio_evolution: str = 'Null', isotope_diffusivity_ratios: str = 'Null', isotope_relaxation_timescale: str = 'Null', optical_albedo: str = 'Null', optical_depth: str = 'Null', particle_shape_and_density: str = 'LiquidSpheres', terminal_velocity: str = 'GunnKinzer1949', air_dynamic_viscosity: str = 'ZografosEtAl1987', bulk_phase_partitioning: str = 'Null', handle_all_breakups: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -78,6 +78,7 @@ hljs.highlightAll();
         particle_shape_and_density: str = &#34;LiquidSpheres&#34;,
         terminal_velocity: str = &#34;GunnKinzer1949&#34;,
         air_dynamic_viscosity: str = &#34;ZografosEtAl1987&#34;,
+        bulk_phase_partitioning: str = &#34;Null&#34;,
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -109,6 +110,7 @@ hljs.highlightAll();
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
+        self.bulk_phase_partitioning = bulk_phase_partitioning
 
         self._components = tuple(
             i
@@ -124,8 +126,18 @@ hljs.highlightAll();
                 getattr(defaults, k), (numbers.Number, pint.Quantity, pint.Unit)
             )
         }
+
+        physics.constants_defaults.compute_derived_values(constants_defaults)
+        if constants is not None:
+            for key in constants:
+                if key not in constants_defaults:
+                    raise ValueError(
+                        f&#34;constant override provided for unknown key: {key}&#34;
+                    )
+
         constants_defaults = {**constants_defaults, **(constants or {})}
         physics.constants_defaults.compute_derived_values(constants_defaults)
+
         constants = namedtuple(&#34;Constants&#34;, tuple(constants_defaults.keys()))(
             **constants_defaults
         )

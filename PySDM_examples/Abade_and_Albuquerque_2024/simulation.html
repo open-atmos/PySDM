@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>PySDM_examples.utils.basic_simulation API documentation</title>
+<title>PySDM_examples.Abade_and_Albuquerque_2024.simulation API documentation</title>
 <meta name="description" content="">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
@@ -22,7 +22,7 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM_examples.utils.basic_simulation</code></h1>
+<h1 class="title">Module <code>PySDM_examples.Abade_and_Albuquerque_2024.simulation</code></h1>
 </header>
 <section id="section-intro">
 </section>
@@ -35,9 +35,9 @@ hljs.highlightAll();
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM_examples.utils.basic_simulation.BasicSimulation"><code class="flex name class">
-<span>class <span class="ident">BasicSimulation</span></span>
-<span>(</span><span>particulator)</span>
+<dt id="PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation"><code class="flex name class">
+<span>class <span class="ident">Simulation</span></span>
+<span>(</span><span>settings)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -45,36 +45,57 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class BasicSimulation:
-    def __init__(self, particulator):
-        self.particulator = particulator
+<pre><code class="python">class Simulation(BasicSimulation):
+    def __init__(self, settings):
+        parcel = Parcel(
+            dt=settings.timestep,
+            mass_of_dry_air=settings.mass_of_dry_air,
+            p0=settings.initial_total_pressure,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+            T0=settings.initial_temperature,
+            w=settings.updraft,
+        )
+        builder = Builder(
+            backend=CPU(settings.formulae, override_jit_flags={&#34;parallel&#34;: False}),
+            n_sd=settings.n_sd,
+            environment=parcel,
+        )
+        builder.add_dynamic(AmbientThermodynamics())
+        builder.add_dynamic(Condensation())
 
-    def _save(self, output):
-        for k, v in self.particulator.products.items():
-            value = v.get()
-            if isinstance(value, np.ndarray) and value.shape[0] == 1:
-                value = value[0]
-            output[k].append(value)
+        r_dry, n_in_dv = ConstantMultiplicity(settings.soluble_aerosol).sample(
+            n_sd=settings.n_sd
+        )
+        attributes = parcel.init_attributes(
+            n_in_dv=n_in_dv, kappa=settings.kappa, r_dry=r_dry
+        )
+        self.products = (
+            WaterMixingRatio(name=&#34;water&#34;, radius_range=(0, np.inf)),
+            WaterMixingRatio(name=&#34;ice&#34;, radius_range=(-np.inf, 0)),
+            WaterMixingRatio(name=&#34;total&#34;, radius_range=(-np.inf, np.inf)),
+            ParcelDisplacement(name=&#34;height&#34;),
+            AmbientTemperature(name=&#34;T&#34;),
+        )
+        super().__init__(
+            particulator=builder.build(attributes=attributes, products=self.products)
+        )
 
-    def _run(self, nt, steps_per_output_interval):
-        output = {k: [] for k in self.particulator.products}
-        self._save(output)
-        for _ in range(0, nt + 1, steps_per_output_interval):
-            self.particulator.run(steps=steps_per_output_interval)
-            self._save(output)
-        return output</code></pre>
+    def run(self, *, nt, steps_per_output_interval):
+        return self._run(nt=nt, steps_per_output_interval=steps_per_output_interval)</code></pre>
 </details>
-<h3>Subclasses</h3>
+<h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation" href="../Abade_and_Albuquerque_2024/simulation.html#PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Grabowski_and_Pawlowska_2023.simulation.Simulation" href="../Grabowski_and_Pawlowska_2023/simulation.html#PySDM_examples.Grabowski_and_Pawlowska_2023.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Jensen_and_Nugent_2017.simulation.Simulation" href="../Jensen_and_Nugent_2017/simulation.html#PySDM_examples.Jensen_and_Nugent_2017.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Kreidenweis_et_al_2003.simulation.Simulation" href="../Kreidenweis_et_al_2003/simulation.html#PySDM_examples.Kreidenweis_et_al_2003.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Lowe_et_al_2019.simulation.Simulation" href="../Lowe_et_al_2019/simulation.html#PySDM_examples.Lowe_et_al_2019.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Niedermeier_et_al_2014.simulation.Simulation" href="../Niedermeier_et_al_2014/simulation.html#PySDM_examples.Niedermeier_et_al_2014.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Pyrcel.simulation.Simulation" href="../Pyrcel/simulation.html#PySDM_examples.Pyrcel.simulation.Simulation">Simulation</a></li>
-<li><a title="PySDM_examples.Pyrcel.tutorial_simulation.Simulation" href="../Pyrcel/tutorial_simulation.html#PySDM_examples.Pyrcel.tutorial_simulation.Simulation">Simulation</a></li>
+<li><a title="PySDM_examples.utils.basic_simulation.BasicSimulation" href="../utils/basic_simulation.html#PySDM_examples.utils.basic_simulation.BasicSimulation">BasicSimulation</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self, *, nt, steps_per_output_interval)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -86,13 +107,16 @@ hljs.highlightAll();
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM_examples.utils" href="index.html">PySDM_examples.utils</a></code></li>
+<li><code><a title="PySDM_examples.Abade_and_Albuquerque_2024" href="index.html">PySDM_examples.Abade_and_Albuquerque_2024</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM_examples.utils.basic_simulation.BasicSimulation" href="#PySDM_examples.utils.basic_simulation.BasicSimulation">BasicSimulation</a></code></h4>
+<h4><code><a title="PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation" href="#PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation">Simulation</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation.run" href="#PySDM_examples.Abade_and_Albuquerque_2024.simulation.Simulation.run">run</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
