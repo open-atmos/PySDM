@@ -1,8 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.builder import Builder
 from PySDM.particulator import Particulator
-from PySDM.attributes.numerics import CellId
-from PySDM.attributes.physics import Multiplicity
 
 from .dummy_environment import DummyEnvironment
 
@@ -15,5 +13,5 @@ class DummyParticulator(Builder, Particulator):
         Particulator.__init__(self, n_sd, backend)
         self.environment = env
         self.particulator = self
-        self.req_attr = {"multiplicity": Multiplicity(self), "cell id": CellId(self)}
+        self.req_attr_names = {"multiplicity", "cell id"}
         self.attributes = None

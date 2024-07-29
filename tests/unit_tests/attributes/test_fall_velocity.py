@@ -131,6 +131,9 @@ def test_attribute_selection(backend_instance):
     env = Box(dt=1, dv=1)
     builder_no_relax = Builder(n_sd=1, backend=backend_instance, environment=env)
     builder_no_relax.request_attribute("relative fall velocity")
+    _ = builder_no_relax.build(
+        attributes={"multiplicity": np.ones(1), "water mass": np.zeros(1)}, products=()
+    )
 
     # with no RelaxedVelocity, the builder should use TerminalVelocity
     assert isinstance(
@@ -140,6 +143,14 @@ def test_attribute_selection(backend_instance):
     builder = Builder(n_sd=1, backend=backend_instance, environment=env)
     builder.add_dynamic(RelaxedVelocity())
     builder.request_attribute("relative fall velocity")
+    _ = builder.build(
+        attributes={
+            "multiplicity": np.ones(1),
+            "water mass": np.zeros(1),
+            "relative fall momentum": np.zeros(1),
+        },
+        products=(),
+    )
 
     # with RelaxedVelocity, the builder should use RelativeFallVelocity
     assert isinstance(builder.req_attr["relative fall velocity"], RelativeFallVelocity)
@@ -147,5 +158,12 @@ def test_attribute_selection(backend_instance):
     # requesting momentum with no dynamic issues a warning
     env = Box(dt=1, dv=1)
     builder = Builder(n_sd=1, backend=backend_instance, environment=env)
+    builder.request_attribute("relative fall momentum")
     with pytest.warns(UserWarning):
-        builder.request_attribute("relative fall momentum")
+        _ = builder.build(
+            attributes={
+                "multiplicity": np.ones(1),
+                "water mass": np.zeros(1),
+            },
+            products=(),
+        )
