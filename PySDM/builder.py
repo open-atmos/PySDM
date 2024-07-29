@@ -84,8 +84,11 @@ class Builder:
         self._resolve_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute):
-        self.req_attr_names.append(attribute)
+    def request_attribute(self, attribute_name):
+        if self.req_attr_names is not None:
+            self.req_attr_names.append(attribute_name)
+        else:
+            self._resolve_attribute(attribute_name)
 
     def build(
         self,
@@ -119,6 +122,7 @@ class Builder:
         self.req_attr = {}
         for attr_name in self.req_attr_names:
             self._resolve_attribute(attr_name)
+        self.req_attr_names = None
 
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
