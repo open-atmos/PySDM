@@ -58,7 +58,7 @@ class Builder:
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
 
-    def register_product(self, product, buffer):
+    def _register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise ValueError(f'product name "{product.name}" already registered')
         product.set_buffer(buffer)
@@ -123,7 +123,7 @@ class Builder:
 
         single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
         for product in products:
-            self.register_product(product, single_buffer_for_all_products)
+            self._register_product(product, single_buffer_for_all_products)
 
         for attribute in attributes:
             self.request_attribute(attribute)
