@@ -54,7 +54,7 @@ class Builder:
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
-        key = get_key(dynamic)
+        key = inspect.getmro(type(dynamic))[-2].__name__
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
 
@@ -152,7 +152,3 @@ class Builder:
             self.particulator.timers[key] = WallTimer()
 
         return self.particulator
-
-
-def get_key(dynamic):
-    return inspect.getmro(type(dynamic))[-2].__name__
