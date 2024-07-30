@@ -58,12 +58,6 @@ class Builder:
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
 
-    def replace_dynamic(self, dynamic):
-        key = get_key(dynamic)
-        assert key in self.particulator.dynamics
-        self.particulator.dynamics.pop(key)
-        self.add_dynamic(dynamic)
-
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise ValueError(f'product name "{product.name}" already registered')
