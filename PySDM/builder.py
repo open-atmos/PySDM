@@ -75,10 +75,13 @@ class Builder:
             assert self.req_attr is not None
 
     def get_attribute(self, attribute_name):
+        """intended for obtaining attribute instances during build() logic,
+        from within register() methods"""
         self._resolve_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
     def request_attribute(self, attribute_name):
+        """can be called either before or during build()"""
         if self.req_attr_names is not None:
             self.req_attr_names.append(attribute_name)
         else:
