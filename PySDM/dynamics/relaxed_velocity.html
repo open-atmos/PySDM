@@ -47,7 +47,6 @@ towards the terminal velocity</p>
 <dd>
 <div class="desc"><p>A dynamic which updates the fall momentum according to a relaxation timescale
 proportional to the sqrt of the droplet radius.</p>
-<p>Should be added first in order to ensure the correct attributes are selected.</p>
 <h2 id="parameters">Parameters</h2>
 <ul>
 <li>constant: use a constant relaxation timescale for all droplets</li>
@@ -61,8 +60,6 @@ proportional to the sqrt of the droplet radius.</p>
     &#34;&#34;&#34;
     A dynamic which updates the fall momentum according to a relaxation timescale
     proportional to the sqrt of the droplet radius.
-
-    Should be added first in order to ensure the correct attributes are selected.
     &#34;&#34;&#34;
 
     def __init__(self, c: float = 8, constant: bool = False):

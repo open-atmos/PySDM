@@ -34,15 +34,6 @@ hljs.highlightAll();
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="PySDM.builder.get_key"><code class="name flex">
-<span>def <span class="ident">get_key</span></span>(<span>dynamic)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -62,11 +53,8 @@ hljs.highlightAll();
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
-        self.req_attr = {
-            &#34;multiplicity&#34;: get_attribute_class(&#34;multiplicity&#34;)(self),
-            &#34;water mass&#34;: get_attribute_class(&#34;water mass&#34;)(self),
-            &#34;cell id&#34;: get_attribute_class(&#34;cell id&#34;)(self),
-        }
+        self.req_attr_names = [&#34;multiplicity&#34;, &#34;water mass&#34;, &#34;cell id&#34;]
+        self.req_attr = None
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
@@ -90,34 +78,38 @@ hljs.highlightAll();
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
-        key = get_key(dynamic)
+        key = inspect.getmro(type(dynamic))[-2].__name__
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
 
-    def replace_dynamic(self, dynamic):
-        key = get_key(dynamic)
-        assert key in self.particulator.dynamics
-        self.particulator.dynamics.pop(key)
-        self.add_dynamic(dynamic)
-
-    def register_product(self, product, buffer):
+    def _register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise ValueError(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
         product.set_buffer(buffer)
         product.register(self)
         self.particulator.products[product.name] = product
 
+    def _resolve_attribute(self, attr_name):
+        if attr_name not in self.req_attr:
+            self.req_attr[attr_name] = get_attribute_class(
+                attr_name,
+                self.particulator.dynamics.keys(),
+                self.formulae,
+            )(self)
+            assert self.req_attr is not None
+
     def get_attribute(self, attribute_name):
-        self.request_attribute(attribute_name)
+        &#34;&#34;&#34;intended for obtaining attribute instances during build() logic,
+        from within register() methods&#34;&#34;&#34;
+        self._resolve_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute, variant=None):
-        if attribute not in self.req_attr:
-            self.req_attr[attribute] = get_attribute_class(
-                attribute, self.particulator.dynamics, self.formulae
-            )(self)
-        if variant is not None:
-            assert variant == self.req_attr[attribute]
+    def request_attribute(self, attribute_name):
+        &#34;&#34;&#34;can be called either before or during build()&#34;&#34;&#34;
+        if self.req_attr_names is not None:
+            self.req_attr_names.append(attribute_name)
+        else:
+            self._resolve_attribute(attribute_name)
 
     def build(
         self,
@@ -148,12 +140,17 @@ hljs.highlightAll();
             del attributes[&#34;volume&#34;]
             self.request_attribute(&#34;volume&#34;)
 
+        self.req_attr = {}
+        for attr_name in self.req_attr_names:
+            self._resolve_attribute(attr_name)
+        self.req_attr_names = None
+
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
 
         single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
         for product in products:
-            self.register_product(product, single_buffer_for_all_products)
+            self._register_product(product, single_buffer_for_all_products)
 
         for attribute in attributes:
             self.request_attribute(attribute)
@@ -198,25 +195,14 @@ hljs.highlightAll();
 <span>def <span class="ident">get_attribute</span></span>(<span>self, attribute_name)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.builder.Builder.register_product"><code class="name flex">
-<span>def <span class="ident">register_product</span></span>(<span>self, product, buffer)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.builder.Builder.replace_dynamic"><code class="name flex">
-<span>def <span class="ident">replace_dynamic</span></span>(<span>self, dynamic)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
+<div class="desc"><p>intended for obtaining attribute instances during build() logic,
+from within register() methods</p></div>
 </dd>
 <dt id="PySDM.builder.Builder.request_attribute"><code class="name flex">
-<span>def <span class="ident">request_attribute</span></span>(<span>self, attribute, variant=None)</span>
+<span>def <span class="ident">request_attribute</span></span>(<span>self, attribute_name)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>can be called either before or during build()</p></div>
 </dd>
 <dt id="PySDM.builder.Builder.set_environment"><code class="name flex">
 <span>def <span class="ident">set_environment</span></span>(<span>self, environment)</span>
@@ -239,21 +225,14 @@ hljs.highlightAll();
 <li><code><a title="PySDM" href="index.html">PySDM</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="PySDM.builder.get_key" href="#PySDM.builder.get_key">get_key</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
 <h4><code><a title="PySDM.builder.Builder" href="#PySDM.builder.Builder">Builder</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="PySDM.builder.Builder.add_dynamic" href="#PySDM.builder.Builder.add_dynamic">add_dynamic</a></code></li>
 <li><code><a title="PySDM.builder.Builder.build" href="#PySDM.builder.Builder.build">build</a></code></li>
 <li><code><a title="PySDM.builder.Builder.get_attribute" href="#PySDM.builder.Builder.get_attribute">get_attribute</a></code></li>
-<li><code><a title="PySDM.builder.Builder.register_product" href="#PySDM.builder.Builder.register_product">register_product</a></code></li>
-<li><code><a title="PySDM.builder.Builder.replace_dynamic" href="#PySDM.builder.Builder.replace_dynamic">replace_dynamic</a></code></li>
 <li><code><a title="PySDM.builder.Builder.request_attribute" href="#PySDM.builder.Builder.request_attribute">request_attribute</a></code></li>
 <li><code><a title="PySDM.builder.Builder.set_environment" href="#PySDM.builder.Builder.set_environment">set_environment</a></code></li>
 </ul>
