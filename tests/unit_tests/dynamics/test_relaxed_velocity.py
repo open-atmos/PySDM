@@ -167,8 +167,6 @@ def test_timescale(default_attributes, c, constant_timescale, backend_instance):
         environment=env,
     )
 
-    sqrt_radius_attr = builder.get_attribute("square root of radius")
-
     dyn = RelaxedVelocity(c=c, constant=constant_timescale)
     builder.add_dynamic(dyn)
 
@@ -177,6 +175,7 @@ def test_timescale(default_attributes, c, constant_timescale, backend_instance):
     )
 
     particulator = builder.build(attributes=default_attributes, products=())
+    sqrt_radius_attr = builder.get_attribute("square root of radius")
 
     tau_storage = particulator.Storage.empty(
         default_attributes["multiplicity"].shape, dtype=float

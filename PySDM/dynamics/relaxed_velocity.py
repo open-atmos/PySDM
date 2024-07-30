@@ -12,8 +12,6 @@ class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     """
     A dynamic which updates the fall momentum according to a relaxation timescale
     proportional to the sqrt of the droplet radius.
-
-    Should be added first in order to ensure the correct attributes are selected.
     """
 
     def __init__(self, c: float = 8, constant: bool = False):
