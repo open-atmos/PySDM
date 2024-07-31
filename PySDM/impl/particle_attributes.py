@@ -22,7 +22,6 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         attributes: Dict[str, Attribute],
     ):
         self.__valid_n_sd = particulator.n_sd
-        self.healthy = True
         self.__healthy_memory = particulator.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
 
@@ -39,6 +38,14 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         )
         self.__sorted = False
         self.__attributes = attributes
+
+    @property
+    def healthy(self) -> bool:
+        return bool(self.__healthy_memory[0])
+
+    @healthy.setter
+    def healthy(self, value: bool):
+        self.__healthy_memory[:] = value
 
     @property
     def cell_start(self):
@@ -63,7 +70,6 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
             self.__idx.remove_zero_n_or_flagged(self["multiplicity"])
             self.__valid_n_sd = self.__idx.length
             self.healthy = True
-            self.__healthy_memory[:] = 1
             self.__sorted = False
 
     def cut_working_length(self, length):

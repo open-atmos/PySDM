@@ -202,9 +202,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 coalescence_rate=coalescence_rate,
                 is_first_in_pair=is_first_in_pair,
             )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
-        )
         self.attributes.sanitize()
         self.attributes.mark_updated("multiplicity")
         for key in self.attributes.get_extensive_attribute_keys():
@@ -410,9 +407,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             precipitation_counting_level_index=precipitation_counting_level_index,
             displacement=displacement,
         )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
-        )
         self.attributes.sanitize()
         return res
 
@@ -424,9 +418,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             length=self.attributes.super_droplet_count,
             healthy=self.attributes._ParticleAttributes__healthy_memory,
             domain_top_level_index=self.mesh.grid[-1],
-        )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
 
