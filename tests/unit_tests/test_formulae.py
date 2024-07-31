@@ -138,7 +138,7 @@ class TestFormulae:
         seed = 0
 
         # act
-        formulae = Formulae(seed=seed)
+        sut = Formulae(seed=seed)
 
         # assert
-        assert formulae.seed == seed
+        assert sut.seed == seed
