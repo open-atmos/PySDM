@@ -60,7 +60,6 @@ hljs.highlightAll();
         attributes: Dict[str, Attribute],
     ):
         self.__valid_n_sd = particulator.n_sd
-        self.healthy = True
         self.__healthy_memory = particulator.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
 
@@ -77,6 +76,14 @@ hljs.highlightAll();
         )
         self.__sorted = False
         self.__attributes = attributes
+
+    @property
+    def healthy(self) -&gt; bool:
+        return bool(self.__healthy_memory[0])
+
+    @healthy.setter
+    def healthy(self, value: bool):
+        self.__healthy_memory[:] = value
 
     @property
     def cell_start(self):
@@ -101,7 +108,6 @@ hljs.highlightAll();
             self.__idx.remove_zero_n_or_flagged(self[&#34;multiplicity&#34;])
             self.__valid_n_sd = self.__idx.length
             self.healthy = True
-            self.__healthy_memory[:] = 1
             self.__sorted = False
 
     def cut_working_length(self, length):
@@ -165,6 +171,18 @@ def cell_start(self):
     if not self.__sorted:
         self.__sort_by_cell_id()
     return self.__cell_start</code></pre>
+</details>
+</dd>
+<dt id="PySDM.impl.particle_attributes.ParticleAttributes.healthy"><code class="name">prop <span class="ident">healthy</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def healthy(self) -&gt; bool:
+    return bool(self.__healthy_memory[0])</code></pre>
 </details>
 </dd>
 <dt id="PySDM.impl.particle_attributes.ParticleAttributes.super_droplet_count"><code class="name">prop <span class="ident">super_droplet_count</span></code></dt>
@@ -281,6 +299,7 @@ otherwise on a per-cell basis</p></div>
 <li><code><a title="PySDM.impl.particle_attributes.ParticleAttributes.get_extensive_attribute_storage" href="#PySDM.impl.particle_attributes.ParticleAttributes.get_extensive_attribute_storage">get_extensive_attribute_storage</a></code></li>
 <li><code><a title="PySDM.impl.particle_attributes.ParticleAttributes.get_working_length" href="#PySDM.impl.particle_attributes.ParticleAttributes.get_working_length">get_working_length</a></code></li>
 <li><code><a title="PySDM.impl.particle_attributes.ParticleAttributes.has_attribute" href="#PySDM.impl.particle_attributes.ParticleAttributes.has_attribute">has_attribute</a></code></li>
+<li><code><a title="PySDM.impl.particle_attributes.ParticleAttributes.healthy" href="#PySDM.impl.particle_attributes.ParticleAttributes.healthy">healthy</a></code></li>
 <li><code><a title="PySDM.impl.particle_attributes.ParticleAttributes.keys" href="#PySDM.impl.particle_attributes.ParticleAttributes.keys">keys</a></code></li>
 <li><code><a title="PySDM.impl.particle_attributes.ParticleAttributes.mark_updated" href="#PySDM.impl.particle_attributes.ParticleAttributes.mark_updated">mark_updated</a></code></li>
 <li><code><a title="PySDM.impl.particle_attributes.ParticleAttributes.permutation" href="#PySDM.impl.particle_attributes.ParticleAttributes.permutation">permutation</a></code></li>
