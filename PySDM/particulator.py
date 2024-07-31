@@ -438,3 +438,23 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.backend.isotopic_fractionation()
         for isotope in heavy_isotopes:
             self.attributes.mark_updated(f"moles_{isotope}")
+
+    def seeding(
+        self, *, seeded_particle_multiplicity, seeded_particle_extensive_attributes
+    ):
+        n_null = self.n_sd - self.attributes.super_droplet_count
+        assert n_null > 0
+
+        self.backend.seeding(
+            idx=self.attributes._ParticleAttributes__idx,
+            multiplicity=self.attributes["multiplicity"],
+            extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+            seeded_particle_multiplicity=seeded_particle_multiplicity,
+            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+        )
+        self.attributes.reset_idx()
+        self.attributes.sanitize()
+
+        self.attributes.mark_updated("multiplicity")
+        for key in self.attributes.get_extensive_attribute_keys():
+            self.attributes.mark_updated(key)
