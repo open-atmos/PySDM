@@ -119,7 +119,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             **constants_defaults
         )
         self.constants = constants
-        self.seed = seed or physics.constants.default_random_seed
+        self.seed = seed if seed is not None else physics.constants.default_random_seed
         self.fastmath = fastmath
         self.handle_all_breakups = handle_all_breakups
         dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
