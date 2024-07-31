@@ -167,6 +167,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     ):
         # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
+        healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes["cell id"]
         multiplicity = self.attributes["multiplicity"]
         attributes = self.attributes.get_extensive_attribute_storage()
@@ -180,7 +181,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 Ec=Ec,
                 Eb=Eb,
                 fragment_mass=fragment_mass,
-                healthy=self.attributes._ParticleAttributes__healthy_memory,
+                healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
                 breakup_rate=breakup_rate,
