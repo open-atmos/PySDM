@@ -150,4 +150,8 @@ class Builder:
         for key in self.particulator.dynamics:
             self.particulator.timers[key] = WallTimer()
 
+        if (attributes["multiplicity"] == 0).any():
+            self.particulator.attributes.healthy = False
+            self.particulator.attributes.sanitize()
+
         return self.particulator
