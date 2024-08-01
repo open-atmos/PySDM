@@ -131,3 +131,14 @@ class TestFormulae:
     @staticmethod
     def test_derived_constant_overridable():
         Formulae(constants={"Mv": np.nan})
+
+    @staticmethod
+    def test_seed_zero():
+        # arrange
+        seed = 0
+
+        # act
+        sut = Formulae(seed=seed)
+
+        # assert
+        assert sut.seed == seed
