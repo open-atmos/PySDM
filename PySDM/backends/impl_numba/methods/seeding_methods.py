@@ -8,7 +8,7 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 class SeedingMethods(BackendMethods):
     @cached_property
     def _seeding(self):
-        @numba.njit(**self.default_jit_flags)
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
         def body(
             idx,
             multiplicity,
