@@ -1,6 +1,4 @@
 import numpy as np
-from .settings import Settings
-
 
 from PySDM import Builder, Formulae
 from PySDM.backends import CPU
@@ -8,6 +6,8 @@ from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, Seeding
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+
+from .settings import Settings
 
 
 class Simulation:
