@@ -5,7 +5,6 @@ factory for arbitrary-moment product classes
 from PySDM.products.impl import MomentProduct, register_product
 
 
-@register_product()
 def make_arbitrary_moment_product(**kwargs):
     """returns a product class to be instantiated and passed to a builder"""
     for arg in kwargs:
@@ -36,55 +35,45 @@ def make_arbitrary_moment_product(**kwargs):
                 self.buffer /= self.particulator.mesh.dv
             return self.buffer
 
-    return ArbitraryMoment
+    return register_product()(ArbitraryMoment)
 
 
-ZerothMoment = register_product()(
-    make_arbitrary_moment_product(
-        rank=0,
-        attr="volume",
-        attr_unit="m^3",
-        skip_division_by_m0=True,
-        skip_division_by_dv=True,
-    )
+ZerothMoment = make_arbitrary_moment_product(
+    rank=0,
+    attr="volume",
+    attr_unit="m^3",
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
 )
 
-VolumeFirstMoment = register_product()(
-    make_arbitrary_moment_product(
-        rank=1,
-        attr="volume",
-        attr_unit="m^3",
-        skip_division_by_m0=True,
-        skip_division_by_dv=True,
-    )
+VolumeFirstMoment = make_arbitrary_moment_product(
+    rank=1,
+    attr="volume",
+    attr_unit="m^3",
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
 )
 
-VolumeSecondMoment = register_product()(
-    make_arbitrary_moment_product(
-        rank=2,
-        attr="volume",
-        attr_unit="m^3",
-        skip_division_by_m0=True,
-        skip_division_by_dv=True,
-    )
+VolumeSecondMoment = make_arbitrary_moment_product(
+    rank=2,
+    attr="volume",
+    attr_unit="m^3",
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
 )
 
-RadiusSixthMoment = register_product()(
-    make_arbitrary_moment_product(
-        rank=6,
-        attr="radius",
-        attr_unit="m",
-        skip_division_by_m0=True,
-        skip_division_by_dv=True,
-    )
+RadiusSixthMoment = make_arbitrary_moment_product(
+    rank=6,
+    attr="radius",
+    attr_unit="m",
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
 )
 
-RadiusFirstMoment = register_product()(
-    make_arbitrary_moment_product(
-        rank=1,
-        attr="radius",
-        attr_unit="m",
-        skip_division_by_m0=True,
-        skip_division_by_dv=True,
-    )
+RadiusFirstMoment = make_arbitrary_moment_product(
+    rank=1,
+    attr="radius",
+    attr_unit="m",
+    skip_division_by_m0=True,
+    skip_division_by_dv=True,
 )

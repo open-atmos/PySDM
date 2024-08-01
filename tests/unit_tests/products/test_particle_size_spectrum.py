@@ -33,6 +33,7 @@ class TestParticleSizeSpectrum:
         """checks if the reported concentration is correctly normalised per
         volume or mass of air, and per bin size"""
         # arrange
+        name = "xxx"
         dv = 666 * si.m**3
         multiplicity = 1000
         rhod = 44 * si.kg / si.m**3
@@ -42,17 +43,21 @@ class TestParticleSizeSpectrum:
         n_sd = 1
         box = Box(dt=np.nan, dv=dv)
         builder = Builder(n_sd=n_sd, backend=backend_instance, environment=box)
-        sut = product_class(
-            radius_bins_edges=(min_size, max_size), **({"stp": stp} if stp else {})
-        )
-        builder.build(
-            products=(sut,),
+        particulator = builder.build(
+            products=(
+                product_class(
+                    name=name,
+                    radius_bins_edges=(min_size, max_size),
+                    **({"stp": stp} if stp else {})
+                ),
+            ),
             attributes={
                 "multiplicity": np.ones(n_sd) * multiplicity,
                 "water mass": np.ones(n_sd) * si.ug,
             },
         )
         box["rhod"] = rhod
+        sut = particulator.products[name]
 
         # act
         actual = sut.get()
@@ -79,6 +84,7 @@ class TestParticleSizeSpectrum:
     def test_dry_flag(product_class, dry, backend_instance):
         """checks if dry or wet size attribute is correctly picked for moment calculation"""
         # arrange
+        name = "xxx"
         n_sd = 1
         dv = 666 * si.m**3
         min_size = 0
@@ -90,9 +96,12 @@ class TestParticleSizeSpectrum:
 
         box = Box(dt=np.nan, dv=dv)
         builder = Builder(n_sd=n_sd, backend=backend_instance, environment=box)
-        sut = product_class(radius_bins_edges=(min_size, max_size), dry=dry)
-        builder.build(
-            products=(sut,),
+        particulator = builder.build(
+            products=(
+                product_class(
+                    name=name, radius_bins_edges=(min_size, max_size), dry=dry
+                ),
+            ),
             attributes={
                 "multiplicity": np.ones(n_sd) * multiplicity,
                 "volume": np.ones(n_sd) * (np.nan if dry else wet_volume),
@@ -100,6 +109,7 @@ class TestParticleSizeSpectrum:
             },
         )
         box["rhod"] = rhod
+        sut = particulator.products[name]
 
         # act
         actual = sut.get()

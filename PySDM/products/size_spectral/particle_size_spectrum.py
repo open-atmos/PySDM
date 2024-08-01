@@ -13,7 +13,6 @@ from PySDM.products.impl import (
 )
 
 
-@register_product()
 class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
     def __init__(
         self,
