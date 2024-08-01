@@ -9,9 +9,10 @@ IceWaterContent is just ice
 
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class CloudWaterContent(MomentProduct):
     def __init__(
         self, unit="kg/m^3", name=None, specific=False, liquid=True, ice=True
@@ -53,26 +54,31 @@ class CloudWaterContent(MomentProduct):
         return cwc
 
 
+@register_product()
 class SpecificCloudWaterContent(CloudWaterContent):
     def __init__(self, unit="kg/kg", name=None):
         super().__init__(unit=unit, name=name, specific=True, liquid=True, ice=True)
 
 
+@register_product()
 class LiquidWaterContent(CloudWaterContent):
     def __init__(self, unit="kg/m^3", name=None):
         super().__init__(unit=unit, name=name, specific=False, liquid=True, ice=False)
 
 
+@register_product()
 class SpecificLiquidWaterContent(CloudWaterContent):
     def __init__(self, unit="kg/kg", name=None):
         super().__init__(unit=unit, name=name, specific=True, liquid=True, ice=False)
 
 
+@register_product()
 class IceWaterContent(CloudWaterContent):
     def __init__(self, unit="kg/m^3", name=None):
         super().__init__(unit=unit, name=name, specific=False, liquid=False, ice=True)
 
 
+@register_product()
 class SpecificIceWaterContent(CloudWaterContent):
     def __init__(self, unit="kg/kg", name=None):
         super().__init__(unit=unit, name=name, specific=True, liquid=False, ice=True)

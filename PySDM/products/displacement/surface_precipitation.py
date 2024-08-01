@@ -2,9 +2,10 @@
 water volume flux derived from sizes of particles crossing bottom domain boundary
 """
 
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class SurfacePrecipitation(Product):
     def __init__(self, name=None, unit="m/s"):
         super().__init__(unit=unit, name=name)

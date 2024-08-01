@@ -3,9 +3,10 @@ mole fractions of gaseous compounds relevant for aqueous chemistry
 """
 
 from PySDM.dynamics.impl.chemistry_utils import GASEOUS_COMPOUNDS
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class GaseousMoleFraction(Product):
     def __init__(self, key, unit="dimensionless", name=None):
         super().__init__(name=name, unit=unit)

@@ -8,9 +8,10 @@ from chempy import Substance
 
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.physics.constants import si
-from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
+from PySDM.products.impl import SpectrumMomentProduct, register_product
 
 
+@register_product()
 class AqueousMassSpectrum(SpectrumMomentProduct):
     def __init__(
         self, *, key, dry_radius_bins_edges, specific=False, name=None, unit="kg/m^3"
@@ -58,6 +59,7 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
         return vals
 
 
+@register_product()
 class SpecificAqueousMassSpectrum(AqueousMassSpectrum):
     def __init__(self, key, dry_radius_bins_edges, name=None, unit="dimensionless"):
         super().__init__(

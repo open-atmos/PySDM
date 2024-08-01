@@ -61,9 +61,9 @@ class Builder:
     def _register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise ValueError(f'product name "{product.name}" already registered')
-        product.set_buffer(buffer)
-        product.register(self)
-        self.particulator.products[product.name] = product
+        self.particulator.products[product.name] = product.instantiate(
+            builder=self, buffer=buffer
+        )
 
     def _resolve_attribute(self, attr_name):
         if attr_name not in self.req_attr:

@@ -8,11 +8,12 @@ import numpy as np
 
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.physics import constants as const
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
 
 
+@register_product()
 class EffectiveRadius(MomentProduct):
     def __init__(self, *, radius_range=None, unit="m", name=None):
         super().__init__(name=name, unit=unit)

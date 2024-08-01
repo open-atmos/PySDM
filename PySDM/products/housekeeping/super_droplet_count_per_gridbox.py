@@ -5,9 +5,10 @@ super-droplet count per gridbox (dimensionless)
 import numba
 
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class SuperDropletCountPerGridbox(Product):
     def __init__(self, unit="dimensionless", name=None):
         super().__init__(unit=unit, name=name)

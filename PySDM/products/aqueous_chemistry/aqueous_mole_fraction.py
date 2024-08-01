@@ -2,11 +2,12 @@
 mole fractions of aqueous-chemistry relevant compounds
 """
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 DUMMY_SPECIFIC_GRAVITY = 44
 
 
+@register_product()
 class AqueousMoleFraction(MomentProduct):
     def __init__(self, key, unit="dimensionless", name=None):
         super().__init__(unit=unit, name=name)

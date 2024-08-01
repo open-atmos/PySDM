@@ -6,9 +6,10 @@ ln(r) + dln(r)
 
 import numpy as np
 
-from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
+from PySDM.products.impl import SpectrumMomentProduct, register_product
 
 
+@register_product()
 class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
     def __init__(self, radius_bins_edges, name=None, unit="dimensionless", dry=False):
         super().__init__(name=name, unit=unit, attr_unit="m^3")
