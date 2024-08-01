@@ -7,7 +7,7 @@ from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, See
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
-from .settings import Settings
+from PySDM_examples.seeding.settings import Settings
 
 
 class Simulation:
