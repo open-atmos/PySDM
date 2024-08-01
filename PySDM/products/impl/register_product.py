@@ -1,3 +1,6 @@
+""" decorator for product classes
+ensuring that their instances can be re-used with multiple builders """
+
 from copy import deepcopy
 
 
