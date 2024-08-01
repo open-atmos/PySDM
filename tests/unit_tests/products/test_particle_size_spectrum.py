@@ -34,15 +34,17 @@ class TestParticleSizeSpectrum:
         volume or mass of air, and per bin size"""
         # arrange
         name = "xxx"
-        dv = 666 * si.m**3
         multiplicity = 1000
         rhod = 44 * si.kg / si.m**3
         min_size = 0
         max_size = 1 * si.mm
 
         n_sd = 1
-        box = Box(dt=np.nan, dv=dv)
-        builder = Builder(n_sd=n_sd, backend=backend_instance, environment=box)
+        builder = Builder(
+            n_sd=n_sd,
+            backend=backend_instance,
+            environment=Box(dt=np.nan, dv=666 * si.m**3),
+        )
         particulator = builder.build(
             products=(
                 product_class(
@@ -56,7 +58,7 @@ class TestParticleSizeSpectrum:
                 "water mass": np.ones(n_sd) * si.ug,
             },
         )
-        box["rhod"] = rhod
+        particulator.environment["rhod"] = rhod
         sut = particulator.products[name]
 
         # act
@@ -68,7 +70,7 @@ class TestParticleSizeSpectrum:
         np.testing.assert_approx_equal(
             actual=actual,
             desired=multiplicity
-            / dv
+            / particulator.environment.mesh.dv
             / (max_size - min_size)
             / (rhod if specific or stp else 1)
             * (backend_instance.formulae.constants.rho_STP if stp else 1),
@@ -86,16 +88,16 @@ class TestParticleSizeSpectrum:
         # arrange
         name = "xxx"
         n_sd = 1
-        dv = 666 * si.m**3
         min_size = 0
         max_size = 1 * si.mm
         multiplicity = 100
         rhod = 44 * si.kg / si.m**3
-        wet_volume = 1 * si.um**3
-        dry_volume = 0.01 * si.um**3
 
-        box = Box(dt=np.nan, dv=dv)
-        builder = Builder(n_sd=n_sd, backend=backend_instance, environment=box)
+        builder = Builder(
+            n_sd=n_sd,
+            backend=backend_instance,
+            environment=Box(dt=np.nan, dv=666 * si.m**3),
+        )
         particulator = builder.build(
             products=(
                 product_class(
@@ -104,11 +106,11 @@ class TestParticleSizeSpectrum:
             ),
             attributes={
                 "multiplicity": np.ones(n_sd) * multiplicity,
-                "volume": np.ones(n_sd) * (np.nan if dry else wet_volume),
-                "dry volume": np.ones(n_sd) * (dry_volume if dry else np.nan),
+                "volume": np.ones(n_sd) * (np.nan if dry else 1 * si.um**3),
+                "dry volume": np.ones(n_sd) * (0.01 * si.um**3 if dry else np.nan),
             },
         )
-        box["rhod"] = rhod
+        particulator.environment["rhod"] = rhod
         sut = particulator.products[name]
 
         # act
@@ -118,7 +120,7 @@ class TestParticleSizeSpectrum:
         np.testing.assert_approx_equal(
             actual=actual,
             desired=multiplicity
-            / dv
+            / particulator.environment.mesh.dv
             / (max_size - min_size)
             / (rhod if sut.specific else 1),
             significant=10,
