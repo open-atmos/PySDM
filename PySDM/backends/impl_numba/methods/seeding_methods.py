@@ -1,3 +1,5 @@
+""" CPU implementation of backend methods for particle injections """
+
 from functools import cached_property
 
 import numba
@@ -5,7 +7,7 @@ import numba
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
-class SeedingMethods(BackendMethods):
+class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     @cached_property
     def _seeding(self):
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
@@ -30,6 +32,7 @@ class SeedingMethods(BackendMethods):
 
     def seeding(
         self,
+        *,
         idx,
         multiplicity,
         extensive_attributes,

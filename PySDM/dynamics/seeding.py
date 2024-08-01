@@ -1,3 +1,8 @@
+""" particle injection handling, requires initalising a simulation with
+enough particles flagged with NaN multiplicity (translated to zeros
+at multiplicity discretisation """
+
+
 class Seeding:
     def __init__(
         self,
@@ -20,7 +25,9 @@ class Seeding:
                 self.particulator.attributes.get_extensive_attribute_keys()
             ) != tuple(self.seeded_particle_extensive_attributes.keys()):
                 raise ValueError(
-                    f"extensive attributes ({self.seeded_particle_extensive_attributes.keys()}) do not match those used in particulator ({self.particulator.attributes.get_extensive_attribute_keys()})"
+                    f"extensive attributes ({self.seeded_particle_extensive_attributes.keys()})"
+                    " do not match those used in particulator"
+                    f" ({self.particulator.attributes.get_extensive_attribute_keys()})"
                 )
 
         time = self.particulator.n_steps * self.particulator.dt
