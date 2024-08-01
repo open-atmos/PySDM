@@ -60,6 +60,7 @@ TEST_SUITES = {
         "Morrison_and_Grabowski_2007",
         "Szumowski_et_al_1998",
         "utils",
+        "seeding",
     ],
 }
 
