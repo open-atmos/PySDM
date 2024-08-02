@@ -13,7 +13,7 @@ FREEZING_CONSTANTS = {
     "illite": {"ABIFM_M": 54.48, "ABIFM_C": -10.67},
 }
 
-COOLING_RATES = (3.75 * si.K / si.min, 0.75 * si.K / si.min, 0.15 * si.K / si.min)
+COOLING_RATES = (-3.75 * si.K / si.min, -0.75 * si.K / si.min, -0.15 * si.K / si.min)
 
 BEST_FIT_LN_S_GEOM = 0.25
 
