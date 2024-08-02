@@ -11,7 +11,7 @@ class DummyParticulator(Builder, Particulator):
         env = DummyEnvironment(grid=grid)
         Builder.__init__(self, n_sd, backend, env)
         Particulator.__init__(self, n_sd, backend)
-        self.environment = env
+        self.environment = env.instantiate(builder=self)
         self.particulator = self
         self.req_attr_names = ["multiplicity", "cell id"]
         self.attributes = None
