@@ -39,12 +39,3 @@ class Settings(StratoCumulus):
         self.simulation_time = 90 * si.minute
         self.dt = 5 * si.second
         self.spin_up_time = 1 * si.hour
-
-        # additional breakup dynamics
-        mu_r = 10 * si.um
-        mu = 4 / 3 * np.pi * mu_r**3
-        sigma = mu / 2.5
-        vmin = mu / 1000
-        self.coalescence_efficiency = ConstEc(Ec=0.95)
-        self.breakup_efficiency = ConstEb(Eb=1.0)
-        self.breakup_fragmentation = Gaussian(mu=mu, sigma=sigma, vmin=vmin, nfmax=10)
