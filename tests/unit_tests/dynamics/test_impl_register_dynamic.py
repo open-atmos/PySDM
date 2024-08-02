@@ -11,7 +11,7 @@ from PySDM.dynamics.impl import register_dynamic
 def test_impl_register_dynamic():
     # arrange
     @register_dynamic()
-    class Dynamic:
+    class Dynamic:  # pylint: disable=too-few-public-methods
         def __init__(self):
             self.particulator = None
 
