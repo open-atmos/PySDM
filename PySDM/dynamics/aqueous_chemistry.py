@@ -13,12 +13,14 @@ from PySDM.dynamics.impl.chemistry_utils import (
     M,
     SpecificGravities,
 )
+from PySDM.dynamics.impl import register_dynamic
 
 DEFAULTS = namedtuple("_", ("pH_min", "pH_max", "pH_rtol", "ionic_strength_threshold"))(
     pH_min=-1.0, pH_max=14.0, pH_rtol=1e-6, ionic_strength_threshold=0.02 * M
 )
 
 
+@register_dynamic()
 class AqueousChemistry:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,

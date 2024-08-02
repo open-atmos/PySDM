@@ -121,8 +121,8 @@ class Builder:
             self._resolve_attribute(attr_name)
         self.req_attr_names = None
 
-        for dynamic in self.particulator.dynamics.values():
-            dynamic.register(self)
+        for key, dynamic in self.particulator.dynamics.items():
+            self.particulator.dynamics[key] = dynamic.instantiate(builder=self)
 
         single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
         for product in products:

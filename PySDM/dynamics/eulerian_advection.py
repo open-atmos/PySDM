@@ -2,7 +2,10 @@
 wrapper class for triggering integration in the Eulerian advection solver
 """
 
+from PySDM.dynamics.impl import register_dynamic
 
+
+@register_dynamic()
 class EulerianAdvection:
     def __init__(self, solvers):
         self.solvers = solvers
