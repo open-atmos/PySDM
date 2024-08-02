@@ -10,7 +10,7 @@ def test_register_environment():
 
     # arrange
     @register_environment()
-    class Env:
+    class Env:  # pylint: disable=too-few-public-methods
         def __init__(self):
             self.particulator = None
 
