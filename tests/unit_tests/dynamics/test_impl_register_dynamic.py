@@ -19,14 +19,15 @@ def test_impl_register_dynamic():
             self.particulator = builder.particulator
 
     dynamic = Dynamic()
-    kwargs = {"n_sd": 0, "backend": CPU(), "environment": Box(dt=0, dv=0)}
+    n_sd = 1
+    kwargs = {"n_sd": n_sd, "backend": CPU(), "environment": Box(dt=0, dv=0)}
     builders = [Builder(**kwargs), Builder(**kwargs)]
 
     # act
     for builder in builders:
         builder.add_dynamic(dynamic)
         builder.build(
-            attributes={"multiplicity": np.empty(0), "water mass": np.empty(0)}
+            attributes={"multiplicity": np.ones(n_sd), "water mass": np.zeros(n_sd)}
         )
 
     # assert
