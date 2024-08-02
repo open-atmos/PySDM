@@ -6,8 +6,11 @@ from abc import ABC
 
 import numpy as np
 
-from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
-from PySDM.products.impl.concentration_product import ConcentrationProduct
+from PySDM.products.impl import (
+    SpectrumMomentProduct,
+    ConcentrationProduct,
+    register_product,
+)
 
 
 class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
@@ -72,6 +75,7 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
         return np.squeeze(vals.reshape(self.shape))
 
 
+@register_product()
 class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
     def __init__(
         self,
@@ -91,6 +95,7 @@ class ParticleSizeSpectrumPerMassOfDryAir(ParticleSizeSpectrum):
         )
 
 
+@register_product()
 class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
     def __init__(
         self, *, radius_bins_edges, dry=False, name=None, unit="m^-3 m^-1", stp=False

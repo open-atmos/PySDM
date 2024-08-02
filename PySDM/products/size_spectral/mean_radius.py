@@ -4,9 +4,10 @@ mean radius of particles within a grid cell (optionally restricted to a given si
 
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class MeanRadius(MomentProduct):
     def __init__(
         self,

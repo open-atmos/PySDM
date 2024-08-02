@@ -5,9 +5,10 @@ liquid water mixing ratio (per mass of dry air) computed from particle sizes
 
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class WaterMixingRatio(MomentProduct):
     def __init__(self, radius_range=None, name=None, unit="dimensionless"):
         self.radius_range = radius_range or (0, np.inf)

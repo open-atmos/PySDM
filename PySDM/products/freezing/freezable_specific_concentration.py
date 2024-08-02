@@ -4,9 +4,10 @@ freezing-temperature binned specific concentration of particles
 
 import numpy as np
 
-from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
+from PySDM.products.impl import SpectrumMomentProduct, register_product
 
 
+@register_product()
 class FreezableSpecificConcentration(SpectrumMomentProduct):
     def __init__(self, temperature_bins_edges, name=None, unit="kg^-1 K^-1"):
         super().__init__(name=name, unit=unit, attr_unit="K")

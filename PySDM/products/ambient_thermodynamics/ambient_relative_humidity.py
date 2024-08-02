@@ -2,9 +2,10 @@
 ambient relative humidity (wrt water or ice)
 """
 
-from PySDM.products.impl.moist_environment_product import MoistEnvironmentProduct
+from PySDM.products.impl import MoistEnvironmentProduct, register_product
 
 
+@register_product()
 class AmbientRelativeHumidity(MoistEnvironmentProduct):
     def __init__(self, name=None, unit="dimensionless", var=None, ice=False):
         super().__init__(name=name, unit=unit, var=var)

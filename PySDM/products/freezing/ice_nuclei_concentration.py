@@ -4,9 +4,10 @@ immersed ice nucleus concentration (both within frozen and unfrozen particles)
 
 import numpy as np
 
-from PySDM.products.impl.concentration_product import ConcentrationProduct
+from PySDM.products.impl import ConcentrationProduct, register_product
 
 
+@register_product()
 class IceNucleiConcentration(ConcentrationProduct):
     def __init__(self, unit="m^-3", name=None, __specific=False, stp=False):
         super().__init__(unit=unit, name=name, specific=__specific, stp=stp)
@@ -34,6 +35,7 @@ class IceNucleiConcentration(ConcentrationProduct):
         return super()._impl(**kwargs)
 
 
+@register_product()
 class SpecificIceNucleiConcentration(IceNucleiConcentration):
     def __init__(self, unit="kg^-1", name=None, __specific=True):
         super().__init__(unit=unit, name=name)

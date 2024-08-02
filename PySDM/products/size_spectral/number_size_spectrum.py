@@ -5,9 +5,10 @@ i.e. number of particles per volume of air having in the size range bin
 
 import numpy as np
 
-from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
+from PySDM.products.impl import SpectrumMomentProduct, register_product
 
 
+@register_product()
 class NumberSizeSpectrum(SpectrumMomentProduct):
     def __init__(self, radius_bins_edges, name=None, unit="m^-3"):
         super().__init__(name=name, unit=unit, attr_unit="m")

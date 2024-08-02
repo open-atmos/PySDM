@@ -4,9 +4,10 @@ mean immersed surface area per particle for unfrozen particles
 
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class TotalUnfrozenImmersedSurfaceArea(MomentProduct):
     def __init__(self, unit="m^2", name=None):
         super().__init__(unit=unit, name=name)

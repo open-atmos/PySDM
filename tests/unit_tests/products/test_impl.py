@@ -34,8 +34,7 @@ from PySDM.products import (
     TotalDryMassMixingRatio,
     VolumeStandardDeviation,
 )
-from PySDM.products.impl.product import Product
-from PySDM.products.impl.rate_product import RateProduct
+from PySDM.products.impl import Product, RateProduct, register_product
 
 _ARGUMENTS = {
     AqueousMassSpectrum: {"key": "S_VI", "dry_radius_bins_edges": (0, np.inf)},
@@ -155,3 +154,32 @@ class TestProducts:
 
         # act
         sut.register(builder)
+
+    @staticmethod
+    def test_register_product_make_product_instances_reusable():
+        # arrange
+        name = "prod"
+
+        @register_product()
+        class Prod(Product):
+            def __init__(self, unit="m"):
+                super().__init__(unit=unit, name=name)
+
+            def _impl(self, **_):
+                pass
+
+        product = Prod()
+        kwargs = {"backend": CPU(), "n_sd": 0, "environment": Box(dt=0, dv=0)}
+        builders = (
+            Builder(**kwargs),
+            Builder(**kwargs),
+        )
+
+        # act
+        for builder in builders:
+            builder._register_product(product=product, buffer=None)
+
+        # assert
+        assert product.particulator is None
+        for builder in builders:
+            assert builder.particulator.products[name] is not product

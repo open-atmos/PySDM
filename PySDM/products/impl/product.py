@@ -60,7 +60,11 @@ class Product:
 
         default_unit_arg = init.parameters["unit"].default
 
-        if default_unit_arg is None or str(default_unit_arg).strip() == "":
+        if (
+            default_unit_arg is inspect._empty
+            or default_unit_arg is None
+            or str(default_unit_arg).strip() == ""
+        ):
             raise AssertionError(
                 f"unit parameter of {type(self).__name__}.__init__"
                 f" is expected to have a non-empty default value"

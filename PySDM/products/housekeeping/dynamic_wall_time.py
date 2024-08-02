@@ -2,9 +2,10 @@
 wall-time for a given dynamic (fetching a value resets the counter)
 """
 
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class DynamicWallTime(Product):
     def __init__(self, dynamic, name=None, unit="s"):
         super().__init__(name=name, unit=unit)

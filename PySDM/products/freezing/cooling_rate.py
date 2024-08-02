@@ -2,9 +2,10 @@
 number-averaged cooling rate
 """
 
-from PySDM.products.impl import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class CoolingRate(MomentProduct):
     def __init__(self, unit="K/s", name=None):
         super().__init__(unit=unit, name=name)

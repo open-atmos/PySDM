@@ -4,9 +4,10 @@ minimum and maximum condensation timestep (fetching a value resets the counter)
 
 import numpy as np
 
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class _CondensationTimestep(Product):
     def __init__(self, name, unit, extremum, reset_value):
         super().__init__(
@@ -37,11 +38,13 @@ class _CondensationTimestep(Product):
         return self.buffer
 
 
+@register_product()
 class CondensationTimestepMin(_CondensationTimestep):
     def __init__(self, name=None, unit="s"):
         super().__init__(name=name, unit=unit, extremum=np.minimum, reset_value=np.inf)
 
 
+@register_product()
 class CondensationTimestepMax(_CondensationTimestep):
     def __init__(self, name=None, unit="s"):
         super().__init__(name=name, unit=unit, extremum=np.maximum, reset_value=-np.inf)
