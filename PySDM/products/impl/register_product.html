@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>PySDM.products.optical.cloud_optical_depth API documentation</title>
-<meta name="description" content="cloud optical depth">
+<title>PySDM.products.impl.register_product API documentation</title>
+<meta name="description" content="decorator for product classes
+ensuring that their instances can be re-used with multiple builders">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -22,56 +23,28 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.optical.cloud_optical_depth</code></h1>
+<h1 class="title">Module <code>PySDM.products.impl.register_product</code></h1>
 </header>
 <section id="section-intro">
-<p>cloud optical depth</p>
+<p>decorator for product classes
+ensuring that their instances can be re-used with multiple builders</p>
 </section>
 <section>
 </section>
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.products.optical.cloud_optical_depth.CloudOpticalDepth"><code class="flex name class">
-<span>class <span class="ident">CloudOpticalDepth</span></span>
-<span>(</span><span>*, unit='dimensionless', name=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@register_product()
-class CloudOpticalDepth(Product):
-    def __init__(self, *, unit=&#34;dimensionless&#34;, name=None):
-        super().__init__(name=name, unit=unit)
-
-    def _impl(self, **kwargs):
-        return self.formulae.optical_depth.tau(
-            kwargs[&#34;liquid_water_path&#34;],
-            kwargs[&#34;effective_radius&#34;],
-        )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.products.optical.cloud_optical_depth.CloudOpticalDepth.instantiate"><code class="name flex">
-<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+<dt id="PySDM.products.impl.register_product.register_product"><code class="name flex">
+<span>def <span class="ident">register_product</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -81,17 +54,12 @@ class CloudOpticalDepth(Product):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.optical" href="index.html">PySDM.products.optical</a></code></li>
+<li><code><a title="PySDM.products.impl" href="index.html">PySDM.products.impl</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="PySDM.products.optical.cloud_optical_depth.CloudOpticalDepth" href="#PySDM.products.optical.cloud_optical_depth.CloudOpticalDepth">CloudOpticalDepth</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.products.optical.cloud_optical_depth.CloudOpticalDepth.instantiate" href="#PySDM.products.optical.cloud_optical_depth.CloudOpticalDepth.instantiate">instantiate</a></code></li>
-</ul>
-</li>
+<li><code><a title="PySDM.products.impl.register_product.register_product" href="#PySDM.products.impl.register_product.register_product">register_product</a></code></li>
 </ul>
 </li>
 </ul>

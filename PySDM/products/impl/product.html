@@ -92,7 +92,11 @@ hljs.highlightAll();
 
         default_unit_arg = init.parameters[&#34;unit&#34;].default
 
-        if default_unit_arg is None or str(default_unit_arg).strip() == &#34;&#34;:
+        if (
+            default_unit_arg is inspect._empty
+            or default_unit_arg is None
+            or str(default_unit_arg).strip() == &#34;&#34;
+        ):
             raise AssertionError(
                 f&#34;unit parameter of {type(self).__name__}.__init__&#34;
                 f&#34; is expected to have a non-empty default value&#34;

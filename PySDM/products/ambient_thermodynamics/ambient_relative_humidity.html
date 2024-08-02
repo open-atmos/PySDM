@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AmbientRelativeHumidity(MoistEnvironmentProduct):
+<pre><code class="python">@register_product()
+class AmbientRelativeHumidity(MoistEnvironmentProduct):
     def __init__(self, name=None, unit=&#34;dimensionless&#34;, var=None, ice=False):
         super().__init__(name=name, unit=unit, var=var)
         self.ice = ice
@@ -64,6 +65,15 @@ hljs.highlightAll();
 <li><a title="PySDM.products.impl.moist_environment_product.MoistEnvironmentProduct" href="../impl/moist_environment_product.html#PySDM.products.impl.moist_environment_product.MoistEnvironmentProduct">MoistEnvironmentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -82,6 +92,9 @@ hljs.highlightAll();
 <ul>
 <li>
 <h4><code><a title="PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity" href="#PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity">AmbientRelativeHumidity</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity.instantiate" href="#PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity.instantiate">instantiate</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

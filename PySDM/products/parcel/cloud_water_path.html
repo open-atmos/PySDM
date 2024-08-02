@@ -49,7 +49,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
+<pre><code class="python">@register_product()
+class ParcelLiquidWaterPath(MomentProduct, ActivationFilteredProduct):
     def __init__(
         self,
         count_unactivated: bool,
@@ -58,7 +59,7 @@ inheritance.</p></div>
         unit=&#34;kg/m^2&#34;,
     ):
         MomentProduct.__init__(self, unit=unit, name=name)
-        _ActivationFilteredProduct.__init__(
+        ActivationFilteredProduct.__init__(
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
         self.previous = {&#34;z&#34;: 0.0, &#34;cwc&#34;: 0.0}
@@ -67,15 +68,15 @@ inheritance.</p></div>
     def register(self, builder):
         if not isinstance(builder.particulator.environment, Parcel):
             raise NotImplementedError()
-        _ActivationFilteredProduct.register(self, builder)
+        ActivationFilteredProduct.register(self, builder)
         MomentProduct.register(self, builder)
         self.particulator.observers.append(self)
 
     def notify(self):
-        _ActivationFilteredProduct.impl(self, attr=&#34;water mass&#34;, rank=1)
+        ActivationFilteredProduct.impl(self, attr=&#34;water mass&#34;, rank=1)
         avg_mass = self.buffer.copy()
 
-        _ActivationFilteredProduct.impl(self, attr=&#34;water mass&#34;, rank=0)
+        ActivationFilteredProduct.impl(self, attr=&#34;water mass&#34;, rank=0)
         tot_numb = self.buffer.copy()
 
         self._download_to_buffer(self.particulator.environment[&#34;z&#34;])
@@ -99,10 +100,16 @@ inheritance.</p></div>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
-<li>PySDM.products.impl.activation_filtered_product._ActivationFilteredProduct</li>
+<li><a title="PySDM.products.impl.activation_filtered_product.ActivationFilteredProduct" href="../impl/activation_filtered_product.html#PySDM.products.impl.activation_filtered_product.ActivationFilteredProduct">ActivationFilteredProduct</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath.notify"><code class="name flex">
 <span>def <span class="ident">notify</span></span>(<span>self)</span>
 </code></dt>
@@ -137,6 +144,7 @@ inheritance.</p></div>
 <li>
 <h4><code><a title="PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath" href="#PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath">ParcelLiquidWaterPath</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath.instantiate" href="#PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath.notify" href="#PySDM.products.parcel.cloud_water_path.ParcelLiquidWaterPath.notify">notify</a></code></li>
 </ul>
 </li>

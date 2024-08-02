@@ -49,7 +49,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class NumberSizeSpectrum(SpectrumMomentProduct):
+<pre><code class="python">@register_product()
+class NumberSizeSpectrum(SpectrumMomentProduct):
     def __init__(self, radius_bins_edges, name=None, unit=&#34;m^-3&#34;):
         super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
         self.radius_bins_edges = radius_bins_edges
@@ -88,6 +89,15 @@ inheritance.</p></div>
 <li>abc.ABC</li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.size_spectral.number_size_spectrum.NumberSizeSpectrum.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></b></code>:
@@ -114,6 +124,9 @@ inheritance.</p></div>
 <ul>
 <li>
 <h4><code><a title="PySDM.products.size_spectral.number_size_spectrum.NumberSizeSpectrum" href="#PySDM.products.size_spectral.number_size_spectrum.NumberSizeSpectrum">NumberSizeSpectrum</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.size_spectral.number_size_spectrum.NumberSizeSpectrum.instantiate" href="#PySDM.products.size_spectral.number_size_spectrum.NumberSizeSpectrum.instantiate">instantiate</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

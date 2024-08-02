@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CPUTime(_Timer):
+<pre><code class="python">@register_product()
+class CPUTime(_Timer):
     def __init__(self, name=&#34;CPU Time&#34;, unit=&#34;s&#34;):
         super().__init__(unit=unit, name=name)
 
@@ -68,6 +69,15 @@ hljs.highlightAll();
 <div class="desc"></div>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.housekeeping.timers.CPUTime.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 </dd>
 <dt id="PySDM.products.housekeeping.timers.WallTime"><code class="flex name class">
 <span>class <span class="ident">WallTime</span></span>
@@ -79,7 +89,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class WallTime(_Timer):
+<pre><code class="python">@register_product()
+class WallTime(_Timer):
     def __init__(self, name=None, unit=&#34;s&#34;):
         super().__init__(unit=unit, name=name)
 
@@ -96,6 +107,15 @@ hljs.highlightAll();
 <dl>
 <dt id="PySDM.products.housekeeping.timers.WallTime.clock"><code class="name flex">
 <span>def <span class="ident">clock</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.housekeeping.timers.WallTime.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -121,12 +141,14 @@ hljs.highlightAll();
 <h4><code><a title="PySDM.products.housekeeping.timers.CPUTime" href="#PySDM.products.housekeeping.timers.CPUTime">CPUTime</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.products.housekeeping.timers.CPUTime.clock" href="#PySDM.products.housekeeping.timers.CPUTime.clock">clock</a></code></li>
+<li><code><a title="PySDM.products.housekeeping.timers.CPUTime.instantiate" href="#PySDM.products.housekeeping.timers.CPUTime.instantiate">instantiate</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="PySDM.products.housekeeping.timers.WallTime" href="#PySDM.products.housekeeping.timers.WallTime">WallTime</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.products.housekeeping.timers.WallTime.clock" href="#PySDM.products.housekeeping.timers.WallTime.clock">clock</a></code></li>
+<li><code><a title="PySDM.products.housekeeping.timers.WallTime.instantiate" href="#PySDM.products.housekeeping.timers.WallTime.instantiate">instantiate</a></code></li>
 </ul>
 </li>
 </ul>

@@ -48,7 +48,8 @@ fetching a value resets the given counter)</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ActivatingRate(EventRate):
+<pre><code class="python">@register_product()
+class ActivatingRate(EventRate):
     def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(&#34;activating&#34;, name=name, unit=unit)</code></pre>
 </details>
@@ -68,7 +69,8 @@ fetching a value resets the given counter)</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class DeactivatingRate(EventRate):
+<pre><code class="python">@register_product()
+class DeactivatingRate(EventRate):
     def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(&#34;deactivating&#34;, name=name, unit=unit)</code></pre>
 </details>
@@ -88,7 +90,8 @@ fetching a value resets the given counter)</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class EventRate(Product):
+<pre><code class="python">@register_product()
+class EventRate(Product):
     def __init__(self, what, name=None, unit=None):
         super().__init__(name=name, unit=unit)
         self.condensation = None
@@ -133,6 +136,12 @@ fetching a value resets the given counter)</p>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.products.condensation.event_rates.EventRate.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.products.condensation.event_rates.EventRate.notify"><code class="name flex">
 <span>def <span class="ident">notify</span></span>(<span>self)</span>
 </code></dt>
@@ -157,7 +166,8 @@ fetching a value resets the given counter)</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class RipeningRate(EventRate):
+<pre><code class="python">@register_product()
+class RipeningRate(EventRate):
     def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(&#34;ripening&#34;, name=name, unit=unit)</code></pre>
 </details>
@@ -191,6 +201,7 @@ fetching a value resets the given counter)</p>
 <li>
 <h4><code><a title="PySDM.products.condensation.event_rates.EventRate" href="#PySDM.products.condensation.event_rates.EventRate">EventRate</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.products.condensation.event_rates.EventRate.instantiate" href="#PySDM.products.condensation.event_rates.EventRate.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.products.condensation.event_rates.EventRate.notify" href="#PySDM.products.condensation.event_rates.EventRate.notify">notify</a></code></li>
 <li><code><a title="PySDM.products.condensation.event_rates.EventRate.register" href="#PySDM.products.condensation.event_rates.EventRate.register">register</a></code></li>
 </ul>

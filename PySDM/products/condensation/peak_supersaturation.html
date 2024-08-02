@@ -50,7 +50,8 @@ fetching a value resets the maximum value)</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PeakSupersaturation(Product):
+<pre><code class="python">@register_product()
+class PeakSupersaturation(Product):
     def __init__(self, unit=&#34;dimensionless&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.condensation = None
@@ -81,6 +82,12 @@ fetching a value resets the maximum value)</p>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.notify"><code class="name flex">
 <span>def <span class="ident">notify</span></span>(<span>self)</span>
 </code></dt>
@@ -113,6 +120,7 @@ fetching a value resets the maximum value)</p>
 <li>
 <h4><code><a title="PySDM.products.condensation.peak_supersaturation.PeakSupersaturation" href="#PySDM.products.condensation.peak_supersaturation.PeakSupersaturation">PeakSupersaturation</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.instantiate" href="#PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.notify" href="#PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.notify">notify</a></code></li>
 <li><code><a title="PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.register" href="#PySDM.products.condensation.peak_supersaturation.PeakSupersaturation.register">register</a></code></li>
 </ul>

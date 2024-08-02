@@ -49,7 +49,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AqueousMassSpectrum(SpectrumMomentProduct):
+<pre><code class="python">@register_product()
+class AqueousMassSpectrum(SpectrumMomentProduct):
     def __init__(
         self, *, key, dry_radius_bins_edges, specific=False, name=None, unit=&#34;kg/m^3&#34;
     ):
@@ -105,6 +106,15 @@ inheritance.</p></div>
 <ul class="hlist">
 <li><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum">SpecificAqueousMassSpectrum</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></b></code>:
@@ -125,7 +135,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SpecificAqueousMassSpectrum(AqueousMassSpectrum):
+<pre><code class="python">@register_product()
+class SpecificAqueousMassSpectrum(AqueousMassSpectrum):
     def __init__(self, key, dry_radius_bins_edges, name=None, unit=&#34;dimensionless&#34;):
         super().__init__(
             key=key,
@@ -168,6 +179,9 @@ inheritance.</p></div>
 <ul>
 <li>
 <h4><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum">AqueousMassSpectrum</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.instantiate" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.instantiate">instantiate</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum">SpecificAqueousMassSpectrum</a></code></h4>

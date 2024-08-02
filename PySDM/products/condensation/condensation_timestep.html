@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CondensationTimestepMax(_CondensationTimestep):
+<pre><code class="python">@register_product()
+class CondensationTimestepMax(_CondensationTimestep):
     def __init__(self, name=None, unit=&#34;s&#34;):
         super().__init__(name=name, unit=unit, extremum=np.maximum, reset_value=-np.inf)</code></pre>
 </details>
@@ -66,7 +67,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CondensationTimestepMin(_CondensationTimestep):
+<pre><code class="python">@register_product()
+class CondensationTimestepMin(_CondensationTimestep):
     def __init__(self, name=None, unit=&#34;s&#34;):
         super().__init__(name=name, unit=unit, extremum=np.minimum, reset_value=np.inf)</code></pre>
 </details>

@@ -47,21 +47,22 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MeanVolumeRadius(MomentProduct, _ActivationFilteredProduct):
+<pre><code class="python">@register_product()
+class MeanVolumeRadius(MomentProduct, ActivationFilteredProduct):
     def __init__(
         self, count_unactivated: bool, count_activated: bool, name=None, unit=&#34;m&#34;
     ):
         MomentProduct.__init__(self, name=name, unit=unit)
-        _ActivationFilteredProduct.__init__(
+        ActivationFilteredProduct.__init__(
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
 
     def register(self, builder):
-        for base_class in (_ActivationFilteredProduct, MomentProduct):
+        for base_class in (ActivationFilteredProduct, MomentProduct):
             base_class.register(self, builder)
 
     def _impl(self, **kwargs):
-        _ActivationFilteredProduct.impl(self, attr=&#34;volume&#34;, rank=1)
+        ActivationFilteredProduct.impl(self, attr=&#34;volume&#34;, rank=1)
         return self.formulae.trivia.radius(self.buffer[:])</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -69,8 +70,17 @@ inheritance.</p></div>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
-<li>PySDM.products.impl.activation_filtered_product._ActivationFilteredProduct</li>
+<li><a title="PySDM.products.impl.activation_filtered_product.ActivationFilteredProduct" href="../impl/activation_filtered_product.html#PySDM.products.impl.activation_filtered_product.ActivationFilteredProduct">ActivationFilteredProduct</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.size_spectral.mean_volume_radius.MeanVolumeRadius.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></b></code>:
@@ -97,6 +107,9 @@ inheritance.</p></div>
 <ul>
 <li>
 <h4><code><a title="PySDM.products.size_spectral.mean_volume_radius.MeanVolumeRadius" href="#PySDM.products.size_spectral.mean_volume_radius.MeanVolumeRadius">MeanVolumeRadius</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.size_spectral.mean_volume_radius.MeanVolumeRadius.instantiate" href="#PySDM.products.size_spectral.mean_volume_radius.MeanVolumeRadius.instantiate">instantiate</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

@@ -49,7 +49,8 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class EffectiveRadius(MomentProduct):
+<pre><code class="python">@register_product()
+class EffectiveRadius(MomentProduct):
     def __init__(self, *, radius_range=None, unit=&#34;m&#34;, name=None):
         super().__init__(name=name, unit=unit)
         self.volume_range = None
@@ -108,6 +109,15 @@ inheritance.</p></div>
 <div class="desc"><p>computes the effective radius (<r^3>/<r^2>) based on <v^(2/3)> and <v></p></div>
 </dd>
 </dl>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.size_spectral.effective_radius.EffectiveRadius.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></b></code>:
@@ -135,6 +145,7 @@ inheritance.</p></div>
 <li>
 <h4><code><a title="PySDM.products.size_spectral.effective_radius.EffectiveRadius" href="#PySDM.products.size_spectral.effective_radius.EffectiveRadius">EffectiveRadius</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.products.size_spectral.effective_radius.EffectiveRadius.instantiate" href="#PySDM.products.size_spectral.effective_radius.EffectiveRadius.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.effective_radius.EffectiveRadius.nan_aware_reff_impl" href="#PySDM.products.size_spectral.effective_radius.EffectiveRadius.nan_aware_reff_impl">nan_aware_reff_impl</a></code></li>
 </ul>
 </li>

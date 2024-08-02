@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SuperDropletCountPerGridbox(Product):
+<pre><code class="python">@register_product()
+class SuperDropletCountPerGridbox(Product):
     def __init__(self, unit=&#34;dimensionless&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self._jit_impl = None
@@ -75,6 +76,12 @@ hljs.highlightAll();
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -101,6 +108,7 @@ hljs.highlightAll();
 <li>
 <h4><code><a title="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox" href="#PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox">SuperDropletCountPerGridbox</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.instantiate" href="#PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.register" href="#PySDM.products.housekeeping.super_droplet_count_per_gridbox.SuperDropletCountPerGridbox.register">register</a></code></li>
 </ul>
 </li>
