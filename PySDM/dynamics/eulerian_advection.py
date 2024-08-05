@@ -19,4 +19,4 @@ class EulerianAdvection:
             self.particulator.environment.get_predicted(field).download(
                 getattr(self.particulator.environment, f"get_{field}")(), reshape=True
             )
-        self.solvers()
+        self.solvers(self.particulator.dynamics["Displacement"])

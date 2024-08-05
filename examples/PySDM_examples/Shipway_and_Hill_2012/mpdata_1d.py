@@ -78,5 +78,5 @@ class MPDATA_1D:
         np.testing.assert_array_less(np.abs(self.advector), 1)
         self.__t += 0.5 * self.dt
 
-    def __call__(self):
+    def __call__(self, _):
         self.solver.advance(1)
