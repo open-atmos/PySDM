@@ -44,21 +44,21 @@ class Moist:
             result[var] = self.particulator.Storage.empty((self.mesh.n_cell,), float)
         return result
 
-    def __getitem__(self, index):
-        """returns a Storage representing the variable (field) at a given index or
-        otherwise a NaN-filled Storage if the index is not found (in order to simplify
+    def __getitem__(self, key: str):
+        """returns a Storage representing the variable (field) at a given key or
+        otherwise a NaN-filled Storage if the key is not found (in order to simplify
         generic code which uses optional variables, e.g. air viscosity, etc.)"""
-        if index in self._values["current"]:
-            return self._values["current"][index]
+        if key in self._values["current"]:
+            return self._values["current"][key]
         return self._nan_field
 
-    def get_predicted(self, index):
+    def get_predicted(self, key: str):
         if self._values["predicted"] is None:
             raise AssertionError(
                 "It seems the AmbientThermodynamics dynamic was not added"
                 " when building particulator"
             )
-        return self._values["predicted"][index]
+        return self._values["predicted"][key]
 
     def _recalculate_temperature_pressure_relative_humidity(self, target):
         self.particulator.backend.temperature_pressure_rh(

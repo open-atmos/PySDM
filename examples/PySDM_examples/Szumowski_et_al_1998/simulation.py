@@ -66,13 +66,6 @@ class Simulation:
                 **kwargs,
             )
             builder.add_dynamic(condensation)
-        displacement = None
-        if self.settings.processes["particle advection"]:
-            displacement = Displacement(
-                enable_sedimentation=self.settings.processes["sedimentation"],
-                adaptive=self.settings.displacement_adaptive,
-                rtol=self.settings.displacement_rtol,
-            )
         if self.settings.processes["fluid advection"]:
             initial_profiles = {
                 "th": self.settings.initial_dry_potential_temperature_profile,
@@ -92,7 +85,6 @@ class Simulation:
                 dt=self.settings.dt,
                 grid=self.settings.grid,
                 size=self.settings.size,
-                displacement=displacement,
                 n_iters=self.settings.mpdata_iters,
                 infinite_gauge=self.settings.mpdata_iga,
                 nonoscillatory=self.settings.mpdata_fct,
@@ -100,7 +92,13 @@ class Simulation:
             )
             builder.add_dynamic(EulerianAdvection(solver))
         if self.settings.processes["particle advection"]:
-            builder.add_dynamic(displacement)
+            builder.add_dynamic(
+                Displacement(
+                    enable_sedimentation=self.settings.processes["sedimentation"],
+                    adaptive=self.settings.displacement_adaptive,
+                    rtol=self.settings.displacement_rtol,
+                )
+            )
         if (
             self.settings.processes["coalescence"]
             and self.settings.processes["breakup"]

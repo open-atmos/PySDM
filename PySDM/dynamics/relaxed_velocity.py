@@ -6,8 +6,10 @@ towards the terminal velocity
 
 from PySDM.attributes.impl.attribute import Attribute
 from PySDM.particulator import Particulator
+from PySDM.dynamics.impl import register_dynamic
 
 
+@register_dynamic()
 class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     """
     A dynamic which updates the fall momentum according to a relaxation timescale

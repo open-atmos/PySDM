@@ -348,10 +348,15 @@ class GUISettings:
                 return widget.value
         raise NotImplementedError()
 
-    def stream_function(self, xX, zZ, _):
+    @property
+    def stream_function(self):
         assert hasattr(self.__settings, "rhod_w_max")
         self.__settings.rhod_w_max = self.ui_rhod_w_max.value
-        return self.__settings.stream_function(xX, zZ, _)
+
+        def fun(xX, zZ, _):
+            return self.__settings.stream_function(xX, zZ, _)
+
+        return fun
 
     @property
     def freezing_inp_spec(self):

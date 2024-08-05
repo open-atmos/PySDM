@@ -4,11 +4,13 @@ requires condensation dynamic to be registered (and run beforehand)
 """
 
 from PySDM.dynamics.condensation import Condensation
+from PySDM.dynamics.impl import register_dynamic
 
 LIGHT_ISOTOPES = ("1H", "16O")
 HEAVY_ISOTOPES = ("2H", "3H", "17O", "18O")
 
 
+@register_dynamic()
 class IsotopicFractionation:
     def __init__(self, isotopes: tuple = HEAVY_ISOTOPES):
         self.isotopes = isotopes

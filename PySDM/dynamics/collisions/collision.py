@@ -23,6 +23,7 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
     RandomGeneratorOptimizerNoPair,
 )
 from PySDM.physics import si
+from PySDM.dynamics.impl import register_dynamic
 
 # pylint: disable=too-many-lines
 
@@ -36,6 +37,7 @@ DEFAULTS = namedtuple(
 )
 
 
+@register_dynamic()
 class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -288,6 +290,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         )
 
 
+@register_dynamic()
 class Coalescence(Collision):
     def __init__(
         self,
@@ -316,6 +319,7 @@ class Coalescence(Collision):
         )
 
 
+@register_dynamic()
 class Breakup(Collision):
     def __init__(
         self,

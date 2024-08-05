@@ -64,6 +64,8 @@ def test_adaptive_displacement(rtol, plot=False):
     pyplot.yticks(np.arange(settings.grid[1] + 1))
     if plot:
         pyplot.show()
+    else:
+        pyplot.clf()
 
     # Assert
     if rtol is not None:
