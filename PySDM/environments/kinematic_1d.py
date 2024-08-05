@@ -61,9 +61,7 @@ class Kinematic1D(Moist):
                 v_wet, n_per_kg = spectral_discretisation.sample(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
                 )
-                # attributes["dry volume"] = v_wet
                 attributes["volume"] = v_wet
-                # attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
             else:
                 r_dry, n_per_kg = spectral_discretisation.sample(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
