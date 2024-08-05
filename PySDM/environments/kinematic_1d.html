@@ -98,9 +98,7 @@ hljs.highlightAll();
                 v_wet, n_per_kg = spectral_discretisation.sample(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
                 )
-                # attributes[&#34;dry volume&#34;] = v_wet
                 attributes[&#34;volume&#34;] = v_wet
-                # attributes[&#34;kappa times dry volume&#34;] = attributes[&#34;dry volume&#34;] * kappa
             else:
                 r_dry, n_per_kg = spectral_discretisation.sample(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
