@@ -63,7 +63,7 @@ hljs.highlightAll();
         self._tmp[&#34;rhod&#34;] = rhod
 
     def get_water_vapour_mixing_ratio(self) -&gt; np.ndarray:
-        return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers.advectee.get()
+        return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers.advectee
 
     def get_thd(self) -&gt; np.ndarray:
         return self.thd0

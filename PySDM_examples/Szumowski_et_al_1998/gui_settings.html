@@ -385,10 +385,15 @@ hljs.highlightAll();
                 return widget.value
         raise NotImplementedError()
 
-    def stream_function(self, xX, zZ, _):
+    @property
+    def stream_function(self):
         assert hasattr(self.__settings, &#34;rhod_w_max&#34;)
         self.__settings.rhod_w_max = self.ui_rhod_w_max.value
-        return self.__settings.stream_function(xX, zZ, _)
+
+        def fun(xX, zZ, _):
+            return self.__settings.stream_function(xX, zZ, _)
+
+        return fun
 
     @property
     def freezing_inp_spec(self):
@@ -828,6 +833,24 @@ def steps_per_output_interval(self) -&gt; int:
     return int(self.output_interval / self.ui_dt.value)</code></pre>
 </details>
 </dd>
+<dt id="PySDM_examples.Szumowski_et_al_1998.gui_settings.GUISettings.stream_function"><code class="name">prop <span class="ident">stream_function</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def stream_function(self):
+    assert hasattr(self.__settings, &#34;rhod_w_max&#34;)
+    self.__settings.rhod_w_max = self.ui_rhod_w_max.value
+
+    def fun(xX, zZ, _):
+        return self.__settings.stream_function(xX, zZ, _)
+
+    return fun</code></pre>
+</details>
+</dd>
 </dl>
 <h3>Methods</h3>
 <dl>
@@ -839,12 +862,6 @@ def steps_per_output_interval(self) -&gt; int:
 </dd>
 <dt id="PySDM_examples.Szumowski_et_al_1998.gui_settings.GUISettings.hide_and_show"><code class="name flex">
 <span>def <span class="ident">hide_and_show</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM_examples.Szumowski_et_al_1998.gui_settings.GUISettings.stream_function"><code class="name flex">
-<span>def <span class="ident">stream_function</span></span>(<span>self, xX, zZ, _)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>

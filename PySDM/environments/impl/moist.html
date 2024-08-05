@@ -83,21 +83,21 @@ hljs.highlightAll();
             result[var] = self.particulator.Storage.empty((self.mesh.n_cell,), float)
         return result
 
-    def __getitem__(self, index):
-        &#34;&#34;&#34;returns a Storage representing the variable (field) at a given index or
-        otherwise a NaN-filled Storage if the index is not found (in order to simplify
+    def __getitem__(self, key: str):
+        &#34;&#34;&#34;returns a Storage representing the variable (field) at a given key or
+        otherwise a NaN-filled Storage if the key is not found (in order to simplify
         generic code which uses optional variables, e.g. air viscosity, etc.)&#34;&#34;&#34;
-        if index in self._values[&#34;current&#34;]:
-            return self._values[&#34;current&#34;][index]
+        if key in self._values[&#34;current&#34;]:
+            return self._values[&#34;current&#34;][key]
         return self._nan_field
 
-    def get_predicted(self, index):
+    def get_predicted(self, key: str):
         if self._values[&#34;predicted&#34;] is None:
             raise AssertionError(
                 &#34;It seems the AmbientThermodynamics dynamic was not added&#34;
                 &#34; when building particulator&#34;
             )
-        return self._values[&#34;predicted&#34;][index]
+        return self._values[&#34;predicted&#34;][key]
 
     def _recalculate_temperature_pressure_relative_humidity(self, target):
         self.particulator.backend.temperature_pressure_rh(
@@ -162,7 +162,7 @@ hljs.highlightAll();
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.environments.impl.moist.Moist.get_predicted"><code class="name flex">
-<span>def <span class="ident">get_predicted</span></span>(<span>self, index)</span>
+<span>def <span class="ident">get_predicted</span></span>(<span>self, key: str)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>

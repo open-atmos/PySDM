@@ -50,7 +50,8 @@ rtol &gt; |(I - E) / E|
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Displacement:  # pylint: disable=too-many-instance-attributes
+<pre><code class="python">@register_dynamic()
+class Displacement:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         enable_sedimentation=False,
@@ -208,6 +209,12 @@ rtol &gt; |(I - E) / E|
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="PySDM.dynamics.displacement.Displacement.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.dynamics.displacement.Displacement.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -248,6 +255,7 @@ rtol &gt; |(I - E) / E|
 <ul class="">
 <li><code><a title="PySDM.dynamics.displacement.Displacement.boundary_condition" href="#PySDM.dynamics.displacement.Displacement.boundary_condition">boundary_condition</a></code></li>
 <li><code><a title="PySDM.dynamics.displacement.Displacement.calculate_displacement" href="#PySDM.dynamics.displacement.Displacement.calculate_displacement">calculate_displacement</a></code></li>
+<li><code><a title="PySDM.dynamics.displacement.Displacement.instantiate" href="#PySDM.dynamics.displacement.Displacement.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.dynamics.displacement.Displacement.register" href="#PySDM.dynamics.displacement.Displacement.register">register</a></code></li>
 <li><code><a title="PySDM.dynamics.displacement.Displacement.update_cell_origin" href="#PySDM.dynamics.displacement.Displacement.update_cell_origin">update_cell_origin</a></code></li>
 <li><code><a title="PySDM.dynamics.displacement.Displacement.update_position" href="#PySDM.dynamics.displacement.Displacement.update_position">update_position</a></code></li>

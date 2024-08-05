@@ -91,13 +91,6 @@ hljs.highlightAll();
                 **kwargs,
             )
             builder.add_dynamic(condensation)
-        displacement = None
-        if self.settings.processes[&#34;particle advection&#34;]:
-            displacement = Displacement(
-                enable_sedimentation=self.settings.processes[&#34;sedimentation&#34;],
-                adaptive=self.settings.displacement_adaptive,
-                rtol=self.settings.displacement_rtol,
-            )
         if self.settings.processes[&#34;fluid advection&#34;]:
             initial_profiles = {
                 &#34;th&#34;: self.settings.initial_dry_potential_temperature_profile,
@@ -117,7 +110,6 @@ hljs.highlightAll();
                 dt=self.settings.dt,
                 grid=self.settings.grid,
                 size=self.settings.size,
-                displacement=displacement,
                 n_iters=self.settings.mpdata_iters,
                 infinite_gauge=self.settings.mpdata_iga,
                 nonoscillatory=self.settings.mpdata_fct,
@@ -125,7 +117,13 @@ hljs.highlightAll();
             )
             builder.add_dynamic(EulerianAdvection(solver))
         if self.settings.processes[&#34;particle advection&#34;]:
-            builder.add_dynamic(displacement)
+            builder.add_dynamic(
+                Displacement(
+                    enable_sedimentation=self.settings.processes[&#34;sedimentation&#34;],
+                    adaptive=self.settings.displacement_adaptive,
+                    rtol=self.settings.displacement_rtol,
+                )
+            )
         if (
             self.settings.processes[&#34;coalescence&#34;]
             and self.settings.processes[&#34;breakup&#34;]

@@ -117,16 +117,12 @@ handled by <a href="http://github.com/open-atmos/PyMPDATA/">PyMPDATA</a></p>
         return attributes
 
     def get_thd(self):
-        return (
-            self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers[&#34;th&#34;].advectee.get()
-        )
+        return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers[&#34;th&#34;]
 
     def get_water_vapour_mixing_ratio(self):
-        return (
-            self.particulator.dynamics[&#34;EulerianAdvection&#34;]
-            .solvers[&#34;water_vapour_mixing_ratio&#34;]
-            .advectee.get()
-        )
+        return self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers[
+            &#34;water_vapour_mixing_ratio&#34;
+        ]
 
     def sync(self):
         self.particulator.dynamics[&#34;EulerianAdvection&#34;].solvers.wait()

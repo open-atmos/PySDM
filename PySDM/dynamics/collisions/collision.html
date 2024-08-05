@@ -56,7 +56,8 @@ b. Perform the relevant dynamic</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Breakup(Collision):
+<pre><code class="python">@register_dynamic()
+class Breakup(Collision):
     def __init__(
         self,
         *,
@@ -108,7 +109,8 @@ b. Perform the relevant dynamic</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Coalescence(Collision):
+<pre><code class="python">@register_dynamic()
+class Coalescence(Collision):
     def __init__(
         self,
         *,
@@ -159,7 +161,8 @@ b. Perform the relevant dynamic</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Collision:  # pylint: disable=too-many-instance-attributes
+<pre><code class="python">@register_dynamic()
+class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
@@ -437,6 +440,12 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
 <dd>
 <div class="desc"><p>eq. (20) in <a href="https://doi.org/10.1002/qj.441">Shima et al. 2009</a></p></div>
 </dd>
+<dt id="PySDM.dynamics.collisions.collision.Collision.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.dynamics.collisions.collision.Collision.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -484,6 +493,7 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
 <li><code><a title="PySDM.dynamics.collisions.collision.Collision.compute_gamma" href="#PySDM.dynamics.collisions.collision.Collision.compute_gamma">compute_gamma</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.collision.Collision.compute_n_fragment" href="#PySDM.dynamics.collisions.collision.Collision.compute_n_fragment">compute_n_fragment</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.collision.Collision.compute_probabilities_of_collision" href="#PySDM.dynamics.collisions.collision.Collision.compute_probabilities_of_collision">compute_probabilities_of_collision</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.collision.Collision.instantiate" href="#PySDM.dynamics.collisions.collision.Collision.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.collision.Collision.register" href="#PySDM.dynamics.collisions.collision.Collision.register">register</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.collision.Collision.step" href="#PySDM.dynamics.collisions.collision.Collision.step">step</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.collision.Collision.toss_candidate_pairs_and_sort_within_pair_by_multiplicity" href="#PySDM.dynamics.collisions.collision.Collision.toss_candidate_pairs_and_sort_within_pair_by_multiplicity">toss_candidate_pairs_and_sort_within_pair_by_multiplicity</a></code></li>

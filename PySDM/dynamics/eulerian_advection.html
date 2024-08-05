@@ -46,7 +46,8 @@ hljs.highlightAll();
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class EulerianAdvection:
+<pre><code class="python">@register_dynamic()
+class EulerianAdvection:
     def __init__(self, solvers):
         self.solvers = solvers
         self.particulator = None
@@ -55,18 +56,20 @@ hljs.highlightAll();
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.environment.get_predicted(
-            &#34;water_vapour_mixing_ratio&#34;
-        ).download(
-            self.particulator.environment.get_water_vapour_mixing_ratio(), reshape=True
-        )
-        self.particulator.environment.get_predicted(&#34;thd&#34;).download(
-            self.particulator.environment.get_thd(), reshape=True
-        )
-        self.solvers()</code></pre>
+        for field in (&#34;water_vapour_mixing_ratio&#34;, &#34;thd&#34;):
+            self.particulator.environment.get_predicted(field).download(
+                getattr(self.particulator.environment, f&#34;get_{field}&#34;)(), reshape=True
+            )
+        self.solvers(self.particulator.dynamics[&#34;Displacement&#34;])</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.dynamics.eulerian_advection.EulerianAdvection.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.dynamics.eulerian_advection.EulerianAdvection.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -93,6 +96,7 @@ hljs.highlightAll();
 <li>
 <h4><code><a title="PySDM.dynamics.eulerian_advection.EulerianAdvection" href="#PySDM.dynamics.eulerian_advection.EulerianAdvection">EulerianAdvection</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.dynamics.eulerian_advection.EulerianAdvection.instantiate" href="#PySDM.dynamics.eulerian_advection.EulerianAdvection.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.dynamics.eulerian_advection.EulerianAdvection.register" href="#PySDM.dynamics.eulerian_advection.EulerianAdvection.register">register</a></code></li>
 </ul>
 </li>

@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc3 0.11.1">
-<title>PySDM.dynamics.isotopic_fractionation API documentation</title>
-<meta name="description" content="resolves fractionation of water molecules across different isotopologues
-requires condensation dynamic to be registered (and run beforehand)">
+<title>PySDM.dynamics.impl.register_dynamic API documentation</title>
+<meta name="description" content="decorator for dynamics classes
+ensuring that their instances can be re-used with multiple builders">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
@@ -23,77 +23,28 @@ hljs.highlightAll();
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.isotopic_fractionation</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.impl.register_dynamic</code></h1>
 </header>
 <section id="section-intro">
-<p>resolves fractionation of water molecules across different isotopologues
-requires condensation dynamic to be registered (and run beforehand)</p>
+<p>decorator for dynamics classes
+ensuring that their instances can be re-used with multiple builders</p>
 </section>
 <section>
 </section>
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.dynamics.isotopic_fractionation.IsotopicFractionation"><code class="flex name class">
-<span>class <span class="ident">IsotopicFractionation</span></span>
-<span>(</span><span>isotopes: tuple = ('2H', '3H', '17O', '18O'))</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@register_dynamic()
-class IsotopicFractionation:
-    def __init__(self, isotopes: tuple = HEAVY_ISOTOPES):
-        self.isotopes = isotopes
-        self.particulator = None
-
-    def register(self, builder):
-        self.particulator = builder.particulator
-
-        try:
-            ix_cond = list(builder.particulator.dynamics.keys()).index(
-                Condensation.__name__
-            )
-        except ValueError:
-            ix_cond = -1
-        ix_self = list(builder.particulator.dynamics.keys()).index(
-            self.__class__.__name__
-        )
-        if ix_cond == -1 or ix_cond &gt; ix_self:
-            raise AssertionError(
-                f&#34;{Condensation.__name__} needs to be registered to run prior to {self.__class__}&#34;
-            )
-
-        for isotope in self.isotopes:
-            builder.request_attribute(f&#34;moles_{isotope}&#34;)
-
-    def __call__(self):
-        self.particulator.isotopic_fractionation(self.isotopes)</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.dynamics.isotopic_fractionation.IsotopicFractionation.instantiate"><code class="name flex">
-<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.dynamics.isotopic_fractionation.IsotopicFractionation.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
+<dt id="PySDM.dynamics.impl.register_dynamic.register_dynamic"><code class="name flex">
+<span>def <span class="ident">register_dynamic</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -103,18 +54,12 @@ class IsotopicFractionation:
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.dynamics" href="index.html">PySDM.dynamics</a></code></li>
+<li><code><a title="PySDM.dynamics.impl" href="index.html">PySDM.dynamics.impl</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="PySDM.dynamics.isotopic_fractionation.IsotopicFractionation" href="#PySDM.dynamics.isotopic_fractionation.IsotopicFractionation">IsotopicFractionation</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.dynamics.isotopic_fractionation.IsotopicFractionation.instantiate" href="#PySDM.dynamics.isotopic_fractionation.IsotopicFractionation.instantiate">instantiate</a></code></li>
-<li><code><a title="PySDM.dynamics.isotopic_fractionation.IsotopicFractionation.register" href="#PySDM.dynamics.isotopic_fractionation.IsotopicFractionation.register">register</a></code></li>
-</ul>
-</li>
+<li><code><a title="PySDM.dynamics.impl.register_dynamic.register_dynamic" href="#PySDM.dynamics.impl.register_dynamic.register_dynamic">register_dynamic</a></code></li>
 </ul>
 </li>
 </ul>

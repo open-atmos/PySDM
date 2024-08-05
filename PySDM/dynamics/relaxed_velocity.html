@@ -56,7 +56,8 @@ proportional to the sqrt of the droplet radius.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
+<pre><code class="python">@register_dynamic()
+class RelaxedVelocity:  # pylint: disable=too-many-instance-attributes
     &#34;&#34;&#34;
     A dynamic which updates the fall momentum according to a relaxation timescale
     proportional to the sqrt of the droplet radius.
@@ -155,6 +156,12 @@ proportional to the sqrt of the droplet radius.</p>
 <dd>
 <div class="desc"></div>
 </dd>
+<dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.instantiate"><code class="name flex">
+<span>def <span class="ident">instantiate</span></span>(<span>self, *, builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt id="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -184,6 +191,7 @@ proportional to the sqrt of the droplet radius.</p>
 <li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_scale_factor" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_scale_factor">calculate_scale_factor</a></code></li>
 <li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_tau" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.calculate_tau">calculate_tau</a></code></li>
 <li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.create_storage" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.create_storage">create_storage</a></code></li>
+<li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.instantiate" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.instantiate">instantiate</a></code></li>
 <li><code><a title="PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register" href="#PySDM.dynamics.relaxed_velocity.RelaxedVelocity.register">register</a></code></li>
 </ul>
 </li>
