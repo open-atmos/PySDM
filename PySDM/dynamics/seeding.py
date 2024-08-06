@@ -2,7 +2,10 @@
 enough particles flagged with NaN multiplicity (translated to zeros
 at multiplicity discretisation """
 
+from PySDM.dynamics.impl import register_dynamic
 
+
+@register_dynamic()
 class Seeding:
     def __init__(
         self,
