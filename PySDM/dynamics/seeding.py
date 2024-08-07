@@ -10,12 +10,12 @@ class Seeding:
     def __init__(
         self,
         *,
-        time_window: tuple,
+        super_droplet_injection_rate: callable,
         seeded_particle_extensive_attributes: dict,
         seeded_particle_multiplicity: int,
     ):
         self.particulator = None
-        self.time_window = time_window
+        self.super_droplet_injection_rate = super_droplet_injection_rate
         self.seeded_particle_extensive_attributes = seeded_particle_extensive_attributes
         self.seeded_particle_multiplicity = seeded_particle_multiplicity
 
@@ -34,8 +34,8 @@ class Seeding:
                 )
 
         time = self.particulator.n_steps * self.particulator.dt
-        if self.time_window[0] <= time <= self.time_window[1]:
-            self.particulator.seeding(
-                seeded_particle_multiplicity=self.seeded_particle_multiplicity,
-                seeded_particle_extensive_attributes=self.seeded_particle_extensive_attributes,
-            )
+        self.particulator.seeding(
+            number_of_super_particles_to_inject=self.super_droplet_injection_rate(time),
+            seeded_particle_multiplicity=self.seeded_particle_multiplicity,
+            seeded_particle_extensive_attributes=self.seeded_particle_extensive_attributes,
+        )

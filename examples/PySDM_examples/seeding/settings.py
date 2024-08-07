@@ -30,7 +30,9 @@ class Settings:
             m_mode=75 * si.nm,
             s_geom=1.6,
         )
-        self.seeding_time_window = (10 * si.min, 15 * si.min)
+        self.super_droplet_injection_rate = lambda time: (
+            2 if 10 * si.min < time < 15 * si.min else 0
+        )
         self.seeded_particle_multiplicity = 1
         self.seeded_particle_extensive_attributes = {
             "water mass": 0.001 * si.ng,
