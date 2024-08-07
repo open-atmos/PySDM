@@ -17,8 +17,12 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             extensive_attributes,
             seeded_particle_multiplicity,
             seeded_particle_extensive_attributes,
+            number_of_super_particles_to_inject: int,
         ):
+            # TODO #1367 it should be possible to start enumerating from the end of valid particle set
             for i, mult in enumerate(multiplicity):
+                if number_of_super_particles_to_inject == 0:
+                    break
                 if mult == 0:
                     idx[i] = -1
                     multiplicity[i] = seeded_particle_multiplicity
@@ -26,7 +30,8 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
                         extensive_attributes[a, i] = (
                             seeded_particle_extensive_attributes[a]
                         )
-                    break
+                    number_of_super_particles_to_inject -= 1
+            assert number_of_super_particles_to_inject == 0
 
         return body
 
@@ -38,6 +43,7 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
         extensive_attributes,
         seeded_particle_multiplicity,
         seeded_particle_extensive_attributes,
+        number_of_super_particles_to_inject: int,
     ):
         self._seeding(
             idx=idx.data,
@@ -47,4 +53,5 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             seeded_particle_extensive_attributes=tuple(
                 seeded_particle_extensive_attributes.values()
             ),
+            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
         )

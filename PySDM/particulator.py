@@ -440,7 +440,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.attributes.mark_updated(f"moles_{isotope}")
 
     def seeding(
-        self, *, seeded_particle_multiplicity, seeded_particle_extensive_attributes
+        self,
+        *,
+        seeded_particle_multiplicity,
+        seeded_particle_extensive_attributes,
+        number_of_super_particles_to_inject,
     ):
         n_null = self.n_sd - self.attributes.super_droplet_count
         assert n_null > 0
@@ -451,6 +455,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             extensive_attributes=self.attributes.get_extensive_attribute_storage(),
             seeded_particle_multiplicity=seeded_particle_multiplicity,
             seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
         )
         self.attributes.reset_idx()
         self.attributes.sanitize()

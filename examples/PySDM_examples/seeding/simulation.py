@@ -8,6 +8,7 @@ from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, Seeding
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM import products
 
 
 class Simulation:
@@ -29,7 +30,7 @@ class Simulation:
         builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
         builder.add_dynamic(
             Seeding(
-                time_window=settings.seeding_time_window,
+                super_droplet_injection_rate=settings.super_droplet_injection_rate,
                 seeded_particle_multiplicity=settings.seeded_particle_multiplicity,
                 seeded_particle_extensive_attributes=settings.seeded_particle_extensive_attributes,
             )
@@ -50,16 +51,31 @@ class Simulation:
                     constant_values=np.nan if k == "multiplicity" else 0,
                 )
                 for k, v in attributes.items()
-            }
+            },
+            products=(
+                products.SuperDropletCountPerGridbox(name="sd_count"),
+                products.Time(),
+            ),
         )
         self.n_steps = int(settings.t_max // settings.timestep)
 
     def run(self):
-        output = []
+        output = {
+            "attributes": {"water mass": []},
+            "products": {"sd_count": [], "time": []},
+        }
         for step in range(self.n_steps + 1):
             if step != 0:
                 self.particulator.run(steps=1)
-            output.append(
-                self.particulator.attributes["water mass"].to_ndarray(raw=True)
-            )
-        return np.array(output)
+            for key in output["attributes"].keys():
+                output["attributes"][key].append(
+                    self.particulator.attributes[key].to_ndarray(raw=True)
+                )
+            for key in output["products"].keys():
+                output["products"][key].append(
+                    float(self.particulator.products[key].get())
+                )
+        for out in ("attributes", "products"):
+            for key in output[out].keys():
+                output[out][key] = np.array(output[out][key])
+        return output
