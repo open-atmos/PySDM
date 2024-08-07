@@ -18,14 +18,15 @@ class TestCoolingRate:
     def _make_particulator():
         env = Box(dt=dt, dv=np.nan)
         builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-        env["T"] = T
-        return builder.build(
+        particulator = builder.build(
             attributes={
                 "multiplicity": np.ones(n_sd),
                 "volume": np.linspace(0.01, 10, n_sd) * si.um**3,
             },
             products=(CoolingRate(),),
         )
+        particulator.environment["T"] = T
+        return particulator
 
     def test_nan_at_t_zero(self):
         # arrange

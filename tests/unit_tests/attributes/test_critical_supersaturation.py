@@ -17,7 +17,6 @@ def test_critical_supersaturation():
 
     env = Box(dt=np.nan, dv=np.nan)
     builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-    env["T"] = T
     particulator = builder.build(
         attributes={
             "multiplicity": np.ones(n_sd),
@@ -27,6 +26,7 @@ def test_critical_supersaturation():
         },
         products=(ActivableFraction(),),
     )
+    particulator.environment["T"] = T
 
     # act
     AF = particulator.products["activable fraction"].get(S_max=S_max)

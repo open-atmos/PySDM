@@ -30,7 +30,7 @@ class TestParticleConcentration:
             attributes=ATTRIBUTES, products=(TotalParticleConcentration(stp=stp),)
         )
         if stp:
-            ENV["rhod"] = RHOD
+            particulator.environment["rhod"] = RHOD
 
         # act
         prod = particulator.products["total particle concentration"].get()
@@ -53,7 +53,7 @@ class TestParticleConcentration:
             attributes=ATTRIBUTES, products=(ParticleConcentration(specific=specific),)
         )
         if specific:
-            ENV["rhod"] = RHOD
+            particulator.environment["rhod"] = RHOD
 
         # act
         prod = particulator.products["particle concentration"].get()

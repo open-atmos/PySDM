@@ -45,10 +45,10 @@ class TestFreezingMethods:
                 ),
             },
         )
-        env["T"] = formulae.constants.T0 + epsilon
-        env["RH"] = np.nan
+        particulator.environment["T"] = formulae.constants.T0 + epsilon
+        particulator.environment["RH"] = np.nan
         if not singular:
-            env["a_w_ice"] = np.nan
+            particulator.environment["a_w_ice"] = np.nan
         assert particulator.products["ice water content"].get() > 0
 
         # act
