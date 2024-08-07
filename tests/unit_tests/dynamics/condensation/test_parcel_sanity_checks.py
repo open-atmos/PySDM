@@ -56,7 +56,7 @@ class TestParcelSanityChecks:
 
         r_wet = equilibrate_wet_radii(
             r_dry=R_DRY,
-            environment=env,
+            environment=builder.particulator.environment,
             kappa_times_dry_volume=KAPPA * V_DRY,
             rtol=1e-3,
         )
