@@ -196,7 +196,7 @@ class TestParcelSanityChecks:
         builder.add_dynamic(Condensation())
 
         # act
-        _ = builder.build(
+        particulator = builder.build(
             products=(),
             attributes=builder.particulator.environment.init_attributes(
                 kappa=1, r_dry=0.25 * si.um, n_in_dv=1000
@@ -204,4 +204,4 @@ class TestParcelSanityChecks:
         )
 
         # assert
-        assert env.delta_liquid_water_mixing_ratio == 0
+        assert particulator.environment.delta_liquid_water_mixing_ratio == 0
