@@ -24,14 +24,16 @@ def test_parcel_liquid_water_path(
     dt = 1 * si.s
 
     builder = Builder(
-        n_sd=n_sd, backend=backend_class(double_precision=True), environment=Parcel(
+        n_sd=n_sd,
+        backend=backend_class(double_precision=True),
+        environment=Parcel(
             dt=dt,
             mass_of_dry_air=1 * si.mg,
             p0=1000 * si.hPa,
             initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
             T0=300 * si.K,
             w=dz / dt,
-        )
+        ),
     )
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
