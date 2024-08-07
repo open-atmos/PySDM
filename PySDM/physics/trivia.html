@@ -1,404 +1,1216 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="generator" content="pdoc3 0.11.1">
-<title>PySDM.physics.trivia API documentation</title>
-<meta name="description" content="Various (hopefully) undebatable formulae …">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
-<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
-<script>window.addEventListener('DOMContentLoaded', () => {
-hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
-hljs.highlightAll();
-})</script>
-</head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="pdoc 14.6.0"/>
+    <title>PySDM.physics.trivia API documentation</title>
+
+    <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
+    <style>/*! syntax-highlighting.css */pre{line-height:125%;}span.linenos{color:inherit; background-color:transparent; padding-left:5px; padding-right:20px;}.pdoc-code .hll{background-color:#ffffcc}.pdoc-code{background:#f8f8f8;}.pdoc-code .c{color:#3D7B7B; font-style:italic}.pdoc-code .err{border:1px solid #FF0000}.pdoc-code .k{color:#008000; font-weight:bold}.pdoc-code .o{color:#666666}.pdoc-code .ch{color:#3D7B7B; font-style:italic}.pdoc-code .cm{color:#3D7B7B; font-style:italic}.pdoc-code .cp{color:#9C6500}.pdoc-code .cpf{color:#3D7B7B; font-style:italic}.pdoc-code .c1{color:#3D7B7B; font-style:italic}.pdoc-code .cs{color:#3D7B7B; font-style:italic}.pdoc-code .gd{color:#A00000}.pdoc-code .ge{font-style:italic}.pdoc-code .gr{color:#E40000}.pdoc-code .gh{color:#000080; font-weight:bold}.pdoc-code .gi{color:#008400}.pdoc-code .go{color:#717171}.pdoc-code .gp{color:#000080; font-weight:bold}.pdoc-code .gs{font-weight:bold}.pdoc-code .gu{color:#800080; font-weight:bold}.pdoc-code .gt{color:#0044DD}.pdoc-code .kc{color:#008000; font-weight:bold}.pdoc-code .kd{color:#008000; font-weight:bold}.pdoc-code .kn{color:#008000; font-weight:bold}.pdoc-code .kp{color:#008000}.pdoc-code .kr{color:#008000; font-weight:bold}.pdoc-code .kt{color:#B00040}.pdoc-code .m{color:#666666}.pdoc-code .s{color:#BA2121}.pdoc-code .na{color:#687822}.pdoc-code .nb{color:#008000}.pdoc-code .nc{color:#0000FF; font-weight:bold}.pdoc-code .no{color:#880000}.pdoc-code .nd{color:#AA22FF}.pdoc-code .ni{color:#717171; font-weight:bold}.pdoc-code .ne{color:#CB3F38; font-weight:bold}.pdoc-code .nf{color:#0000FF}.pdoc-code .nl{color:#767600}.pdoc-code .nn{color:#0000FF; font-weight:bold}.pdoc-code .nt{color:#008000; font-weight:bold}.pdoc-code .nv{color:#19177C}.pdoc-code .ow{color:#AA22FF; font-weight:bold}.pdoc-code .w{color:#bbbbbb}.pdoc-code .mb{color:#666666}.pdoc-code .mf{color:#666666}.pdoc-code .mh{color:#666666}.pdoc-code .mi{color:#666666}.pdoc-code .mo{color:#666666}.pdoc-code .sa{color:#BA2121}.pdoc-code .sb{color:#BA2121}.pdoc-code .sc{color:#BA2121}.pdoc-code .dl{color:#BA2121}.pdoc-code .sd{color:#BA2121; font-style:italic}.pdoc-code .s2{color:#BA2121}.pdoc-code .se{color:#AA5D1F; font-weight:bold}.pdoc-code .sh{color:#BA2121}.pdoc-code .si{color:#A45A77; font-weight:bold}.pdoc-code .sx{color:#008000}.pdoc-code .sr{color:#A45A77}.pdoc-code .s1{color:#BA2121}.pdoc-code .ss{color:#19177C}.pdoc-code .bp{color:#008000}.pdoc-code .fm{color:#0000FF}.pdoc-code .vc{color:#19177C}.pdoc-code .vg{color:#19177C}.pdoc-code .vi{color:#19177C}.pdoc-code .vm{color:#19177C}.pdoc-code .il{color:#666666}</style>
+    <style>/*! theme.css */:root{--pdoc-background:#fff;}.pdoc{--text:#212529;--muted:#6c757d;--link:#3660a5;--link-hover:#1659c5;--code:#f8f8f8;--active:#fff598;--accent:#eee;--accent2:#c1c1c1;--nav-hover:rgba(255, 255, 255, 0.5);--name:#0066BB;--def:#008800;--annotation:#007020;}</style>
+    <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;z-index:999;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;opacity:0;}nav.pdoc{--pad:clamp(0.5rem, 2vw, 1.75rem);--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent; z-index:1}nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc > div > ul{margin-left:calc(0px - var(--pad));}nav.pdoc li a{padding:.2rem 0 .2rem calc(var(--pad) + var(--indent));}nav.pdoc > div > ul > li > a{padding-left:var(--pad);}nav.pdoc li{transition:all 100ms;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
+    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{cursor:pointer;display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .alert{padding:1rem 1rem 1rem calc(1.5rem + 24px);border:1px solid transparent;border-radius:.25rem;background-repeat:no-repeat;background-position:.75rem center;margin-bottom:1rem;}.pdoc .alert > em{display:none;}.pdoc .alert > *:last-child{margin-bottom:0;}.pdoc .alert.note {color:#084298;background-color:#cfe2ff;border-color:#b6d4fe;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23084298%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2016A8%208%200%201%200%208%200a8%208%200%200%200%200%2016zm.93-9.412-1%204.705c-.07.34.029.533.304.533.194%200%20.487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703%200-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381%202.29-.287zM8%205.5a1%201%200%201%201%200-2%201%201%200%200%201%200%202z%22/%3E%3C/svg%3E");}.pdoc .alert.warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23664d03%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8.982%201.566a1.13%201.13%200%200%200-1.96%200L.165%2013.233c-.457.778.091%201.767.98%201.767h13.713c.889%200%201.438-.99.98-1.767L8.982%201.566zM8%205c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%205.995A.905.905%200%200%201%208%205zm.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2z%22/%3E%3C/svg%3E");}.pdoc .alert.danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5.52.359A.5.5%200%200%201%206%200h4a.5.5%200%200%201%20.474.658L8.694%206H12.5a.5.5%200%200%201%20.395.807l-7%209a.5.5%200%200%201-.873-.454L6.823%209.5H3.5a.5.5%200%200%201-.48-.641l2.5-8.5z%22/%3E%3C/svg%3E");}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc > section:not(.module-info) h1{font-size:1.5rem;font-weight:500;}.pdoc > section:not(.module-info) h2{font-size:1.4rem;font-weight:500;}.pdoc > section:not(.module-info) h3{font-size:1.3rem;font-weight:500;}.pdoc > section:not(.module-info) h4{font-size:1.2rem;}.pdoc > section:not(.module-info) h5{font-size:1.1rem;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--accent);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc > section:not(.module-info){margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.view-source-toggle-state,.view-source-toggle-state ~ .pdoc-code{display:none;}.view-source-toggle-state:checked ~ .pdoc-code{display:block;}.view-source-button{display:inline-block;float:right;font-size:.75rem;line-height:1.5rem;color:var(--muted);padding:0 .4rem 0 1.3rem;cursor:pointer;text-indent:-2px;}.view-source-button > span{visibility:hidden;}.module-info .view-source-button{float:none;display:flex;justify-content:flex-end;margin:-1.2rem .4rem -.2rem 0;}.view-source-button::before{position:absolute;content:"View Source";display:list-item;list-style-type:disclosure-closed;}.view-source-toggle-state:checked ~ .attr .view-source-button::before,.view-source-toggle-state:checked ~ .view-source-button::before{list-style-type:disclosure-open;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc section:not(.module-info) .docstring{margin-left:clamp(0rem, 5vw - 2rem, 1rem);}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target,.pdoc .pdoc-code > pre > span:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc .pdoc-code > pre > span:target{display:block;}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc *{scroll-margin:2rem;}.pdoc .pdoc-code .linenos{user-select:none;}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc section, .pdoc .classattr{position:relative;}.pdoc .headerlink{--width:clamp(1rem, 3vw, 2rem);position:absolute;top:0;left:calc(0rem - var(--width));transition:all 100ms ease-in-out;opacity:0;}.pdoc .headerlink::before{content:"#";display:block;text-align:center;width:var(--width);height:2.3rem;line-height:2.3rem;font-size:1.5rem;}.pdoc .attr:hover ~ .headerlink,.pdoc *:target > .headerlink,.pdoc .headerlink:hover{opacity:1;}.pdoc .attr{display:block;margin:.5rem 0 .5rem;padding:.4rem .4rem .4rem 1rem;background-color:var(--accent);overflow-x:auto;}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{background-color:transparent;}.pdoc .param, .pdoc .return-annotation{white-space:pre;}.pdoc .signature.multiline .param{display:block;}.pdoc .signature.condensed .param{display:inline-block;}.pdoc .annotation{color:var(--annotation);}.pdoc .view-value-toggle-state,.pdoc .view-value-toggle-state ~ .default_value{display:none;}.pdoc .view-value-toggle-state:checked ~ .default_value{display:inherit;}.pdoc .view-value-button{font-size:.5rem;vertical-align:middle;border-style:dashed;margin-top:-0.1rem;}.pdoc .view-value-button:hover{background:white;}.pdoc .view-value-button::before{content:"show";text-align:center;width:2.2em;display:inline-block;}.pdoc .view-value-toggle-state:checked ~ .view-value-button::before{content:"hide";}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
+    <style>/*! custom.css */</style></head>
 <body>
-<main>
-<article id="content">
-<header>
-<h1 class="title">Module <code>PySDM.physics.trivia</code></h1>
-</header>
-<section id="section-intro">
-<p>Various (hopefully) undebatable formulae</p>
-<p><code>erfinv</code> approximation based on eqs. 11-12 from Vedder 1987, <a href="https://doi.org/10.1119/1.15018">https://doi.org/10.1119/1.15018</a></p>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="PySDM.physics.trivia.Trivia"><code class="flex name class">
-<span>class <span class="ident">Trivia</span></span>
-<span>(</span><span>_)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Trivia:  # pylint: disable=too-many-public-methods
-    def __init__(self, _):
-        pass
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
+        <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
+        <div>            <a class="pdoc-button module-list-button" href="../physics.html">
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/>
+  <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
+</svg>                &nbsp;PySDM.physics</a>
 
-    @staticmethod
-    def volume_of_density_mass(rho, m):
-        return m / rho
 
-    @staticmethod
-    def radius(const, volume):
-        return np.power(volume / const.PI_4_3, const.ONE_THIRD)
+            <input type="search" placeholder="Search..." role="searchbox" aria-label="search"
+                   pattern=".+" required>
 
-    @staticmethod
-    def area(const, radius):
-        return const.PI * const.FOUR * np.power(radius, const.TWO)
 
-    @staticmethod
-    def volume(const, radius):
-        return const.PI_4_3 * np.power(radius, const.THREE)
 
-    @staticmethod
-    def sphere_surface(const, diameter):
-        return const.PI * diameter**2
+            <h2>API Documentation</h2>
+                <ul class="memberlist">
+            <li>
+                    <a class="class" href="#Trivia">Trivia</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Trivia.__init__">Trivia</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.volume_of_density_mass">volume_of_density_mass</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.radius">radius</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.area">area</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.volume">volume</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.sphere_surface">sphere_surface</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.explicit_euler">explicit_euler</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.within_tolerance">within_tolerance</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.H2pH">H2pH</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.pH2H">pH2H</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.vant_hoff">vant_hoff</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.tdep2enthalpy">tdep2enthalpy</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.arrhenius">arrhenius</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.mole_fraction_2_mixing_ratio">mole_fraction_2_mixing_ratio</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.mixing_ratio_2_mole_fraction">mixing_ratio_2_mole_fraction</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.p_d">p_d</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.th_std">th_std</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.unfrozen_and_saturated">unfrozen_and_saturated</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.frozen_and_above_freezing_point">frozen_and_above_freezing_point</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.erfinv_approx">erfinv_approx</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.isotopic_delta_2_ratio">isotopic_delta_2_ratio</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.isotopic_ratio_2_delta">isotopic_ratio_2_delta</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.isotopic_enrichment_to_delta_SMOW">isotopic_enrichment_to_delta_SMOW</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.mixing_ratio_to_specific_content">mixing_ratio_to_specific_content</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.dn_dlogr">dn_dlogr</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.air_schmidt_number">air_schmidt_number</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.sqrt_re_times_cbrt_sc">sqrt_re_times_cbrt_sc</a>
+                        </li>
+                </ul>
 
-    @staticmethod
-    def explicit_euler(y, dt, dy_dt):
-        return y + dt * dy_dt
+            </li>
+    </ul>
 
-    @staticmethod
-    def within_tolerance(error_estimate, value, rtol):
-        return error_estimate &lt; rtol * np.abs(value)
 
-    @staticmethod
-    def H2pH(H):
-        return -np.log10(H * 1e-3)
 
-    @staticmethod
-    def pH2H(pH):
-        return np.power(10, -pH) * 1e3
-
-    @staticmethod
-    def vant_hoff(const, K, dH, T, *, T_0):
-        return K * np.exp(-dH / const.R_str * (1 / T - 1 / T_0))
-
-    @staticmethod
-    def tdep2enthalpy(const, tdep):
-        return -tdep * const.R_str
-
-    @staticmethod
-    def arrhenius(const, A, Ea, T):
-        return A * np.exp(-Ea / (const.R_str * T))
-
-    @staticmethod
-    def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
-        return specific_gravity * mole_fraction / (1 - mole_fraction)
-
-    @staticmethod
-    def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
-        return mixing_ratio / (specific_gravity + mixing_ratio)
-
-    @staticmethod
-    def p_d(const, p, water_vapour_mixing_ratio):
-        return p * (1 - 1 / (1 + const.eps / water_vapour_mixing_ratio))
-
-    @staticmethod
-    def th_std(const, p, T):
-        return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
-
-    @staticmethod
-    def unfrozen_and_saturated(water_mass, relative_humidity):
-        return water_mass &gt; 0 and relative_humidity &gt; 1
-
-    @staticmethod
-    def frozen_and_above_freezing_point(const, water_mass, temperature):
-        return water_mass &lt; 0 and temperature &gt; const.T0
-
-    @staticmethod
-    def erfinv_approx(const, c):
-        return (
-            2
-            * np.sqrt(const.VEDDER_1987_A)
-            * np.sinh(
-                np.arcsinh(
-                    np.arctanh(c)
-                    / 2
-                    / const.VEDDER_1987_b
-                    / np.power(const.VEDDER_1987_A, const.ONE_AND_A_HALF)
-                )
-                / 3
-            )
-        )
-
-    @staticmethod
-    def isotopic_delta_2_ratio(delta, reference_ratio):
-        return (delta + 1) * reference_ratio
-
-    @staticmethod
-    def isotopic_ratio_2_delta(ratio, reference_ratio):
-        return ratio / reference_ratio - 1
-
-    @staticmethod
-    def isotopic_enrichment_to_delta_SMOW(E, delta_0_SMOW):
-        &#34;&#34;&#34;(see also eq. 10 in Pierchala et al. 2022)
-
-        conversion from E to delta_R_SMOW with:
-          δ_R/SMOW = R / R_SMOW - 1
-          E = δ_R/R0 = R / R0 - 1
-        and the sought formula (the quantity used to define d-excess, etc.) is:
-          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
-                      = (E + 1) * (δ_R0/SMOW + 1) - 1
-        where:
-          δ_R0/SMOW is the initial SMOW-delta in the experiment
-        &#34;&#34;&#34;
-        return (E + 1) * (delta_0_SMOW + 1) - 1
-
-    @staticmethod
-    def mixing_ratio_to_specific_content(mixing_ratio):
-        return mixing_ratio / (1 + mixing_ratio)
-
-    @staticmethod
-    def dn_dlogr(r, dn_dr):
-        return np.log(10) * r * dn_dr
-
-    @staticmethod
-    def air_schmidt_number(dynamic_viscosity, diffusivity, density):
-        return dynamic_viscosity / diffusivity / density
-
-    @staticmethod
-    def sqrt_re_times_cbrt_sc(const, Re, Sc):
-        return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)</code></pre>
-</details>
-<h3>Static methods</h3>
-<dl>
-<dt id="PySDM.physics.trivia.Trivia.H2pH"><code class="name flex">
-<span>def <span class="ident">H2pH</span></span>(<span>H)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.air_schmidt_number"><code class="name flex">
-<span>def <span class="ident">air_schmidt_number</span></span>(<span>dynamic_viscosity, diffusivity, density)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.area"><code class="name flex">
-<span>def <span class="ident">area</span></span>(<span>const, radius)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.arrhenius"><code class="name flex">
-<span>def <span class="ident">arrhenius</span></span>(<span>const, A, Ea, T)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.dn_dlogr"><code class="name flex">
-<span>def <span class="ident">dn_dlogr</span></span>(<span>r, dn_dr)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.erfinv_approx"><code class="name flex">
-<span>def <span class="ident">erfinv_approx</span></span>(<span>const, c)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.explicit_euler"><code class="name flex">
-<span>def <span class="ident">explicit_euler</span></span>(<span>y, dt, dy_dt)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point"><code class="name flex">
-<span>def <span class="ident">frozen_and_above_freezing_point</span></span>(<span>const, water_mass, temperature)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.isotopic_delta_2_ratio"><code class="name flex">
-<span>def <span class="ident">isotopic_delta_2_ratio</span></span>(<span>delta, reference_ratio)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.isotopic_enrichment_to_delta_SMOW"><code class="name flex">
-<span>def <span class="ident">isotopic_enrichment_to_delta_SMOW</span></span>(<span>E, delta_0_SMOW)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>(see also eq. 10 in Pierchala et al. 2022)</p>
-<p>conversion from E to delta_R_SMOW with:
-δ_R/SMOW = R / R_SMOW - 1
-E = δ_R/R0 = R / R0 - 1
-and the sought formula (the quantity used to define d-excess, etc.) is:
-δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
-= (E + 1) * (δ_R0/SMOW + 1) - 1
-where:
-δ_R0/SMOW is the initial SMOW-delta in the experiment</p></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.isotopic_ratio_2_delta"><code class="name flex">
-<span>def <span class="ident">isotopic_ratio_2_delta</span></span>(<span>ratio, reference_ratio)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction"><code class="name flex">
-<span>def <span class="ident">mixing_ratio_2_mole_fraction</span></span>(<span>mixing_ratio, specific_gravity)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.mixing_ratio_to_specific_content"><code class="name flex">
-<span>def <span class="ident">mixing_ratio_to_specific_content</span></span>(<span>mixing_ratio)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio"><code class="name flex">
-<span>def <span class="ident">mole_fraction_2_mixing_ratio</span></span>(<span>mole_fraction, specific_gravity)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.pH2H"><code class="name flex">
-<span>def <span class="ident">pH2H</span></span>(<span>pH)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.p_d"><code class="name flex">
-<span>def <span class="ident">p_d</span></span>(<span>const, p, water_vapour_mixing_ratio)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.radius"><code class="name flex">
-<span>def <span class="ident">radius</span></span>(<span>const, volume)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.sphere_surface"><code class="name flex">
-<span>def <span class="ident">sphere_surface</span></span>(<span>const, diameter)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.sqrt_re_times_cbrt_sc"><code class="name flex">
-<span>def <span class="ident">sqrt_re_times_cbrt_sc</span></span>(<span>const, Re, Sc)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.tdep2enthalpy"><code class="name flex">
-<span>def <span class="ident">tdep2enthalpy</span></span>(<span>const, tdep)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.th_std"><code class="name flex">
-<span>def <span class="ident">th_std</span></span>(<span>const, p, T)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.unfrozen_and_saturated"><code class="name flex">
-<span>def <span class="ident">unfrozen_and_saturated</span></span>(<span>water_mass, relative_humidity)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.vant_hoff"><code class="name flex">
-<span>def <span class="ident">vant_hoff</span></span>(<span>const, K, dH, T, *, T_0)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.volume"><code class="name flex">
-<span>def <span class="ident">volume</span></span>(<span>const, radius)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.volume_of_density_mass"><code class="name flex">
-<span>def <span class="ident">volume_of_density_mass</span></span>(<span>rho, m)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.physics.trivia.Trivia.within_tolerance"><code class="name flex">
-<span>def <span class="ident">within_tolerance</span></span>(<span>error_estimate, value, rtol)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-</dl>
-</section>
-</article>
-<nav id="sidebar">
-<div class="toc">
-<ul></ul>
+        <a class="attribution" title="pdoc: Python API documentation generator" href="https://pdoc.dev" target="_blank">
+            built with <span class="visually-hidden">pdoc</span><img
+                alt="pdoc logo"
+                src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20role%3D%22img%22%20aria-label%3D%22pdoc%20logo%22%20width%3D%22300%22%20height%3D%22150%22%20viewBox%3D%22-1%200%2060%2030%22%3E%3Ctitle%3Epdoc%3C/title%3E%3Cpath%20d%3D%22M29.621%2021.293c-.011-.273-.214-.475-.511-.481a.5.5%200%200%200-.489.503l-.044%201.393c-.097.551-.695%201.215-1.566%201.704-.577.428-1.306.486-2.193.182-1.426-.617-2.467-1.654-3.304-2.487l-.173-.172a3.43%203.43%200%200%200-.365-.306.49.49%200%200%200-.286-.196c-1.718-1.06-4.931-1.47-7.353.191l-.219.15c-1.707%201.187-3.413%202.131-4.328%201.03-.02-.027-.49-.685-.141-1.763.233-.721.546-2.408.772-4.076.042-.09.067-.187.046-.288.166-1.347.277-2.625.241-3.351%201.378-1.008%202.271-2.586%202.271-4.362%200-.976-.272-1.935-.788-2.774-.057-.094-.122-.18-.184-.268.033-.167.052-.339.052-.516%200-1.477-1.202-2.679-2.679-2.679-.791%200-1.496.352-1.987.9a6.3%206.3%200%200%200-1.001.029c-.492-.564-1.207-.929-2.012-.929-1.477%200-2.679%201.202-2.679%202.679A2.65%202.65%200%200%200%20.97%206.554c-.383.747-.595%201.572-.595%202.41%200%202.311%201.507%204.29%203.635%205.107-.037.699-.147%202.27-.423%203.294l-.137.461c-.622%202.042-2.515%208.257%201.727%2010.643%201.614.908%203.06%201.248%204.317%201.248%202.665%200%204.492-1.524%205.322-2.401%201.476-1.559%202.886-1.854%206.491.82%201.877%201.393%203.514%201.753%204.861%201.068%202.223-1.713%202.811-3.867%203.399-6.374.077-.846.056-1.469.054-1.537zm-4.835%204.313c-.054.305-.156.586-.242.629-.034-.007-.131-.022-.307-.157-.145-.111-.314-.478-.456-.908.221.121.432.25.675.355.115.039.219.051.33.081zm-2.251-1.238c-.05.33-.158.648-.252.694-.022.001-.125-.018-.307-.157-.217-.166-.488-.906-.639-1.573.358.344.754.693%201.198%201.036zm-3.887-2.337c-.006-.116-.018-.231-.041-.342.635.145%201.189.368%201.599.625.097.231.166.481.174.642-.03.049-.055.101-.067.158-.046.013-.128.026-.298.004-.278-.037-.901-.57-1.367-1.087zm-1.127-.497c.116.306.176.625.12.71-.019.014-.117.045-.345.016-.206-.027-.604-.332-.986-.695.41-.051.816-.056%201.211-.031zm-4.535%201.535c.209.22.379.47.358.598-.006.041-.088.138-.351.234-.144.055-.539-.063-.979-.259a11.66%2011.66%200%200%200%20.972-.573zm.983-.664c.359-.237.738-.418%201.126-.554.25.237.479.548.457.694-.006.042-.087.138-.351.235-.174.064-.694-.105-1.232-.375zm-3.381%201.794c-.022.145-.061.29-.149.401-.133.166-.358.248-.69.251h-.002c-.133%200-.306-.26-.45-.621.417.091.854.07%201.291-.031zm-2.066-8.077a4.78%204.78%200%200%201-.775-.584c.172-.115.505-.254.88-.378l-.105.962zm-.331%202.302a10.32%2010.32%200%200%201-.828-.502c.202-.143.576-.328.984-.49l-.156.992zm-.45%202.157l-.701-.403c.214-.115.536-.249.891-.376a11.57%2011.57%200%200%201-.19.779zm-.181%201.716c.064.398.194.702.298.893-.194-.051-.435-.162-.736-.398.061-.119.224-.3.438-.495zM8.87%204.141c0%20.152-.123.276-.276.276s-.275-.124-.275-.276.123-.276.276-.276.275.124.275.276zm-.735-.389a1.15%201.15%200%200%200-.314.783%201.16%201.16%200%200%200%201.162%201.162c.457%200%20.842-.27%201.032-.653.026.117.042.238.042.362a1.68%201.68%200%200%201-1.679%201.679%201.68%201.68%200%200%201-1.679-1.679c0-.843.626-1.535%201.436-1.654zM5.059%205.406A1.68%201.68%200%200%201%203.38%207.085a1.68%201.68%200%200%201-1.679-1.679c0-.037.009-.072.011-.109.21.3.541.508.935.508a1.16%201.16%200%200%200%201.162-1.162%201.14%201.14%200%200%200-.474-.912c.015%200%20.03-.005.045-.005.926.001%201.679.754%201.679%201.68zM3.198%204.141c0%20.152-.123.276-.276.276s-.275-.124-.275-.276.123-.276.276-.276.275.124.275.276zM1.375%208.964c0-.52.103-1.035.288-1.52.466.394%201.06.64%201.717.64%201.144%200%202.116-.725%202.499-1.738.383%201.012%201.355%201.738%202.499%201.738.867%200%201.631-.421%202.121-1.062.307.605.478%201.267.478%201.942%200%202.486-2.153%204.51-4.801%204.51s-4.801-2.023-4.801-4.51zm24.342%2019.349c-.985.498-2.267.168-3.813-.979-3.073-2.281-5.453-3.199-7.813-.705-1.315%201.391-4.163%203.365-8.423.97-3.174-1.786-2.239-6.266-1.261-9.479l.146-.492c.276-1.02.395-2.457.444-3.268a6.11%206.11%200%200%200%201.18.115%206.01%206.01%200%200%200%202.536-.562l-.006.175c-.802.215-1.848.612-2.021%201.25-.079.295.021.601.274.837.219.203.415.364.598.501-.667.304-1.243.698-1.311%201.179-.02.144-.022.507.393.787.213.144.395.26.564.365-1.285.521-1.361.96-1.381%201.126-.018.142-.011.496.427.746l.854.489c-.473.389-.971.914-.999%201.429-.018.278.095.532.316.713.675.556%201.231.721%201.653.721.059%200%20.104-.014.158-.02.207.707.641%201.64%201.513%201.64h.013c.8-.008%201.236-.345%201.462-.626.173-.216.268-.457.325-.692.424.195.93.374%201.372.374.151%200%20.294-.021.423-.068.732-.27.944-.704.993-1.021.009-.061.003-.119.002-.179.266.086.538.147.789.147.15%200%20.294-.021.423-.069.542-.2.797-.489.914-.754.237.147.478.258.704.288.106.014.205.021.296.021.356%200%20.595-.101.767-.229.438.435%201.094.992%201.656%201.067.106.014.205.021.296.021a1.56%201.56%200%200%200%20.323-.035c.17.575.453%201.289.866%201.605.358.273.665.362.914.362a.99.99%200%200%200%20.421-.093%201.03%201.03%200%200%200%20.245-.164c.168.428.39.846.68%201.068.358.273.665.362.913.362a.99.99%200%200%200%20.421-.093c.317-.148.512-.448.639-.762.251.157.495.257.726.257.127%200%20.25-.024.37-.071.427-.17.706-.617.841-1.314.022-.015.047-.022.068-.038.067-.051.133-.104.196-.159-.443%201.486-1.107%202.761-2.086%203.257zM8.66%209.925a.5.5%200%201%200-1%200c0%20.653-.818%201.205-1.787%201.205s-1.787-.552-1.787-1.205a.5.5%200%201%200-1%200c0%201.216%201.25%202.205%202.787%202.205s2.787-.989%202.787-2.205zm4.4%2015.965l-.208.097c-2.661%201.258-4.708%201.436-6.086.527-1.542-1.017-1.88-3.19-1.844-4.198a.4.4%200%200%200-.385-.414c-.242-.029-.406.164-.414.385-.046%201.249.367%203.686%202.202%204.896.708.467%201.547.7%202.51.7%201.248%200%202.706-.392%204.362-1.174l.185-.086a.4.4%200%200%200%20.205-.527c-.089-.204-.326-.291-.527-.206zM9.547%202.292c.093.077.205.114.317.114a.5.5%200%200%200%20.318-.886L8.817.397a.5.5%200%200%200-.703.068.5.5%200%200%200%20.069.703l1.364%201.124zm-7.661-.065c.086%200%20.173-.022.253-.068l1.523-.893a.5.5%200%200%200-.506-.863l-1.523.892a.5.5%200%200%200-.179.685c.094.158.261.247.432.247z%22%20transform%3D%22matrix%28-1%200%200%201%2058%200%29%22%20fill%3D%22%233bb300%22/%3E%3Cpath%20d%3D%22M.3%2021.86V10.18q0-.46.02-.68.04-.22.18-.5.28-.54%201.34-.54%201.06%200%201.42.28.38.26.44.78.76-1.04%202.38-1.04%201.64%200%203.1%201.54%201.46%201.54%201.46%203.58%200%202.04-1.46%203.58-1.44%201.54-3.08%201.54-1.64%200-2.38-.92v4.04q0%20.46-.04.68-.02.22-.18.5-.14.3-.5.42-.36.12-.98.12-.62%200-1-.12-.36-.12-.52-.4-.14-.28-.18-.5-.02-.22-.02-.68zm3.96-9.42q-.46.54-.46%201.18%200%20.64.46%201.18.48.52%201.2.52.74%200%201.24-.52.52-.52.52-1.18%200-.66-.48-1.18-.48-.54-1.26-.54-.76%200-1.22.54zm14.741-8.36q.16-.3.54-.42.38-.12%201-.12.64%200%201.02.12.38.12.52.42.16.3.18.54.04.22.04.68v11.94q0%20.46-.04.7-.02.22-.18.5-.3.54-1.7.54-1.38%200-1.54-.98-.84.96-2.34.96-1.8%200-3.28-1.56-1.48-1.58-1.48-3.66%200-2.1%201.48-3.68%201.5-1.58%203.28-1.58%201.48%200%202.3%201v-4.2q0-.46.02-.68.04-.24.18-.52zm-3.24%2010.86q.52.54%201.26.54.74%200%201.22-.54.5-.54.5-1.18%200-.66-.48-1.22-.46-.56-1.26-.56-.8%200-1.28.56-.48.54-.48%201.2%200%20.66.52%201.2zm7.833-1.2q0-2.4%201.68-3.96%201.68-1.56%203.84-1.56%202.16%200%203.82%201.56%201.66%201.54%201.66%203.94%200%201.66-.86%202.96-.86%201.28-2.1%201.9-1.22.6-2.54.6-1.32%200-2.56-.64-1.24-.66-2.1-1.92-.84-1.28-.84-2.88zm4.18%201.44q.64.48%201.3.48.66%200%201.32-.5.66-.5.66-1.48%200-.98-.62-1.46-.62-.48-1.34-.48-.72%200-1.34.5-.62.5-.62%201.48%200%20.96.64%201.46zm11.412-1.44q0%20.84.56%201.32.56.46%201.18.46.64%200%201.18-.36.56-.38.9-.38.6%200%201.46%201.06.46.58.46%201.04%200%20.76-1.1%201.42-1.14.8-2.8.8-1.86%200-3.58-1.34-.82-.64-1.34-1.7-.52-1.08-.52-2.36%200-1.3.52-2.34.52-1.06%201.34-1.7%201.66-1.32%203.54-1.32.76%200%201.48.22.72.2%201.06.4l.32.2q.36.24.56.38.52.4.52.92%200%20.5-.42%201.14-.72%201.1-1.38%201.1-.38%200-1.08-.44-.36-.34-1.04-.34-.66%200-1.24.48-.58.48-.58%201.34z%22%20fill%3D%22green%22/%3E%3C/svg%3E"/>
+        </a>
 </div>
-<ul id="index">
-<li><h3>Super-module</h3>
-<ul>
-<li><code><a title="PySDM.physics" href="index.html">PySDM.physics</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="PySDM.physics.trivia.Trivia" href="#PySDM.physics.trivia.Trivia">Trivia</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.physics.trivia.Trivia.H2pH" href="#PySDM.physics.trivia.Trivia.H2pH">H2pH</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.air_schmidt_number" href="#PySDM.physics.trivia.Trivia.air_schmidt_number">air_schmidt_number</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.area" href="#PySDM.physics.trivia.Trivia.area">area</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.arrhenius" href="#PySDM.physics.trivia.Trivia.arrhenius">arrhenius</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.dn_dlogr" href="#PySDM.physics.trivia.Trivia.dn_dlogr">dn_dlogr</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.erfinv_approx" href="#PySDM.physics.trivia.Trivia.erfinv_approx">erfinv_approx</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.explicit_euler" href="#PySDM.physics.trivia.Trivia.explicit_euler">explicit_euler</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point" href="#PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point">frozen_and_above_freezing_point</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.isotopic_delta_2_ratio" href="#PySDM.physics.trivia.Trivia.isotopic_delta_2_ratio">isotopic_delta_2_ratio</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.isotopic_enrichment_to_delta_SMOW" href="#PySDM.physics.trivia.Trivia.isotopic_enrichment_to_delta_SMOW">isotopic_enrichment_to_delta_SMOW</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.isotopic_ratio_2_delta" href="#PySDM.physics.trivia.Trivia.isotopic_ratio_2_delta">isotopic_ratio_2_delta</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction" href="#PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction">mixing_ratio_2_mole_fraction</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.mixing_ratio_to_specific_content" href="#PySDM.physics.trivia.Trivia.mixing_ratio_to_specific_content">mixing_ratio_to_specific_content</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio" href="#PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio">mole_fraction_2_mixing_ratio</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.pH2H" href="#PySDM.physics.trivia.Trivia.pH2H">pH2H</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.p_d" href="#PySDM.physics.trivia.Trivia.p_d">p_d</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.radius" href="#PySDM.physics.trivia.Trivia.radius">radius</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.sphere_surface" href="#PySDM.physics.trivia.Trivia.sphere_surface">sphere_surface</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.sqrt_re_times_cbrt_sc" href="#PySDM.physics.trivia.Trivia.sqrt_re_times_cbrt_sc">sqrt_re_times_cbrt_sc</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.tdep2enthalpy" href="#PySDM.physics.trivia.Trivia.tdep2enthalpy">tdep2enthalpy</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.th_std" href="#PySDM.physics.trivia.Trivia.th_std">th_std</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.unfrozen_and_saturated" href="#PySDM.physics.trivia.Trivia.unfrozen_and_saturated">unfrozen_and_saturated</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.vant_hoff" href="#PySDM.physics.trivia.Trivia.vant_hoff">vant_hoff</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.volume" href="#PySDM.physics.trivia.Trivia.volume">volume</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.volume_of_density_mass" href="#PySDM.physics.trivia.Trivia.volume_of_density_mass">volume_of_density_mass</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.within_tolerance" href="#PySDM.physics.trivia.Trivia.within_tolerance">within_tolerance</a></code></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</nav>
-</main>
-<footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
-</footer>
-</body>
+    </nav>
+    <main class="pdoc">
+            <section class="module-info">
+                    <h1 class="modulename">
+<a href="./../../PySDM.html">PySDM</a><wbr>.<a href="./../physics.html">physics</a><wbr>.trivia    </h1>
+
+                        <div class="docstring"><p>Various (hopefully) undebatable formulae</p>
+
+<p><code>erfinv</code> approximation based on eqs. 11-12 from Vedder 1987, <a href="https://doi.org/10.1119/1.15018">https://doi.org/10.1119/1.15018</a></p>
+</div>
+
+                        <input id="mod-trivia-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+
+                        <label class="view-source-button" for="mod-trivia-view-source"><span>View Source</span></label>
+
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Various (hopefully) undebatable formulae</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">`erfinv` approximation based on eqs. 11-12 from Vedder 1987, https://doi.org/10.1119/1.15018</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="k">class</span> <span class="nc">Trivia</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>        <span class="k">pass</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="k">def</span> <span class="nf">volume_of_density_mass</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>        <span class="k">return</span> <span class="n">m</span> <span class="o">/</span> <span class="n">rho</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">volume</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">volume</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FOUR</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO</span><span class="p">)</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">THREE</span><span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>    <span class="k">def</span> <span class="nf">sphere_surface</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">diameter</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">diameter</span><span class="o">**</span><span class="mi">2</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>    <span class="k">def</span> <span class="nf">explicit_euler</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dy_dt</span><span class="p">):</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="k">return</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dy_dt</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="k">def</span> <span class="nf">within_tolerance</span><span class="p">(</span><span class="n">error_estimate</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">rtol</span><span class="p">):</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="k">return</span> <span class="n">error_estimate</span> <span class="o">&lt;</span> <span class="n">rtol</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>    <span class="k">def</span> <span class="nf">H2pH</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="k">def</span> <span class="nf">pH2H</span><span class="p">(</span><span class="n">pH</span><span class="p">):</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="n">pH</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>    <span class="k">def</span> <span class="nf">vant_hoff</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">dH</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">T_0</span><span class="p">):</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>        <span class="k">return</span> <span class="n">K</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dH</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">T</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">T_0</span><span class="p">))</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="k">def</span> <span class="nf">tdep2enthalpy</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">tdep</span><span class="p">):</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="k">return</span> <span class="o">-</span><span class="n">tdep</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>    <span class="k">def</span> <span class="nf">arrhenius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">Ea</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>        <span class="k">return</span> <span class="n">A</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Ea</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>    <span class="k">def</span> <span class="nf">mole_fraction_2_mixing_ratio</span><span class="p">(</span><span class="n">mole_fraction</span><span class="p">,</span> <span class="n">specific_gravity</span><span class="p">):</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="k">return</span> <span class="n">specific_gravity</span> <span class="o">*</span> <span class="n">mole_fraction</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mole_fraction</span><span class="p">)</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>    <span class="k">def</span> <span class="nf">mixing_ratio_2_mole_fraction</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">,</span> <span class="n">specific_gravity</span><span class="p">):</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="n">specific_gravity</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="k">def</span> <span class="nf">p_d</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">water_vapour_mixing_ratio</span><span class="p">):</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>        <span class="k">return</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">eps</span> <span class="o">/</span> <span class="n">water_vapour_mixing_ratio</span><span class="p">))</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>    <span class="k">def</span> <span class="nf">th_std</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>        <span class="k">return</span> <span class="n">T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">p1000</span> <span class="o">/</span> <span class="n">p</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">Rd_over_c_pd</span><span class="p">)</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>    <span class="k">def</span> <span class="nf">unfrozen_and_saturated</span><span class="p">(</span><span class="n">water_mass</span><span class="p">,</span> <span class="n">relative_humidity</span><span class="p">):</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>        <span class="k">return</span> <span class="n">water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>    <span class="k">def</span> <span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="k">return</span> <span class="n">water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="k">def</span> <span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>            <span class="mi">2</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>                    <span class="o">/</span> <span class="mi">2</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                <span class="p">)</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="o">/</span> <span class="mi">3</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>            <span class="p">)</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="p">)</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="k">def</span> <span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">def</span> <span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">        where:</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>    <span class="k">def</span> <span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>    <span class="k">def</span> <span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>    <span class="k">def</span> <span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="k">def</span> <span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span></pre></div>
+
+
+            </section>
+                <section id="Trivia">
+                            <input id="Trivia-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">Trivia</span>:
+
+                <label class="view-source-button" for="Trivia-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia-11"><a href="#Trivia-11"><span class="linenos"> 11</span></a><span class="k">class</span> <span class="nc">Trivia</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
+</span><span id="Trivia-12"><a href="#Trivia-12"><span class="linenos"> 12</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="Trivia-13"><a href="#Trivia-13"><span class="linenos"> 13</span></a>        <span class="k">pass</span>
+</span><span id="Trivia-14"><a href="#Trivia-14"><span class="linenos"> 14</span></a>
+</span><span id="Trivia-15"><a href="#Trivia-15"><span class="linenos"> 15</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-16"><a href="#Trivia-16"><span class="linenos"> 16</span></a>    <span class="k">def</span> <span class="nf">volume_of_density_mass</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+</span><span id="Trivia-17"><a href="#Trivia-17"><span class="linenos"> 17</span></a>        <span class="k">return</span> <span class="n">m</span> <span class="o">/</span> <span class="n">rho</span>
+</span><span id="Trivia-18"><a href="#Trivia-18"><span class="linenos"> 18</span></a>
+</span><span id="Trivia-19"><a href="#Trivia-19"><span class="linenos"> 19</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-20"><a href="#Trivia-20"><span class="linenos"> 20</span></a>    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">volume</span><span class="p">):</span>
+</span><span id="Trivia-21"><a href="#Trivia-21"><span class="linenos"> 21</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">volume</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span><span id="Trivia-22"><a href="#Trivia-22"><span class="linenos"> 22</span></a>
+</span><span id="Trivia-23"><a href="#Trivia-23"><span class="linenos"> 23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-24"><a href="#Trivia-24"><span class="linenos"> 24</span></a>    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="Trivia-25"><a href="#Trivia-25"><span class="linenos"> 25</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FOUR</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO</span><span class="p">)</span>
+</span><span id="Trivia-26"><a href="#Trivia-26"><span class="linenos"> 26</span></a>
+</span><span id="Trivia-27"><a href="#Trivia-27"><span class="linenos"> 27</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-28"><a href="#Trivia-28"><span class="linenos"> 28</span></a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="Trivia-29"><a href="#Trivia-29"><span class="linenos"> 29</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">THREE</span><span class="p">)</span>
+</span><span id="Trivia-30"><a href="#Trivia-30"><span class="linenos"> 30</span></a>
+</span><span id="Trivia-31"><a href="#Trivia-31"><span class="linenos"> 31</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-32"><a href="#Trivia-32"><span class="linenos"> 32</span></a>    <span class="k">def</span> <span class="nf">sphere_surface</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">diameter</span><span class="p">):</span>
+</span><span id="Trivia-33"><a href="#Trivia-33"><span class="linenos"> 33</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">diameter</span><span class="o">**</span><span class="mi">2</span>
+</span><span id="Trivia-34"><a href="#Trivia-34"><span class="linenos"> 34</span></a>
+</span><span id="Trivia-35"><a href="#Trivia-35"><span class="linenos"> 35</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-36"><a href="#Trivia-36"><span class="linenos"> 36</span></a>    <span class="k">def</span> <span class="nf">explicit_euler</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dy_dt</span><span class="p">):</span>
+</span><span id="Trivia-37"><a href="#Trivia-37"><span class="linenos"> 37</span></a>        <span class="k">return</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dy_dt</span>
+</span><span id="Trivia-38"><a href="#Trivia-38"><span class="linenos"> 38</span></a>
+</span><span id="Trivia-39"><a href="#Trivia-39"><span class="linenos"> 39</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-40"><a href="#Trivia-40"><span class="linenos"> 40</span></a>    <span class="k">def</span> <span class="nf">within_tolerance</span><span class="p">(</span><span class="n">error_estimate</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">rtol</span><span class="p">):</span>
+</span><span id="Trivia-41"><a href="#Trivia-41"><span class="linenos"> 41</span></a>        <span class="k">return</span> <span class="n">error_estimate</span> <span class="o">&lt;</span> <span class="n">rtol</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span id="Trivia-42"><a href="#Trivia-42"><span class="linenos"> 42</span></a>
+</span><span id="Trivia-43"><a href="#Trivia-43"><span class="linenos"> 43</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-44"><a href="#Trivia-44"><span class="linenos"> 44</span></a>    <span class="k">def</span> <span class="nf">H2pH</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+</span><span id="Trivia-45"><a href="#Trivia-45"><span class="linenos"> 45</span></a>        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">)</span>
+</span><span id="Trivia-46"><a href="#Trivia-46"><span class="linenos"> 46</span></a>
+</span><span id="Trivia-47"><a href="#Trivia-47"><span class="linenos"> 47</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-48"><a href="#Trivia-48"><span class="linenos"> 48</span></a>    <span class="k">def</span> <span class="nf">pH2H</span><span class="p">(</span><span class="n">pH</span><span class="p">):</span>
+</span><span id="Trivia-49"><a href="#Trivia-49"><span class="linenos"> 49</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="n">pH</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+</span><span id="Trivia-50"><a href="#Trivia-50"><span class="linenos"> 50</span></a>
+</span><span id="Trivia-51"><a href="#Trivia-51"><span class="linenos"> 51</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-52"><a href="#Trivia-52"><span class="linenos"> 52</span></a>    <span class="k">def</span> <span class="nf">vant_hoff</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">dH</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">T_0</span><span class="p">):</span>
+</span><span id="Trivia-53"><a href="#Trivia-53"><span class="linenos"> 53</span></a>        <span class="k">return</span> <span class="n">K</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dH</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">T</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">T_0</span><span class="p">))</span>
+</span><span id="Trivia-54"><a href="#Trivia-54"><span class="linenos"> 54</span></a>
+</span><span id="Trivia-55"><a href="#Trivia-55"><span class="linenos"> 55</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-56"><a href="#Trivia-56"><span class="linenos"> 56</span></a>    <span class="k">def</span> <span class="nf">tdep2enthalpy</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">tdep</span><span class="p">):</span>
+</span><span id="Trivia-57"><a href="#Trivia-57"><span class="linenos"> 57</span></a>        <span class="k">return</span> <span class="o">-</span><span class="n">tdep</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span>
+</span><span id="Trivia-58"><a href="#Trivia-58"><span class="linenos"> 58</span></a>
+</span><span id="Trivia-59"><a href="#Trivia-59"><span class="linenos"> 59</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-60"><a href="#Trivia-60"><span class="linenos"> 60</span></a>    <span class="k">def</span> <span class="nf">arrhenius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">Ea</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Trivia-61"><a href="#Trivia-61"><span class="linenos"> 61</span></a>        <span class="k">return</span> <span class="n">A</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Ea</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span>
+</span><span id="Trivia-62"><a href="#Trivia-62"><span class="linenos"> 62</span></a>
+</span><span id="Trivia-63"><a href="#Trivia-63"><span class="linenos"> 63</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-64"><a href="#Trivia-64"><span class="linenos"> 64</span></a>    <span class="k">def</span> <span class="nf">mole_fraction_2_mixing_ratio</span><span class="p">(</span><span class="n">mole_fraction</span><span class="p">,</span> <span class="n">specific_gravity</span><span class="p">):</span>
+</span><span id="Trivia-65"><a href="#Trivia-65"><span class="linenos"> 65</span></a>        <span class="k">return</span> <span class="n">specific_gravity</span> <span class="o">*</span> <span class="n">mole_fraction</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mole_fraction</span><span class="p">)</span>
+</span><span id="Trivia-66"><a href="#Trivia-66"><span class="linenos"> 66</span></a>
+</span><span id="Trivia-67"><a href="#Trivia-67"><span class="linenos"> 67</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-68"><a href="#Trivia-68"><span class="linenos"> 68</span></a>    <span class="k">def</span> <span class="nf">mixing_ratio_2_mole_fraction</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">,</span> <span class="n">specific_gravity</span><span class="p">):</span>
+</span><span id="Trivia-69"><a href="#Trivia-69"><span class="linenos"> 69</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="n">specific_gravity</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span><span id="Trivia-70"><a href="#Trivia-70"><span class="linenos"> 70</span></a>
+</span><span id="Trivia-71"><a href="#Trivia-71"><span class="linenos"> 71</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-72"><a href="#Trivia-72"><span class="linenos"> 72</span></a>    <span class="k">def</span> <span class="nf">p_d</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">water_vapour_mixing_ratio</span><span class="p">):</span>
+</span><span id="Trivia-73"><a href="#Trivia-73"><span class="linenos"> 73</span></a>        <span class="k">return</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">eps</span> <span class="o">/</span> <span class="n">water_vapour_mixing_ratio</span><span class="p">))</span>
+</span><span id="Trivia-74"><a href="#Trivia-74"><span class="linenos"> 74</span></a>
+</span><span id="Trivia-75"><a href="#Trivia-75"><span class="linenos"> 75</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-76"><a href="#Trivia-76"><span class="linenos"> 76</span></a>    <span class="k">def</span> <span class="nf">th_std</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Trivia-77"><a href="#Trivia-77"><span class="linenos"> 77</span></a>        <span class="k">return</span> <span class="n">T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">p1000</span> <span class="o">/</span> <span class="n">p</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">Rd_over_c_pd</span><span class="p">)</span>
+</span><span id="Trivia-78"><a href="#Trivia-78"><span class="linenos"> 78</span></a>
+</span><span id="Trivia-79"><a href="#Trivia-79"><span class="linenos"> 79</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-80"><a href="#Trivia-80"><span class="linenos"> 80</span></a>    <span class="k">def</span> <span class="nf">unfrozen_and_saturated</span><span class="p">(</span><span class="n">water_mass</span><span class="p">,</span> <span class="n">relative_humidity</span><span class="p">):</span>
+</span><span id="Trivia-81"><a href="#Trivia-81"><span class="linenos"> 81</span></a>        <span class="k">return</span> <span class="n">water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</span><span id="Trivia-82"><a href="#Trivia-82"><span class="linenos"> 82</span></a>
+</span><span id="Trivia-83"><a href="#Trivia-83"><span class="linenos"> 83</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-84"><a href="#Trivia-84"><span class="linenos"> 84</span></a>    <span class="k">def</span> <span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="Trivia-85"><a href="#Trivia-85"><span class="linenos"> 85</span></a>        <span class="k">return</span> <span class="n">water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-86"><a href="#Trivia-86"><span class="linenos"> 86</span></a>
+</span><span id="Trivia-87"><a href="#Trivia-87"><span class="linenos"> 87</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-88"><a href="#Trivia-88"><span class="linenos"> 88</span></a>    <span class="k">def</span> <span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="Trivia-89"><a href="#Trivia-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="Trivia-90"><a href="#Trivia-90"><span class="linenos"> 90</span></a>            <span class="mi">2</span>
+</span><span id="Trivia-91"><a href="#Trivia-91"><span class="linenos"> 91</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
+</span><span id="Trivia-92"><a href="#Trivia-92"><span class="linenos"> 92</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
+</span><span id="Trivia-93"><a href="#Trivia-93"><span class="linenos"> 93</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
+</span><span id="Trivia-94"><a href="#Trivia-94"><span class="linenos"> 94</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span id="Trivia-95"><a href="#Trivia-95"><span class="linenos"> 95</span></a>                    <span class="o">/</span> <span class="mi">2</span>
+</span><span id="Trivia-96"><a href="#Trivia-96"><span class="linenos"> 96</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
+</span><span id="Trivia-97"><a href="#Trivia-97"><span class="linenos"> 97</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
+</span><span id="Trivia-98"><a href="#Trivia-98"><span class="linenos"> 98</span></a>                <span class="p">)</span>
+</span><span id="Trivia-99"><a href="#Trivia-99"><span class="linenos"> 99</span></a>                <span class="o">/</span> <span class="mi">3</span>
+</span><span id="Trivia-100"><a href="#Trivia-100"><span class="linenos">100</span></a>            <span class="p">)</span>
+</span><span id="Trivia-101"><a href="#Trivia-101"><span class="linenos">101</span></a>        <span class="p">)</span>
+</span><span id="Trivia-102"><a href="#Trivia-102"><span class="linenos">102</span></a>
+</span><span id="Trivia-103"><a href="#Trivia-103"><span class="linenos">103</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-104"><a href="#Trivia-104"><span class="linenos">104</span></a>    <span class="k">def</span> <span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia-105"><a href="#Trivia-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
+</span><span id="Trivia-106"><a href="#Trivia-106"><span class="linenos">106</span></a>
+</span><span id="Trivia-107"><a href="#Trivia-107"><span class="linenos">107</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-108"><a href="#Trivia-108"><span class="linenos">108</span></a>    <span class="k">def</span> <span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia-109"><a href="#Trivia-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="Trivia-110"><a href="#Trivia-110"><span class="linenos">110</span></a>
+</span><span id="Trivia-111"><a href="#Trivia-111"><span class="linenos">111</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-112"><a href="#Trivia-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
+</span><span id="Trivia-113"><a href="#Trivia-113"><span class="linenos">113</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="Trivia-114"><a href="#Trivia-114"><span class="linenos">114</span></a>
+</span><span id="Trivia-115"><a href="#Trivia-115"><span class="linenos">115</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
+</span><span id="Trivia-116"><a href="#Trivia-116"><span class="linenos">116</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
+</span><span id="Trivia-117"><a href="#Trivia-117"><span class="linenos">117</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
+</span><span id="Trivia-118"><a href="#Trivia-118"><span class="linenos">118</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
+</span><span id="Trivia-119"><a href="#Trivia-119"><span class="linenos">119</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
+</span><span id="Trivia-120"><a href="#Trivia-120"><span class="linenos">120</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
+</span><span id="Trivia-121"><a href="#Trivia-121"><span class="linenos">121</span></a><span class="sd">        where:</span>
+</span><span id="Trivia-122"><a href="#Trivia-122"><span class="linenos">122</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
+</span><span id="Trivia-123"><a href="#Trivia-123"><span class="linenos">123</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-124"><a href="#Trivia-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="Trivia-125"><a href="#Trivia-125"><span class="linenos">125</span></a>
+</span><span id="Trivia-126"><a href="#Trivia-126"><span class="linenos">126</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-127"><a href="#Trivia-127"><span class="linenos">127</span></a>    <span class="k">def</span> <span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
+</span><span id="Trivia-128"><a href="#Trivia-128"><span class="linenos">128</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span><span id="Trivia-129"><a href="#Trivia-129"><span class="linenos">129</span></a>
+</span><span id="Trivia-130"><a href="#Trivia-130"><span class="linenos">130</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-131"><a href="#Trivia-131"><span class="linenos">131</span></a>    <span class="k">def</span> <span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
+</span><span id="Trivia-132"><a href="#Trivia-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
+</span><span id="Trivia-133"><a href="#Trivia-133"><span class="linenos">133</span></a>
+</span><span id="Trivia-134"><a href="#Trivia-134"><span class="linenos">134</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-135"><a href="#Trivia-135"><span class="linenos">135</span></a>    <span class="k">def</span> <span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
+</span><span id="Trivia-136"><a href="#Trivia-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
+</span><span id="Trivia-137"><a href="#Trivia-137"><span class="linenos">137</span></a>
+</span><span id="Trivia-138"><a href="#Trivia-138"><span class="linenos">138</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-139"><a href="#Trivia-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
+</span><span id="Trivia-140"><a href="#Trivia-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            <div id="Trivia.__init__" class="classattr">
+                                        <input id="Trivia.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">Trivia</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">_</span></span>)</span>
+
+                <label class="view-source-button" for="Trivia.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.__init__-12"><a href="#Trivia.__init__-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="Trivia.__init__-13"><a href="#Trivia.__init__-13"><span class="linenos">13</span></a>        <span class="k">pass</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.volume_of_density_mass" class="classattr">
+                                        <input id="Trivia.volume_of_density_mass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">volume_of_density_mass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">rho</span>, </span><span class="param"><span class="n">m</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.volume_of_density_mass-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.volume_of_density_mass"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.volume_of_density_mass-15"><a href="#Trivia.volume_of_density_mass-15"><span class="linenos">15</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.volume_of_density_mass-16"><a href="#Trivia.volume_of_density_mass-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="nf">volume_of_density_mass</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+</span><span id="Trivia.volume_of_density_mass-17"><a href="#Trivia.volume_of_density_mass-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">m</span> <span class="o">/</span> <span class="n">rho</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.radius" class="classattr">
+                                        <input id="Trivia.radius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">radius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">volume</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.radius-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.radius"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.radius-19"><a href="#Trivia.radius-19"><span class="linenos">19</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.radius-20"><a href="#Trivia.radius-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">volume</span><span class="p">):</span>
+</span><span id="Trivia.radius-21"><a href="#Trivia.radius-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">volume</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.area" class="classattr">
+                                        <input id="Trivia.area-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">area</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">radius</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.area-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.area"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.area-23"><a href="#Trivia.area-23"><span class="linenos">23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.area-24"><a href="#Trivia.area-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="Trivia.area-25"><a href="#Trivia.area-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FOUR</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.volume" class="classattr">
+                                        <input id="Trivia.volume-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">volume</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">radius</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.volume-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.volume"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.volume-27"><a href="#Trivia.volume-27"><span class="linenos">27</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.volume-28"><a href="#Trivia.volume-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="Trivia.volume-29"><a href="#Trivia.volume-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">THREE</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.sphere_surface" class="classattr">
+                                        <input id="Trivia.sphere_surface-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">sphere_surface</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">diameter</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.sphere_surface-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.sphere_surface"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.sphere_surface-31"><a href="#Trivia.sphere_surface-31"><span class="linenos">31</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.sphere_surface-32"><a href="#Trivia.sphere_surface-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">sphere_surface</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">diameter</span><span class="p">):</span>
+</span><span id="Trivia.sphere_surface-33"><a href="#Trivia.sphere_surface-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">diameter</span><span class="o">**</span><span class="mi">2</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.explicit_euler" class="classattr">
+                                        <input id="Trivia.explicit_euler-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">explicit_euler</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">y</span>, </span><span class="param"><span class="n">dt</span>, </span><span class="param"><span class="n">dy_dt</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.explicit_euler-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.explicit_euler"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.explicit_euler-35"><a href="#Trivia.explicit_euler-35"><span class="linenos">35</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.explicit_euler-36"><a href="#Trivia.explicit_euler-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">explicit_euler</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">dy_dt</span><span class="p">):</span>
+</span><span id="Trivia.explicit_euler-37"><a href="#Trivia.explicit_euler-37"><span class="linenos">37</span></a>        <span class="k">return</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">dy_dt</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.within_tolerance" class="classattr">
+                                        <input id="Trivia.within_tolerance-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">within_tolerance</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">error_estimate</span>, </span><span class="param"><span class="n">value</span>, </span><span class="param"><span class="n">rtol</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.within_tolerance-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.within_tolerance"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.within_tolerance-39"><a href="#Trivia.within_tolerance-39"><span class="linenos">39</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.within_tolerance-40"><a href="#Trivia.within_tolerance-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">within_tolerance</span><span class="p">(</span><span class="n">error_estimate</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">rtol</span><span class="p">):</span>
+</span><span id="Trivia.within_tolerance-41"><a href="#Trivia.within_tolerance-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">error_estimate</span> <span class="o">&lt;</span> <span class="n">rtol</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.H2pH" class="classattr">
+                                        <input id="Trivia.H2pH-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">H2pH</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">H</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.H2pH-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.H2pH"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.H2pH-43"><a href="#Trivia.H2pH-43"><span class="linenos">43</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.H2pH-44"><a href="#Trivia.H2pH-44"><span class="linenos">44</span></a>    <span class="k">def</span> <span class="nf">H2pH</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+</span><span id="Trivia.H2pH-45"><a href="#Trivia.H2pH-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="mf">1e-3</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.pH2H" class="classattr">
+                                        <input id="Trivia.pH2H-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">pH2H</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">pH</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.pH2H-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.pH2H"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.pH2H-47"><a href="#Trivia.pH2H-47"><span class="linenos">47</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.pH2H-48"><a href="#Trivia.pH2H-48"><span class="linenos">48</span></a>    <span class="k">def</span> <span class="nf">pH2H</span><span class="p">(</span><span class="n">pH</span><span class="p">):</span>
+</span><span id="Trivia.pH2H-49"><a href="#Trivia.pH2H-49"><span class="linenos">49</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="n">pH</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.vant_hoff" class="classattr">
+                                        <input id="Trivia.vant_hoff-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">vant_hoff</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">K</span>, </span><span class="param"><span class="n">dH</span>, </span><span class="param"><span class="n">T</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">T_0</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.vant_hoff-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.vant_hoff"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.vant_hoff-51"><a href="#Trivia.vant_hoff-51"><span class="linenos">51</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.vant_hoff-52"><a href="#Trivia.vant_hoff-52"><span class="linenos">52</span></a>    <span class="k">def</span> <span class="nf">vant_hoff</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">dH</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">T_0</span><span class="p">):</span>
+</span><span id="Trivia.vant_hoff-53"><a href="#Trivia.vant_hoff-53"><span class="linenos">53</span></a>        <span class="k">return</span> <span class="n">K</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">dH</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">T</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">T_0</span><span class="p">))</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.tdep2enthalpy" class="classattr">
+                                        <input id="Trivia.tdep2enthalpy-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">tdep2enthalpy</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">tdep</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.tdep2enthalpy-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.tdep2enthalpy"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.tdep2enthalpy-55"><a href="#Trivia.tdep2enthalpy-55"><span class="linenos">55</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.tdep2enthalpy-56"><a href="#Trivia.tdep2enthalpy-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">tdep2enthalpy</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">tdep</span><span class="p">):</span>
+</span><span id="Trivia.tdep2enthalpy-57"><a href="#Trivia.tdep2enthalpy-57"><span class="linenos">57</span></a>        <span class="k">return</span> <span class="o">-</span><span class="n">tdep</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.arrhenius" class="classattr">
+                                        <input id="Trivia.arrhenius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">arrhenius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">A</span>, </span><span class="param"><span class="n">Ea</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.arrhenius-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.arrhenius"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.arrhenius-59"><a href="#Trivia.arrhenius-59"><span class="linenos">59</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.arrhenius-60"><a href="#Trivia.arrhenius-60"><span class="linenos">60</span></a>    <span class="k">def</span> <span class="nf">arrhenius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">Ea</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Trivia.arrhenius-61"><a href="#Trivia.arrhenius-61"><span class="linenos">61</span></a>        <span class="k">return</span> <span class="n">A</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">Ea</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="n">T</span><span class="p">))</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.mole_fraction_2_mixing_ratio" class="classattr">
+                                        <input id="Trivia.mole_fraction_2_mixing_ratio-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">mole_fraction_2_mixing_ratio</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">mole_fraction</span>, </span><span class="param"><span class="n">specific_gravity</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.mole_fraction_2_mixing_ratio-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.mole_fraction_2_mixing_ratio"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.mole_fraction_2_mixing_ratio-63"><a href="#Trivia.mole_fraction_2_mixing_ratio-63"><span class="linenos">63</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.mole_fraction_2_mixing_ratio-64"><a href="#Trivia.mole_fraction_2_mixing_ratio-64"><span class="linenos">64</span></a>    <span class="k">def</span> <span class="nf">mole_fraction_2_mixing_ratio</span><span class="p">(</span><span class="n">mole_fraction</span><span class="p">,</span> <span class="n">specific_gravity</span><span class="p">):</span>
+</span><span id="Trivia.mole_fraction_2_mixing_ratio-65"><a href="#Trivia.mole_fraction_2_mixing_ratio-65"><span class="linenos">65</span></a>        <span class="k">return</span> <span class="n">specific_gravity</span> <span class="o">*</span> <span class="n">mole_fraction</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mole_fraction</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.mixing_ratio_2_mole_fraction" class="classattr">
+                                        <input id="Trivia.mixing_ratio_2_mole_fraction-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">mixing_ratio_2_mole_fraction</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">mixing_ratio</span>, </span><span class="param"><span class="n">specific_gravity</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.mixing_ratio_2_mole_fraction-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.mixing_ratio_2_mole_fraction"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.mixing_ratio_2_mole_fraction-67"><a href="#Trivia.mixing_ratio_2_mole_fraction-67"><span class="linenos">67</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.mixing_ratio_2_mole_fraction-68"><a href="#Trivia.mixing_ratio_2_mole_fraction-68"><span class="linenos">68</span></a>    <span class="k">def</span> <span class="nf">mixing_ratio_2_mole_fraction</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">,</span> <span class="n">specific_gravity</span><span class="p">):</span>
+</span><span id="Trivia.mixing_ratio_2_mole_fraction-69"><a href="#Trivia.mixing_ratio_2_mole_fraction-69"><span class="linenos">69</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="n">specific_gravity</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.p_d" class="classattr">
+                                        <input id="Trivia.p_d-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">p_d</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">p</span>, </span><span class="param"><span class="n">water_vapour_mixing_ratio</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.p_d-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.p_d"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.p_d-71"><a href="#Trivia.p_d-71"><span class="linenos">71</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.p_d-72"><a href="#Trivia.p_d-72"><span class="linenos">72</span></a>    <span class="k">def</span> <span class="nf">p_d</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">water_vapour_mixing_ratio</span><span class="p">):</span>
+</span><span id="Trivia.p_d-73"><a href="#Trivia.p_d-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">p</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">eps</span> <span class="o">/</span> <span class="n">water_vapour_mixing_ratio</span><span class="p">))</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.th_std" class="classattr">
+                                        <input id="Trivia.th_std-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">th_std</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">p</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.th_std-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.th_std"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.th_std-75"><a href="#Trivia.th_std-75"><span class="linenos">75</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.th_std-76"><a href="#Trivia.th_std-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">th_std</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Trivia.th_std-77"><a href="#Trivia.th_std-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="n">T</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">p1000</span> <span class="o">/</span> <span class="n">p</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">Rd_over_c_pd</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.unfrozen_and_saturated" class="classattr">
+                                        <input id="Trivia.unfrozen_and_saturated-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">unfrozen_and_saturated</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">water_mass</span>, </span><span class="param"><span class="n">relative_humidity</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.unfrozen_and_saturated-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.unfrozen_and_saturated"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.unfrozen_and_saturated-79"><a href="#Trivia.unfrozen_and_saturated-79"><span class="linenos">79</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.unfrozen_and_saturated-80"><a href="#Trivia.unfrozen_and_saturated-80"><span class="linenos">80</span></a>    <span class="k">def</span> <span class="nf">unfrozen_and_saturated</span><span class="p">(</span><span class="n">water_mass</span><span class="p">,</span> <span class="n">relative_humidity</span><span class="p">):</span>
+</span><span id="Trivia.unfrozen_and_saturated-81"><a href="#Trivia.unfrozen_and_saturated-81"><span class="linenos">81</span></a>        <span class="k">return</span> <span class="n">water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.frozen_and_above_freezing_point" class="classattr">
+                                        <input id="Trivia.frozen_and_above_freezing_point-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">frozen_and_above_freezing_point</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">water_mass</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.frozen_and_above_freezing_point-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.frozen_and_above_freezing_point"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.frozen_and_above_freezing_point-83"><a href="#Trivia.frozen_and_above_freezing_point-83"><span class="linenos">83</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.frozen_and_above_freezing_point-84"><a href="#Trivia.frozen_and_above_freezing_point-84"><span class="linenos">84</span></a>    <span class="k">def</span> <span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="Trivia.frozen_and_above_freezing_point-85"><a href="#Trivia.frozen_and_above_freezing_point-85"><span class="linenos">85</span></a>        <span class="k">return</span> <span class="n">water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.erfinv_approx" class="classattr">
+                                        <input id="Trivia.erfinv_approx-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">erfinv_approx</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">c</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.erfinv_approx-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.erfinv_approx"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.erfinv_approx-87"><a href="#Trivia.erfinv_approx-87"><span class="linenos"> 87</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.erfinv_approx-88"><a href="#Trivia.erfinv_approx-88"><span class="linenos"> 88</span></a>    <span class="k">def</span> <span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="Trivia.erfinv_approx-89"><a href="#Trivia.erfinv_approx-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="Trivia.erfinv_approx-90"><a href="#Trivia.erfinv_approx-90"><span class="linenos"> 90</span></a>            <span class="mi">2</span>
+</span><span id="Trivia.erfinv_approx-91"><a href="#Trivia.erfinv_approx-91"><span class="linenos"> 91</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-92"><a href="#Trivia.erfinv_approx-92"><span class="linenos"> 92</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
+</span><span id="Trivia.erfinv_approx-93"><a href="#Trivia.erfinv_approx-93"><span class="linenos"> 93</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
+</span><span id="Trivia.erfinv_approx-94"><a href="#Trivia.erfinv_approx-94"><span class="linenos"> 94</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-95"><a href="#Trivia.erfinv_approx-95"><span class="linenos"> 95</span></a>                    <span class="o">/</span> <span class="mi">2</span>
+</span><span id="Trivia.erfinv_approx-96"><a href="#Trivia.erfinv_approx-96"><span class="linenos"> 96</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
+</span><span id="Trivia.erfinv_approx-97"><a href="#Trivia.erfinv_approx-97"><span class="linenos"> 97</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-98"><a href="#Trivia.erfinv_approx-98"><span class="linenos"> 98</span></a>                <span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-99"><a href="#Trivia.erfinv_approx-99"><span class="linenos"> 99</span></a>                <span class="o">/</span> <span class="mi">3</span>
+</span><span id="Trivia.erfinv_approx-100"><a href="#Trivia.erfinv_approx-100"><span class="linenos">100</span></a>            <span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-101"><a href="#Trivia.erfinv_approx-101"><span class="linenos">101</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.isotopic_delta_2_ratio" class="classattr">
+                                        <input id="Trivia.isotopic_delta_2_ratio-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">isotopic_delta_2_ratio</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">delta</span>, </span><span class="param"><span class="n">reference_ratio</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.isotopic_delta_2_ratio-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.isotopic_delta_2_ratio"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_delta_2_ratio-103"><a href="#Trivia.isotopic_delta_2_ratio-103"><span class="linenos">103</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.isotopic_delta_2_ratio-104"><a href="#Trivia.isotopic_delta_2_ratio-104"><span class="linenos">104</span></a>    <span class="k">def</span> <span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia.isotopic_delta_2_ratio-105"><a href="#Trivia.isotopic_delta_2_ratio-105"><span class="linenos">105</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.isotopic_ratio_2_delta" class="classattr">
+                                        <input id="Trivia.isotopic_ratio_2_delta-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">isotopic_ratio_2_delta</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">ratio</span>, </span><span class="param"><span class="n">reference_ratio</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.isotopic_ratio_2_delta-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.isotopic_ratio_2_delta"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_ratio_2_delta-107"><a href="#Trivia.isotopic_ratio_2_delta-107"><span class="linenos">107</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.isotopic_ratio_2_delta-108"><a href="#Trivia.isotopic_ratio_2_delta-108"><span class="linenos">108</span></a>    <span class="k">def</span> <span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia.isotopic_ratio_2_delta-109"><a href="#Trivia.isotopic_ratio_2_delta-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.isotopic_enrichment_to_delta_SMOW" class="classattr">
+                                        <input id="Trivia.isotopic_enrichment_to_delta_SMOW-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">isotopic_enrichment_to_delta_SMOW</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">E</span>, </span><span class="param"><span class="n">delta_0_SMOW</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.isotopic_enrichment_to_delta_SMOW-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.isotopic_enrichment_to_delta_SMOW"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-111"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-111"><span class="linenos">111</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-112"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-113"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-113"><span class="linenos">113</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-114"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-114"><span class="linenos">114</span></a>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-115"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-115"><span class="linenos">115</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-116"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-116"><span class="linenos">116</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-117"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-117"><span class="linenos">117</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-118"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-118"><span class="linenos">118</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-119"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-119"><span class="linenos">119</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-120"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-120"><span class="linenos">120</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-121"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-121"><span class="linenos">121</span></a><span class="sd">        where:</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-122"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-122"><span class="linenos">122</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-123"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-123"><span class="linenos">123</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-124"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-124"><span class="linenos">124</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>(see also eq. 10 in Pierchala et al. 2022)</p>
+
+<p>conversion from E to delta_R_SMOW with:
+  δ_R/SMOW = R / R_SMOW - 1
+  E = δ_R/R0 = R / R0 - 1
+and the sought formula (the quantity used to define d-excess, etc.) is:
+  δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
+              = (E + 1) * (δ_R0/SMOW + 1) - 1
+where:
+  δ_R0/SMOW is the initial SMOW-delta in the experiment</p>
+</div>
+
+
+                            </div>
+                            <div id="Trivia.mixing_ratio_to_specific_content" class="classattr">
+                                        <input id="Trivia.mixing_ratio_to_specific_content-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">mixing_ratio_to_specific_content</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">mixing_ratio</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.mixing_ratio_to_specific_content-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.mixing_ratio_to_specific_content"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.mixing_ratio_to_specific_content-126"><a href="#Trivia.mixing_ratio_to_specific_content-126"><span class="linenos">126</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.mixing_ratio_to_specific_content-127"><a href="#Trivia.mixing_ratio_to_specific_content-127"><span class="linenos">127</span></a>    <span class="k">def</span> <span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
+</span><span id="Trivia.mixing_ratio_to_specific_content-128"><a href="#Trivia.mixing_ratio_to_specific_content-128"><span class="linenos">128</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.dn_dlogr" class="classattr">
+                                        <input id="Trivia.dn_dlogr-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">dn_dlogr</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">r</span>, </span><span class="param"><span class="n">dn_dr</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.dn_dlogr-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.dn_dlogr"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.dn_dlogr-130"><a href="#Trivia.dn_dlogr-130"><span class="linenos">130</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.dn_dlogr-131"><a href="#Trivia.dn_dlogr-131"><span class="linenos">131</span></a>    <span class="k">def</span> <span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
+</span><span id="Trivia.dn_dlogr-132"><a href="#Trivia.dn_dlogr-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.air_schmidt_number" class="classattr">
+                                        <input id="Trivia.air_schmidt_number-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">air_schmidt_number</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">dynamic_viscosity</span>, </span><span class="param"><span class="n">diffusivity</span>, </span><span class="param"><span class="n">density</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.air_schmidt_number-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.air_schmidt_number"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.air_schmidt_number-134"><a href="#Trivia.air_schmidt_number-134"><span class="linenos">134</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.air_schmidt_number-135"><a href="#Trivia.air_schmidt_number-135"><span class="linenos">135</span></a>    <span class="k">def</span> <span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
+</span><span id="Trivia.air_schmidt_number-136"><a href="#Trivia.air_schmidt_number-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.sqrt_re_times_cbrt_sc" class="classattr">
+                                        <input id="Trivia.sqrt_re_times_cbrt_sc-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">sqrt_re_times_cbrt_sc</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">Re</span>, </span><span class="param"><span class="n">Sc</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.sqrt_re_times_cbrt_sc-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.sqrt_re_times_cbrt_sc"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.sqrt_re_times_cbrt_sc-138"><a href="#Trivia.sqrt_re_times_cbrt_sc-138"><span class="linenos">138</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.sqrt_re_times_cbrt_sc-139"><a href="#Trivia.sqrt_re_times_cbrt_sc-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
+</span><span id="Trivia.sqrt_re_times_cbrt_sc-140"><a href="#Trivia.sqrt_re_times_cbrt_sc-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                </section>
+    </main>
+<script>
+    function escapeHTML(html) {
+        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
+    }
+
+    const originalContent = document.querySelector("main.pdoc");
+    let currentContent = originalContent;
+
+    function setContent(innerHTML) {
+        let elem;
+        if (innerHTML) {
+            elem = document.createElement("main");
+            elem.classList.add("pdoc");
+            elem.innerHTML = innerHTML;
+        } else {
+            elem = originalContent;
+        }
+        if (currentContent !== elem) {
+            currentContent.replaceWith(elem);
+            currentContent = elem;
+        }
+    }
+
+    function getSearchTerm() {
+        return (new URL(window.location)).searchParams.get("search");
+    }
+
+    const searchBox = document.querySelector(".pdoc input[type=search]");
+    searchBox.addEventListener("input", function () {
+        let url = new URL(window.location);
+        if (searchBox.value.trim()) {
+            url.hash = "";
+            url.searchParams.set("search", searchBox.value);
+        } else {
+            url.searchParams.delete("search");
+        }
+        history.replaceState("", "", url.toString());
+        onInput();
+    });
+    window.addEventListener("popstate", onInput);
+
+
+    let search, searchErr;
+
+    async function initialize() {
+        try {
+            search = await new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.type = "text/javascript";
+                script.async = true;
+                script.onload = () => resolve(window.pdocSearch);
+                script.onerror = (e) => reject(e);
+                script.src = "../../search.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            });
+        } catch (e) {
+            console.error("Cannot fetch pdoc search index");
+            searchErr = "Cannot fetch search index.";
+        }
+        onInput();
+
+        document.querySelector("nav.pdoc").addEventListener("click", e => {
+            if (e.target.hash) {
+                searchBox.value = "";
+                searchBox.dispatchEvent(new Event("input"));
+            }
+        });
+    }
+
+    function onInput() {
+        setContent((() => {
+            const term = getSearchTerm();
+            if (!term) {
+                return null
+            }
+            if (searchErr) {
+                return `<h3>Error: ${searchErr}</h3>`
+            }
+            if (!search) {
+                return "<h3>Searching...</h3>"
+            }
+
+            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+
+            const results = search(term);
+
+            let html;
+            if (results.length === 0) {
+                html = `No search results for '${escapeHTML(term)}'.`
+            } else {
+                html = `<h4>${results.length} search result${results.length > 1 ? "s" : ""} for '${escapeHTML(term)}'.</h4>`;
+            }
+            for (let result of results.slice(0, 10)) {
+                let doc = result.doc;
+                let url = `../../${doc.modulename.replaceAll(".", "/")}.html`;
+                if (doc.qualname) {
+                    url += `#${doc.qualname}`;
+                }
+
+                let heading;
+                switch (result.doc.kind) {
+                    case "function":
+                        if (doc.fullname.endsWith(".__init__")) {
+                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
+                        } else {
+                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
+                        }
+                        break;
+                    case "class":
+                        heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
+                        if (doc.bases)
+                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
+                        heading += `:`;
+                        break;
+                    case "variable":
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        if (doc.annotation)
+                            heading += `<span class="annotation">${doc.annotation}</span>`;
+                        if (doc.default_value)
+                            heading += `<span class="default_value"> = ${doc.default_value}</span>`;
+                        break;
+                    default:
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        break;
+                }
+                html += `
+                        <section class="search-result">
+                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
+                        <div class="docstring">${doc.doc}</div>
+                        </section>
+                    `;
+
+            }
+            return html;
+        })());
+    }
+
+    if (getSearchTerm()) {
+        initialize();
+        searchBox.value = getSearchTerm();
+        onInput();
+    } else {
+        searchBox.addEventListener("focus", initialize, {once: true});
+    }
+
+    searchBox.addEventListener("keydown", e => {
+        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+            let focused = currentContent.querySelector(".search-result.focused");
+            if (!focused) {
+                currentContent.querySelector(".search-result").classList.add("focused");
+            } else if (
+                e.key === "ArrowDown"
+                && focused.nextElementSibling
+                && focused.nextElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.nextElementSibling.classList.add("focused");
+                focused.nextElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "ArrowUp"
+                && focused.previousElementSibling
+                && focused.previousElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.previousElementSibling.classList.add("focused");
+                focused.previousElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "Enter"
+            ) {
+                focused.querySelector("a").click();
+            }
+        }
+    });
+</script></body>
 </html>
