@@ -445,7 +445,7 @@ class CondensationMethods(BackendMethods):
                 v_drop = formulae.particle_shape_and_density__mass_to_volume(
                     attributes.water_mass[drop]
                 )
-                if v_drop < 0:
+                if v_drop <= 0:
                     continue
                 x_old = formulae.condensation_coordinate__x(v_drop)
                 r_old = formulae.trivia__radius(v_drop)
