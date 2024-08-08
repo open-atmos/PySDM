@@ -13,7 +13,10 @@ def _instantiate(self, *, builder):
 def register_environment():
     def decorator(cls):
         if hasattr(cls, "instantiate"):
-            assert cls.instantiate is _instantiate
+            if cls.instantiate is not _instantiate:
+                raise AttributeError(
+                    "decorated class has a different instantiate method"
+                )
         else:
             setattr(cls, "instantiate", _instantiate)
         return cls
