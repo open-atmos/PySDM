@@ -28,12 +28,15 @@ class Simulation(BasicSimulation):
                 T0=settings.initial_temperature,
                 w=settings.vertical_velocity,
                 mass_of_dry_air=44 * si.kg,
-            )
+            ),
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
 
-        volume = builder.particulator.environment.mass_of_dry_air / settings.initial_air_density
+        volume = (
+            builder.particulator.environment.mass_of_dry_air
+            / settings.initial_air_density
+        )
         attributes = {
             k: np.empty(0)
             for k in ("dry volume", "kappa times dry volume", "multiplicity")
