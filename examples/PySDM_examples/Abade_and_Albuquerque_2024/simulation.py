@@ -22,7 +22,7 @@ class Simulation(BasicSimulation):
                 initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
                 T0=settings.initial_temperature,
                 w=settings.updraft,
-            )
+            ),
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())

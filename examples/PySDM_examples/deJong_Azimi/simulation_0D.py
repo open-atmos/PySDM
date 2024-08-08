@@ -19,7 +19,7 @@ def run_box(settings, backend_class=CPU):
     builder = Builder(
         n_sd=settings.n_sd,
         backend=backend_class(settings.formulae),
-        environment=Box(dv=settings.dv, dt=settings.dt)
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
     builder.particulator.environment["rhod"] = settings.rhod
     attributes = {}

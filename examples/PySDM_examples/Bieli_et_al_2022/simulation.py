@@ -12,7 +12,7 @@ def make_core(settings, coal_eff):
     builder = Builder(
         n_sd=settings.n_sd,
         backend=backend(settings.formulae),
-        environment=Box(dv=settings.dv, dt=settings.dt)
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}

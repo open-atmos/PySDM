@@ -28,7 +28,9 @@ def run_box_breakup(
     settings, steps=None, backend_class=CPU, sample_in_radius=False, return_nv=False
 ):
     builder = Builder(
-        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=Box(dv=settings.dv, dt=settings.dt)
+        n_sd=settings.n_sd,
+        backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
@@ -90,7 +92,9 @@ def run_box_breakup(
 
 def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     builder = Builder(
-        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=Box(dv=settings.dv, dt=settings.dt)
+        n_sd=settings.n_sd,
+        backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
