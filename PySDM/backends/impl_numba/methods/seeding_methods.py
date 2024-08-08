@@ -11,7 +11,7 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     @cached_property
     def _seeding(self):
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        def body(
+        def body(  # pylint: disable=too-many-arguments
             idx,
             multiplicity,
             extensive_attributes,
@@ -19,7 +19,7 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             seeded_particle_extensive_attributes,
             number_of_super_particles_to_inject: int,
         ):
-            # TODO #1367 it should be possible to start enumerating from the end of valid particle set
+            # TODO #1367 start enumerating from the end of valid particle set
             for i, mult in enumerate(multiplicity):
                 if number_of_super_particles_to_inject == 0:
                     break
