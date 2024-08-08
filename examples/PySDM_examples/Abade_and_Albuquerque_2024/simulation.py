@@ -12,18 +12,17 @@ from PySDM.environments import Parcel
 
 class Simulation(BasicSimulation):
     def __init__(self, settings):
-        parcel = Parcel(
-            dt=settings.timestep,
-            mass_of_dry_air=settings.mass_of_dry_air,
-            p0=settings.initial_total_pressure,
-            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-            T0=settings.initial_temperature,
-            w=settings.updraft,
-        )
         builder = Builder(
             backend=CPU(settings.formulae, override_jit_flags={"parallel": False}),
             n_sd=settings.n_sd,
-            environment=parcel,
+            environment=Parcel(
+                dt=settings.timestep,
+                mass_of_dry_air=settings.mass_of_dry_air,
+                p0=settings.initial_total_pressure,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+                T0=settings.initial_temperature,
+                w=settings.updraft,
+            )
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
@@ -31,7 +30,7 @@ class Simulation(BasicSimulation):
         r_dry, n_in_dv = ConstantMultiplicity(settings.soluble_aerosol).sample(
             n_sd=settings.n_sd
         )
-        attributes = parcel.init_attributes(
+        attributes = builder.particulator.environment.init_attributes(
             n_in_dv=n_in_dv, kappa=settings.kappa, r_dry=r_dry
         )
         self.products = (
