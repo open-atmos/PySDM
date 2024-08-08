@@ -81,7 +81,7 @@ class Simulation(BasicSimulation):
         )
         rhod0 = settings.formulae.state_variable_triplet.rhod_of_pd_T(pd0, settings.T0)
 
-        attributes = buulder.particulator.environment.init_attributes(
+        attributes = builder.particulator.environment.init_attributes(
             n_in_dv=n_in_unit_volume
             * builder.particulator.environment.mass_of_dry_air
             / rhod0,
