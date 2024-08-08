@@ -74,7 +74,11 @@ class Simulation:
             advectees = dict(
                 (
                     key,
-                    np.repeat(profile.reshape(1, -1), environment.mesh.grid[0], axis=0),
+                    np.repeat(
+                        profile.reshape(1, -1),
+                        builder.particulator.environment.mesh.grid[0],
+                        axis=0,
+                    ),
                 )
                 for key, profile in initial_profiles.items()
             )
@@ -141,7 +145,7 @@ class Simulation:
                 )
             )
 
-        attributes = environment.init_attributes(
+        attributes = builder.particulator.environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             dry_radius_spectrum=self.settings.spectrum_per_mass_of_dry_air,
             kappa=self.settings.kappa,
