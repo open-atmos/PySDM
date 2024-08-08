@@ -68,9 +68,9 @@ class Simulation:
             if step != 0:
                 self.particulator.run(steps=1)
             for key in output["attributes"].keys():
-                output["attributes"][key].append(
-                    self.particulator.attributes[key].to_ndarray(raw=True)
-                )
+                data = self.particulator.attributes[key].to_ndarray(raw=True)
+                data[data == 0] = np.nan
+                output["attributes"][key].append(data)
             for key in output["products"].keys():
                 output["products"][key].append(
                     float(self.particulator.products[key].get())

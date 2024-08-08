@@ -6,7 +6,7 @@ from PySDM.physics import si
 
 @strict
 class Settings:
-    def __init__(self):
+    def __init__(self, *, super_droplet_injection_rate: callable):
         self.n_sd_initial = 100
         self.n_sd_seeding = 100
         self.t_max = 20 * si.min
@@ -30,9 +30,7 @@ class Settings:
             m_mode=75 * si.nm,
             s_geom=1.6,
         )
-        self.super_droplet_injection_rate = lambda time: (
-            2 if 10 * si.min < time < 15 * si.min else 0
-        )
+        self.super_droplet_injection_rate = super_droplet_injection_rate
         self.seeded_particle_multiplicity = 1
         self.seeded_particle_extensive_attributes = {
             "water mass": 0.001 * si.ng,
