@@ -69,11 +69,10 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install pdoc3
+          pip install pdoc
           pip install -e .
           pip install -e examples
-          python -We -m pdoc --html PySDM examples/PySDM_examples
-          python -We .github/workflows/pdoc_index_workaround.py
+          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PySDM_examples -t pdoc_templates
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
