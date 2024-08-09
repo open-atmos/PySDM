@@ -39,7 +39,7 @@ class TestImpl:
     def test_register_environment_fails_with_other_instantiate_present():
         # arrange
         class BogusEnv(Env):
-            def instantiate(self, builder):
+            def instantiate(self, *, builder):  # pylint: disable=unused-argument
                 assert False
 
         # act
@@ -52,7 +52,7 @@ class TestImpl:
     @staticmethod
     def test_register_environment_no_error_registering_class_inheritting_from_a_decorated_one():
         # arrange
-        class NewEnv(Env):
+        class NewEnv(Env):  # pylint: disable=too-few-public-methods
             pass
 
         # act
