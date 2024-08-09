@@ -45,10 +45,10 @@ class TestFreezingMethods:
                 ),
             },
         )
-        env["T"] = formulae.constants.T0 + epsilon
-        env["RH"] = np.nan
+        particulator.environment["T"] = formulae.constants.T0 + epsilon
+        particulator.environment["RH"] = np.nan
         if not singular:
-            env["a_w_ice"] = np.nan
+            particulator.environment["a_w_ice"] = np.nan
         assert particulator.products["ice water content"].get() > 0
 
         # act
@@ -84,8 +84,8 @@ class TestFreezingMethods:
         }
         products = (IceWaterContent(name="qi"),)
         particulator = builder.build(attributes=attributes, products=products)
-        env["T"] = T_fz
-        env["RH"] = 1.000001
+        particulator.environment["T"] = T_fz
+        particulator.environment["RH"] = 1.000001
 
         # act
         particulator.run(steps=steps)
@@ -168,9 +168,9 @@ class TestFreezingMethods:
                 "water mass": np.full(n_sd, initial_water_mass),
             }
             particulator = builder.build(attributes=attributes, products=products)
-            env["RH"] = 1.0001
-            env["a_w_ice"] = np.nan
-            env["T"] = np.nan
+            particulator.environment["RH"] = 1.0001
+            particulator.environment["a_w_ice"] = np.nan
+            particulator.environment["T"] = np.nan
 
             cell_id = 0
             for i in range(int(total_time / case["dt"]) + 1):

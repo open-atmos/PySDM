@@ -15,7 +15,7 @@ class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
         halo = 3
         grid = (11, 13)
         env = DummyEnvironment(grid=grid, halo=halo)
-        env.register(particulator)
+        env.register(builder=particulator)
         env.water_vapour_mixing_ratio[:] = 7.3
         env.thd[:] = 59.5
         env.pred["water_vapour_mixing_ratio"][:] = 3.7

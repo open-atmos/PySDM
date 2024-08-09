@@ -510,7 +510,7 @@ builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = Dict()
 attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
@@ -595,7 +595,7 @@ v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
 r_wet = equilibrate_wet_radii(pyargs(...
     'r_dry', r_dry, ...
-    'environment', env, ...
+    'environment', builder.particulator.environment, ...
     'kappa_times_dry_volume', kappa * v_dry...
 ));
 
@@ -691,7 +691,7 @@ builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = {
   'multiplicity': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),

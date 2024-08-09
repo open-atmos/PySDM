@@ -57,9 +57,9 @@ def make_particulator(
         ) = sampling.sample(backend=backend, n_sd=n_sd)
     attributes["multiplicity"] *= total_particle_number
 
-    env = Box(dt, volume)
-    builder = Builder(n_sd, backend, env)
+    builder = Builder(n_sd=n_sd, backend=backend, environment=Box(dt, volume))
 
+    env = builder.particulator.environment
     env["T"] = initial_temperature
     env["RH"] = A_VALUE_LARGER_THAN_ONE
     env["rhod"] = 1.0

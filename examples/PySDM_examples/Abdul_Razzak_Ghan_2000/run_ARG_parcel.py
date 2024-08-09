@@ -65,7 +65,8 @@ def run_parcel(
         v_dry = builder.formulae.trivia.volume(radius=r_dry)
         specific_concentration = concentration / builder.formulae.constants.rho_STP
         attributes["multiplicity"] = np.append(
-            attributes["multiplicity"], specific_concentration * env.mass_of_dry_air
+            attributes["multiplicity"],
+            specific_concentration * builder.particulator.environment.mass_of_dry_air,
         )
         attributes["dry volume"] = np.append(attributes["dry volume"], v_dry)
         attributes["kappa times dry volume"] = np.append(
@@ -74,7 +75,7 @@ def run_parcel(
 
     r_wet = equilibrate_wet_radii(
         r_dry=builder.formulae.trivia.radius(volume=attributes["dry volume"]),
-        environment=env,
+        environment=builder.particulator.environment,
         kappa_times_dry_volume=attributes["kappa times dry volume"],
     )
     attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet)

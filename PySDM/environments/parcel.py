@@ -12,8 +12,10 @@ from PySDM.initialisation.equilibrate_wet_radii import (
     default_rtol,
     equilibrate_wet_radii,
 )
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,

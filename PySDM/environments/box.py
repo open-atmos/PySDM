@@ -5,8 +5,10 @@ Bare zero-dimensional framework
 import numpy as np
 
 from PySDM.impl.mesh import Mesh
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class Box:
     def __init__(self, dt, dv):
         self.dt = dt

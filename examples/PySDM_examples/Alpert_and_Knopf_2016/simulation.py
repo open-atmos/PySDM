@@ -215,8 +215,11 @@ def simulation(
         constants=constants,
         particle_shape_and_density="MixedPhaseSpheres",
     )
-    env = Box(dt=time_step, dv=volume)
-    builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae), environment=env)
+    builder = Builder(
+        n_sd=n_sd,
+        backend=CPU(formulae=formulae),
+        environment=Box(dt=time_step, dv=volume),
+    )
     builder.add_dynamic(Freezing(singular=False))
 
     if hasattr(spectrum, "s_geom") and spectrum.s_geom == 1:
@@ -236,6 +239,7 @@ def simulation(
         TotalUnfrozenImmersedSurfaceArea(name="A_tot"),
     )
     particulator = builder.build(attributes=attributes, products=products)
+    env = particulator.environment
 
     env["T"] = initial_temperature
     env["a_w_ice"] = np.nan

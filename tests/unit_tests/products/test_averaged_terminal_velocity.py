@@ -24,11 +24,12 @@ class TestAveragedTerminalVelocity:
         builder = Builder(
             n_sd=len(attributes["multiplicity"]), backend=CPU(), environment=env
         )
-        env["T"] = T
-        return builder.build(
+        particulator = builder.build(
             attributes=attributes,
             products=(AveragedTerminalVelocity(weighting=weighting),),
         )
+        particulator.environment["T"] = T
+        return particulator
 
     def test_mono_disperse(self):
         # arrange

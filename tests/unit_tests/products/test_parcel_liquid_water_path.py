@@ -23,22 +23,22 @@ def test_parcel_liquid_water_path(
     dz = 5 * si.m
     dt = 1 * si.s
 
-    env = Parcel(
-        dt=dt,
-        mass_of_dry_air=1 * si.mg,
-        p0=1000 * si.hPa,
-        initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
-        T0=300 * si.K,
-        w=dz / dt,
-    )
-
     builder = Builder(
-        n_sd=n_sd, backend=backend_class(double_precision=True), environment=env
+        n_sd=n_sd,
+        backend=backend_class(double_precision=True),
+        environment=Parcel(
+            dt=dt,
+            mass_of_dry_air=1 * si.mg,
+            p0=1000 * si.hPa,
+            initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
+            T0=300 * si.K,
+            w=dz / dt,
+        ),
     )
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
     particulator = builder.build(
-        attributes=env.init_attributes(
+        attributes=builder.particulator.environment.init_attributes(
             n_in_dv=np.asarray([1000]), kappa=0.666, r_dry=np.asarray([0.01 * si.um])
         ),
         products=(

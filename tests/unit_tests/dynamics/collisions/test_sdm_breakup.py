@@ -794,7 +794,6 @@ class TestSDMBreakup:
         dt = 1 * si.s
         env = Box(dv=dv, dt=dt)
         builder = Builder(n_sd=n_sd, backend=backend, environment=env)
-        env["rhod"] = 1.0
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
@@ -827,6 +826,7 @@ class TestSDMBreakup:
             ),
         )
         particulator = builder.build(attributes, products)
+        particulator.environment["rhod"] = 1.0
 
         t_end = 100
         particulator.run(t_end - particulator.n_steps)

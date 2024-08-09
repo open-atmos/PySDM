@@ -93,7 +93,7 @@ class TestCollisionProducts:
             },
             products=products,
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -152,7 +152,7 @@ class TestCollisionProducts:
             },
             products=(CollisionRateDeficitPerGridbox(name="crd"),),
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -200,7 +200,7 @@ class TestCollisionProducts:
                 BreakupRateDeficitPerGridbox(name="brd"),
             ),
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -252,7 +252,7 @@ class TestCollisionProducts:
                 BreakupRateDeficitPerGridbox(name="brd"),
             ),
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -303,7 +303,7 @@ class TestCollisionProducts:
             },
             products=products,
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)

@@ -2,8 +2,10 @@
 import numpy as np
 
 from PySDM.impl.mesh import Mesh
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -33,13 +35,13 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
                 self.step_counter = 0
         self.courant_field_data = courant_field_data
 
-    def register(self, particulator):
-        self.particulator = particulator
+    def register(self, *, builder):
+        self.particulator = builder.particulator
         if hasattr(self, "halo"):
-            self.pred["water_vapour_mixing_ratio"] = particulator.backend.Storage.empty(
-                self.mesh.n_cell, dtype=float
+            self.pred["water_vapour_mixing_ratio"] = (
+                self.particulator.backend.Storage.empty(self.mesh.n_cell, dtype=float)
             )
-            self.pred["thd"] = particulator.backend.Storage.empty(
+            self.pred["thd"] = self.particulator.backend.Storage.empty(
                 self.mesh.n_cell, dtype=float
             )
 

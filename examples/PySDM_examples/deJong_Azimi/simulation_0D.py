@@ -16,11 +16,12 @@ from PySDM.products.size_spectral import (
 
 
 def run_box(settings, backend_class=CPU):
-    env = Box(dv=settings.dv, dt=settings.dt)
     builder = Builder(
-        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=env
+        n_sd=settings.n_sd,
+        backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
-    env["rhod"] = settings.rhod
+    builder.particulator.environment["rhod"] = settings.rhod
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum

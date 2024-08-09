@@ -39,20 +39,23 @@ def test_single_supersaturation_peak(
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.ParcelDisplacement(name="z"),
     )
-    env = Parcel(
-        dt=2 * si.s,
-        mass_of_dry_air=1e3 * si.kg,
-        p0=1000 * si.hPa,
-        initial_water_vapour_mixing_ratio=22.76 * si.g / si.kg,
-        w=0.5 * si.m / si.s,
-        T0=300 * si.K,
-    )
     n_steps = 70
     n_sd = 2
     kappa = 0.4
     spectrum = Lognormal(norm_factor=5000 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
     formulae = Formulae(constants=CONSTANTS_ARG)
-    builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
+    builder = Builder(
+        backend=CPU(formulae),
+        n_sd=n_sd,
+        environment=Parcel(
+            dt=2 * si.s,
+            mass_of_dry_air=1e3 * si.kg,
+            p0=1000 * si.hPa,
+            initial_water_vapour_mixing_ratio=22.76 * si.g / si.kg,
+            w=0.5 * si.m / si.s,
+            T0=300 * si.K,
+        ),
+    )
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(
         Condensation(
@@ -65,11 +68,14 @@ def test_single_supersaturation_peak(
     r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
     r_wet = equilibrate_wet_radii(
-        r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry
+        r_dry=r_dry,
+        environment=builder.particulator.environment,
+        kappa_times_dry_volume=kappa * v_dry,
     )
     specific_concentration = concentration / builder.formulae.constants.rho_STP
     attributes = {
-        "multiplicity": specific_concentration * env.mass_of_dry_air,
+        "multiplicity": specific_concentration
+        * builder.particulator.environment.mass_of_dry_air,
         "dry volume": v_dry,
         "kappa times dry volume": kappa * v_dry,
         "volume": builder.formulae.trivia.volume(radius=r_wet),
