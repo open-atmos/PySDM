@@ -61,9 +61,6 @@
                                 <a class="variable" href="#Simulation.mesh">mesh</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Simulation.env">env</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#Simulation.g_factor_vec">g_factor_vec</a>
                         </li>
                         <li>
@@ -153,7 +150,7 @@
 </span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>            <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">z_max</span> <span class="o">+</span> <span class="n">settings</span><span class="o">.</span><span class="n">particle_reservoir_depth</span><span class="p">,),</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="p">)</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
-</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">Kinematic1D</span><span class="p">(</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="n">env</span> <span class="o">=</span> <span class="n">Kinematic1D</span><span class="p">(</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>            <span class="n">dt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>            <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>            <span class="n">thd_of_z</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">thd</span><span class="p">,</span>
@@ -185,7 +182,7 @@
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="o">=</span> <span class="n">Builder</span><span class="p">(</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>            <span class="n">n_sd</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>            <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">(</span><span class="n">formulae</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">formulae</span><span class="p">),</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>            <span class="n">environment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>            <span class="n">environment</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>        <span class="p">)</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">add_dynamic</span><span class="p">(</span><span class="n">AmbientThermodynamics</span><span class="p">())</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
@@ -211,7 +208,7 @@
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>            <span class="p">),</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="p">)</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">add_dynamic</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">init_attributes</span><span class="p">(</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">init_attributes</span><span class="p">(</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>            <span class="n">spatial_discretisation</span><span class="o">=</span><span class="n">spatial_sampling</span><span class="o">.</span><span class="n">Pseudorandom</span><span class="p">(),</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>            <span class="n">spectral_discretisation</span><span class="o">=</span><span class="n">spectral_sampling</span><span class="o">.</span><span class="n">ConstantMultiplicity</span><span class="p">(</span>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="n">spectrum</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">wet_radius_spectrum_per_mass_of_dry_air</span>
@@ -419,7 +416,7 @@
 </span><span id="Simulation-35"><a href="#Simulation-35"><span class="linenos"> 35</span></a>            <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">z_max</span> <span class="o">+</span> <span class="n">settings</span><span class="o">.</span><span class="n">particle_reservoir_depth</span><span class="p">,),</span>
 </span><span id="Simulation-36"><a href="#Simulation-36"><span class="linenos"> 36</span></a>        <span class="p">)</span>
 </span><span id="Simulation-37"><a href="#Simulation-37"><span class="linenos"> 37</span></a>
-</span><span id="Simulation-38"><a href="#Simulation-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">Kinematic1D</span><span class="p">(</span>
+</span><span id="Simulation-38"><a href="#Simulation-38"><span class="linenos"> 38</span></a>        <span class="n">env</span> <span class="o">=</span> <span class="n">Kinematic1D</span><span class="p">(</span>
 </span><span id="Simulation-39"><a href="#Simulation-39"><span class="linenos"> 39</span></a>            <span class="n">dt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
 </span><span id="Simulation-40"><a href="#Simulation-40"><span class="linenos"> 40</span></a>            <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
 </span><span id="Simulation-41"><a href="#Simulation-41"><span class="linenos"> 41</span></a>            <span class="n">thd_of_z</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">thd</span><span class="p">,</span>
@@ -451,7 +448,7 @@
 </span><span id="Simulation-67"><a href="#Simulation-67"><span class="linenos"> 67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="o">=</span> <span class="n">Builder</span><span class="p">(</span>
 </span><span id="Simulation-68"><a href="#Simulation-68"><span class="linenos"> 68</span></a>            <span class="n">n_sd</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span>
 </span><span id="Simulation-69"><a href="#Simulation-69"><span class="linenos"> 69</span></a>            <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">(</span><span class="n">formulae</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">formulae</span><span class="p">),</span>
-</span><span id="Simulation-70"><a href="#Simulation-70"><span class="linenos"> 70</span></a>            <span class="n">environment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span>
+</span><span id="Simulation-70"><a href="#Simulation-70"><span class="linenos"> 70</span></a>            <span class="n">environment</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
 </span><span id="Simulation-71"><a href="#Simulation-71"><span class="linenos"> 71</span></a>        <span class="p">)</span>
 </span><span id="Simulation-72"><a href="#Simulation-72"><span class="linenos"> 72</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">add_dynamic</span><span class="p">(</span><span class="n">AmbientThermodynamics</span><span class="p">())</span>
 </span><span id="Simulation-73"><a href="#Simulation-73"><span class="linenos"> 73</span></a>
@@ -477,7 +474,7 @@
 </span><span id="Simulation-93"><a href="#Simulation-93"><span class="linenos"> 93</span></a>            <span class="p">),</span>
 </span><span id="Simulation-94"><a href="#Simulation-94"><span class="linenos"> 94</span></a>        <span class="p">)</span>
 </span><span id="Simulation-95"><a href="#Simulation-95"><span class="linenos"> 95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">add_dynamic</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
-</span><span id="Simulation-96"><a href="#Simulation-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">init_attributes</span><span class="p">(</span>
+</span><span id="Simulation-96"><a href="#Simulation-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">init_attributes</span><span class="p">(</span>
 </span><span id="Simulation-97"><a href="#Simulation-97"><span class="linenos"> 97</span></a>            <span class="n">spatial_discretisation</span><span class="o">=</span><span class="n">spatial_sampling</span><span class="o">.</span><span class="n">Pseudorandom</span><span class="p">(),</span>
 </span><span id="Simulation-98"><a href="#Simulation-98"><span class="linenos"> 98</span></a>            <span class="n">spectral_discretisation</span><span class="o">=</span><span class="n">spectral_sampling</span><span class="o">.</span><span class="n">ConstantMultiplicity</span><span class="p">(</span>
 </span><span id="Simulation-99"><a href="#Simulation-99"><span class="linenos"> 99</span></a>                <span class="n">spectrum</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">wet_radius_spectrum_per_mass_of_dry_air</span>
@@ -684,7 +681,7 @@
 </span><span id="Simulation.__init__-35"><a href="#Simulation.__init__-35"><span class="linenos"> 35</span></a>            <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">z_max</span> <span class="o">+</span> <span class="n">settings</span><span class="o">.</span><span class="n">particle_reservoir_depth</span><span class="p">,),</span>
 </span><span id="Simulation.__init__-36"><a href="#Simulation.__init__-36"><span class="linenos"> 36</span></a>        <span class="p">)</span>
 </span><span id="Simulation.__init__-37"><a href="#Simulation.__init__-37"><span class="linenos"> 37</span></a>
-</span><span id="Simulation.__init__-38"><a href="#Simulation.__init__-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">Kinematic1D</span><span class="p">(</span>
+</span><span id="Simulation.__init__-38"><a href="#Simulation.__init__-38"><span class="linenos"> 38</span></a>        <span class="n">env</span> <span class="o">=</span> <span class="n">Kinematic1D</span><span class="p">(</span>
 </span><span id="Simulation.__init__-39"><a href="#Simulation.__init__-39"><span class="linenos"> 39</span></a>            <span class="n">dt</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
 </span><span id="Simulation.__init__-40"><a href="#Simulation.__init__-40"><span class="linenos"> 40</span></a>            <span class="n">mesh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mesh</span><span class="p">,</span>
 </span><span id="Simulation.__init__-41"><a href="#Simulation.__init__-41"><span class="linenos"> 41</span></a>            <span class="n">thd_of_z</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">thd</span><span class="p">,</span>
@@ -716,7 +713,7 @@
 </span><span id="Simulation.__init__-67"><a href="#Simulation.__init__-67"><span class="linenos"> 67</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="o">=</span> <span class="n">Builder</span><span class="p">(</span>
 </span><span id="Simulation.__init__-68"><a href="#Simulation.__init__-68"><span class="linenos"> 68</span></a>            <span class="n">n_sd</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span>
 </span><span id="Simulation.__init__-69"><a href="#Simulation.__init__-69"><span class="linenos"> 69</span></a>            <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">(</span><span class="n">formulae</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">formulae</span><span class="p">),</span>
-</span><span id="Simulation.__init__-70"><a href="#Simulation.__init__-70"><span class="linenos"> 70</span></a>            <span class="n">environment</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span>
+</span><span id="Simulation.__init__-70"><a href="#Simulation.__init__-70"><span class="linenos"> 70</span></a>            <span class="n">environment</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
 </span><span id="Simulation.__init__-71"><a href="#Simulation.__init__-71"><span class="linenos"> 71</span></a>        <span class="p">)</span>
 </span><span id="Simulation.__init__-72"><a href="#Simulation.__init__-72"><span class="linenos"> 72</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">add_dynamic</span><span class="p">(</span><span class="n">AmbientThermodynamics</span><span class="p">())</span>
 </span><span id="Simulation.__init__-73"><a href="#Simulation.__init__-73"><span class="linenos"> 73</span></a>
@@ -742,7 +739,7 @@
 </span><span id="Simulation.__init__-93"><a href="#Simulation.__init__-93"><span class="linenos"> 93</span></a>            <span class="p">),</span>
 </span><span id="Simulation.__init__-94"><a href="#Simulation.__init__-94"><span class="linenos"> 94</span></a>        <span class="p">)</span>
 </span><span id="Simulation.__init__-95"><a href="#Simulation.__init__-95"><span class="linenos"> 95</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">add_dynamic</span><span class="p">(</span><span class="n">displacement</span><span class="p">)</span>
-</span><span id="Simulation.__init__-96"><a href="#Simulation.__init__-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">init_attributes</span><span class="p">(</span>
+</span><span id="Simulation.__init__-96"><a href="#Simulation.__init__-96"><span class="linenos"> 96</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="o">.</span><span class="n">init_attributes</span><span class="p">(</span>
 </span><span id="Simulation.__init__-97"><a href="#Simulation.__init__-97"><span class="linenos"> 97</span></a>            <span class="n">spatial_discretisation</span><span class="o">=</span><span class="n">spatial_sampling</span><span class="o">.</span><span class="n">Pseudorandom</span><span class="p">(),</span>
 </span><span id="Simulation.__init__-98"><a href="#Simulation.__init__-98"><span class="linenos"> 98</span></a>            <span class="n">spectral_discretisation</span><span class="o">=</span><span class="n">spectral_sampling</span><span class="o">.</span><span class="n">ConstantMultiplicity</span><span class="p">(</span>
 </span><span id="Simulation.__init__-99"><a href="#Simulation.__init__-99"><span class="linenos"> 99</span></a>                <span class="n">spectrum</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">wet_radius_spectrum_per_mass_of_dry_air</span>
@@ -932,17 +929,6 @@
         
     </div>
     <a class="headerlink" href="#Simulation.mesh"></a>
-    
-    
-
-                            </div>
-                            <div id="Simulation.env" class="classattr">
-                                <div class="attr variable">
-            <span class="name">env</span>
-
-        
-    </div>
-    <a class="headerlink" href="#Simulation.env"></a>
     
     
 
