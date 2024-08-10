@@ -9,8 +9,10 @@ from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics.condensation import Condensation
 from PySDM.impl.mesh import Mesh
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class _TestEnv:
     def __init__(
         self, *, dt, dv, rhod, thd, water_vapour_mixing_ratio, T, p, RH, rho, eta

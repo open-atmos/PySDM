@@ -12,21 +12,20 @@ from PySDM.initialisation.spectra import Sum
 
 class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
-        env = Parcel(
-            dt=settings.dt,
-            mass_of_dry_air=settings.mass_of_dry_air,
-            p0=settings.p0,
-            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-            T0=settings.T0,
-            w=settings.w,
-        )
         n_sd = settings.n_sd_per_mode * len(settings.aerosol.modes)
         builder = Builder(
             n_sd=n_sd,
             backend=CPU(
                 formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
-            environment=env,
+            environment=Parcel(
+                dt=settings.dt,
+                mass_of_dry_air=settings.mass_of_dry_air,
+                p0=settings.p0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+                T0=settings.T0,
+                w=settings.w,
+            ),
         )
 
         attributes = {
@@ -67,7 +66,7 @@ class Simulation(BasicSimulation):
         )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
-            environment=env,
+            environment=builder.particulator.environment,
             kappa_times_dry_volume=attributes["kappa times dry volume"],
             f_org=attributes["dry volume organic"] / attributes["dry volume"],
         )

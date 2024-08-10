@@ -34,16 +34,6 @@ class Simulation(BasicSimulation):
             settings.p0 / settings.RH0 / pvs_Celsius(settings.T0 - const.T0) - 1
         )
 
-        env = Parcel(
-            dt=settings.dt,
-            mass_of_dry_air=666 * si.kg,
-            p0=settings.p0,
-            initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
-            T0=settings.T0,
-            w=settings.vertical_velocity,
-            z0=settings.z0,
-        )
-
         n_gccn = np.count_nonzero(table_3.NA) if gccn else 0
 
         builder = Builder(
@@ -51,7 +41,15 @@ class Simulation(BasicSimulation):
             backend=CPU(
                 formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
-            environment=env,
+            environment=Parcel(
+                dt=settings.dt,
+                mass_of_dry_air=666 * si.kg,
+                p0=settings.p0,
+                initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
+                T0=settings.T0,
+                w=settings.vertical_velocity,
+                z0=settings.z0,
+            ),
         )
 
         additional_derived_attributes = ("radius", "equilibrium supersaturation")
@@ -83,8 +81,10 @@ class Simulation(BasicSimulation):
         )
         rhod0 = settings.formulae.state_variable_triplet.rhod_of_pd_T(pd0, settings.T0)
 
-        attributes = env.init_attributes(
-            n_in_dv=n_in_unit_volume * env.mass_of_dry_air / rhod0,
+        attributes = builder.particulator.environment.init_attributes(
+            n_in_dv=n_in_unit_volume
+            * builder.particulator.environment.mass_of_dry_air
+            / rhod0,
             kappa=settings.kappa,
             r_dry=self.r_dry,
         )

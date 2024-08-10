@@ -27,11 +27,12 @@ from PySDM.products.size_spectral import (
 def run_box_breakup(
     settings, steps=None, backend_class=CPU, sample_in_radius=False, return_nv=False
 ):
-    env = Box(dv=settings.dv, dt=settings.dt)
     builder = Builder(
-        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=env
+        n_sd=settings.n_sd,
+        backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
-    env["rhod"] = 1.0
+    builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     if sample_in_radius:
         diams, attributes["multiplicity"] = Logarithmic(settings.spectrum).sample(
@@ -90,11 +91,12 @@ def run_box_breakup(
 
 
 def run_box_NObreakup(settings, steps=None, backend_class=CPU):
-    env = Box(dv=settings.dv, dt=settings.dt)
     builder = Builder(
-        n_sd=settings.n_sd, backend=backend_class(settings.formulae), environment=env
+        n_sd=settings.n_sd,
+        backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
-    env["rhod"] = 1.0
+    builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum

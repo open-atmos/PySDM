@@ -34,7 +34,7 @@ class Simulation:
             size=(settings.z_max + settings.particle_reservoir_depth,),
         )
 
-        self.env = Kinematic1D(
+        env = Kinematic1D(
             dt=settings.dt,
             mesh=self.mesh,
             thd_of_z=settings.thd,
@@ -66,7 +66,7 @@ class Simulation:
         self.builder = Builder(
             n_sd=settings.n_sd,
             backend=backend(formulae=settings.formulae),
-            environment=self.env,
+            environment=env,
         )
         self.builder.add_dynamic(AmbientThermodynamics())
 
@@ -92,7 +92,7 @@ class Simulation:
             ),
         )
         self.builder.add_dynamic(displacement)
-        self.attributes = self.env.init_attributes(
+        self.attributes = self.builder.particulator.environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(
                 spectrum=settings.wet_radius_spectrum_per_mass_of_dry_air

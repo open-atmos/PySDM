@@ -20,13 +20,13 @@ def test_reynolds_number(water_mass, backend_class):
         environment=env,
     )
 
-    env["air dynamic viscosity"] = 2e-5 * si.Pa * si.s
-    env["air density"] = 1 * si.kg / si.m**3
-
     builder.request_attribute("Reynolds number")
     particulator = builder.build(
         attributes={"water mass": water_mass, "multiplicity": np.ones_like(water_mass)}
     )
+
+    particulator.environment["air dynamic viscosity"] = 2e-5 * si.Pa * si.s
+    particulator.environment["air density"] = 1 * si.kg / si.m**3
 
     # act
     re_actual = particulator.attributes["Reynolds number"].to_ndarray()

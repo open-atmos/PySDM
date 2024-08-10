@@ -49,8 +49,7 @@ class Builder:
     def _set_environment(self, environment):
         if self.particulator.environment is not None:
             raise AssertionError("environment has already been set")
-        self.particulator.environment = environment
-        self.particulator.environment.register(self)
+        self.particulator.environment = environment.instantiate(builder=self)
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None

@@ -7,10 +7,12 @@ import numpy as np
 
 from PySDM.environments.impl.moist import Moist
 
-from ..impl import arakawa_c
-from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+from PySDM.impl import arakawa_c
+from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class Kinematic1D(Moist):
     def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0):
         super().__init__(dt, mesh, [])
