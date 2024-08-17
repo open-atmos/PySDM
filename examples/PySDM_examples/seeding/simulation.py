@@ -67,15 +67,13 @@ class Simulation:
         for step in range(self.n_steps + 1):
             if step != 0:
                 self.particulator.run(steps=1)
-            for key in output["attributes"].keys():
+            for key, attr in output["attributes"].items():
                 data = self.particulator.attributes[key].to_ndarray(raw=True)
                 data[data == 0] = np.nan
-                output["attributes"][key].append(data)
-            for key in output["products"].keys():
-                output["products"][key].append(
-                    float(self.particulator.products[key].get())
-                )
+                attr.append(data)
+            for key, prod in output["products"].items():
+                prod.append(float(self.particulator.products[key].get()))
         for out in ("attributes", "products"):
-            for key in output[out].keys():
-                output[out][key] = np.array(output[out][key])
+            for key, out in output[out].items():
+                output[out][key] = np.array(out)
         return output
