@@ -13,7 +13,7 @@ from PySDM.environments import Box
 from PySDM.physics import si
 
 
-def test_zero_injection_rate_same_as_no_seeding(plot=True, backend_instance=CPU()):
+def test_zero_injection_rate_same_as_no_seeding(plot=False, backend_instance=CPU()):
     # arrange
     def simulation(*, dynamics):
         n_sd_seeding = 100
