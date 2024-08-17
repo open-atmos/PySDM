@@ -15,9 +15,10 @@ from PySDM.physics import si
 
 def test_zero_injection_rate_same_as_no_seeding(plot=False, backend_instance=CPU()):
     # arrange
+    n_sd_seeding = 100
+    n_sd_initial = 100
+
     def simulation(*, dynamics):
-        n_sd_seeding = 100
-        n_sd_initial = 100
         t_max = 20 * si.min
         timestep = 15 * si.s
         dv = 1 * si.cm**3
@@ -122,5 +123,10 @@ def test_zero_injection_rate_same_as_no_seeding(plot=False, backend_instance=CPU
         output["zero_injection_rate"]["sd_count"], output["no_seeding"]["sd_count"]
     )
     np.testing.assert_array_equal(np.diff(output["no_seeding"]["sd_count"]), 0)
-    np.testing.assert_array_equal(np.diff(output["zero_injection_rate"]["sd_count"]), 0)
     assert np.amax(np.diff(output["positive_injection_rate"]["sd_count"])) >= 0
+    assert output["positive_injection_rate"]["sd_count"][0] == n_sd_initial
+    assert (
+        n_sd_initial
+        < output["positive_injection_rate"]["sd_count"][-1]
+        < n_sd_initial + n_sd_seeding
+    )
