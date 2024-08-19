@@ -48,6 +48,7 @@ class TestDiscretiseMultiplicities:
         values = np.asarray(
             [
                 np.nan,
+                1,
             ],
             dtype=np.float64,
         )
