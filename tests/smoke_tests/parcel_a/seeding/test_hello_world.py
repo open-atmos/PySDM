@@ -22,24 +22,31 @@ def variables_fixture():
 class TestHelloWorld:
     @staticmethod
     def test_sd_count(variables):
-        minimum = variables['n_sd_initial']
-        maximum = minimum + variables['n_sd_seeding']
-        assert variables['outputs']['seeding']['products']['sd_count'][0] == minimum
-        assert minimum < variables['outputs']['seeding']['products']['sd_count'][-1] < maximum
-        np.testing.assert_equal(variables['outputs']['no seeding']['products']['sd_count'], minimum)
+        minimum = variables["n_sd_initial"]
+        maximum = minimum + variables["n_sd_seeding"]
+        assert variables["outputs"]["seeding"]["products"]["sd_count"][0] == minimum
+        assert (
+            minimum
+            < variables["outputs"]["seeding"]["products"]["sd_count"][-1]
+            < maximum
+        )
+        np.testing.assert_equal(
+            variables["outputs"]["no seeding"]["products"]["sd_count"], minimum
+        )
 
     @staticmethod
     def test_final_rain_water_mixing_ratio_larger_with_seeding(variables):
         assert (
-            variables['outputs']['seeding']['products']['rain water mixing ratio'][-1]
-            >
-            variables['outputs']['no seeding']['products']['rain water mixing ratio'][-1]
+            variables["outputs"]["seeding"]["products"]["rain water mixing ratio"][-1]
+            > variables["outputs"]["no seeding"]["products"]["rain water mixing ratio"][
+                -1
+            ]
         )
 
     @staticmethod
     def test_rain_water_earlier_with_seeding(variables):
-        assert (
-            np.count_nonzero(variables['outputs']['seeding']['products']['rain water mixing ratio'])
-            >
-            np.count_nonzero(variables['outputs']['no seeding']['products']['rain water mixing ratio'])
+        assert np.count_nonzero(
+            variables["outputs"]["seeding"]["products"]["rain water mixing ratio"]
+        ) > np.count_nonzero(
+            variables["outputs"]["no seeding"]["products"]["rain water mixing ratio"]
         )

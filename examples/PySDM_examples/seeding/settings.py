@@ -6,7 +6,9 @@ from PySDM.physics import si
 
 @strict
 class Settings:
-    def __init__(self, *,
+    def __init__(
+        self,
+        *,
         super_droplet_injection_rate: callable,
         n_sd_initial: int,
         n_sd_seeding: int,
