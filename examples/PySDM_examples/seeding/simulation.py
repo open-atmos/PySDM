@@ -2,7 +2,7 @@ import numpy as np
 
 from PySDM_examples.seeding.settings import Settings
 
-from PySDM import Builder, Formulae
+from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, Seeding
@@ -16,7 +16,7 @@ class Simulation:
         builder = Builder(
             n_sd=settings.n_sd_seeding + settings.n_sd_initial,
             backend=CPU(
-                formulae=Formulae(seed=100), override_jit_flags={"parallel": False}
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
             environment=Parcel(
                 dt=settings.timestep,

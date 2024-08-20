@@ -1,7 +1,9 @@
 import numpy as np
 from pystrict import strict
 from PySDM.initialisation.spectra import Lognormal
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
+from PySDM import Formulae
 
 
 @strict
@@ -14,6 +16,7 @@ class Settings:
         n_sd_seeding: int,
         rain_water_radius_threshold: float,
     ):
+        self.formulae = Formulae(seed=100)  # TODO
         self.n_sd_initial = n_sd_initial
         self.n_sd_seeding = n_sd_seeding
         self.rain_water_radius_threshold = rain_water_radius_threshold
@@ -40,9 +43,18 @@ class Settings:
             s_geom=1.6,
         )
         self.super_droplet_injection_rate = super_droplet_injection_rate
-        self.seeded_particle_multiplicity = 100
+
+        r_dry, n_in_dv = ConstantMultiplicity(
+            Lognormal(
+                norm_factor=10 / si.mg * self.mass_of_dry_air,
+                m_mode=1 * si.um,
+                s_geom=1.1,
+            )
+        ).sample(n_sd=n_sd_seeding)  # TODO: does not to be the same?
+        v_dry = self.formulae.trivia.volume(radius=r_dry)
+        self.seeded_particle_multiplicity = n_in_dv
         self.seeded_particle_extensive_attributes = {
-            "water mass": 0.001 * si.ng,
-            "dry volume": 0.0001 * si.ng,
-            "kappa times dry volume": 0.8 * 0.0001 * si.ng,
+            "water mass": [0.0001 * si.ng] * n_sd_seeding,
+            "dry volume": v_dry,
+            "kappa times dry volume": 0.8 * v_dry,
         }

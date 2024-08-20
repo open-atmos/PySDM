@@ -67,9 +67,9 @@ class TestSeeding:
 
         # act
         common_seeding_ctor_args = {
-            "seeded_particle_multiplicity": 1,
+            "seeded_particle_multiplicity": [1,2,3],
             "seeded_particle_extensive_attributes": {
-                "water mass": 0.001 * si.ng,
+                "water mass": [0.001 * si.ng, 0.002 * si.ng, 0.003 * si.ng],
             },
         }
         output = {
@@ -157,8 +157,8 @@ class TestSeeding:
 
         dynamic = Seeding(
             super_droplet_injection_rate=lambda time: 0,
-            seeded_particle_extensive_attributes={k: None for k in seeding_attributes},
-            seeded_particle_multiplicity=0,
+            seeded_particle_extensive_attributes={k: [np.nan] for k in seeding_attributes},
+            seeded_particle_multiplicity=[0],
         )
         dynamic.register(builder)
 

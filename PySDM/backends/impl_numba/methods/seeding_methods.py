@@ -15,6 +15,7 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             idx,
             multiplicity,
             extensive_attributes,
+            seeded_particle_index,
             seeded_particle_multiplicity,
             seeded_particle_extensive_attributes,
             number_of_super_particles_to_inject: int,
@@ -25,12 +26,13 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
                     break
                 if mult == 0:
                     idx[i] = -1
-                    multiplicity[i] = seeded_particle_multiplicity
+                    number_of_super_particles_to_inject -= 1
+                    s = seeded_particle_index[number_of_super_particles_to_inject]
+                    multiplicity[i] = seeded_particle_multiplicity[s]
                     for a in range(len(extensive_attributes)):
                         extensive_attributes[a, i] = (
-                            seeded_particle_extensive_attributes[a]
+                            seeded_particle_extensive_attributes[a, s]
                         )
-                    number_of_super_particles_to_inject -= 1
             assert number_of_super_particles_to_inject == 0
 
         return body
@@ -41,6 +43,7 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
         idx,
         multiplicity,
         extensive_attributes,
+        seeded_particle_index,
         seeded_particle_multiplicity,
         seeded_particle_extensive_attributes,
         number_of_super_particles_to_inject: int,
@@ -49,9 +52,8 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             idx=idx.data,
             multiplicity=multiplicity.data,
             extensive_attributes=extensive_attributes.data,
-            seeded_particle_multiplicity=seeded_particle_multiplicity,
-            seeded_particle_extensive_attributes=tuple(
-                seeded_particle_extensive_attributes.values()
-            ),
+            seeded_particle_index=seeded_particle_index.data,
+            seeded_particle_multiplicity=seeded_particle_multiplicity.data,
+            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes.data,
             number_of_super_particles_to_inject=number_of_super_particles_to_inject,
         )
