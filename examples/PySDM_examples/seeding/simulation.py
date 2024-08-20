@@ -15,7 +15,7 @@ class Simulation:
     def __init__(self, settings: Settings):
         builder = Builder(
             n_sd=settings.n_sd_seeding + settings.n_sd_initial,
-            backend=CPU(formulae=Formulae(seed=100)),
+            backend=CPU(formulae=Formulae(seed=100), override_jit_flags={"parallel": False}),
             environment=Parcel(
                 dt=settings.timestep,
                 mass_of_dry_air=settings.mass_of_dry_air,
