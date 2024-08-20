@@ -55,6 +55,10 @@ class Simulation:
             products=(
                 products.SuperDropletCountPerGridbox(name="sd_count"),
                 products.Time(),
+                products.WaterMixingRatio(
+                    radius_range=(settings.rain_water_radius_threshold, np.inf),
+                    name='rain water mixing ratio'
+                )
             ),
         )
         self.n_steps = int(settings.t_max // settings.timestep)
@@ -62,7 +66,7 @@ class Simulation:
     def run(self):
         output = {
             "attributes": {"water mass": []},
-            "products": {"sd_count": [], "time": []},
+            "products": {"sd_count": [], "time": [], "rain water mixing ratio": []},
         }
         for step in range(self.n_steps + 1):
             if step != 0:

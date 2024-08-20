@@ -6,10 +6,17 @@ from PySDM.physics import si
 
 @strict
 class Settings:
-    def __init__(self, *, super_droplet_injection_rate: callable):
-        self.n_sd_initial = 100
-        self.n_sd_seeding = 100
-        self.t_max = 20 * si.min
+    def __init__(self, *,
+        super_droplet_injection_rate: callable,
+        n_sd_initial: int,
+        n_sd_seeding: int,
+        rain_water_radius_threshold: float,
+    ):
+        self.n_sd_initial = n_sd_initial
+        self.n_sd_seeding = n_sd_seeding
+        self.rain_water_radius_threshold = rain_water_radius_threshold
+
+        self.t_max = 25 * si.min
         self.w_max = 3 * si.m / si.s
         self.w_min = 0.025 * si.m / si.s
 
@@ -31,7 +38,7 @@ class Settings:
             s_geom=1.6,
         )
         self.super_droplet_injection_rate = super_droplet_injection_rate
-        self.seeded_particle_multiplicity = 1
+        self.seeded_particle_multiplicity = 100
         self.seeded_particle_extensive_attributes = {
             "water mass": 0.001 * si.ng,
             "dry volume": 0.0001 * si.ng,
