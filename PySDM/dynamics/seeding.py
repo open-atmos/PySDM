@@ -31,28 +31,39 @@ class Seeding:
         self.particulator = builder.particulator
 
     def post_register_setup_when_attributes_are_known(self):
-        if tuple(
-                self.particulator.attributes.get_extensive_attribute_keys()
-        ) != tuple(self.seeded_particle_extensive_attributes.keys()):
+        if tuple(self.particulator.attributes.get_extensive_attribute_keys()) != tuple(
+            self.seeded_particle_extensive_attributes.keys()
+        ):
             raise ValueError(
                 f"extensive attributes ({self.seeded_particle_extensive_attributes.keys()})"
                 " do not match those used in particulator"
                 f" ({self.particulator.attributes.get_extensive_attribute_keys()})"
             )
 
-        self.index = self.particulator.Index.identity_index(len(self.seeded_particle_multiplicity))
+        self.index = self.particulator.Index.identity_index(
+            len(self.seeded_particle_multiplicity)
+        )
         self.rnd = self.particulator.Random(
-            len(self.seeded_particle_multiplicity),
-            self.particulator.formulae.seed
+            len(self.seeded_particle_multiplicity), self.particulator.formulae.seed
         )
-        self.u01 = self.particulator.Storage.empty(len(self.seeded_particle_multiplicity), dtype=float)
-        self.seeded_particle_multiplicity = self.particulator.IndexedStorage.from_ndarray(
-            self.index,
-            np.asarray(self.seeded_particle_multiplicity, dtype=Multiplicity.TYPE),  # TODO: discretise_multiplicities?
+        self.u01 = self.particulator.Storage.empty(
+            len(self.seeded_particle_multiplicity), dtype=float
         )
-        self.seeded_particle_extensive_attributes = self.particulator.IndexedStorage.from_ndarray(
-            self.index,
-            np.asarray([v for v in self.seeded_particle_extensive_attributes.values()])
+        self.seeded_particle_multiplicity = (
+            self.particulator.IndexedStorage.from_ndarray(
+                self.index,
+                np.asarray(
+                    self.seeded_particle_multiplicity, dtype=Multiplicity.TYPE
+                ),  # TODO: discretise_multiplicities?
+            )
+        )
+        self.seeded_particle_extensive_attributes = (
+            self.particulator.IndexedStorage.from_ndarray(
+                self.index,
+                np.asarray(
+                    [v for v in self.seeded_particle_extensive_attributes.values()]
+                ),
+            )
         )
 
     def __call__(self):
@@ -63,7 +74,9 @@ class Seeding:
         number_of_super_particles_to_inject = self.super_droplet_injection_rate(time)
 
         if number_of_super_particles_to_inject > 0:
-            assert number_of_super_particles_to_inject <= len(self.seeded_particle_multiplicity)
+            assert number_of_super_particles_to_inject <= len(
+                self.seeded_particle_multiplicity
+            )
 
             self.u01.urand(self.rnd)
             self.index.shuffle(self.u01)

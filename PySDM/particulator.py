@@ -13,7 +13,7 @@ from PySDM.impl.particle_attributes import ParticleAttributes
 
 
 class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance-attributes
-    def __init__(self, n_sd, backend: BackendMethods):
+    def __init__(self, n_sd, backend):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
 
@@ -442,6 +442,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def seeding(
         self,
         *,
+        seeded_particle_index,
         seeded_particle_multiplicity,
         seeded_particle_extensive_attributes,
         number_of_super_particles_to_inject,
