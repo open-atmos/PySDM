@@ -74,6 +74,6 @@ class Simulation:
             for key, prod in output["products"].items():
                 prod.append(float(self.particulator.products[key].get()))
         for out in ("attributes", "products"):
-            for key, out in output[out].items():
-                output[out][key] = np.array(out)
+            for key, val in output[out].items():
+                output[out][key] = np.array(val)
         return output
