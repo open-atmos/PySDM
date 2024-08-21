@@ -30,7 +30,7 @@ def init_fall_momenta(
     if zero:
         return np.zeros_like(water_mass)
 
-    from PySDM.backends import CPU
+    from PySDM.backends import CPU  # pylint: disable=import-outside-toplevel
 
     particulator = Particulator(0, CPU(Formulae()))  # TODO #1155
 
