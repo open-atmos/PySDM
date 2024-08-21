@@ -15,8 +15,9 @@ class Settings:
         n_sd_initial: int,
         n_sd_seeding: int,
         rain_water_radius_threshold: float,
+        formulae: Formulae,
     ):
-        self.formulae = Formulae(seed=100)  # TODO
+        self.formulae = formulae
         self.n_sd_initial = n_sd_initial
         self.n_sd_seeding = n_sd_seeding
         self.rain_water_radius_threshold = rain_water_radius_threshold

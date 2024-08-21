@@ -17,7 +17,9 @@ from PySDM.physics import si
 
 class TestSeeding:
     @staticmethod
-    def test_zero_injection_rate_same_as_no_seeding(plot=False, backend_instance=CPU()):
+    def test_zero_injection_rate_same_as_no_seeding_monodisperse(
+        plot=False, backend_instance=CPU()
+    ):
         """a not-so-unit test checking that results of a box simulation
         are the same without seeding as with a zero injection rate"""
         # arrange
@@ -67,9 +69,9 @@ class TestSeeding:
 
         # act
         common_seeding_ctor_args = {
-            "seeded_particle_multiplicity": [1, 2, 3],
+            "seeded_particle_multiplicity": [1],
             "seeded_particle_extensive_attributes": {
-                "water mass": [0.001 * si.ng, 0.002 * si.ng, 0.003 * si.ng],
+                "water mass": [0.001 * si.ng],
             },
         }
         output = {

@@ -2,10 +2,12 @@
 enough particles flagged with NaN multiplicity (translated to zeros
 at multiplicity discretisation """
 
-import numpy as np
 from collections.abc import Sized
+
+import numpy as np
+
 from PySDM.dynamics.impl import register_dynamic
-from PySDM.attributes import Multiplicity
+from PySDM.initialisation import discretise_multiplicities
 
 
 @register_dynamic()
@@ -43,26 +45,25 @@ class Seeding:
         self.index = self.particulator.Index.identity_index(
             len(self.seeded_particle_multiplicity)
         )
-        self.rnd = self.particulator.Random(
-            len(self.seeded_particle_multiplicity), self.particulator.formulae.seed
-        )
-        self.u01 = self.particulator.Storage.empty(
-            len(self.seeded_particle_multiplicity), dtype=float
-        )
+        if len(self.seeded_particle_multiplicity) > 1:
+            self.rnd = self.particulator.Random(
+                len(self.seeded_particle_multiplicity), self.particulator.formulae.seed
+            )
+            self.u01 = self.particulator.Storage.empty(
+                len(self.seeded_particle_multiplicity), dtype=float
+            )
         self.seeded_particle_multiplicity = (
             self.particulator.IndexedStorage.from_ndarray(
                 self.index,
-                np.asarray(
-                    self.seeded_particle_multiplicity, dtype=Multiplicity.TYPE
-                ),  # TODO: discretise_multiplicities?
+                discretise_multiplicities(
+                    np.asarray(self.seeded_particle_multiplicity)
+                ),
             )
         )
         self.seeded_particle_extensive_attributes = (
             self.particulator.IndexedStorage.from_ndarray(
                 self.index,
-                np.asarray(
-                    [v for v in self.seeded_particle_extensive_attributes.values()]
-                ),
+                np.asarray(list(self.seeded_particle_extensive_attributes.values())),
             )
         )
 
@@ -78,8 +79,9 @@ class Seeding:
                 self.seeded_particle_multiplicity
             )
 
-            self.u01.urand(self.rnd)
-            self.index.shuffle(self.u01)
+            if self.rnd is not None:
+                self.u01.urand(self.rnd)
+                self.index.shuffle(self.u01)
             self.particulator.seeding(
                 seeded_particle_index=self.index,
                 number_of_super_particles_to_inject=number_of_super_particles_to_inject,
