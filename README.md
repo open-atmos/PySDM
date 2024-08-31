@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/open-atmos/PyMPDATA/main/.github/pympdata_logo.svg" style="height:50pt" alt="pysdm logo">
+# <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" style="height:50pt" alt="pysdm logo">
 
 # PySDM
 
