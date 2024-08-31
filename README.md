@@ -1,3 +1,5 @@
+# <img src="https://raw.githubusercontent.com/open-atmos/PyMPDATA/main/.github/pympdata_logo.svg" style="height:50pt" alt="pysdm logo">
+
 # PySDM
 
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
