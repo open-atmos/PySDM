@@ -1,4 +1,3 @@
-# <img src="https://raw.githubusercontent.com/open-atmos/PyMPDATA/main/.github/pysdm_logo.svg" style="height:50pt" alt="pympdata logo">
 
 # PySDM
 
