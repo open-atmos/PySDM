@@ -10,8 +10,10 @@ from setuptools import find_packages, setup
 
 
 def get_long_description():
+    """returns contents of README.md file"""
     with open("README.md", "r", encoding="utf8") as file:
         long_description = file.read()
+        long_description = long_description.replace("pysdm_logo.svg", "pysdm_logo.png")
     return long_description
 
 
