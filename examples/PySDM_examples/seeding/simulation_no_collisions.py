@@ -5,8 +5,7 @@ from PySDM_examples.seeding.settings import Settings
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Parcel
-from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, Seeding
-from PySDM.dynamics.collisions.collision_kernels import Geometric
+from PySDM.dynamics import Condensation, AmbientThermodynamics, Seeding
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM import products
 from PySDM.physics import si
@@ -30,7 +29,6 @@ class SimulationNoCollisions:
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
-        # builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
         builder.add_dynamic(
             Seeding(
                 super_droplet_injection_rate=settings.super_droplet_injection_rate,
