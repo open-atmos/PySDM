@@ -73,15 +73,16 @@ class TestCoolingRate:
     @staticmethod
     @pytest.mark.parametrize("courant_number", (0.2, 0.8))
     @pytest.mark.parametrize(
-        "dt",
+        "timestep",
         (
             0.5 * si.s,
             5 * si.s,
         ),
     )
-    def test_single_column_constant_updraft(
+    def test_single_column_constant_updraft(  # pylint: disable=too-many-locals
+        *,
         courant_number,
-        dt,
+        timestep,
         mean_n_sd_per_gridbox=1000,
         nz=10,
         z_max=1 * si.km,
@@ -92,7 +93,7 @@ class TestCoolingRate:
         # arrange
         builder = Builder(
             environment=Kinematic1D(
-                dt=dt,
+                dt=timestep,
                 mesh=Mesh(grid=(nz,), size=(z_max,)),
                 thd_of_z=lambda z: signed_thd_lapse_rate * z + 300 * si.K,
                 rhod_of_z=lambda z: 0 * z + constant_rhod,
@@ -117,9 +118,8 @@ class TestCoolingRate:
                 pass
 
         builder.add_dynamic(EulerianAdvection())
-
-        print(builder.particulator.dynamics)
         builder.add_dynamic(Displacement())
+
         cellular_attributes = {}
         (
             cellular_attributes["cell id"],
@@ -159,7 +159,7 @@ class TestCoolingRate:
         valid_cells = slice(math.ceil(courant_number * n_steps), None)
 
         dz = z_max / nz
-        dz_dt = courant_number * dz / dt
+        dz_dt = courant_number * dz / timestep
         mean_temperature_lapse_rate = (
             np.mean(np.diff(particulator.environment["T"].to_ndarray())) / dz
         )
