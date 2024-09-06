@@ -1,18 +1,18 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import math
+from collections import namedtuple
 
 import numpy as np
 
 import pytest
 
-from PySDM import Builder, Formulae
+from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box, Kinematic1D
 from PySDM.physics import si
 from PySDM.products.freezing import CoolingRate
 from PySDM.impl.mesh import Mesh
-from PySDM.dynamics import Displacement, AmbientThermodynamics, EulerianAdvection
-from PySDM_examples.Shipway_and_Hill_2012.mpdata_1d import MPDATA_1D
+from PySDM.dynamics import Displacement, AmbientThermodynamics
 
 T = 300 * si.K
 n_sd = 100
@@ -101,23 +101,24 @@ class TestCoolingRate:
             backend=CPU(),
         )
         builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(
-            EulerianAdvection(
-                solvers=MPDATA_1D(
-                    nz=nz,
-                    dt=dt,
-                    advectee_of_zZ_at_t0=lambda zZ: zZ * 0,
-                    advector_of_t=lambda t: courant_number,
-                    g_factor_of_zZ=lambda z: z * 0 + 1,
-                    mpdata_settings={
-                        "n_iters": 2,
-                        "iga": False,
-                        "fct": False,
-                        "tot": False,
-                    },
+
+        class EulerianAdvection:
+            solvers = namedtuple(typename="_", field_names=("advectee",))(
+                advectee=namedtuple(typename="__", field_names=("ravel", "shape"))(
+                    ravel=lambda: None, shape=(nz,)
                 )
             )
-        )
+
+            def instantiate(self, *, builder):
+                assert builder
+                return self
+
+            def __call__(self):
+                pass
+
+        builder.add_dynamic(EulerianAdvection())
+
+        print(builder.particulator.dynamics)
         builder.add_dynamic(Displacement())
         cellular_attributes = {}
         (
