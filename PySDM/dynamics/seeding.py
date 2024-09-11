@@ -81,6 +81,10 @@ class Seeding:
 
             if self.rnd is not None:
                 self.u01.urand(self.rnd)
+                # TODO make shuffle smarter
+                # e.g. don't need to shuffle if only one type of seed particle
+                # or if the number of super particles to inject
+                # is equal to the number of possible seeds
                 self.index.shuffle(self.u01)
             self.particulator.seeding(
                 seeded_particle_index=self.index,
