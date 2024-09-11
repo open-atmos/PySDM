@@ -172,3 +172,20 @@ class TestSeeding:
 
         # assert
         assert "do not match those used in particulator" in str(excinfo)
+
+    @staticmethod
+    def test_seeding_arguments():
+        """unit test for injection logic.
+        test that the injected particles abide by the seeding method arguments.
+            multiplicity,
+            extensive_attributes,
+            seeded_particle_index,
+            seeded_particle_multiplicity,
+            seeded_particle_extensive_attributes,
+            number_of_super_particles_to_inject
+        """
+        # arrange
+
+        # act
+
+        # assert
