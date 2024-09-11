@@ -253,7 +253,9 @@ jobs:
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
       - if: matrix.platform != 'windows-latest'
-        run: pvpython --version
+        run: |
+          pvpython --version
+          pvpython -c "from paraview import simple"
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
