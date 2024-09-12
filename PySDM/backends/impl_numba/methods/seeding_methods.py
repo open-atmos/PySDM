@@ -21,7 +21,7 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             number_of_super_particles_to_inject: int,
         ):
             number_of_super_particles_already_injected = 0
-            # TODO #1367 start enumerating from the end of valid particle set
+            # TODO #1387 start enumerating from the end of valid particle set
             for i, mult in enumerate(multiplicity):
                 if (
                     number_of_super_particles_to_inject
