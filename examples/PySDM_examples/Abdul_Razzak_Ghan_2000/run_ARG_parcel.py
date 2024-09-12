@@ -35,7 +35,7 @@ def run_parcel(
 
     formulae = Formulae(constants=CONSTANTS_ARG)
     const = formulae.constants
-    pv0 = RH0 * formulae.saturation_vapour_pressure.pvs_Celsius(T0 - const.T0)
+    pv0 = RH0 * formulae.saturation_vapour_pressure.pvs_water(T0)
 
     env = Parcel(
         dt=dt,

@@ -3,6 +3,7 @@
 """
 
 import numpy as np
+from PySDM.physics.constants import T0
 
 
 class Wexler1976:
@@ -10,7 +11,8 @@ class Wexler1976:
         pass
 
     @staticmethod
-    def pvs_Celsius(const, T):
+    def pvs_water(const, T):
+        T = T - T0 # convert temperature T from Kelvin to Celsius
         return (
             np.exp(
                 const.W76W_G0 / (T + const.T0) ** 2
@@ -26,6 +28,7 @@ class Wexler1976:
         )
 
     @staticmethod
-    def ice_Celsius(const, T):
+    def pvs_ice(const, T):
         """NaN with unit of pressure and correct dimension"""
+        T = T - T0 # convert temperature T from Kelvin to Celsius
         return np.nan * T / const.B80W_G2 * const.B80W_G0

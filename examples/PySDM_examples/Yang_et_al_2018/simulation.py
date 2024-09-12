@@ -30,9 +30,7 @@ class Simulation:
             / (
                 settings.p0
                 / settings.RH0
-                / self.formulae.saturation_vapour_pressure.pvs_Celsius(
-                    settings.T0 - self.formulae.constants.T0
-                )
+                / self.formulae.saturation_vapour_pressure.pvs_water(settings.T0)
                 - 1
             ),
             T0=settings.T0,

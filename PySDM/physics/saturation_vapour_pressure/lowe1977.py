@@ -3,13 +3,16 @@ polynomial fits from
 [Lowe et al. 1977](https://doi.org/10.1175/1520-0450(1977)016<0100:AAPFTC>2.0.CO;2)
 """
 
+from PySDM.physics.constants import T0
+
 
 class Lowe1977:
     def __init__(self, _):
         pass
 
     @staticmethod
-    def pvs_Celsius(const, T):
+    def pvs_water(const, T):
+        T = T - T0 # convert temperature T from Kelvin to Celsius
         return const.L77W_A0 + T * (
             const.L77W_A1
             + T
@@ -24,7 +27,8 @@ class Lowe1977:
         )
 
     @staticmethod
-    def ice_Celsius(const, T):
+    def pvs_ice(const, T):
+        T = T - T0 # convert temperature T from Kelvin to Celsius
         return const.L77I_A0 + T * (
             const.L77I_A1
             + T

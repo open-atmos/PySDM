@@ -5,6 +5,7 @@ and references therein)
 """
 
 import numpy as np
+from PySDM.physics.constants import T0
 
 
 class AugustRocheMagnus:
@@ -12,10 +13,12 @@ class AugustRocheMagnus:
         pass
 
     @staticmethod
-    def pvs_Celsius(const, T):
+    def pvs_water(const, T):
+        T = T - T0 # convert temperature T from Kelvin to Celsius
         return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
 
     @staticmethod
-    def ice_Celsius(const, T):
+    def pvs_ice(const, T):
         """NaN with unit of pressure and correct dimension"""
+        T = T - T0 # convert temperature T from Kelvin to Celsius
         return np.nan * T / const.ARM_C3 * const.ARM_C1

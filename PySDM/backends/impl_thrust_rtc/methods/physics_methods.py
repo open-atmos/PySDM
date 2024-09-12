@@ -27,9 +27,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             )};
             RH[i] = {self.formulae.state_variable_triplet.pv.c_inline(
                 p="p[i]", water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
-            )} / {self.formulae.saturation_vapour_pressure.pvs_Celsius.c_inline(
-                T="T[i] - const.T0"
-            )};
+            )} / {self.formulae.saturation_vapour_pressure.pvs_water.c_inline(T="T[i]")};
             """.replace(
                 "real_type", self._get_c_type()
             ),

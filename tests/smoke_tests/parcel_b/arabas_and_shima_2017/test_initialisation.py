@@ -28,7 +28,7 @@ class TestInitialisation:
     def test_RH_initialisation(settings_idx):
         setup = setups[settings_idx]
         pv0 = setup.p0 / (1 + CONST.eps / setup.initial_water_vapour_mixing_ratio)
-        pvs = setup.formulae.saturation_vapour_pressure.pvs_Celsius(setup.T0 - CONST.T0)
+        pvs = setup.formulae.saturation_vapour_pressure.pvs_water(setup.T0)
         TestInitialisation.simulation_test("RH", pv0 / pvs, setup)
 
     @staticmethod
