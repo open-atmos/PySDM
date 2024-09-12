@@ -16,7 +16,9 @@ class Settings:
         n_sd_seeding: int,
         rain_water_radius_threshold: float,
         formulae: Formulae,
+        enable_collisions: bool = True,
     ):
+        self.enable_collisions = enable_collisions
         self.formulae = formulae
         self.n_sd_initial = n_sd_initial
         self.n_sd_seeding = n_sd_seeding

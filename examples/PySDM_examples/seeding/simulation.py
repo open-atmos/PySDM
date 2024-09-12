@@ -9,6 +9,7 @@ from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence, See
 from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM import products
+from PySDM.physics import si
 
 
 class Simulation:
@@ -29,7 +30,8 @@ class Simulation:
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
-        builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
+        if settings.enable_collisions:
+            builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
         builder.add_dynamic(
             Seeding(
                 super_droplet_injection_rate=settings.super_droplet_injection_rate,
@@ -61,6 +63,16 @@ class Simulation:
                     radius_range=(settings.rain_water_radius_threshold, np.inf),
                     name="rain water mixing ratio",
                 ),
+                products.EffectiveRadius(
+                    name="r_eff",
+                    unit="um",
+                    radius_range=(0.5 * si.um, 25 * si.um),
+                ),
+                products.ParticleConcentration(
+                    name="n_drop",
+                    unit="cm^-3",
+                    radius_range=(0.5 * si.um, 25 * si.um),
+                ),
             ),
         )
         self.n_steps = int(settings.t_max // settings.timestep)
@@ -68,7 +80,7 @@ class Simulation:
     def run(self):
         output = {
             "attributes": {"water mass": []},
-            "products": {"sd_count": [], "time": [], "rain water mixing ratio": []},
+            "products": {key: [] for key in self.particulator.products.keys()},
         }
         for step in range(self.n_steps + 1):
             if step != 0:
