@@ -12,6 +12,9 @@ def discretise_multiplicities(values_arg):
     values_int = np.where(np.isnan(values_arg), 0, values_arg).round().astype(np.int64)
 
     if np.issubdtype(values_arg.dtype, np.floating):
+        if np.isnan(values_arg).all():
+            return values_int
+
         if not np.logical_or(values_int > 0, np.isnan(values_arg)).all():
             raise ValueError(
                 f"int-casting resulted in multiplicity of zero (min(y_float)={min(values_arg)})"

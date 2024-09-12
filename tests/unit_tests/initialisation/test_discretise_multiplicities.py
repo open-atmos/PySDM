@@ -58,3 +58,22 @@ class TestDiscretiseMultiplicities:
 
         # assert
         assert ints[0] == 0
+
+    @staticmethod
+    def test_all_nans_to_all_zeros():
+        """checks for how NaN values are treated"""
+        # arrange
+        values = np.asarray(
+            [
+                np.nan,
+                np.nan,
+                np.nan,
+            ],
+            dtype=np.float64,
+        )
+
+        # act
+        ints = discretise_multiplicities(values)
+
+        # assert
+        assert (ints == 0).all()
