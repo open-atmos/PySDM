@@ -448,7 +448,20 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         number_of_super_particles_to_inject,
     ):
         n_null = self.n_sd - self.attributes.super_droplet_count
-        assert n_null > 0
+        if n_null == 0:
+            raise ValueError(
+                "No available seeds to inject. Please provide particles with nan filled attributes."
+            )
+
+        if number_of_super_particles_to_inject > n_null:
+            raise ValueError(
+                "Trying to inject more super particles than space available."
+            )
+
+        if number_of_super_particles_to_inject > len(seeded_particle_multiplicity):
+            raise ValueError(
+                "Trying to inject multiple super particles with the same attributes. Instead increase multiplicity of injected particles."
+            )
 
         self.backend.seeding(
             idx=self.attributes._ParticleAttributes__idx,

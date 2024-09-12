@@ -173,19 +173,74 @@ class TestSeeding:
         # assert
         assert "do not match those used in particulator" in str(excinfo)
 
+    max_number_to_inject = 4
+
     @staticmethod
-    def test_seeding_arguments():
-        """unit test for injection logic.
-        test that the injected particles abide by the seeding method arguments.
+    @pytest.mark.parametrize(
+        "n_sd, number_of_super_particles_to_inject",
+        (
+            (1, 1),
+            pytest.param(1, 2, marks=pytest.mark.xfail(strict=True)),
+            (max_number_to_inject, max_number_to_inject - 1),
+            (max_number_to_inject, max_number_to_inject),
+            pytest.param(
+                max_number_to_inject + 2,
+                max_number_to_inject + 1,
+                marks=pytest.mark.xfail(strict=True),
+            ),
+        ),
+    )
+    def test_seeding_number_of_super_particles_to_inject(
+        n_sd,
+        number_of_super_particles_to_inject,
+        dt=1,
+        dv=1,
+    ):
+        """unit test for injection logic on: number_of_super_particles_to_inject
+
+        FUTURE TESTS:
             multiplicity,
             extensive_attributes,
             seeded_particle_index,
             seeded_particle_multiplicity,
             seeded_particle_extensive_attributes,
-            number_of_super_particles_to_inject
         """
         # arrange
+        builder = Builder(n_sd, CPU(), Box(dt, dv))
+        particulator = builder.build(
+            attributes={
+                "multiplicity": np.full(n_sd, np.nan),
+                "water mass": np.zeros(n_sd),
+            },
+        )
+
+        seeded_particle_extensive_attributes = {
+            "water mass": [0.0001 * si.ng] * TestSeeding.max_number_to_inject,
+        }
+        seeded_particle_multiplicity = [1] * TestSeeding.max_number_to_inject
+
+        seeded_particle_index = particulator.Index.identity_index(
+            len(seeded_particle_multiplicity)
+        )
+        seeded_particle_multiplicity = particulator.IndexedStorage.from_ndarray(
+            seeded_particle_index,
+            np.asarray(seeded_particle_multiplicity),
+        )
+        seeded_particle_extensive_attributes = particulator.IndexedStorage.from_ndarray(
+            seeded_particle_index,
+            np.asarray(list(seeded_particle_extensive_attributes.values())),
+        )
 
         # act
+        particulator.seeding(
+            seeded_particle_index=seeded_particle_index,
+            seeded_particle_multiplicity=seeded_particle_multiplicity,
+            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+        )
 
         # assert
+        assert (
+            number_of_super_particles_to_inject
+            == particulator.attributes.super_droplet_count
+        )
