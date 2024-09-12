@@ -91,7 +91,8 @@ class TestSeeding:
         dt=1,
         dv=1,
     ):
-        """unit test for injection logic on: seeded_particle_index, seeded_particle_multiplicity, seeded_particle_extensive_attributes"""
+        """unit test for injection logic on: seeded_particle_index, \
+            seeded_particle_multiplicity, seeded_particle_extensive_attributes"""
 
         # arrange
         builder = Builder(n_sd, CPU(), Box(dt, dv))

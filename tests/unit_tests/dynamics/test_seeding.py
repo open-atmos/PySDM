@@ -192,7 +192,7 @@ class TestSeeding:
         extensive_attributes = ["a"]
         seeding_attributes = ["a"]
 
-        class MockParticulator:
+        class MockParticulator:  # pylint: disable=too-few-public-methods
             def __init__(self):
                 self.seeding_call_count = 0
                 self.indices = []
@@ -201,9 +201,9 @@ class TestSeeding:
                 self,
                 *,
                 seeded_particle_index,
-                number_of_super_particles_to_inject,
-                seeded_particle_multiplicity,
-                seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject,  # pylint: disable=unused-argument
+                seeded_particle_multiplicity,  # pylint: disable=unused-argument
+                seeded_particle_extensive_attributes,  # pylint: disable=unused-argument
             ):
                 self.seeding_call_count += 1
                 self.indices.append(seeded_particle_index.to_ndarray())

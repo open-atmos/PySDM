@@ -80,7 +80,7 @@ class Simulation:
     def run(self):
         output = {
             "attributes": {"water mass": []},
-            "products": {key: [] for key in self.particulator.products.keys()},
+            "products": {key: [] for key in self.particulator.products},
         }
         for step in range(self.n_steps + 1):
             if step != 0:

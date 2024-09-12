@@ -460,7 +460,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
         if number_of_super_particles_to_inject > len(seeded_particle_multiplicity):
             raise ValueError(
-                "Trying to inject multiple super particles with the same attributes. Instead increase multiplicity of injected particles."
+                "Trying to inject multiple super particles with the same attributes. \
+                Instead increase multiplicity of injected particles."
             )
 
         self.backend.seeding(
