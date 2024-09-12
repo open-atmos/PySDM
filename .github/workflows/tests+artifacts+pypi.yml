@@ -178,7 +178,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-12, windows-latest]
-        python-version: ["3.9", "3.12"]
+        python-version: ["3.9", "3.11"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -214,7 +214,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-12, windows-latest]
-        python-version: ["3.9", "3.12"]
+        python-version: ["3.9", "3.11"]
         test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
