@@ -3,8 +3,6 @@ polynomial fits from
 [Flatau et al. 1992](https://doi.org/10.1175/1520-0450(1992)031%3C1507:PFTSVP%3E2.0.CO;2)
 """
 
-from PySDM.physics.constants import T0
-
 
 class FlatauWalkoCotton:
     def __init__(self, _):
@@ -12,7 +10,7 @@ class FlatauWalkoCotton:
 
     @staticmethod
     def pvs_water(const, T):
-        T = T - T0 # convert temperature T from Kelvin to Celsius
+        T = T - const.T0 # convert temperature T from Kelvin to Celsius
         return const.FWC_C0 + T * (
             const.FWC_C1
             + T
@@ -36,7 +34,7 @@ class FlatauWalkoCotton:
 
     @staticmethod
     def pvs_ice(const, T):
-        T = T - T0 # convert temperature T from Kelvin to Celsius
+        T = T - const.T0 # convert temperature T from Kelvin to Celsius
         return const.FWC_I0 + T * (
             const.FWC_I1
             + T
