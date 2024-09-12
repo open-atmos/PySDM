@@ -20,20 +20,29 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             seeded_particle_extensive_attributes,
             number_of_super_particles_to_inject: int,
         ):
+            number_of_super_particles_already_injected = 0
             # TODO #1367 start enumerating from the end of valid particle set
             for i, mult in enumerate(multiplicity):
-                if number_of_super_particles_to_inject == 0:
+                if (
+                    number_of_super_particles_to_inject
+                    == number_of_super_particles_already_injected
+                ):
                     break
                 if mult == 0:
                     idx[i] = -1
-                    number_of_super_particles_to_inject -= 1
-                    s = seeded_particle_index[number_of_super_particles_to_inject]
+                    s = seeded_particle_index[
+                        number_of_super_particles_already_injected
+                    ]
+                    number_of_super_particles_already_injected += 1
                     multiplicity[i] = seeded_particle_multiplicity[s]
                     for a in range(len(extensive_attributes)):
                         extensive_attributes[a, i] = (
                             seeded_particle_extensive_attributes[a, s]
                         )
-            assert number_of_super_particles_to_inject == 0
+            assert (
+                number_of_super_particles_to_inject
+                == number_of_super_particles_already_injected
+            )
 
         return body
 

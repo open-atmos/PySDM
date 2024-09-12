@@ -199,9 +199,6 @@ class TestSeeding:
         """unit test for injection logic on: number_of_super_particles_to_inject
 
         FUTURE TESTS:
-            multiplicity,
-            extensive_attributes,
-            seeded_particle_index,
             seeded_particle_multiplicity,
             seeded_particle_extensive_attributes,
         """
@@ -243,4 +240,71 @@ class TestSeeding:
         assert (
             number_of_super_particles_to_inject
             == particulator.attributes.super_droplet_count
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "seeded_particle_index",
+        (
+            [0, 0, 0],
+            [0, 1, 2],
+            [2, 1, 0],
+            pytest.param([0], marks=pytest.mark.xfail(strict=True)),
+        ),
+    )
+    def test_seeded_particle_index(
+        seeded_particle_index,
+        n_sd=3,
+        number_of_super_particles_to_inject=3,
+        dt=1,
+        dv=1,
+    ):
+        """unit test for injection logic on: seeded_particle_index"""
+
+        # arrange
+        builder = Builder(n_sd, CPU(), Box(dt, dv))
+        particulator = builder.build(
+            attributes={
+                "multiplicity": np.full(n_sd, np.nan),
+                "water mass": np.zeros(n_sd),
+            },
+        )
+
+        seeded_particle_extensive_attributes = {
+            "water mass": [0.0001, 0.0003, 0.0002],
+        }
+        seeded_particle_multiplicity = [1, 2, 3]
+
+        seeded_particle_index_impl = particulator.Index.from_ndarray(
+            np.asarray(seeded_particle_index)
+        )
+        seeded_particle_multiplicity_impl = particulator.IndexedStorage.from_ndarray(
+            seeded_particle_index_impl,
+            np.asarray(seeded_particle_multiplicity),
+        )
+        seeded_particle_extensive_attributes_impl = (
+            particulator.IndexedStorage.from_ndarray(
+                seeded_particle_index_impl,
+                np.asarray(list(seeded_particle_extensive_attributes.values())),
+            )
+        )
+
+        # act
+        particulator.seeding(
+            seeded_particle_index=seeded_particle_index_impl,
+            seeded_particle_multiplicity=seeded_particle_multiplicity_impl,
+            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes_impl,
+            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+        )
+
+        # assert
+        np.testing.assert_array_equal(
+            particulator.attributes["multiplicity"].to_ndarray(),
+            np.asarray(seeded_particle_multiplicity)[seeded_particle_index],
+        )
+        np.testing.assert_array_equal(
+            particulator.attributes["water mass"].to_ndarray(),
+            np.asarray(seeded_particle_extensive_attributes["water mass"])[
+                seeded_particle_index
+            ],
         )
