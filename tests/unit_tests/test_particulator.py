@@ -53,3 +53,56 @@ class TestParticulator:
         assert particulator.attributes.updated == [
             f"moles_{isotope}" for isotope in isotopes
         ]
+
+
+    @staticmethod
+    def test_seeding_marks_modified_attributes_as_updated(backend_class):
+        # arrange
+        storage = backend_class().Storage.empty(1, dtype=int)
+        abc = ["a", "b", "c"]
+
+        class ParticleAttributes:
+            def __init__(self):
+                self.updated = []
+                self.super_droplet_count = -1
+                self.__idx = storage
+                self.idx_reset = False
+                self.sane = False
+
+            def get_extensive_attribute_storage(self):
+                return storage
+
+            def get_extensive_attribute_keys(self):
+                return abc
+
+            def __getitem__(self, item):
+                return storage
+
+            def mark_updated(self, attr):
+                self.updated += [attr]
+
+            def reset_idx(self):
+                self.idx_reset = True
+
+            def sanitize(self):
+                self.sane = True
+
+        class DP(DummyParticulator):
+            pass
+
+        particulator = DP(backend_class, 44)
+        particulator.attributes = ParticleAttributes()
+        particulator.backend.seeding = lambda idx, multiplicity, extensive_attributes, seeded_particle_index, seeded_particle_multiplicity, seeded_particle_extensive_attributes, number_of_super_particles_to_inject: None
+
+        # act
+        particulator.seeding(
+            seeded_particle_index=storage,
+            seeded_particle_multiplicity=storage,
+            seeded_particle_extensive_attributes=storage,
+            number_of_super_particles_to_inject=0,
+        )
+
+        # assert
+        assert particulator.attributes.updated == ["multiplicity"] + [ attr for attr in abc ]
+        assert particulator.attributes.idx_reset
+        assert particulator.attributes.sane
