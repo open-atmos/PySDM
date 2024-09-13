@@ -107,11 +107,9 @@ class TestSeeding:
         context,
         n_sd=3,
         number_of_super_particles_to_inject=3,
-        dt=1,
-        dv=1,
     ):
         # arrange
-        builder = Builder(n_sd, CPU(), Box(dt, dv))
+        builder = Builder(n_sd, CPU(), Box(dt=np.nan, dv=np.nan))
         particulator = builder.build(
             attributes={
                 "multiplicity": np.full(n_sd, np.nan),

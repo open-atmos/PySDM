@@ -94,7 +94,15 @@ class TestParticulator:
         particulator = DP(backend_class, 44)
         particulator.attributes = ParticleAttributes()
         particulator.backend.seeding = (
-            lambda idx, multiplicity, extensive_attributes, seeded_particle_index, seeded_particle_multiplicity, seeded_particle_extensive_attributes, number_of_super_particles_to_inject: None
+            lambda
+                idx,
+                multiplicity,
+                extensive_attributes,
+                seeded_particle_index,
+                seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject:
+            None
         )
 
         # act
@@ -106,9 +114,7 @@ class TestParticulator:
         )
 
         # assert
-        assert particulator.attributes.updated == ["multiplicity"] + [
-            attr for attr in abc
-        ]
+        assert particulator.attributes.updated == ["multiplicity"] + abc
         assert particulator.attributes.idx_reset
         assert particulator.attributes.sane
 
