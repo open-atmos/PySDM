@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from collections import namedtuple
+
 import pytest
 
 from .dummy_particulator import DummyParticulator
@@ -106,3 +108,23 @@ class TestParticulator:
         assert particulator.attributes.updated == ["multiplicity"] + [ attr for attr in abc ]
         assert particulator.attributes.idx_reset
         assert particulator.attributes.sane
+
+    @staticmethod
+    def test_seeding_fails_if_no_null_super_droplets_availale(backend_class):
+        # arrange
+        a_number = 44
+
+        particulator = DummyParticulator(backend_class, n_sd=a_number)
+        storage = backend_class().Storage.empty(1, dtype=int)
+
+        particulator.attributes = namedtuple(typename="_", field_names=("super_droplet_count",))(super_droplet_count=a_number)
+
+        # act
+        with pytest.raises(ValueError, match="No available seeds to inject"):
+            particulator.seeding(
+            seeded_particle_index=storage,
+            seeded_particle_multiplicity=storage,
+            seeded_particle_extensive_attributes=storage,
+            number_of_super_particles_to_inject=0,
+        )
+
