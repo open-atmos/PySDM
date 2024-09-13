@@ -2,8 +2,8 @@
 CPU implementation of backend methods for water condensation/evaporation
 """
 
-from collections import namedtuple
 import math
+from collections import namedtuple
 from functools import lru_cache
 
 import numba

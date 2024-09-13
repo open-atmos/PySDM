@@ -9,10 +9,10 @@ import warnings
 import numba
 
 from PySDM.backends.impl_numba import methods
+from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
 from PySDM.backends.impl_numba.storage import Storage as ImportedStorage
 from PySDM.formulae import Formulae
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
 
 
 class Numba(  # pylint: disable=too-many-ancestors,duplicate-code

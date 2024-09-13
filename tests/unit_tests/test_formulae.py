@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import formulae, Formulae
+from PySDM import Formulae, formulae
 from PySDM.physics import si
 
 

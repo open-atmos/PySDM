@@ -1,13 +1,12 @@
 import numpy as np
-
 from PySDM_examples.utils import BasicSimulation
 
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.dynamics import Condensation, AmbientThermodynamics
+from PySDM.dynamics import AmbientThermodynamics, Condensation
+from PySDM.environments import Parcel
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import AmbientTemperature, ParcelDisplacement, WaterMixingRatio
-from PySDM.environments import Parcel
 
 
 class Simulation(BasicSimulation):

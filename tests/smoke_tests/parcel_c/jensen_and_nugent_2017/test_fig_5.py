@@ -4,12 +4,13 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from PySDM_examples import Jensen_and_Nugent_2017
+from PySDM_examples.utils import notebook_vars
 from scipy import signal
 
-from PySDM_examples.utils import notebook_vars
-from PySDM_examples import Jensen_and_Nugent_2017
-from PySDM.physics.constants import PER_CENT
 from PySDM.physics import si
+from PySDM.physics.constants import PER_CENT
+
 from .test_fig_4_and_7_and_tab_4_bottom_rows import (
     find_cloud_base_index,
     find_max_alt_index,

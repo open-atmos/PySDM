@@ -1,9 +1,10 @@
 from typing import Optional
 
 from pystrict import strict
+
 from PySDM import Formulae
-from PySDM.physics import si
 from PySDM.initialisation.spectra import Lognormal, Sum
+from PySDM.physics import si
 
 INITIAL_RELATIVE_HUMIDITY = 0.8561
 INITIAL_TEMPERATURE = 284.3 * si.K

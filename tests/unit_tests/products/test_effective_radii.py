@@ -5,7 +5,7 @@ import numpy as np
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.products import EffectiveRadius, ActivatedEffectiveRadius
+from PySDM.products import ActivatedEffectiveRadius, EffectiveRadius
 
 
 def test_effective_radii(backend_class):

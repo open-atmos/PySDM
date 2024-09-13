@@ -17,6 +17,8 @@ Physical constants and formulae (mostly one-liners)
 """
 
 from . import (
+    air_dynamic_viscosity,
+    bulk_phase_partitioning,
     condensation_coordinate,
     constants_defaults,
     diffusion_kinetics,
@@ -28,10 +30,10 @@ from . import (
     hydrostatics,
     hygroscopicity,
     impl,
+    isotope_diffusivity_ratios,
     isotope_equilibrium_fractionation_factors,
     isotope_meteoric_water_line_excess,
     isotope_ratio_evolution,
-    isotope_diffusivity_ratios,
     isotope_relaxation_timescale,
     latent_heat,
     optical_albedo,
@@ -41,10 +43,8 @@ from . import (
     saturation_vapour_pressure,
     state_variable_triplet,
     surface_tension,
+    terminal_velocity,
     trivia,
     ventilation,
-    air_dynamic_viscosity,
-    terminal_velocity,
-    bulk_phase_partitioning,
 )
 from .constants import convert_to, in_unit, si

@@ -11,6 +11,8 @@ from scipy import constants as sci
 
 from .constants import (  # pylint: disable=unused-import
     FOUR,
+    ONE,
+    ONE_HALF,
     ONE_THIRD,
     PER_CENT,
     PER_MEG,
@@ -20,10 +22,8 @@ from .constants import (  # pylint: disable=unused-import
     PPM,
     T0,
     THREE,
-    ONE,
     TWO,
     TWO_THIRDS,
-    ONE_HALF,
     M,
     si,
 )

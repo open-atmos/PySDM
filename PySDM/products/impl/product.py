@@ -8,8 +8,8 @@ from typing import Optional
 
 import pint
 
-from PySDM.physics.constants import PPB, PPM, PPT
 from PySDM.impl.camel_case import camel_case_to_words
+from PySDM.physics.constants import PPB, PPM, PPT
 
 _UNIT_REGISTRY = pint.UnitRegistry()
 

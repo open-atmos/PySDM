@@ -1,15 +1,15 @@
 """ exemplifies and does basic tests of ventilation logic in condensation/evaporation """
 
-import pytest
 import numpy as np
+import pytest
 
-from PySDM import Formulae, Builder
+from PySDM import Builder, Formulae
+from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
+from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.formulae import _choices
-from PySDM.physics import ventilation, si
-from PySDM.dynamics import Condensation, AmbientThermodynamics
+from PySDM.physics import si, ventilation
 from PySDM.products import AmbientRelativeHumidity
-from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 
 INITIAL_DROPLET_MASS = 1 * si.ug
 DRY_VOLUME = 1 * si.nm**3

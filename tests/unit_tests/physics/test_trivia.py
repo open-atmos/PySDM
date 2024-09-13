@@ -4,8 +4,8 @@ import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
-from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics import constants_defaults
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
 class TestTrivia:

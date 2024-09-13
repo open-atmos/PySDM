@@ -1,7 +1,6 @@
 """ tests ensuring proper condensation solver operation in some parcel-model based cases """
 
 import numpy as np
-
 import pytest
 from matplotlib import pyplot
 from scipy import signal

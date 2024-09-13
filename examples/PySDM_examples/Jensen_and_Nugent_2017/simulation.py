@@ -1,21 +1,22 @@
 import numpy as np
-from PySDM_examples.utils import BasicSimulation
-from PySDM_examples.Jensen_and_Nugent_2017.settings import Settings
 from PySDM_examples.Jensen_and_Nugent_2017 import table_3
+from PySDM_examples.Jensen_and_Nugent_2017.settings import Settings
+from PySDM_examples.utils import BasicSimulation
+
 from PySDM import Builder
-from PySDM.physics import si
 from PySDM.backends import CPU
-from PySDM.products import (
-    PeakSupersaturation,
-    ParcelDisplacement,
-    Time,
-    ActivatedMeanRadius,
-    RadiusStandardDeviation,
-)
-from PySDM.environments import Parcel
-from PySDM.dynamics import Condensation, AmbientThermodynamics, Coalescence
+from PySDM.dynamics import AmbientThermodynamics, Coalescence, Condensation
 from PySDM.dynamics.collisions.collision_kernels import Geometric
+from PySDM.environments import Parcel
 from PySDM.initialisation.sampling.spectral_sampling import Logarithmic
+from PySDM.physics import si
+from PySDM.products import (
+    ActivatedMeanRadius,
+    ParcelDisplacement,
+    PeakSupersaturation,
+    RadiusStandardDeviation,
+    Time,
+)
 
 # note: 100 in caption of Table 1
 N_SD_NON_GCCN = 100

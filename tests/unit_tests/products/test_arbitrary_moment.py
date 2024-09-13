@@ -1,13 +1,13 @@
 """ tests of the product-class-generating `make_arbitrary_moment_product` function """
 
-import pytest
 import numpy as np
+import pytest
 
-from PySDM.products.size_spectral.arbitrary_moment import make_arbitrary_moment_product
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
+from PySDM.products.size_spectral.arbitrary_moment import make_arbitrary_moment_product
 
 
 class TestArbitraryMoment:

@@ -1,8 +1,8 @@
 from pystrict import strict
 
 from PySDM import Formulae
-from PySDM.physics import si
 from PySDM.initialisation.spectra import Lognormal
+from PySDM.physics import si
 
 
 @strict

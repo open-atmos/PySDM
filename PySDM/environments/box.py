@@ -4,8 +4,8 @@ Bare zero-dimensional framework
 
 import numpy as np
 
-from PySDM.impl.mesh import Mesh
 from PySDM.environments.impl import register_environment
+from PySDM.impl.mesh import Mesh
 
 
 @register_environment()

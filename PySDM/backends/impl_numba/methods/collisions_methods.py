@@ -3,6 +3,7 @@ CPU implementation of backend methods for particle collisions
 """
 
 from functools import cached_property
+
 import numba
 import numpy as np
 

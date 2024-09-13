@@ -13,7 +13,6 @@ from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import si
 
-
 DUMMY_ATTRIBUTES = {
     attr: np.asarray([np.nan if attr != "multiplicity" else 0])
     for attr in (

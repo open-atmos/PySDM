@@ -2,11 +2,12 @@
 tests the ParticleSizeSpectrum product against per-mass/per-volume and dry-/wet-size choices
 """
 
-import pytest
 import numpy as np
+import pytest
+
 from PySDM import Builder
-from PySDM.physics import si
 from PySDM.environments import Box
+from PySDM.physics import si
 from PySDM.products import (
     ParticleSizeSpectrumPerMassOfDryAir,
     ParticleSizeSpectrumPerVolume,

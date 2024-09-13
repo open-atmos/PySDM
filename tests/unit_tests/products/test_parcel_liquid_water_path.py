@@ -3,15 +3,15 @@
 import numpy as np
 from matplotlib import pyplot
 
-from PySDM.products import (
-    ParcelLiquidWaterPath,
-    LiquidWaterContent,
-    AmbientRelativeHumidity,
-)
-from PySDM.environments import Parcel
-from PySDM.dynamics import Condensation, AmbientThermodynamics
 from PySDM import Builder
+from PySDM.dynamics import AmbientThermodynamics, Condensation
+from PySDM.environments import Parcel
 from PySDM.physics import si
+from PySDM.products import (
+    AmbientRelativeHumidity,
+    LiquidWaterContent,
+    ParcelLiquidWaterPath,
+)
 
 
 def test_parcel_liquid_water_path(

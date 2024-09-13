@@ -7,9 +7,9 @@ from scipy.interpolate import interp1d
 
 from PySDM import Formulae
 from PySDM.dynamics import condensation
+from PySDM.dynamics.collisions.collision_kernels import Geometric
 from PySDM.initialisation import spectra
 from PySDM.physics import si
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 
 
 class Settings:

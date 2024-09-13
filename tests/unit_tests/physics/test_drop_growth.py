@@ -1,11 +1,11 @@
 """ tests for drop growth formulae """
 
+import numpy as np
 import pytest
 from matplotlib import pyplot
-import numpy as np
 
-from PySDM.formulae import _choices, Formulae
-from PySDM.physics import drop_growth, constants_defaults, si, in_unit
+from PySDM.formulae import Formulae, _choices
+from PySDM.physics import constants_defaults, drop_growth, in_unit, si
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 

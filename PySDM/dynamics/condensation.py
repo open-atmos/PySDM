@@ -7,8 +7,8 @@ from collections import namedtuple
 
 import numpy as np
 
-from PySDM.physics import si
 from PySDM.dynamics.impl import register_dynamic
+from PySDM.physics import si
 
 DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
     rtol_x=1e-6,

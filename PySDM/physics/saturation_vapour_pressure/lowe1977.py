@@ -10,7 +10,7 @@ class Lowe1977:
 
     @staticmethod
     def pvs_water(const, T):
-        T = T - const.T0 # convert temperature T from Kelvin to Celsius
+        T = T - const.T0  # convert temperature T from Kelvin to Celsius
         return const.L77W_A0 + T * (
             const.L77W_A1
             + T
@@ -26,7 +26,7 @@ class Lowe1977:
 
     @staticmethod
     def pvs_ice(const, T):
-        T = T - const.T0 # convert temperature T from Kelvin to Celsius
+        T = T - const.T0  # convert temperature T from Kelvin to Celsius
         return const.L77I_A0 + T * (
             const.L77I_A1
             + T

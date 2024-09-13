@@ -3,8 +3,8 @@
 import pytest
 
 from PySDM import Formulae
-from PySDM.physics import optical_albedo, optical_depth, constants_defaults
 from PySDM.formulae import _choices
+from PySDM.physics import constants_defaults, optical_albedo, optical_depth
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 

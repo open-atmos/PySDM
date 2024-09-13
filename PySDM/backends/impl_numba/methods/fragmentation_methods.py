@@ -3,10 +3,12 @@ CPU implementation of backend methods supporting fragmentation functions
 """
 
 from functools import cached_property
+
 import numba
 import numpy as np
-from PySDM.backends.impl_numba import conf
+
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.backends.impl_numba import conf
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})

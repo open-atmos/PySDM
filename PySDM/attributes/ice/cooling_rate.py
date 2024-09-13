@@ -5,6 +5,7 @@ cooling rate estimated as the difference in current and previous grid-cell
 """
 
 import numpy as np
+
 from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 

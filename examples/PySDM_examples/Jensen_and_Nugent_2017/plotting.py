@@ -1,6 +1,7 @@
-from matplotlib import pyplot
 import numpy as np
-from PySDM.physics import si, in_unit
+from matplotlib import pyplot
+
+from PySDM.physics import in_unit, si
 from PySDM.physics.constants import PER_CENT
 
 CLOUD_BASE = 300 * si.m

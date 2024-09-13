@@ -3,9 +3,9 @@ from typing import Iterable
 from PySDM_examples.Shipway_and_Hill_2012 import Settings as SettingsSH
 
 from PySDM import Formulae
+from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.initialisation import spectra
 from PySDM.physics import si
-from PySDM.dynamics.collisions.collision_kernels import Golovin
 
 
 class Settings1D(SettingsSH):

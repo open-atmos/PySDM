@@ -1,9 +1,10 @@
 """ tests calculation of particle Reynolds number """
 
-import pytest
 import numpy as np
-from PySDM.environments import Box
+import pytest
+
 from PySDM import Builder, Formulae
+from PySDM.environments import Box
 from PySDM.physics import si
 
 
