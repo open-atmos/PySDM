@@ -19,10 +19,23 @@ class TestSeeding:
         "n_sd, number_of_super_particles_to_inject, context",
         (
             (1, 1, nullcontext()),
-            (1, 2, pytest.raises(ValueError, match="inject more super particles than space available")),
+            (
+                1,
+                2,
+                pytest.raises(
+                    ValueError, match="inject more super particles than space available"
+                ),
+            ),
             (max_number_to_inject, max_number_to_inject - 1, nullcontext()),
             (max_number_to_inject, max_number_to_inject, nullcontext()),
-            (max_number_to_inject + 2, max_number_to_inject + 1, pytest.raises(ValueError, match="inject multiple super particles with the same attributes")),
+            (
+                max_number_to_inject + 2,
+                max_number_to_inject + 1,
+                pytest.raises(
+                    ValueError,
+                    match="inject multiple super particles with the same attributes",
+                ),
+            ),
         ),
     )
     def test_number_of_super_particles_to_inject(
@@ -80,7 +93,13 @@ class TestSeeding:
             ([0, 0, 0], nullcontext()),
             ([0, 1, 2], nullcontext()),
             ([2, 1, 0], nullcontext()),
-            ([0], pytest.raises(ValueError, match=" multiple super particles with the same attributes")),
+            (
+                [0],
+                pytest.raises(
+                    ValueError,
+                    match=" multiple super particles with the same attributes",
+                ),
+            ),
         ),
     )
     def test_seeded_particle_index_multiplicity_extensive_attributes(

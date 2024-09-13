@@ -56,7 +56,6 @@ class TestParticulator:
             f"moles_{isotope}" for isotope in isotopes
         ]
 
-
     @staticmethod
     def test_seeding_marks_modified_attributes_as_updated(backend_class):
         # arrange
@@ -94,7 +93,9 @@ class TestParticulator:
 
         particulator = DP(backend_class, 44)
         particulator.attributes = ParticleAttributes()
-        particulator.backend.seeding = lambda idx, multiplicity, extensive_attributes, seeded_particle_index, seeded_particle_multiplicity, seeded_particle_extensive_attributes, number_of_super_particles_to_inject: None
+        particulator.backend.seeding = (
+            lambda idx, multiplicity, extensive_attributes, seeded_particle_index, seeded_particle_multiplicity, seeded_particle_extensive_attributes, number_of_super_particles_to_inject: None
+        )
 
         # act
         particulator.seeding(
@@ -105,7 +106,9 @@ class TestParticulator:
         )
 
         # assert
-        assert particulator.attributes.updated == ["multiplicity"] + [ attr for attr in abc ]
+        assert particulator.attributes.updated == ["multiplicity"] + [
+            attr for attr in abc
+        ]
         assert particulator.attributes.idx_reset
         assert particulator.attributes.sane
 
@@ -117,14 +120,15 @@ class TestParticulator:
         particulator = DummyParticulator(backend_class, n_sd=a_number)
         storage = backend_class().Storage.empty(1, dtype=int)
 
-        particulator.attributes = namedtuple(typename="_", field_names=("super_droplet_count",))(super_droplet_count=a_number)
+        particulator.attributes = namedtuple(
+            typename="_", field_names=("super_droplet_count",)
+        )(super_droplet_count=a_number)
 
         # act
         with pytest.raises(ValueError, match="No available seeds to inject"):
             particulator.seeding(
-            seeded_particle_index=storage,
-            seeded_particle_multiplicity=storage,
-            seeded_particle_extensive_attributes=storage,
-            number_of_super_particles_to_inject=0,
-        )
-
+                seeded_particle_index=storage,
+                seeded_particle_multiplicity=storage,
+                seeded_particle_extensive_attributes=storage,
+                number_of_super_particles_to_inject=0,
+            )
