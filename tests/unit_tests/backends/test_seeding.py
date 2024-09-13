@@ -32,7 +32,6 @@ class TestSeeding:
         dt=1,
         dv=1,
     ):
-        """unit test for injection logic on: number_of_super_particles_to_inject"""
         # arrange
         builder = Builder(n_sd, CPU(), Box(dt, dv))
         particulator = builder.build(
@@ -92,9 +91,6 @@ class TestSeeding:
         dt=1,
         dv=1,
     ):
-        """unit test for injection logic on: seeded_particle_index, \
-            seeded_particle_multiplicity, seeded_particle_extensive_attributes"""
-
         # arrange
         builder = Builder(n_sd, CPU(), Box(dt, dv))
         particulator = builder.build(
