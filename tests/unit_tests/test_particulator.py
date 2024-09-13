@@ -93,6 +93,7 @@ class TestParticulator:
 
         particulator = DP(backend_class, 44)
         particulator.attributes = ParticleAttributes()
+        # fmt: off
         particulator.backend.seeding = (
             lambda
                 idx,
@@ -104,6 +105,7 @@ class TestParticulator:
                 number_of_super_particles_to_inject:
             None
         )
+        # fmt: on
 
         # act
         particulator.seeding(
