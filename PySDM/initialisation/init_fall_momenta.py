@@ -5,7 +5,6 @@ of droplets
 
 import numpy as np
 
-from PySDM.backends import CPU
 from PySDM.dynamics.terminal_velocity import GunnKinzer1949
 from PySDM.formulae import Formulae
 from PySDM.particulator import Particulator
@@ -30,6 +29,8 @@ def init_fall_momenta(
     """
     if zero:
         return np.zeros_like(water_mass)
+
+    from PySDM.backends import CPU  # pylint: disable=import-outside-toplevel
 
     particulator = Particulator(0, CPU(Formulae()))  # TODO #1155
 
