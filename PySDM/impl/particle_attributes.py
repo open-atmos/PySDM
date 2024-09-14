@@ -118,3 +118,8 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
 
     def has_attribute(self, attr):
         return attr in self.__attributes
+
+    def reset_idx(self):
+        self.__valid_n_sd = self.__idx.shape[0]
+        self.__idx.reset_index()
+        self.healthy = False

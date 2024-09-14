@@ -28,6 +28,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     methods.DisplacementMethods,
     methods.TerminalVelocityMethods,
     methods.IsotopeMethods,
+    methods.SeedingMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -75,3 +76,4 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         methods.DisplacementMethods.__init__(self)
         methods.TerminalVelocityMethods.__init__(self)
         methods.IsotopeMethods.__init__(self)
+        methods.SeedingMethods.__init__(self)
