@@ -1,6 +1,7 @@
 from functools import cached_property
 
 import numpy as np
+
 from PyMPDATA import Options, ScalarField, Solver, Stepper, VectorField
 from PyMPDATA.boundary_conditions import Extrapolated
 

@@ -7,8 +7,8 @@ from abc import ABC
 import numpy as np
 
 from PySDM.products.impl import (
-    ConcentrationProduct,
     SpectrumMomentProduct,
+    ConcentrationProduct,
     register_product,
 )
 

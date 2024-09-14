@@ -2,12 +2,13 @@
 
 from pathlib import Path
 
-import numpy as np
 import pytest
-from PySDM_examples import deJong_Azimi
-from PySDM_examples.utils import notebook_vars
+import numpy as np
 
-from PySDM.physics import in_unit, si
+from PySDM_examples.utils import notebook_vars
+from PySDM_examples import deJong_Azimi
+
+from PySDM.physics import si, in_unit
 
 PLOT = False
 RTOL = 1e-2

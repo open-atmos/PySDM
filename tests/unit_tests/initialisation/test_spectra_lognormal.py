@@ -2,7 +2,6 @@
 
 import numpy as np
 import pytest
-
 from PySDM.initialisation.spectra import Lognormal
 
 

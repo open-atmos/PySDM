@@ -2,7 +2,6 @@
 
 import numpy as np
 from matplotlib import pyplot
-
 from PySDM import Formulae
 from PySDM.physics import si
 

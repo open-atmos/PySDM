@@ -10,9 +10,9 @@ from PySDM.attributes.impl import (
     DummyAttribute,
     ExtensiveAttribute,
     MaximumAttribute,
-    get_attribute_class,
 )
 from PySDM.impl.particle_attributes import ParticleAttributes
+from PySDM.attributes.impl import get_attribute_class
 
 
 class ParticleAttributesFactory:

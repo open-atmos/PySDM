@@ -6,9 +6,9 @@ import numpy as np
 import pytest
 from matplotlib import pyplot
 
-from PySDM.formulae import Formulae, _choices
-from PySDM.physics import constants_defaults, isotope_diffusivity_ratios, si
+from PySDM.physics import constants_defaults, si, isotope_diffusivity_ratios
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.formulae import _choices, Formulae
 
 
 class TestIsotopeDiffusivityRatios:

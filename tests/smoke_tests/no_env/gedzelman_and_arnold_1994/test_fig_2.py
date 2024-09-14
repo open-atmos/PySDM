@@ -6,8 +6,9 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from PySDM_examples import Gedzelman_and_Arnold_1994
+
 from PySDM_examples.utils.notebook_vars import notebook_vars
+from PySDM_examples import Gedzelman_and_Arnold_1994
 
 PLOT = False
 

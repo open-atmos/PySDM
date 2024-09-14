@@ -9,8 +9,8 @@ from PySDM.physics import (
     latent_heat,
     saturation_vapour_pressure,
 )
-from PySDM.physics.constants import T0
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.physics.constants import T0
 
 
 class TestFormulae:

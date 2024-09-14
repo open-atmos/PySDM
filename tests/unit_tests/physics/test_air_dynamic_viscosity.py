@@ -1,11 +1,10 @@
 """ tests for air dynamic viscosity formulae """
 
-import numpy as np
 import pytest
-
-from PySDM.formulae import Formulae, _choices
-from PySDM.physics import air_dynamic_viscosity, constants_defaults, si
+import numpy as np
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.formulae import _choices, Formulae
+from PySDM.physics import air_dynamic_viscosity, constants_defaults, si
 
 
 class TestAirDynamicViscosity:

@@ -6,13 +6,13 @@ from typing import List, Optional
 
 import numpy as np
 
-from PySDM.environments.impl import register_environment
 from PySDM.environments.impl.moist import Moist
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import (
     default_rtol,
     equilibrate_wet_radii,
 )
+from PySDM.environments.impl import register_environment
 
 
 @register_environment()

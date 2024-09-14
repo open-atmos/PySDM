@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
+import pytest
 
 import numpy as np
-import pytest
 from matplotlib import pyplot
 
 from PySDM import Formulae

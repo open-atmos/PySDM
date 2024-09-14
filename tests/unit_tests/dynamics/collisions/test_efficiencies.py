@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from matplotlib import pyplot
 import numpy as np
 import pytest
-from matplotlib import pyplot
 
 from PySDM import Builder
 from PySDM.backends import CPU

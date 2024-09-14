@@ -8,7 +8,7 @@ import numbers
 import re
 import warnings
 from collections import namedtuple
-from functools import cached_property, lru_cache, partial
+from functools import lru_cache, partial, cached_property
 from types import SimpleNamespace
 from typing import Optional
 

@@ -2,13 +2,12 @@
 tests for ventilation coefficient implementation
 """
 
+from matplotlib import pyplot
 import numpy as np
 import pytest
-from matplotlib import pyplot
-
 from PySDM import Formulae
 from PySDM.formulae import _choices
-from PySDM.physics import constants_defaults, in_unit, ventilation
+from PySDM.physics import ventilation, constants_defaults, in_unit
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 

@@ -13,10 +13,10 @@ import scipy.integrate
 from PySDM.backends import Numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.backends.impl_numba.methods.condensation_methods import (
+    _RelativeTolerances,
     _Attributes,
     _CellData,
     _Counters,
-    _RelativeTolerances,
 )
 from PySDM.physics.constants_defaults import PI_4_3
 

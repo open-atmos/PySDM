@@ -1,10 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 
+from PySDM_examples.Jensen_and_Nugent_2017.table_3 import RD, NA
 import numpy as np
-from PySDM_examples.Jensen_and_Nugent_2017.table_3 import NA, RD
-
-from PySDM import Formulae
 from PySDM.physics import si
+from PySDM import Formulae
+
 
 TRIVIA = Formulae().trivia
 

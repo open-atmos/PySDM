@@ -4,12 +4,13 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from PySDM_examples import Jensen_and_Nugent_2017
-from PySDM_examples.utils import notebook_vars
 from scipy import signal
 
-from PySDM.physics import si
+from PySDM_examples.utils import notebook_vars
+from PySDM_examples import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
+
+from PySDM.physics import si
 
 PLOT = False
 

@@ -5,8 +5,8 @@ towards the terminal velocity
 """
 
 from PySDM.attributes.impl.attribute import Attribute
-from PySDM.dynamics.impl import register_dynamic
 from PySDM.particulator import Particulator
+from PySDM.dynamics.impl import register_dynamic
 
 
 @register_dynamic()

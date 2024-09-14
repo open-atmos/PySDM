@@ -1,6 +1,7 @@
 import numpy as np
-from PySDM_examples import Jensen_and_Nugent_2017
 from pystrict import strict
+
+from PySDM_examples import Jensen_and_Nugent_2017
 
 from PySDM.backends import CPU
 from PySDM.dynamics import condensation

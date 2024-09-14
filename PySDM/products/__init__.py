@@ -9,6 +9,6 @@ from .condensation import *
 from .displacement import *
 from .freezing import *
 from .housekeeping import *
+from .size_spectral import *
 from .optical import *
 from .parcel import *
-from .size_spectral import *

@@ -4,9 +4,9 @@ tests for isotope relaxation timescale formulae
 
 import pytest
 
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import constants_defaults, isotope_relaxation_timescale
-from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
 @pytest.mark.parametrize(

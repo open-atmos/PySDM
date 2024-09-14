@@ -4,8 +4,8 @@ import numpy as np
 
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.dynamics.impl import register_dynamic
 from PySDM.environments import Box
+from PySDM.dynamics.impl import register_dynamic
 
 
 def test_impl_register_dynamic():

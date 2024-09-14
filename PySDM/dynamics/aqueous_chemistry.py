@@ -6,7 +6,6 @@ from collections import namedtuple
 
 import numpy as np
 
-from PySDM.dynamics.impl import register_dynamic
 from PySDM.dynamics.impl.chemistry_utils import (
     AQUEOUS_COMPOUNDS,
     DIFFUSION_CONST,
@@ -14,6 +13,7 @@ from PySDM.dynamics.impl.chemistry_utils import (
     M,
     SpecificGravities,
 )
+from PySDM.dynamics.impl import register_dynamic
 
 DEFAULTS = namedtuple("_", ("pH_min", "pH_max", "pH_rtol", "ionic_strength_threshold"))(
     pH_min=-1.0, pH_max=14.0, pH_rtol=1e-6, ionic_strength_threshold=0.02 * M

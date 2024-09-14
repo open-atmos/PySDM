@@ -10,7 +10,7 @@ class FlatauWalkoCotton:
 
     @staticmethod
     def pvs_water(const, T):
-        T = T - const.T0  # convert temperature T from Kelvin to Celsius
+        T = T - const.T0 # convert temperature T from Kelvin to Celsius
         return const.FWC_C0 + T * (
             const.FWC_C1
             + T
@@ -34,7 +34,7 @@ class FlatauWalkoCotton:
 
     @staticmethod
     def pvs_ice(const, T):
-        T = T - const.T0  # convert temperature T from Kelvin to Celsius
+        T = T - const.T0 # convert temperature T from Kelvin to Celsius
         return const.FWC_I0 + T * (
             const.FWC_I1
             + T
