@@ -64,47 +64,48 @@ of droplets</p>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">PySDM.backends</span> <span class="kn">import</span> <span class="n">CPU</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">PySDM.dynamics.terminal_velocity</span> <span class="kn">import</span> <span class="n">GunnKinzer1949</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span> <span class="nn">PySDM.formulae</span> <span class="kn">import</span> <span class="n">Formulae</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span> <span class="nn">PySDM.particulator</span> <span class="kn">import</span> <span class="n">Particulator</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">PySDM.dynamics.terminal_velocity</span> <span class="kn">import</span> <span class="n">GunnKinzer1949</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">PySDM.formulae</span> <span class="kn">import</span> <span class="n">Formulae</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span> <span class="nn">PySDM.particulator</span> <span class="kn">import</span> <span class="n">Particulator</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">def</span> <span class="nf">init_fall_momenta</span><span class="p">(</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">water_mass</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">terminal_velocity_approx</span><span class="o">=</span><span class="n">GunnKinzer1949</span><span class="p">,</span>  <span class="c1"># TODO #1155</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    Calculate default values of the</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum` attribute</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    (needed when using</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity` attribute)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">    Parameters:</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">        - water_mass: a numpy array of superdroplet water masses</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">    Returns:</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">        - a numpy array of initial momentum values</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="k">if</span> <span class="n">zero</span><span class="p">:</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">water_mass</span><span class="p">)</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="n">particulator</span> <span class="o">=</span> <span class="n">Particulator</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">CPU</span><span class="p">(</span><span class="n">Formulae</span><span class="p">()))</span>  <span class="c1"># TODO #1155</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>    <span class="n">approximation</span> <span class="o">=</span> <span class="n">terminal_velocity_approx</span><span class="p">(</span><span class="n">particulator</span><span class="o">=</span><span class="n">particulator</span><span class="p">)</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="n">volume_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">mass_to_volume</span><span class="p">(</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="n">water_mass</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="p">)</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="n">radii_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="n">volume</span><span class="o">=</span><span class="n">volume_arr</span><span class="p">)</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">radii</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">from_ndarray</span><span class="p">(</span><span class="n">radii_arr</span><span class="p">)</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="n">output</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">water_mass</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="n">approximation</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radii</span><span class="p">)</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">to_ndarray</span><span class="p">()</span> <span class="o">*</span> <span class="n">water_mass</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="k">def</span> <span class="nf">init_fall_momenta</span><span class="p">(</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">water_mass</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">terminal_velocity_approx</span><span class="o">=</span><span class="n">GunnKinzer1949</span><span class="p">,</span>  <span class="c1"># TODO #1155</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="p">):</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">    Calculate default values of the</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum` attribute</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">    (needed when using</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity` attribute)</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">    Parameters:</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">        - water_mass: a numpy array of superdroplet water masses</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    Returns:</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">        - a numpy array of initial momentum values</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="k">if</span> <span class="n">zero</span><span class="p">:</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">water_mass</span><span class="p">)</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="kn">from</span> <span class="nn">PySDM.backends</span> <span class="kn">import</span> <span class="n">CPU</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="n">particulator</span> <span class="o">=</span> <span class="n">Particulator</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">CPU</span><span class="p">(</span><span class="n">Formulae</span><span class="p">()))</span>  <span class="c1"># TODO #1155</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="n">approximation</span> <span class="o">=</span> <span class="n">terminal_velocity_approx</span><span class="p">(</span><span class="n">particulator</span><span class="o">=</span><span class="n">particulator</span><span class="p">)</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="n">volume_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">mass_to_volume</span><span class="p">(</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="n">water_mass</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>    <span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="n">radii_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="n">volume</span><span class="o">=</span><span class="n">volume_arr</span><span class="p">)</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="n">radii</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">from_ndarray</span><span class="p">(</span><span class="n">radii_arr</span><span class="p">)</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>    <span class="n">output</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">water_mass</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>    <span class="n">approximation</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radii</span><span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">to_ndarray</span><span class="p">()</span> <span class="o">*</span> <span class="n">water_mass</span>
 </span></pre></div>
 
 
@@ -120,41 +121,43 @@ of droplets</p>
 
     </div>
     <a class="headerlink" href="#init_fall_momenta"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="init_fall_momenta-15"><a href="#init_fall_momenta-15"><span class="linenos">15</span></a><span class="k">def</span> <span class="nf">init_fall_momenta</span><span class="p">(</span>
-</span><span id="init_fall_momenta-16"><a href="#init_fall_momenta-16"><span class="linenos">16</span></a>    <span class="n">water_mass</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-</span><span id="init_fall_momenta-17"><a href="#init_fall_momenta-17"><span class="linenos">17</span></a>    <span class="n">zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="init_fall_momenta-18"><a href="#init_fall_momenta-18"><span class="linenos">18</span></a>    <span class="n">terminal_velocity_approx</span><span class="o">=</span><span class="n">GunnKinzer1949</span><span class="p">,</span>  <span class="c1"># TODO #1155</span>
-</span><span id="init_fall_momenta-19"><a href="#init_fall_momenta-19"><span class="linenos">19</span></a><span class="p">):</span>
-</span><span id="init_fall_momenta-20"><a href="#init_fall_momenta-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="init_fall_momenta-21"><a href="#init_fall_momenta-21"><span class="linenos">21</span></a><span class="sd">    Calculate default values of the</span>
-</span><span id="init_fall_momenta-22"><a href="#init_fall_momenta-22"><span class="linenos">22</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum` attribute</span>
-</span><span id="init_fall_momenta-23"><a href="#init_fall_momenta-23"><span class="linenos">23</span></a><span class="sd">    (needed when using</span>
-</span><span id="init_fall_momenta-24"><a href="#init_fall_momenta-24"><span class="linenos">24</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity` attribute)</span>
-</span><span id="init_fall_momenta-25"><a href="#init_fall_momenta-25"><span class="linenos">25</span></a>
-</span><span id="init_fall_momenta-26"><a href="#init_fall_momenta-26"><span class="linenos">26</span></a><span class="sd">    Parameters:</span>
-</span><span id="init_fall_momenta-27"><a href="#init_fall_momenta-27"><span class="linenos">27</span></a><span class="sd">        - water_mass: a numpy array of superdroplet water masses</span>
-</span><span id="init_fall_momenta-28"><a href="#init_fall_momenta-28"><span class="linenos">28</span></a>
-</span><span id="init_fall_momenta-29"><a href="#init_fall_momenta-29"><span class="linenos">29</span></a><span class="sd">    Returns:</span>
-</span><span id="init_fall_momenta-30"><a href="#init_fall_momenta-30"><span class="linenos">30</span></a><span class="sd">        - a numpy array of initial momentum values</span>
-</span><span id="init_fall_momenta-31"><a href="#init_fall_momenta-31"><span class="linenos">31</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="init_fall_momenta-32"><a href="#init_fall_momenta-32"><span class="linenos">32</span></a>    <span class="k">if</span> <span class="n">zero</span><span class="p">:</span>
-</span><span id="init_fall_momenta-33"><a href="#init_fall_momenta-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">water_mass</span><span class="p">)</span>
-</span><span id="init_fall_momenta-34"><a href="#init_fall_momenta-34"><span class="linenos">34</span></a>
-</span><span id="init_fall_momenta-35"><a href="#init_fall_momenta-35"><span class="linenos">35</span></a>    <span class="n">particulator</span> <span class="o">=</span> <span class="n">Particulator</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">CPU</span><span class="p">(</span><span class="n">Formulae</span><span class="p">()))</span>  <span class="c1"># TODO #1155</span>
-</span><span id="init_fall_momenta-36"><a href="#init_fall_momenta-36"><span class="linenos">36</span></a>
-</span><span id="init_fall_momenta-37"><a href="#init_fall_momenta-37"><span class="linenos">37</span></a>    <span class="n">approximation</span> <span class="o">=</span> <span class="n">terminal_velocity_approx</span><span class="p">(</span><span class="n">particulator</span><span class="o">=</span><span class="n">particulator</span><span class="p">)</span>
-</span><span id="init_fall_momenta-38"><a href="#init_fall_momenta-38"><span class="linenos">38</span></a>
-</span><span id="init_fall_momenta-39"><a href="#init_fall_momenta-39"><span class="linenos">39</span></a>    <span class="n">volume_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">mass_to_volume</span><span class="p">(</span>
-</span><span id="init_fall_momenta-40"><a href="#init_fall_momenta-40"><span class="linenos">40</span></a>        <span class="n">water_mass</span>
-</span><span id="init_fall_momenta-41"><a href="#init_fall_momenta-41"><span class="linenos">41</span></a>    <span class="p">)</span>
-</span><span id="init_fall_momenta-42"><a href="#init_fall_momenta-42"><span class="linenos">42</span></a>    <span class="n">radii_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="n">volume</span><span class="o">=</span><span class="n">volume_arr</span><span class="p">)</span>
-</span><span id="init_fall_momenta-43"><a href="#init_fall_momenta-43"><span class="linenos">43</span></a>    <span class="n">radii</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">from_ndarray</span><span class="p">(</span><span class="n">radii_arr</span><span class="p">)</span>
-</span><span id="init_fall_momenta-44"><a href="#init_fall_momenta-44"><span class="linenos">44</span></a>
-</span><span id="init_fall_momenta-45"><a href="#init_fall_momenta-45"><span class="linenos">45</span></a>    <span class="n">output</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">water_mass</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-</span><span id="init_fall_momenta-46"><a href="#init_fall_momenta-46"><span class="linenos">46</span></a>
-</span><span id="init_fall_momenta-47"><a href="#init_fall_momenta-47"><span class="linenos">47</span></a>    <span class="n">approximation</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radii</span><span class="p">)</span>
-</span><span id="init_fall_momenta-48"><a href="#init_fall_momenta-48"><span class="linenos">48</span></a>
-</span><span id="init_fall_momenta-49"><a href="#init_fall_momenta-49"><span class="linenos">49</span></a>    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">to_ndarray</span><span class="p">()</span> <span class="o">*</span> <span class="n">water_mass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="init_fall_momenta-14"><a href="#init_fall_momenta-14"><span class="linenos">14</span></a><span class="k">def</span> <span class="nf">init_fall_momenta</span><span class="p">(</span>
+</span><span id="init_fall_momenta-15"><a href="#init_fall_momenta-15"><span class="linenos">15</span></a>    <span class="n">water_mass</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="init_fall_momenta-16"><a href="#init_fall_momenta-16"><span class="linenos">16</span></a>    <span class="n">zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="init_fall_momenta-17"><a href="#init_fall_momenta-17"><span class="linenos">17</span></a>    <span class="n">terminal_velocity_approx</span><span class="o">=</span><span class="n">GunnKinzer1949</span><span class="p">,</span>  <span class="c1"># TODO #1155</span>
+</span><span id="init_fall_momenta-18"><a href="#init_fall_momenta-18"><span class="linenos">18</span></a><span class="p">):</span>
+</span><span id="init_fall_momenta-19"><a href="#init_fall_momenta-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="init_fall_momenta-20"><a href="#init_fall_momenta-20"><span class="linenos">20</span></a><span class="sd">    Calculate default values of the</span>
+</span><span id="init_fall_momenta-21"><a href="#init_fall_momenta-21"><span class="linenos">21</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallMomentum` attribute</span>
+</span><span id="init_fall_momenta-22"><a href="#init_fall_momenta-22"><span class="linenos">22</span></a><span class="sd">    (needed when using</span>
+</span><span id="init_fall_momenta-23"><a href="#init_fall_momenta-23"><span class="linenos">23</span></a><span class="sd">    `PySDM.attributes.physics.relative_fall_velocity.RelativeFallVelocity` attribute)</span>
+</span><span id="init_fall_momenta-24"><a href="#init_fall_momenta-24"><span class="linenos">24</span></a>
+</span><span id="init_fall_momenta-25"><a href="#init_fall_momenta-25"><span class="linenos">25</span></a><span class="sd">    Parameters:</span>
+</span><span id="init_fall_momenta-26"><a href="#init_fall_momenta-26"><span class="linenos">26</span></a><span class="sd">        - water_mass: a numpy array of superdroplet water masses</span>
+</span><span id="init_fall_momenta-27"><a href="#init_fall_momenta-27"><span class="linenos">27</span></a>
+</span><span id="init_fall_momenta-28"><a href="#init_fall_momenta-28"><span class="linenos">28</span></a><span class="sd">    Returns:</span>
+</span><span id="init_fall_momenta-29"><a href="#init_fall_momenta-29"><span class="linenos">29</span></a><span class="sd">        - a numpy array of initial momentum values</span>
+</span><span id="init_fall_momenta-30"><a href="#init_fall_momenta-30"><span class="linenos">30</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="init_fall_momenta-31"><a href="#init_fall_momenta-31"><span class="linenos">31</span></a>    <span class="k">if</span> <span class="n">zero</span><span class="p">:</span>
+</span><span id="init_fall_momenta-32"><a href="#init_fall_momenta-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">water_mass</span><span class="p">)</span>
+</span><span id="init_fall_momenta-33"><a href="#init_fall_momenta-33"><span class="linenos">33</span></a>
+</span><span id="init_fall_momenta-34"><a href="#init_fall_momenta-34"><span class="linenos">34</span></a>    <span class="kn">from</span> <span class="nn">PySDM.backends</span> <span class="kn">import</span> <span class="n">CPU</span>  <span class="c1"># pylint: disable=import-outside-toplevel</span>
+</span><span id="init_fall_momenta-35"><a href="#init_fall_momenta-35"><span class="linenos">35</span></a>
+</span><span id="init_fall_momenta-36"><a href="#init_fall_momenta-36"><span class="linenos">36</span></a>    <span class="n">particulator</span> <span class="o">=</span> <span class="n">Particulator</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">CPU</span><span class="p">(</span><span class="n">Formulae</span><span class="p">()))</span>  <span class="c1"># TODO #1155</span>
+</span><span id="init_fall_momenta-37"><a href="#init_fall_momenta-37"><span class="linenos">37</span></a>
+</span><span id="init_fall_momenta-38"><a href="#init_fall_momenta-38"><span class="linenos">38</span></a>    <span class="n">approximation</span> <span class="o">=</span> <span class="n">terminal_velocity_approx</span><span class="p">(</span><span class="n">particulator</span><span class="o">=</span><span class="n">particulator</span><span class="p">)</span>
+</span><span id="init_fall_momenta-39"><a href="#init_fall_momenta-39"><span class="linenos">39</span></a>
+</span><span id="init_fall_momenta-40"><a href="#init_fall_momenta-40"><span class="linenos">40</span></a>    <span class="n">volume_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">mass_to_volume</span><span class="p">(</span>
+</span><span id="init_fall_momenta-41"><a href="#init_fall_momenta-41"><span class="linenos">41</span></a>        <span class="n">water_mass</span>
+</span><span id="init_fall_momenta-42"><a href="#init_fall_momenta-42"><span class="linenos">42</span></a>    <span class="p">)</span>
+</span><span id="init_fall_momenta-43"><a href="#init_fall_momenta-43"><span class="linenos">43</span></a>    <span class="n">radii_arr</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">radius</span><span class="p">(</span><span class="n">volume</span><span class="o">=</span><span class="n">volume_arr</span><span class="p">)</span>
+</span><span id="init_fall_momenta-44"><a href="#init_fall_momenta-44"><span class="linenos">44</span></a>    <span class="n">radii</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">from_ndarray</span><span class="p">(</span><span class="n">radii_arr</span><span class="p">)</span>
+</span><span id="init_fall_momenta-45"><a href="#init_fall_momenta-45"><span class="linenos">45</span></a>
+</span><span id="init_fall_momenta-46"><a href="#init_fall_momenta-46"><span class="linenos">46</span></a>    <span class="n">output</span> <span class="o">=</span> <span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">water_mass</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</span><span id="init_fall_momenta-47"><a href="#init_fall_momenta-47"><span class="linenos">47</span></a>
+</span><span id="init_fall_momenta-48"><a href="#init_fall_momenta-48"><span class="linenos">48</span></a>    <span class="n">approximation</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radii</span><span class="p">)</span>
+</span><span id="init_fall_momenta-49"><a href="#init_fall_momenta-49"><span class="linenos">49</span></a>
+</span><span id="init_fall_momenta-50"><a href="#init_fall_momenta-50"><span class="linenos">50</span></a>    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">to_ndarray</span><span class="p">()</span> <span class="o">*</span> <span class="n">water_mass</span>
 </span></pre></div>
 
 

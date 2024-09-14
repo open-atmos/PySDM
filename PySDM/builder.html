@@ -247,7 +247,11 @@
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dynamics</span><span class="p">:</span>
 </span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">timers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">WallTimer</span><span class="p">()</span>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="k">if</span> <span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">healthy</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sanitize</span><span class="p">()</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span>
 </span></pre></div>
 
 
@@ -389,7 +393,11 @@
 </span><span id="Builder-151"><a href="#Builder-151"><span class="linenos">151</span></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dynamics</span><span class="p">:</span>
 </span><span id="Builder-152"><a href="#Builder-152"><span class="linenos">152</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">timers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">WallTimer</span><span class="p">()</span>
 </span><span id="Builder-153"><a href="#Builder-153"><span class="linenos">153</span></a>
-</span><span id="Builder-154"><a href="#Builder-154"><span class="linenos">154</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="Builder-154"><a href="#Builder-154"><span class="linenos">154</span></a>        <span class="k">if</span> <span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+</span><span id="Builder-155"><a href="#Builder-155"><span class="linenos">155</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">healthy</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="Builder-156"><a href="#Builder-156"><span class="linenos">156</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sanitize</span><span class="p">()</span>
+</span><span id="Builder-157"><a href="#Builder-157"><span class="linenos">157</span></a>
+</span><span id="Builder-158"><a href="#Builder-158"><span class="linenos">158</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span>
 </span></pre></div>
 
 
@@ -657,7 +665,11 @@ from within register() methods</p>
 </span><span id="Builder.build-151"><a href="#Builder.build-151"><span class="linenos">151</span></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dynamics</span><span class="p">:</span>
 </span><span id="Builder.build-152"><a href="#Builder.build-152"><span class="linenos">152</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">timers</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">WallTimer</span><span class="p">()</span>
 </span><span id="Builder.build-153"><a href="#Builder.build-153"><span class="linenos">153</span></a>
-</span><span id="Builder.build-154"><a href="#Builder.build-154"><span class="linenos">154</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="Builder.build-154"><a href="#Builder.build-154"><span class="linenos">154</span></a>        <span class="k">if</span> <span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+</span><span id="Builder.build-155"><a href="#Builder.build-155"><span class="linenos">155</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">healthy</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="Builder.build-156"><a href="#Builder.build-156"><span class="linenos">156</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sanitize</span><span class="p">()</span>
+</span><span id="Builder.build-157"><a href="#Builder.build-157"><span class="linenos">157</span></a>
+</span><span id="Builder.build-158"><a href="#Builder.build-158"><span class="linenos">158</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span>
 </span></pre></div>
 
 

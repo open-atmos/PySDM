@@ -153,6 +153,9 @@
                         <li>
                                 <a class="function" href="#Particulator.isotopic_fractionation">isotopic_fractionation</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Particulator.seeding">seeding</a>
+                        </li>
                 </ul>
 
             </li>
@@ -194,7 +197,7 @@
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="k">class</span> <span class="nc">Particulator</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-public-methods,too-many-instance-attributes</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sd</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">BackendMethods</span><span class="p">):</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sd</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendMethods</span><span class="p">)</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__n_sd</span> <span class="o">=</span> <span class="n">n_sd</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
@@ -619,6 +622,47 @@
 </span><span id="L-438"><a href="#L-438"><span class="linenos">438</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">isotopic_fractionation</span><span class="p">()</span>
 </span><span id="L-439"><a href="#L-439"><span class="linenos">439</span></a>        <span class="k">for</span> <span class="n">isotope</span> <span class="ow">in</span> <span class="n">heavy_isotopes</span><span class="p">:</span>
 </span><span id="L-440"><a href="#L-440"><span class="linenos">440</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;moles_</span><span class="si">{</span><span class="n">isotope</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="L-441"><a href="#L-441"><span class="linenos">441</span></a>
+</span><span id="L-442"><a href="#L-442"><span class="linenos">442</span></a>    <span class="k">def</span> <span class="nf">seeding</span><span class="p">(</span>
+</span><span id="L-443"><a href="#L-443"><span class="linenos">443</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-444"><a href="#L-444"><span class="linenos">444</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="L-445"><a href="#L-445"><span class="linenos">445</span></a>        <span class="n">seeded_particle_index</span><span class="p">,</span>
+</span><span id="L-446"><a href="#L-446"><span class="linenos">446</span></a>        <span class="n">seeded_particle_multiplicity</span><span class="p">,</span>
+</span><span id="L-447"><a href="#L-447"><span class="linenos">447</span></a>        <span class="n">seeded_particle_extensive_attributes</span><span class="p">,</span>
+</span><span id="L-448"><a href="#L-448"><span class="linenos">448</span></a>        <span class="n">number_of_super_particles_to_inject</span><span class="p">,</span>
+</span><span id="L-449"><a href="#L-449"><span class="linenos">449</span></a>    <span class="p">):</span>
+</span><span id="L-450"><a href="#L-450"><span class="linenos">450</span></a>        <span class="n">n_null</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sd</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">super_droplet_count</span>
+</span><span id="L-451"><a href="#L-451"><span class="linenos">451</span></a>        <span class="k">if</span> <span class="n">n_null</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-452"><a href="#L-452"><span class="linenos">452</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="L-453"><a href="#L-453"><span class="linenos">453</span></a>                <span class="s2">&quot;No available seeds to inject. Please provide particles with nan filled attributes.&quot;</span>
+</span><span id="L-454"><a href="#L-454"><span class="linenos">454</span></a>            <span class="p">)</span>
+</span><span id="L-455"><a href="#L-455"><span class="linenos">455</span></a>
+</span><span id="L-456"><a href="#L-456"><span class="linenos">456</span></a>        <span class="k">if</span> <span class="n">number_of_super_particles_to_inject</span> <span class="o">&gt;</span> <span class="n">n_null</span><span class="p">:</span>
+</span><span id="L-457"><a href="#L-457"><span class="linenos">457</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="L-458"><a href="#L-458"><span class="linenos">458</span></a>                <span class="s2">&quot;Trying to inject more super particles than space available.&quot;</span>
+</span><span id="L-459"><a href="#L-459"><span class="linenos">459</span></a>            <span class="p">)</span>
+</span><span id="L-460"><a href="#L-460"><span class="linenos">460</span></a>
+</span><span id="L-461"><a href="#L-461"><span class="linenos">461</span></a>        <span class="k">if</span> <span class="n">number_of_super_particles_to_inject</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">seeded_particle_multiplicity</span><span class="p">):</span>
+</span><span id="L-462"><a href="#L-462"><span class="linenos">462</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="L-463"><a href="#L-463"><span class="linenos">463</span></a>                <span class="s2">&quot;Trying to inject multiple super particles with the same attributes. </span><span class="se">\</span>
+</span><span id="L-464"><a href="#L-464"><span class="linenos">464</span></a><span class="s2">                Instead increase multiplicity of injected particles.&quot;</span>
+</span><span id="L-465"><a href="#L-465"><span class="linenos">465</span></a>            <span class="p">)</span>
+</span><span id="L-466"><a href="#L-466"><span class="linenos">466</span></a>
+</span><span id="L-467"><a href="#L-467"><span class="linenos">467</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">seeding</span><span class="p">(</span>
+</span><span id="L-468"><a href="#L-468"><span class="linenos">468</span></a>            <span class="n">idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">_ParticleAttributes__idx</span><span class="p">,</span>
+</span><span id="L-469"><a href="#L-469"><span class="linenos">469</span></a>            <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">],</span>
+</span><span id="L-470"><a href="#L-470"><span class="linenos">470</span></a>            <span class="n">extensive_attributes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_storage</span><span class="p">(),</span>
+</span><span id="L-471"><a href="#L-471"><span class="linenos">471</span></a>            <span class="n">seeded_particle_index</span><span class="o">=</span><span class="n">seeded_particle_index</span><span class="p">,</span>
+</span><span id="L-472"><a href="#L-472"><span class="linenos">472</span></a>            <span class="n">seeded_particle_multiplicity</span><span class="o">=</span><span class="n">seeded_particle_multiplicity</span><span class="p">,</span>
+</span><span id="L-473"><a href="#L-473"><span class="linenos">473</span></a>            <span class="n">seeded_particle_extensive_attributes</span><span class="o">=</span><span class="n">seeded_particle_extensive_attributes</span><span class="p">,</span>
+</span><span id="L-474"><a href="#L-474"><span class="linenos">474</span></a>            <span class="n">number_of_super_particles_to_inject</span><span class="o">=</span><span class="n">number_of_super_particles_to_inject</span><span class="p">,</span>
+</span><span id="L-475"><a href="#L-475"><span class="linenos">475</span></a>        <span class="p">)</span>
+</span><span id="L-476"><a href="#L-476"><span class="linenos">476</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">reset_idx</span><span class="p">()</span>
+</span><span id="L-477"><a href="#L-477"><span class="linenos">477</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sanitize</span><span class="p">()</span>
+</span><span id="L-478"><a href="#L-478"><span class="linenos">478</span></a>
+</span><span id="L-479"><a href="#L-479"><span class="linenos">479</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">)</span>
+</span><span id="L-480"><a href="#L-480"><span class="linenos">480</span></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_keys</span><span class="p">():</span>
+</span><span id="L-481"><a href="#L-481"><span class="linenos">481</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -635,7 +679,7 @@
     </div>
     <a class="headerlink" href="#Particulator"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Particulator-16"><a href="#Particulator-16"><span class="linenos"> 16</span></a><span class="k">class</span> <span class="nc">Particulator</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-public-methods,too-many-instance-attributes</span>
-</span><span id="Particulator-17"><a href="#Particulator-17"><span class="linenos"> 17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sd</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">BackendMethods</span><span class="p">):</span>
+</span><span id="Particulator-17"><a href="#Particulator-17"><span class="linenos"> 17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sd</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
 </span><span id="Particulator-18"><a href="#Particulator-18"><span class="linenos"> 18</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendMethods</span><span class="p">)</span>
 </span><span id="Particulator-19"><a href="#Particulator-19"><span class="linenos"> 19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__n_sd</span> <span class="o">=</span> <span class="n">n_sd</span>
 </span><span id="Particulator-20"><a href="#Particulator-20"><span class="linenos"> 20</span></a>
@@ -1060,6 +1104,47 @@
 </span><span id="Particulator-439"><a href="#Particulator-439"><span class="linenos">439</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">isotopic_fractionation</span><span class="p">()</span>
 </span><span id="Particulator-440"><a href="#Particulator-440"><span class="linenos">440</span></a>        <span class="k">for</span> <span class="n">isotope</span> <span class="ow">in</span> <span class="n">heavy_isotopes</span><span class="p">:</span>
 </span><span id="Particulator-441"><a href="#Particulator-441"><span class="linenos">441</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;moles_</span><span class="si">{</span><span class="n">isotope</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="Particulator-442"><a href="#Particulator-442"><span class="linenos">442</span></a>
+</span><span id="Particulator-443"><a href="#Particulator-443"><span class="linenos">443</span></a>    <span class="k">def</span> <span class="nf">seeding</span><span class="p">(</span>
+</span><span id="Particulator-444"><a href="#Particulator-444"><span class="linenos">444</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Particulator-445"><a href="#Particulator-445"><span class="linenos">445</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="Particulator-446"><a href="#Particulator-446"><span class="linenos">446</span></a>        <span class="n">seeded_particle_index</span><span class="p">,</span>
+</span><span id="Particulator-447"><a href="#Particulator-447"><span class="linenos">447</span></a>        <span class="n">seeded_particle_multiplicity</span><span class="p">,</span>
+</span><span id="Particulator-448"><a href="#Particulator-448"><span class="linenos">448</span></a>        <span class="n">seeded_particle_extensive_attributes</span><span class="p">,</span>
+</span><span id="Particulator-449"><a href="#Particulator-449"><span class="linenos">449</span></a>        <span class="n">number_of_super_particles_to_inject</span><span class="p">,</span>
+</span><span id="Particulator-450"><a href="#Particulator-450"><span class="linenos">450</span></a>    <span class="p">):</span>
+</span><span id="Particulator-451"><a href="#Particulator-451"><span class="linenos">451</span></a>        <span class="n">n_null</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sd</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">super_droplet_count</span>
+</span><span id="Particulator-452"><a href="#Particulator-452"><span class="linenos">452</span></a>        <span class="k">if</span> <span class="n">n_null</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Particulator-453"><a href="#Particulator-453"><span class="linenos">453</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Particulator-454"><a href="#Particulator-454"><span class="linenos">454</span></a>                <span class="s2">&quot;No available seeds to inject. Please provide particles with nan filled attributes.&quot;</span>
+</span><span id="Particulator-455"><a href="#Particulator-455"><span class="linenos">455</span></a>            <span class="p">)</span>
+</span><span id="Particulator-456"><a href="#Particulator-456"><span class="linenos">456</span></a>
+</span><span id="Particulator-457"><a href="#Particulator-457"><span class="linenos">457</span></a>        <span class="k">if</span> <span class="n">number_of_super_particles_to_inject</span> <span class="o">&gt;</span> <span class="n">n_null</span><span class="p">:</span>
+</span><span id="Particulator-458"><a href="#Particulator-458"><span class="linenos">458</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Particulator-459"><a href="#Particulator-459"><span class="linenos">459</span></a>                <span class="s2">&quot;Trying to inject more super particles than space available.&quot;</span>
+</span><span id="Particulator-460"><a href="#Particulator-460"><span class="linenos">460</span></a>            <span class="p">)</span>
+</span><span id="Particulator-461"><a href="#Particulator-461"><span class="linenos">461</span></a>
+</span><span id="Particulator-462"><a href="#Particulator-462"><span class="linenos">462</span></a>        <span class="k">if</span> <span class="n">number_of_super_particles_to_inject</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">seeded_particle_multiplicity</span><span class="p">):</span>
+</span><span id="Particulator-463"><a href="#Particulator-463"><span class="linenos">463</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Particulator-464"><a href="#Particulator-464"><span class="linenos">464</span></a>                <span class="s2">&quot;Trying to inject multiple super particles with the same attributes. </span><span class="se">\</span>
+</span><span id="Particulator-465"><a href="#Particulator-465"><span class="linenos">465</span></a><span class="s2">                Instead increase multiplicity of injected particles.&quot;</span>
+</span><span id="Particulator-466"><a href="#Particulator-466"><span class="linenos">466</span></a>            <span class="p">)</span>
+</span><span id="Particulator-467"><a href="#Particulator-467"><span class="linenos">467</span></a>
+</span><span id="Particulator-468"><a href="#Particulator-468"><span class="linenos">468</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">seeding</span><span class="p">(</span>
+</span><span id="Particulator-469"><a href="#Particulator-469"><span class="linenos">469</span></a>            <span class="n">idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">_ParticleAttributes__idx</span><span class="p">,</span>
+</span><span id="Particulator-470"><a href="#Particulator-470"><span class="linenos">470</span></a>            <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">],</span>
+</span><span id="Particulator-471"><a href="#Particulator-471"><span class="linenos">471</span></a>            <span class="n">extensive_attributes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_storage</span><span class="p">(),</span>
+</span><span id="Particulator-472"><a href="#Particulator-472"><span class="linenos">472</span></a>            <span class="n">seeded_particle_index</span><span class="o">=</span><span class="n">seeded_particle_index</span><span class="p">,</span>
+</span><span id="Particulator-473"><a href="#Particulator-473"><span class="linenos">473</span></a>            <span class="n">seeded_particle_multiplicity</span><span class="o">=</span><span class="n">seeded_particle_multiplicity</span><span class="p">,</span>
+</span><span id="Particulator-474"><a href="#Particulator-474"><span class="linenos">474</span></a>            <span class="n">seeded_particle_extensive_attributes</span><span class="o">=</span><span class="n">seeded_particle_extensive_attributes</span><span class="p">,</span>
+</span><span id="Particulator-475"><a href="#Particulator-475"><span class="linenos">475</span></a>            <span class="n">number_of_super_particles_to_inject</span><span class="o">=</span><span class="n">number_of_super_particles_to_inject</span><span class="p">,</span>
+</span><span id="Particulator-476"><a href="#Particulator-476"><span class="linenos">476</span></a>        <span class="p">)</span>
+</span><span id="Particulator-477"><a href="#Particulator-477"><span class="linenos">477</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">reset_idx</span><span class="p">()</span>
+</span><span id="Particulator-478"><a href="#Particulator-478"><span class="linenos">478</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sanitize</span><span class="p">()</span>
+</span><span id="Particulator-479"><a href="#Particulator-479"><span class="linenos">479</span></a>
+</span><span id="Particulator-480"><a href="#Particulator-480"><span class="linenos">480</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">)</span>
+</span><span id="Particulator-481"><a href="#Particulator-481"><span class="linenos">481</span></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_keys</span><span class="p">():</span>
+</span><span id="Particulator-482"><a href="#Particulator-482"><span class="linenos">482</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1069,13 +1154,13 @@
                                         <input id="Particulator.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">Particulator</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">n_sd</span>,</span><span class="param">	<span class="n">backend</span><span class="p">:</span> <span class="n"><a href="backends/impl_common/backend_methods.html#BackendMethods">PySDM.backends.impl_common.backend_methods.BackendMethods</a></span></span>)</span>
+        <span class="name">Particulator</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">n_sd</span>, </span><span class="param"><span class="n">backend</span></span>)</span>
 
                 <label class="view-source-button" for="Particulator.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Particulator.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Particulator.__init__-17"><a href="#Particulator.__init__-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sd</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">BackendMethods</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Particulator.__init__-17"><a href="#Particulator.__init__-17"><span class="linenos">17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sd</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
 </span><span id="Particulator.__init__-18"><a href="#Particulator.__init__-18"><span class="linenos">18</span></a>        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="n">BackendMethods</span><span class="p">)</span>
 </span><span id="Particulator.__init__-19"><a href="#Particulator.__init__-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__n_sd</span> <span class="o">=</span> <span class="n">n_sd</span>
 </span><span id="Particulator.__init__-20"><a href="#Particulator.__init__-20"><span class="linenos">20</span></a>
@@ -2049,6 +2134,63 @@ to fall within <code>attr_range</code>. The moment ranks are defined by <code>sp
 </span><span id="Particulator.isotopic_fractionation-439"><a href="#Particulator.isotopic_fractionation-439"><span class="linenos">439</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">isotopic_fractionation</span><span class="p">()</span>
 </span><span id="Particulator.isotopic_fractionation-440"><a href="#Particulator.isotopic_fractionation-440"><span class="linenos">440</span></a>        <span class="k">for</span> <span class="n">isotope</span> <span class="ow">in</span> <span class="n">heavy_isotopes</span><span class="p">:</span>
 </span><span id="Particulator.isotopic_fractionation-441"><a href="#Particulator.isotopic_fractionation-441"><span class="linenos">441</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;moles_</span><span class="si">{</span><span class="n">isotope</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Particulator.seeding" class="classattr">
+                                        <input id="Particulator.seeding-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">seeding</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">seeded_particle_index</span>,</span><span class="param">	<span class="n">seeded_particle_multiplicity</span>,</span><span class="param">	<span class="n">seeded_particle_extensive_attributes</span>,</span><span class="param">	<span class="n">number_of_super_particles_to_inject</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Particulator.seeding-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Particulator.seeding"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Particulator.seeding-443"><a href="#Particulator.seeding-443"><span class="linenos">443</span></a>    <span class="k">def</span> <span class="nf">seeding</span><span class="p">(</span>
+</span><span id="Particulator.seeding-444"><a href="#Particulator.seeding-444"><span class="linenos">444</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Particulator.seeding-445"><a href="#Particulator.seeding-445"><span class="linenos">445</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="Particulator.seeding-446"><a href="#Particulator.seeding-446"><span class="linenos">446</span></a>        <span class="n">seeded_particle_index</span><span class="p">,</span>
+</span><span id="Particulator.seeding-447"><a href="#Particulator.seeding-447"><span class="linenos">447</span></a>        <span class="n">seeded_particle_multiplicity</span><span class="p">,</span>
+</span><span id="Particulator.seeding-448"><a href="#Particulator.seeding-448"><span class="linenos">448</span></a>        <span class="n">seeded_particle_extensive_attributes</span><span class="p">,</span>
+</span><span id="Particulator.seeding-449"><a href="#Particulator.seeding-449"><span class="linenos">449</span></a>        <span class="n">number_of_super_particles_to_inject</span><span class="p">,</span>
+</span><span id="Particulator.seeding-450"><a href="#Particulator.seeding-450"><span class="linenos">450</span></a>    <span class="p">):</span>
+</span><span id="Particulator.seeding-451"><a href="#Particulator.seeding-451"><span class="linenos">451</span></a>        <span class="n">n_null</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sd</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">super_droplet_count</span>
+</span><span id="Particulator.seeding-452"><a href="#Particulator.seeding-452"><span class="linenos">452</span></a>        <span class="k">if</span> <span class="n">n_null</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="Particulator.seeding-453"><a href="#Particulator.seeding-453"><span class="linenos">453</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Particulator.seeding-454"><a href="#Particulator.seeding-454"><span class="linenos">454</span></a>                <span class="s2">&quot;No available seeds to inject. Please provide particles with nan filled attributes.&quot;</span>
+</span><span id="Particulator.seeding-455"><a href="#Particulator.seeding-455"><span class="linenos">455</span></a>            <span class="p">)</span>
+</span><span id="Particulator.seeding-456"><a href="#Particulator.seeding-456"><span class="linenos">456</span></a>
+</span><span id="Particulator.seeding-457"><a href="#Particulator.seeding-457"><span class="linenos">457</span></a>        <span class="k">if</span> <span class="n">number_of_super_particles_to_inject</span> <span class="o">&gt;</span> <span class="n">n_null</span><span class="p">:</span>
+</span><span id="Particulator.seeding-458"><a href="#Particulator.seeding-458"><span class="linenos">458</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Particulator.seeding-459"><a href="#Particulator.seeding-459"><span class="linenos">459</span></a>                <span class="s2">&quot;Trying to inject more super particles than space available.&quot;</span>
+</span><span id="Particulator.seeding-460"><a href="#Particulator.seeding-460"><span class="linenos">460</span></a>            <span class="p">)</span>
+</span><span id="Particulator.seeding-461"><a href="#Particulator.seeding-461"><span class="linenos">461</span></a>
+</span><span id="Particulator.seeding-462"><a href="#Particulator.seeding-462"><span class="linenos">462</span></a>        <span class="k">if</span> <span class="n">number_of_super_particles_to_inject</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">seeded_particle_multiplicity</span><span class="p">):</span>
+</span><span id="Particulator.seeding-463"><a href="#Particulator.seeding-463"><span class="linenos">463</span></a>            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span id="Particulator.seeding-464"><a href="#Particulator.seeding-464"><span class="linenos">464</span></a>                <span class="s2">&quot;Trying to inject multiple super particles with the same attributes. </span><span class="se">\</span>
+</span><span id="Particulator.seeding-465"><a href="#Particulator.seeding-465"><span class="linenos">465</span></a><span class="s2">                Instead increase multiplicity of injected particles.&quot;</span>
+</span><span id="Particulator.seeding-466"><a href="#Particulator.seeding-466"><span class="linenos">466</span></a>            <span class="p">)</span>
+</span><span id="Particulator.seeding-467"><a href="#Particulator.seeding-467"><span class="linenos">467</span></a>
+</span><span id="Particulator.seeding-468"><a href="#Particulator.seeding-468"><span class="linenos">468</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">seeding</span><span class="p">(</span>
+</span><span id="Particulator.seeding-469"><a href="#Particulator.seeding-469"><span class="linenos">469</span></a>            <span class="n">idx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">_ParticleAttributes__idx</span><span class="p">,</span>
+</span><span id="Particulator.seeding-470"><a href="#Particulator.seeding-470"><span class="linenos">470</span></a>            <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">],</span>
+</span><span id="Particulator.seeding-471"><a href="#Particulator.seeding-471"><span class="linenos">471</span></a>            <span class="n">extensive_attributes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_storage</span><span class="p">(),</span>
+</span><span id="Particulator.seeding-472"><a href="#Particulator.seeding-472"><span class="linenos">472</span></a>            <span class="n">seeded_particle_index</span><span class="o">=</span><span class="n">seeded_particle_index</span><span class="p">,</span>
+</span><span id="Particulator.seeding-473"><a href="#Particulator.seeding-473"><span class="linenos">473</span></a>            <span class="n">seeded_particle_multiplicity</span><span class="o">=</span><span class="n">seeded_particle_multiplicity</span><span class="p">,</span>
+</span><span id="Particulator.seeding-474"><a href="#Particulator.seeding-474"><span class="linenos">474</span></a>            <span class="n">seeded_particle_extensive_attributes</span><span class="o">=</span><span class="n">seeded_particle_extensive_attributes</span><span class="p">,</span>
+</span><span id="Particulator.seeding-475"><a href="#Particulator.seeding-475"><span class="linenos">475</span></a>            <span class="n">number_of_super_particles_to_inject</span><span class="o">=</span><span class="n">number_of_super_particles_to_inject</span><span class="p">,</span>
+</span><span id="Particulator.seeding-476"><a href="#Particulator.seeding-476"><span class="linenos">476</span></a>        <span class="p">)</span>
+</span><span id="Particulator.seeding-477"><a href="#Particulator.seeding-477"><span class="linenos">477</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">reset_idx</span><span class="p">()</span>
+</span><span id="Particulator.seeding-478"><a href="#Particulator.seeding-478"><span class="linenos">478</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">sanitize</span><span class="p">()</span>
+</span><span id="Particulator.seeding-479"><a href="#Particulator.seeding-479"><span class="linenos">479</span></a>
+</span><span id="Particulator.seeding-480"><a href="#Particulator.seeding-480"><span class="linenos">480</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">)</span>
+</span><span id="Particulator.seeding-481"><a href="#Particulator.seeding-481"><span class="linenos">481</span></a>        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_keys</span><span class="p">():</span>
+</span><span id="Particulator.seeding-482"><a href="#Particulator.seeding-482"><span class="linenos">482</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </span></pre></div>
 
 

@@ -81,6 +81,9 @@
                         <li>
                                 <a class="function" href="#ParticleAttributes.has_attribute">has_attribute</a>
                         </li>
+                        <li>
+                                <a class="function" href="#ParticleAttributes.reset_idx">reset_idx</a>
+                        </li>
                 </ul>
 
             </li>
@@ -228,6 +231,11 @@
 </span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>
 </span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="k">def</span> <span class="nf">has_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 </span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>        <span class="k">return</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__attributes</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a>    <span class="k">def</span> <span class="nf">reset_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__valid_n_sd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__idx</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">healthy</span> <span class="o">=</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -351,6 +359,11 @@
 </span><span id="ParticleAttributes-119"><a href="#ParticleAttributes-119"><span class="linenos">119</span></a>
 </span><span id="ParticleAttributes-120"><a href="#ParticleAttributes-120"><span class="linenos">120</span></a>    <span class="k">def</span> <span class="nf">has_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 </span><span id="ParticleAttributes-121"><a href="#ParticleAttributes-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__attributes</span>
+</span><span id="ParticleAttributes-122"><a href="#ParticleAttributes-122"><span class="linenos">122</span></a>
+</span><span id="ParticleAttributes-123"><a href="#ParticleAttributes-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="nf">reset_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ParticleAttributes-124"><a href="#ParticleAttributes-124"><span class="linenos">124</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__valid_n_sd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="ParticleAttributes-125"><a href="#ParticleAttributes-125"><span class="linenos">125</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__idx</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+</span><span id="ParticleAttributes-126"><a href="#ParticleAttributes-126"><span class="linenos">126</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">healthy</span> <span class="o">=</span> <span class="kc">False</span>
 </span></pre></div>
 
 
@@ -693,6 +706,27 @@ otherwise on a per-cell basis</p>
     <a class="headerlink" href="#ParticleAttributes.has_attribute"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ParticleAttributes.has_attribute-120"><a href="#ParticleAttributes.has_attribute-120"><span class="linenos">120</span></a>    <span class="k">def</span> <span class="nf">has_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
 </span><span id="ParticleAttributes.has_attribute-121"><a href="#ParticleAttributes.has_attribute-121"><span class="linenos">121</span></a>        <span class="k">return</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__attributes</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="ParticleAttributes.reset_idx" class="classattr">
+                                        <input id="ParticleAttributes.reset_idx-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">reset_idx</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="ParticleAttributes.reset_idx-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ParticleAttributes.reset_idx"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ParticleAttributes.reset_idx-123"><a href="#ParticleAttributes.reset_idx-123"><span class="linenos">123</span></a>    <span class="k">def</span> <span class="nf">reset_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ParticleAttributes.reset_idx-124"><a href="#ParticleAttributes.reset_idx-124"><span class="linenos">124</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__valid_n_sd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__idx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="ParticleAttributes.reset_idx-125"><a href="#ParticleAttributes.reset_idx-125"><span class="linenos">125</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__idx</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+</span><span id="ParticleAttributes.reset_idx-126"><a href="#ParticleAttributes.reset_idx-126"><span class="linenos">126</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">healthy</span> <span class="o">=</span> <span class="kc">False</span>
 </span></pre></div>
 
 
