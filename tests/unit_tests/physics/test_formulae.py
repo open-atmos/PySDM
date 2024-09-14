@@ -10,7 +10,6 @@ from PySDM.physics import (
     saturation_vapour_pressure,
 )
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics.constants import T0
 
 
 class TestFormulae:
