@@ -66,7 +66,7 @@ class TestParticulator:
             def __init__(self):
                 self.updated = []
                 self.super_droplet_count = -1
-                self.__idx = storage
+                self.__idx = storage  # pylint: disable=unused-private-member
                 self.idx_reset = False
                 self.sane = False
 
