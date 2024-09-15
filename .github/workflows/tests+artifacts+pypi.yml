@@ -247,6 +247,7 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: |
           sudo apt-get update
+          apt-cache policy python3-paraview
           sudo apt-get install python3-paraview=5.11.2+dfsg-6build5
       - if: startsWith(matrix.platform, 'macos-')
         run: |
