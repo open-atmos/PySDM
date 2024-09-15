@@ -247,10 +247,10 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: |
           sudo apt-get update
-          sudo apt-get install python3-paraview=5.9.0-2
+          sudo apt-get install python3-paraview=5.11.2
       - if: startsWith(matrix.platform, 'macos-')
         run: |
-          brew install --cask paraview@5.9.1
+          brew install --cask paraview@5.13.0
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
       - if: matrix.platform != 'windows-latest'
         run: |
