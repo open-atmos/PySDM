@@ -250,7 +250,7 @@ jobs:
           sudo apt-get install python3-paraview=5.11.2+dfsg-6build5
       - if: startsWith(matrix.platform, 'macos-')
         run: |
-          brew install --cask paraview@5.13.0,MPI-OSX11.0-Python3.10
+          brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
       - if: matrix.platform != 'windows-latest'
         run: |
