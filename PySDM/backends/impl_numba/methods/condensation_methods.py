@@ -291,9 +291,7 @@ class CondensationMethods(BackendMethods):
                 )
                 pv = formulae.state_variable_triplet__pv(p, water_vapour_mixing_ratio)
                 lv = formulae.latent_heat__lv(T)
-                pvs = formulae.saturation_vapour_pressure__pvs_Celsius(
-                    T - formulae.constants.T0
-                )
+                pvs = formulae.saturation_vapour_pressure__pvs_water(T)
                 DTp = formulae.diffusion_thermics__D(T, p)
                 RH = pv / pvs
                 Sc = formulae.trivia__air_schmidt_number(

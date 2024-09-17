@@ -18,7 +18,7 @@ from PySDM.backends.impl_numba.methods.condensation_methods import (
     _CellData,
     _Counters,
 )
-from PySDM.physics.constants_defaults import PI_4_3, T0
+from PySDM.physics.constants_defaults import PI_4_3
 
 idx_thd = 0
 idx_x = 1
@@ -205,7 +205,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         T = jit_formulae.state_variable_triplet__T(rhod, thd)
         p = jit_formulae.state_variable_triplet__p(rhod, T, water_vapour_mixing_ratio)
         pv = jit_formulae.state_variable_triplet__pv(p, water_vapour_mixing_ratio)
-        pvs = jit_formulae.saturation_vapour_pressure__pvs_Celsius(T - T0)
+        pvs = jit_formulae.saturation_vapour_pressure__pvs_water(T)
         RH = pv / pvs
 
         dy_dt = np.empty_like(y)

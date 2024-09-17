@@ -29,9 +29,9 @@ class Simulation(BasicSimulation):
         gravitational_coalsecence: bool = False,
     ):
         const = settings.formulae.constants
-        pvs_Celsius = settings.formulae.saturation_vapour_pressure.pvs_Celsius
+        pvs_water = settings.formulae.saturation_vapour_pressure.pvs_water
         initial_water_vapour_mixing_ratio = const.eps / (
-            settings.p0 / settings.RH0 / pvs_Celsius(settings.T0 - const.T0) - 1
+            settings.p0 / settings.RH0 / pvs_water(settings.T0) - 1
         )
 
         n_gccn = np.count_nonzero(table_3.NA) if gccn else 0

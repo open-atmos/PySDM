@@ -318,8 +318,8 @@ class CondensationMethods(
                 p='p[i]', water_vapour_mixing_ratio='predicted_water_vapour_mixing_ratio[i]')};
             lv[i] = {phys.latent_heat.lv.c_inline(
                 T='T[i]')};
-            pvs[i] = {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
-                T='T[i] - const.T0')};
+            pvs[i] = {phys.saturation_vapour_pressure.pvs_water.c_inline(
+                T='T[i]')};
             RH[i] = pv[i] / pvs[i];
             RH_max[i] = max(RH_max[i], RH[i]);
             DTp[i] = {phys.diffusion_thermics.D.c_inline(

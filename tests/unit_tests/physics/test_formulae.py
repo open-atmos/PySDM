@@ -20,8 +20,8 @@ class TestFormulae:
             # Arrange
             formulae = Formulae(saturation_vapour_pressure=opt)
             si = constants_defaults.si
-            sut = formulae.saturation_vapour_pressure.pvs_Celsius
-            T = 300 * si.kelvins
+            sut = formulae.saturation_vapour_pressure.pvs_water
+            T = 300 * si.kelvins + constants_defaults.T0
 
             # Act
             pvs = sut(T)
@@ -36,8 +36,8 @@ class TestFormulae:
             # Arrange
             formulae = Formulae(saturation_vapour_pressure=opt)
             si = constants_defaults.si
-            sut = formulae.saturation_vapour_pressure.ice_Celsius
-            T = 250 * si.kelvins
+            sut = formulae.saturation_vapour_pressure.pvs_ice
+            T = 250 * si.kelvins + constants_defaults.T0
 
             # Act
             pvs = sut(T)
