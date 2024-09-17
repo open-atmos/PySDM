@@ -1,3 +1,5 @@
+"""basic water vapor deposition on ice test"""
+
 import numpy as np
 
 import pytest
@@ -14,7 +16,7 @@ from PySDM.products import IceWaterContent
 @pytest.mark.parametrize("dt", (1 * si.s, 0.1 * si.s))
 @pytest.mark.parametrize("water_mass", (-si.ng, -si.ug, -si.mg, si.mg))
 @pytest.mark.parametrize("fastmath", (True, False))
-def test_TODO(dt, water_mass, fastmath, dv=1 * si.m**3):
+def test_iwc_lower_after_timestep(dt, water_mass, fastmath, dv=1 * si.m**3):
     # arrange
     n_sd = 1
     builder = Builder(
