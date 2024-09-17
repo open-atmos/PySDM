@@ -11,7 +11,7 @@ class Bolton1980:
 
     @staticmethod
     def pvs_water(const, T):
-        """valid for 243.15(-30) <= T <= 308.15(35) K(C), eq (10)"""
+        """valid for 243.15(-30) <= T <= 308.15(35) K(C), eq. (10)"""
         return const.B80W_G0 * np.exp(
             (const.B80W_G1 * (T - const.T0)) / ((T - const.T0) + const.B80W_G2)
         )
