@@ -37,10 +37,10 @@
                                 <a class="function" href="#Bolton1980.__init__">Bolton1980</a>
                         </li>
                         <li>
-                                <a class="function" href="#Bolton1980.pvs_Celsius">pvs_Celsius</a>
+                                <a class="function" href="#Bolton1980.pvs_water">pvs_water</a>
                         </li>
                         <li>
-                                <a class="function" href="#Bolton1980.ice_Celsius">ice_Celsius</a>
+                                <a class="function" href="#Bolton1980.pvs_ice">pvs_ice</a>
                         </li>
                 </ul>
 
@@ -80,14 +80,16 @@
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for -30 &lt;= T &lt;= 35 C, eq (10)&quot;&quot;&quot;</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">const</span><span class="o">.</span><span class="n">B80W_G1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span><span class="p">))</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;NaN with unit of pressure and correct dimension&quot;&quot;&quot;</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for 243.15(-30) &lt;= T &lt;= 308.15(35) K(C), eq. (10)&quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">B80W_G1</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;NaN with unit of pressure and correct dimension&quot;&quot;&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span>
 </span></pre></div>
 
 
@@ -108,14 +110,16 @@
 </span><span id="Bolton1980-11"><a href="#Bolton1980-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
 </span><span id="Bolton1980-12"><a href="#Bolton1980-12"><span class="linenos">12</span></a>
 </span><span id="Bolton1980-13"><a href="#Bolton1980-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolton1980-14"><a href="#Bolton1980-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Bolton1980-15"><a href="#Bolton1980-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for -30 &lt;= T &lt;= 35 C, eq (10)&quot;&quot;&quot;</span>
-</span><span id="Bolton1980-16"><a href="#Bolton1980-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">const</span><span class="o">.</span><span class="n">B80W_G1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span><span class="p">))</span>
-</span><span id="Bolton1980-17"><a href="#Bolton1980-17"><span class="linenos">17</span></a>
-</span><span id="Bolton1980-18"><a href="#Bolton1980-18"><span class="linenos">18</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolton1980-19"><a href="#Bolton1980-19"><span class="linenos">19</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Bolton1980-20"><a href="#Bolton1980-20"><span class="linenos">20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;NaN with unit of pressure and correct dimension&quot;&quot;&quot;</span>
-</span><span id="Bolton1980-21"><a href="#Bolton1980-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span>
+</span><span id="Bolton1980-14"><a href="#Bolton1980-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Bolton1980-15"><a href="#Bolton1980-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for 243.15(-30) &lt;= T &lt;= 308.15(35) K(C), eq. (10)&quot;&quot;&quot;</span>
+</span><span id="Bolton1980-16"><a href="#Bolton1980-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+</span><span id="Bolton1980-17"><a href="#Bolton1980-17"><span class="linenos">17</span></a>            <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">B80W_G1</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span><span class="p">)</span>
+</span><span id="Bolton1980-18"><a href="#Bolton1980-18"><span class="linenos">18</span></a>        <span class="p">)</span>
+</span><span id="Bolton1980-19"><a href="#Bolton1980-19"><span class="linenos">19</span></a>
+</span><span id="Bolton1980-20"><a href="#Bolton1980-20"><span class="linenos">20</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Bolton1980-21"><a href="#Bolton1980-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Bolton1980-22"><a href="#Bolton1980-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;NaN with unit of pressure and correct dimension&quot;&quot;&quot;</span>
+</span><span id="Bolton1980-23"><a href="#Bolton1980-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span>
 </span></pre></div>
 
 
@@ -139,46 +143,48 @@
     
 
                             </div>
-                            <div id="Bolton1980.pvs_Celsius" class="classattr">
-                                        <input id="Bolton1980.pvs_Celsius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Bolton1980.pvs_water" class="classattr">
+                                        <input id="Bolton1980.pvs_water-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">pvs_Celsius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+        <span class="name">pvs_water</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="Bolton1980.pvs_Celsius-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Bolton1980.pvs_water-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Bolton1980.pvs_Celsius"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolton1980.pvs_Celsius-13"><a href="#Bolton1980.pvs_Celsius-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolton1980.pvs_Celsius-14"><a href="#Bolton1980.pvs_Celsius-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Bolton1980.pvs_Celsius-15"><a href="#Bolton1980.pvs_Celsius-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for -30 &lt;= T &lt;= 35 C, eq (10)&quot;&quot;&quot;</span>
-</span><span id="Bolton1980.pvs_Celsius-16"><a href="#Bolton1980.pvs_Celsius-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">const</span><span class="o">.</span><span class="n">B80W_G1</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">T</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span><span class="p">))</span>
+    <a class="headerlink" href="#Bolton1980.pvs_water"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolton1980.pvs_water-13"><a href="#Bolton1980.pvs_water-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Bolton1980.pvs_water-14"><a href="#Bolton1980.pvs_water-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Bolton1980.pvs_water-15"><a href="#Bolton1980.pvs_water-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for 243.15(-30) &lt;= T &lt;= 308.15(35) K(C), eq. (10)&quot;&quot;&quot;</span>
+</span><span id="Bolton1980.pvs_water-16"><a href="#Bolton1980.pvs_water-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+</span><span id="Bolton1980.pvs_water-17"><a href="#Bolton1980.pvs_water-17"><span class="linenos">17</span></a>            <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">B80W_G1</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">))</span> <span class="o">/</span> <span class="p">((</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span><span class="p">)</span>
+</span><span id="Bolton1980.pvs_water-18"><a href="#Bolton1980.pvs_water-18"><span class="linenos">18</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>valid for -30 &lt;= T &lt;= 35 C, eq (10)</p>
+            <div class="docstring"><p>valid for 243.15(-30) &lt;= T &lt;= 308.15(35) K(C), eq. (10)</p>
 </div>
 
 
                             </div>
-                            <div id="Bolton1980.ice_Celsius" class="classattr">
-                                        <input id="Bolton1980.ice_Celsius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Bolton1980.pvs_ice" class="classattr">
+                                        <input id="Bolton1980.pvs_ice-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">ice_Celsius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+        <span class="name">pvs_ice</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="Bolton1980.ice_Celsius-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Bolton1980.pvs_ice-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Bolton1980.ice_Celsius"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolton1980.ice_Celsius-18"><a href="#Bolton1980.ice_Celsius-18"><span class="linenos">18</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolton1980.ice_Celsius-19"><a href="#Bolton1980.ice_Celsius-19"><span class="linenos">19</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Bolton1980.ice_Celsius-20"><a href="#Bolton1980.ice_Celsius-20"><span class="linenos">20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;NaN with unit of pressure and correct dimension&quot;&quot;&quot;</span>
-</span><span id="Bolton1980.ice_Celsius-21"><a href="#Bolton1980.ice_Celsius-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span>
+    <a class="headerlink" href="#Bolton1980.pvs_ice"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolton1980.pvs_ice-20"><a href="#Bolton1980.pvs_ice-20"><span class="linenos">20</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Bolton1980.pvs_ice-21"><a href="#Bolton1980.pvs_ice-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Bolton1980.pvs_ice-22"><a href="#Bolton1980.pvs_ice-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;NaN with unit of pressure and correct dimension&quot;&quot;&quot;</span>
+</span><span id="Bolton1980.pvs_ice-23"><a href="#Bolton1980.pvs_ice-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">B80W_G0</span>
 </span></pre></div>
 
 

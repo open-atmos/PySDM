@@ -37,10 +37,10 @@
                                 <a class="function" href="#Lowe1977.__init__">Lowe1977</a>
                         </li>
                         <li>
-                                <a class="function" href="#Lowe1977.pvs_Celsius">pvs_Celsius</a>
+                                <a class="function" href="#Lowe1977.pvs_water">pvs_water</a>
                         </li>
                         <li>
-                                <a class="function" href="#Lowe1977.ice_Celsius">ice_Celsius</a>
+                                <a class="function" href="#Lowe1977.pvs_ice">pvs_ice</a>
                         </li>
                 </ul>
 
@@ -80,34 +80,44 @@
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77W_A0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77W_A0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77W_A1</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="o">+</span> <span class="n">T</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77W_A2</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>                <span class="o">+</span> <span class="n">T</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>                <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77W_A3</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>                    <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A4</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A5</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A6</span><span class="p">)))</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>                <span class="p">)</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>            <span class="p">)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="p">)</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77I_A0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77I_A1</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77I_A2</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77I_A3</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>                    <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A4</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A5</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A6</span><span class="p">)))</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>                <span class="p">)</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>            <span class="p">)</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="p">)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">L77W_A4</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>                        <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A5</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A6</span><span class="p">))</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>                    <span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>                <span class="p">)</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77I_A0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77I_A1</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77I_A2</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77I_A3</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">L77I_A4</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>                        <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A5</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A6</span><span class="p">))</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                    <span class="p">)</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>                <span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>            <span class="p">)</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -128,34 +138,44 @@
 </span><span id="Lowe1977-10"><a href="#Lowe1977-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
 </span><span id="Lowe1977-11"><a href="#Lowe1977-11"><span class="linenos">11</span></a>
 </span><span id="Lowe1977-12"><a href="#Lowe1977-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Lowe1977-13"><a href="#Lowe1977-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Lowe1977-14"><a href="#Lowe1977-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77W_A0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977-13"><a href="#Lowe1977-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Lowe1977-14"><a href="#Lowe1977-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77W_A0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
 </span><span id="Lowe1977-15"><a href="#Lowe1977-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77W_A1</span>
-</span><span id="Lowe1977-16"><a href="#Lowe1977-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="n">T</span>
+</span><span id="Lowe1977-16"><a href="#Lowe1977-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="Lowe1977-17"><a href="#Lowe1977-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="p">(</span>
 </span><span id="Lowe1977-18"><a href="#Lowe1977-18"><span class="linenos">18</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77W_A2</span>
-</span><span id="Lowe1977-19"><a href="#Lowe1977-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="n">T</span>
+</span><span id="Lowe1977-19"><a href="#Lowe1977-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="Lowe1977-20"><a href="#Lowe1977-20"><span class="linenos">20</span></a>                <span class="o">*</span> <span class="p">(</span>
 </span><span id="Lowe1977-21"><a href="#Lowe1977-21"><span class="linenos">21</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77W_A3</span>
-</span><span id="Lowe1977-22"><a href="#Lowe1977-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A4</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A5</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A6</span><span class="p">)))</span>
-</span><span id="Lowe1977-23"><a href="#Lowe1977-23"><span class="linenos">23</span></a>                <span class="p">)</span>
-</span><span id="Lowe1977-24"><a href="#Lowe1977-24"><span class="linenos">24</span></a>            <span class="p">)</span>
-</span><span id="Lowe1977-25"><a href="#Lowe1977-25"><span class="linenos">25</span></a>        <span class="p">)</span>
-</span><span id="Lowe1977-26"><a href="#Lowe1977-26"><span class="linenos">26</span></a>
-</span><span id="Lowe1977-27"><a href="#Lowe1977-27"><span class="linenos">27</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Lowe1977-28"><a href="#Lowe1977-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Lowe1977-29"><a href="#Lowe1977-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77I_A0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977-30"><a href="#Lowe1977-30"><span class="linenos">30</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77I_A1</span>
-</span><span id="Lowe1977-31"><a href="#Lowe1977-31"><span class="linenos">31</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="Lowe1977-32"><a href="#Lowe1977-32"><span class="linenos">32</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977-33"><a href="#Lowe1977-33"><span class="linenos">33</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77I_A2</span>
-</span><span id="Lowe1977-34"><a href="#Lowe1977-34"><span class="linenos">34</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="Lowe1977-35"><a href="#Lowe1977-35"><span class="linenos">35</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977-36"><a href="#Lowe1977-36"><span class="linenos">36</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77I_A3</span>
-</span><span id="Lowe1977-37"><a href="#Lowe1977-37"><span class="linenos">37</span></a>                    <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A4</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A5</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A6</span><span class="p">)))</span>
-</span><span id="Lowe1977-38"><a href="#Lowe1977-38"><span class="linenos">38</span></a>                <span class="p">)</span>
-</span><span id="Lowe1977-39"><a href="#Lowe1977-39"><span class="linenos">39</span></a>            <span class="p">)</span>
-</span><span id="Lowe1977-40"><a href="#Lowe1977-40"><span class="linenos">40</span></a>        <span class="p">)</span>
+</span><span id="Lowe1977-22"><a href="#Lowe1977-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977-23"><a href="#Lowe1977-23"><span class="linenos">23</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977-24"><a href="#Lowe1977-24"><span class="linenos">24</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">L77W_A4</span>
+</span><span id="Lowe1977-25"><a href="#Lowe1977-25"><span class="linenos">25</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977-26"><a href="#Lowe1977-26"><span class="linenos">26</span></a>                        <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A5</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A6</span><span class="p">))</span>
+</span><span id="Lowe1977-27"><a href="#Lowe1977-27"><span class="linenos">27</span></a>                    <span class="p">)</span>
+</span><span id="Lowe1977-28"><a href="#Lowe1977-28"><span class="linenos">28</span></a>                <span class="p">)</span>
+</span><span id="Lowe1977-29"><a href="#Lowe1977-29"><span class="linenos">29</span></a>            <span class="p">)</span>
+</span><span id="Lowe1977-30"><a href="#Lowe1977-30"><span class="linenos">30</span></a>        <span class="p">)</span>
+</span><span id="Lowe1977-31"><a href="#Lowe1977-31"><span class="linenos">31</span></a>
+</span><span id="Lowe1977-32"><a href="#Lowe1977-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Lowe1977-33"><a href="#Lowe1977-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Lowe1977-34"><a href="#Lowe1977-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77I_A0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977-35"><a href="#Lowe1977-35"><span class="linenos">35</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77I_A1</span>
+</span><span id="Lowe1977-36"><a href="#Lowe1977-36"><span class="linenos">36</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977-37"><a href="#Lowe1977-37"><span class="linenos">37</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977-38"><a href="#Lowe1977-38"><span class="linenos">38</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77I_A2</span>
+</span><span id="Lowe1977-39"><a href="#Lowe1977-39"><span class="linenos">39</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977-40"><a href="#Lowe1977-40"><span class="linenos">40</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977-41"><a href="#Lowe1977-41"><span class="linenos">41</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77I_A3</span>
+</span><span id="Lowe1977-42"><a href="#Lowe1977-42"><span class="linenos">42</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977-43"><a href="#Lowe1977-43"><span class="linenos">43</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977-44"><a href="#Lowe1977-44"><span class="linenos">44</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">L77I_A4</span>
+</span><span id="Lowe1977-45"><a href="#Lowe1977-45"><span class="linenos">45</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977-46"><a href="#Lowe1977-46"><span class="linenos">46</span></a>                        <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A5</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A6</span><span class="p">))</span>
+</span><span id="Lowe1977-47"><a href="#Lowe1977-47"><span class="linenos">47</span></a>                    <span class="p">)</span>
+</span><span id="Lowe1977-48"><a href="#Lowe1977-48"><span class="linenos">48</span></a>                <span class="p">)</span>
+</span><span id="Lowe1977-49"><a href="#Lowe1977-49"><span class="linenos">49</span></a>            <span class="p">)</span>
+</span><span id="Lowe1977-50"><a href="#Lowe1977-50"><span class="linenos">50</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -179,64 +199,74 @@
     
 
                             </div>
-                            <div id="Lowe1977.pvs_Celsius" class="classattr">
-                                        <input id="Lowe1977.pvs_Celsius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Lowe1977.pvs_water" class="classattr">
+                                        <input id="Lowe1977.pvs_water-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">pvs_Celsius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+        <span class="name">pvs_water</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="Lowe1977.pvs_Celsius-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Lowe1977.pvs_water-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Lowe1977.pvs_Celsius"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Lowe1977.pvs_Celsius-12"><a href="#Lowe1977.pvs_Celsius-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Lowe1977.pvs_Celsius-13"><a href="#Lowe1977.pvs_Celsius-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Lowe1977.pvs_Celsius-14"><a href="#Lowe1977.pvs_Celsius-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77W_A0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977.pvs_Celsius-15"><a href="#Lowe1977.pvs_Celsius-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77W_A1</span>
-</span><span id="Lowe1977.pvs_Celsius-16"><a href="#Lowe1977.pvs_Celsius-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="Lowe1977.pvs_Celsius-17"><a href="#Lowe1977.pvs_Celsius-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977.pvs_Celsius-18"><a href="#Lowe1977.pvs_Celsius-18"><span class="linenos">18</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77W_A2</span>
-</span><span id="Lowe1977.pvs_Celsius-19"><a href="#Lowe1977.pvs_Celsius-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="Lowe1977.pvs_Celsius-20"><a href="#Lowe1977.pvs_Celsius-20"><span class="linenos">20</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977.pvs_Celsius-21"><a href="#Lowe1977.pvs_Celsius-21"><span class="linenos">21</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77W_A3</span>
-</span><span id="Lowe1977.pvs_Celsius-22"><a href="#Lowe1977.pvs_Celsius-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A4</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A5</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A6</span><span class="p">)))</span>
-</span><span id="Lowe1977.pvs_Celsius-23"><a href="#Lowe1977.pvs_Celsius-23"><span class="linenos">23</span></a>                <span class="p">)</span>
-</span><span id="Lowe1977.pvs_Celsius-24"><a href="#Lowe1977.pvs_Celsius-24"><span class="linenos">24</span></a>            <span class="p">)</span>
-</span><span id="Lowe1977.pvs_Celsius-25"><a href="#Lowe1977.pvs_Celsius-25"><span class="linenos">25</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#Lowe1977.pvs_water"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Lowe1977.pvs_water-12"><a href="#Lowe1977.pvs_water-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Lowe1977.pvs_water-13"><a href="#Lowe1977.pvs_water-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Lowe1977.pvs_water-14"><a href="#Lowe1977.pvs_water-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77W_A0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_water-15"><a href="#Lowe1977.pvs_water-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77W_A1</span>
+</span><span id="Lowe1977.pvs_water-16"><a href="#Lowe1977.pvs_water-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_water-17"><a href="#Lowe1977.pvs_water-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_water-18"><a href="#Lowe1977.pvs_water-18"><span class="linenos">18</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77W_A2</span>
+</span><span id="Lowe1977.pvs_water-19"><a href="#Lowe1977.pvs_water-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_water-20"><a href="#Lowe1977.pvs_water-20"><span class="linenos">20</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_water-21"><a href="#Lowe1977.pvs_water-21"><span class="linenos">21</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77W_A3</span>
+</span><span id="Lowe1977.pvs_water-22"><a href="#Lowe1977.pvs_water-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_water-23"><a href="#Lowe1977.pvs_water-23"><span class="linenos">23</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_water-24"><a href="#Lowe1977.pvs_water-24"><span class="linenos">24</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">L77W_A4</span>
+</span><span id="Lowe1977.pvs_water-25"><a href="#Lowe1977.pvs_water-25"><span class="linenos">25</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_water-26"><a href="#Lowe1977.pvs_water-26"><span class="linenos">26</span></a>                        <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A5</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77W_A6</span><span class="p">))</span>
+</span><span id="Lowe1977.pvs_water-27"><a href="#Lowe1977.pvs_water-27"><span class="linenos">27</span></a>                    <span class="p">)</span>
+</span><span id="Lowe1977.pvs_water-28"><a href="#Lowe1977.pvs_water-28"><span class="linenos">28</span></a>                <span class="p">)</span>
+</span><span id="Lowe1977.pvs_water-29"><a href="#Lowe1977.pvs_water-29"><span class="linenos">29</span></a>            <span class="p">)</span>
+</span><span id="Lowe1977.pvs_water-30"><a href="#Lowe1977.pvs_water-30"><span class="linenos">30</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="Lowe1977.ice_Celsius" class="classattr">
-                                        <input id="Lowe1977.ice_Celsius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Lowe1977.pvs_ice" class="classattr">
+                                        <input id="Lowe1977.pvs_ice-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">ice_Celsius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+        <span class="name">pvs_ice</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="Lowe1977.ice_Celsius-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Lowe1977.pvs_ice-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Lowe1977.ice_Celsius"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Lowe1977.ice_Celsius-27"><a href="#Lowe1977.ice_Celsius-27"><span class="linenos">27</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Lowe1977.ice_Celsius-28"><a href="#Lowe1977.ice_Celsius-28"><span class="linenos">28</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="Lowe1977.ice_Celsius-29"><a href="#Lowe1977.ice_Celsius-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77I_A0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977.ice_Celsius-30"><a href="#Lowe1977.ice_Celsius-30"><span class="linenos">30</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77I_A1</span>
-</span><span id="Lowe1977.ice_Celsius-31"><a href="#Lowe1977.ice_Celsius-31"><span class="linenos">31</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="Lowe1977.ice_Celsius-32"><a href="#Lowe1977.ice_Celsius-32"><span class="linenos">32</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977.ice_Celsius-33"><a href="#Lowe1977.ice_Celsius-33"><span class="linenos">33</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77I_A2</span>
-</span><span id="Lowe1977.ice_Celsius-34"><a href="#Lowe1977.ice_Celsius-34"><span class="linenos">34</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="Lowe1977.ice_Celsius-35"><a href="#Lowe1977.ice_Celsius-35"><span class="linenos">35</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="Lowe1977.ice_Celsius-36"><a href="#Lowe1977.ice_Celsius-36"><span class="linenos">36</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77I_A3</span>
-</span><span id="Lowe1977.ice_Celsius-37"><a href="#Lowe1977.ice_Celsius-37"><span class="linenos">37</span></a>                    <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A4</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A5</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A6</span><span class="p">)))</span>
-</span><span id="Lowe1977.ice_Celsius-38"><a href="#Lowe1977.ice_Celsius-38"><span class="linenos">38</span></a>                <span class="p">)</span>
-</span><span id="Lowe1977.ice_Celsius-39"><a href="#Lowe1977.ice_Celsius-39"><span class="linenos">39</span></a>            <span class="p">)</span>
-</span><span id="Lowe1977.ice_Celsius-40"><a href="#Lowe1977.ice_Celsius-40"><span class="linenos">40</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#Lowe1977.pvs_ice"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Lowe1977.pvs_ice-32"><a href="#Lowe1977.pvs_ice-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Lowe1977.pvs_ice-33"><a href="#Lowe1977.pvs_ice-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="Lowe1977.pvs_ice-34"><a href="#Lowe1977.pvs_ice-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">L77I_A0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_ice-35"><a href="#Lowe1977.pvs_ice-35"><span class="linenos">35</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">L77I_A1</span>
+</span><span id="Lowe1977.pvs_ice-36"><a href="#Lowe1977.pvs_ice-36"><span class="linenos">36</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_ice-37"><a href="#Lowe1977.pvs_ice-37"><span class="linenos">37</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_ice-38"><a href="#Lowe1977.pvs_ice-38"><span class="linenos">38</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">L77I_A2</span>
+</span><span id="Lowe1977.pvs_ice-39"><a href="#Lowe1977.pvs_ice-39"><span class="linenos">39</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_ice-40"><a href="#Lowe1977.pvs_ice-40"><span class="linenos">40</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_ice-41"><a href="#Lowe1977.pvs_ice-41"><span class="linenos">41</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">L77I_A3</span>
+</span><span id="Lowe1977.pvs_ice-42"><a href="#Lowe1977.pvs_ice-42"><span class="linenos">42</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_ice-43"><a href="#Lowe1977.pvs_ice-43"><span class="linenos">43</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="Lowe1977.pvs_ice-44"><a href="#Lowe1977.pvs_ice-44"><span class="linenos">44</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">L77I_A4</span>
+</span><span id="Lowe1977.pvs_ice-45"><a href="#Lowe1977.pvs_ice-45"><span class="linenos">45</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="Lowe1977.pvs_ice-46"><a href="#Lowe1977.pvs_ice-46"><span class="linenos">46</span></a>                        <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A5</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">L77I_A6</span><span class="p">))</span>
+</span><span id="Lowe1977.pvs_ice-47"><a href="#Lowe1977.pvs_ice-47"><span class="linenos">47</span></a>                    <span class="p">)</span>
+</span><span id="Lowe1977.pvs_ice-48"><a href="#Lowe1977.pvs_ice-48"><span class="linenos">48</span></a>                <span class="p">)</span>
+</span><span id="Lowe1977.pvs_ice-49"><a href="#Lowe1977.pvs_ice-49"><span class="linenos">49</span></a>            <span class="p">)</span>
+</span><span id="Lowe1977.pvs_ice-50"><a href="#Lowe1977.pvs_ice-50"><span class="linenos">50</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 

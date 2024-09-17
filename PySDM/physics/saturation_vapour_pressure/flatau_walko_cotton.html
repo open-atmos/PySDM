@@ -37,10 +37,10 @@
                                 <a class="function" href="#FlatauWalkoCotton.__init__">FlatauWalkoCotton</a>
                         </li>
                         <li>
-                                <a class="function" href="#FlatauWalkoCotton.pvs_Celsius">pvs_Celsius</a>
+                                <a class="function" href="#FlatauWalkoCotton.pvs_water">pvs_water</a>
                         </li>
                         <li>
-                                <a class="function" href="#FlatauWalkoCotton.ice_Celsius">ice_Celsius</a>
+                                <a class="function" href="#FlatauWalkoCotton.pvs_ice">pvs_ice</a>
                         </li>
                 </ul>
 
@@ -80,50 +80,60 @@
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C1</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="o">+</span> <span class="n">T</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_C2</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>                <span class="o">+</span> <span class="n">T</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>                <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_C3</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>                    <span class="o">+</span> <span class="n">T</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>                    <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_C4</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>                        <span class="o">+</span> <span class="n">T</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>                        <span class="o">*</span> <span class="p">(</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C5</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>                            <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C6</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C7</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C8</span><span class="p">))</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>                        <span class="p">)</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>                    <span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>                <span class="p">)</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="p">)</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="p">)</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I1</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I2</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_I3</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>                    <span class="o">+</span> <span class="n">T</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>                    <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_I4</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>                        <span class="o">+</span> <span class="n">T</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>                        <span class="o">*</span> <span class="p">(</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I5</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>                            <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I6</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I7</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I8</span><span class="p">))</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>                        <span class="p">)</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>                    <span class="p">)</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>                <span class="p">)</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>            <span class="p">)</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>        <span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>                            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>                            <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>                                <span class="n">const</span><span class="o">.</span><span class="n">FWC_C6</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>                                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>                                <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C7</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C8</span><span class="p">)</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>                            <span class="p">)</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>                        <span class="p">)</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                    <span class="p">)</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                <span class="p">)</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="p">)</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I1</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I2</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_I3</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_I4</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>                        <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I5</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>                            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>                            <span class="o">*</span> <span class="p">(</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>                                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I6</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>                                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>                                <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I7</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I8</span><span class="p">)</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>                            <span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>                        <span class="p">)</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>                    <span class="p">)</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>                <span class="p">)</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>            <span class="p">)</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -144,50 +154,60 @@
 </span><span id="FlatauWalkoCotton-10"><a href="#FlatauWalkoCotton-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
 </span><span id="FlatauWalkoCotton-11"><a href="#FlatauWalkoCotton-11"><span class="linenos">11</span></a>
 </span><span id="FlatauWalkoCotton-12"><a href="#FlatauWalkoCotton-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FlatauWalkoCotton-13"><a href="#FlatauWalkoCotton-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="FlatauWalkoCotton-14"><a href="#FlatauWalkoCotton-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-13"><a href="#FlatauWalkoCotton-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="FlatauWalkoCotton-14"><a href="#FlatauWalkoCotton-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
 </span><span id="FlatauWalkoCotton-15"><a href="#FlatauWalkoCotton-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C1</span>
-</span><span id="FlatauWalkoCotton-16"><a href="#FlatauWalkoCotton-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="n">T</span>
+</span><span id="FlatauWalkoCotton-16"><a href="#FlatauWalkoCotton-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="FlatauWalkoCotton-17"><a href="#FlatauWalkoCotton-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="p">(</span>
 </span><span id="FlatauWalkoCotton-18"><a href="#FlatauWalkoCotton-18"><span class="linenos">18</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_C2</span>
-</span><span id="FlatauWalkoCotton-19"><a href="#FlatauWalkoCotton-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="n">T</span>
+</span><span id="FlatauWalkoCotton-19"><a href="#FlatauWalkoCotton-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="FlatauWalkoCotton-20"><a href="#FlatauWalkoCotton-20"><span class="linenos">20</span></a>                <span class="o">*</span> <span class="p">(</span>
 </span><span id="FlatauWalkoCotton-21"><a href="#FlatauWalkoCotton-21"><span class="linenos">21</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_C3</span>
-</span><span id="FlatauWalkoCotton-22"><a href="#FlatauWalkoCotton-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="n">T</span>
+</span><span id="FlatauWalkoCotton-22"><a href="#FlatauWalkoCotton-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="FlatauWalkoCotton-23"><a href="#FlatauWalkoCotton-23"><span class="linenos">23</span></a>                    <span class="o">*</span> <span class="p">(</span>
 </span><span id="FlatauWalkoCotton-24"><a href="#FlatauWalkoCotton-24"><span class="linenos">24</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_C4</span>
-</span><span id="FlatauWalkoCotton-25"><a href="#FlatauWalkoCotton-25"><span class="linenos">25</span></a>                        <span class="o">+</span> <span class="n">T</span>
+</span><span id="FlatauWalkoCotton-25"><a href="#FlatauWalkoCotton-25"><span class="linenos">25</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
 </span><span id="FlatauWalkoCotton-26"><a href="#FlatauWalkoCotton-26"><span class="linenos">26</span></a>                        <span class="o">*</span> <span class="p">(</span>
 </span><span id="FlatauWalkoCotton-27"><a href="#FlatauWalkoCotton-27"><span class="linenos">27</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C5</span>
-</span><span id="FlatauWalkoCotton-28"><a href="#FlatauWalkoCotton-28"><span class="linenos">28</span></a>                            <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C6</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C7</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C8</span><span class="p">))</span>
-</span><span id="FlatauWalkoCotton-29"><a href="#FlatauWalkoCotton-29"><span class="linenos">29</span></a>                        <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-30"><a href="#FlatauWalkoCotton-30"><span class="linenos">30</span></a>                    <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-31"><a href="#FlatauWalkoCotton-31"><span class="linenos">31</span></a>                <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-32"><a href="#FlatauWalkoCotton-32"><span class="linenos">32</span></a>            <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-33"><a href="#FlatauWalkoCotton-33"><span class="linenos">33</span></a>        <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-34"><a href="#FlatauWalkoCotton-34"><span class="linenos">34</span></a>
-</span><span id="FlatauWalkoCotton-35"><a href="#FlatauWalkoCotton-35"><span class="linenos">35</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FlatauWalkoCotton-36"><a href="#FlatauWalkoCotton-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="FlatauWalkoCotton-37"><a href="#FlatauWalkoCotton-37"><span class="linenos">37</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton-38"><a href="#FlatauWalkoCotton-38"><span class="linenos">38</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I1</span>
-</span><span id="FlatauWalkoCotton-39"><a href="#FlatauWalkoCotton-39"><span class="linenos">39</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton-40"><a href="#FlatauWalkoCotton-40"><span class="linenos">40</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton-41"><a href="#FlatauWalkoCotton-41"><span class="linenos">41</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I2</span>
-</span><span id="FlatauWalkoCotton-42"><a href="#FlatauWalkoCotton-42"><span class="linenos">42</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton-43"><a href="#FlatauWalkoCotton-43"><span class="linenos">43</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton-44"><a href="#FlatauWalkoCotton-44"><span class="linenos">44</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_I3</span>
-</span><span id="FlatauWalkoCotton-45"><a href="#FlatauWalkoCotton-45"><span class="linenos">45</span></a>                    <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton-46"><a href="#FlatauWalkoCotton-46"><span class="linenos">46</span></a>                    <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton-47"><a href="#FlatauWalkoCotton-47"><span class="linenos">47</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_I4</span>
-</span><span id="FlatauWalkoCotton-48"><a href="#FlatauWalkoCotton-48"><span class="linenos">48</span></a>                        <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton-49"><a href="#FlatauWalkoCotton-49"><span class="linenos">49</span></a>                        <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton-50"><a href="#FlatauWalkoCotton-50"><span class="linenos">50</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I5</span>
-</span><span id="FlatauWalkoCotton-51"><a href="#FlatauWalkoCotton-51"><span class="linenos">51</span></a>                            <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I6</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I7</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I8</span><span class="p">))</span>
-</span><span id="FlatauWalkoCotton-52"><a href="#FlatauWalkoCotton-52"><span class="linenos">52</span></a>                        <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-53"><a href="#FlatauWalkoCotton-53"><span class="linenos">53</span></a>                    <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-54"><a href="#FlatauWalkoCotton-54"><span class="linenos">54</span></a>                <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-55"><a href="#FlatauWalkoCotton-55"><span class="linenos">55</span></a>            <span class="p">)</span>
-</span><span id="FlatauWalkoCotton-56"><a href="#FlatauWalkoCotton-56"><span class="linenos">56</span></a>        <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-28"><a href="#FlatauWalkoCotton-28"><span class="linenos">28</span></a>                            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-29"><a href="#FlatauWalkoCotton-29"><span class="linenos">29</span></a>                            <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-30"><a href="#FlatauWalkoCotton-30"><span class="linenos">30</span></a>                                <span class="n">const</span><span class="o">.</span><span class="n">FWC_C6</span>
+</span><span id="FlatauWalkoCotton-31"><a href="#FlatauWalkoCotton-31"><span class="linenos">31</span></a>                                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-32"><a href="#FlatauWalkoCotton-32"><span class="linenos">32</span></a>                                <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C7</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C8</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-33"><a href="#FlatauWalkoCotton-33"><span class="linenos">33</span></a>                            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-34"><a href="#FlatauWalkoCotton-34"><span class="linenos">34</span></a>                        <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-35"><a href="#FlatauWalkoCotton-35"><span class="linenos">35</span></a>                    <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-36"><a href="#FlatauWalkoCotton-36"><span class="linenos">36</span></a>                <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-37"><a href="#FlatauWalkoCotton-37"><span class="linenos">37</span></a>            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-38"><a href="#FlatauWalkoCotton-38"><span class="linenos">38</span></a>        <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-39"><a href="#FlatauWalkoCotton-39"><span class="linenos">39</span></a>
+</span><span id="FlatauWalkoCotton-40"><a href="#FlatauWalkoCotton-40"><span class="linenos">40</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="FlatauWalkoCotton-41"><a href="#FlatauWalkoCotton-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="FlatauWalkoCotton-42"><a href="#FlatauWalkoCotton-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-43"><a href="#FlatauWalkoCotton-43"><span class="linenos">43</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I1</span>
+</span><span id="FlatauWalkoCotton-44"><a href="#FlatauWalkoCotton-44"><span class="linenos">44</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-45"><a href="#FlatauWalkoCotton-45"><span class="linenos">45</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-46"><a href="#FlatauWalkoCotton-46"><span class="linenos">46</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I2</span>
+</span><span id="FlatauWalkoCotton-47"><a href="#FlatauWalkoCotton-47"><span class="linenos">47</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-48"><a href="#FlatauWalkoCotton-48"><span class="linenos">48</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-49"><a href="#FlatauWalkoCotton-49"><span class="linenos">49</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_I3</span>
+</span><span id="FlatauWalkoCotton-50"><a href="#FlatauWalkoCotton-50"><span class="linenos">50</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-51"><a href="#FlatauWalkoCotton-51"><span class="linenos">51</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-52"><a href="#FlatauWalkoCotton-52"><span class="linenos">52</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_I4</span>
+</span><span id="FlatauWalkoCotton-53"><a href="#FlatauWalkoCotton-53"><span class="linenos">53</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-54"><a href="#FlatauWalkoCotton-54"><span class="linenos">54</span></a>                        <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-55"><a href="#FlatauWalkoCotton-55"><span class="linenos">55</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I5</span>
+</span><span id="FlatauWalkoCotton-56"><a href="#FlatauWalkoCotton-56"><span class="linenos">56</span></a>                            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-57"><a href="#FlatauWalkoCotton-57"><span class="linenos">57</span></a>                            <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton-58"><a href="#FlatauWalkoCotton-58"><span class="linenos">58</span></a>                                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I6</span>
+</span><span id="FlatauWalkoCotton-59"><a href="#FlatauWalkoCotton-59"><span class="linenos">59</span></a>                                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-60"><a href="#FlatauWalkoCotton-60"><span class="linenos">60</span></a>                                <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I7</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I8</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton-61"><a href="#FlatauWalkoCotton-61"><span class="linenos">61</span></a>                            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-62"><a href="#FlatauWalkoCotton-62"><span class="linenos">62</span></a>                        <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-63"><a href="#FlatauWalkoCotton-63"><span class="linenos">63</span></a>                    <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-64"><a href="#FlatauWalkoCotton-64"><span class="linenos">64</span></a>                <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-65"><a href="#FlatauWalkoCotton-65"><span class="linenos">65</span></a>            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton-66"><a href="#FlatauWalkoCotton-66"><span class="linenos">66</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -211,80 +231,90 @@
     
 
                             </div>
-                            <div id="FlatauWalkoCotton.pvs_Celsius" class="classattr">
-                                        <input id="FlatauWalkoCotton.pvs_Celsius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FlatauWalkoCotton.pvs_water" class="classattr">
+                                        <input id="FlatauWalkoCotton.pvs_water-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">pvs_Celsius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+        <span class="name">pvs_water</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="FlatauWalkoCotton.pvs_Celsius-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FlatauWalkoCotton.pvs_water-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FlatauWalkoCotton.pvs_Celsius"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FlatauWalkoCotton.pvs_Celsius-12"><a href="#FlatauWalkoCotton.pvs_Celsius-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-13"><a href="#FlatauWalkoCotton.pvs_Celsius-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-14"><a href="#FlatauWalkoCotton.pvs_Celsius-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-15"><a href="#FlatauWalkoCotton.pvs_Celsius-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C1</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-16"><a href="#FlatauWalkoCotton.pvs_Celsius-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-17"><a href="#FlatauWalkoCotton.pvs_Celsius-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-18"><a href="#FlatauWalkoCotton.pvs_Celsius-18"><span class="linenos">18</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_C2</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-19"><a href="#FlatauWalkoCotton.pvs_Celsius-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-20"><a href="#FlatauWalkoCotton.pvs_Celsius-20"><span class="linenos">20</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-21"><a href="#FlatauWalkoCotton.pvs_Celsius-21"><span class="linenos">21</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_C3</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-22"><a href="#FlatauWalkoCotton.pvs_Celsius-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-23"><a href="#FlatauWalkoCotton.pvs_Celsius-23"><span class="linenos">23</span></a>                    <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-24"><a href="#FlatauWalkoCotton.pvs_Celsius-24"><span class="linenos">24</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_C4</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-25"><a href="#FlatauWalkoCotton.pvs_Celsius-25"><span class="linenos">25</span></a>                        <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-26"><a href="#FlatauWalkoCotton.pvs_Celsius-26"><span class="linenos">26</span></a>                        <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-27"><a href="#FlatauWalkoCotton.pvs_Celsius-27"><span class="linenos">27</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C5</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-28"><a href="#FlatauWalkoCotton.pvs_Celsius-28"><span class="linenos">28</span></a>                            <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C6</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C7</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C8</span><span class="p">))</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-29"><a href="#FlatauWalkoCotton.pvs_Celsius-29"><span class="linenos">29</span></a>                        <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-30"><a href="#FlatauWalkoCotton.pvs_Celsius-30"><span class="linenos">30</span></a>                    <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-31"><a href="#FlatauWalkoCotton.pvs_Celsius-31"><span class="linenos">31</span></a>                <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-32"><a href="#FlatauWalkoCotton.pvs_Celsius-32"><span class="linenos">32</span></a>            <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.pvs_Celsius-33"><a href="#FlatauWalkoCotton.pvs_Celsius-33"><span class="linenos">33</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#FlatauWalkoCotton.pvs_water"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FlatauWalkoCotton.pvs_water-12"><a href="#FlatauWalkoCotton.pvs_water-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="FlatauWalkoCotton.pvs_water-13"><a href="#FlatauWalkoCotton.pvs_water-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="FlatauWalkoCotton.pvs_water-14"><a href="#FlatauWalkoCotton.pvs_water-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_water-15"><a href="#FlatauWalkoCotton.pvs_water-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C1</span>
+</span><span id="FlatauWalkoCotton.pvs_water-16"><a href="#FlatauWalkoCotton.pvs_water-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-17"><a href="#FlatauWalkoCotton.pvs_water-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_water-18"><a href="#FlatauWalkoCotton.pvs_water-18"><span class="linenos">18</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_C2</span>
+</span><span id="FlatauWalkoCotton.pvs_water-19"><a href="#FlatauWalkoCotton.pvs_water-19"><span class="linenos">19</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-20"><a href="#FlatauWalkoCotton.pvs_water-20"><span class="linenos">20</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_water-21"><a href="#FlatauWalkoCotton.pvs_water-21"><span class="linenos">21</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_C3</span>
+</span><span id="FlatauWalkoCotton.pvs_water-22"><a href="#FlatauWalkoCotton.pvs_water-22"><span class="linenos">22</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-23"><a href="#FlatauWalkoCotton.pvs_water-23"><span class="linenos">23</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_water-24"><a href="#FlatauWalkoCotton.pvs_water-24"><span class="linenos">24</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_C4</span>
+</span><span id="FlatauWalkoCotton.pvs_water-25"><a href="#FlatauWalkoCotton.pvs_water-25"><span class="linenos">25</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-26"><a href="#FlatauWalkoCotton.pvs_water-26"><span class="linenos">26</span></a>                        <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_water-27"><a href="#FlatauWalkoCotton.pvs_water-27"><span class="linenos">27</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_C5</span>
+</span><span id="FlatauWalkoCotton.pvs_water-28"><a href="#FlatauWalkoCotton.pvs_water-28"><span class="linenos">28</span></a>                            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-29"><a href="#FlatauWalkoCotton.pvs_water-29"><span class="linenos">29</span></a>                            <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_water-30"><a href="#FlatauWalkoCotton.pvs_water-30"><span class="linenos">30</span></a>                                <span class="n">const</span><span class="o">.</span><span class="n">FWC_C6</span>
+</span><span id="FlatauWalkoCotton.pvs_water-31"><a href="#FlatauWalkoCotton.pvs_water-31"><span class="linenos">31</span></a>                                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-32"><a href="#FlatauWalkoCotton.pvs_water-32"><span class="linenos">32</span></a>                                <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_C7</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_C8</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-33"><a href="#FlatauWalkoCotton.pvs_water-33"><span class="linenos">33</span></a>                            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-34"><a href="#FlatauWalkoCotton.pvs_water-34"><span class="linenos">34</span></a>                        <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-35"><a href="#FlatauWalkoCotton.pvs_water-35"><span class="linenos">35</span></a>                    <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-36"><a href="#FlatauWalkoCotton.pvs_water-36"><span class="linenos">36</span></a>                <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-37"><a href="#FlatauWalkoCotton.pvs_water-37"><span class="linenos">37</span></a>            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_water-38"><a href="#FlatauWalkoCotton.pvs_water-38"><span class="linenos">38</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="FlatauWalkoCotton.ice_Celsius" class="classattr">
-                                        <input id="FlatauWalkoCotton.ice_Celsius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="FlatauWalkoCotton.pvs_ice" class="classattr">
+                                        <input id="FlatauWalkoCotton.pvs_ice-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">ice_Celsius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
+        <span class="name">pvs_ice</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="FlatauWalkoCotton.ice_Celsius-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="FlatauWalkoCotton.pvs_ice-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#FlatauWalkoCotton.ice_Celsius"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FlatauWalkoCotton.ice_Celsius-35"><a href="#FlatauWalkoCotton.ice_Celsius-35"><span class="linenos">35</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-36"><a href="#FlatauWalkoCotton.ice_Celsius-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">ice_Celsius</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-37"><a href="#FlatauWalkoCotton.ice_Celsius-37"><span class="linenos">37</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I0</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-38"><a href="#FlatauWalkoCotton.ice_Celsius-38"><span class="linenos">38</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I1</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-39"><a href="#FlatauWalkoCotton.ice_Celsius-39"><span class="linenos">39</span></a>            <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-40"><a href="#FlatauWalkoCotton.ice_Celsius-40"><span class="linenos">40</span></a>            <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-41"><a href="#FlatauWalkoCotton.ice_Celsius-41"><span class="linenos">41</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I2</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-42"><a href="#FlatauWalkoCotton.ice_Celsius-42"><span class="linenos">42</span></a>                <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-43"><a href="#FlatauWalkoCotton.ice_Celsius-43"><span class="linenos">43</span></a>                <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-44"><a href="#FlatauWalkoCotton.ice_Celsius-44"><span class="linenos">44</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_I3</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-45"><a href="#FlatauWalkoCotton.ice_Celsius-45"><span class="linenos">45</span></a>                    <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-46"><a href="#FlatauWalkoCotton.ice_Celsius-46"><span class="linenos">46</span></a>                    <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-47"><a href="#FlatauWalkoCotton.ice_Celsius-47"><span class="linenos">47</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_I4</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-48"><a href="#FlatauWalkoCotton.ice_Celsius-48"><span class="linenos">48</span></a>                        <span class="o">+</span> <span class="n">T</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-49"><a href="#FlatauWalkoCotton.ice_Celsius-49"><span class="linenos">49</span></a>                        <span class="o">*</span> <span class="p">(</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-50"><a href="#FlatauWalkoCotton.ice_Celsius-50"><span class="linenos">50</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I5</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-51"><a href="#FlatauWalkoCotton.ice_Celsius-51"><span class="linenos">51</span></a>                            <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I6</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I7</span> <span class="o">+</span> <span class="n">T</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I8</span><span class="p">))</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-52"><a href="#FlatauWalkoCotton.ice_Celsius-52"><span class="linenos">52</span></a>                        <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-53"><a href="#FlatauWalkoCotton.ice_Celsius-53"><span class="linenos">53</span></a>                    <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-54"><a href="#FlatauWalkoCotton.ice_Celsius-54"><span class="linenos">54</span></a>                <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-55"><a href="#FlatauWalkoCotton.ice_Celsius-55"><span class="linenos">55</span></a>            <span class="p">)</span>
-</span><span id="FlatauWalkoCotton.ice_Celsius-56"><a href="#FlatauWalkoCotton.ice_Celsius-56"><span class="linenos">56</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#FlatauWalkoCotton.pvs_ice"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FlatauWalkoCotton.pvs_ice-40"><a href="#FlatauWalkoCotton.pvs_ice-40"><span class="linenos">40</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-41"><a href="#FlatauWalkoCotton.pvs_ice-41"><span class="linenos">41</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-42"><a href="#FlatauWalkoCotton.pvs_ice-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I0</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-43"><a href="#FlatauWalkoCotton.pvs_ice-43"><span class="linenos">43</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I1</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-44"><a href="#FlatauWalkoCotton.pvs_ice-44"><span class="linenos">44</span></a>            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-45"><a href="#FlatauWalkoCotton.pvs_ice-45"><span class="linenos">45</span></a>            <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-46"><a href="#FlatauWalkoCotton.pvs_ice-46"><span class="linenos">46</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I2</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-47"><a href="#FlatauWalkoCotton.pvs_ice-47"><span class="linenos">47</span></a>                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-48"><a href="#FlatauWalkoCotton.pvs_ice-48"><span class="linenos">48</span></a>                <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-49"><a href="#FlatauWalkoCotton.pvs_ice-49"><span class="linenos">49</span></a>                    <span class="n">const</span><span class="o">.</span><span class="n">FWC_I3</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-50"><a href="#FlatauWalkoCotton.pvs_ice-50"><span class="linenos">50</span></a>                    <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-51"><a href="#FlatauWalkoCotton.pvs_ice-51"><span class="linenos">51</span></a>                    <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-52"><a href="#FlatauWalkoCotton.pvs_ice-52"><span class="linenos">52</span></a>                        <span class="n">const</span><span class="o">.</span><span class="n">FWC_I4</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-53"><a href="#FlatauWalkoCotton.pvs_ice-53"><span class="linenos">53</span></a>                        <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-54"><a href="#FlatauWalkoCotton.pvs_ice-54"><span class="linenos">54</span></a>                        <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-55"><a href="#FlatauWalkoCotton.pvs_ice-55"><span class="linenos">55</span></a>                            <span class="n">const</span><span class="o">.</span><span class="n">FWC_I5</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-56"><a href="#FlatauWalkoCotton.pvs_ice-56"><span class="linenos">56</span></a>                            <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-57"><a href="#FlatauWalkoCotton.pvs_ice-57"><span class="linenos">57</span></a>                            <span class="o">*</span> <span class="p">(</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-58"><a href="#FlatauWalkoCotton.pvs_ice-58"><span class="linenos">58</span></a>                                <span class="n">const</span><span class="o">.</span><span class="n">FWC_I6</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-59"><a href="#FlatauWalkoCotton.pvs_ice-59"><span class="linenos">59</span></a>                                <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-60"><a href="#FlatauWalkoCotton.pvs_ice-60"><span class="linenos">60</span></a>                                <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">FWC_I7</span> <span class="o">+</span> <span class="p">(</span><span class="n">T</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">FWC_I8</span><span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-61"><a href="#FlatauWalkoCotton.pvs_ice-61"><span class="linenos">61</span></a>                            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-62"><a href="#FlatauWalkoCotton.pvs_ice-62"><span class="linenos">62</span></a>                        <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-63"><a href="#FlatauWalkoCotton.pvs_ice-63"><span class="linenos">63</span></a>                    <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-64"><a href="#FlatauWalkoCotton.pvs_ice-64"><span class="linenos">64</span></a>                <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-65"><a href="#FlatauWalkoCotton.pvs_ice-65"><span class="linenos">65</span></a>            <span class="p">)</span>
+</span><span id="FlatauWalkoCotton.pvs_ice-66"><a href="#FlatauWalkoCotton.pvs_ice-66"><span class="linenos">66</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
