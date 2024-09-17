@@ -12,28 +12,26 @@ class MurphyKoop2005:
     @staticmethod
     def pvs_water(const, T):
         """valid for 123 < T < 332 K, eq (10)"""
-        T = T - const.T0  # convert temperature T from Kelvin to Celsius
         return const.MK05_LIQ_C1 * np.exp(
             const.MK05_LIQ_C2
-            - const.MK05_LIQ_C3 / (T + const.T0)
-            - const.MK05_LIQ_C4 * np.log((T + const.T0) / const.MK05_LIQ_C5)
-            + const.MK05_LIQ_C6 * (T + const.T0)
-            + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8))
+            - const.MK05_LIQ_C3 / (T)
+            - const.MK05_LIQ_C4 * np.log(T / const.MK05_LIQ_C5)
+            + const.MK05_LIQ_C6 * (T)
+            + np.tanh(const.MK05_LIQ_C7 * (T - const.MK05_LIQ_C8))
             * (
                 const.MK05_LIQ_C9
-                - const.MK05_LIQ_C10 / (T + const.T0)
-                - const.MK05_LIQ_C11 * np.log((T + const.T0) / const.MK05_LIQ_C12)
-                + const.MK05_LIQ_C13 * (T + const.T0)
+                - const.MK05_LIQ_C10 / T
+                - const.MK05_LIQ_C11 * np.log(T / const.MK05_LIQ_C12)
+                + const.MK05_LIQ_C13 * T
             )
         )
 
     @staticmethod
     def pvs_ice(const, T):
         """valid for T > 110 K, eq (7)"""
-        T = T - const.T0  # convert temperature T from Kelvin to Celsius
         return const.MK05_ICE_C1 * np.exp(
             const.MK05_ICE_C2
-            - const.MK05_ICE_C3 / (T + const.T0)
-            + const.MK05_ICE_C4 * np.log((T + const.T0) / const.MK05_ICE_C5)
-            - const.MK05_ICE_C6 * (T + const.T0)
+            - const.MK05_ICE_C3 / T
+            + const.MK05_ICE_C4 * np.log(T / const.MK05_ICE_C5)
+            - const.MK05_ICE_C6 * T
         )

@@ -10,32 +10,40 @@ class Lowe1977:
 
     @staticmethod
     def pvs_water(const, T):
-        T = T - const.T0  # convert temperature T from Kelvin to Celsius
-        return const.L77W_A0 + T * (
+        return const.L77W_A0 + (T - const.T0) * (
             const.L77W_A1
-            + T
+            + (T - const.T0)
             * (
                 const.L77W_A2
-                + T
+                + (T - const.T0)
                 * (
                     const.L77W_A3
-                    + T * (const.L77W_A4 + T * (const.L77W_A5 + T * (const.L77W_A6)))
+                    + (T - const.T0)
+                    * (
+                        const.L77W_A4
+                        + (T - const.T0)
+                        * (const.L77W_A5 + (T - const.T0) * (const.L77W_A6))
+                    )
                 )
             )
         )
 
     @staticmethod
     def pvs_ice(const, T):
-        T = T - const.T0  # convert temperature T from Kelvin to Celsius
-        return const.L77I_A0 + T * (
+        return const.L77I_A0 + (T - const.T0) * (
             const.L77I_A1
-            + T
+            + (T - const.T0)
             * (
                 const.L77I_A2
-                + T
+                + (T - const.T0)
                 * (
                     const.L77I_A3
-                    + T * (const.L77I_A4 + T * (const.L77I_A5 + T * (const.L77I_A6)))
+                    + (T - const.T0)
+                    * (
+                        const.L77I_A4
+                        + (T - const.T0)
+                        * (const.L77I_A5 + (T - const.T0) * (const.L77I_A6))
+                    )
                 )
             )
         )
