@@ -479,3 +479,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.attributes.mark_updated("multiplicity")
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
+
+    def deposition(self):
+        self.backend.deposition(
+            water_mass=self.attributes["water mass"]
+        )
+        self.attributes.mark_updated("water mass")
