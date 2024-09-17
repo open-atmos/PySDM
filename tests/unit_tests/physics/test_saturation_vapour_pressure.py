@@ -30,7 +30,9 @@ class TestSaturationVapourPressure:
                         and name == "pvs_ice"
                     ):
                         pyplot.plot(
-                            temperature, func(temperature), label=f"{key}::{name}"
+                            temperature,
+                            func(temperature + const.T0),
+                            label=f"{key}::{name}",
                         )
         pyplot.grid()
         pyplot.legend()
