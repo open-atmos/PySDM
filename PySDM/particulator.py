@@ -482,6 +482,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
     def deposition(self):
         self.backend.deposition(
-            water_mass=self.attributes["water mass"]
+            water_mass=self.attributes["water mass"],
+            ambient_temperature=self.environment["T"],
+            ambient_total_pressure=self.environment["P"],
+            time_step=self.dt,
+            cell_id=self.attributes["cell id"],
         )
         self.attributes.mark_updated("water mass")
