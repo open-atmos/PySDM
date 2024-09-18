@@ -12,6 +12,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
         mass_to_volume = self.formulae.particle_shape_and_density.mass_to_volume
         diffusion_coefficient_function = self.formulae.diffusion_thermics.D
+        liquid = self.formulae.trivia.unzfroze
 
         @numba.jit(**self.default_jit_flags)
         def body(
@@ -21,8 +22,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             n_sd = len(water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
 
-                if water_mass[i] < 0:
-
+                if not liquid(water_mass[i]):
                     cid = cell_id[i]
 
                     volume = mass_to_volume(water_mass[i])
