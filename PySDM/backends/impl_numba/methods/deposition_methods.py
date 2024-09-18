@@ -57,7 +57,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         temperature, pressure
                     )
 
-                    saturation_ratio_ice = 1.1  # formulae.saturation_vapour_pressure.pvs_ice( temperature )
+                    saturation_ratio_ice = (
+                        ambient_humidity[cid] / ambient_water_activity[cid]
+                    )
 
                     dm_dt = (
                         4
@@ -86,6 +88,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         water_mass,
         ambient_temperature,
         ambient_total_pressure,
+        ambient_humidity,
+        ambient_water_activity,
         time_step,
         cell_id,
         reynolds_number,
@@ -95,6 +99,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             water_mass=water_mass.data,
             ambient_temperature=ambient_temperature.data,
             ambient_total_pressure=ambient_total_pressure.data,
+            ambient_humidity=ambient_humidity.data,
+            ambient_water_activity=ambient_water_activity.data,
             time_step=time_step,
             cell_id=cell_id.data,
             reynolds_number=reynolds_number.data,
