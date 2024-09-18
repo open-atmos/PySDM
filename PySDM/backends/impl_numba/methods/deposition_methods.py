@@ -10,9 +10,10 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
     def _deposition(self):
         assert self.formulae.particle_shape_and_density.supports_mixed_phase()
 
-        mass_to_volume = self.formulae.particle_shape_and_density.mass_to_volume
+        formulae = self.formulae_flattened
+        liquid = formulae.trivia__unzfroze
+
         diffusion_coefficient_function = self.formulae.diffusion_thermics.D
-        liquid = self.formulae.trivia.unzfroze
 
         @numba.jit(**self.default_jit_flags)
         def body(
@@ -25,7 +26,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 if not liquid(water_mass[i]):
                     cid = cell_id[i]
 
-                    volume = mass_to_volume(water_mass[i])
+                    volume = formulae.particle_shape_and_density__mass_to_volume(
+                        water_mass[i]
+                    )
 
                     temperature = ambient_temperature[cid]
                     pressure = ambient_total_pressure[cid]
