@@ -1,5 +1,5 @@
 """
-particle volume as condensation coordinate (i.e. no transformation)
+particle volume as diffusion coordinate (i.e. no transformation)
 """
 
 import numpy as np

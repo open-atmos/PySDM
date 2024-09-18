@@ -1,5 +1,5 @@
 """
-definitions of particle-size coordinates for the condensation solver
+definitions of particle-size coordinates for the vapour diffusion solvers
 """
 
 from .volume import Volume

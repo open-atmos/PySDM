@@ -1,5 +1,6 @@
 """
-logarithm of particle volume as coordinate (ensures non-negative values)
+logarithm of particle volume as diffusion coordinate
+(ensures non-negative values)
 """
 
 import numpy as np

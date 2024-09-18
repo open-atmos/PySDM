@@ -390,7 +390,7 @@ class CondensationMethods(BackendMethods):
             K,
             ventilation_factor,
         ):
-            volume = formulae.condensation_coordinate__volume(x_new)
+            volume = formulae.diffusion_coordinate__volume(x_new)
             RH_eq = formulae.hygroscopicity__RH_eq(
                 formulae.trivia__radius(volume),
                 temperature,
@@ -413,7 +413,7 @@ class CondensationMethods(BackendMethods):
             return (
                 x_old
                 - x_new
-                + timestep * formulae.condensation_coordinate__dx_dt(x_new, r_dr_dt)
+                + timestep * formulae.diffusion_coordinate__dx_dt(x_new, r_dr_dt)
             )
 
         @numba.njit(**jit_flags)
@@ -445,11 +445,9 @@ class CondensationMethods(BackendMethods):
                 )
                 if v_drop <= 0:
                     continue
-                x_old = formulae.condensation_coordinate__x(v_drop)
+                x_old = formulae.diffusion_coordinate__x(v_drop)
                 r_old = formulae.trivia__radius(v_drop)
-                x_insane = formulae.condensation_coordinate__x(
-                    attributes.vdry[drop] / 100
-                )
+                x_insane = formulae.diffusion_coordinate__x(attributes.vdry[drop] / 100)
                 rd3 = attributes.vdry[drop] / formulae.constants.PI_4_3
                 sgm = formulae.surface_tension__sigma(
                     T, v_drop, attributes.vdry[drop], attributes.f_org[drop]
@@ -492,7 +490,7 @@ class CondensationMethods(BackendMethods):
                         Kr,
                         ventilation_factor,
                     )
-                    dx_old = timestep * formulae.condensation_coordinate__dx_dt(
+                    dx_old = timestep * formulae.diffusion_coordinate__dx_dt(
                         x_old, r_dr_dt_old
                     )
                 else:
@@ -562,7 +560,7 @@ class CondensationMethods(BackendMethods):
                         x_new = x_old
 
                 mass_new = formulae.particle_shape_and_density__volume_to_mass(
-                    formulae.condensation_coordinate__volume(x_new)
+                    formulae.diffusion_coordinate__volume(x_new)
                 )
                 mass_cr = formulae.particle_shape_and_density__volume_to_mass(
                     attributes.v_cr[drop]

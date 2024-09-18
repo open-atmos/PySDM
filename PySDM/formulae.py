@@ -30,7 +30,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         constants: Optional[dict] = None,
         seed: int = None,
         fastmath: bool = True,
-        condensation_coordinate: str = "VolumeLogarithm",
+        diffusion_coordinate: str = "VolumeLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
         latent_heat: str = "Kirchhoff",
         hygroscopicity: str = "KappaKoehlerLeadingTerms",
@@ -62,7 +62,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         # in PyCharm and alike, all these fields are later overwritten within this ctor
         self.optical_albedo = optical_albedo
         self.optical_depth = optical_depth
-        self.condensation_coordinate = condensation_coordinate
+        self.diffusion_coordinate = diffusion_coordinate
         self.saturation_vapour_pressure = saturation_vapour_pressure
         self.hygroscopicity = hygroscopicity
         self.drop_growth = drop_growth
