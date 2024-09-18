@@ -12,6 +12,7 @@ class VapourDepositionOnIce:
     def register(self, *, builder):
         """called by the builder"""
         self.particulator = builder.particulator
+        builder.request_attribute("Reynolds number")
 
     def __call__(self):
         """called by the particulator during simulation"""

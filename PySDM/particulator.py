@@ -487,5 +487,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             ambient_total_pressure=self.environment["P"],
             time_step=self.dt,
             cell_id=self.attributes["cell id"],
+            reynolds_number=self.attributes["Reynolds number"],
+            schmidt_number=self.environment["Schmidt number"],
         )
         self.attributes.mark_updated("water mass")
