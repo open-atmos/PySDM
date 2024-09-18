@@ -42,8 +42,13 @@ def test_iwc_lower_after_timestep(
         },
         products=(IceWaterContent(),),
     )
-    particulator.environment["T"] = 250 * si.K
+    temperature = 250 * si.K
+    particulator.environment["T"] = temperature
     particulator.environment["P"] = 500 * si.hPa
+    particulator.environment["RH"] = 1.1 * si.dimensionless
+    pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(temperature)
+    pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(temperature)
+    particulator.environment["a_w_ice"] = pvs_ice / pvs_water
     particulator.environment["Schmidt number"] = 1
 
     # act

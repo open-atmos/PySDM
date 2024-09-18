@@ -2,6 +2,7 @@
 
 from functools import cached_property
 import numba
+import numpy as np
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
@@ -20,6 +21,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             water_mass,
             ambient_temperature,
             ambient_total_pressure,
+            ambient_humidity,
+            ambient_water_activity,
             time_step,
             cell_id,
             reynolds_number,
@@ -30,6 +33,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
 
                 if not liquid(water_mass[i]):
+                    ice_mass = -water_mass[i]
                     cid = cell_id[i]
 
                     volume = formulae.particle_shape_and_density__mass_to_volume(
@@ -53,17 +57,26 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         temperature, pressure
                     )
 
-                    print(
-                        volume, temperature, pressure, diffusion_coefficient, time_step
+                    saturation_ratio_ice = 1.1  # formulae.saturation_vapour_pressure.pvs_ice( temperature )
+
+                    dm_dt = (
+                        4
+                        * np.pi
+                        * capacity
+                        * diffusion_coefficient
+                        * (saturation_ratio_ice - 1)
                     )
 
-                    dm_dt = 1.1
+                    print(
+                        f" {volume=}, {temperature=}, {pressure=}, {diffusion_coefficient=},"
+                    )
+                    print(f"  {time_step=},  {saturation_ratio_ice=}, {dm_dt=}")
 
-                    x_old = formulae.diffusion_coordinate__x(water_mass[i])
+                    x_old = formulae.diffusion_coordinate__x(ice_mass)
                     dx_dt_old = formulae.diffusion_coordinate__dx_dt(x_old, dm_dt)
                     x_new = formulae.trivia__explicit_euler(x_old, time_step, dx_dt_old)
 
-                    water_mass[i] = formulae.diffusion_coordinate__mass(x_new)
+                    water_mass[i] = -formulae.diffusion_coordinate__mass(x_new)
 
         return body
 
