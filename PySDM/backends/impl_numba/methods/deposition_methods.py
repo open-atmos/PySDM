@@ -23,14 +23,18 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             ambient_total_pressure,
             ambient_humidity,
             ambient_water_activity,
+            ambient_vapour_mixing_ratio,
+            ambient_dry_air_density,
+            cell_volume,
             time_step,
             cell_id,
             reynolds_number,
             schmidt_number,
         ):
-
+            delta_vapour_mass = 0.0
             n_sd = len(water_mass)
-            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+            # for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+            for i in range(n_sd):
 
                 if not liquid(water_mass[i]):
                     ice_mass = -water_mass[i]
@@ -70,6 +74,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     )
                     if dm_dt == 0:
                         continue
+                    ambient_vapour_mixing_ratio[cell_id] -= (
+                        dm_dt * time_step / (cell_volume * ambient_dry_air_density)
+                    )
                     print(
                         f" {volume=}, {temperature=}, {pressure=}, {diffusion_coefficient=},"
                     )
@@ -91,6 +98,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         ambient_total_pressure,
         ambient_humidity,
         ambient_water_activity,
+        ambient_vapour_mixing_ratio,
+        ambient_dry_air_density,
+        cell_volume,
         time_step,
         cell_id,
         reynolds_number,
@@ -102,6 +112,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             ambient_total_pressure=ambient_total_pressure.data,
             ambient_humidity=ambient_humidity.data,
             ambient_water_activity=ambient_water_activity.data,
+            ambient_vapour_mixing_ratio=ambient_vapour_mixing_ratio.data,
+            ambient_dry_air_density=ambient_dry_air_density.data,
+            cell_volume=cell_volume,
             time_step=time_step,
             cell_id=cell_id.data,
             reynolds_number=reynolds_number.data,
