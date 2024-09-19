@@ -68,7 +68,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         * diffusion_coefficient
                         * (saturation_ratio_ice - 1)
                     )
-
+                    if dm_dt == 0:
+                        continue
                     print(
                         f" {volume=}, {temperature=}, {pressure=}, {diffusion_coefficient=},"
                     )
