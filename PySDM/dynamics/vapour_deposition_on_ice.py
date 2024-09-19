@@ -12,6 +12,7 @@ class VapourDepositionOnIce:
     def register(self, *, builder):
         """called by the builder"""
         self.particulator = builder.particulator
+        assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
         builder.request_attribute("Reynolds number")
 
     def __call__(self):
