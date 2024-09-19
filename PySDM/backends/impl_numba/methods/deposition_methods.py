@@ -18,6 +18,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
         @numba.jit(**self.default_jit_flags)
         def body(
+            multiplicity,
             water_mass,
             ambient_temperature,
             ambient_total_pressure,
@@ -59,37 +60,35 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         ambient_humidity[cid] / ambient_water_activity[cid]
                     )
 
+                    rho_vs_ice = (
+                        formulae.saturation_vapour_pressure__pvs_ice(temperature)
+                        / formulae.constants.Rv
+                        / temperature
+                    )
                     dm_dt = (
                         4
                         * np.pi
                         * capacity
                         * diffusion_coefficient
                         * (saturation_ratio_ice - 1)
-                    )
-                    # print("dm_dt", dm_dt)
+                    ) * rho_vs_ice
+
                     if dm_dt == 0:
                         continue
+
                     delta_rv_i = (
                         -dm_dt
+                        * multiplicity[i]
                         * time_step
                         / (cell_volume * ambient_dry_air_density[cid])
                     )
                     if -delta_rv_i > ambient_vapour_mixing_ratio[cid]:
                         assert False
-                    # print('delta_rv_i', delta_rv_i)
-                    # print('A', ambient_vapour_mixing_ratio[cid])
                     ambient_vapour_mixing_ratio[cid] += delta_rv_i
-                    # print('B', ambient_vapour_mixing_ratio[cid])
-                    # print(
-                    #     f" {volume=}, {temperature=}, {pressure=}, {diffusion_coefficient=},"
-                    # )
-                    # print(f"  {time_step=},  {saturation_ratio_ice=}, {dm_dt=}")
 
                     x_old = formulae.diffusion_coordinate__x(ice_mass)
                     dx_dt_old = formulae.diffusion_coordinate__dx_dt(x_old, dm_dt)
                     x_new = formulae.trivia__explicit_euler(x_old, time_step, dx_dt_old)
-
-                    # print(x_old, x_new, dm_dt)
 
                     water_mass[i] = -formulae.diffusion_coordinate__mass(x_new)
 
@@ -98,6 +97,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
     def deposition(
         self,
         *,
+        multiplicity,
         water_mass,
         ambient_temperature,
         ambient_total_pressure,
@@ -112,6 +112,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         schmidt_number,
     ):
         self._deposition(
+            multiplicity=multiplicity.data,
             water_mass=water_mass.data,
             ambient_temperature=ambient_temperature.data,
             ambient_total_pressure=ambient_total_pressure.data,

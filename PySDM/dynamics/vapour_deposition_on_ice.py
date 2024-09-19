@@ -18,3 +18,4 @@ class VapourDepositionOnIce:
     def __call__(self):
         """called by the particulator during simulation"""
         self.particulator.deposition()
+        self.particulator.update_TpRH()

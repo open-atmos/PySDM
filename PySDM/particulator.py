@@ -482,12 +482,15 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
     def deposition(self):
         self.backend.deposition(
+            multiplicity=self.attributes["multiplicity"],
             water_mass=self.attributes["water mass"],
             ambient_temperature=self.environment["T"],
             ambient_total_pressure=self.environment["P"],
             ambient_humidity=self.environment["RH"],
             ambient_water_activity=self.environment["a_w_ice"],
-            ambient_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
+            ambient_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
             ambient_dry_air_density=self.environment["rhod"],
             cell_volume=self.environment.mesh.dv,
             time_step=self.dt,

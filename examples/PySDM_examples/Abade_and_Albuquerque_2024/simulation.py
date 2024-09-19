@@ -13,6 +13,7 @@ from PySDM.dynamics import (
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import (
     AmbientTemperature,
+    AmbientWaterVapourMixingRatio,
     ParcelDisplacement,
     WaterMixingRatio,
     SpecificIceWaterContent,
@@ -36,13 +37,12 @@ class Simulation(BasicSimulation):
             ),
         )
         builder.add_dynamic(AmbientThermodynamics())
+        builder.add_dynamic(Condensation())
 
         if settings.enable_immersion_freezing:
             builder.add_dynamic(Freezing())
         if settings.enable_vapour_deposition_on_ice:
             builder.add_dynamic(VapourDepositionOnIce())
-
-        builder.add_dynamic(Condensation())
 
         r_dry, n_in_dv = ConstantMultiplicity(settings.soluble_aerosol).sample(
             n_sd=settings.n_sd
@@ -63,6 +63,9 @@ class Simulation(BasicSimulation):
             SpecificIceWaterContent(name="ice"),
             ParcelDisplacement(name="height"),
             AmbientTemperature(name="T"),
+            AmbientWaterVapourMixingRatio(
+                name="vapour", var="water_vapour_mixing_ratio"
+            ),
         )
         super().__init__(
             particulator=builder.build(attributes=attributes, products=self.products)
