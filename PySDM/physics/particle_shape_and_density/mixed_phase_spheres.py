@@ -10,7 +10,7 @@ class MixedPhaseSpheres:
         pass
 
     @staticmethod
-    def supports_mixed_phase(_=None):
+    def supports_mixed_phase(_=None):  # TODO: rename to "ice_phase?"
         return True
 
     @staticmethod
