@@ -7,9 +7,18 @@ from PySDM.initialisation.spectra import Lognormal
 
 @strict
 class Settings:
-    def __init__(self, *, n_sd: int, timestep: float):
+    def __init__(
+        self,
+        *,
+        n_sd: int,
+        timestep: float,
+        enable_immersion_freezing: bool = True,
+        enable_vapour_deposition_on_ice: bool = True,
+    ):
         self.n_sd = n_sd
         self.timestep = timestep
+        self.enable_immersion_freezing = enable_immersion_freezing
+        self.enable_vapour_deposition_on_ice = enable_vapour_deposition_on_ice
 
         self.initial_total_pressure = 1000 * si.hPa  # note: not given in the paper
 
@@ -17,6 +26,8 @@ class Settings:
         self.formulae = Formulae(
             constants={"bulk_phase_partitioning_exponent": 0.1},
             bulk_phase_partitioning="KaulEtAl2015",
+            particle_shape_and_density="MixedPhaseSpheres",
+            diffusion_coordinate="Mass",
         )
         self.initial_water_vapour_mixing_ratio = 1.5 * si.g / si.kg
         self.parcel_linear_extent = 100 * si.m

@@ -31,18 +31,12 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             reynolds_number,
             schmidt_number,
         ):
-            delta_vapour_mass = 0.0
             n_sd = len(water_mass)
             # for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
             for i in range(n_sd):
-
                 if not liquid(water_mass[i]):
                     ice_mass = -water_mass[i]
                     cid = cell_id[i]
-
-                    volume = formulae.particle_shape_and_density__mass_to_volume(
-                        water_mass[i]
-                    )
 
                     temperature = ambient_temperature[cid]
                     pressure = ambient_total_pressure[cid]
@@ -72,19 +66,30 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         * diffusion_coefficient
                         * (saturation_ratio_ice - 1)
                     )
+                    # print("dm_dt", dm_dt)
                     if dm_dt == 0:
                         continue
-                    ambient_vapour_mixing_ratio[cell_id] -= (
-                        dm_dt * time_step / (cell_volume * ambient_dry_air_density)
+                    delta_rv_i = (
+                        -dm_dt
+                        * time_step
+                        / (cell_volume * ambient_dry_air_density[cid])
                     )
-                    print(
-                        f" {volume=}, {temperature=}, {pressure=}, {diffusion_coefficient=},"
-                    )
-                    print(f"  {time_step=},  {saturation_ratio_ice=}, {dm_dt=}")
+                    if -delta_rv_i > ambient_vapour_mixing_ratio[cid]:
+                        assert False
+                    # print('delta_rv_i', delta_rv_i)
+                    # print('A', ambient_vapour_mixing_ratio[cid])
+                    ambient_vapour_mixing_ratio[cid] += delta_rv_i
+                    # print('B', ambient_vapour_mixing_ratio[cid])
+                    # print(
+                    #     f" {volume=}, {temperature=}, {pressure=}, {diffusion_coefficient=},"
+                    # )
+                    # print(f"  {time_step=},  {saturation_ratio_ice=}, {dm_dt=}")
 
                     x_old = formulae.diffusion_coordinate__x(ice_mass)
                     dx_dt_old = formulae.diffusion_coordinate__dx_dt(x_old, dm_dt)
                     x_new = formulae.trivia__explicit_euler(x_old, time_step, dx_dt_old)
+
+                    # print(x_old, x_new, dm_dt)
 
                     water_mass[i] = -formulae.diffusion_coordinate__mass(x_new)
 
