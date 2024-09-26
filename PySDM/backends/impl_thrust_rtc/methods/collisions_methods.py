@@ -34,11 +34,13 @@ struct Commons {
     VectorView<real_type> gamma,
     VectorView<real_type> attributes,
     VectorView<int64_t> coalescence_rate,
+    VectorView<bool_t> flag_coalescence,
     int64_t n_attr,
     int64_t n_sd
   ) {
     auto cid = cell_id[j];
     atomicAdd((unsigned long long int*)&coalescence_rate[cid], (unsigned long long int)(gamma[i] * multiplicity[k]));
+    flag_coalescence[j] = flag_coalescence[k] = true;
     auto new_n = multiplicity[j] - gamma[i] * multiplicity[k];
     if (new_n > 0) {
         multiplicity[j] = new_n;
@@ -328,6 +330,7 @@ class CollisionsMethods(
                 "cell_id",
                 "coalescence_rate",
                 "is_first_in_pair",
+                "flag_coalescence",
             ),
             name_iter="i",
             body=f"""
@@ -341,7 +344,7 @@ class CollisionsMethods(
                 return;
             }}
 
-            Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
+            Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, flag_coalescence, n_attr, n_sd);
 
             Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
             """.replace(
@@ -369,6 +372,7 @@ class CollisionsMethods(
                 "is_first_in_pair",
                 "max_multiplicity",
                 "particle_mass",
+                "flag_coalescence",
                 "n_sd",
                 "n_attr",
             ),
@@ -398,6 +402,7 @@ class CollisionsMethods(
                     gamma,
                     attributes,
                     coalescence_rate,
+                    flag_coalescence,
                     n_attr,
                     n_sd
                 );
@@ -793,6 +798,7 @@ class CollisionsMethods(
         cell_id,
         coalescence_rate,
         is_first_in_pair,
+        flag_coalescence,
     ):
         if len(idx) < 2:
             return
@@ -811,6 +817,7 @@ class CollisionsMethods(
                 cell_id.data,
                 coalescence_rate.data,
                 is_first_in_pair.indicator.data,
+                flag_coalescence.data,
             ),
         )
 
@@ -835,6 +842,7 @@ class CollisionsMethods(
         warn_overflows,
         particle_mass,
         max_multiplicity,
+        flag_coalescence,
     ):
         if warn_overflows:
             raise NotImplementedError()
@@ -861,6 +869,7 @@ class CollisionsMethods(
                 is_first_in_pair.indicator.data,
                 trtc.DVInt64(max_multiplicity),
                 particle_mass.data,
+                flag_coalescence.data,
                 n_sd,
                 n_attr,
             ),
