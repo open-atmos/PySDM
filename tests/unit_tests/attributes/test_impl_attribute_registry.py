@@ -20,7 +20,7 @@ class TestAttributeRegistry:
     def test_get_attribute_class_fail():
         """checks if inquiring for an invalid attribute name raises an exception"""
         with pytest.raises(ValueError):
-            assert get_attribute_class("lorem ipsum")
+            get_attribute_class("lorem ipsum")
 
     @staticmethod
     def test_get_attribute_class_variant_fail():
@@ -31,7 +31,14 @@ class TestAttributeRegistry:
             """Dummy class"""
 
         with pytest.raises(AssertionError):
-            assert get_attribute_class("umaminess")
+            get_attribute_class("umaminess")
+
+    @staticmethod
+    def test_get_attribute_class_error_message_hints():
+        """check if error message thrown on unknown attribute error contains list of valid names"""
+        with pytest.raises(ValueError) as excinfo:
+            get_attribute_class("XXX")
+        assert "multiplicity" in str(excinfo.value)
 
     @staticmethod
     def test_register_attribute_fail_on_repeated_name():
