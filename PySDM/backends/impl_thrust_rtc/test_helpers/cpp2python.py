@@ -35,6 +35,7 @@ CPPYTHON = {
     "(float)": "np.float32",
     "return;": "continue",
     "void*": "",
+    "VectorView<bool_t> ": "",
     "VectorView<int64_t> ": "",
     "VectorView<float> ": "",
     "VectorView<double> ": "",

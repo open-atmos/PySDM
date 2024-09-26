@@ -164,6 +164,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         is_first_in_pair,
         warn_overflows,
         max_multiplicity,
+        flag_coalescence,
     ):
         # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
@@ -190,6 +191,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 warn_overflows=warn_overflows,
                 particle_mass=self.attributes["water mass"],
                 max_multiplicity=max_multiplicity,
+                flag_coalescence=flag_coalescence,
             )
         else:
             self.backend.collision_coalescence(
@@ -201,6 +203,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
                 is_first_in_pair=is_first_in_pair,
+                flag_coalescence=flag_coalescence,
             )
         self.attributes.sanitize()
         self.attributes.mark_updated("multiplicity")
