@@ -14,7 +14,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         formulae = self.formulae_flattened
         liquid = formulae.trivia__unfrozen
 
-        diffusion_coefficient_function = self.formulae.diffusion_thermics.D
+  #      diffusion_coefficient_function = self.formulae.diffusion_thermics.D
+  #      diffusion_kinetic_correction_function = self.formulae.diffusion_thermics.D
 
         @numba.jit(**self.default_jit_flags)
         def body(
@@ -52,9 +53,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         )
                     )
 
-                    diffusion_coefficient = diffusion_coefficient_function(
-                        temperature, pressure
-                    )
+                    DTp = formulae.diffusion_thermics__D(temperature, pressure)
+                    
+                    diffusion_coefficient = formulae.diffusion_ice_kinetics__D(DTp, 0., temperature)
 
                     saturation_ratio_ice = (
                         ambient_humidity[cid] / ambient_water_activity[cid]

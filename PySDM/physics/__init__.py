@@ -21,6 +21,7 @@ from . import (
     condensation_coordinate,
     constants_defaults,
     diffusion_kinetics,
+    diffusion_ice_kinetics,
     diffusion_thermics,
     drop_growth,
     fragmentation_function,

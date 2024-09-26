@@ -18,6 +18,11 @@ from PySDM.products import IceWaterContent
 @pytest.mark.parametrize("RHi", (1.1, 1.0, 0.9))
 @pytest.mark.parametrize("fastmath", (True, False))
 @pytest.mark.parametrize("diffusion_coordinate", ("Mass", "MassLogarithm"))
+# @pytest.mark.parametrize("dt", (1 * si.s,))
+# @pytest.mark.parametrize("water_mass", (-si.mg,))
+# @pytest.mark.parametrize("RHi", (1.1,))
+# @pytest.mark.parametrize("fastmath", (False,))
+# @pytest.mark.parametrize("diffusion_coordinate", ("Mass",))
 def test_iwc_lower_after_timestep(
     dt, water_mass, RHi, fastmath, diffusion_coordinate, dv=1 * si.m**3
 ):
@@ -51,7 +56,7 @@ def test_iwc_lower_after_timestep(
     pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(temperature)
     vapour_pressure = RHi * pvs_ice
     RH = vapour_pressure / pvs_water
-    particulator.environment["RH"] = RH  # 1.1 * si.dimensionless
+    particulator.environment["RH"] = RH
     particulator.environment["a_w_ice"] = pvs_ice / pvs_water
     particulator.environment["Schmidt number"] = 1
     rv0 = (
