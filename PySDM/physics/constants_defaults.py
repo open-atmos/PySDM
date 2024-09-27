@@ -62,9 +62,13 @@ D_exp = 1.81
 
 K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
 
-# mass and heat accommodation coefficients
+# mass and heat accommodation coefficients for condensation
 MAC = 1.0
 HAC = 1.0
+
+# mass and heat accommodation coefficients for vapour deposition on ice
+MAC_ice = 0.5
+HAC_ice = 0.7
 
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
@@ -134,6 +138,10 @@ k_l19_c = 0.017 / si.kelvin
 
 # Delta v for diffusivity in Pruppacher & Klett eq. 13-14
 dv_pk05 = 0.0 * si.metres
+
+# mean free path of lambda of water molecules
+# in pruppacher und klett 
+lmbd_w_0 = 6.6e-8 * si.metre
 
 # Seinfeld & Pandis eq. 15.65 (Hall & Pruppacher 1976)
 d_l19_a = 0.211e-4 * si.metre**2 / si.second

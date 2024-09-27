@@ -69,7 +69,7 @@ def test_iwc_lower_after_timestep(
         temperature * particulator.formulae.constants.Rd
     )
 
-    print(f" {RHi=}, {RH=}, {vapour_pressure=}, {pvs_ice=}, {pvs_water=}")
+
 
     # act
     iwc_old = particulator.products["ice water content"].get().copy()

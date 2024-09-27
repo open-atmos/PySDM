@@ -13,9 +13,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
         formulae = self.formulae_flattened
         liquid = formulae.trivia__unfrozen
-
-  #      diffusion_coefficient_function = self.formulae.diffusion_thermics.D
-  #      diffusion_kinetic_correction_function = self.formulae.diffusion_thermics.D
+        
 
         @numba.jit(**self.default_jit_flags)
         def body(
@@ -40,8 +38,13 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     ice_mass = -water_mass[i]
                     cid = cell_id[i]
 
+                    radius = formulae.particle_shape_and_density__ice_mass_to_radius(
+                        water_mass[i]
+                    )
+
                     temperature = ambient_temperature[cid]
                     pressure = ambient_total_pressure[cid]
+                    rho = ambient_dry_air_density[cid]
                     capacity = formulae.particle_shape_and_density__ice_mass_to_radius(
                         water_mass[i]
                     )
@@ -53,9 +56,13 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         )
                     )
 
-                    DTp = formulae.diffusion_thermics__D(temperature, pressure)
-                    
-                    diffusion_coefficient = formulae.diffusion_ice_kinetics__D(DTp, 0., temperature)
+                    Dv_const = formulae.diffusion_thermics__D(temperature, pressure)
+                    lambdaD = formulae.diffusion_ice_kinetics__lambdaD(temperature, pressure)
+                    diffusion_coefficient = formulae.diffusion_ice_kinetics__D(Dv_const, radius, lambdaD, temperature)
+
+                    Ka_const = formulae.diffusion_thermics__K(temperature, pressure)
+                    lambdaK = formulae.diffusion_ice_kinetics__lambdaK(temperature, pressure)
+                    thermal_conductivity = formulae.diffusion_ice_kinetics__K(Ka_const,  radius, lambdaK, temperature, rho)  
 
                     saturation_ratio_ice = (
                         ambient_humidity[cid] / ambient_water_activity[cid]
@@ -81,7 +88,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         -dm_dt
                         * multiplicity[i]
                         * time_step
-                        / (cell_volume * ambient_dry_air_density[cid])
+                        / (cell_volume * rho)
                     )
                     if -delta_rv_i > ambient_vapour_mixing_ratio[cid]:
                         assert False
