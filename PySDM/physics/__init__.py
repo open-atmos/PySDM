@@ -22,6 +22,7 @@ from . import (
     constants_defaults,
     diffusion_kinetics,
     diffusion_ice_kinetics,
+    diffusion_ice_capacity,
     diffusion_thermics,
     drop_growth,
     fragmentation_function,

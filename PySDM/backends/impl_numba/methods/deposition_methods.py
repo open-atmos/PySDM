@@ -32,7 +32,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             schmidt_number,
         ):
             n_sd = len(water_mass)
-            # for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+            ## for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
             for i in range(n_sd):
                 if not liquid(water_mass[i]):
                     ice_mass = -water_mass[i]
@@ -41,14 +41,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     radius = formulae.particle_shape_and_density__ice_mass_to_radius(
                         water_mass[i]
                     )
+                    diameter = radius * 2.
 
                     temperature = ambient_temperature[cid]
                     pressure = ambient_total_pressure[cid]
                     rho = ambient_dry_air_density[cid]
-                    capacity = formulae.particle_shape_and_density__ice_mass_to_radius(
-                        water_mass[i]
-                    )
-
+               
+                    capacity = formulae.diffusion_ice_capacity__capacity( diameter )
+                    
                     ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=reynolds_number[i],
