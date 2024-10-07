@@ -131,6 +131,7 @@ l_tri = 2.5e6 * si.joule / si.kilogram
 l_l19_a = 0.167 * si.dimensionless
 l_l19_b = 3.65e-4 / si.kelvin
 
+
 # Thermal diffusivity constants from Lowe et al. (2019)
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
@@ -167,6 +168,13 @@ MK05_LIQ_C10 = 1331.22 * si.K
 MK05_LIQ_C11 = 9.44523 * si.dimensionless
 MK05_LIQ_C12 = 1 * si.K
 MK05_LIQ_C13 = 0.014025 / si.K
+
+# Latent heat of sublimation from Murphy and Koop (2005)
+MK05_SUB_C1 = 46782.5 * si.joule /  si.mole
+MK05_SUB_C2 = 35.8925 * si.joule /  si.mole / si.kelvin
+MK05_SUB_C3 = 0.07414 * si.joule /  si.mole / si.kelvin**2
+MK05_SUB_C4 = 541.5 * si.joule /  si.mole
+MK05_SUB_C5 = 123.75 * si.kelvin
 
 # standard pressure and temperature (ICAO)
 T_STP = (sci.zero_Celsius + 15) * si.kelvin

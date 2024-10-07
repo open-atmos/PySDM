@@ -64,6 +64,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     lambdaK = formulae.diffusion_ice_kinetics__lambdaK(temperature, pressure)
                     thermal_conductivity = formulae.diffusion_ice_kinetics__K(Ka_const,  radius, lambdaK, temperature, rho)  
 
+                    latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
+
+                    
                     saturation_ratio_ice = (
                         ambient_humidity[cid] / ambient_water_activity[cid]
                     )
