@@ -1,12 +1,13 @@
 """
 transition-regime correction as in 'Physics and Chemistry of Clouds' by Lamb and Verlinde (2011), Chapter 8.2  
+or 13.1 in Pruppbacher and Klett (2010)
 with free pathway of air/vapour (lambdaD) after Pruppacher and Klett (2010)
 """
 
 import numpy as np
 
 
-class LambVerlinde:
+class Standard:
     def __init__(self, _):
         pass
     
