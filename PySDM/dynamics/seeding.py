@@ -39,7 +39,6 @@ class Seeding:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        # self.environment = builder.particulator.environment
 
     def post_register_setup_when_attributes_are_known(self):
         if tuple(self.particulator.attributes.get_extensive_attribute_keys()) != tuple(
@@ -75,7 +74,6 @@ class Seeding:
                 ),
             )
         )
-        # if self.environment.__class__.__name__ == 'Kinematic1D':
         self.seeded_particle_cell_id = self.particulator.IndexedStorage.from_ndarray(
             self.index,
             np.asarray(self.seeded_particle_cell_id),
