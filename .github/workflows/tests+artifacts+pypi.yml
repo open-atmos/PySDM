@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
         with:
-          python-version: 3.8
+          python-version: 3.9
       - run: |
           pip install pre-commit
           pre-commit clean
@@ -123,11 +123,11 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
-        python-version: ["3.8", "3.11"]
+        python-version: ["3.9", "3.11"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - test-suite: "devops_tests"
-            python-version: "3.8"
+            python-version: "3.9"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 25 }}
@@ -176,7 +176,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
-        python-version: ["3.8", "3.11"]
+        python-version: ["3.9", "3.11"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -212,7 +212,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
-        python-version: ["3.8", "3.11"]
+        python-version: ["3.9", "3.11"]
         test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
@@ -304,7 +304,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
-        python-version: ["3.8", "3.11", "system"]
+        python-version: ["3.9", "3.11", "system"]
         exclude:
           - platform: ubuntu-latest
             python-version: system
@@ -313,7 +313,7 @@ jobs:
           - platform: windows-latest
             python-version: system
           - platform: macos-14
-            python-version: "3.8"
+            python-version: "3.9"
           - platform: macos-14
             python-version: "3.11"
     runs-on: ${{ matrix.platform }}
