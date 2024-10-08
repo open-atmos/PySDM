@@ -46,6 +46,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     temperature = ambient_temperature[cid]
                     pressure = ambient_total_pressure[cid]
                     rho = ambient_dry_air_density[cid]
+                    Rv = formulae.constants.Rv
+                    pvs_ice =  formulae.saturation_vapour_pressure__pvs_ice(temperature)
+                    latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
                
                     capacity = formulae.diffusion_ice_capacity__capacity( diameter )
                     
@@ -64,18 +67,20 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     lambdaK = formulae.diffusion_ice_kinetics__lambdaK(temperature, pressure)
                     thermal_conductivity = formulae.diffusion_ice_kinetics__K(Ka_const,  radius, lambdaK, temperature, rho)  
 
-                    latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
-
+                  
+                    howell_factor = 1. / ((latent_heat_sub / Rv / temperature - 1.) * latent_heat_sub * diffusion_coefficient / temperature / thermal_conductivity +  Rv * temperature  /  pvs_ice)
+                    # print( f" {howell_factor=}, {latent_heat_sub= }, {Rv=}, {Dv_const=}, {diffusion_coefficient=}, {Ka_const=}, {thermal_conductivity=}, {pvs_ice=}")
                     
                     saturation_ratio_ice = (
                         ambient_humidity[cid] / ambient_water_activity[cid]
                     )
 
                     rho_vs_ice = (
-                        formulae.saturation_vapour_pressure__pvs_ice(temperature)
-                        / formulae.constants.Rv
+                        pvs_ice
+                        / Rv
                         / temperature
                     )
+                    
                     dm_dt = (
                         4
                         * np.pi
