@@ -193,9 +193,14 @@ class Simulation:
                         attributes[name][copy] = array * (
                             1 - self.settings.freezing_inp_frac
                         )
-                    elif len(array.shape) > 1:
-                        attributes[name][:, orig] = array
-                        attributes[name][:, copy] = array
+                    elif len(array.shape) > 1:  # particle positions
+                        # TODO: #599: seed
+                        for dim, _ in enumerate(array.shape):
+                            # only to make particles not shadow each other in visualisations
+                            attributes[name][dim, orig] = array[dim, :]
+                            attributes[name][dim, copy] = np.random.permutation(
+                                array[dim, :]
+                            )
                     else:
                         attributes[name][orig] = array
                         attributes[name][copy] = array
