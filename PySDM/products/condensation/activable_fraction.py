@@ -3,9 +3,10 @@ fraction of particles with critical supersaturation lower than a given supersatu
  (passed as keyword argument while calling `get()`)
 """
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class ActivableFraction(MomentProduct):
     def __init__(self, unit="dimensionless", name=None):
         super().__init__(name=name, unit=unit)

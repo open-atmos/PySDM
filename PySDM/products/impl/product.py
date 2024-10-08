@@ -3,21 +3,20 @@ logic around the `PySDM.products.impl.product.Product` - parent class for all pr
 """
 
 import inspect
-import re
 from abc import abstractmethod
 from typing import Optional
 
 import pint
 
 from PySDM.physics.constants import PPB, PPM, PPT
+from PySDM.impl.camel_case import camel_case_to_words
 
 _UNIT_REGISTRY = pint.UnitRegistry()
-_CAMEL_CASE_PATTERN = re.compile(r"[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])")
 
 
 class Product:
     def __init__(self, *, unit: str, name: Optional[str] = None):
-        self.name = name or self._camel_case_to_words(self.__class__.__name__)
+        self.name = name or camel_case_to_words(self.__class__.__name__)
 
         self._unit = self._parse_unit(unit)
         self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
@@ -51,12 +50,6 @@ class Product:
             return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
-    @staticmethod
-    def _camel_case_to_words(string: str):
-        words = _CAMEL_CASE_PATTERN.findall(string)
-        words = (word if word.isupper() else word.lower() for word in words)
-        return " ".join(words)
-
     def __check_unit(self):
         init = inspect.signature(self.__init__)
         if "unit" not in init.parameters:
@@ -67,7 +60,11 @@ class Product:
 
         default_unit_arg = init.parameters["unit"].default
 
-        if default_unit_arg is None or str(default_unit_arg).strip() == "":
+        if (
+            default_unit_arg is inspect._empty
+            or default_unit_arg is None
+            or str(default_unit_arg).strip() == ""
+        ):
             raise AssertionError(
                 f"unit parameter of {type(self).__name__}.__init__"
                 f" is expected to have a non-empty default value"

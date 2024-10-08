@@ -7,7 +7,8 @@ from collections import namedtuple
 
 import numpy as np
 
-from ..physics import si
+from PySDM.physics import si
+from PySDM.dynamics.impl import register_dynamic
 
 DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
     rtol_x=1e-6,
@@ -17,6 +18,7 @@ DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
 )
 
 
+@register_dynamic()
 class Condensation:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,

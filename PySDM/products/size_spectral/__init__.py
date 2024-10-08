@@ -19,7 +19,7 @@ from .particle_concentration_activated import (
     ActivatedParticleSpecificConcentration,
 )
 from .particle_size_spectrum import (
-    ParticleSizeSpectrumPerMass,
+    ParticleSizeSpectrumPerMassOfDryAir,
     ParticleSizeSpectrumPerVolume,
 )
 from .particle_volume_versus_radius_logarithm_spectrum import (

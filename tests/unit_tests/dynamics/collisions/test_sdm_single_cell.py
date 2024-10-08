@@ -213,9 +213,9 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
-    def test_compute_gamma(backend_class):
+    def test_compute_gamma(backend_instance):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
@@ -268,7 +268,7 @@ class TestSDMSingleCell:
     )
     def test_rnd_reuse(backend_class, optimized_random, adaptive):
         if backend_class is ThrustRTC:
-            return  # TODO #330
+            pytest.skip("# TODO #330")
 
         # Arrange
         n_sd = 256
@@ -277,7 +277,10 @@ class TestSDMSingleCell:
         n_substeps = 5
 
         particles, sut = get_dummy_particulator_and_coalescence(
-            backend_class, n_sd, optimized_random=optimized_random, substeps=n_substeps
+            backend_class,
+            n_sd,
+            optimized_random=optimized_random,
+            substeps=n_substeps,
         )
         attributes = {"multiplicity": n, "volume": v}
         particles.build(attributes)

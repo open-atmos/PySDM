@@ -2,7 +2,6 @@
 import inspect
 import sys
 from collections import namedtuple
-from typing import Tuple
 
 import numpy as np
 import pytest
@@ -27,7 +26,7 @@ from PySDM.products import (
     MeanVolumeRadius,
     NumberSizeSpectrum,
     ParcelLiquidWaterPath,
-    ParticleSizeSpectrumPerMass,
+    ParticleSizeSpectrumPerMassOfDryAir,
     ParticleSizeSpectrumPerVolume,
     ParticleVolumeVersusRadiusLogarithmSpectrum,
     RadiusBinnedNumberAveragedTerminalVelocity,
@@ -35,14 +34,13 @@ from PySDM.products import (
     TotalDryMassMixingRatio,
     VolumeStandardDeviation,
 )
-from PySDM.products.impl.product import Product
-from PySDM.products.impl.rate_product import RateProduct
+from PySDM.products.impl import Product, RateProduct, register_product
 
 _ARGUMENTS = {
     AqueousMassSpectrum: {"key": "S_VI", "dry_radius_bins_edges": (0, np.inf)},
     AqueousMoleFraction: {"key": "S_VI"},
     TotalDryMassMixingRatio: {"density": 1},
-    ParticleSizeSpectrumPerMass: {"radius_bins_edges": (0, np.inf)},
+    ParticleSizeSpectrumPerMassOfDryAir: {"radius_bins_edges": (0, np.inf)},
     GaseousMoleFraction: {"key": "O3"},
     FreezableSpecificConcentration: {"temperature_bins_edges": (0, 300)},
     DynamicWallTime: {"dynamic": "Condensation"},
@@ -147,20 +145,6 @@ class TestProducts:
         np.testing.assert_allclose(value2, count / n_steps / dt / dv / rhod)
 
     @staticmethod
-    @pytest.mark.parametrize(
-        "in_out_pair", (("CPUTime", "CPU time"), ("WallTime", "wall time"))
-    )
-    def test_camel_case_to_words(in_out_pair: Tuple[str, str]):
-        # arrange
-        test_input, expected_output = in_out_pair
-
-        # act
-        actual_output = Product._camel_case_to_words(test_input)
-
-        # assert
-        assert actual_output == expected_output
-
-    @staticmethod
     def test_register_can_be_called_twice_on_r_eff():
         # arrange
         sut = products.EffectiveRadius()
@@ -170,3 +154,32 @@ class TestProducts:
 
         # act
         sut.register(builder)
+
+    @staticmethod
+    def test_register_product_make_product_instances_reusable():
+        # arrange
+        name = "prod"
+
+        @register_product()
+        class Prod(Product):
+            def __init__(self, unit="m"):
+                super().__init__(unit=unit, name=name)
+
+            def _impl(self, **_):
+                pass
+
+        product = Prod()
+        kwargs = {"backend": CPU(), "n_sd": 0, "environment": Box(dt=0, dv=0)}
+        builders = (
+            Builder(**kwargs),
+            Builder(**kwargs),
+        )
+
+        # act
+        for builder in builders:
+            builder._register_product(product=product, buffer=None)
+
+        # assert
+        assert product.particulator is None
+        for builder in builders:
+            assert builder.particulator.products[name] is not product

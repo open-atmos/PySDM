@@ -55,6 +55,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
+        bulk_phase_partitioning: str = "Null",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -86,6 +87,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
+        self.bulk_phase_partitioning = bulk_phase_partitioning
 
         self._components = tuple(
             i
@@ -101,13 +103,23 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
                 getattr(defaults, k), (numbers.Number, pint.Quantity, pint.Unit)
             )
         }
+
+        physics.constants_defaults.compute_derived_values(constants_defaults)
+        if constants is not None:
+            for key in constants:
+                if key not in constants_defaults:
+                    raise ValueError(
+                        f"constant override provided for unknown key: {key}"
+                    )
+
         constants_defaults = {**constants_defaults, **(constants or {})}
         physics.constants_defaults.compute_derived_values(constants_defaults)
+
         constants = namedtuple("Constants", tuple(constants_defaults.keys()))(
             **constants_defaults
         )
         self.constants = constants
-        self.seed = seed or physics.constants.default_random_seed
+        self.seed = seed if seed is not None else physics.constants.default_random_seed
         self.fastmath = fastmath
         self.handle_all_breakups = handle_all_breakups
         dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS

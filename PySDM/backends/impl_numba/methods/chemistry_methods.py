@@ -62,49 +62,48 @@ class ChemistryMethods(BackendMethods):
         droplet_volume,
         multiplicity,
     ):
-        for thread_id in numba.prange(n_threads):  # pylint: disable=not-an-iterable
-            for i in range(thread_id, n_cell, n_threads):
-                cell_id = cell_order[i]
+        assert n_cell == 1
+        assert n_threads == 1
+        for i in range(n_cell):
+            cell_id = cell_order[i]
 
-                cell_start = cell_start_arg[cell_id]
-                cell_end = cell_start_arg[cell_id + 1]
-                n_sd_in_cell = cell_end - cell_start
-                if n_sd_in_cell == 0:
-                    continue
+            cell_start = cell_start_arg[cell_id]
+            cell_end = cell_start_arg[cell_id + 1]
+            n_sd_in_cell = cell_end - cell_start
+            if n_sd_in_cell == 0:
+                continue
 
-                super_droplet_ids = numba.typed.List()
-                for sd_id in idx[cell_start:cell_end]:
-                    if do_chemistry_flag.data[sd_id]:
-                        super_droplet_ids.append(sd_id)
+            super_droplet_ids = numba.typed.List()
+            for sd_id in idx[cell_start:cell_end]:
+                if do_chemistry_flag.data[sd_id]:
+                    super_droplet_ids.append(sd_id)
 
-                if len(super_droplet_ids) == 0:
-                    return
+            if len(super_droplet_ids) == 0:
+                return
 
-                for key, compound in GASEOUS_COMPOUNDS.items():
-                    ChemistryMethods.dissolution_body(
-                        super_droplet_ids=super_droplet_ids,
-                        mole_amounts=mole_amounts[key].data,
-                        env_mixing_ratio=env_mixing_ratio[compound][
-                            cell_id : cell_id + 1
-                        ],
-                        henrysConstant=self.HENRY_CONST.HENRY_CONST[compound].at(
-                            env_T[cell_id]
-                        ),
-                        env_p=env_p[cell_id],
-                        env_T=env_T[cell_id],
-                        env_rho_d=env_rho_d[cell_id],
-                        timestep=timestep,
-                        dv=dv,
-                        droplet_volume=droplet_volume.data,
-                        multiplicity=multiplicity.data,
-                        system_type=system_type,
-                        specific_gravity=self.specific_gravities[compound],
-                        alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
-                        diffusion_const=DIFFUSION_CONST[compound],
-                        dissociation_factor=dissociation_factors[compound].data,
-                        radius=self.formulae.trivia.radius,
-                        const=self.formulae.constants,
-                    )
+            for key, compound in GASEOUS_COMPOUNDS.items():
+                ChemistryMethods.dissolution_body(
+                    super_droplet_ids=super_droplet_ids,
+                    mole_amounts=mole_amounts[key].data,
+                    env_mixing_ratio=env_mixing_ratio[compound][cell_id : cell_id + 1],
+                    henrysConstant=self.HENRY_CONST.HENRY_CONST[compound].at(
+                        env_T[cell_id]
+                    ),
+                    env_p=env_p[cell_id],
+                    env_T=env_T[cell_id],
+                    env_rho_d=env_rho_d[cell_id],
+                    timestep=timestep,
+                    dv=dv,
+                    droplet_volume=droplet_volume.data,
+                    multiplicity=multiplicity.data,
+                    system_type=system_type,
+                    specific_gravity=self.specific_gravities[compound],
+                    alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
+                    diffusion_const=DIFFUSION_CONST[compound],
+                    dissociation_factor=dissociation_factors[compound].data,
+                    radius=self.formulae.trivia.radius,
+                    const=self.formulae.constants,
+                )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})

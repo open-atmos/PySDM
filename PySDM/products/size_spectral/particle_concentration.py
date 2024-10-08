@@ -5,9 +5,10 @@ concentration of particles within a grid cell (either per-volume of per-mass-of-
 
 import numpy as np
 
-from PySDM.products.impl.concentration_product import ConcentrationProduct
+from PySDM.products.impl import ConcentrationProduct, register_product
 
 
+@register_product()
 class ParticleConcentration(ConcentrationProduct):
     # pylint: disable=too-many-arguments
     def __init__(
@@ -37,6 +38,7 @@ class ParticleConcentration(ConcentrationProduct):
         return super()._impl(**kwargs)
 
 
+@register_product()
 class ParticleSpecificConcentration(ParticleConcentration):
     def __init__(self, radius_range=(0, np.inf), name=None, unit="kg^-1"):
         super().__init__(radius_range=radius_range, specific=True, name=name, unit=unit)

@@ -4,9 +4,10 @@ average terminal with weighting either by number or volume
 
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class AveragedTerminalVelocity(MomentProduct):
     def __init__(
         self, *, radius_range=(0, np.inf), weighting="volume", unit="m/s", name=None

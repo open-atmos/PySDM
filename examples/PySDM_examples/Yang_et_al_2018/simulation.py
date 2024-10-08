@@ -30,9 +30,7 @@ class Simulation:
             / (
                 settings.p0
                 / settings.RH0
-                / self.formulae.saturation_vapour_pressure.pvs_Celsius(
-                    settings.T0 - self.formulae.constants.T0
-                )
+                / self.formulae.saturation_vapour_pressure.pvs_water(settings.T0)
                 - 1
             ),
             T0=settings.T0,
@@ -40,7 +38,11 @@ class Simulation:
             z0=settings.z0,
         )
         builder = Builder(
-            backend=backend(formulae=self.formulae), n_sd=settings.n_sd, environment=env
+            backend=backend(
+                formulae=self.formulae, override_jit_flags={"parallel": False}
+            ),
+            n_sd=settings.n_sd,
+            environment=env,
         )
 
         environment = builder.particulator.environment

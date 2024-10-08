@@ -2,7 +2,7 @@
 factory for arbitrary-moment product classes
 """
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
 def make_arbitrary_moment_product(**kwargs):
@@ -35,7 +35,7 @@ def make_arbitrary_moment_product(**kwargs):
                 self.buffer /= self.particulator.mesh.dv
             return self.buffer
 
-    return ArbitraryMoment
+    return register_product()(ArbitraryMoment)
 
 
 ZerothMoment = make_arbitrary_moment_product(

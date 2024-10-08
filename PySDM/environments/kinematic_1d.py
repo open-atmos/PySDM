@@ -7,10 +7,12 @@ import numpy as np
 
 from PySDM.environments.impl.moist import Moist
 
-from ..impl import arakawa_c
-from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+from PySDM.impl import arakawa_c
+from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class Kinematic1D(Moist):
     def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0):
         super().__init__(dt, mesh, [])
@@ -26,7 +28,7 @@ class Kinematic1D(Moist):
         self._tmp["rhod"] = rhod
 
     def get_water_vapour_mixing_ratio(self) -> np.ndarray:
-        return self.particulator.dynamics["EulerianAdvection"].solvers.advectee.get()
+        return self.particulator.dynamics["EulerianAdvection"].solvers.advectee
 
     def get_thd(self) -> np.ndarray:
         return self.thd0
@@ -61,9 +63,7 @@ class Kinematic1D(Moist):
                 v_wet, n_per_kg = spectral_discretisation.sample(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
                 )
-                # attributes["dry volume"] = v_wet
                 attributes["volume"] = v_wet
-                # attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
             else:
                 r_dry, n_per_kg = spectral_discretisation.sample(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd

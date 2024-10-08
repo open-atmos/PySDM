@@ -11,9 +11,12 @@ from collections import namedtuple
 
 import numpy as np
 
+from PySDM.dynamics.impl import register_dynamic
+
 DEFAULTS = namedtuple("_", ("rtol", "adaptive"))(rtol=1e-2, adaptive=True)
 
 
+@register_dynamic()
 class Displacement:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,

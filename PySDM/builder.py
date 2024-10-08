@@ -7,10 +7,7 @@ import warnings
 
 import numpy as np
 
-from PySDM.attributes.impl.mapper import get_class as attr_class
-from PySDM.attributes.numerics.cell_id import CellID
-from PySDM.attributes.physics import WaterMass
-from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.impl.attribute_registry import get_attribute_class
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.initialisation.discretise_multiplicities import (  # TODO #324
@@ -32,11 +29,8 @@ class Builder:
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
-        self.req_attr = {
-            "multiplicity": Multiplicities(self),
-            "water mass": WaterMass(self),
-            "cell id": CellID(self),
-        }
+        self.req_attr_names = ["multiplicity", "water mass", "cell id"]
+        self.req_attr = None
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
@@ -55,39 +49,42 @@ class Builder:
     def _set_environment(self, environment):
         if self.particulator.environment is not None:
             raise AssertionError("environment has already been set")
-        self.particulator.environment = environment
-        self.particulator.environment.register(self)
+        self.particulator.environment = environment.instantiate(builder=self)
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
-        key = get_key(dynamic)
+        key = inspect.getmro(type(dynamic))[-2].__name__
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
 
-    def replace_dynamic(self, dynamic):
-        key = get_key(dynamic)
-        assert key in self.particulator.dynamics
-        self.particulator.dynamics.pop(key)
-        self.add_dynamic(dynamic)
-
-    def register_product(self, product, buffer):
+    def _register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise ValueError(f'product name "{product.name}" already registered')
-        product.set_buffer(buffer)
-        product.register(self)
-        self.particulator.products[product.name] = product
+        self.particulator.products[product.name] = product.instantiate(
+            builder=self, buffer=buffer
+        )
+
+    def _resolve_attribute(self, attr_name):
+        if attr_name not in self.req_attr:
+            self.req_attr[attr_name] = get_attribute_class(
+                attr_name,
+                self.particulator.dynamics.keys(),
+                self.formulae,
+            )(self)
+            assert self.req_attr is not None
 
     def get_attribute(self, attribute_name):
-        self.request_attribute(attribute_name)
+        """intended for obtaining attribute instances during build() logic,
+        from within register() methods"""
+        self._resolve_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute, variant=None):
-        if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(
-                attribute, self.particulator.dynamics, self.formulae
-            )(self)
-        if variant is not None:
-            assert variant == self.req_attr[attribute]
+    def request_attribute(self, attribute_name):
+        """can be called either before or during build()"""
+        if self.req_attr_names is not None:
+            self.req_attr_names.append(attribute_name)
+        else:
+            self._resolve_attribute(attribute_name)
 
     def build(
         self,
@@ -118,12 +115,17 @@ class Builder:
             del attributes["volume"]
             self.request_attribute("volume")
 
-        for dynamic in self.particulator.dynamics.values():
-            dynamic.register(self)
+        self.req_attr = {}
+        for attr_name in self.req_attr_names:
+            self._resolve_attribute(attr_name)
+        self.req_attr_names = None
+
+        for key, dynamic in self.particulator.dynamics.items():
+            self.particulator.dynamics[key] = dynamic.instantiate(builder=self)
 
         single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
         for product in products:
-            self.register_product(product, single_buffer_for_all_products)
+            self._register_product(product, single_buffer_for_all_products)
 
         for attribute in attributes:
             self.request_attribute(attribute)
@@ -148,8 +150,8 @@ class Builder:
         for key in self.particulator.dynamics:
             self.particulator.timers[key] = WallTimer()
 
+        if (attributes["multiplicity"] == 0).any():
+            self.particulator.attributes.healthy = False
+            self.particulator.attributes.sanitize()
+
         return self.particulator
-
-
-def get_key(dynamic):
-    return inspect.getmro(type(dynamic))[-2].__name__

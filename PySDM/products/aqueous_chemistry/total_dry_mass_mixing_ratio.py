@@ -4,9 +4,10 @@ dry aerosol mass summed over all particles in a grid box per mass of dry air
 
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class TotalDryMassMixingRatio(MomentProduct):
     def __init__(self, density, name=None, unit="kg/kg"):
         super().__init__(unit=unit, name=name)

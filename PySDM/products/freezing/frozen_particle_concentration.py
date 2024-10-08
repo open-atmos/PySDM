@@ -4,9 +4,10 @@ concentration of frozen particles (unactivated, activated or both)
 
 import numpy as np
 
-from PySDM.products.impl.concentration_product import ConcentrationProduct
+from PySDM.products.impl import ConcentrationProduct, register_product
 
 
+@register_product()
 class FrozenParticleConcentration(ConcentrationProduct):
     def __init__(
         self,
@@ -39,6 +40,7 @@ class FrozenParticleConcentration(ConcentrationProduct):
         return super()._impl(**kwargs)
 
 
+@register_product()
 class FrozenParticleSpecificConcentration(FrozenParticleConcentration):
     def __init__(self, *, count_unactivated, count_activated, unit="kg^-1", name=None):
         super().__init__(

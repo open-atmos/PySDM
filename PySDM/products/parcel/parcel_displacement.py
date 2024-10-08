@@ -3,9 +3,10 @@ parcel displacement, for use with `PySDM.environments.parcel.Parcel` environment
 """
 
 from PySDM.environments import Parcel
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class ParcelDisplacement(Product):
     def __init__(self, unit="m", name=None):
         super().__init__(unit=unit, name=name)

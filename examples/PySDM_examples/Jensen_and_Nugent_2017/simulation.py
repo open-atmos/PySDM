@@ -29,27 +29,27 @@ class Simulation(BasicSimulation):
         gravitational_coalsecence: bool = False,
     ):
         const = settings.formulae.constants
-        pvs_Celsius = settings.formulae.saturation_vapour_pressure.pvs_Celsius
+        pvs_water = settings.formulae.saturation_vapour_pressure.pvs_water
         initial_water_vapour_mixing_ratio = const.eps / (
-            settings.p0 / settings.RH0 / pvs_Celsius(settings.T0 - const.T0) - 1
-        )
-
-        env = Parcel(
-            dt=settings.dt,
-            mass_of_dry_air=666 * si.kg,
-            p0=settings.p0,
-            initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
-            T0=settings.T0,
-            w=settings.vertical_velocity,
-            z0=settings.z0,
+            settings.p0 / settings.RH0 / pvs_water(settings.T0) - 1
         )
 
         n_gccn = np.count_nonzero(table_3.NA) if gccn else 0
 
         builder = Builder(
             n_sd=N_SD_NON_GCCN + n_gccn,
-            backend=CPU(formulae=settings.formulae),
-            environment=env,
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
+            ),
+            environment=Parcel(
+                dt=settings.dt,
+                mass_of_dry_air=666 * si.kg,
+                p0=settings.p0,
+                initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
+                T0=settings.T0,
+                w=settings.vertical_velocity,
+                z0=settings.z0,
+            ),
         )
 
         additional_derived_attributes = ("radius", "equilibrium supersaturation")
@@ -81,8 +81,10 @@ class Simulation(BasicSimulation):
         )
         rhod0 = settings.formulae.state_variable_triplet.rhod_of_pd_T(pd0, settings.T0)
 
-        attributes = env.init_attributes(
-            n_in_dv=n_in_unit_volume * env.mass_of_dry_air / rhod0,
+        attributes = builder.particulator.environment.init_attributes(
+            n_in_dv=n_in_unit_volume
+            * builder.particulator.environment.mass_of_dry_air
+            / rhod0,
             kappa=settings.kappa,
             r_dry=self.r_dry,
         )

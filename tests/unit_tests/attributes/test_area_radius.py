@@ -7,10 +7,10 @@ from PySDM.environments import Box
 
 
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
-def test_radius(volume, backend_class):
+def test_radius(volume, backend_instance):
     # arrange
     env = Box(dt=None, dv=None)
-    builder = Builder(backend=backend_class(), n_sd=volume.size, environment=env)
+    builder = Builder(backend=backend_instance, n_sd=volume.size, environment=env)
     builder.request_attribute("radius")
     particulator = builder.build(
         attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
@@ -25,10 +25,10 @@ def test_radius(volume, backend_class):
 
 
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
-def test_sqrt_radius(volume, backend_class):
+def test_sqrt_radius(volume, backend_instance):
     # arrange
     env = Box(dt=None, dv=None)
-    builder = Builder(backend=backend_class(), n_sd=volume.size, environment=env)
+    builder = Builder(backend=backend_instance, n_sd=volume.size, environment=env)
     builder.request_attribute("radius")
     builder.request_attribute("square root of radius")
     particulator = builder.build(
@@ -45,10 +45,10 @@ def test_sqrt_radius(volume, backend_class):
 
 
 @pytest.mark.parametrize("volume", (np.asarray([44, 666]),))
-def test_area(volume, backend_class):
+def test_area(volume, backend_instance):
     # arrange
     env = Box(dv=None, dt=None)
-    builder = Builder(backend=backend_class(), n_sd=volume.size, environment=env)
+    builder = Builder(backend=backend_instance, n_sd=volume.size, environment=env)
     builder.request_attribute("area")
     particulator = builder.build(
         attributes={"volume": volume, "multiplicity": np.ones_like(volume)}

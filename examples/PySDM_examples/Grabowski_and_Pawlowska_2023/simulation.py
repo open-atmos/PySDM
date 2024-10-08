@@ -19,16 +19,19 @@ class Simulation(BasicSimulation):
         scipy_solver=False,
         sampling_class=ConstantMultiplicity,
     ):
-        env = Parcel(
-            dt=settings.timestep,
-            p0=settings.initial_pressure,
-            initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
-            T0=settings.initial_temperature,
-            w=settings.vertical_velocity,
-            mass_of_dry_air=44 * si.kg,
-        )
         builder = Builder(
-            n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae), environment=env
+            n_sd=settings.n_sd,
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
+            ),
+            environment=Parcel(
+                dt=settings.timestep,
+                p0=settings.initial_pressure,
+                initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
+                T0=settings.initial_temperature,
+                w=settings.vertical_velocity,
+                mass_of_dry_air=44 * si.kg,
+            ),
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(
@@ -41,6 +44,7 @@ class Simulation(BasicSimulation):
         ):
             builder.request_attribute(attribute)
 
+        env = builder.particulator.environment
         volume = env.mass_of_dry_air / settings.initial_air_density
         attributes = {
             k: np.empty(0)

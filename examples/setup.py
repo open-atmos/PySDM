@@ -26,13 +26,18 @@ setup(
         "PyMPDATA" + (">=1.0.15" if CI else ""),
         "open-atmos-jupyter-utils",
         "pystrict",
-        "matplotlib",
+        # https://github.com/matplotlib/matplotlib/issues/28551
+        "matplotlib" + ("!=3.9.1" if CI else ""),
         "joblib",
         "ipywidgets",
         "seaborn",
         "numdifftools",
     ]
-    + (["pyvinecopulib", "vtk"] if platform.architecture()[0] != "32bit" else []),
+    + (
+        ["pyvinecopulib" + "==0.6.4" if CI else "", "vtk"]
+        if platform.architecture()[0] != "32bit"
+        else []
+    ),
     extras_require={
         "tests": [
             "pytest",

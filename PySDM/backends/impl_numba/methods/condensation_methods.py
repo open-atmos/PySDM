@@ -291,9 +291,7 @@ class CondensationMethods(BackendMethods):
                 )
                 pv = formulae.state_variable_triplet__pv(p, water_vapour_mixing_ratio)
                 lv = formulae.latent_heat__lv(T)
-                pvs = formulae.saturation_vapour_pressure__pvs_Celsius(
-                    T - formulae.constants.T0
-                )
+                pvs = formulae.saturation_vapour_pressure__pvs_water(T)
                 DTp = formulae.diffusion_thermics__D(T, p)
                 RH = pv / pvs
                 Sc = formulae.trivia__air_schmidt_number(
@@ -445,7 +443,7 @@ class CondensationMethods(BackendMethods):
                 v_drop = formulae.particle_shape_and_density__mass_to_volume(
                     attributes.water_mass[drop]
                 )
-                if v_drop < 0:
+                if v_drop <= 0:
                     continue
                 x_old = formulae.condensation_coordinate__x(v_drop)
                 r_old = formulae.trivia__radius(v_drop)
@@ -597,7 +595,7 @@ class CondensationMethods(BackendMethods):
         max_iters,
     ):
         return CondensationMethods.make_condensation_solver_impl(
-            formulae=self.formulae.flatten,
+            formulae=self.formulae_flattened,
             timestep=timestep,
             dt_range=dt_range,
             adaptive=adaptive,

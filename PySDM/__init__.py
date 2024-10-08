@@ -24,6 +24,9 @@ PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in th
 
 from importlib.metadata import PackageNotFoundError, version
 
+from PySDM.attributes.impl.attribute_registry import register_attribute
+
+from . import attributes
 from . import environments, exporters, products
 from .builder import Builder
 from .formulae import Formulae

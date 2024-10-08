@@ -11,7 +11,6 @@ from PySDM.dynamics import Freezing
 from PySDM.environments import Box
 from PySDM.initialisation import discretise_multiplicities
 from PySDM.initialisation.sampling import spectral_sampling
-from PySDM.physics import constants as const
 from PySDM.physics import si
 from PySDM.products import IceWaterContent, TotalUnfrozenImmersedSurfaceArea
 
@@ -143,7 +142,7 @@ class Simulation:
         svp = formulae.saturation_vapour_pressure
         plot_x = np.linspace(*self.temperature_range) * si.K
         plot_y = formulae.heterogeneous_ice_nucleation_rate.j_het(
-            svp.ice_Celsius(plot_x - const.T0) / svp.pvs_Celsius(plot_x - const.T0)
+            svp.pvs_ice(plot_x) / svp.pvs_water(plot_x)
         )
         pyplot.grid()
         pyplot.plot(plot_x, plot_y / yunit, color="red", label="ABIFM $J_{het}$")
@@ -215,8 +214,11 @@ def simulation(
         constants=constants,
         particle_shape_and_density="MixedPhaseSpheres",
     )
-    env = Box(dt=time_step, dv=volume)
-    builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae), environment=env)
+    builder = Builder(
+        n_sd=n_sd,
+        backend=CPU(formulae=formulae),
+        environment=Box(dt=time_step, dv=volume),
+    )
     builder.add_dynamic(Freezing(singular=False))
 
     if hasattr(spectrum, "s_geom") and spectrum.s_geom == 1:
@@ -236,6 +238,7 @@ def simulation(
         TotalUnfrozenImmersedSurfaceArea(name="A_tot"),
     )
     particulator = builder.build(attributes=attributes, products=products)
+    env = particulator.environment
 
     env["T"] = initial_temperature
     env["a_w_ice"] = np.nan
@@ -248,9 +251,7 @@ def simulation(
     for i in range(int(total_time / time_step) + 1):
         if cooling_rate != 0:
             env["T"] -= np.full((1,), cooling_rate * time_step / 2)
-            env["a_w_ice"] = svp.ice_Celsius(env["T"][0] - const.T0) / svp.pvs_Celsius(
-                env["T"][0] - const.T0
-            )
+            env["a_w_ice"] = svp.pvs_ice(env["T"][0]) / svp.pvs_water(env["T"][0])
         particulator.run(0 if i == 0 else 1)
         if cooling_rate != 0:
             env["T"] -= np.full((1,), cooling_rate * time_step / 2)

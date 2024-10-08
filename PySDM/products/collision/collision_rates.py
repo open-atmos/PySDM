@@ -4,9 +4,10 @@ Rates of collision events and their deficit wrt expected values in case mutiplic
  or due to unrepresentable breakups from integer overflow
 """
 
-from PySDM.products.impl.rate_product import RateProduct
+from PySDM.products.impl import RateProduct, register_product
 
 
+@register_product()
 class CollisionRateDeficitPerGridbox(RateProduct):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__(
@@ -14,6 +15,7 @@ class CollisionRateDeficitPerGridbox(RateProduct):
         )
 
 
+@register_product()
 class CollisionRatePerGridbox(RateProduct):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__(
@@ -21,6 +23,7 @@ class CollisionRatePerGridbox(RateProduct):
         )
 
 
+@register_product()
 class CoalescenceRatePerGridbox(RateProduct):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__(
@@ -28,6 +31,7 @@ class CoalescenceRatePerGridbox(RateProduct):
         )
 
 
+@register_product()
 class BreakupRatePerGridbox(RateProduct):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__(
@@ -35,6 +39,7 @@ class BreakupRatePerGridbox(RateProduct):
         )
 
 
+@register_product()
 class BreakupRateDeficitPerGridbox(RateProduct):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__(

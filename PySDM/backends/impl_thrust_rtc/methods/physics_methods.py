@@ -13,7 +13,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class PhysicsMethods(ThrustRTCBackendMethods):
     @cached_property
-    def _temperature_pressure_RH_body(self):
+    def _temperature_pressure_rh_body(self):
         return trtc.For(
             ("rhod", "thd", "water_vapour_mixing_ratio", "T", "p", "RH"),
             "i",
@@ -27,9 +27,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             )};
             RH[i] = {self.formulae.state_variable_triplet.pv.c_inline(
                 p="p[i]", water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
-            )} / {self.formulae.saturation_vapour_pressure.pvs_Celsius.c_inline(
-                T="T[i] - const.T0"
-            )};
+            )} / {self.formulae.saturation_vapour_pressure.pvs_water.c_inline(T="T[i]")};
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -108,10 +106,10 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def temperature_pressure_RH(
+    def temperature_pressure_rh(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
     ):
-        self._temperature_pressure_RH_body.launch_n(
+        self._temperature_pressure_rh_body.launch_n(
             T.shape[0],
             (
                 rhod.data,

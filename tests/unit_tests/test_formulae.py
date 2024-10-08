@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import formulae
+from PySDM import formulae, Formulae
 from PySDM.physics import si
 
 
@@ -115,3 +115,30 @@ class TestFormulae:
 
         # assert
         assert str(excinfo.value) == "Unknown setting: C; choices are: A, B"
+
+    @staticmethod
+    def test_raise_error_on_unknown_constant():
+        # arrange
+        key = "p10000"
+
+        with pytest.raises(ValueError) as excinfo:
+            Formulae(constants={key: np.nan})
+
+        assert (
+            str(excinfo.value) == f"constant override provided for unknown key: {key}"
+        )
+
+    @staticmethod
+    def test_derived_constant_overridable():
+        Formulae(constants={"Mv": np.nan})
+
+    @staticmethod
+    def test_seed_zero():
+        # arrange
+        seed = 0
+
+        # act
+        sut = Formulae(seed=seed)
+
+        # assert
+        assert sut.seed == seed

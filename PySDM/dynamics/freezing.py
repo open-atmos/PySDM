@@ -7,8 +7,10 @@ from PySDM.backends.impl_common.freezing_attributes import (
     TimeDependentAttributes,
 )
 from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
+from PySDM.dynamics.impl import register_dynamic
 
 
+@register_dynamic()
 class Freezing:
     def __init__(self, *, singular=True, record_freezing_temperature=False, thaw=False):
         assert not (record_freezing_temperature and singular)

@@ -5,9 +5,10 @@ rates of activation, deactivation and ripening events (take into account substep
 
 import numpy as np
 
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class EventRate(Product):
     def __init__(self, what, name=None, unit=None):
         super().__init__(name=name, unit=unit)
@@ -42,16 +43,19 @@ class EventRate(Product):
         return self.buffer
 
 
+@register_product()
 class RipeningRate(EventRate):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__("ripening", name=name, unit=unit)
 
 
+@register_product()
 class ActivatingRate(EventRate):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__("activating", name=name, unit=unit)
 
 
+@register_product()
 class DeactivatingRate(EventRate):
     def __init__(self, name=None, unit="s^-1 kg^-1"):
         super().__init__("deactivating", name=name, unit=unit)

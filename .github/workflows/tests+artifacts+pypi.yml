@@ -18,7 +18,7 @@ jobs:
   precommit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.8
@@ -31,11 +31,12 @@ jobs:
         run: git diff
 
   nojit_and_codecov:
+    needs: [precommit, pylint]
     runs-on: ubuntu-latest
     env:
       NUMBA_DISABLE_JIT: 1
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0
@@ -48,8 +49,7 @@ jobs:
         pip install -e ./examples
         pip install pytest-cov
         pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
-    - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: codecov/codecov-action@v4.1.0
+    - uses: codecov/codecov-action@v4.5.0
       with:
         fail_ci_if_error: true
         verbose: true
@@ -61,7 +61,7 @@ jobs:
         platform: [ubuntu-latest, macos-12, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           persist-credentials: false
@@ -69,11 +69,10 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install pdoc3
+          pip install pdoc
           pip install -e .
           pip install -e examples
-          python -We -m pdoc --html PySDM examples/PySDM_examples
-          python -We .github/workflows/pdoc_index_workaround.py
+          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PySDM_examples -t pdoc_templates
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
@@ -84,7 +83,7 @@ jobs:
   pylint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0 
@@ -97,7 +96,6 @@ jobs:
         python -m pip install --upgrade pip
         # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
         pip install "pylint<3.0.0" nbqa
-        pip install pdoc3 # (pdoc3 for checking the .github/workflows/pdoc_index_workaround.py)
         pip install -r tests/devops_tests/requirements.txt
         pip install -e ./examples[tests]
         pip install -e .[tests]
@@ -114,14 +112,14 @@ jobs:
   zenodo_json:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
       - uses: notiz-dev/github-action-json-property@release
         with: 
           path: '.zenodo.json'
           prop_path: 'creators'
 
   tests:
-    needs: [pylint, pdoc, nojit_and_codecov, precommit, zenodo_json]
+    needs: [pdoc, nojit_and_codecov, zenodo_json]
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
@@ -132,9 +130,9 @@ jobs:
             python-version: "3.8"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 45
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 25 }}
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -174,13 +172,14 @@ jobs:
 #           limit-access-to-actor: true
 
   examples-setup:
+    needs: [nojit_and_codecov]
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
         python-version: ["3.8", "3.11"]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -192,17 +191,14 @@ jobs:
           echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests+artifacts+pypi.yml \
           | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
       - uses: actions/cache@v4
+        id: cache
         with:
           path: ${{ env.pip_user_site }}
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          lookup-only: true
       - if: steps.cache.outputs.cache-hit != 'true'
         run: |
           python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
-          
-          python -m pip install "setuptools==64.0.0"
-          python -m pip install pyvinecopulib # requires newer setuptools
-          python -m pip install "setuptools==56.0.0"
-          
           python -m pip install -e . -e ./examples
           python -m pip install -r tests/devops_tests/requirements.txt
       - if: steps.cache.outputs.cache-hit != 'true'
@@ -212,7 +208,7 @@ jobs:
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
   examples:
-    needs: [pylint, precommit, examples-setup]
+    needs: [examples-setup]
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
@@ -220,9 +216,9 @@ jobs:
         test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 50
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 65 || 50 }}
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0
@@ -266,7 +262,7 @@ jobs:
   devops:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
@@ -282,7 +278,7 @@ jobs:
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
+      - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
@@ -332,7 +328,7 @@ jobs:
           sudo ln -s `which python3` /usr/local/bin/python
           echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
           # Python 3.12 workaround  
-          python -m pip install --break-system-packages setuptools
+          python -m pip install --break-system-packages setuptools packaging
       - uses: actions/download-artifact@v3
         with:
           name: dist

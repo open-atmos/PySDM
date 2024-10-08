@@ -3,9 +3,10 @@ Minimal collision timestep used when adaptive timestepping is enabled in the
  `PySDM.dynamics.collisions.collision.Collision` dynamic (fetching a value resets the counter)
 """
 
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class CollisionTimestepMin(Product):
     def __init__(self, unit="s", name=None):
         super().__init__(unit=unit, name=name)

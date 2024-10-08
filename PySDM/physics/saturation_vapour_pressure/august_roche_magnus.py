@@ -12,10 +12,12 @@ class AugustRocheMagnus:
         pass
 
     @staticmethod
-    def pvs_Celsius(const, T):
-        return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+    def pvs_water(const, T):
+        return const.ARM_C1 * np.exp(
+            (const.ARM_C2 * (T - const.T0)) / ((T - const.T0) + const.ARM_C3)
+        )
 
     @staticmethod
-    def ice_Celsius(const, T):
+    def pvs_ice(const, T):
         """NaN with unit of pressure and correct dimension"""
-        return np.nan * T / const.ARM_C3 * const.ARM_C1
+        return np.nan * (T - const.T0) / const.ARM_C3 * const.ARM_C1

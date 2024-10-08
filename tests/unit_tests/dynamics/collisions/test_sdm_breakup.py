@@ -94,9 +94,9 @@ class TestSDMBreakup:
             ),
         ],
     )
-    def test_single_collision_bounce(params, backend_class):
+    def test_single_collision_bounce(params, backend_instance):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         n_sd = 2
         env = Box(dv=np.NaN, dt=np.NaN)
         builder = Builder(n_sd, backend, environment=env)
@@ -172,12 +172,14 @@ class TestSDMBreakup:
             },
         ],
     )
-    def test_breakup_counters(params, backend_class):  # pylint: disable=too-many-locals
+    def test_breakup_counters(
+        params, backend_instance
+    ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
         env = Box(dv=np.NaN, dt=np.NaN)
-        builder = Builder(n_sd, backend_class(), environment=env)
+        builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
@@ -706,13 +708,13 @@ class TestSDMBreakup:
     )
     @pytest.mark.parametrize("flag", ("multiplicity", "v", "conserve", "deficit"))
     def test_noninteger_fragments(
-        params, flag, backend_class
+        params, flag, backend_instance
     ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
         env = Box(dv=np.NaN, dt=np.NaN)
-        builder = Builder(n_sd, backend_class(), environment=env)
+        builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
@@ -792,7 +794,6 @@ class TestSDMBreakup:
         dt = 1 * si.s
         env = Box(dv=dv, dt=dt)
         builder = Builder(n_sd=n_sd, backend=backend, environment=env)
-        env["rhod"] = 1.0
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
@@ -825,6 +826,7 @@ class TestSDMBreakup:
             ),
         )
         particulator = builder.build(attributes, products)
+        particulator.environment["rhod"] = 1.0
 
         t_end = 100
         particulator.run(t_end - particulator.n_steps)

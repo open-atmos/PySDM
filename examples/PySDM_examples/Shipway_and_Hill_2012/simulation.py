@@ -34,7 +34,7 @@ class Simulation:
             size=(settings.z_max + settings.particle_reservoir_depth,),
         )
 
-        self.env = Kinematic1D(
+        env = Kinematic1D(
             dt=settings.dt,
             mesh=self.mesh,
             thd_of_z=settings.thd,
@@ -46,7 +46,7 @@ class Simulation:
             z_above_reservoir = zZ * (settings.nz * settings.dz) + self.z0
             return z_above_reservoir
 
-        self.mpdata = MPDATA_1D(
+        mpdata = MPDATA_1D(
             nz=settings.nz,
             dt=settings.dt,
             mpdata_settings=settings.mpdata_settings,
@@ -66,7 +66,7 @@ class Simulation:
         self.builder = Builder(
             n_sd=settings.n_sd,
             backend=backend(formulae=settings.formulae),
-            environment=self.env,
+            environment=env,
         )
         self.builder.add_dynamic(AmbientThermodynamics())
 
@@ -79,7 +79,7 @@ class Simulation:
                     update_thd=settings.condensation_update_thd,
                 )
             )
-        self.builder.add_dynamic(EulerianAdvection(self.mpdata))
+        self.builder.add_dynamic(EulerianAdvection(mpdata))
 
         self.products = []
         if settings.precip:
@@ -92,7 +92,7 @@ class Simulation:
             ),
         )
         self.builder.add_dynamic(displacement)
-        self.attributes = self.env.init_attributes(
+        self.attributes = self.builder.particulator.environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(
                 spectrum=settings.wet_radius_spectrum_per_mass_of_dry_air
@@ -257,10 +257,11 @@ class Simulation:
 
         self.save(0)
         for step in range(self.nt):
-            self.mpdata.update_advector_field()
+            mpdata = self.particulator.dynamics["EulerianAdvection"].solvers
+            mpdata.update_advector_field()
             if "Displacement" in self.particulator.dynamics:
                 self.particulator.dynamics["Displacement"].upload_courant_field(
-                    (self.mpdata.advector / self.g_factor_vec,)
+                    (mpdata.advector / self.g_factor_vec,)
                 )
             self.particulator.run(steps=1)
             self.save(step + 1)

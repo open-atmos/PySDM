@@ -5,11 +5,15 @@ in parcel volume along the way
 
 from PySDM.environments.parcel import Parcel
 
-from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import (
+    ActivationFilteredProduct,
+    MomentProduct,
+    register_product,
+)
 
 
-class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
+@register_product()
+class ParcelLiquidWaterPath(MomentProduct, ActivationFilteredProduct):
     def __init__(
         self,
         count_unactivated: bool,
@@ -18,7 +22,7 @@ class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
         unit="kg/m^2",
     ):
         MomentProduct.__init__(self, unit=unit, name=name)
-        _ActivationFilteredProduct.__init__(
+        ActivationFilteredProduct.__init__(
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
         self.previous = {"z": 0.0, "cwc": 0.0}
@@ -27,15 +31,15 @@ class ParcelLiquidWaterPath(MomentProduct, _ActivationFilteredProduct):
     def register(self, builder):
         if not isinstance(builder.particulator.environment, Parcel):
             raise NotImplementedError()
-        _ActivationFilteredProduct.register(self, builder)
+        ActivationFilteredProduct.register(self, builder)
         MomentProduct.register(self, builder)
         self.particulator.observers.append(self)
 
     def notify(self):
-        _ActivationFilteredProduct.impl(self, attr="water mass", rank=1)
+        ActivationFilteredProduct.impl(self, attr="water mass", rank=1)
         avg_mass = self.buffer.copy()
 
-        _ActivationFilteredProduct.impl(self, attr="water mass", rank=0)
+        ActivationFilteredProduct.impl(self, attr="water mass", rank=0)
         tot_numb = self.buffer.copy()
 
         self._download_to_buffer(self.particulator.environment["z"])

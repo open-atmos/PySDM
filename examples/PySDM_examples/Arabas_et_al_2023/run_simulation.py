@@ -4,10 +4,9 @@ import numpy as np
 def update_thermo(particulator, T):
     env = particulator.environment
     svp = particulator.formulae.saturation_vapour_pressure
-    const = particulator.formulae.constants
 
     env["T"] = T
-    env["a_w_ice"] = svp.ice_Celsius(T - const.T0) / svp.pvs_Celsius(T - const.T0)
+    env["a_w_ice"] = svp.pvs_ice(T) / svp.pvs_water(T)
 
 
 def run_simulation(particulator, temperature_profile, n_steps):

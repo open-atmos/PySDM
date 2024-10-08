@@ -69,17 +69,19 @@ class TestCollisionProducts:
             },
         ],
     )
-    def test_individual_dynamics_rates_nonadaptive(params, backend_class):
-        # TODO #744
-        if backend_class.__name__ == "ThrustRTC" and params["enable_breakup"]:
-            return
+    def test_individual_dynamics_rates_nonadaptive(params, backend_instance):
+        if (
+            backend_instance.__class__.__name__ == "ThrustRTC"
+            and params["enable_breakup"]
+        ):
+            pytest.skip("# TODO #744")
 
         # Arrange
         n_init = [5, 2]
         n_sd = len(n_init)
 
         env = Box(**ENV_ARGS)
-        builder = Builder(n_sd, backend_class(), environment=env)
+        builder = Builder(n_sd, backend_instance, environment=env)
 
         dynamic, products = _get_dynamics_and_products(params, adaptive=False)
         builder.add_dynamic(dynamic)
@@ -91,7 +93,7 @@ class TestCollisionProducts:
             },
             products=products,
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -150,7 +152,7 @@ class TestCollisionProducts:
             },
             products=(CollisionRateDeficitPerGridbox(name="crd"),),
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -198,7 +200,7 @@ class TestCollisionProducts:
                 BreakupRateDeficitPerGridbox(name="brd"),
             ),
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -250,7 +252,7 @@ class TestCollisionProducts:
                 BreakupRateDeficitPerGridbox(name="brd"),
             ),
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)
@@ -301,7 +303,7 @@ class TestCollisionProducts:
             },
             products=products,
         )
-        env["rhod"] = RHO_DRY
+        particulator.environment["rhod"] = RHO_DRY
 
         # Act
         particulator.run(1)

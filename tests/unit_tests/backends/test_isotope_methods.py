@@ -7,17 +7,17 @@ import numpy as np
 
 class TestIsotopeMethods:
     @staticmethod
-    def test_isotopic_fractionation(backend_class):
+    def test_isotopic_fractionation(backend_instance):
         # arrange
-        backend = backend_class()
+        backend = backend_instance
 
         # act
         backend.isotopic_fractionation()
 
     @staticmethod
-    def test_isotopic_delta(backend_class):
+    def test_isotopic_delta(backend_instance):
         # arrange
-        backend = backend_class()
+        backend = backend_instance
         arr2storage = backend.Storage.from_ndarray
         n_sd = 10
         output = arr2storage(np.empty(n_sd))

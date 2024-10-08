@@ -11,7 +11,6 @@ from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
 )
-from ...impl_numba import conf
 
 
 class FreezingMethods(BackendMethods):
@@ -22,21 +21,17 @@ class FreezingMethods(BackendMethods):
             self.formulae.trivia.frozen_and_above_freezing_point
         )
 
-        @numba.njit(
-            **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
-        )
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
         def _freeze(water_mass, i):
             water_mass[i] = -1 * water_mass[i]
             # TODO #599: change thd (latent heat)!
 
-        @numba.njit(
-            **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
-        )
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
         def _thaw(water_mass, i):
             water_mass[i] = -1 * water_mass[i]
             # TODO #599: change thd (latent heat)!
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def freeze_singular_body(
             attributes, temperature, relative_humidity, cell, thaw
         ):
@@ -60,7 +55,7 @@ class FreezingMethods(BackendMethods):
 
         j_het = self.formulae.heterogeneous_ice_nucleation_rate.j_het
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(**self.default_jit_flags)
         def freeze_time_dependent_body(  # pylint: disable=unused-argument,too-many-arguments
             rand,
             attributes,
