@@ -102,6 +102,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         assert False
                     ambient_vapour_mixing_ratio[cid] += delta_rv_i
 
+                    delta_T = -delta_rv_i * latent_heat_sub / formulae.constants.c_pd
+                    ambient_temperature[cid] += delta_T 
+
                     x_old = formulae.diffusion_coordinate__x(ice_mass)
                     dx_dt_old = formulae.diffusion_coordinate__dx_dt(x_old, dm_dt)
                     x_new = formulae.trivia__explicit_euler(x_old, time_step, dx_dt_old)
