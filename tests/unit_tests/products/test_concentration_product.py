@@ -23,15 +23,14 @@ CONC = N_SD * MULTIPLICITY / DV
 class TestParticleConcentration:
     @staticmethod
     @pytest.mark.parametrize("stp", (True, False))
-    def test_stp(backend_class, stp):
+    def test_stp(backend_instance, stp):
         # arrange
-        builder = Builder(n_sd=N_SD, backend=backend_class())
-        builder.set_environment(ENV)
+        builder = Builder(n_sd=N_SD, backend=backend_instance, environment=ENV)
         particulator = builder.build(
             attributes=ATTRIBUTES, products=(TotalParticleConcentration(stp=stp),)
         )
         if stp:
-            ENV["rhod"] = RHOD
+            particulator.environment["rhod"] = RHOD
 
         # act
         prod = particulator.products["total particle concentration"].get()
@@ -39,23 +38,22 @@ class TestParticleConcentration:
         # assert
         np.testing.assert_approx_equal(
             actual=prod,
-            desired=CONC / RHOD * particulator.formulae.constants.rho_STP
-            if stp
-            else CONC,
+            desired=(
+                CONC / RHOD * particulator.formulae.constants.rho_STP if stp else CONC
+            ),
             significant=7,
         )
 
     @staticmethod
     @pytest.mark.parametrize("specific", (True, False))
-    def test_specific(backend_class, specific):
+    def test_specific(backend_instance, specific):
         # arrange
-        builder = Builder(n_sd=N_SD, backend=backend_class())
-        builder.set_environment(ENV)
+        builder = Builder(n_sd=N_SD, backend=backend_instance, environment=ENV)
         particulator = builder.build(
             attributes=ATTRIBUTES, products=(ParticleConcentration(specific=specific),)
         )
         if specific:
-            ENV["rhod"] = RHOD
+            particulator.environment["rhod"] = RHOD
 
         # act
         prod = particulator.products["particle concentration"].get()

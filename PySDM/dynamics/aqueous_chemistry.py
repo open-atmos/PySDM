@@ -1,6 +1,7 @@
 """
 Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
 """
+
 from collections import namedtuple
 
 import numpy as np
@@ -12,12 +13,14 @@ from PySDM.dynamics.impl.chemistry_utils import (
     M,
     SpecificGravities,
 )
+from PySDM.dynamics.impl import register_dynamic
 
 DEFAULTS = namedtuple("_", ("pH_min", "pH_max", "pH_rtol", "ionic_strength_threshold"))(
     pH_min=-1.0, pH_max=14.0, pH_rtol=1e-6, ionic_strength_threshold=0.02 * M
 )
 
 
+@register_dynamic()
 class AqueousChemistry:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -77,6 +80,7 @@ class AqueousChemistry:  # pylint: disable=too-many-instance-attributes
 
         for key in AQUEOUS_COMPOUNDS:
             builder.request_attribute("conc_" + key)
+        builder.request_attribute("pH")
 
         for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
             self.kinetic_consts[key] = self.particulator.Storage.empty(

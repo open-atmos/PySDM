@@ -1,14 +1,15 @@
-from typing import Iterable
+from typing import Iterable, Optional
 
 import numpy as np
+from numdifftools import Derivative
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
-from scipy.misc import derivative
 
 from PySDM import Formulae
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
 from PySDM.physics import si
+from PySDM.dynamics.collisions.collision_kernels import Geometric
 
 
 class Settings:
@@ -41,10 +42,13 @@ class Settings:
         dt: float = 1 * si.s,
         dz: float = 25 * si.m,
         z_max: float = 3000 * si.m,
+        z_part: Optional[tuple] = None,
         t_max: float = 60 * si.minutes,
         precip: bool = True,
+        enable_condensation: bool = True,
         formulae: Formulae = None,
-        save_spec_and_attr_times=()
+        save_spec_and_attr_times=(),
+        collision_kernel=None
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
@@ -55,13 +59,15 @@ class Settings:
         self.dt = dt
         self.dz = dz
         self.precip = precip
-
+        self.enable_condensation = enable_condensation
+        self.z_part = z_part
         self.z_max = z_max
         self.t_max = t_max
+        self.collision_kernel = collision_kernel or Geometric(collection_efficiency=1)
 
         t_1 = 600 * si.s
-        self.rho_times_w = (
-            lambda t: rho_times_w_1 * np.sin(np.pi * t / t_1) if t < t_1 else 0
+        self.rho_times_w = lambda t: (
+            rho_times_w_1 * np.sin(np.pi * t / t_1) if t < t_1 else 0
         )
         apprx_w1 = rho_times_w_1 / self.formulae.constants.rho_STP
         self.particle_reservoir_depth = (
@@ -106,9 +112,9 @@ class Settings:
             water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
                 z_above_reservoir
             )
-            d_water_vapour_mixing_ratio__dz = derivative(
-                self.water_vapour_mixing_ratio, z_above_reservoir
-            )
+            d_water_vapour_mixing_ratio__dz = Derivative(
+                self.water_vapour_mixing_ratio
+            )(z_above_reservoir)
             T = self.formulae.state_variable_triplet.T(
                 rhod[0], self.thd(z_above_reservoir)
             )

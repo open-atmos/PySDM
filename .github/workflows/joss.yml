@@ -12,7 +12,7 @@ jobs:
     name: Paper Draft
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.6
       - name: TeX and PDF
         uses: docker://openjournals/paperdraft:latest
         with:
@@ -21,7 +21,7 @@ jobs:
           GIT_SHA: $GITHUB_SHA
           JOURNAL: joss
       - name: Upload
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4.3.1
         with:
           name: paper
           path: paper/

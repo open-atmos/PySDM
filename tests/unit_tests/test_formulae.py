@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import formulae
+from PySDM import formulae, Formulae
 from PySDM.physics import si
 
 
@@ -66,3 +66,79 @@ class TestFormulae:
                 f_org if isinstance(f_org, float) else f_org[i],
             )
         np.testing.assert_array_equal(actual, expected)
+
+    @staticmethod
+    def test_flatten():
+        # arrange
+        f = formulae.Formulae()
+
+        # act
+        sut = f.flatten
+
+        # assert
+        temp = 300 * si.K
+        assert sut.latent_heat__lv(temp) == f.latent_heat.lv(temp)
+
+    @staticmethod
+    def test_get_constant():
+        # arrange
+        rho_w = 666 * si.kg / si.m**3
+
+        # act
+        sut = formulae.Formulae(constants={"rho_w": rho_w})
+
+        # assert
+        assert sut.get_constant("rho_w") == rho_w
+
+    @staticmethod
+    @pytest.mark.parametrize("arg", ("Dansgaard1964+BarkanAndLuz2007", "Dansgaard1964"))
+    def test_plus_separated_ctor_arg(arg):
+        # arrange
+        sut = formulae.Formulae(isotope_meteoric_water_line_excess=arg)
+
+        # act
+        class_name = sut.isotope_meteoric_water_line_excess.__name__
+
+        # assert
+        assert class_name == arg
+
+    @staticmethod
+    def test_pick_reports_correct_missing_name():
+        # arrange
+        class Cls:  # pylint:disable=too-few-public-methods
+            def __init__(self, _):
+                pass
+
+        # act
+        with pytest.raises(ValueError) as excinfo:
+            formulae._pick(value="C", choices={"A": Cls, "B": Cls}, constants=None)
+
+        # assert
+        assert str(excinfo.value) == "Unknown setting: C; choices are: A, B"
+
+    @staticmethod
+    def test_raise_error_on_unknown_constant():
+        # arrange
+        key = "p10000"
+
+        with pytest.raises(ValueError) as excinfo:
+            Formulae(constants={key: np.nan})
+
+        assert (
+            str(excinfo.value) == f"constant override provided for unknown key: {key}"
+        )
+
+    @staticmethod
+    def test_derived_constant_overridable():
+        Formulae(constants={"Mv": np.nan})
+
+    @staticmethod
+    def test_seed_zero():
+        # arrange
+        seed = 0
+
+        # act
+        sut = Formulae(seed=seed)
+
+        # assert
+        assert sut.seed == seed

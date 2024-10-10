@@ -12,10 +12,11 @@ from PySDM.initialisation.equilibrate_wet_radii import (
     equilibrate_wet_radii,
 )
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.impl import arakawa_c
+from PySDM.environments.impl import register_environment
 
-from ..impl import arakawa_c
 
-
+@register_environment()
 class Kinematic2D(Moist):
     def __init__(self, *, dt, grid, size, rhod_of, mixed_phase=False):
         super().__init__(dt, Mesh(grid, size), [], mixed_phase=mixed_phase)
@@ -85,16 +86,12 @@ class Kinematic2D(Moist):
         return attributes
 
     def get_thd(self):
-        return (
-            self.particulator.dynamics["EulerianAdvection"].solvers["th"].advectee.get()
-        )
+        return self.particulator.dynamics["EulerianAdvection"].solvers["th"]
 
     def get_water_vapour_mixing_ratio(self):
-        return (
-            self.particulator.dynamics["EulerianAdvection"]
-            .solvers["water_vapour_mixing_ratio"]
-            .advectee.get()
-        )
+        return self.particulator.dynamics["EulerianAdvection"].solvers[
+            "water_vapour_mixing_ratio"
+        ]
 
     def sync(self):
         self.particulator.dynamics["EulerianAdvection"].solvers.wait()

@@ -2,6 +2,7 @@
 logic around `PySDM.attributes.impl.base_attribute.BaseAttribute` - the parent class
 for non-derived attributes
 """
+
 from .attribute import Attribute
 
 

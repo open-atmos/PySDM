@@ -19,7 +19,7 @@ from PySDM.physics import si
 ASSERT_PROD = SimProducts.Computed.mean_drop_volume_total_volume_ratio.name
 N_STEPS = 32
 N_REALISATIONS = 5
-SEEDS = list(range(N_REALISATIONS))
+SEEDS = list(range(1, N_REALISATIONS + 1))
 
 
 def test_pysdm_coalescence_is_close_to_analytic_coalescence(

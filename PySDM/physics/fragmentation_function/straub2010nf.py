@@ -2,7 +2,6 @@
 Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.straub2010`
 """
 
-
 import numpy as np
 
 

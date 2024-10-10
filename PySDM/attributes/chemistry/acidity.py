@@ -1,11 +1,13 @@
 """
 pH calculated by finding equilibrium hydrogen ion concentration
 """
-from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
+
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 from PySDM.backends.impl_numba.methods.chemistry_methods import _conc
 from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 
 
+@register_attribute(name="pH")
 class Acidity(DerivedAttribute):
     def __init__(self, builder):
         self.conc = {}
@@ -18,7 +20,7 @@ class Acidity(DerivedAttribute):
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = self.formulae.constants.pH_w
+        self.data.fill(self.formulae.constants.pH_w)
 
     def recalculate(self):
         dynamic = self.particulator.dynamics["AqueousChemistry"]

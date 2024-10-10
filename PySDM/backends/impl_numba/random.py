@@ -1,6 +1,7 @@
 """
 random number generator class for Numba backend
 """
+
 import numpy as np
 
 from ..impl_common.random_common import RandomCommon

@@ -7,7 +7,7 @@ from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.initialisation import spectra
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
-from PySDM.physics.constants import PPB, PPM, T0
+from PySDM.physics.constants import PPB, PPM
 
 
 @strict
@@ -40,7 +40,7 @@ class Settings:
 
         self.p0 = 950 * si.mbar
         self.T0 = 285.2 * si.K
-        pv0 = 0.95 * self.formulae.saturation_vapour_pressure.pvs_Celsius(self.T0 - T0)
+        pv0 = 0.95 * self.formulae.saturation_vapour_pressure.pvs_water(self.T0)
         self.initial_water_vapour_mixing_ratio = const.eps * pv0 / (self.p0 - pv0)
         self.kappa = 0.61
 
@@ -70,11 +70,13 @@ class Settings:
 
         self.starting_amounts = {
             "moles_"
-            + k: self.formulae.trivia.volume(self.r_dry)
-            * self.DRY_RHO
-            / self.dry_molar_mass
-            if k in ("N_mIII", "S_VI")
-            else np.zeros(self.n_sd)
+            + k: (
+                self.formulae.trivia.volume(self.r_dry)
+                * self.DRY_RHO
+                / self.dry_molar_mass
+                if k in ("N_mIII", "S_VI")
+                else np.zeros(self.n_sd)
+            )
             for k in AQUEOUS_COMPOUNDS
         }
 

@@ -2,6 +2,7 @@
 two-dimensional sampling for singular immersion freezing: constant-multiplicity
  sampling in the freezing-temperature vs. immersed-surface-area phase space
 """
+
 import numpy as np
 
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range

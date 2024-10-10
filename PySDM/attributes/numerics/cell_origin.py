@@ -1,9 +1,11 @@
 """
 grid-cell origin (multi-dimensional)
 """
-from PySDM.attributes.impl.cell_attribute import CellAttribute
+
+from PySDM.attributes.impl import CellAttribute, register_attribute
 
 
+@register_attribute()
 class CellOrigin(CellAttribute):
     def __init__(self, builder):
         super().__init__(

@@ -1,4 +1,3 @@
-import matplotlib
 import numpy as np
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
@@ -17,12 +16,12 @@ def plot_profiles(subplot_list, updraft_list, forg_list, output, save=False):
         for i, w in enumerate(updraft_list):
             for _, Forg in enumerate(forg_list):
                 key = subplot + f"_w{w:.2f}_f{Forg:.2f}_"
-                var = "n_c_cm3"
+                var = "CDNC_cm3"
                 z = np.array(output[key + "CompressedFilmOvadnevaite"]["z"])
                 CDNC_film = np.array(output[key + "CompressedFilmOvadnevaite"][var])
                 CDNC_bulk = np.array(output[key + "Constant"][var])
 
-                cmap = matplotlib.cm.get_cmap("Spectral")
+                cmap = pyplot.get_cmap("Spectral")
                 if len(subplot_list) > 1:
                     ax = axes[k, i]
                 else:
@@ -60,7 +59,7 @@ def plot_contours(
                     CDNC_film = output[key + "CompressedFilmOvadnevaite"][var][0] * Naer
                     CDNC_bulk = output[key + "Constant"][var][0] * Naer
                 else:
-                    var = "n_c_cm3"
+                    var = "CDNC_cm3"
                     z = np.array(output[key + "CompressedFilmOvadnevaite"]["z"])
                     wz = np.where(z == z[-1])[0][0]
                     CDNC_film = np.array(

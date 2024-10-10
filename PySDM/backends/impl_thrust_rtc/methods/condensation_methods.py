@@ -1,6 +1,7 @@
 """
 GPU implementation of backend methods for water condensation/evaporation
 """
+
 from functools import cached_property
 from typing import Dict, Optional
 
@@ -24,6 +25,7 @@ ARGS_VARS = (
     "_pvs",
     "Dr",
     "Kr",
+    "ventilation_factor",
 )
 
 
@@ -34,7 +36,18 @@ def args(arg):
 class CondensationMethods(
     ThrustRTCBackendMethods
 ):  # pylint: disable=too-many-instance-attributes
-    keys = ("T", "p", "pv", "lv", "pvs", "RH", "DTp", "lambdaK", "lambdaD")
+    keys = (
+        "T",
+        "p",
+        "pv",
+        "lv",
+        "pvs",
+        "RH",
+        "DTp",
+        "lambdaK",
+        "lambdaD",
+        "schmidt_number",
+    )
 
     @cached_property
     def __calculate_m_l(self):
@@ -80,6 +93,7 @@ class CondensationMethods(
                 "rtol_x",
                 "max_iters",
                 "cell_id",
+                "reynolds_number",
             ),
             name_iter="i",
             body=f"""
@@ -108,7 +122,8 @@ class CondensationMethods(
                         lv=args("_lv"),
                         pvs=args("_pvs"),
                         D=args("Dr"),
-                        K=args("Kr")
+                        K=args("Kr"),
+                        ventilation_factor=args("ventilation_factor"),
                     )};
                     return {args("x_old")} - x_new + {args("dt")} * {
                         phys.condensation_coordinate.dx_dt.c_inline(x="x_new", r_dr_dt="r_dr_dt")
@@ -125,6 +140,7 @@ class CondensationMethods(
             auto _DTp = DTp[cell_id[i]];
             auto _lambdaK = lambdaK[cell_id[i]];
             auto _lambdaD = lambdaD[cell_id[i]];
+            auto _schmidt_number = schmidt_number[cell_id[i]];
 
             auto v_old = {phys.particle_shape_and_density.mass_to_volume.c_inline(
                 mass="water_mass[i]"
@@ -142,6 +158,8 @@ class CondensationMethods(
 
             real_type Dr=0;
             real_type Kr=0;
+            real_type qrt_re_times_cbrt_sc=0;
+            real_type ventilation_factor=0;
             real_type r_dr_dt_old=0;
             real_type dx_old=0;
 
@@ -155,8 +173,16 @@ class CondensationMethods(
                 Kr = {phys.diffusion_kinetics.K.c_inline(
                     K="const.K0", r="r_old", lmbd="_lambdaK"
                 )};
+                qrt_re_times_cbrt_sc={phys.trivia.sqrt_re_times_cbrt_sc.c_inline(
+                    Re="reynolds_number[i]",
+                    Sc="_schmidt_number",
+                )};
+                ventilation_factor = {phys.ventilation.ventilation_coefficient.c_inline(
+                    sqrt_re_times_cbrt_sc="qrt_re_times_cbrt_sc"
+                )};
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
-                    RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs", D="Dr", K="Kr"
+                    RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs", D="Dr", K="Kr",
+                    ventilation_factor="ventilation_factor",
                 )};
                 dx_old = dt * {phys.condensation_coordinate.dx_dt.c_inline(
                     x="x_old", r_dr_dt="r_dr_dt_old"
@@ -271,6 +297,8 @@ class CondensationMethods(
                 "rhod_copy",
                 "dt",
                 "RH_max",
+                "air_density",
+                "air_dynamic_viscosity",
             ),
             name_iter="i",
             body=f"""
@@ -290,8 +318,8 @@ class CondensationMethods(
                 p='p[i]', water_vapour_mixing_ratio='predicted_water_vapour_mixing_ratio[i]')};
             lv[i] = {phys.latent_heat.lv.c_inline(
                 T='T[i]')};
-            pvs[i] = {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
-                T='T[i] - const.T0')};
+            pvs[i] = {phys.saturation_vapour_pressure.pvs_water.c_inline(
+                T='T[i]')};
             RH[i] = pv[i] / pvs[i];
             RH_max[i] = max(RH_max[i], RH[i]);
             DTp[i] = {phys.diffusion_thermics.D.c_inline(
@@ -300,6 +328,11 @@ class CondensationMethods(
                 T='T[i]', p='p[i]')};
             lambdaD[i] = {phys.diffusion_kinetics.lambdaD.c_inline(
                 D='DTp[i]', T='T[i]')};
+            schmidt_number[i] = {phys.trivia.air_schmidt_number.c_inline(
+                dynamic_viscosity="air_dynamic_viscosity[i]",
+                diffusivity="DTp[i]",
+                density="air_density[i]",
+            )};
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -381,6 +414,9 @@ class CondensationMethods(
         RH_max,
         success,
         cell_id,
+        reynolds_number,
+        air_density,
+        air_dynamic_viscosity,
     ):
         assert solver is None
 
@@ -427,6 +463,8 @@ class CondensationMethods(
                     self.rhod_copy.data,
                     dvfloat(timestep),
                     RH_max.data,
+                    air_density.data,
+                    air_dynamic_viscosity.data,
                 ),
             )
             self.__update_drop_masses.launch_n(
@@ -442,6 +480,7 @@ class CondensationMethods(
                     dvfloat(rtol_x),
                     dvfloat(self.max_iters),
                     cell_id.data,
+                    reynolds_number.data,
                 ),
             )
             self.calculate_m_l(self.ml_new, water_mass, multiplicity, cell_id)

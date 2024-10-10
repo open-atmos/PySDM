@@ -75,7 +75,9 @@ class NetCDFExporter_1d:  # pylint: disable=too-few-public-methods,too-many-inst
                 )
 
             n_dimensions = len(instance.shape)
-            if n_dimensions == 1:
+            if n_dimensions == 0:
+                dimensions = ("time",)
+            elif n_dimensions == 1:
                 dimensions = ("height", "time")
             elif n_dimensions == 2:
                 dim_name = name.replace(" ", "_") + "_bin_index"
@@ -94,7 +96,9 @@ class NetCDFExporter_1d:  # pylint: disable=too-few-public-methods,too-many-inst
     def _write_variables(self):
         for var in self.simulator.particulator.products.keys():
             n_dimensions = len(self.simulator.particulator.products[var].shape)
-            if n_dimensions == 1:
+            if n_dimensions == 0:
+                self.vars[var][:] = self.data[var][:]
+            elif n_dimensions == 1:
                 self.vars[var][:, :] = self.data[var][-self.nz_export :, :]
             elif n_dimensions == 2:
                 if self.n_save_spec == 0:

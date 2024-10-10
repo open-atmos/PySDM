@@ -22,17 +22,19 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 @pytest.mark.parametrize("adaptive", (True, False))
 @pytest.mark.parametrize("kernel", (Geometric(), Electric(), Hydrodynamic()))
 def test_coalescence(backend_class, kernel, croupier, adaptive):
-    if backend_class == ThrustRTC and croupier == "local":  # TODO #358
-        return
-    if backend_class == ThrustRTC and adaptive and croupier == "global":  # TODO #329
-        return
+    if backend_class == ThrustRTC and croupier == "local":
+        pytest.skip("TODO #358")
+    if backend_class == ThrustRTC and adaptive and croupier == "global":
+        pytest.skip("TODO #329")
     # Arrange
     s = Settings()
     s.formulae.seed = 0
     steps = [0, 800]
 
-    builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
-    builder.set_environment(Box(dt=s.dt, dv=s.dv))
+    env = Box(dt=s.dt, dv=s.dv)
+    builder = Builder(
+        n_sd=s.n_sd, backend=backend_class(formulae=s.formulae), environment=env
+    )
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         s.spectrum
@@ -65,8 +67,10 @@ def test_coalescence_2_sd(backend_class):
     steps = [0, 200]
     s.n_sd = 2
 
-    builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
-    builder.set_environment(Box(dt=s.dt, dv=s.dv))
+    env = Box(dt=s.dt, dv=s.dv)
+    builder = Builder(
+        n_sd=s.n_sd, backend=backend_class(formulae=s.formulae), environment=env
+    )
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         s.spectrum

@@ -2,11 +2,13 @@
 average pH (averaging after or before taking the logarithm in pH definition)
 with weighting either by number or volume
 """
+
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class Acidity(MomentProduct):
     def __init__(
         self,

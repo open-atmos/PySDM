@@ -10,7 +10,7 @@ from PySDM_examples.Szumowski_et_al_1998.simulation import Simulation
 from PySDM_examples.Szumowski_et_al_1998.storage import Storage
 from PySDM_examples.utils import DummyController
 from PySDM_examples.utils.widgets import IntSlider
-from scipy.io import netcdf
+from scipy.io import netcdf_file
 
 from PySDM import Formulae
 from PySDM.backends import CPU
@@ -78,9 +78,7 @@ def test_export_with_gui_settings():
         vtk_exporter.write_pvd()
 
         # Assert
-        versions = netcdf.netcdf_file(  # pylint: disable=no-member
-            file.absolute_path
-        ).versions
+        versions = netcdf_file(file.absolute_path).versions  # pylint: disable=no-member
         assert "PyMPDATA" in str(versions)
 
         filenames_list = os.listdir(os.path.join(tempdir, "output"))

@@ -1,6 +1,7 @@
 """
 GPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 """
+
 from functools import cached_property
 
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS

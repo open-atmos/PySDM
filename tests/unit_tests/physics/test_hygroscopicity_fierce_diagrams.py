@@ -1,6 +1,7 @@
 """ comparing full and linearised formula for kappa-Koehler hygroscopicity
   parameterisation using dry-radius/kappa surfaces of critical supersaturation
   (diagram concept by Laura Fierce) """
+
 import numpy as np
 from matplotlib import pyplot
 
@@ -85,6 +86,8 @@ def test_hygroscopicity_fierce_diagrams(plot=False):
 
     if plot:
         fig.show()
+    else:
+        fig.clear()
 
     # assert
     assert np.amax(log10_rel_diff) < -1.5

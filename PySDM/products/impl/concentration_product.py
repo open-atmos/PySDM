@@ -7,19 +7,23 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 
 class ConcentrationProduct(MomentProduct):
+    @staticmethod
+    def check_ctor_arguments(specific, stp):
+        if stp and specific:
+            raise ValueError(
+                "std-temperature-and-pressure precludes specific conc. option"
+            )
+
     def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
         """
         `stp` toggles expressing the concentration in terms of standard temperature
         and pressure conditions (ground level of the ICAO standard atmosphere, zero humidity)
         """
+        self.check_ctor_arguments(specific, stp)
         super().__init__(unit=unit, name=name)
         self.specific = specific
         self.stp = stp
         self.rho_stp = None
-        if self.stp and self.specific:
-            raise ValueError(
-                "std-temperature-and-pressure precludes specific conc. option"
-            )
 
     def register(self, builder):
         super().register(builder)

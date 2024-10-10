@@ -1,6 +1,7 @@
 """
 GPU implementation of backend methods wrapping basic physics formulae
 """
+
 from functools import cached_property
 
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
@@ -12,7 +13,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class PhysicsMethods(ThrustRTCBackendMethods):
     @cached_property
-    def _temperature_pressure_RH_body(self):
+    def _temperature_pressure_rh_body(self):
         return trtc.For(
             ("rhod", "thd", "water_vapour_mixing_ratio", "T", "p", "RH"),
             "i",
@@ -26,9 +27,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             )};
             RH[i] = {self.formulae.state_variable_triplet.pv.c_inline(
                 p="p[i]", water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
-            )} / {self.formulae.saturation_vapour_pressure.pvs_Celsius.c_inline(
-                T="T[i] - const.T0"
-            )};
+            )} / {self.formulae.saturation_vapour_pressure.pvs_water.c_inline(T="T[i]")};
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -63,28 +62,6 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             )};
             v_cr[i] = {self.formulae.trivia.volume.c_inline(radius="r_cr")};
         """.replace(
-                "real_type", self._get_c_type()
-            ),
-        )
-
-    @cached_property
-    def __terminal_velocity_body(self):
-        return trtc.For(
-            ("values", "radius", "k1", "k2", "k3", "r1", "r2"),
-            "i",
-            """
-            if (radius[i] < r1) {
-                values[i] = k1 * radius[i] * radius[i];
-            }
-            else {
-                if (radius[i] < r2) {
-                    values[i] = k2 * radius[i];
-                }
-                else {
-                    values[i] = k3 * pow(radius[i], (real_type)(.5));
-                }
-            }
-            """.replace(
                 "real_type", self._get_c_type()
             ),
         )
@@ -129,10 +106,10 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def temperature_pressure_RH(
+    def temperature_pressure_rh(
         self, *, rhod, thd, water_vapour_mixing_ratio, T, p, RH
     ):
-        self._temperature_pressure_RH_body.launch_n(
+        self._temperature_pressure_rh_body.launch_n(
             T.shape[0],
             (
                 rhod.data,
@@ -145,24 +122,103 @@ class PhysicsMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def terminal_velocity(self, *, values, radius, k1, k2, k3, r1, r2):
-        k1 = self._get_floating_point(k1)
-        k2 = self._get_floating_point(k2)
-        k3 = self._get_floating_point(k3)
-        r1 = self._get_floating_point(r1)
-        r2 = self._get_floating_point(r2)
-        self.__terminal_velocity_body.launch_n(
-            values.size(), [values, radius, k1, k2, k3, r1, r2]
-        )
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
     def explicit_euler(self, y, dt, dy_dt):
         dt = self._get_floating_point(dt)
         dy_dt = self._get_floating_point(dy_dt)
         self.__explicit_euler_body.launch_n(y.shape[0], (y.data, dt, dy_dt))
 
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def volume_of_water_mass(self, volume, mass):
         self.__volume_of_mass_body.launch_n(volume.shape[0], (volume.data, mass.data))
 
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def mass_of_water_volume(self, mass, volume):
         self.__mass_of_volume_body.launch_n(mass.shape[0], (mass.data, volume.data))
+
+    @cached_property
+    def __air_density_body(self):
+        return trtc.For(
+            param_names=("output", "rhod", "water_vapour_mixing_ratio"),
+            name_iter="i",
+            body=f"""
+            output[i] = {self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio.c_inline(
+                rhod="rhod[i]",
+                water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
+            )};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def air_density(self, output, rhod, water_vapour_mixing_ratio):
+        self.__air_density_body.launch_n(
+            n=output.shape[0],
+            args=(output.data, rhod.data, water_vapour_mixing_ratio.data),
+        )
+
+    @cached_property
+    def __air_dynamic_viscosity_body(self):
+        return trtc.For(
+            param_names=("output", "temperature"),
+            name_iter="i",
+            body=f"""
+            output[i] = {self.formulae.air_dynamic_viscosity.eta_air.c_inline(
+                temperature="temperature[i]"
+            )};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def air_dynamic_viscosity(self, output, temperature):
+        self.__air_dynamic_viscosity_body.launch_n(
+            n=output.shape[0], args=(output.data, temperature.data)
+        )
+
+    @cached_property
+    def __reynolds_number_body(self):
+        return trtc.For(
+            param_names=(
+                "output",
+                "cell_id",
+                "air_dynamic_viscosity",
+                "air_density",
+                "radius",
+                "velocity_wrt_air",
+            ),
+            name_iter="i",
+            body=f"""
+            output[i] = {self.formulae.particle_shape_and_density.reynolds_number.c_inline(
+                radius="radius[i]",
+                velocity_wrt_air="velocity_wrt_air[i]",
+                dynamic_viscosity="air_dynamic_viscosity[cell_id[i]]",
+                density="air_density[cell_id[i]]",
+            )};
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
+    def reynolds_number(
+        self,
+        *,
+        output,
+        cell_id,
+        dynamic_viscosity,
+        density,
+        radius,
+        velocity_wrt_air,
+    ):
+        self.__reynolds_number_body.launch_n(
+            n=output.shape[0],
+            args=(
+                output.data,
+                cell_id.data,
+                dynamic_viscosity.data,
+                density.data,
+                radius.data,
+                velocity_wrt_air.data,
+            ),
+        )

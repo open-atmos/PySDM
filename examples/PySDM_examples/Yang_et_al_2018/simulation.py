@@ -21,17 +21,28 @@ class Simulation:
             saturation_vapour_pressure="AugustRocheMagnus",
         )
         self.bins_edges = self.formulae.trivia.volume(settings.r_bins_edges)
-        builder = Builder(backend=backend(formulae=self.formulae), n_sd=settings.n_sd)
-        builder.set_environment(
-            Parcel(
-                dt=dt_output / self.n_substeps,
-                mass_of_dry_air=settings.mass_of_dry_air,
-                p0=settings.p0,
-                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                T0=settings.T0,
-                w=settings.w,
-                z0=settings.z0,
-            )
+
+        env = Parcel(
+            dt=dt_output / self.n_substeps,
+            mass_of_dry_air=settings.mass_of_dry_air,
+            p0=settings.p0,
+            initial_water_vapour_mixing_ratio=self.formulae.constants.eps
+            / (
+                settings.p0
+                / settings.RH0
+                / self.formulae.saturation_vapour_pressure.pvs_water(settings.T0)
+                - 1
+            ),
+            T0=settings.T0,
+            w=settings.w,
+            z0=settings.z0,
+        )
+        builder = Builder(
+            backend=backend(
+                formulae=self.formulae, override_jit_flags={"parallel": False}
+            ),
+            n_sd=settings.n_sd,
+            environment=env,
         )
 
         environment = builder.particulator.environment

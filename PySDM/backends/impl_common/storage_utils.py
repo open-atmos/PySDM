@@ -2,7 +2,6 @@
 common code for storage classes
 """
 
-
 from abc import abstractmethod
 from collections import namedtuple
 from typing import Type

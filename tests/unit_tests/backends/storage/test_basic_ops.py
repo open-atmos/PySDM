@@ -12,9 +12,9 @@ class TestBasicOps:
             ([1.0], [2], [3.0]),
         ],
     )
-    def test_addition(backend_class, output, addend, expected):
+    def test_addition(backend_instance, output, addend, expected):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         output = backend.Storage.from_ndarray(np.asarray(output))
         if hasattr(addend, "__len__"):
             addend = backend.Storage.from_ndarray(np.asarray(addend))

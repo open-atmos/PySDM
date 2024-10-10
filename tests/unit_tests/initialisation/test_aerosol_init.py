@@ -4,6 +4,7 @@ import pytest
 from chempy import Substance
 
 # from PySDM.initialisation import spectra
+from PySDM import Formulae
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 from PySDM.physics import si
 
@@ -18,6 +19,8 @@ from PySDM.physics import si
 )
 def test_volume_weighted_kappa_with_insoluble_compound(mass_fractions):
     # Arrange
+    const = Formulae().constants
+    water_molar_volume = const.Mv / const.rho_w
     compounds = ("(NH4)2SO4", "insoluble")
     molar_masses = {
         "(NH4)2SO4": Substance.from_formula("(NH4)2SO4").mass * si.gram / si.mole,
@@ -39,7 +42,7 @@ def test_volume_weighted_kappa_with_insoluble_compound(mass_fractions):
     )
 
     # Act
-    kappa_expected = aer.kappa(mass_fractions)["Constant"]
+    kappa_expected = aer.kappa(mass_fractions, water_molar_volume)["Constant"]
     volume_fractions = aer.volume_fractions(mass_fractions)
 
     # Assert

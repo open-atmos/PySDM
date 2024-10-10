@@ -9,10 +9,12 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 def make_core(settings, coal_eff):
     backend = CPU
 
-    builder = Builder(n_sd=settings.n_sd, backend=backend(settings.formulae))
-    env = Box(dv=settings.dv, dt=settings.dt)
-    builder.set_environment(env)
-    env["rhod"] = 1.0
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=backend(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
+    )
+    builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
@@ -25,8 +27,14 @@ def make_core(settings, coal_eff):
         adaptive=settings.adaptive,
     )
     builder.add_dynamic(collision)
-    M0 = am.make_arbitrary_moment_product(rank=0, attr="volume", attr_unit="m^3")
-    M1 = am.make_arbitrary_moment_product(rank=1, attr="volume", attr_unit="m^3")
-    M2 = am.make_arbitrary_moment_product(rank=2, attr="volume", attr_unit="m^3")
-    products = (M0(name="M0"), M1(name="M1"), M2(name="M2"))
+    common_args = {
+        "attr": "volume",
+        "attr_unit": "m^3",
+        "skip_division_by_m0": True,
+        "skip_division_by_dv": True,
+    }
+    products = tuple(
+        am.make_arbitrary_moment_product(rank=rank, **common_args)(name=f"M{rank}")
+        for rank in range(3)
+    )
     return builder.build(attributes, products)

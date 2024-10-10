@@ -12,8 +12,8 @@ from PySDM.products import WallTime
 
 
 def run(settings, backend):
-    builder = Builder(n_sd=settings.n_sd, backend=backend)
-    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
+    env = Box(dv=settings.dv, dt=settings.dt)
+    builder = Builder(n_sd=settings.n_sd, backend=backend, environment=env)
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
     attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)

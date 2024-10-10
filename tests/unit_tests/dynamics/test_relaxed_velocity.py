@@ -42,17 +42,18 @@ def constant_timescale_fixture(request):
     return request.param
 
 
-def test_small_timescale(default_attributes, constant_timescale, backend_class):
+def test_small_timescale(default_attributes, constant_timescale, backend_instance):
     """
     When the fall velocity is initialized to 0 and relaxation is very quick,
     the velocity should quickly approach the terminal velocity
     """
 
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_instance,
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
 
     builder.add_dynamic(RelaxedVelocity(c=1e-12, constant=constant_timescale))
 
@@ -73,17 +74,18 @@ def test_small_timescale(default_attributes, constant_timescale, backend_class):
     )
 
 
-def test_large_timescale(default_attributes, constant_timescale, backend_class):
+def test_large_timescale(default_attributes, constant_timescale, backend_instance):
     """
     When the fall velocity is initialized to 0 and relaxation is very slow,
     the velocity should remain 0
     """
 
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_instance,
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
 
     builder.add_dynamic(RelaxedVelocity(c=1e15, constant=constant_timescale))
 
@@ -104,16 +106,17 @@ def test_large_timescale(default_attributes, constant_timescale, backend_class):
     )
 
 
-def test_behavior(default_attributes, constant_timescale, backend_class):
+def test_behavior(default_attributes, constant_timescale, backend_instance):
     """
     The fall velocity should approach the terminal velocity exponentially
     """
 
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_instance,
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
 
     # relaxation happens too quickly unless c is high enough
     builder.add_dynamic(RelaxedVelocity(c=100, constant=constant_timescale))
@@ -150,21 +153,19 @@ def test_behavior(default_attributes, constant_timescale, backend_class):
 
 
 @pytest.mark.parametrize("c", [0.1, 10])
-def test_timescale(default_attributes, c, constant_timescale, backend_class):
+def test_timescale(default_attributes, c, constant_timescale, backend_instance):
     """
     The non-constant timescale should be proportional to the sqrt of the radius. The
     proportionality constant should be the parameter for the dynamic.
 
     The constant timescale should be constant.
     """
-
+    env = Box(dt=1, dv=1)
     builder = Builder(
-        n_sd=len(default_attributes["multiplicity"]), backend=backend_class()
+        n_sd=len(default_attributes["multiplicity"]),
+        backend=backend_instance,
+        environment=env,
     )
-
-    builder.set_environment(Box(dt=1, dv=1))
-
-    sqrt_radius_attr = builder.get_attribute("square root of radius")
 
     dyn = RelaxedVelocity(c=c, constant=constant_timescale)
     builder.add_dynamic(dyn)
@@ -174,6 +175,7 @@ def test_timescale(default_attributes, c, constant_timescale, backend_class):
     )
 
     particulator = builder.build(attributes=default_attributes, products=())
+    sqrt_radius_attr = builder.get_attribute("square root of radius")
 
     tau_storage = particulator.Storage.empty(
         default_attributes["multiplicity"].shape, dtype=float

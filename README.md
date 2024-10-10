@@ -1,3 +1,5 @@
+# <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
+
 # PySDM
 
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
@@ -21,7 +23,7 @@
 [![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/open-atmos/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
 [![Coverage Status](https://codecov.io/gh/open-atmos/PySDM/branch/main/graph/badge.svg)](https://app.codecov.io/gh/open-atmos/PySDM)    
 [![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
-[![API docs](https://img.shields.io/badge/API_docs-pdoc3-blue.svg)](https://open-atmos.github.io/PySDM/)
+[![API docs](https://shields.mitmproxy.org/badge/docs-pdoc.dev-brightgreen.svg)](https://open-atmos.github.io/PySDM/)
 
 PySDM is a package for simulating the dynamics of population of particles. 
 It is intended to serve as a building block for simulation systems modelling
@@ -37,16 +39,23 @@ The package features a Pythonic high-performance implementation of the
 
 There is a growing set of example Jupyter notebooks exemplifying how to perform 
   various types of calculations and simulations using PySDM.
-Most of the example notebooks reproduce resutls and plot from literature, see below for 
+Most of the example notebooks reproduce results and plot from literature, see below for 
   a list of examples and links to the notebooks (which can be either executed or viewed 
   "in the cloud").
+
+There are also a growing set of [tutorials](https://github.com/open-atmos/PySDM/tree/main/tutorials), also in the form of Jupyter notebooks.
+These tutorials are intended for teaching purposes and include short explanations of cloud microphysical 
+  concepts paired with widgets for running interactive simulations using PySDM.
+Each tutorial also comes with a set of questions at the end that can be used as homework problems.
+Like the examples, these tutorials can be executed or viewed "in the cloud" making it an especially 
+  easy way for students to get started.
 
 PySDM has two alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
-The [`Numba`](https://open-atmos.github.io/PySDM/PySDM/backends/numba/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
+The [`Numba`](https://open-atmos.github.io/PySDM/PySDM/backends/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
   multi-core CPUs, it uses the just-in-time compilation technique based on the LLVM infrastructure.
-The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrustRTC/thrustRTC.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
+The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrust_rtc.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
@@ -56,9 +65,9 @@ For an overview of PySDM features (and the preferred way to cite PySDM in papers
 - [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
   
 PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
-For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
+For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
-A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
+A [pdoc-generated](https://pdoc.dev/) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
 
 ## Example Jupyter notebooks (reproducing results from literature):
 
@@ -93,9 +102,9 @@ Running the example Jupyter notebooks requires the ``PySDM_examples`` package to
 The suggested install and launch steps are:
 ```
 git clone https://github.com/open-atmos/PySDM.git
-cd examples
-pip install -e .
-jupyter-notebook
+pip install -e PySDM
+pip install -e PySDM/examples
+jupyter-notebook PySDM/examples/PySDM_examples
 ```
 Alternatively, one can also install the examples package from pypi.org by 
 using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
@@ -168,8 +177,8 @@ In order to depict the PySDM API with a practical example, the following
   listings provide sample code roughly reproducing the 
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
   using PySDM from Python, Julia and Matlab.
-It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
-  spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Exponential) and is deterministically sampled to match
+It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/sollision.html#Coalescence)-only set-up in which the initial particle size 
+  spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/exponential.html#Exponential) and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -223,9 +232,9 @@ attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_
 ```
 </details>
 
-The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html) 
+The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) 
   class instances of which are used to manage the system state and control the simulation.
-Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html) class is handled by the [``Builder``](https://open-atmos.github.io/PySDM/PySDM/builder.html)
+Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) class is handled by the [``Builder``](https://open-atmos.github.io/PySDM/PySDM/builder.html#Builder)
   as exemplified below:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -240,8 +249,8 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").Particl
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
-builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
+env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
 particulator = builder.build(attributes, products)
@@ -260,8 +269,8 @@ ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
-builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
-builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
+env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
+builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU(), 'environment', env));
 builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
@@ -284,8 +293,8 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
-builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
+env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3)
+builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
@@ -295,18 +304,18 @@ particulator = builder.build(attributes, products)
 The ``backend`` argument may be set to ``CPU`` or ``GPU``
   what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
-The employed [`Box`](https://open-atmos.github.io/PySDM/PySDM/environments/box.html) environment corresponds to a zero-dimensional framework
+The employed [`Box`](https://open-atmos.github.io/PySDM/PySDM/environments/box.html#Box) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
   used to initialise super-droplet attributes.
-The [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/coalescence.html)
+The [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html#Coalescence)
   Monte-Carlo algorithm (Super Droplet Method) is registered as the only
   dynamic in the system.
-Finally, the [`build()`](https://open-atmos.github.io/PySDM/PySDM/builder.html#PySDM.builder.Builder.build) method is used to obtain an instance
-  of [`Particulator`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#PySDM.particulator.Particulator) which can then be used to control time-stepping and
+Finally, the [`build()`](https://open-atmos.github.io/PySDM/PySDM/builder.html#Builder.build) method is used to obtain an instance
+  of [`Particulator`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) which can then be used to control time-stepping and
   access simulation state.
 
-The [`run(nt)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#PySDM.particuparticulatorr.Particulator.run) method advances the simulation by ``nt`` timesteps.
+The [`run(nt)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator.run) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
@@ -314,14 +323,15 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-rho_w = pyimport("PySDM.physics.constants_defaults").rho_w
 using Plots; plotlyjs()
 
 for step = 0:1200:3600
     particulator.run(step - particulator.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particulator.products["dv/dlnr"].get()[:] * rho_w / si.g,
+        particulator.formulae.particle_shape_and_density.volume_to_mass(
+            particulator.products["dv/dlnr"].get()[:]
+        )/ si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -336,12 +346,12 @@ savefig("plot.svg")
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-rho_w = py.importlib.import_module('PySDM.physics.constants_defaults').rho_w;
-
 for step = 0:1200:3600
     particulator.run(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
-    y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
+    y = particulator.formulae.particle_shape_and_density.volume_to_mass( ...
+        particulator.products{"dv/dlnr"}.get() ...
+    ) / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
@@ -360,14 +370,17 @@ legend()
 <summary>Python (click to expand)</summary>
 
 ```Python
-from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
     particulator.run(step - particulator.n_steps)
-    pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particulator.products['dv/dlnr'].get()[0] * rho_w / si.g,
-                where='post', label=f"t = {step}s")
+    pyplot.step(
+        x=radius_bins_edges[:-1] / si.um,
+        y=particulator.formulae.particle_shape_and_density.volume_to_mass(
+            particulator.products['dv/dlnr'].get()[0]
+        ) / si.g,
+        where='post', label=f"t = {step}s"
+    )
 
 pyplot.xscale('log')
 pyplot.xlabel('particle radius [µm]')
@@ -387,14 +400,13 @@ The component submodules used to create this simulation are visualized below:
     COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
     BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
     ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
-    N_SD["n_sd :int"] -->|passed as arg to| BUILDER_INIT
-    BUILDER_INSTANCE -..-|has a method| BUILDER_SET_ENV(["Builder.set_environment()"])
-    BUILDER_INIT(["Builder.__init__()"]) ----->|instantiates| BUILDER_INSTANCE
+    N_SD["n_sd :int"] ---->|passed as arg to| BUILDER_INIT
+    BUILDER_INIT(["Builder.__init__()"]) --->|instantiates| BUILDER_INSTANCE
     BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
-    ENV_INIT(["Box.__init__()"]) --->|instantiates| ENV
-    DT[dt :float] ----->|passed as arg to| ENV_INIT
-    DV[dv :float] ----->|passed as arg to| ENV_INIT
-    ENV[":Box"] -->|passed as arg to| BUILDER_SET_ENV
+    ENV_INIT(["Box.__init__()"]) -->|instantiates| ENV
+    DT[dt :float] -->|passed as arg to| ENV_INIT
+    DV[dv :float] -->|passed as arg to| ENV_INIT
+    ENV[":Box"] -->|passed as arg to| BUILDER_INIT
     B["b: float"] --->|passed as arg to| KERNEL_INIT(["Golovin.__init__()"])
     KERNEL_INIT -->|instantiates| KERNEL
     KERNEL[collision_kernel: Golovin] -->|passed as arg to| COAL_INIT(["Coalesncence.__init__()"])
@@ -413,24 +425,23 @@ The component submodules used to create this simulation are visualized below:
     volume -->|added as element of| ATTRIBUTES
     BUILDER_BUILD -->|returns| PARTICULATOR_INSTANCE["particulator :Particulator"]
     PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
-    BACKEND_INSTANCE["backend :CPU"] -->|passed as arg to| BUILDER_INIT
+    BACKEND_INSTANCE["backend :CPU"] ---->|passed as arg to| BUILDER_INIT
     PRODUCTS -.-|accessible via| PARTICULATOR_PROD
     NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES 
     EDGES[radius_bins_edges: np.ndarray] -->|passed as arg to| SPECTRUM_INIT
     SPECTRUM_INIT["ParticleVolumeVersusRadiusLogarithmSpectrum.__init__()"] -->|instantiates| SPECTRUM
     SPECTRUM[":ParticleVolumeVersusRadiusLogarithmSpectrum"] -->|added as element of| PRODUCTS
 
-    click COAL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html"
+    click COAL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html#Coalescence"
     click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click BUILDER_SET_ENV "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
-    click ENV "https://open-atmos.github.io/PySDM/PySDM/environments/index.html"
-    click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
-    click KERNEL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/index.html"
-    click EXP_INIT "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/index.html"
-    click IS "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/index.html"
+    click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments.html"
+    click ENV "https://open-atmos.github.io/PySDM/PySDM/environments.html"
+    click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels.html"
+    click KERNEL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels.html"
+    click EXP_INIT "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html"
+    click IS "https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html"
     click CM_INIT "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
     click CM_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
     click SAMPLE "https://open-atmos.github.io/PySDM/PySDM/initialisation/sampling/spectral_sampling.html"
@@ -446,7 +457,7 @@ The component submodules used to create this simulation are visualized below:
 
 In the following example, a condensation-only setup is used with the adiabatic 
 [`Parcel`](https://open-atmos.github.io/PySDM/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
+An initial [`Lognormal`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/lognormal.html#Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
 Subsequent particle growth due to [`Condensation`](https://open-atmos.github.io/PySDM/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
@@ -456,7 +467,7 @@ Results of the simulation are plotted against vertical
 and depict the evolution of 
 [`PeakSupersaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_supersaturation.html), 
 [`EffectiveRadius`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/effective_radius.html), 
-[`ParticleConcentration`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_concentration.html#PySDM.products.particles_concentration.ParticleConcentration) 
+[`ParticleConcentration`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_concentration.html#ParticleConcentration) 
 and the 
 [`WaterMixingRatio `](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/water_mixing_ratio.html).
 
@@ -495,14 +506,13 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
-builder.set_environment(env)
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = Dict()
 attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
@@ -577,8 +587,7 @@ output_points = 40;
 n_sd = 256;
 
 formulae = Formulae();
-builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
-builder.set_environment(env);
+builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environment', env));
 builder.add_dynamic(AmbientThermodynamics());
 builder.add_dynamic(Condensation());
 
@@ -588,7 +597,7 @@ v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
 r_wet = equilibrate_wet_radii(pyargs(...
     'r_dry', r_dry, ...
-    'environment', env, ...
+    'environment', builder.particulator.environment, ...
     'kappa_times_dry_volume', kappa * v_dry...
 ));
 
@@ -678,14 +687,13 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
-builder.set_environment(env)
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
-r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
+r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
 attributes = {
   'multiplicity': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
@@ -783,20 +791,23 @@ We look forward to your contributions and feedback.
 The development and maintenance of PySDM is led by [Sylwester Arabas](https://github.com/slayoo/).
 [Piotr Bartman](https://github.com/piotrbartman/) had been the architect and main developer 
 of technological solutions in PySDM. 
-The suite of examples shipped with PySDM includes contributions from researchers 
+PySDM includes contributions from researchers 
 from [Jagiellonian University](https://en.uj.edu.pl/en) departments of computer science, physics and chemistry;
-and from 
-[Caltech's Climate Modelling Alliance](https://clima.caltech.edu/).
+from [Caltech's Climate Modelling Alliance](https://clima.caltech.edu/),
+from [University of Warsaw](https://en.uw.edu.pl/) (dept. physics), and
+from [AGH University of Krakow](https://agh.edu.pl/en) (dept. physics \& applied computer science) where release maintenance takes place currently.
 
 Development of PySDM had been initially supported by the EU through a grant of the 
-[Foundation for Polish Science](https://www.fnp.org.pl/)) (POIR.04.04.00-00-5E1C/18) 
+[Foundation for Polish Science](https://www.fnp.org.pl/)) (grant no. POIR.04.04.00-00-5E1C/18) 
 realised at the [Jagiellonian University](https://en.uj.edu.pl/en).
-The immersion freezing support in PySDM is developed with support from the
+The immersion freezing support in PySDM was developed with support from the
 US Department of Energy [Atmospheric System Research](https://asr.science.energy.gov/) programme
-through a grant realised at the 
+through a grant (no. DE-SC0021034) realised at the 
 [University of Illinois at Urbana-Champaign](https://illinois.edu/).
+Development of isotopic fractionation representation and mixed-phase support is carried out with support from
+the [Polish National Science Centre](https://ncn.gov.pl/en) (grant no. 2020/39/D/ST10/01220).
 
-copyright: [Jagiellonian University](https://en.uj.edu.pl/en)    
+copyright: [Jagiellonian University](https://en.uj.edu.pl/en) (2019-2023) & [AGH University of Krakow](https://agh.edu.pl/en) (2023-...)    
 licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Related resources and open-source projects
@@ -822,6 +833,14 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
   https://github.com/darothen/superdroplet
 - NTLP (FORTRAN)   
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
+- CLEO (C++)    
+  https://yoctoyotta1024.github.io/CLEO/
+- droplets.jl (Julia)   
+  https://github.com/emmacware/droplets.jl
+- LacmoPy (Python/Numba)    
+  https://github.com/JanKBohrer/LacmoPy/blob/master/collision/all_or_nothing.py
+- McSnow (FORTRAN):     
+  https://gitlab.dkrz.de/mcsnow/mcsnow/-/blob/master/src/mo_coll.f90
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
@@ -833,3 +852,9 @@ licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 - pyrcel: https://github.com/darothen/pyrcel
 - PyBox: https://github.com/loftytopping/PyBox
 - py-cloud-parcel-model: https://github.com/emmasimp/py-cloud-parcel-model
+
+### non-Python cloud microphysics open-source software
+
+- CloudMicrophysics.jl: https://github.com/CliMA/CloudMicrophysics.jl
+- McSnow: https://gitlab.dkrz.de/mcsnow/mcsnow
+  

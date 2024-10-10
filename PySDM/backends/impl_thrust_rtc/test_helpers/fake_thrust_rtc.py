@@ -3,6 +3,7 @@ Numba-based implementation of ThrustRTC API involving translation of C++ code
  to njitted (and multi-threaded) Python code - a hacky workaround enabling
  testing ThrustRTC code on machines with no GPU/CUDA
 """
+
 # pylint: disable=no-member,unsupported-assignment-operation,unsubscriptable-object,no-value-for-parameter
 import types
 import warnings
@@ -144,7 +145,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             dtype = np.bool_
         else:
             raise NotImplementedError(f"Unsupported type {elem_cls}")
-        result = np.empty(size, dtype=dtype)
+        result = np.full(
+            size, np.nan if elem_cls in ("float", "double") else -666, dtype=dtype
+        )
         return FakeThrustRTC.DVVector(result)
 
     @staticmethod

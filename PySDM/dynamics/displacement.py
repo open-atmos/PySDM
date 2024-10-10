@@ -6,13 +6,17 @@ and explicit-Euler (E) maximal displacements with:
 rtol > |(I - E) / E|
 (see eqs 13-16 in [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015))
 """
+
 from collections import namedtuple
 
 import numpy as np
 
+from PySDM.dynamics.impl import register_dynamic
+
 DEFAULTS = namedtuple("_", ("rtol", "adaptive"))(rtol=1e-2, adaptive=True)
 
 
+@register_dynamic()
 class Displacement:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -86,9 +90,11 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
                     max_abs_delta_courant /= self._n_substeps
                     error_estimate = max(
                         error_estimate,
-                        0
-                        if max_abs_delta_courant == 0
-                        else 1 / (1 / max_abs_delta_courant - 1),
+                        (
+                            0
+                            if max_abs_delta_courant == 0
+                            else 1 / (1 / max_abs_delta_courant - 1)
+                        ),
                     )
 
     def __call__(self):

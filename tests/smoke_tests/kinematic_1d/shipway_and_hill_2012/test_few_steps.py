@@ -23,7 +23,7 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
         n_sd_per_gridbox=n_sd_per_gridbox,
         dt=30 * si.s,
         dz=60 * si.m,
-        precip=False,
+        precip=True,
         rho_times_w_1=2 * si.m / si.s * si.kg / si.m**3,
     )
     settings.particle_reservoir_depth = particle_reservoir_depth
@@ -80,6 +80,7 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
     assert max(mean_profile_over_last_steps("activating")) == 0
     assert max(mean_profile_over_last_steps("ripening")) > 0
     assert max(mean_profile_over_last_steps("deactivating")) > 0
+    assert max(output["surface precipitation"]) == 0
 
 
 def test_fixed_thd():

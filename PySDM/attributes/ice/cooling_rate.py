@@ -3,11 +3,12 @@ cooling rate estimated as the difference in current and previous grid-cell
  temperatures divided by the timestep (i.e. equals zero if particle has not
  moved to a different cell since the last timestep)
 """
+
 import numpy as np
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
-from PySDM.attributes.impl import DerivedAttribute
 
-
+@register_attribute()
 class CoolingRate(DerivedAttribute):
     def __init__(self, builder):
         self.cell_id = builder.get_attribute("cell id")

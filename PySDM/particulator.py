@@ -1,6 +1,7 @@
 """
 The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
 """
+
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
@@ -12,7 +13,7 @@ from PySDM.impl.particle_attributes import ParticleAttributes
 
 
 class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance-attributes
-    def __init__(self, n_sd, backend: BackendMethods):
+    def __init__(self, n_sd, backend):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
 
@@ -90,7 +91,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
 
     def update_TpRH(self):
-        self.backend.temperature_pressure_RH(
+        self.backend.temperature_pressure_rh(
             # input
             rhod=self.environment.get_predicted("rhod"),
             thd=self.environment.get_predicted("thd"),
@@ -142,6 +143,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             RH_max=RH_max,
             success=success,
             cell_id=self.attributes["cell id"],
+            reynolds_number=self.attributes["Reynolds number"],
+            air_density=self.environment["air density"],
+            air_dynamic_viscosity=self.environment["air dynamic viscosity"],
         )
         self.attributes.mark_updated("water mass")
 
@@ -198,9 +202,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 coalescence_rate=coalescence_rate,
                 is_first_in_pair=is_first_in_pair,
             )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
-        )
         self.attributes.sanitize()
         self.attributes.mark_updated("multiplicity")
         for key in self.attributes.get_extensive_attribute_keys():
@@ -406,9 +407,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             precipitation_counting_level_index=precipitation_counting_level_index,
             displacement=displacement,
         )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
-        )
         self.attributes.sanitize()
         return res
 
@@ -420,9 +418,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             length=self.attributes.super_droplet_count,
             healthy=self.attributes._ParticleAttributes__healthy_memory,
             domain_top_level_index=self.mesh.grid[-1],
-        )
-        self.attributes.healthy = bool(
-            self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
 
@@ -438,3 +433,49 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 position_in_cell=position_in_cell,
                 n_substeps=n_substeps,
             )
+
+    def isotopic_fractionation(self, heavy_isotopes: tuple):
+        self.backend.isotopic_fractionation()
+        for isotope in heavy_isotopes:
+            self.attributes.mark_updated(f"moles_{isotope}")
+
+    def seeding(
+        self,
+        *,
+        seeded_particle_index,
+        seeded_particle_multiplicity,
+        seeded_particle_extensive_attributes,
+        number_of_super_particles_to_inject,
+    ):
+        n_null = self.n_sd - self.attributes.super_droplet_count
+        if n_null == 0:
+            raise ValueError(
+                "No available seeds to inject. Please provide particles with nan filled attributes."
+            )
+
+        if number_of_super_particles_to_inject > n_null:
+            raise ValueError(
+                "Trying to inject more super particles than space available."
+            )
+
+        if number_of_super_particles_to_inject > len(seeded_particle_multiplicity):
+            raise ValueError(
+                "Trying to inject multiple super particles with the same attributes. \
+                Instead increase multiplicity of injected particles."
+            )
+
+        self.backend.seeding(
+            idx=self.attributes._ParticleAttributes__idx,
+            multiplicity=self.attributes["multiplicity"],
+            extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+            seeded_particle_index=seeded_particle_index,
+            seeded_particle_multiplicity=seeded_particle_multiplicity,
+            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+        )
+        self.attributes.reset_idx()
+        self.attributes.sanitize()
+
+        self.attributes.mark_updated("multiplicity")
+        for key in self.attributes.get_extensive_attribute_keys():
+            self.attributes.mark_updated(key)

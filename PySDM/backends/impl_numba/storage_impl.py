@@ -1,6 +1,7 @@
 """
 Numba njit-ted basic arithmetics routines for CPU backend
 """
+
 import numba
 import numpy as np
 
@@ -10,6 +11,11 @@ from PySDM.backends.impl_numba import conf
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def add(output, addend):
     output += addend
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def add_with_multiplier(output, addend, multiplier):
+    output += multiplier * addend
 
 
 @numba.njit(**conf.JIT_FLAGS)

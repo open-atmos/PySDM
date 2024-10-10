@@ -1,6 +1,9 @@
 """
 Zero-dimensional adiabatic parcel framework
 """
+
+from typing import List, Optional
+
 import numpy as np
 
 from PySDM.environments.impl.moist import Moist
@@ -9,8 +12,10 @@ from PySDM.initialisation.equilibrate_wet_radii import (
     default_rtol,
     equilibrate_wet_radii,
 )
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -23,10 +28,10 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         w: [float, callable],
         z0: float = 0,
         mixed_phase=False,
+        variables: Optional[List[str]] = None,
     ):
-        super().__init__(
-            dt, Mesh.mesh_0d(), ["rhod", "z", "t"], mixed_phase=mixed_phase
-        )
+        variables = (variables or []) + ["rhod", "z", "t"]
+        super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
         self.p0 = p0
         self.initial_water_vapour_mixing_ratio = initial_water_vapour_mixing_ratio
@@ -37,7 +42,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self.w = w if callable(w) else lambda _: w
 
         self.formulae = None
-        self.delta_liquid_water_mixing_ratio = None
+        self.delta_liquid_water_mixing_ratio = np.nan
         self.params = None
 
     @property
@@ -70,6 +75,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self["z"][:] = params[3]
         self["t"][:] = params[4]
 
+        self._tmp["water_vapour_mixing_ratio"][:] = params[0]
         self.sync_parcel_vars()
         Moist.sync(self)
         self.notify()
@@ -81,14 +87,15 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         kappa: float,
         r_dry: [float, np.ndarray],
         rtol=default_rtol,
+        include_dry_volume_in_attribute: bool = True,
     ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
-        attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
+        dry_volume = self.formulae.trivia.volume(radius=r_dry)
+        attributes["kappa times dry volume"] = dry_volume * kappa
         attributes["multiplicity"] = n_in_dv
         r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
@@ -97,6 +104,8 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             rtol=rtol,
         )
         attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
+        if include_dry_volume_in_attribute:
+            attributes["dry volume"] = dry_volume
         return attributes
 
     def advance_parcel_vars(self):
@@ -111,6 +120,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             - self.delta_liquid_water_mixing_ratio / 2
         )
 
+        # derivate evaluated at p_old, T_old, mixrat_mid, w_mid
         drho_dz = self.formulae.hydrostatics.drho_dz(
             g=self.formulae.constants.g_std,
             p=p,

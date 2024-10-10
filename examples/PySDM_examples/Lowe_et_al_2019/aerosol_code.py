@@ -19,7 +19,9 @@ class AerosolMarine(DryAerosolMixture):
     # NMODE                   = [1 1];
     # DENSITY                 = [1.841, 1.78, 1.77, 0.852, 1.5, 2., 2.65, 2.165]; %[gcm-3]
 
-    def __init__(self, Forg: float = 0.2, Acc_N2: float = 137):
+    def __init__(
+        self, water_molar_volume: float, Forg: float = 0.2, Acc_N2: float = 137
+    ):
         Aitken = {
             "palmitic": Forg,
             "(NH4)2SO4": (1 - Forg),
@@ -59,7 +61,9 @@ class AerosolMarine(DryAerosolMixture):
         self.modes = (
             {
                 "f_org": 1 - self.f_soluble_volume(Aitken),
-                "kappa": self.kappa(Aitken),
+                "kappa": self.kappa(
+                    mass_fractions=Aitken, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Aitken),
                 "spectrum": spectra.Lognormal(
                     norm_factor=223 / si.cm**3, m_mode=19.6 * si.nm, s_geom=1.68
@@ -67,7 +71,9 @@ class AerosolMarine(DryAerosolMixture):
             },
             {
                 "f_org": 1 - self.f_soluble_volume(Accumulation),
-                "kappa": self.kappa(Accumulation),
+                "kappa": self.kappa(
+                    mass_fractions=Accumulation, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Accumulation),
                 "spectrum": spectra.Lognormal(
                     norm_factor=Acc_N2 / si.cm**3, m_mode=69.5 * si.nm, s_geom=1.68
@@ -100,9 +106,11 @@ class AerosolBoreal(DryAerosolMixture):
     # DENSITY                     = [1.841, 1.78, 1.77, 1.5, 1.5, 2., 2.65, 2.165]; %[gcm-3]
     # DENSITY                     = [1.72, 1.78, 1.77, 1.2, 1.4, 2., 2.65, 2.165]; %[gcm-3]
 
-    def __init__(self, Forg: float = 0.668, Acc_N2: float = 540):
-        # TODO #604: SOA1 or SOA2 unclear from the paper
-        # TODO #604: CAN'T FIND WHERE NH4NO3 PROPERTIES ARE DEFINED IN ICPM
+    def __init__(
+        self, water_molar_volume: float, Forg: float = 0.668, Acc_N2: float = 540
+    ):
+        # TODO #1247: SOA1 or SOA2 unclear from the paper
+        # TODO #1247: CAN'T FIND WHERE NH4NO3 PROPERTIES ARE DEFINED IN ICPM
         INORG_MASS_RATIO = 0.1515 / 0.1559
         Aitken = {
             "SOA1": Forg,
@@ -129,8 +137,8 @@ class AerosolBoreal(DryAerosolMixture):
                 * si.gram
                 / si.mole,
                 "NH4NO3": Substance.from_formula("NH4NO3").mass * si.gram / si.mole,
-                "SOA1": 190 * si.g / si.mole,  # TODO #604: 190 OR 200?
-                "SOA2": 368.4 * si.g / si.mole,  # TODO #604: 368.4 OR 200?
+                "SOA1": 190 * si.g / si.mole,  # TODO #1247: 190 OR 200?
+                "SOA2": 368.4 * si.g / si.mole,  # TODO #1247: 368.4 OR 200?
             },
             densities={
                 "SOA1": 1.2 * si.g / si.cm**3,
@@ -149,7 +157,9 @@ class AerosolBoreal(DryAerosolMixture):
         self.modes = (
             {
                 "f_org": 1 - self.f_soluble_volume(Aitken),
-                "kappa": self.kappa(Aitken),
+                "kappa": self.kappa(
+                    mass_fractions=Aitken, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Aitken),
                 "spectrum": spectra.Lognormal(
                     norm_factor=1110 / si.cm**3, m_mode=22.65 * si.nm, s_geom=1.75
@@ -157,7 +167,9 @@ class AerosolBoreal(DryAerosolMixture):
             },
             {
                 "f_org": 1 - self.f_soluble_volume(Accumulation),
-                "kappa": self.kappa(Accumulation),
+                "kappa": self.kappa(
+                    mass_fractions=Accumulation, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Accumulation),
                 "spectrum": spectra.Lognormal(
                     norm_factor=Acc_N2 / si.cm**3,
@@ -184,8 +196,10 @@ class AerosolNascent(DryAerosolMixture):
 
     # DENSITY                 = [1.841, 1.78, 1.77, 1.2, 1.24, 2., 2.65, 2.165]; %[gcm-3]
 
-    def __init__(self, Acc_Forg: float = 0.3, Acc_N2: float = 30):
-        # TODO #604: CAN'T FIND WHEN PHI IS MULTIPLIED FOR KÖHLER B IN ICPM CODE
+    def __init__(
+        self, water_molar_volume: float, Acc_Forg: float = 0.3, Acc_N2: float = 30
+    ):
+        # TODO #1247: CAN'T FIND WHEN PHI IS MULTIPLIED FOR KÖHLER B IN ICPM CODE
         Ultrafine = {
             "SOA1": 0.52,
             "SOA2": 0,
@@ -203,8 +217,8 @@ class AerosolNascent(DryAerosolMixture):
                 "(NH4)2SO4": 3,
             },
             molar_masses={
-                "SOA1": 190 * si.g / si.mole,  # TODO #604: 190 OR 200?
-                "SOA2": 368.4 * si.g / si.mole,  # TODO #604: 368.4 OR 200?
+                "SOA1": 190 * si.g / si.mole,  # TODO #1247: 190 OR 200?
+                "SOA2": 368.4 * si.g / si.mole,  # TODO #1247: 368.4 OR 200?
                 "(NH4)2SO4": Substance.from_formula("(NH4)2SO4").mass
                 * si.gram
                 / si.mole,
@@ -224,7 +238,9 @@ class AerosolNascent(DryAerosolMixture):
         self.modes = (
             {
                 "f_org": 1 - self.f_soluble_volume(Ultrafine),
-                "kappa": self.kappa(Ultrafine),
+                "kappa": self.kappa(
+                    mass_fractions=Ultrafine, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Ultrafine),
                 "spectrum": spectra.Lognormal(
                     norm_factor=2000 / si.cm**3, m_mode=11.5 * si.nm, s_geom=1.71
@@ -232,7 +248,9 @@ class AerosolNascent(DryAerosolMixture):
             },
             {
                 "f_org": 1 - self.f_soluble_volume(Accumulation),
-                "kappa": self.kappa(Accumulation),
+                "kappa": self.kappa(
+                    mass_fractions=Accumulation, water_molar_volume=water_molar_volume
+                ),
                 "nu_org": self.nu_org(Accumulation),
                 "spectrum": spectra.Lognormal(
                     norm_factor=Acc_N2 / si.cm**3, m_mode=100 * si.nm, s_geom=1.703

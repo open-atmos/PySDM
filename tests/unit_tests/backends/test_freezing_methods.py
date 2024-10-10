@@ -6,7 +6,6 @@ from matplotlib import pyplot
 from PySDM import Builder, Formulae
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
-from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 from PySDM.products import IceWaterContent
 
@@ -27,9 +26,10 @@ class TestFreezingMethods:
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        builder = Builder(n_sd=1, backend=backend_class(formulae=formulae))
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=1, backend=backend_class(formulae=formulae), environment=env
+        )
         builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
         particulator = builder.build(
             products=(IceWaterContent(),),
@@ -45,10 +45,10 @@ class TestFreezingMethods:
                 ),
             },
         )
-        env["T"] = formulae.constants.T0 + epsilon
-        env["RH"] = np.nan
+        particulator.environment["T"] = formulae.constants.T0 + epsilon
+        particulator.environment["RH"] = np.nan
         if not singular:
-            env["a_w_ice"] = np.nan
+            particulator.environment["a_w_ice"] = np.nan
         assert particulator.products["ice water content"].get() > 0
 
         # act
@@ -67,32 +67,34 @@ class TestFreezingMethods:
         dt = 1 * si.s
         dv = 1 * si.m**3
         T_fz = 250 * si.K
-        vol = 1 * si.um**3
+        water_mass = 1 * si.mg
         multiplicity = 1e10
         steps = 1
 
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
         env = Box(dt=dt, dv=dv)
-        builder.set_environment(env)
+        builder = Builder(
+            n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+        )
         builder.add_dynamic(Freezing(singular=True))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
             "freezing temperature": np.full(n_sd, T_fz),
-            "volume": np.full(n_sd, vol),
+            "water mass": np.full(n_sd, water_mass),
         }
         products = (IceWaterContent(name="qi"),)
         particulator = builder.build(attributes=attributes, products=products)
-        env["T"] = T_fz
-        env["RH"] = 1.000001
+        particulator.environment["T"] = T_fz
+        particulator.environment["RH"] = 1.000001
 
         # act
         particulator.run(steps=steps)
 
         # assert
-        np.testing.assert_almost_equal(
-            np.asarray(particulator.products["qi"].get()),
-            [n_sd * multiplicity * vol * const.rho_w / dv],
+        np.testing.assert_approx_equal(
+            actual=np.asarray(particulator.products["qi"].get()),
+            desired=n_sd * multiplicity * water_mass / dv,
+            significant=7,
         )
 
     @staticmethod
@@ -121,7 +123,7 @@ class TestFreezingMethods:
         )
 
         # dummy (but must-be-set) values
-        vol = (
+        initial_water_mass = (
             44  # for sign flip (ice water has negative volumes), value does not matter
         )
         d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
@@ -151,24 +153,24 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
 
+            env = Box(dt=case["dt"], dv=d_v)
             builder = Builder(
                 n_sd=n_sd,
                 backend=backend_class(
                     formulae=formulae, double_precision=double_precision
                 ),
+                environment=env,
             )
-            env = Box(dt=case["dt"], dv=d_v)
-            builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
-                "volume": np.full(n_sd, vol),
+                "water mass": np.full(n_sd, initial_water_mass),
             }
             particulator = builder.build(attributes=attributes, products=products)
-            env["RH"] = 1.0001
-            env["a_w_ice"] = np.nan
-            env["T"] = np.nan
+            particulator.environment["RH"] = 1.0001
+            particulator.environment["a_w_ice"] = np.nan
+            particulator.environment["T"] = np.nan
 
             cell_id = 0
             for i in range(int(total_time / case["dt"]) + 1):
@@ -176,7 +178,7 @@ class TestFreezingMethods:
 
                 ice_mass_per_volume = particulator.products["qi"].get()[cell_id]
                 ice_mass = ice_mass_per_volume * d_v
-                ice_number = ice_mass / (const.rho_w * vol)
+                ice_number = ice_mass / initial_water_mass
                 unfrozen_fraction = 1 - ice_number / number_of_real_droplets
                 output[key]["unfrozen_fraction"].append(unfrozen_fraction)
 
