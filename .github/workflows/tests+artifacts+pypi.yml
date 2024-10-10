@@ -295,7 +295,7 @@ jobs:
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | grep -v "no previously-included files matching" | wc -l`
           twine check --strict dist/*
 
-      - uses: actions/upload-artifact@v4.1.7
+      - uses: actions/upload-artifact@v4
         with:
           path: ${{ matrix.packages-dir }}/dist
           name: dist-${{ matrix.packages-dir }}
@@ -329,7 +329,7 @@ jobs:
           echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
           # Python 3.12 workaround  
           python -m pip install --break-system-packages setuptools packaging
-      - uses: actions/download-artifact@v4.1.7
+      - uses: actions/download-artifact@v4
         with:
           pattern: dist-*
           merge-multiple: true
@@ -344,7 +344,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/download-artifact@v4.1.7
+      - uses: actions/download-artifact@v4
         with:
           pattern: dist-*
           merge-multiple: true
