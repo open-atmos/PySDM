@@ -82,7 +82,10 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             auto origin = cell_origin[n_sd * (n_dims-1) + idx[i]];
             auto pic = position_in_cell[n_sd * (n_dims-1) + idx[i]];
             if (origin + pic < 0) {
-                atomicAdd((real_type*) &rainfall_mass[0], multiplicity[idx[i]] * abs(water_mass[idx[i]]));
+                atomicAdd(
+                    (real_type*) &rainfall_mass[0],
+                    multiplicity[idx[i]] * abs(water_mass[idx[i]])
+                );
                 idx[i] = n_sd;
                 healthy[0] = 0;
             }

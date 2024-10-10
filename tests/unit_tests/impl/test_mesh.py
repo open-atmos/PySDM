@@ -94,7 +94,7 @@ class TestMesh:
         "mesh, expected_dv",
         (
             (Mesh.mesh_0d(dv=44 * si.m**3), 44 * si.m**3),
-            (Mesh(grid=(100,), size=(1 * si.km)), 10 * si.m * 1 * si.m * 1 * si.m),
+            (Mesh(grid=(100,), size=(1 * si.km,)), 10 * si.m * 1 * si.m * 1 * si.m),
             (
                 Mesh(grid=(100, 200), size=(1 * si.km, 2 * si.km)),
                 10 * si.m * 10 * si.m * 1 * si.m,
