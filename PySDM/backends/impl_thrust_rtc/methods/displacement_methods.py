@@ -73,16 +73,19 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 "healthy",
                 "cell_origin",
                 "position_in_cell",
-                "volume",
+                "water_mass",
                 "multiplicity",
-                "rainfall",
+                "rainfall_mass",
             ),
             "i",
             """
             auto origin = cell_origin[n_sd * (n_dims-1) + idx[i]];
             auto pic = position_in_cell[n_sd * (n_dims-1) + idx[i]];
             if (origin + pic < 0) {
-                atomicAdd((real_type*) &rainfall[0], multiplicity[idx[i]] * volume[idx[i]]);
+                atomicAdd(
+                    (real_type*) &rainfall_mass[0],
+                    multiplicity[idx[i]] * abs(water_mass[idx[i]])
+                );
                 idx[i] = n_sd;
                 healthy[0] = 0;
             }
@@ -118,7 +121,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         *,
         cell_origin,
         position_in_cell,
-        volume,
+        water_mass,
         multiplicity,
         idx,
         length,
@@ -130,8 +133,8 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             raise NotImplementedError()
         n_sd = trtc.DVInt64(cell_origin.shape[1])
         n_dims = trtc.DVInt64(len(cell_origin.shape))
-        rainfall = trtc.device_vector(self._get_c_type(), 1)
-        trtc.Fill(rainfall, self._get_floating_point(0))
+        rainfall_mass = trtc.device_vector(self._get_c_type(), 1)
+        trtc.Fill(rainfall_mass, self._get_floating_point(0))
         self.__flag_precipitated_body.launch_n(
             length,
             (
@@ -141,12 +144,12 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 healthy.data,
                 cell_origin.data,
                 position_in_cell.data,
-                volume.data,
+                water_mass.data,
                 multiplicity.data,
-                rainfall,
+                rainfall_mass,
             ),
         )
-        return rainfall.to_host()[0]
+        return rainfall_mass.to_host()[0]
 
     @staticmethod
     def flag_out_of_column(  # pylint: disable=unused-argument

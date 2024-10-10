@@ -152,7 +152,7 @@ class DisplacementMethods(BackendMethods):
         def body(
             cell_origin,
             position_in_cell,
-            volume,
+            water_mass,
             multiplicity,
             idx,
             length,
@@ -160,7 +160,7 @@ class DisplacementMethods(BackendMethods):
             precipitation_counting_level_index,
             displacement,
         ):
-            rainfall = 0.0
+            rainfall_mass = 0.0
             flag = len(idx)
             for i in range(length):
                 position_within_column = (
@@ -173,10 +173,10 @@ class DisplacementMethods(BackendMethods):
                     # and crossed precip-counting level
                     position_within_column < precipitation_counting_level_index
                 ):
-                    rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
+                    rainfall_mass += abs(water_mass[idx[i]]) * multiplicity[idx[i]]
                     idx[i] = flag
                     healthy[0] = 0
-            return rainfall
+            return rainfall_mass
 
         return body
 
@@ -204,9 +204,10 @@ class DisplacementMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     def flag_precipitated(
         self,
+        *,
         cell_origin,
         position_in_cell,
-        volume,
+        water_mass,
         multiplicity,
         idx,
         length,
@@ -214,10 +215,12 @@ class DisplacementMethods(BackendMethods):
         precipitation_counting_level_index,
         displacement,
     ) -> float:
+        """return a scalar value corresponding to the mass of water (all phases) that crossed
+        the bottom boundary of the entire domain"""
         return self._flag_precipitated_body(
             cell_origin.data,
             position_in_cell.data,
-            volume.data,
+            water_mass.data,
             multiplicity.data,
             idx.data,
             length,
