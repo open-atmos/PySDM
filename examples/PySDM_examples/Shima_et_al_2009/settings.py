@@ -8,7 +8,6 @@ from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.initialisation import spectra
 from PySDM.physics import si
 
-
 @strict
 class Settings:
     def __init__(self, seed: int, steps: Optional[list] = None):
