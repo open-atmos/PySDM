@@ -21,6 +21,9 @@ class CoolingRate(DerivedAttribute):
         builder.particulator.observers.append(self)
 
     def notify(self):
+        """triggers update to ensure recalculation is done before
+        overwriting `self.prev_T` with current temperature"""
+        self.update()
         cell_id = self.particulator.attributes["cell id"]
         self.prev_T[:] = self.particulator.environment["T"][cell_id]
 

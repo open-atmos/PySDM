@@ -103,14 +103,14 @@ def make_freezing_spec_plot(
             _ = CurvedText(
                 x=T.squeeze(),
                 y=qi.squeeze(),
-                text=f"                      {multiplier}x median A",
+                text=f"                      {multiplier}x median S",
                 va="bottom",
                 color="black",
                 axes=prim,
             )
     title = f"$σ_g$=exp({np.log(surf_spec.s_geom):.3g})"
     if cooling_rate_K_min is not None:
-        title += f", cooling rate: {cooling_rate_K_min} K/min"
+        title += f", c={cooling_rate_K_min} K/min"
     prim.set_title(title)
     # prim.set_ylabel('ice water content [$g/m^3$]')
     prim.set_yticks([])
