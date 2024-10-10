@@ -54,6 +54,7 @@ def main(plot: bool = True, save: str = None):
             last_step_error = error
             if base_error is None:
                 base_error = last_step_error
+            norm_error = last_step_error / base_error
 
             plotter.ylabel = (
                 r"$\bf{dt: "
@@ -68,7 +69,9 @@ def main(plot: bool = True, save: str = None):
                 if i == len(dts) - 1
                 else None
             )
-            plotter.title = f"time: {norm_time:.2f} error: {last_step_error / base_error:.2f} (normalised)"
+            plotter.title = (
+                f"time: {norm_time:.2f} error: {norm_error:.2f} (normalised)"
+            )
             plotter.finished = False
             plotter.finish()
     if save is not None:
