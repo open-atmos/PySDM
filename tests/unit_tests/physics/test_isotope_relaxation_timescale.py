@@ -33,7 +33,7 @@ def test_unit_and_magnitude(paper, iso):
         alpha_iso = getattr(
             formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{iso}"
         )(temperature)
-        e_s = formulae.saturation_vapour_pressure.pvs_Celsius(temperature - const.T0)
+        e_s = formulae.saturation_vapour_pressure.pvs_water(temperature)
         radius = 0.1 * si.mm
         vent_coeff = 1.01
 

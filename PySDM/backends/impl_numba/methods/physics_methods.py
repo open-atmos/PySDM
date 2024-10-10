@@ -59,7 +59,7 @@ class PhysicsMethods(BackendMethods):
                 )
                 RH[i] = ff.state_variable_triplet__pv(
                     p[i], water_vapour_mixing_ratio[i]
-                ) / ff.saturation_vapour_pressure__pvs_Celsius(T[i] - ff.constants.T0)
+                ) / ff.saturation_vapour_pressure__pvs_water(T[i])
 
         return body
 
@@ -82,9 +82,7 @@ class PhysicsMethods(BackendMethods):
         @numba.njit(**self.default_jit_flags)
         def body(*, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out):
             for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
-                pvi = ff.saturation_vapour_pressure__ice_Celsius(
-                    T_in[i] - ff.constants.T0
-                )
+                pvi = ff.saturation_vapour_pressure__pvs_ice(T_in[i])
                 pv = ff.state_variable_triplet__pv(
                     p_in[i], water_vapour_mixing_ratio_in[i]
                 )

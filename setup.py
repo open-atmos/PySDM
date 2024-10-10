@@ -10,8 +10,10 @@ from setuptools import find_packages, setup
 
 
 def get_long_description():
+    """returns contents of README.md file"""
     with open("README.md", "r", encoding="utf8") as file:
         long_description = file.read()
+        long_description = long_description.replace("pysdm_logo.svg", "pysdm_logo.png")
     return long_description
 
 
@@ -40,7 +42,18 @@ setup(
             else ">=0.51.2"
         ),
         # TODO #1344: (numpy 2.0.0 incompatibility in https://github.com/bjodah/chempy/issues/234)
-        "numpy" + ("==1.24.4" if CI else "<2.0.0"),
+        "numpy"
+        + (
+            {
+                8: "==1.24.4",
+                9: "==1.24.4",
+                10: "==1.24.4",
+                11: "==1.24.4",
+                12: "==1.26.4",
+            }[sys.version_info.minor]
+            if CI
+            else ""
+        ),
         "Pint" + ("==0.21.1" if CI else ""),
         "chempy" + ("==0.8.3" if CI else ""),
         "scipy"

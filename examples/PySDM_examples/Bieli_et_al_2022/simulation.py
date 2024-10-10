@@ -9,11 +9,12 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 def make_core(settings, coal_eff):
     backend = CPU
 
-    env = Box(dv=settings.dv, dt=settings.dt)
     builder = Builder(
-        n_sd=settings.n_sd, backend=backend(settings.formulae), environment=env
+        n_sd=settings.n_sd,
+        backend=backend(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
     )
-    env["rhod"] = 1.0
+    builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum

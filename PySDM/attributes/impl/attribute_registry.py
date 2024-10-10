@@ -54,7 +54,7 @@ def get_attribute_class(name, dynamics=None, formulae=None):
     if name not in _ATTRIBUTES_REGISTRY:
         raise ValueError(
             f"Unknown attribute name: {name};"
-            " valid names: {', '.join(sorted(_ATTRIBUTES_REGISTRY))}"
+            f" valid names: {', '.join(sorted(_ATTRIBUTES_REGISTRY))}"
         )
     for cls, func in _ATTRIBUTES_REGISTRY[name].items():
         if func(dynamics, formulae):

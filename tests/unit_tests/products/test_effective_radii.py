@@ -21,7 +21,6 @@ def test_effective_radii(backend_class):
         environment=env,
     )
     dry_volume = builder.formulae.trivia.volume(radius=dry_radii)
-    env["T"] = 300 * si.K
     particulator = builder.build(
         attributes={
             "water mass": builder.formulae.particle_shape_and_density.radius_to_mass(
@@ -44,6 +43,7 @@ def test_effective_radii(backend_class):
             EffectiveRadius(name="d", radius_range=(0.5 * si.um, np.inf)),
         ),
     )
+    particulator.environment["T"] = 300 * si.K
 
     # act
     sut = {k: product.get()[0] for k, product in particulator.products.items()}

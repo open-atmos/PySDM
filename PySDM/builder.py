@@ -49,8 +49,7 @@ class Builder:
     def _set_environment(self, environment):
         if self.particulator.environment is not None:
             raise AssertionError("environment has already been set")
-        self.particulator.environment = environment
-        self.particulator.environment.register(self)
+        self.particulator.environment = environment.instantiate(builder=self)
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
@@ -150,5 +149,9 @@ class Builder:
 
         for key in self.particulator.dynamics:
             self.particulator.timers[key] = WallTimer()
+
+        if (attributes["multiplicity"] == 0).any():
+            self.particulator.attributes.healthy = False
+            self.particulator.attributes.sanitize()
 
         return self.particulator

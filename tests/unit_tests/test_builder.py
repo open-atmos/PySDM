@@ -47,7 +47,7 @@ class TestBuilder:
                 )
             },
         )
-        env["T"] = np.nan
+        particulator.environment["T"] = np.nan
         _ = particulator.attributes["critical supersaturation"].to_ndarray()
 
     @staticmethod

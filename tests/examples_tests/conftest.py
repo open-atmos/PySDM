@@ -53,6 +53,7 @@ TEST_SUITES = {
         "deJong_Azimi",
         "Bulenok_2023_MasterThesis",
         "Shipway_and_Hill_2012",
+        "seeding",
     ],
     "multi-process_b": [
         "Bartman_2020_MasterThesis",

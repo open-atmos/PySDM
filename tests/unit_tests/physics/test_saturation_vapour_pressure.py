@@ -27,10 +27,12 @@ class TestSaturationVapourPressure:
                 if name[:2] not in ("__", "a_"):
                     if not (
                         key in ("AugustRocheMagnus", "Wexler1976", "Bolton1980")
-                        and name == "ice_Celsius"
+                        and name == "pvs_ice"
                     ):
                         pyplot.plot(
-                            temperature, func(temperature), label=f"{key}::{name}"
+                            temperature,
+                            func(temperature + const.T0),
+                            label=f"{key}::{name}",
                         )
         pyplot.grid()
         pyplot.legend()
@@ -46,10 +48,10 @@ class TestSaturationVapourPressure:
             np.testing.assert_allclose(
                 Formulae(
                     saturation_vapour_pressure=choices_keys[0]
-                ).saturation_vapour_pressure.pvs_Celsius(temperature),
+                ).saturation_vapour_pressure.pvs_water(temperature + const.T0),
                 Formulae(
                     saturation_vapour_pressure=choice
-                ).saturation_vapour_pressure.pvs_Celsius(temperature),
+                ).saturation_vapour_pressure.pvs_water(temperature + const.T0),
                 rtol=2e-2,
             )
 
@@ -59,19 +61,19 @@ class TestSaturationVapourPressure:
                 np.testing.assert_array_less(
                     Formulae(
                         saturation_vapour_pressure="FlatauWalkoCotton"
-                    ).saturation_vapour_pressure.ice_Celsius(temperature),
+                    ).saturation_vapour_pressure.pvs_ice(temperature + const.T0),
                     Formulae(
                         saturation_vapour_pressure=choice
-                    ).saturation_vapour_pressure.pvs_Celsius(temperature),
+                    ).saturation_vapour_pressure.pvs_water(temperature + const.T0),
                 )
                 temperature = np.linspace(1, 1, 100)
                 np.testing.assert_array_less(
                     Formulae(
                         saturation_vapour_pressure="FlatauWalkoCotton"
-                    ).saturation_vapour_pressure.pvs_Celsius(temperature),
+                    ).saturation_vapour_pressure.pvs_water(temperature + const.T0),
                     Formulae(
                         saturation_vapour_pressure=choice
-                    ).saturation_vapour_pressure.ice_Celsius(temperature),
+                    ).saturation_vapour_pressure.pvs_ice(temperature + const.T0),
                 )
 
     @staticmethod
@@ -91,7 +93,7 @@ class TestSaturationVapourPressure:
     )
     def test_wexler_1976_table_1(T_C, expected_es_mb):
         formulae = Formulae(saturation_vapour_pressure="Wexler1976")
-        actual_es = formulae.saturation_vapour_pressure.pvs_Celsius(T_C)
+        actual_es = formulae.saturation_vapour_pressure.pvs_water(T_C + const.T0)
         np.testing.assert_approx_equal(
             actual=actual_es, desired=expected_es_mb * si.mbar, significant=4
         )

@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
         with:
-          python-version: 3.8
+          python-version: 3.9
       - run: |
           pip install pre-commit
           pre-commit clean
@@ -69,11 +69,10 @@ jobs:
         with:
           python-version: 3.9
       - run: |
-          pip install pdoc3
+          pip install pdoc
           pip install -e .
           pip install -e examples
-          python -We -m pdoc --html PySDM examples/PySDM_examples
-          python -We .github/workflows/pdoc_index_workaround.py
+          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PySDM_examples -t pdoc_templates
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
@@ -97,7 +96,6 @@ jobs:
         python -m pip install --upgrade pip
         # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
         pip install "pylint<3.0.0" nbqa
-        pip install pdoc3 # (pdoc3 for checking the .github/workflows/pdoc_index_workaround.py)
         pip install -r tests/devops_tests/requirements.txt
         pip install -e ./examples[tests]
         pip install -e .[tests]
@@ -125,11 +123,11 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
-        python-version: ["3.8", "3.11"]
+        python-version: ["3.9", "3.11"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - test-suite: "devops_tests"
-            python-version: "3.8"
+            python-version: "3.9"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 25 }}
@@ -309,7 +307,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
-        python-version: ["3.8", "3.11", "system"]
+        python-version: ["3.9", "3.11", "system"]
         exclude:
           - platform: ubuntu-latest
             python-version: system
@@ -318,7 +316,7 @@ jobs:
           - platform: windows-latest
             python-version: system
           - platform: macos-14
-            python-version: "3.8"
+            python-version: "3.9"
           - platform: macos-14
             python-version: "3.11"
     runs-on: ${{ matrix.platform }}

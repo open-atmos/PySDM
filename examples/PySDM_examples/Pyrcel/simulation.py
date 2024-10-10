@@ -15,26 +15,28 @@ class Simulation(BasicSimulation):
     def __init__(
         self, settings, products=None, scipy_solver=False, rtol_thd=1e-10, rtol_x=1e-10
     ):
-        env = Parcel(
-            dt=settings.timestep,
-            p0=settings.initial_pressure,
-            initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
-            T0=settings.initial_temperature,
-            w=settings.vertical_velocity,
-            mass_of_dry_air=44 * si.kg,
-        )
         n_sd = sum(settings.n_sd_per_mode)
         builder = Builder(
             n_sd=n_sd,
             backend=CPU(
                 formulae=settings.formulae, override_jit_flags={"parallel": False}
             ),
-            environment=env,
+            environment=Parcel(
+                dt=settings.timestep,
+                p0=settings.initial_pressure,
+                initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
+                T0=settings.initial_temperature,
+                w=settings.vertical_velocity,
+                mass_of_dry_air=44 * si.kg,
+            ),
         )
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x))
 
-        volume = env.mass_of_dry_air / settings.initial_air_density
+        volume = (
+            builder.particulator.environment.mass_of_dry_air
+            / settings.initial_air_density
+        )
         attributes = {
             k: np.empty(0)
             for k in ("dry volume", "kappa times dry volume", "multiplicity")
@@ -52,7 +54,7 @@ class Simulation(BasicSimulation):
             )
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
-            environment=env,
+            environment=builder.particulator.environment,
             kappa_times_dry_volume=attributes["kappa times dry volume"],
         )
         attributes["volume"] = settings.formulae.trivia.volume(radius=r_wet)

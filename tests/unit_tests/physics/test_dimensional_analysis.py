@@ -29,9 +29,9 @@ class TestDimensionalAnalysis:
         sut = DimensionalAnalysis()
 
         # Act & Assert
-        assert hasattr(Formulae().saturation_vapour_pressure.pvs_Celsius, "py_func")
+        assert hasattr(Formulae().saturation_vapour_pressure.pvs_water, "py_func")
         with sut:
             assert not hasattr(
-                Formulae().saturation_vapour_pressure.pvs_Celsius, "py_func"
+                Formulae().saturation_vapour_pressure.pvs_water, "py_func"
             )
-        assert hasattr(Formulae().saturation_vapour_pressure.pvs_Celsius, "py_func")
+        assert hasattr(Formulae().saturation_vapour_pressure.pvs_water, "py_func")
