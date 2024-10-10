@@ -10,7 +10,7 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, CPUTime
 
 
 def run(settings, backend=CPU, observers=()):
@@ -29,7 +29,7 @@ def run(settings, backend=CPU, observers=()):
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             settings.radius_bins_edges, name="dv/dlnr"
         ),
-        WallTime(),
+        CPUTime(),
     )
     particulator = builder.build(attributes, products)
 
@@ -37,13 +37,13 @@ def run(settings, backend=CPU, observers=()):
         particulator.observers.append(observer)
 
     vals = {}
-    particulator.products["wall time"].reset()
+    particulator.products["CPU Time"].reset()
     for step in settings.output_steps:
         particulator.run(step - particulator.n_steps)
         vals[step] = particulator.products["dv/dlnr"].get()[0]
         vals[step][:] *= settings.rho
 
-    exec_time = particulator.products["wall time"].get()
+    exec_time = particulator.products["CPU Time"].get()
     return vals, exec_time
 
 

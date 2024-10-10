@@ -123,7 +123,8 @@ class SpectrumPlotter:
         if spectrum is not None:
             y = spectrum * si.kilograms / si.grams
             error = error_measure(y, y_true, x)
-            self.title = f"error measure: {error:.2f}"  # TODO #327 relative error
+            self.title = f"error: {error:.2f}"  # TODO #327 relative error
+            self.title = f"error: {error:.2f}"  # TODO #327 relative error
             return error
         return None
 
