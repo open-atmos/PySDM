@@ -10,5 +10,6 @@ def error_measure_old(y, y_true, x):
     error = np.sum(np.abs(errors))
     return error
 
+
 def error_measure(y, y_true, _):
     return np.sqrt(np.mean(np.square(y - y_true)))

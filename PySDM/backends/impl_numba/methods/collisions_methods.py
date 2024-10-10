@@ -515,7 +515,6 @@ class CollisionsMethods(BackendMethods):
     def _compute_gamma_body(self):
         @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments,too-many-locals
-
         def body(
             prob,
             rand,

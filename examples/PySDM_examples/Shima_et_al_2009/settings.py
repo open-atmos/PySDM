@@ -8,9 +8,10 @@ from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.initialisation import spectra
 from PySDM.physics import si
 
+
 @strict
 class Settings:
-    def __init__(self, seed: int, steps: Optional[list] = None):
+    def __init__(self, seed: Optional[int] = None, steps: Optional[list] = None):
         steps = steps or [0, 1200, 2400, 3600]
         self.formulae = Formulae(seed=seed)
         self.n_sd = 2**13

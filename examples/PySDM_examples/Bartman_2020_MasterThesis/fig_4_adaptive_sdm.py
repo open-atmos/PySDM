@@ -40,7 +40,7 @@ def main(plot: bool = True, save: str = None):
                 base_time = mean_time
             norm_time = mean_time / base_time
             mean_output = {}
-            for key in outputs[0].keys ():
+            for key in outputs[0].keys():
                 mean_output[key] = sum((output[key] for output in outputs)) / len(
                     outputs
                 )
@@ -56,7 +56,10 @@ def main(plot: bool = True, save: str = None):
                 base_error = last_step_error
 
             plotter.ylabel = (
-                r"$\bf{dt: " + str(settings.dt) + ("+ adaptivity" if settings.adaptive else "") + "}$\ndm/dlnr [g/m^3/(unit dr/r)]"
+                r"$\bf{dt: "
+                + str(settings.dt)
+                + ("+ adaptivity" if settings.adaptive else "")
+                + "}$\ndm/dlnr [g/m^3/(unit dr/r)]"
                 if j == 0
                 else None
             )
@@ -65,7 +68,7 @@ def main(plot: bool = True, save: str = None):
                 if i == len(dts) - 1
                 else None
             )
-            plotter.title = f"norm. time: {norm_time:.2f}; error: {last_step_error / base_error:.2f}"
+            plotter.title = f"time: {norm_time:.2f} error: {last_step_error / base_error:.2f} (normalised)"
             plotter.finished = False
             plotter.finish()
     if save is not None:
