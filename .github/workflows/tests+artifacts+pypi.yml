@@ -295,9 +295,9 @@ jobs:
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | grep -v "no previously-included files matching" | wc -l`
           twine check --strict dist/*
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4.1.7
         with:
-          path: ${{ matrix.packages-dir}}/dist
+          path: ${{ matrix.packages-dir }}/dist
           name: dist-${{ matrix.packages-dir }}
 
   pkg_install_check:
@@ -348,7 +348,7 @@ jobs:
         with:
           pattern: dist-*
           merge-multiple: true
-          path: dist     
+          path: dist
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: pypa/gh-action-pypi-publish@unstable/v1
