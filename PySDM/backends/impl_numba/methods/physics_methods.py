@@ -125,6 +125,17 @@ class PhysicsMethods(BackendMethods):
 
         return body
 
+    @cached_property
+    def mass_of_volume(self):
+        phys_volume_to_mass = self.formulae.particle_shape_and_density.volume_to_mass
+
+        @numba.njit(**self.default_jit_flags)
+        def mass_of_volume(mass, volume):
+            for i in prange(volume.shape[0]):  # pylint: disable=not-an-iterable
+                mass[i] = phys_volume_to_mass(volume[i])
+
+        return mass_of_volume
+
     def mass_of_water_volume(self, mass, volume):
         self._mass_of_volume_body(mass.data, volume.data)
 

@@ -69,6 +69,7 @@ setup(
             else ""
         ),
         "pyevtk" + ("==1.2.0" if CI else ""),
+        "pystrict",
     ],
     extras_require={
         "tests": [
