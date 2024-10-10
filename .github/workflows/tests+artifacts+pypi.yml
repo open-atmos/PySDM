@@ -123,7 +123,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
-        python-version: ["3.9", "3.11"]
+        python-version: ["3.9", "3.12"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
@@ -189,7 +189,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
-        python-version: ["3.9", "3.11"]
+        python-version: ["3.9", "3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -225,7 +225,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-22.04, macos-12, windows-latest]
-        python-version: ["3.9", "3.11"]
+        python-version: ["3.9", "3.12"]
         test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
@@ -297,7 +297,7 @@ jobs:
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
       - uses: actions/setup-python@v5.0.0
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - run: pip install twine build
 
@@ -317,7 +317,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
-        python-version: ["3.9", "3.11"]
+        python-version: ["3.9", "3.12"]
         exclude:
           - platform: macos-14
             python-version: "3.9"
