@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from PySDM.impl.mesh import Mesh
+from PySDM.physics import si
 
 
 def random_positions(grid: tuple, n_sd: int):
@@ -57,7 +58,7 @@ class TestMesh:
             Mesh(grid=(3, 4, 5, 6), size=(5, 5, 5, 5)),
         ),
     )
-    def test_cellural_attributes(mesh):
+    def test_cellular_attributes(mesh):
         # arrange
         n_sd = 666
         positions = random_positions(mesh.grid, n_sd)
@@ -87,3 +88,33 @@ class TestMesh:
                 0 <= min(position_in_cell[dim, :]) <= max(position_in_cell[dim, :]) < 1
             )
         assert position_in_cell.dtype == float
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "mesh, expected_dv",
+        (
+            (Mesh.mesh_0d(dv=44 * si.m**3), 44 * si.m**3),
+            (Mesh(grid=(100,), size=(1 * si.km,)), 10 * si.m * 1 * si.m * 1 * si.m),
+            (
+                Mesh(grid=(100, 200), size=(1 * si.km, 2 * si.km)),
+                10 * si.m * 10 * si.m * 1 * si.m,
+            ),
+            (
+                Mesh(grid=(10, 20, 30), size=(1 * si.km, 2 * si.km, 3 * si.km)),
+                (100 * si.m) ** 3,
+            ),
+        ),
+    )
+    def test_dv(mesh, expected_dv):
+        assert mesh.dv == expected_dv
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "mesh, expected_area",
+        (
+            (Mesh(grid=(100,), size=(44 * si.km,)), 1 * si.m**2),
+            (Mesh(grid=(100, 200), size=(44 * si.km, 666 * si.m)), 44 * si.km * si.m),
+        ),
+    )
+    def test_domain_bottom_surface_area(mesh, expected_area):
+        assert mesh.domain_bottom_surface_area == expected_area
