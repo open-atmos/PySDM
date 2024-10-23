@@ -198,7 +198,7 @@ class Simulation:
                             1 - self.settings.freezing_inp_frac
                         )
                     elif len(array.shape) > 1:  # particle positions
-                        # TODO: #599: seed
+                        # TODO #599: seed
                         for dim, _ in enumerate(array.shape):
                             # only to make particles not shadow each other in visualisations
                             attributes[name][dim, orig] = array[dim, :]
