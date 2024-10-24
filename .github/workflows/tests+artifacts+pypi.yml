@@ -40,7 +40,7 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
-    - uses: actions/setup-python@master
+    - uses: actions/setup-python@v5.0.0
       with:
         python-version: 3.9
     - name: Generate coverage report
@@ -58,7 +58,7 @@ jobs:
   pdoc:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-12, windows-latest]
+        platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -122,7 +122,7 @@ jobs:
     needs: [pdoc, nojit_and_codecov, zenodo_json]
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-12, windows-latest]
+        platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
         python-version: ["3.9", "3.11"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
@@ -175,7 +175,7 @@ jobs:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-22.04, macos-12, windows-latest]
+        platform: [ubuntu-22.04, macos-12, macos-14, windows-latest]
         python-version: ["3.9", "3.11"]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -183,7 +183,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
       - run: |
@@ -211,7 +211,7 @@ jobs:
     needs: [examples-setup]
     strategy:
       matrix:
-        platform: [ubuntu-22.04, macos-12, windows-latest]
+        platform: [ubuntu-22.04, macos-12, macos-14, windows-latest]
         python-version: ["3.9", "3.11"]
         test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
@@ -304,31 +304,16 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
-        python-version: ["3.9", "3.11", "system"]
+        python-version: ["3.9", "3.11"]
         exclude:
-          - platform: ubuntu-latest
-            python-version: system
-          - platform: macos-12
-            python-version: system
-          - platform: windows-latest
-            python-version: system
           - platform: macos-14
             python-version: "3.9"
-          - platform: macos-14
-            python-version: "3.11"
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
-      - if: matrix.platform != 'macos-14'
-        uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - if: matrix.platform == 'macos-14'
-        run: |
-          sudo ln -s `which python3` /usr/local/bin/python
-          echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
-          # Python 3.12 workaround  
-          python -m pip install --break-system-packages setuptools packaging
       - uses: actions/download-artifact@v4
         with:
           pattern: dist-*
