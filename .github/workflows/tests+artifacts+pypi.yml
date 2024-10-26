@@ -40,7 +40,7 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
-    - uses: actions/setup-python@master
+    - uses: actions/setup-python@v5.0.0
       with:
         python-version: 3.9
     - name: Generate coverage report
@@ -122,10 +122,12 @@ jobs:
     needs: [pdoc, nojit_and_codecov, zenodo_json]
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-12, windows-latest]
+        platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
         python-version: ["3.9", "3.11"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
+          - platform: "macos-14"
+            python-version: "3.9"
           - test-suite: "devops_tests"
             python-version: "3.9"
       fail-fast: false
@@ -148,7 +150,7 @@ jobs:
       - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
         run: pip install -e ./examples
 
-      - run: pip install -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
+      - run: pip install --only-binary :all: -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
 
       # install devops_tests for tutorials_tests
       - if: matrix.test-suite == 'tutorials_tests'
@@ -183,7 +185,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v1
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
       - run: |
@@ -304,31 +306,16 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, macos-14, windows-latest]
-        python-version: ["3.9", "3.11", "system"]
+        python-version: ["3.9", "3.11"]
         exclude:
-          - platform: ubuntu-latest
-            python-version: system
-          - platform: macos-12
-            python-version: system
-          - platform: windows-latest
-            python-version: system
           - platform: macos-14
             python-version: "3.9"
-          - platform: macos-14
-            python-version: "3.11"
     runs-on: ${{ matrix.platform }}
     needs: [package]
     steps:
-      - if: matrix.platform != 'macos-14'
-        uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - if: matrix.platform == 'macos-14'
-        run: |
-          sudo ln -s `which python3` /usr/local/bin/python
-          echo "PIP_INSTALL_ARGS=--break-system-packages" >> $GITHUB_ENV
-          # Python 3.12 workaround  
-          python -m pip install --break-system-packages setuptools packaging
       - uses: actions/download-artifact@v4
         with:
           pattern: dist-*
