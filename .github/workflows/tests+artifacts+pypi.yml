@@ -150,7 +150,7 @@ jobs:
       - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
         run: pip install -e ./examples
 
-      - run: pip install -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
+      - run: pip install --only-binary -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
 
       # install devops_tests for tutorials_tests
       - if: matrix.test-suite == 'tutorials_tests'
