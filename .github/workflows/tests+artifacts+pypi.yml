@@ -130,6 +130,15 @@ jobs:
             python-version: "3.9"
           - test-suite: "devops_tests"
             python-version: "3.9"
+          # TODO #1406
+          - platform: "macos-14"
+            test-suite: "smoke_tests/box"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_a"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/kinematic_2d"
+          - platform: "macos-14"
+            test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 25 }}
