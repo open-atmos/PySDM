@@ -130,6 +130,15 @@ jobs:
             python-version: "3.9"
           - test-suite: "devops_tests"
             python-version: "3.9"
+          # TODO #1406
+          - platform: "macos-14"
+            test-suite: "smoke_tests/box"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_a"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/kinematic_2d"
+          - platform: "macos-14"
+            test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 25 }}
@@ -150,7 +159,9 @@ jobs:
       - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
         run: pip install -e ./examples
 
-      - run: pip install --only-binary :all: -e .[tests] # incl. ensuring that the previous pip did not overwrite the package
+      # incl. ensuring that the previous pip did not overwrite the package
+      - run: |
+          pip install --only-binary :all: -e .[tests]
 
       # install devops_tests for tutorials_tests
       - if: matrix.test-suite == 'tutorials_tests'
