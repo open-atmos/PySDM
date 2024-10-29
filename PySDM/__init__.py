@@ -20,6 +20,7 @@ notebooks are maintained in the
 
 PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in the
 [tests package](https://github.com/open-atmos/PySDM/tree/master/tests).
+.. include:: ../docs/markdown/pysdm_landing.md
 """
 
 from importlib.metadata import PackageNotFoundError, version
