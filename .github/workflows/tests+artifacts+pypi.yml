@@ -72,7 +72,7 @@ jobs:
           pip install pdoc
           pip install -e .
           pip install -e examples
-          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PySDM_examples -t pdoc_templates
+          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PyMPDATA_examples -t docs/templates --math
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
