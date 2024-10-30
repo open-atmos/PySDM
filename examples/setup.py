@@ -1,13 +1,19 @@
 import os
+import re
 import platform
 
 from setuptools import find_packages, setup
 
 
 def get_long_description():
-    with open("README.md", "r", encoding="utf8") as file:
-        long_description = file.read()
-    return long_description
+    """returns contents of the pdoc landing site with pdoc links converted into URLs"""
+    with open(
+            "docs/pysdm_examples_landing.md", "r", encoding="utf8"
+    ) as file:
+        pdoc_links = re.compile(
+            r"(`)([\w\d_-]*).([\w\d_-]*)(`)", re.MULTILINE | re.UNICODE
+        )
+        return pdoc_links.sub(r'<a href="\2/\3.html">\3</a>', file.read())
 
 
 CI = "CI" in os.environ
