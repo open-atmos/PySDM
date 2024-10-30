@@ -7,10 +7,7 @@ Running the examples requires the PySDM_examples package to be installed.
 We recommend you look through the example gallery below to see the examples in action.
 
 # Example gallery
-Unless stated otherwise the following examples solve the <mark>TODO</mark>:
-$$ TODO $$
-
-The examples are grouped by TODO.
+The examples are grouped by dimensionality of the modeled system and by the set of physical processes simulated.
 
 ## no-env examples depicting isotope-related formulae
 | tags              | link                                       |
