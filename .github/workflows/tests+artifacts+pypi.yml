@@ -68,7 +68,7 @@ jobs:
           fetch-depth: 0  # for setuptools-scm, https://github.com/pypa/setuptools-scm/issues/480
       - uses: actions/setup-python@v5.0.0
         with:
-          python-version: 3.9
+          python-version: "3.12"
       - run: |
           pip install pdoc
           pip install -e .
@@ -80,6 +80,10 @@ jobs:
           BRANCH: pdoc
           FOLDER: html
           CLEAN: true
+      - if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
   pylint:
     runs-on: ubuntu-latest
