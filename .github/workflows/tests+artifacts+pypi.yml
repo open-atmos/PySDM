@@ -312,7 +312,7 @@ jobs:
           python -m build 2>&1 | tee build.log
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py \
             | grep -v "no previously-included files matching" \
-            | grep -v "listing git files failed - pretending" \
+            | grep -v "version of {dist_name} already set" \
             | grep -v -E "UserWarning: version of PySDM(-examples)? already set" \
             | wc -l`
           twine check --strict dist/*
