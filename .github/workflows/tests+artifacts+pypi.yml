@@ -65,6 +65,7 @@ jobs:
         with:
           submodules: recursive
           persist-credentials: false
+          fetch-depth: 0  # for setuptools-scm, https://github.com/pypa/setuptools-scm/issues/480
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: 3.9
