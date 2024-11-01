@@ -3,6 +3,7 @@
 
 # pylint: disable=missing-function-docstring,no-member
 import platform
+import sys
 from collections import namedtuple
 
 import numpy as np
@@ -16,7 +17,7 @@ from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
 
-if platform.architecture()[0] == "64bit":
+if platform.architecture()[0] == "64bit" and sys.version_info < (3, 12):  # TODO #1410
     import PyPartMC
 
 linestyles = {"PyPartMC": "dashed", "PySDM": "dotted"}
@@ -74,7 +75,8 @@ def pypartmc(dry_diam, temp, rel_humid, kpa):
 
 
 @pytest.mark.skipif(
-    platform.architecture()[0] != "64bit", reason="binary package availability"
+    platform.architecture()[0] != "64bit" or sys.version_info() >= 3.12,
+    reason="binary package availability",  # TODO #1410
 )
 @pytest.mark.parametrize("kappa", (0.1, 1))
 @pytest.mark.parametrize("temperature", (300 * si.K,))
