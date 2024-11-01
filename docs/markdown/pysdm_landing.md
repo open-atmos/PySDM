@@ -37,7 +37,7 @@ mindmap
           UniformRandom
           Logarithmic
           ...
-        (...)  
+        (...)
       (...)
     ((physics))
       (hygroscopicity)
