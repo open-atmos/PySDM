@@ -188,7 +188,7 @@ jobs:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-22.04, macos-12, windows-latest]
+        platform: [ubuntu-24.04, macos-12, windows-latest]
         python-version: ["3.9", "3.11"]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -224,7 +224,7 @@ jobs:
     needs: [examples-setup]
     strategy:
       matrix:
-        platform: [ubuntu-22.04, macos-12, windows-latest]
+        platform: [ubuntu-24.04, macos-12, windows-latest]
         python-version: ["3.9", "3.11"]
         test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
       fail-fast: false
@@ -255,11 +255,11 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
-      - if: startsWith(matrix.platform, 'ubuntu-')
+      - if: startsWith(matrix.platform, 'ubuntu-') && matrix.test-suite == 'multi-process_a'
         run: |
           sudo apt-get update
           sudo apt-get install python3-paraview=5.11.2+dfsg-6build5
-      - if: startsWith(matrix.platform, 'macos-')
+      - if: startsWith(matrix.platform, 'macos-') && matrix.test-suite == 'multi-process_a'
         run: |
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
