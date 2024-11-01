@@ -75,7 +75,7 @@ def pypartmc(dry_diam, temp, rel_humid, kpa):
 
 
 @pytest.mark.skipif(
-    platform.architecture()[0] != "64bit" or sys.version_info() >= 3.12,
+    platform.architecture()[0] != "64bit" or sys.version_info >= (3, 12),
     reason="binary package availability",  # TODO #1410
 )
 @pytest.mark.parametrize("kappa", (0.1, 1))
