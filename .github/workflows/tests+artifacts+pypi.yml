@@ -80,7 +80,7 @@ jobs:
               with open(notebook_path + ".badges.md", 'w') as fout:
                 fout.write(nbformat.read(fin, nbformat.NO_CONVERT).cells[0].source)
           EOF
-          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PyMPDATA_examples -t docs/templates --math --mermaid
+          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PySDM_examples -t docs/templates --math --mermaid
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
