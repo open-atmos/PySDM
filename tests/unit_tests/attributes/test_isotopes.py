@@ -88,10 +88,10 @@ class TestIsotopes:
         delta = particulator.attributes[f"delta_{isotope}"].to_ndarray()[0]
 
         # assert
-        n_heavy_isotope = attributes[f"moles_{isotope}"].to_ndarray()[0]
+        n_heavy_isotope = attributes[f"moles_{isotope}"][0]
         n_light_water = (
             (1 - heavier_water_specific_content)
-            * attributes["water mass"].to_ndarray()[0]
+            * attributes["water mass"][0]
             / (constants_defaults.M_1H * 2 + constants_defaults.M_16O)
         )
         if isotope[-1] == "O":
