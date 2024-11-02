@@ -257,17 +257,9 @@ jobs:
 
       - if: startsWith(matrix.platform, 'ubuntu-') && matrix.test-suite == 'multi-process_a'
         run: |
+          sudo sed -i `s/noble/oracular/g` /etc/apt/sources.list
           sudo apt-get update
-          sudo apt-get install python3-paraview=5.11.2+dfsg-6build5
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/f/ffmpeg/libavcodec61_7.0.2-3ubuntu1_amd64.deb
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/f/ffmpeg/libavformat61_7.0.2-3ubuntu1_amd64.deb
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/f/ffmpeg/libavutil59_7.0.2-3ubuntu1_amd64.deb
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/g/gdal/libgdal35_3.9.1+dfsg-1build2_amd64.deb
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/g/gmsh/libgmsh4.12t64_4.12.2+ds1-2build2_amd64.deb
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/f/ffmpeg/libswscale8_7.0.2-3ubuntu1_amd64.deb
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/p/paraview/paraview_5.12.1+dfsg-4_amd64.deb  
-          wget -nv http://mirrors.kernel.org/ubuntu/pool/universe/p/paraview/python3-paraview_5.12.1+dfsg-4_amd64.deb  
-          sudo apt install ./*_amd64.deb
+          sudo apt-get install python3-paraview
       - if: startsWith(matrix.platform, 'macos-') && matrix.test-suite == 'multi-process_a'
         run: |
           brew install --cask paraview
