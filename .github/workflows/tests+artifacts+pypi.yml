@@ -256,16 +256,21 @@ jobs:
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
       - if: startsWith(matrix.platform, 'ubuntu-') && matrix.test-suite == 'multi-process_a'
-        uses: myci-actions/add-deb-repo@11
-        with:
-          repo: http://deb.debian.org/debian unstable main
-          repo-name: sid
-          install: python3-paraview
+        run: |
+          sudo echo "deb http://deb.debian.org/debian/ sid main" >> /etc/apt/sources.list
+          sudo apt-get update
+          sudo apt-get install python3-paraview
+          
       - if: startsWith(matrix.platform, 'macos-') && matrix.test-suite == 'multi-process_a'
         run: |
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
-      - if: matrix.platform != 'windows-latest' && matrix.test-suite == 'multi-process_a'
+
+      - if: startsWith(matrix.platform, 'windows-') && matrix.test-suite == 'multi-process_a'
+        run: |
+          choco install -y paraview
+
+      - if: matrix.test-suite == 'multi-process_a'
         run: |
           pvpython --version
           pvpython -c "from paraview import simple"
