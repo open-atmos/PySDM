@@ -257,7 +257,7 @@ jobs:
 
       - if: startsWith(matrix.platform, 'ubuntu-') && matrix.test-suite == 'multi-process_a'
         run: |
-          wget "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-osmesa-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
+          wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-osmesa-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
           
