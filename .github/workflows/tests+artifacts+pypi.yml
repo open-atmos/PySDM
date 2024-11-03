@@ -190,7 +190,7 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-12, windows-latest]
 #        python-version: ["3.9", "3.11"]
-        python-version: [3.11"]
+        python-version: ["3.11"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
