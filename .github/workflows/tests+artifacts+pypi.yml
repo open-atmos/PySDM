@@ -271,22 +271,20 @@ jobs:
 
       - if: startsWith(matrix.platform, 'windows-') && matrix.test-suite == 'multi-process_a'
         run: |
-          choco install -y paraview
+          wget -nv "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Windows&downloadFile=ParaView-5.13.1-Windows-Python3.10-msvc2017-AMD64.msi" -O paraview.msi
+          msiexec //i paraview.msi
 
       - if: matrix.test-suite == 'multi-process_a'
         run: |
           pvpython --version
           pvpython -c "from paraview import simple"
 
-      - if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-
+      - uses: mxschmitt/action-tmate@v3
+        
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run_notebooks -k paraview --suite ${{ matrix.test-suite }}
+          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run_notebooks --suite ${{ matrix.test-suite }}
 #          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
 #          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
 
