@@ -260,7 +260,7 @@ jobs:
 
       - if: startsWith(matrix.platform, 'ubuntu-') && matrix.test-suite == 'multi-process_a'
         run: |
-          sud apt-get install libegl1
+          sudo apt-get install libegl1
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `pwd`/`dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
@@ -275,11 +275,6 @@ jobs:
           curl "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Windows&downloadFile=ParaView-5.13.1-Windows-Python3.10-msvc2017-AMD64.msi" -o paraview.msi
           msiexec //i paraview.msi //quiet //qn //norestart 
           echo "/c/Program Files/ParaView 5.13.1/bin/" >> $GITHUB_PATH
-
-      - if: startsWith(matrix.platform, 'windows-')
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
 
       - if: matrix.test-suite == 'multi-process_a'
         run: |
