@@ -270,7 +270,7 @@ jobs:
       - if: startsWith(matrix.platform, 'windows-') && matrix.test-suite == 'multi-process_a'
         run: |
           choco install ghostscript
-          echo `dirname /c/Program Files/gs/gs*/bin/ps2pdf" >> $GITHUB_PATH
+          echo `dirname /c/Program Files/gs/gs*/bin/ps2pdf` >> $GITHUB_PATH
           curl "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Windows&downloadFile=ParaView-5.13.1-Windows-Python3.10-msvc2017-AMD64.msi" -o paraview.msi
           msiexec //i paraview.msi //quiet //qn //norestart 
           echo "/c/Program Files/ParaView 5.13.1/bin/" >> $GITHUB_PATH
