@@ -278,11 +278,6 @@ jobs:
           msiexec //i paraview.msi //quiet //qn //norestart 
           echo "/c/Program Files/ParaView 5.13.1/bin/" >> $GITHUB_PATH
 
-      - if: startsWith(matrix.platform, 'windows-')
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-
       - if: matrix.test-suite == 'multi-process_a'
         run: |
           pvpython --version
