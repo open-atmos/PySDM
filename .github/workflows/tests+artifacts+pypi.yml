@@ -361,14 +361,14 @@ jobs:
           path: dist
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: pypa/gh-action-pypi-publish@unstable/v1.12.0
+        uses: pypa/gh-action-pypi-publish@release/v1.12.0
         with:
           attestations: false
           repository_url: https://test.pypi.org/legacy/
           packages-dir: dist
 
       - if: startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@unstable/v1.12.0
+        uses: pypa/gh-action-pypi-publish@release/v1.12.0
         with:
           attestations: false
           packages-dir: dist
