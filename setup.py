@@ -72,6 +72,7 @@ setup(
             else ""
         ),
         "pyevtk" + ("==1.2.0" if CI else ""),
+        "flexparser<0.4",
     ],
     extras_require={
         "tests": [
