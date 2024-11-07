@@ -32,6 +32,7 @@ setup(
         "ipywidgets",
         "seaborn",
         "numdifftools",
+        "flexparser<0.4",
     ]
     + (
         ["pyvinecopulib" + "==0.6.4" if CI else "", "vtk"]
