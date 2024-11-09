@@ -1,7 +1,5 @@
 # <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
 
-# PySDM
-
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
 [![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
 [![CUDA](https://img.shields.io/static/v1?label=CUDA&logo=nVidia&color=87ce3e&message=ThrustRTC)](https://pypi.org/project/ThrustRTC/)
@@ -162,26 +160,7 @@ We encourage to use the [GitHub Discussions](https://github.com/open-atmos/PySDM
 
 We look forward to your contributions and feedback.
 
-## Credits:
-
-The development and maintenance of PySDM is led by [Sylwester Arabas](https://github.com/slayoo/).
-[Piotr Bartman](https://github.com/piotrbartman/) had been the architect and main developer 
-of technological solutions in PySDM. 
-PySDM includes contributions from researchers 
-from [Jagiellonian University](https://en.uj.edu.pl/en) departments of computer science, physics and chemistry;
-from [Caltech's Climate Modelling Alliance](https://clima.caltech.edu/),
-from [University of Warsaw](https://en.uw.edu.pl/) (dept. physics), and
-from [AGH University of Krakow](https://agh.edu.pl/en) (dept. physics \& applied computer science) where release maintenance takes place currently.
-
-Development of PySDM had been initially supported by the EU through a grant of the 
-[Foundation for Polish Science](https://www.fnp.org.pl/)) (grant no. POIR.04.04.00-00-5E1C/18) 
-realised at the [Jagiellonian University](https://en.uj.edu.pl/en).
-The immersion freezing support in PySDM was developed with support from the
-US Department of Energy [Atmospheric System Research](https://asr.science.energy.gov/) programme
-through a grant (no. DE-SC0021034) realised at the 
-[University of Illinois at Urbana-Champaign](https://illinois.edu/).
-Development of isotopic fractionation representation and mixed-phase support is carried out with support from
-the [Polish National Science Centre](https://ncn.gov.pl/en) (grant no. 2020/39/D/ST10/01220).
+## Licensing:
 
 copyright: [Jagiellonian University](https://en.uj.edu.pl/en) (2019-2023) & [AGH University of Krakow](https://agh.edu.pl/en) (2023-...)    
 licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)

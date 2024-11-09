@@ -1,6 +1,4 @@
 """
-PySDM_examples package includes common Python modules used in PySDM smoke tests
-and in example notebooks (but the package wheels do not include the notebooks)
 .. include:: ../docs/pysdm_examples_landing.md
 """
 

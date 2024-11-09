@@ -1,36 +1,30 @@
-<img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
-
 # Introduction
+
+<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
+
 PySDM offers a set of building blocks for development of atmospheric cloud
 simulation systems revolving around the particle-based microphysics modelling concept
 and the Super-Droplet Method algorithm ([Shima et al. 2009](https://doi.org/10.1002/qj.441))
 for numerically tackling the probabilistic representation of particle coagulation.
 
-For an overview of PySDM, see [Bartman, Arabas et al. 2021](https://arxiv.org/abs/2103.17238).
-PySDM is released under the [GNU GPL v3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).
-PySDM development has been spearheaded at the Faculty of Mathematics and Computer Science,
-[Jagiellonian University in Kraków](https://en.uj.edu.pl/en) (the copyright holder).
+For details on PySDM dependencies and installation procedures, see
+[project docs homepage](https://open-atmos.github.io/PySDM).
 
-For details on PySDM dependencies and installation procedures, see project
-[README.md file](https://github.com/open-atmos/PySDM/blob/master/README.md)
-which also includes basic usage examples in **Python**, **Julia** and **Matlab**.
-
-A set of more elaborate examples engineered in Python and accompanied by Jupyter
+Below, a set of basic usage examples in **Python**, **Julia** and **Matlab** is provided
+as a tutorial
+More elaborate examples reproducing results from literature, engineered in Python and accompanied by Jupyter
 notebooks are maintained in the
-[PySDM-examples package](https://github.com/open-atmos/PySDM-examples).
-
-PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in the
-[tests package](https://github.com/open-atmos/PySDM/tree/master/tests).
+[PySDM-examples package](https://open-atmos.github.io/PySDM/PySDM_examples).
 
 # Tutorials
 
 ## Hello-world coalescence example in Python, Julia and Matlab
 
 In order to depict the PySDM API with a practical example, the following
-  listings provide sample code roughly reproducing the 
+  listings provide sample code roughly reproducing the
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
   using PySDM from Python, Julia and Matlab.
-It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/sollision.html#Coalescence)-only set-up in which the initial particle size 
+It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/sollision.html#Coalescence)-only set-up in which the initial particle size
   spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/exponential.html#Exponential) and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
 <details>
@@ -85,7 +79,7 @@ attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_
 ```
 </details>
 
-The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) 
+The key element of the PySDM interface is the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator)
   class instances of which are used to manage the system state and control the simulation.
 Instantiation of the [``Particulator``](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator) class is handled by the [``Builder``](https://open-atmos.github.io/PySDM/PySDM/builder.html#Builder)
   as exemplified below:
@@ -100,12 +94,12 @@ Golovin = pyimport("PySDM.dynamics.collisions.collision_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").ParticleVolumeVersusRadiusLogarithmSpectrum
 
-radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
+radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
 builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
+products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")]
 particulator = builder.build(attributes, products)
 ```
 </details>
@@ -155,7 +149,7 @@ particulator = builder.build(attributes, products)
 </details>
 
 The ``backend`` argument may be set to ``CPU`` or ``GPU``
-  what translates to choosing the multi-threaded backend or the 
+  what translates to choosing the multi-threaded backend or the
   GPU-resident computation mode, respectively.
 The employed [`Box`](https://open-atmos.github.io/PySDM/PySDM/environments/box.html#Box) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
@@ -170,7 +164,7 @@ Finally, the [`build()`](https://open-atmos.github.io/PySDM/PySDM/builder.html#B
 
 The [`run(nt)`](https://open-atmos.github.io/PySDM/PySDM/particulator.html#Particulator.run) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
-  which displays a histogram of particle mass distribution 
+  which displays a histogram of particle mass distribution
   at selected timesteps:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -190,7 +184,7 @@ for step = 0:1200:3600
         xlabel="particle radius [µm]",
         ylabel="dm/dlnr [g/m^3/(unit dr/r)]",
         label="t = $step s"
-    )   
+    )
 end
 savefig("plot.svg")
 ```
@@ -206,7 +200,7 @@ for step = 0:1200:3600
         particulator.products{"dv/dlnr"}.get() ...
     ) / si.g;
     stairs(...
-        x(1:end-1), ... 
+        x(1:end-1), ...
         double(py.array.array('d',py.numpy.nditer(y))), ...
         'DisplayName', sprintf("t = %d s", step) ...
     );
@@ -280,7 +274,7 @@ The component submodules used to create this simulation are visualized below:
     PARTICULATOR_INSTANCE -.-|has a field| PARTICULATOR_PROD(["Particulator.products:dict"])
     BACKEND_INSTANCE["backend :CPU"] ---->|passed as arg to| BUILDER_INIT
     PRODUCTS -.-|accessible via| PARTICULATOR_PROD
-    NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES 
+    NP_LOGSPACE(["np.logspace()"]) -->|returns| EDGES
     EDGES[radius_bins_edges: np.ndarray] -->|passed as arg to| SPECTRUM_INIT
     SPECTRUM_INIT["ParticleVolumeVersusRadiusLogarithmSpectrum.__init__()"] -->|instantiates| SPECTRUM
     SPECTRUM[":ParticleVolumeVersusRadiusLogarithmSpectrum"] -->|added as element of| PRODUCTS
@@ -307,20 +301,20 @@ The component submodules used to create this simulation are visualized below:
 ```
 ## Hello-world condensation example in Python, Julia and Matlab
 
-In the following example, a condensation-only setup is used with the adiabatic 
+In the following example, a condensation-only setup is used with the adiabatic
 [`Parcel`](https://open-atmos.github.io/PySDM/PySDM/environments/parcel.html) environment.
 An initial [`Lognormal`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/lognormal.html#Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
-initial humidity. 
+initial humidity.
 Subsequent particle growth due to [`Condensation`](https://open-atmos.github.io/PySDM/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
 causes a subset of particles to activate into cloud droplets.
-Results of the simulation are plotted against vertical 
+Results of the simulation are plotted against vertical
 [`ParcelDisplacement`](https://open-atmos.github.io/PySDM/PySDM/products/housekeeping/parcel_displacement.html)
-and depict the evolution of 
-[`PeakSupersaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_supersaturation.html), 
-[`EffectiveRadius`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/effective_radius.html), 
-[`ParticleConcentration`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_concentration.html#ParticleConcentration) 
-and the 
+and depict the evolution of
+[`PeakSupersaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_supersaturation.html),
+[`EffectiveRadius`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/effective_radius.html),
+[`ParticleConcentration`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_concentration.html#ParticleConcentration)
+and the
 [`WaterMixingRatio `](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/water_mixing_ratio.html).
 
 <details>
@@ -370,7 +364,7 @@ attributes = Dict()
 attributes["multiplicity"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
 attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
-attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
+attributes["volume"] = formulae.trivia.volume(radius=r_wet)
 
 particulator = builder.build(attributes, products=[
     products.PeakSupersaturation(name="S_max", unit="%"),
@@ -379,20 +373,20 @@ particulator = builder.build(attributes, products=[
     products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
     products.ParcelDisplacement(name="z")
 ])
-    
+
 cell_id=1
 output = Dict()
 for (_, product) in particulator.products
     output[product.name] = Array{Float32}(undef, output_points+1)
     output[product.name][1] = product.get()[cell_id]
-end 
-    
+end
+
 for step = 2:output_points+1
     particulator.run(steps=output_interval)
     for (_, product) in particulator.products
         output[product.name][step] = product.get()[cell_id]
-    end 
-end 
+    end
+end
 
 plots = []
 ylbl = particulator.products["z"].unit
@@ -456,7 +450,7 @@ r_wet = equilibrate_wet_radii(pyargs(...
 attributes = py.dict(pyargs( ...
     'multiplicity', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
-    'kappa times dry volume', kappa * v_dry, ... 
+    'kappa times dry volume', kappa * v_dry, ...
     'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
 ));
 
@@ -666,32 +660,32 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - https://patents.google.com/patent/CN101059821B
 
 ### Other SDM implementations:
-- SCALE-SDM (Fortran):    
+- SCALE-SDM (Fortran):
   https://github.com/Shima-Lab/SCALE-SDM_BOMEX_Sato2018/blob/master/contrib/SDM/sdm_coalescence.f90
-- Pencil Code (Fortran):    
+- Pencil Code (Fortran):
   https://github.com/pencil-code/pencil-code/blob/master/src/particles_coagulation.f90
-- PALM LES (Fortran):    
+- PALM LES (Fortran):
   https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90
-- libcloudph++ (C++):    
+- libcloudph++ (C++):
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
-- LCM1D (Python)    
+- LCM1D (Python)
   https://github.com/SimonUnterstrasser/ColumnModel
-- superdroplet (Cython/Numba/C++11/Fortran 2008/Julia)   
+- superdroplet (Cython/Numba/C++11/Fortran 2008/Julia)
   https://github.com/darothen/superdroplet
-- NTLP (FORTRAN)   
+- NTLP (FORTRAN)
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
-- CLEO (C++)    
+- CLEO (C++)
   https://yoctoyotta1024.github.io/CLEO/
-- droplets.jl (Julia)   
+- droplets.jl (Julia)
   https://github.com/emmacware/droplets.jl
-- LacmoPy (Python/Numba)    
+- LacmoPy (Python/Numba)
   https://github.com/JanKBohrer/LacmoPy/blob/master/collision/all_or_nothing.py
-- McSnow (FORTRAN):     
+- McSnow (FORTRAN):
   https://gitlab.dkrz.de/mcsnow/mcsnow/-/blob/master/src/mo_coll.f90
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
-- PartMC (Fortran):    
+- PartMC (Fortran):
   https://github.com/compdyn/partmc
 
 ### Python models with discrete-particle (moving-sectional) representation of particle size spectrum
