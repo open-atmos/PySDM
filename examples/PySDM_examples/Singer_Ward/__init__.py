@@ -5,4 +5,5 @@ kohler.ipynb:
 MWE_joss_paper.ipynb:
 .. include:: ./MWE_joss_paper.ipynb.badges.md
 """
+
 # pylint: disable=invalid-name

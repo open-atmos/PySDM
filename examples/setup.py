@@ -13,7 +13,7 @@ def get_long_description():
         )
         return pdoc_links.sub(
             r'<a href="https://open-atmos.github.io/PySDM/\2/\3.html">\3</a>',
-            file.read()
+            file.read(),
         )
 
 
