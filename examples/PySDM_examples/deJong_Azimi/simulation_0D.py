@@ -48,9 +48,9 @@ def run_box(settings, backend_class=CPU):
     for i, step in enumerate(settings.steps):
         particulator.run(step - particulator.n_steps)
         y[i] = particulator.products["dv/dlnr"].get()[0]
-        mom[i, 0] = particulator.products["M0"].get()
-        mom[i, 1] = particulator.products["M1"].get()
-        mom[i, 2] = particulator.products["M2"].get()
+        (mom[i, 0],) = particulator.products["M0"].get()
+        (mom[i, 1],) = particulator.products["M1"].get()
+        (mom[i, 2],) = particulator.products["M2"].get()
 
     return namedtuple("_", ("radius_bins_left_edges", "dv_dlnr", "moments"))(
         radius_bins_left_edges=settings.radius_bins_edges[:-1], dv_dlnr=y, moments=mom

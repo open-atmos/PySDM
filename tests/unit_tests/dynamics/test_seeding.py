@@ -4,6 +4,7 @@ from collections import namedtuple
 
 import numpy as np
 import pytest
+from attr.validators import instance_of
 
 from matplotlib import pyplot
 
@@ -64,7 +65,10 @@ class TestSeeding:
                 if step != 0:
                     particulator.run(steps=1)
                 for key, val in products.items():
-                    val.append(float(particulator.products[key].get()))
+                    value = particulator.products[key].get()
+                    if not isinstance(value, float):
+                        (value,) = value
+                    val.append(float(value))
             for key in products:
                 products[key] = np.array(products[key])
             return products

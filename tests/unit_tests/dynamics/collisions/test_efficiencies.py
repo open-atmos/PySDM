@@ -101,7 +101,7 @@ class TestEfficiencies:
                     )
                     particulator.attributes.mark_updated("water mass")
                     sut(eff, is_first_in_pair)
-                    res[i, j] = eff.data
+                    (res[i, j],) = eff.data
 
         # plot
         pyplot.colorbar(
