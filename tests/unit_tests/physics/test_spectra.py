@@ -27,14 +27,15 @@ class TestLognormal:
         # Arrange
         s = 1.001
         r_mode = 1e-6
-        sut = Lognormal(1, r_mode, s)
+        sut = Lognormal(norm_factor=1, m_mode=r_mode, s_geom=s)
 
         # Act
-        m, _ = np.linspace(0.01e-6, 100e-6, 10000, retstep=True)
+        m = np.linspace(start=0.01e-6, stop=100e-6, num=1000)
         sd = sut.size_distribution(m)
 
         # Assert
-        assert_approx_equal(m[sd == np.amax(sd)], r_mode, 2)
+        ((index,),) = np.where(sd == np.amax(sd))
+        assert_approx_equal(actual=m[index], desired=r_mode, significant=2)
 
 
 class TestExponential:  # pylint: disable=too-few-public-methods

@@ -33,7 +33,7 @@ class TestParticleConcentration:
             particulator.environment["rhod"] = RHOD
 
         # act
-        prod = particulator.products["total particle concentration"].get()
+        (prod,) = particulator.products["total particle concentration"].get()
 
         # assert
         np.testing.assert_approx_equal(
@@ -56,7 +56,7 @@ class TestParticleConcentration:
             particulator.environment["rhod"] = RHOD
 
         # act
-        prod = particulator.products["particle concentration"].get()
+        (prod,) = particulator.products["particle concentration"].get()
 
         # assert
         np.testing.assert_approx_equal(
