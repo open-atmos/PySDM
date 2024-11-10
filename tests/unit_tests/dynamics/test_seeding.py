@@ -4,7 +4,6 @@ from collections import namedtuple
 
 import numpy as np
 import pytest
-from attr.validators import instance_of
 
 from matplotlib import pyplot
 
