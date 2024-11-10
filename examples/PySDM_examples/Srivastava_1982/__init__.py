@@ -1,6 +1,9 @@
 """
 box-model examples feat. analytic solution for breakup from
 [Srivastava 1982 (JAS)](https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2)
+
+figures.ipynb:
+.. include:: ./figures.ipynb.badges.md
 """
 
 from .equations import Equations, EquationsHelpers
