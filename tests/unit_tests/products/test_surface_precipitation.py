@@ -10,7 +10,6 @@ from PySDM.impl.mesh import Mesh
 from PySDM.environments import Box, Kinematic1D
 from PySDM.products import SurfacePrecipitation
 from PySDM.dynamics import Displacement
-from tests.unit_tests.conftest import backend_instance
 
 
 class TestSurfacePrecipitation:
@@ -52,10 +51,11 @@ class TestSurfacePrecipitation:
     @pytest.mark.parametrize("n_sd", (1, 44, 666))
     # TODO #1418 add tests for counting_level
     def test_surface_precipitation(
-        env_class, env_ctor_args, backend_instance, dt, drop_mass, multiplicity, n_sd
+        *, env_class, env_ctor_args, backend_instance, dt, drop_mass, multiplicity, n_sd
     ):
-        """uses a monodisperse super-droplet setup to check if reported precip matches drop and flow params,
-        the droplet is initialised at position z=0, so any downward movement triggers counting as precip
+        """uses a monodisperse super-droplet setup to check if reported precip
+        matches drop and flow params, the droplet is initialised at position z=0,
+        so any downward movement triggers counting as precip
         """
 
         if isinstance(backend_instance, GPU):
