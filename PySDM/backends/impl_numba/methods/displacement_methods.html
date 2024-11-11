@@ -272,7 +272,7 @@
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>            <span class="n">cell_origin</span><span class="p">,</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>            <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>            <span class="n">volume</span><span class="p">,</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>            <span class="n">water_mass</span><span class="p">,</span>
 </span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>            <span class="n">multiplicity</span><span class="p">,</span>
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>            <span class="n">idx</span><span class="p">,</span>
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>            <span class="n">length</span><span class="p">,</span>
@@ -280,7 +280,7 @@
 </span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>            <span class="n">displacement</span><span class="p">,</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>        <span class="p">):</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>            <span class="n">rainfall</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>            <span class="n">rainfall_mass</span> <span class="o">=</span> <span class="mf">0.0</span>
 </span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>            <span class="n">flag</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>                <span class="n">position_within_column</span> <span class="o">=</span> <span class="p">(</span>
@@ -293,10 +293,10 @@
 </span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>                    <span class="c1"># and crossed precip-counting level</span>
 </span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>                    <span class="n">position_within_column</span> <span class="o">&lt;</span> <span class="n">precipitation_counting_level_index</span>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>                <span class="p">):</span>
-</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>                    <span class="n">rainfall</span> <span class="o">+=</span> <span class="n">volume</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="n">multiplicity</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>  <span class="c1"># TODO #599</span>
+</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>                    <span class="n">rainfall_mass</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">water_mass</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="o">*</span> <span class="n">multiplicity</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
 </span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>                    <span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag</span>
 </span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>                    <span class="n">healthy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>            <span class="k">return</span> <span class="n">rainfall</span>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>            <span class="k">return</span> <span class="n">rainfall_mass</span>
 </span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>
 </span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>
@@ -324,46 +324,49 @@
 </span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>    <span class="k">def</span> <span class="nf">flag_precipitated</span><span class="p">(</span>
 </span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
-</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>        <span class="n">volume</span><span class="p">,</span>
-</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
-</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>        <span class="n">healthy</span><span class="p">,</span>
-</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>        <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>        <span class="n">displacement</span><span class="p">,</span>
-</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_precipitated_body</span><span class="p">(</span>
-</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>            <span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>            <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
-</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>            <span class="n">displacement</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>        <span class="p">)</span>
-</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>
-</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>    <span class="k">def</span> <span class="nf">flag_out_of_column</span><span class="p">(</span>
-</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
-</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>        <span class="n">healthy</span><span class="p">,</span>
-</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>        <span class="n">domain_top_level_index</span><span class="p">,</span>
-</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>    <span class="p">):</span>
-</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_out_of_column_body</span><span class="p">(</span>
-</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>            <span class="n">domain_top_level_index</span><span class="p">,</span>
-</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>        <span class="p">)</span>
+</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>        <span class="n">water_mass</span><span class="p">,</span>
+</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>        <span class="n">healthy</span><span class="p">,</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>        <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
+</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>        <span class="n">displacement</span><span class="p">,</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;return a scalar value corresponding to the mass of water (all phases) that crossed</span>
+</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="sd">        the bottom boundary of the entire domain&quot;&quot;&quot;</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_precipitated_body</span><span class="p">(</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>            <span class="n">water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>            <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
+</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>            <span class="n">displacement</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>        <span class="p">)</span>
+</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>
+</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
+</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>    <span class="k">def</span> <span class="nf">flag_out_of_column</span><span class="p">(</span>
+</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
+</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
+</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>        <span class="n">healthy</span><span class="p">,</span>
+</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a>        <span class="n">domain_top_level_index</span><span class="p">,</span>
+</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>    <span class="p">):</span>
+</span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_out_of_column_body</span><span class="p">(</span>
+</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>            <span class="n">domain_top_level_index</span><span class="p">,</span>
+</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -536,7 +539,7 @@
 </span><span id="DisplacementMethods-153"><a href="#DisplacementMethods-153"><span class="linenos">153</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>
 </span><span id="DisplacementMethods-154"><a href="#DisplacementMethods-154"><span class="linenos">154</span></a>            <span class="n">cell_origin</span><span class="p">,</span>
 </span><span id="DisplacementMethods-155"><a href="#DisplacementMethods-155"><span class="linenos">155</span></a>            <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="DisplacementMethods-156"><a href="#DisplacementMethods-156"><span class="linenos">156</span></a>            <span class="n">volume</span><span class="p">,</span>
+</span><span id="DisplacementMethods-156"><a href="#DisplacementMethods-156"><span class="linenos">156</span></a>            <span class="n">water_mass</span><span class="p">,</span>
 </span><span id="DisplacementMethods-157"><a href="#DisplacementMethods-157"><span class="linenos">157</span></a>            <span class="n">multiplicity</span><span class="p">,</span>
 </span><span id="DisplacementMethods-158"><a href="#DisplacementMethods-158"><span class="linenos">158</span></a>            <span class="n">idx</span><span class="p">,</span>
 </span><span id="DisplacementMethods-159"><a href="#DisplacementMethods-159"><span class="linenos">159</span></a>            <span class="n">length</span><span class="p">,</span>
@@ -544,7 +547,7 @@
 </span><span id="DisplacementMethods-161"><a href="#DisplacementMethods-161"><span class="linenos">161</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
 </span><span id="DisplacementMethods-162"><a href="#DisplacementMethods-162"><span class="linenos">162</span></a>            <span class="n">displacement</span><span class="p">,</span>
 </span><span id="DisplacementMethods-163"><a href="#DisplacementMethods-163"><span class="linenos">163</span></a>        <span class="p">):</span>
-</span><span id="DisplacementMethods-164"><a href="#DisplacementMethods-164"><span class="linenos">164</span></a>            <span class="n">rainfall</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="DisplacementMethods-164"><a href="#DisplacementMethods-164"><span class="linenos">164</span></a>            <span class="n">rainfall_mass</span> <span class="o">=</span> <span class="mf">0.0</span>
 </span><span id="DisplacementMethods-165"><a href="#DisplacementMethods-165"><span class="linenos">165</span></a>            <span class="n">flag</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 </span><span id="DisplacementMethods-166"><a href="#DisplacementMethods-166"><span class="linenos">166</span></a>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
 </span><span id="DisplacementMethods-167"><a href="#DisplacementMethods-167"><span class="linenos">167</span></a>                <span class="n">position_within_column</span> <span class="o">=</span> <span class="p">(</span>
@@ -557,10 +560,10 @@
 </span><span id="DisplacementMethods-174"><a href="#DisplacementMethods-174"><span class="linenos">174</span></a>                    <span class="c1"># and crossed precip-counting level</span>
 </span><span id="DisplacementMethods-175"><a href="#DisplacementMethods-175"><span class="linenos">175</span></a>                    <span class="n">position_within_column</span> <span class="o">&lt;</span> <span class="n">precipitation_counting_level_index</span>
 </span><span id="DisplacementMethods-176"><a href="#DisplacementMethods-176"><span class="linenos">176</span></a>                <span class="p">):</span>
-</span><span id="DisplacementMethods-177"><a href="#DisplacementMethods-177"><span class="linenos">177</span></a>                    <span class="n">rainfall</span> <span class="o">+=</span> <span class="n">volume</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">*</span> <span class="n">multiplicity</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>  <span class="c1"># TODO #599</span>
+</span><span id="DisplacementMethods-177"><a href="#DisplacementMethods-177"><span class="linenos">177</span></a>                    <span class="n">rainfall_mass</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">water_mass</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="o">*</span> <span class="n">multiplicity</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
 </span><span id="DisplacementMethods-178"><a href="#DisplacementMethods-178"><span class="linenos">178</span></a>                    <span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag</span>
 </span><span id="DisplacementMethods-179"><a href="#DisplacementMethods-179"><span class="linenos">179</span></a>                    <span class="n">healthy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="DisplacementMethods-180"><a href="#DisplacementMethods-180"><span class="linenos">180</span></a>            <span class="k">return</span> <span class="n">rainfall</span>
+</span><span id="DisplacementMethods-180"><a href="#DisplacementMethods-180"><span class="linenos">180</span></a>            <span class="k">return</span> <span class="n">rainfall_mass</span>
 </span><span id="DisplacementMethods-181"><a href="#DisplacementMethods-181"><span class="linenos">181</span></a>
 </span><span id="DisplacementMethods-182"><a href="#DisplacementMethods-182"><span class="linenos">182</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="DisplacementMethods-183"><a href="#DisplacementMethods-183"><span class="linenos">183</span></a>
@@ -588,46 +591,49 @@
 </span><span id="DisplacementMethods-205"><a href="#DisplacementMethods-205"><span class="linenos">205</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="DisplacementMethods-206"><a href="#DisplacementMethods-206"><span class="linenos">206</span></a>    <span class="k">def</span> <span class="nf">flag_precipitated</span><span class="p">(</span>
 </span><span id="DisplacementMethods-207"><a href="#DisplacementMethods-207"><span class="linenos">207</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="DisplacementMethods-208"><a href="#DisplacementMethods-208"><span class="linenos">208</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
-</span><span id="DisplacementMethods-209"><a href="#DisplacementMethods-209"><span class="linenos">209</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="DisplacementMethods-210"><a href="#DisplacementMethods-210"><span class="linenos">210</span></a>        <span class="n">volume</span><span class="p">,</span>
-</span><span id="DisplacementMethods-211"><a href="#DisplacementMethods-211"><span class="linenos">211</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
-</span><span id="DisplacementMethods-212"><a href="#DisplacementMethods-212"><span class="linenos">212</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="DisplacementMethods-213"><a href="#DisplacementMethods-213"><span class="linenos">213</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods-214"><a href="#DisplacementMethods-214"><span class="linenos">214</span></a>        <span class="n">healthy</span><span class="p">,</span>
-</span><span id="DisplacementMethods-215"><a href="#DisplacementMethods-215"><span class="linenos">215</span></a>        <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods-216"><a href="#DisplacementMethods-216"><span class="linenos">216</span></a>        <span class="n">displacement</span><span class="p">,</span>
-</span><span id="DisplacementMethods-217"><a href="#DisplacementMethods-217"><span class="linenos">217</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="DisplacementMethods-218"><a href="#DisplacementMethods-218"><span class="linenos">218</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_precipitated_body</span><span class="p">(</span>
-</span><span id="DisplacementMethods-219"><a href="#DisplacementMethods-219"><span class="linenos">219</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-220"><a href="#DisplacementMethods-220"><span class="linenos">220</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-221"><a href="#DisplacementMethods-221"><span class="linenos">221</span></a>            <span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-222"><a href="#DisplacementMethods-222"><span class="linenos">222</span></a>            <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-223"><a href="#DisplacementMethods-223"><span class="linenos">223</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-224"><a href="#DisplacementMethods-224"><span class="linenos">224</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods-225"><a href="#DisplacementMethods-225"><span class="linenos">225</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-226"><a href="#DisplacementMethods-226"><span class="linenos">226</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods-227"><a href="#DisplacementMethods-227"><span class="linenos">227</span></a>            <span class="n">displacement</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-228"><a href="#DisplacementMethods-228"><span class="linenos">228</span></a>        <span class="p">)</span>
-</span><span id="DisplacementMethods-229"><a href="#DisplacementMethods-229"><span class="linenos">229</span></a>
-</span><span id="DisplacementMethods-230"><a href="#DisplacementMethods-230"><span class="linenos">230</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="DisplacementMethods-231"><a href="#DisplacementMethods-231"><span class="linenos">231</span></a>    <span class="k">def</span> <span class="nf">flag_out_of_column</span><span class="p">(</span>
-</span><span id="DisplacementMethods-232"><a href="#DisplacementMethods-232"><span class="linenos">232</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="DisplacementMethods-233"><a href="#DisplacementMethods-233"><span class="linenos">233</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
-</span><span id="DisplacementMethods-234"><a href="#DisplacementMethods-234"><span class="linenos">234</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="DisplacementMethods-235"><a href="#DisplacementMethods-235"><span class="linenos">235</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="DisplacementMethods-236"><a href="#DisplacementMethods-236"><span class="linenos">236</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods-237"><a href="#DisplacementMethods-237"><span class="linenos">237</span></a>        <span class="n">healthy</span><span class="p">,</span>
-</span><span id="DisplacementMethods-238"><a href="#DisplacementMethods-238"><span class="linenos">238</span></a>        <span class="n">domain_top_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods-239"><a href="#DisplacementMethods-239"><span class="linenos">239</span></a>    <span class="p">):</span>
-</span><span id="DisplacementMethods-240"><a href="#DisplacementMethods-240"><span class="linenos">240</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_out_of_column_body</span><span class="p">(</span>
-</span><span id="DisplacementMethods-241"><a href="#DisplacementMethods-241"><span class="linenos">241</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-242"><a href="#DisplacementMethods-242"><span class="linenos">242</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-243"><a href="#DisplacementMethods-243"><span class="linenos">243</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-244"><a href="#DisplacementMethods-244"><span class="linenos">244</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods-245"><a href="#DisplacementMethods-245"><span class="linenos">245</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods-246"><a href="#DisplacementMethods-246"><span class="linenos">246</span></a>            <span class="n">domain_top_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods-247"><a href="#DisplacementMethods-247"><span class="linenos">247</span></a>        <span class="p">)</span>
+</span><span id="DisplacementMethods-208"><a href="#DisplacementMethods-208"><span class="linenos">208</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="DisplacementMethods-209"><a href="#DisplacementMethods-209"><span class="linenos">209</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
+</span><span id="DisplacementMethods-210"><a href="#DisplacementMethods-210"><span class="linenos">210</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
+</span><span id="DisplacementMethods-211"><a href="#DisplacementMethods-211"><span class="linenos">211</span></a>        <span class="n">water_mass</span><span class="p">,</span>
+</span><span id="DisplacementMethods-212"><a href="#DisplacementMethods-212"><span class="linenos">212</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
+</span><span id="DisplacementMethods-213"><a href="#DisplacementMethods-213"><span class="linenos">213</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="DisplacementMethods-214"><a href="#DisplacementMethods-214"><span class="linenos">214</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods-215"><a href="#DisplacementMethods-215"><span class="linenos">215</span></a>        <span class="n">healthy</span><span class="p">,</span>
+</span><span id="DisplacementMethods-216"><a href="#DisplacementMethods-216"><span class="linenos">216</span></a>        <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods-217"><a href="#DisplacementMethods-217"><span class="linenos">217</span></a>        <span class="n">displacement</span><span class="p">,</span>
+</span><span id="DisplacementMethods-218"><a href="#DisplacementMethods-218"><span class="linenos">218</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="DisplacementMethods-219"><a href="#DisplacementMethods-219"><span class="linenos">219</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;return a scalar value corresponding to the mass of water (all phases) that crossed</span>
+</span><span id="DisplacementMethods-220"><a href="#DisplacementMethods-220"><span class="linenos">220</span></a><span class="sd">        the bottom boundary of the entire domain&quot;&quot;&quot;</span>
+</span><span id="DisplacementMethods-221"><a href="#DisplacementMethods-221"><span class="linenos">221</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_precipitated_body</span><span class="p">(</span>
+</span><span id="DisplacementMethods-222"><a href="#DisplacementMethods-222"><span class="linenos">222</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-223"><a href="#DisplacementMethods-223"><span class="linenos">223</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-224"><a href="#DisplacementMethods-224"><span class="linenos">224</span></a>            <span class="n">water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-225"><a href="#DisplacementMethods-225"><span class="linenos">225</span></a>            <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-226"><a href="#DisplacementMethods-226"><span class="linenos">226</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-227"><a href="#DisplacementMethods-227"><span class="linenos">227</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods-228"><a href="#DisplacementMethods-228"><span class="linenos">228</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-229"><a href="#DisplacementMethods-229"><span class="linenos">229</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods-230"><a href="#DisplacementMethods-230"><span class="linenos">230</span></a>            <span class="n">displacement</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-231"><a href="#DisplacementMethods-231"><span class="linenos">231</span></a>        <span class="p">)</span>
+</span><span id="DisplacementMethods-232"><a href="#DisplacementMethods-232"><span class="linenos">232</span></a>
+</span><span id="DisplacementMethods-233"><a href="#DisplacementMethods-233"><span class="linenos">233</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
+</span><span id="DisplacementMethods-234"><a href="#DisplacementMethods-234"><span class="linenos">234</span></a>    <span class="k">def</span> <span class="nf">flag_out_of_column</span><span class="p">(</span>
+</span><span id="DisplacementMethods-235"><a href="#DisplacementMethods-235"><span class="linenos">235</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="DisplacementMethods-236"><a href="#DisplacementMethods-236"><span class="linenos">236</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
+</span><span id="DisplacementMethods-237"><a href="#DisplacementMethods-237"><span class="linenos">237</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
+</span><span id="DisplacementMethods-238"><a href="#DisplacementMethods-238"><span class="linenos">238</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="DisplacementMethods-239"><a href="#DisplacementMethods-239"><span class="linenos">239</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods-240"><a href="#DisplacementMethods-240"><span class="linenos">240</span></a>        <span class="n">healthy</span><span class="p">,</span>
+</span><span id="DisplacementMethods-241"><a href="#DisplacementMethods-241"><span class="linenos">241</span></a>        <span class="n">domain_top_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods-242"><a href="#DisplacementMethods-242"><span class="linenos">242</span></a>    <span class="p">):</span>
+</span><span id="DisplacementMethods-243"><a href="#DisplacementMethods-243"><span class="linenos">243</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_out_of_column_body</span><span class="p">(</span>
+</span><span id="DisplacementMethods-244"><a href="#DisplacementMethods-244"><span class="linenos">244</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-245"><a href="#DisplacementMethods-245"><span class="linenos">245</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-246"><a href="#DisplacementMethods-246"><span class="linenos">246</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-247"><a href="#DisplacementMethods-247"><span class="linenos">247</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods-248"><a href="#DisplacementMethods-248"><span class="linenos">248</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods-249"><a href="#DisplacementMethods-249"><span class="linenos">249</span></a>            <span class="n">domain_top_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods-250"><a href="#DisplacementMethods-250"><span class="linenos">250</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -829,7 +835,7 @@
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">flag_precipitated</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">cell_origin</span>,</span><span class="param">	<span class="n">position_in_cell</span>,</span><span class="param">	<span class="n">volume</span>,</span><span class="param">	<span class="n">multiplicity</span>,</span><span class="param">	<span class="n">idx</span>,</span><span class="param">	<span class="n">length</span>,</span><span class="param">	<span class="n">healthy</span>,</span><span class="param">	<span class="n">precipitation_counting_level_index</span>,</span><span class="param">	<span class="n">displacement</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">flag_precipitated</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">cell_origin</span>,</span><span class="param">	<span class="n">position_in_cell</span>,</span><span class="param">	<span class="n">water_mass</span>,</span><span class="param">	<span class="n">multiplicity</span>,</span><span class="param">	<span class="n">idx</span>,</span><span class="param">	<span class="n">length</span>,</span><span class="param">	<span class="n">healthy</span>,</span><span class="param">	<span class="n">precipitation_counting_level_index</span>,</span><span class="param">	<span class="n">displacement</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="DisplacementMethods.flag_precipitated-view-source"><span>View Source</span></label>
 
@@ -837,31 +843,37 @@
     <a class="headerlink" href="#DisplacementMethods.flag_precipitated"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="DisplacementMethods.flag_precipitated-206"><a href="#DisplacementMethods.flag_precipitated-206"><span class="linenos">206</span></a>    <span class="k">def</span> <span class="nf">flag_precipitated</span><span class="p">(</span>
 </span><span id="DisplacementMethods.flag_precipitated-207"><a href="#DisplacementMethods.flag_precipitated-207"><span class="linenos">207</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-208"><a href="#DisplacementMethods.flag_precipitated-208"><span class="linenos">208</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-209"><a href="#DisplacementMethods.flag_precipitated-209"><span class="linenos">209</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-210"><a href="#DisplacementMethods.flag_precipitated-210"><span class="linenos">210</span></a>        <span class="n">volume</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-211"><a href="#DisplacementMethods.flag_precipitated-211"><span class="linenos">211</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-212"><a href="#DisplacementMethods.flag_precipitated-212"><span class="linenos">212</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-213"><a href="#DisplacementMethods.flag_precipitated-213"><span class="linenos">213</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-214"><a href="#DisplacementMethods.flag_precipitated-214"><span class="linenos">214</span></a>        <span class="n">healthy</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-215"><a href="#DisplacementMethods.flag_precipitated-215"><span class="linenos">215</span></a>        <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-216"><a href="#DisplacementMethods.flag_precipitated-216"><span class="linenos">216</span></a>        <span class="n">displacement</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-217"><a href="#DisplacementMethods.flag_precipitated-217"><span class="linenos">217</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-</span><span id="DisplacementMethods.flag_precipitated-218"><a href="#DisplacementMethods.flag_precipitated-218"><span class="linenos">218</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_precipitated_body</span><span class="p">(</span>
-</span><span id="DisplacementMethods.flag_precipitated-219"><a href="#DisplacementMethods.flag_precipitated-219"><span class="linenos">219</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-220"><a href="#DisplacementMethods.flag_precipitated-220"><span class="linenos">220</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-221"><a href="#DisplacementMethods.flag_precipitated-221"><span class="linenos">221</span></a>            <span class="n">volume</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-222"><a href="#DisplacementMethods.flag_precipitated-222"><span class="linenos">222</span></a>            <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-223"><a href="#DisplacementMethods.flag_precipitated-223"><span class="linenos">223</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-224"><a href="#DisplacementMethods.flag_precipitated-224"><span class="linenos">224</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-225"><a href="#DisplacementMethods.flag_precipitated-225"><span class="linenos">225</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-226"><a href="#DisplacementMethods.flag_precipitated-226"><span class="linenos">226</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-227"><a href="#DisplacementMethods.flag_precipitated-227"><span class="linenos">227</span></a>            <span class="n">displacement</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_precipitated-228"><a href="#DisplacementMethods.flag_precipitated-228"><span class="linenos">228</span></a>        <span class="p">)</span>
+</span><span id="DisplacementMethods.flag_precipitated-208"><a href="#DisplacementMethods.flag_precipitated-208"><span class="linenos">208</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-209"><a href="#DisplacementMethods.flag_precipitated-209"><span class="linenos">209</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-210"><a href="#DisplacementMethods.flag_precipitated-210"><span class="linenos">210</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-211"><a href="#DisplacementMethods.flag_precipitated-211"><span class="linenos">211</span></a>        <span class="n">water_mass</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-212"><a href="#DisplacementMethods.flag_precipitated-212"><span class="linenos">212</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-213"><a href="#DisplacementMethods.flag_precipitated-213"><span class="linenos">213</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-214"><a href="#DisplacementMethods.flag_precipitated-214"><span class="linenos">214</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-215"><a href="#DisplacementMethods.flag_precipitated-215"><span class="linenos">215</span></a>        <span class="n">healthy</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-216"><a href="#DisplacementMethods.flag_precipitated-216"><span class="linenos">216</span></a>        <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-217"><a href="#DisplacementMethods.flag_precipitated-217"><span class="linenos">217</span></a>        <span class="n">displacement</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-218"><a href="#DisplacementMethods.flag_precipitated-218"><span class="linenos">218</span></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="DisplacementMethods.flag_precipitated-219"><a href="#DisplacementMethods.flag_precipitated-219"><span class="linenos">219</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;return a scalar value corresponding to the mass of water (all phases) that crossed</span>
+</span><span id="DisplacementMethods.flag_precipitated-220"><a href="#DisplacementMethods.flag_precipitated-220"><span class="linenos">220</span></a><span class="sd">        the bottom boundary of the entire domain&quot;&quot;&quot;</span>
+</span><span id="DisplacementMethods.flag_precipitated-221"><a href="#DisplacementMethods.flag_precipitated-221"><span class="linenos">221</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_precipitated_body</span><span class="p">(</span>
+</span><span id="DisplacementMethods.flag_precipitated-222"><a href="#DisplacementMethods.flag_precipitated-222"><span class="linenos">222</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-223"><a href="#DisplacementMethods.flag_precipitated-223"><span class="linenos">223</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-224"><a href="#DisplacementMethods.flag_precipitated-224"><span class="linenos">224</span></a>            <span class="n">water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-225"><a href="#DisplacementMethods.flag_precipitated-225"><span class="linenos">225</span></a>            <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-226"><a href="#DisplacementMethods.flag_precipitated-226"><span class="linenos">226</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-227"><a href="#DisplacementMethods.flag_precipitated-227"><span class="linenos">227</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-228"><a href="#DisplacementMethods.flag_precipitated-228"><span class="linenos">228</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-229"><a href="#DisplacementMethods.flag_precipitated-229"><span class="linenos">229</span></a>            <span class="n">precipitation_counting_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-230"><a href="#DisplacementMethods.flag_precipitated-230"><span class="linenos">230</span></a>            <span class="n">displacement</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_precipitated-231"><a href="#DisplacementMethods.flag_precipitated-231"><span class="linenos">231</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>return a scalar value corresponding to the mass of water (all phases) that crossed
+the bottom boundary of the entire domain</p>
+</div>
+
 
                             </div>
                             <div id="DisplacementMethods.flag_out_of_column" class="classattr">
@@ -875,23 +887,23 @@
 
     </div>
     <a class="headerlink" href="#DisplacementMethods.flag_out_of_column"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DisplacementMethods.flag_out_of_column-231"><a href="#DisplacementMethods.flag_out_of_column-231"><span class="linenos">231</span></a>    <span class="k">def</span> <span class="nf">flag_out_of_column</span><span class="p">(</span>
-</span><span id="DisplacementMethods.flag_out_of_column-232"><a href="#DisplacementMethods.flag_out_of_column-232"><span class="linenos">232</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-233"><a href="#DisplacementMethods.flag_out_of_column-233"><span class="linenos">233</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-234"><a href="#DisplacementMethods.flag_out_of_column-234"><span class="linenos">234</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-235"><a href="#DisplacementMethods.flag_out_of_column-235"><span class="linenos">235</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-236"><a href="#DisplacementMethods.flag_out_of_column-236"><span class="linenos">236</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-237"><a href="#DisplacementMethods.flag_out_of_column-237"><span class="linenos">237</span></a>        <span class="n">healthy</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-238"><a href="#DisplacementMethods.flag_out_of_column-238"><span class="linenos">238</span></a>        <span class="n">domain_top_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-239"><a href="#DisplacementMethods.flag_out_of_column-239"><span class="linenos">239</span></a>    <span class="p">):</span>
-</span><span id="DisplacementMethods.flag_out_of_column-240"><a href="#DisplacementMethods.flag_out_of_column-240"><span class="linenos">240</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_out_of_column_body</span><span class="p">(</span>
-</span><span id="DisplacementMethods.flag_out_of_column-241"><a href="#DisplacementMethods.flag_out_of_column-241"><span class="linenos">241</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-242"><a href="#DisplacementMethods.flag_out_of_column-242"><span class="linenos">242</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-243"><a href="#DisplacementMethods.flag_out_of_column-243"><span class="linenos">243</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-244"><a href="#DisplacementMethods.flag_out_of_column-244"><span class="linenos">244</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-245"><a href="#DisplacementMethods.flag_out_of_column-245"><span class="linenos">245</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-246"><a href="#DisplacementMethods.flag_out_of_column-246"><span class="linenos">246</span></a>            <span class="n">domain_top_level_index</span><span class="p">,</span>
-</span><span id="DisplacementMethods.flag_out_of_column-247"><a href="#DisplacementMethods.flag_out_of_column-247"><span class="linenos">247</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DisplacementMethods.flag_out_of_column-234"><a href="#DisplacementMethods.flag_out_of_column-234"><span class="linenos">234</span></a>    <span class="k">def</span> <span class="nf">flag_out_of_column</span><span class="p">(</span>
+</span><span id="DisplacementMethods.flag_out_of_column-235"><a href="#DisplacementMethods.flag_out_of_column-235"><span class="linenos">235</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-236"><a href="#DisplacementMethods.flag_out_of_column-236"><span class="linenos">236</span></a>        <span class="n">cell_origin</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-237"><a href="#DisplacementMethods.flag_out_of_column-237"><span class="linenos">237</span></a>        <span class="n">position_in_cell</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-238"><a href="#DisplacementMethods.flag_out_of_column-238"><span class="linenos">238</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-239"><a href="#DisplacementMethods.flag_out_of_column-239"><span class="linenos">239</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-240"><a href="#DisplacementMethods.flag_out_of_column-240"><span class="linenos">240</span></a>        <span class="n">healthy</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-241"><a href="#DisplacementMethods.flag_out_of_column-241"><span class="linenos">241</span></a>        <span class="n">domain_top_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-242"><a href="#DisplacementMethods.flag_out_of_column-242"><span class="linenos">242</span></a>    <span class="p">):</span>
+</span><span id="DisplacementMethods.flag_out_of_column-243"><a href="#DisplacementMethods.flag_out_of_column-243"><span class="linenos">243</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_flag_out_of_column_body</span><span class="p">(</span>
+</span><span id="DisplacementMethods.flag_out_of_column-244"><a href="#DisplacementMethods.flag_out_of_column-244"><span class="linenos">244</span></a>            <span class="n">cell_origin</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-245"><a href="#DisplacementMethods.flag_out_of_column-245"><span class="linenos">245</span></a>            <span class="n">position_in_cell</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-246"><a href="#DisplacementMethods.flag_out_of_column-246"><span class="linenos">246</span></a>            <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-247"><a href="#DisplacementMethods.flag_out_of_column-247"><span class="linenos">247</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-248"><a href="#DisplacementMethods.flag_out_of_column-248"><span class="linenos">248</span></a>            <span class="n">healthy</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-249"><a href="#DisplacementMethods.flag_out_of_column-249"><span class="linenos">249</span></a>            <span class="n">domain_top_level_index</span><span class="p">,</span>
+</span><span id="DisplacementMethods.flag_out_of_column-250"><a href="#DisplacementMethods.flag_out_of_column-250"><span class="linenos">250</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 

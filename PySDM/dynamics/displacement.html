@@ -99,7 +99,7 @@
                                 <a class="variable" href="#Displacement.temp">temp</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Displacement.precipitation_in_last_step">precipitation_in_last_step</a>
+                                <a class="variable" href="#Displacement.precipitation_mass_in_last_step">precipitation_mass_in_last_step</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Displacement.precipitation_counting_level_index">precipitation_counting_level_index</a>
@@ -196,7 +196,7 @@ rtol &gt; |(I - E) / E|
 </span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">courant</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">displacement</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_in_last_step</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_mass_in_last_step</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_counting_level_index</span> <span class="o">=</span> <span class="n">precipitation_counting_level_index</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span> <span class="o">=</span> <span class="n">adaptive</span>
@@ -266,14 +266,14 @@ rtol &gt; |(I - E) / E|
 </span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="n">cell_origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;cell origin&quot;</span><span class="p">]</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="n">position_in_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;position in cell&quot;</span><span class="p">]</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_in_last_step</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_mass_in_last_step</span> <span class="o">=</span> <span class="mf">0.0</span>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_substeps</span><span class="p">):</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_displacement</span><span class="p">(</span>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">displacement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">courant</span><span class="p">,</span> <span class="n">cell_origin</span><span class="p">,</span> <span class="n">position_in_cell</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>            <span class="p">)</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">update_position</span><span class="p">(</span><span class="n">position_in_cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">displacement</span><span class="p">)</span>
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_sedimentation</span><span class="p">:</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_in_last_step</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">remove_precipitated</span><span class="p">(</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_mass_in_last_step</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">remove_precipitated</span><span class="p">(</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                    <span class="n">displacement</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">displacement</span><span class="p">,</span>
 </span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>                    <span class="n">precipitation_counting_level_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">precipitation_counting_level_index</span><span class="p">,</span>
 </span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>                <span class="p">)</span>
@@ -359,7 +359,7 @@ rtol &gt; |(I - E) / E|
 </span><span id="Displacement-33"><a href="#Displacement-33"><span class="linenos"> 33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">courant</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Displacement-34"><a href="#Displacement-34"><span class="linenos"> 34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">displacement</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Displacement-35"><a href="#Displacement-35"><span class="linenos"> 35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="Displacement-36"><a href="#Displacement-36"><span class="linenos"> 36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_in_last_step</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="Displacement-36"><a href="#Displacement-36"><span class="linenos"> 36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_mass_in_last_step</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Displacement-37"><a href="#Displacement-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_counting_level_index</span> <span class="o">=</span> <span class="n">precipitation_counting_level_index</span>
 </span><span id="Displacement-38"><a href="#Displacement-38"><span class="linenos"> 38</span></a>
 </span><span id="Displacement-39"><a href="#Displacement-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span> <span class="o">=</span> <span class="n">adaptive</span>
@@ -429,14 +429,14 @@ rtol &gt; |(I - E) / E|
 </span><span id="Displacement-103"><a href="#Displacement-103"><span class="linenos">103</span></a>        <span class="n">cell_origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;cell origin&quot;</span><span class="p">]</span>
 </span><span id="Displacement-104"><a href="#Displacement-104"><span class="linenos">104</span></a>        <span class="n">position_in_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;position in cell&quot;</span><span class="p">]</span>
 </span><span id="Displacement-105"><a href="#Displacement-105"><span class="linenos">105</span></a>
-</span><span id="Displacement-106"><a href="#Displacement-106"><span class="linenos">106</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_in_last_step</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="Displacement-106"><a href="#Displacement-106"><span class="linenos">106</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_mass_in_last_step</span> <span class="o">=</span> <span class="mf">0.0</span>
 </span><span id="Displacement-107"><a href="#Displacement-107"><span class="linenos">107</span></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_substeps</span><span class="p">):</span>
 </span><span id="Displacement-108"><a href="#Displacement-108"><span class="linenos">108</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">calculate_displacement</span><span class="p">(</span>
 </span><span id="Displacement-109"><a href="#Displacement-109"><span class="linenos">109</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">displacement</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">courant</span><span class="p">,</span> <span class="n">cell_origin</span><span class="p">,</span> <span class="n">position_in_cell</span>
 </span><span id="Displacement-110"><a href="#Displacement-110"><span class="linenos">110</span></a>            <span class="p">)</span>
 </span><span id="Displacement-111"><a href="#Displacement-111"><span class="linenos">111</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">update_position</span><span class="p">(</span><span class="n">position_in_cell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">displacement</span><span class="p">)</span>
 </span><span id="Displacement-112"><a href="#Displacement-112"><span class="linenos">112</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_sedimentation</span><span class="p">:</span>
-</span><span id="Displacement-113"><a href="#Displacement-113"><span class="linenos">113</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_in_last_step</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">remove_precipitated</span><span class="p">(</span>
+</span><span id="Displacement-113"><a href="#Displacement-113"><span class="linenos">113</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_mass_in_last_step</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">remove_precipitated</span><span class="p">(</span>
 </span><span id="Displacement-114"><a href="#Displacement-114"><span class="linenos">114</span></a>                    <span class="n">displacement</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">displacement</span><span class="p">,</span>
 </span><span id="Displacement-115"><a href="#Displacement-115"><span class="linenos">115</span></a>                    <span class="n">precipitation_counting_level_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">precipitation_counting_level_index</span><span class="p">,</span>
 </span><span id="Displacement-116"><a href="#Displacement-116"><span class="linenos">116</span></a>                <span class="p">)</span>
@@ -507,7 +507,7 @@ rtol &gt; |(I - E) / E|
 </span><span id="Displacement.__init__-33"><a href="#Displacement.__init__-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">courant</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Displacement.__init__-34"><a href="#Displacement.__init__-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">displacement</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Displacement.__init__-35"><a href="#Displacement.__init__-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">temp</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="Displacement.__init__-36"><a href="#Displacement.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_in_last_step</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="Displacement.__init__-36"><a href="#Displacement.__init__-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_mass_in_last_step</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="Displacement.__init__-37"><a href="#Displacement.__init__-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">precipitation_counting_level_index</span> <span class="o">=</span> <span class="n">precipitation_counting_level_index</span>
 </span><span id="Displacement.__init__-38"><a href="#Displacement.__init__-38"><span class="linenos">38</span></a>
 </span><span id="Displacement.__init__-39"><a href="#Displacement.__init__-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span> <span class="o">=</span> <span class="n">adaptive</span>
@@ -596,13 +596,13 @@ rtol &gt; |(I - E) / E|
     
 
                             </div>
-                            <div id="Displacement.precipitation_in_last_step" class="classattr">
+                            <div id="Displacement.precipitation_mass_in_last_step" class="classattr">
                                 <div class="attr variable">
-            <span class="name">precipitation_in_last_step</span>
+            <span class="name">precipitation_mass_in_last_step</span>
 
         
     </div>
-    <a class="headerlink" href="#Displacement.precipitation_in_last_step"></a>
+    <a class="headerlink" href="#Displacement.precipitation_mass_in_last_step"></a>
     
     
 
