@@ -37,7 +37,7 @@ def make_particulator(
         "particle_shape_and_density": "MixedPhaseSpheres",
     }
     formulae = Formulae(**formulae_ctor_args)
-    backend = CPU(formulae)
+    backend = CPU(formulae, override_jit_flags={"parallel": False})
 
     sampling = SpectroGlacialSampling(
         freezing_temperature_spectrum=formulae.freezing_temperature_spectrum,

@@ -80,7 +80,7 @@ def test_terminal_velocity_boundary_values(
 
     # act
     with context:
-        v_term = particulator.attributes["terminal velocity"].to_ndarray()
+        (v_term,) = particulator.attributes["terminal velocity"].to_ndarray()
 
         # assert
         np.testing.assert_approx_equal(v_term, expected_v_term)
