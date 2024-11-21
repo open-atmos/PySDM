@@ -1,6 +1,6 @@
 # Introduction
 
-<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
+<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
 
 PySDM offers a set of building blocks for development of atmospheric cloud
 simulation systems revolving around the particle-based microphysics modelling concept
