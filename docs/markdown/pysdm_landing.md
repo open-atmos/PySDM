@@ -24,7 +24,7 @@ In order to depict the PySDM API with a practical example, the following
   listings provide sample code roughly reproducing the
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
   using PySDM from Python, Julia and Matlab.
-It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/sollision.html#Coalescence)-only set-up in which the initial particle size
+It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html#Coalescence)-only set-up in which the initial particle size
   spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/PySDM/initialisation/spectra/exponential.html#Exponential) and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
 <details>
