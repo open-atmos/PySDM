@@ -13,6 +13,7 @@ def notebook_variables_fixture():
         plot=False,
     )
 
+
 class TestTable1:
     COLUMNS = {
         "row": None,
@@ -21,6 +22,7 @@ class TestTable1:
         "terminal_velocity": "terminal velocity [m/s]",
         "distance": "distance [m]",
     }
+
     @staticmethod
     @pytest.mark.parametrize(
         ",".join(COLUMNS.keys()),
@@ -32,21 +34,25 @@ class TestTable1:
             (4, 0.075, 165, 5.4, 890),
             (5, 0.1, 245, 6.5, 1600),
             (6, 0.15, 365, 8.1, 3000),
-            (7, 0.2, 435, 8.8, 3800)
-        )
+            (7, 0.2, 435, 8.8, 3800),
+        ),
     )
     @pytest.mark.parametrize(
         "column_var, column_label",
-        {k:v for k,v in COLUMNS.items() if k != "row"}.items()
+        {k: v for k, v in COLUMNS.items() if k != "row"}.items(),
     )
     def test_against_values_from_the_paper(
         notebook_variables,
-        column_var, column_label,
-        row, radius_cm, adjustment_time, terminal_velocity, distance
+        column_var,
+        column_label,
+        row,
+        radius_cm,
+        adjustment_time,
+        terminal_velocity,
+        distance,
     ):
         np.testing.assert_allclose(
             actual=notebook_variables["data"][column_label][row],
             desired=locals()[column_var],
-            rtol=defaultdict(lambda :.53, radius_cm= 0)[column_var]
+            rtol=defaultdict(lambda: 0.53, radius_cm=0)[column_var],
         )
-
