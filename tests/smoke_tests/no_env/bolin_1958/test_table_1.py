@@ -1,3 +1,7 @@
+"""
+test checking values in table against paper
+"""
+
 from pathlib import Path
 from collections import defaultdict
 import numpy as np
