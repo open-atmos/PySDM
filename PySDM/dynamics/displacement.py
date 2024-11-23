@@ -32,7 +32,7 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         self.courant = None
         self.displacement = None
         self.temp = None
-        self.precipitation_in_last_step = 0
+        self.precipitation_mass_in_last_step = 0
         self.precipitation_counting_level_index = precipitation_counting_level_index
 
         self.adaptive = adaptive
@@ -102,14 +102,14 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         cell_origin = self.particulator.attributes["cell origin"]
         position_in_cell = self.particulator.attributes["position in cell"]
 
-        self.precipitation_in_last_step = 0.0
+        self.precipitation_mass_in_last_step = 0.0
         for _ in range(self._n_substeps):
             self.calculate_displacement(
                 self.displacement, self.courant, cell_origin, position_in_cell
             )
             self.update_position(position_in_cell, self.displacement)
             if self.enable_sedimentation:
-                self.precipitation_in_last_step += self.particulator.remove_precipitated(
+                self.precipitation_mass_in_last_step += self.particulator.remove_precipitated(
                     displacement=self.displacement,
                     precipitation_counting_level_index=self.precipitation_counting_level_index,
                 )

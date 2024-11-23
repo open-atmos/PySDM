@@ -37,6 +37,7 @@ setup(
                 10: "==0.60.0",
                 11: "==0.60.0",
                 12: "==0.60.0",
+                13: "==0.60.0",
             }[sys.version_info.minor]
             if CI and not _32bit
             else ">=0.51.2"
@@ -50,6 +51,7 @@ setup(
                 10: "==1.24.4",
                 11: "==1.24.4",
                 12: "==1.26.4",
+                13: "==1.26.4",
             }[sys.version_info.minor]
             if CI
             else ""
@@ -64,6 +66,7 @@ setup(
                 10: "==1.10.1",
                 11: "==1.10.1",
                 12: "==1.13.0",
+                13: "==1.13.0",
             }[sys.version_info.minor]
             if CI and not _32bit
             else ""
@@ -75,8 +78,8 @@ setup(
             "matplotlib",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==1.3.3",
         ]
+        + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
         + (
             [
                 "pywinpty" + ("==0.5.7" if CI else ""),

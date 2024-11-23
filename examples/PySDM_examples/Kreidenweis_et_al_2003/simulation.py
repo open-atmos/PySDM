@@ -114,7 +114,7 @@ class Simulation(BasicSimulation):
                 key="S_VI",
                 dry_radius_bins_edges=settings.dry_radius_bins_edges,
                 name="dm_S_VI/dlog_10(dry diameter)",
-                unit='ug / m^3"',
+                unit="ug / m^3",
             ),
         )
 

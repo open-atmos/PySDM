@@ -56,7 +56,7 @@ class TestMaths:
         particulator.moments(
             moment_0=moment_0, moments=moments, specs={"temperature": (2,)}
         )
-        discr_mean_T_squared = moments[0, slice(0, 1)].to_ndarray()
+        (discr_mean_T_squared,) = moments[0, slice(0, 1)].to_ndarray()
 
         # Assert
         assert abs(discr_zero - 1) / 1 < 1e-3

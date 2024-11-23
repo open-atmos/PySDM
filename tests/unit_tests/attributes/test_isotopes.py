@@ -85,15 +85,16 @@ class TestIsotopes:
         particulator = builder.build(attributes=attributes)
 
         # act
-        delta = particulator.attributes[f"delta_{isotope}"].to_ndarray()
+        (delta,) = particulator.attributes[f"delta_{isotope}"].to_ndarray()
 
         # assert
-        n_heavy_isotope = attributes[f"moles_{isotope}"][0]
-        n_light_water = (
+        ((n_heavy_isotope,),) = attributes[f"moles_{isotope}"]
+        (n_light_water,) = (
             (1 - heavier_water_specific_content)
             * attributes["water mass"]
             / (constants_defaults.M_1H * 2 + constants_defaults.M_16O)
         )
+        print(delta, n_heavy_isotope, n_light_water)
         if isotope[-1] == "O":
             n_light_isotope = n_light_water
         elif isotope[-1] == "H":
