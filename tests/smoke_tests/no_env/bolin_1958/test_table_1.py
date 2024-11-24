@@ -1,5 +1,5 @@
 """
-test checking values in table against paper
+test checking values in the notebook table against those listed in the paper
 """
 
 from pathlib import Path
@@ -18,45 +18,47 @@ def notebook_variables_fixture():
     )
 
 
-class TestTable1:
-    COLUMNS = {
-        "row": None,
-        "radius_cm": "radius [cm]",
-        "adjustment_time": "adjustment time [s]",
-        "terminal_velocity": "terminal velocity [m/s]",
-        "distance": "distance [m]",
-    }
+COLUMNS = {
+    "row": None,
+    "radius_cm": "radius [cm]",
+    "adjustment_time": "adjustment time [s]",
+    "terminal_velocity": "terminal velocity [m/s]",
+    "distance": "distance [m]",
+}
 
-    @staticmethod
-    @pytest.mark.parametrize(
-        ",".join(COLUMNS.keys()),
-        (
-            (0, 0.005, 3.3, 0.27, 0.9),
-            (1, 0.01, 7.1, 0.72, 5.1),
-            (2, 0.025, 33, 2.1, 69),
-            (3, 0.05, 93, 4.0, 370),
-            (4, 0.075, 165, 5.4, 890),
-            (5, 0.1, 245, 6.5, 1600),
-            (6, 0.15, 365, 8.1, 3000),
-            (7, 0.2, 435, 8.8, 3800),
-        ),
+
+@pytest.mark.parametrize(
+    ",".join(COLUMNS.keys()),
+    (
+        (0, 0.005, 3.3, 0.27, 0.9),
+        (1, 0.01, 7.1, 0.72, 5.1),
+        (2, 0.025, 33, 2.1, 69),
+        (3, 0.05, 93, 4.0, 370),
+        (4, 0.075, 165, 5.4, 890),
+        (5, 0.1, 245, 6.5, 1600),
+        (6, 0.15, 365, 8.1, 3000),
+        (7, 0.2, 435, 8.8, 3800),
+    ),
+)
+@pytest.mark.parametrize(
+    "column_var, column_label",
+    {k: v for k, v in COLUMNS.items() if k != "row"}.items(),
+)
+def test_table_1_against_values_from_the_paper(
+    # pylint: disable=unused-argument
+    # (used via locals())
+    *,
+    notebook_variables,
+    column_var,
+    column_label,
+    row,
+    radius_cm,
+    adjustment_time,
+    terminal_velocity,
+    distance,
+):
+    np.testing.assert_allclose(
+        actual=notebook_variables["data"][column_label][row],
+        desired=locals()[column_var],
+        rtol=defaultdict(lambda: 0.53, radius_cm=0)[column_var],
     )
-    @pytest.mark.parametrize(
-        "column_var, column_label",
-        {k: v for k, v in COLUMNS.items() if k != "row"}.items(),
-    )
-    def test_against_values_from_the_paper(
-        notebook_variables,
-        column_var,
-        column_label,
-        row,
-        radius_cm,
-        adjustment_time,
-        terminal_velocity,
-        distance,
-    ):
-        np.testing.assert_allclose(
-            actual=notebook_variables["data"][column_label][row],
-            desired=locals()[column_var],
-            rtol=defaultdict(lambda: 0.53, radius_cm=0)[column_var],
-        )
