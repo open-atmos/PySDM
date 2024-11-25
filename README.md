@@ -94,7 +94,7 @@ Conda users may use ``pip`` as well, see the [Installing non-conda packages](htt
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies can be installed with ``pip -e .[tests]``.
 
-PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM-examples) package.
+PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM/blob/main/examples/setup.py) file.
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
 The suggested install and launch steps are:
