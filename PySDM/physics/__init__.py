@@ -48,3 +48,4 @@ from . import (
     bulk_phase_partitioning,
 )
 from .constants import convert_to, in_unit, si
+from .dimensional_analysis import DimensionalAnalysis

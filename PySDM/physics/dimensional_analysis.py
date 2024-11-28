@@ -6,6 +6,7 @@ for use in unit tests which disables Numba and enables Pint
 from importlib import reload
 
 from PySDM import formulae
+from PySDM import physics
 
 from . import constants, constants_defaults
 from .impl import flag
@@ -17,9 +18,11 @@ class DimensionalAnalysis:
         reload(constants)
         reload(constants_defaults)
         reload(formulae)
+        reload(physics)
 
     def __exit__(*_):  # pylint: disable=no-method-argument,no-self-argument
         flag.DIMENSIONAL_ANALYSIS = False
         reload(constants)
         reload(constants_defaults)
         reload(formulae)
+        reload(physics)
