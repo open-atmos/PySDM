@@ -12,7 +12,6 @@ from PySDM_examples import Bolin_1958
 
 @pytest.fixture(scope="session", name="notebook_variables")
 def notebook_variables_fixture():
-    """returns variables from the notebook Bolin_1958/table_1.ipynb"""
     return notebook_vars(
         file=Path(Bolin_1958.__file__).parent / "table_1.ipynb",
         plot=False,
@@ -58,10 +57,6 @@ def test_table_1_against_values_from_the_paper(
     terminal_velocity,
     distance,
 ):
-    """comparison of the calculated values of isotopic adjustment time
-    and terminal velocity for drops with different radii with those presented
-    in the paper
-    """
     np.testing.assert_allclose(
         actual=notebook_variables["data"][column_label][row],
         desired=locals()[column_var],
