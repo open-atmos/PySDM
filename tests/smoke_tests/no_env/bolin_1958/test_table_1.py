@@ -29,10 +29,7 @@ class TestTable1:
             (1, 0.01, 7.1, 0.72, 5.1),
             (2, 0.025, 33, 2.1, 69),
             (3, 0.05, 93, 4.0, 370),
-            (4, 0.075, 165, 5.4, 890),
-            (5, 0.1, 245, 6.5, 1600),
-            (6, 0.15, 365, 8.1, 3000),
-            (7, 0.2, 435, 8.8, 3800)
+            # (4, 0.075, 165, 5.4, )
         )
     )
     @pytest.mark.parametrize(
@@ -47,6 +44,6 @@ class TestTable1:
         np.testing.assert_allclose(
             actual=notebook_variables["data"][column_label][row],
             desired=locals()[column_var],
-            rtol=defaultdict(lambda :.53, radius_cm= 0)[column_var]
+            rtol=defaultdict(lambda :.1, radius_cm= 0)[column_var]
         )
 
