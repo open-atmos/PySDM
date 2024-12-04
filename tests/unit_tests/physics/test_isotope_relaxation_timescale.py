@@ -11,11 +11,7 @@ from PySDM.physics import constants_defaults, isotope_relaxation_timescale
 
 @pytest.mark.parametrize(
     "paper",
-    [
-        choice
-        for choice in _choices(isotope_relaxation_timescale)
-        if choice not in ("Null", "Bolin1958")
-    ],
+    [choice for choice in _choices(isotope_relaxation_timescale) if choice != "Null"],
 )
 @pytest.mark.parametrize("iso", ("2H", "18O"))
 def test_unit_and_magnitude(paper, iso):
@@ -47,20 +43,3 @@ def test_unit_and_magnitude(paper, iso):
         # assert
         assert result.check("[time]")
         assert 1 * si.s < result < 10 * si.s
-
-
-def test_bolin_tritium_formula_unit():
-    with DimensionalAnalysis():
-        # arrange
-        si = constants_defaults.si
-        formulae = Formulae(
-            isotope_relaxation_timescale="Bolin1958",
-            constants={"BOLIN_C1": 1 * si.dimensionless},
-        )
-        sut = formulae.isotope_relaxation_timescale.tau
-
-        # act
-        result = sut(radius=si.um, r_dr_dt=si.um**2 / si.s)
-
-        # assert
-        assert result.check("[time]")

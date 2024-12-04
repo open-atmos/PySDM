@@ -428,5 +428,3 @@ one_kelvin = 1 * si.K
 bulk_phase_partitioning_T_cold = 235 * si.K
 bulk_phase_partitioning_T_warm = 273 * si.K
 bulk_phase_partitioning_exponent = np.nan
-
-BOLIN_C1 = np.nan * si.dimensionless
