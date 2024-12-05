@@ -55,7 +55,7 @@ def test_bolin_tritium_formula_unit():
         si = constants_defaults.si
         formulae = Formulae(
             isotope_relaxation_timescale="Bolin1958",
-            constants={"BOLIN_C1": 1 * si.dimensionless},
+            constants={"BOLIN_ISOTOPE_TIMESCALE_COEFF_C1": 1 * si.dimensionless},
         )
         sut = formulae.isotope_relaxation_timescale.tau
 
