@@ -132,7 +132,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_test/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
             python-version: "3.9"
@@ -263,26 +263,26 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
-      - if: startsWith(matrix.platform, 'ubuntu-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_c')
+      - if: startsWith(matrix.platform, 'ubuntu-') && matrix.test-suite == 'multi-process_a'
         run: |
           sudo apt-get install libegl1 libopengl0 ghostscript
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `pwd`/`dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
           
-      - if: startsWith(matrix.platform, 'macos-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_c')
+      - if: startsWith(matrix.platform, 'macos-') && matrix.test-suite == 'multi-process_a'
         run: |
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
           brew install ghostscript
 
-      - if: startsWith(matrix.platform, 'windows-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_c')
+      - if: startsWith(matrix.platform, 'windows-') && matrix.test-suite == 'multi-process_a'
         run: |
           curl "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Windows&downloadFile=ParaView-5.13.1-Windows-Python3.10-msvc2017-AMD64.msi" -o paraview.msi
           msiexec //i paraview.msi //quiet //qn //norestart 
           echo "C:\\Program Files\\ParaView 5.13.1\\bin\\" >> $GITHUB_PATH
 
-      - if: (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_c')
+      - if: matrix.test-suite == 'multi-process_a'
         run: |
           pvpython --version
           pvpython -c "from paraview import simple"
