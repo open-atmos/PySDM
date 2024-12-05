@@ -50,10 +50,7 @@ TEST_SUITES = {
     "multi-process_a": [
         "Arabas_et_al_2015",
         "Arabas_et_al_2023",
-        "deJong_Azimi",
         "Bulenok_2023_MasterThesis",
-        "Shipway_and_Hill_2012",
-        "seeding",
     ],
     "multi-process_b": [
         "Bartman_2020_MasterThesis",
@@ -62,6 +59,11 @@ TEST_SUITES = {
         "Szumowski_et_al_1998",
         "utils",
         "_HOWTOs",
+    ],
+    "multi-process_c": [
+        "deJong_Azimi",
+        "Shipway_and_Hill_2012",
+        "seeding",
     ],
 }
 
