@@ -109,7 +109,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_test/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
             python-version: "3.9"
@@ -211,7 +211,7 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-13, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_freezing_isotopes_a", "chemistry_freezing_isotopes_b", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
+        test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ !startsWith(matrix.platform, 'ubuntu-') && 65 || 50 }}
