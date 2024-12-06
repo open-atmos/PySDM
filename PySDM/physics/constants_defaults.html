@@ -794,6 +794,9 @@
             <li>
                     <a class="variable" href="#bulk_phase_partitioning_exponent">bulk_phase_partitioning_exponent</a>
             </li>
+            <li>
+                    <a class="variable" href="#BOLIN_ISOTOPE_TIMESCALE_COEFF_C1">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</a>
+            </li>
     </ul>
 
 
@@ -1250,6 +1253,15 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-428"><a href="#L-428"><span class="linenos">428</span></a><span class="n">bulk_phase_partitioning_T_cold</span> <span class="o">=</span> <span class="mi">235</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-429"><a href="#L-429"><span class="linenos">429</span></a><span class="n">bulk_phase_partitioning_T_warm</span> <span class="o">=</span> <span class="mi">273</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-430"><a href="#L-430"><span class="linenos">430</span></a><span class="n">bulk_phase_partitioning_exponent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</span><span id="L-431"><a href="#L-431"><span class="linenos">431</span></a>
+</span><span id="L-432"><a href="#L-432"><span class="linenos">432</span></a>
+</span><span id="L-433"><a href="#L-433"><span class="linenos">433</span></a><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">dimensionless</span>
+</span><span id="L-434"><a href="#L-434"><span class="linenos">434</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-435"><a href="#L-435"><span class="linenos">435</span></a><span class="sd">Coeffitient c1 used in [Bolin 1958](https://https://digitallibrary.un.org/record/3892725)</span>
+</span><span id="L-436"><a href="#L-436"><span class="linenos">436</span></a><span class="sd">for the falling drop evaporation timescale of equilibration with ambient air void of a given</span>
+</span><span id="L-437"><a href="#L-437"><span class="linenos">437</span></a><span class="sd">isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium</span>
+</span><span id="L-438"><a href="#L-438"><span class="linenos">438</span></a><span class="sd">in the environment around the drop (Table 1).</span>
+</span><span id="L-439"><a href="#L-439"><span class="linenos">439</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -4250,6 +4262,23 @@ for discussion, see:</p>
     <a class="headerlink" href="#bulk_phase_partitioning_exponent"></a>
     
     
+
+                </section>
+                <section id="BOLIN_ISOTOPE_TIMESCALE_COEFF_C1">
+                    <div class="attr variable">
+            <span class="name">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span>        =
+<span class="default_value">nan</span>
+
+        
+    </div>
+    <a class="headerlink" href="#BOLIN_ISOTOPE_TIMESCALE_COEFF_C1"></a>
+    
+            <div class="docstring"><p>Coeffitient c1 used in <a href="https://https://digitallibrary.un.org/record/3892725">Bolin 1958</a>
+for the falling drop evaporation timescale of equilibration with ambient air void of a given
+isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
+in the environment around the drop (Table 1).</p>
+</div>
+
 
                 </section>
     </main>
