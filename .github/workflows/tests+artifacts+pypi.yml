@@ -234,7 +234,7 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-13, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c"]
+        test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ !startsWith(matrix.platform, 'ubuntu-') && 50 || 50 }}
