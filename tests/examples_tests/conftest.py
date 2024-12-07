@@ -16,7 +16,7 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "chemistry_freezing_isotopes_a": [
+    "chemistry_freezing_isotopes": [
         "Jaruga_and_Pawlowska_2018",
         "Kreidenweis_et_al_2003",
         "Alpert_and_Knopf_2016",
