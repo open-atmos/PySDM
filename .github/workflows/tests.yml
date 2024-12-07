@@ -109,7 +109,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_test/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
             python-version: "3.9"
