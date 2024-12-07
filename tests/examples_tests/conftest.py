@@ -49,20 +49,20 @@ TEST_SUITES = {
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process_a": [
         "Arabas_et_al_2015",
-        "Arabas_et_al_2023",
     ],
     "multi-process_b": [
-        "Bartman_2020_MasterThesis",
-        "Bartman_et_al_2021",
+        "Arabas_et_al_2023",
     ],
     "multi-process_c": [
+        "Bartman_2020_MasterThesis",
+        "Bulenok_2023_MasterThesis",
+    ],
+    "multi-process_d": [
+        "Bartman_et_al_2021",
         "deJong_Azimi",
         "Shipway_and_Hill_2012",
         "seeding",
         "_HOWTOs",
-    ],
-    "multi-process_d": [
-        "Bulenok_2023_MasterThesis",
         "Morrison_and_Grabowski_2007",
         "Szumowski_et_al_1998",
         "utils",
