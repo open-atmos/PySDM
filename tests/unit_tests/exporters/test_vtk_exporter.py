@@ -52,6 +52,6 @@ def test_vtk_exporter_copies_product_data(tmp_path):
         binary_data = vtk.readlines()[14]
         for i, off in enumerate(offsets):
             assert (
-                np.fromstring(binary_data[off : off + 8], dtype=np.float64)
+                np.frombuffer(binary_data[off : off + 8], dtype=np.float64)
                 == (i + 1) * incr
             )
