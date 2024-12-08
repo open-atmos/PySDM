@@ -35,7 +35,7 @@ The package features a Pythonic high-performance implementation of the
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
 
-There is a growing set of example Jupyter notebooks exemplifying how to perform 
+There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) exemplifying how to perform 
   various types of calculations and simulations using PySDM.
 Most of the example notebooks reproduce results and plot from literature, see below for 
   a list of examples and links to the notebooks (which can be either executed or viewed 
@@ -94,7 +94,7 @@ Conda users may use ``pip`` as well, see the [Installing non-conda packages](htt
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies can be installed with ``pip -e .[tests]``.
 
-PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM-examples) package.
+PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM/blob/main/examples/setup.py) file.
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
 The suggested install and launch steps are:
@@ -149,7 +149,8 @@ To run all pre-commit hooks, run `pre-commit run --all-files`.
 The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
   existing ones need to be altered.  
 
-Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki).
+Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki)
+  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOS).
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).

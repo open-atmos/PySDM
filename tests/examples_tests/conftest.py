@@ -32,6 +32,7 @@ TEST_SUITES = {
         "Miyake_et_al_1968",
         "Rozanski_and_Sonntag_1982",
         "Abade_and_Albuquerque_2024",
+        "Bolin_1958",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
@@ -61,6 +62,7 @@ TEST_SUITES = {
         "Morrison_and_Grabowski_2007",
         "Szumowski_et_al_1998",
         "utils",
+        "_HOWTOs",
     ],
 }
 

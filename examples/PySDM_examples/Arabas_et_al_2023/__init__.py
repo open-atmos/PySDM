@@ -11,8 +11,8 @@ copula_hello.ipynb:
 fig_2.ipynb:
 .. include:: ./fig_2.ipynb.badges.md
 
-fig_11.ipynb:
-.. include:: ./figs_10_and_11_and_animations.ipynb
+figs_10_and_11_and_animations.ipynb:
+.. include:: ./figs_10_and_11_and_animations.ipynb.badges.md
 
 fig_A2.ipynb:
 .. include:: ./fig_A2.ipynb.badges.md
