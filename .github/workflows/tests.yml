@@ -259,7 +259,7 @@ jobs:
           msiexec //i paraview.msi //quiet //qn //norestart 
           echo "C:\\Program Files\\ParaView 5.13.1\\bin\\" >> $GITHUB_PATH
 
-      - if: matrix.test-suite == matrix.test-suite == (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
+      - if: matrix.test-suite == (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           pvpython --version
           pvpython -c "from paraview import simple"

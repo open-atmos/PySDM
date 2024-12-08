@@ -16,7 +16,7 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "chemistry_freezing_isotopes": [
+    "chemistry_freezing_isotopes_a": [
         "Jaruga_and_Pawlowska_2018",
         "Kreidenweis_et_al_2003",
         "Alpert_and_Knopf_2016",
@@ -26,9 +26,9 @@ TEST_SUITES = {
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
         "Pierchala_et_al_2022",
+        "Gedzelman_and_Arnold_1994",
     ],
     "chemistry_freezing_isotopes_b": [
-        "Gedzelman_and_Arnold_1994",
         "Graf_et_al_2019",
         "Lamb_et_al_2017",
         "Miyake_et_al_1968",
@@ -54,21 +54,19 @@ TEST_SUITES = {
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process_a": [
         "Arabas_et_al_2015",
-    ],
-    "multi-process_b": [
         "Arabas_et_al_2023",
     ],
-    "multi-process_c": [
+    "multi-process_b": [
         "Bartman_2020_MasterThesis",
+        "Morrison_and_Grabowski_2007",
     ],
-    "multi-process_d": [
-        "Bartman_et_al_2021",
-    ],
-    "multi-process_e": [
+    "multi-process_c": [
         "Bulenok_2023_MasterThesis",
+        "Bartman_et_al_2021",
         "deJong_Azimi",
         "Szumowski_et_al_1998",
-        "Morrison_and_Grabowski_2007",
+    ],
+    "multi-process_d": [
         "Shipway_and_Hill_2012",
         "seeding",
         "_HOWTOs",
