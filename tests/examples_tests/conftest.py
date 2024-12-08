@@ -16,7 +16,7 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "chemistry_freezing_isotopes": [
+    "chemistry_freezing_isotopes_a": [
         "Jaruga_and_Pawlowska_2018",
         "Kreidenweis_et_al_2003",
         "Alpert_and_Knopf_2016",
@@ -27,6 +27,8 @@ TEST_SUITES = {
         "Van_Hook_1968",
         "Pierchala_et_al_2022",
         "Gedzelman_and_Arnold_1994",
+    ],
+    "chemistry_freezing_isotopes_b": [
         "Graf_et_al_2019",
         "Lamb_et_al_2017",
         "Miyake_et_al_1968",
@@ -36,13 +38,15 @@ TEST_SUITES = {
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
-        "Abdul_Razzak_Ghan_2000",
+        "Singer_Ward",
     ],
     "condensation_b": [
+        "Abdul_Razzak_Ghan_2000",
         "Arabas_and_Shima_2017",
         "Pyrcel",
         "Yang_et_al_2018",
-        "Singer_Ward",
+    ],
+    "condensation_c": [
         "Grabowski_and_Pawlowska_2023",
         "Jensen_and_Nugent_2017",
     ],
@@ -50,22 +54,22 @@ TEST_SUITES = {
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process_a": [
         "Arabas_et_al_2015",
-    ],
-    "multi-process_b": [
         "Arabas_et_al_2023",
     ],
-    "multi-process_c": [
+    "multi-process_b": [
         "Bartman_2020_MasterThesis",
-        "Bulenok_2023_MasterThesis",
+        "Morrison_and_Grabowski_2007",
     ],
-    "multi-process_d": [
+    "multi-process_c": [
+        "Bulenok_2023_MasterThesis",
         "Bartman_et_al_2021",
         "deJong_Azimi",
+        "Szumowski_et_al_1998",
+    ],
+    "multi-process_d": [
         "Shipway_and_Hill_2012",
         "seeding",
         "_HOWTOs",
-        "Morrison_and_Grabowski_2007",
-        "Szumowski_et_al_1998",
         "utils",
     ],
 }
