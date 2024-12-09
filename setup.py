@@ -78,6 +78,7 @@ setup(
             "matplotlib",
             "pytest",
             "pytest-timeout",
+            "anyio" + ("==4.6.2.post1" if CI else ""),
         ]
         + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
         + (
@@ -88,7 +89,6 @@ setup(
                 "jupyter-core" + ("==4.12.0" if CI else ""),
                 "jupyter-server" + ("==1.24.0" if CI else ""),
                 "notebook" + ("==6.5.6" if CI else ""),
-                "anyio" + ("==4.6.2.post1" if CI else ""),
             ]
             if _32bit
             else [
