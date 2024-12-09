@@ -1,0 +1,47 @@
+name: pdoc
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 13 * * 4'
+
+jobs:
+  pdoc:
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, macos-13, windows-latest ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: "3.12"
+      - run: |
+          pip install pdoc nbformat
+          pip install -e .
+          pip install -e examples
+
+          python - <<EOF
+          import glob, nbformat
+          for notebook_path in glob.glob('examples/PySDM_examples/*/*.ipynb'):
+            with open(notebook_path, encoding="utf8") as fin:
+              with open(notebook_path + ".badges.md", 'w') as fout:
+                fout.write(nbformat.read(fin, nbformat.NO_CONVERT).cells[0].source)
+          EOF
+          PDOC_ALLOW_EXEC=1 python -We -m pdoc -o html PySDM examples/PySDM_examples -t docs/templates --math --mermaid
+      - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: pdoc
+          folder: html
+          clean: true
