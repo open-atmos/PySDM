@@ -27,20 +27,21 @@ class _SizeStandardDeviation(MomentProduct, ActivationFilteredProduct):
         ActivationFilteredProduct.__init__(
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
+        self.tmp = None
 
     def register(self, builder):
         builder.request_attribute(self.attr)
         for base_class in (ActivationFilteredProduct, MomentProduct):
             base_class.register(self, builder)
+        self.tmp = np.empty_like(self.buffer)
 
     def _impl(self, **kwargs):
         ActivationFilteredProduct.impl(self, attr=self.attr, rank=1)
-        tmp = np.empty_like(self.buffer)
-        tmp[:] = -self.buffer**2
+        self.tmp[:] = -self.buffer**2
         ActivationFilteredProduct.impl(self, attr=self.attr, rank=2)
-        tmp[:] += self.buffer
-        tmp[:] = np.sqrt(tmp)
-        return tmp
+        self.tmp[:] += self.buffer
+        self.tmp[:] = np.sqrt(self.tmp)
+        return self.tmp
 
 
 RadiusStandardDeviation = register_product()(_SizeStandardDeviation)
