@@ -78,6 +78,7 @@ setup(
             "matplotlib",
             "pytest",
             "pytest-timeout",
+            "anyio" + ("==4.6.1" if CI else ""),
         ]
         + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
         + (
