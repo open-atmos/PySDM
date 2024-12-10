@@ -45,7 +45,7 @@ def test_all_test_suites_are_on_ci():
         .parent.parent.parent.absolute()
         .joinpath(".github")
         .joinpath("workflows")
-        .joinpath("tests+artifacts+pypi.yml")
+        .joinpath("tests.yml")
     )
     with open(workflow_file_path, "r", encoding="utf8") as workflow_file:
         d = yaml.safe_load(workflow_file)
