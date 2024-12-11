@@ -91,8 +91,9 @@ class TestFreezingMethods:
         particulator.run(steps=steps)
 
         # assert
+        (qi,) = particulator.products["qi"].get()
         np.testing.assert_approx_equal(
-            actual=np.asarray(particulator.products["qi"].get()),
+            actual=qi,
             desired=n_sd * multiplicity * water_mass / dv,
             significant=7,
         )

@@ -44,9 +44,10 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
         parallel_default = True
         if platform.machine() == "arm64":
-            warnings.warn(
-                "Disabling Numba threading due to ARM64 CPU (atomics do not work yet)"
-            )
+            if "CI" not in os.environ:
+                warnings.warn(
+                    "Disabling Numba threading due to ARM64 CPU (atomics do not work yet)"
+                )
             parallel_default = False  # TODO #1183 - atomics don't work on ARM64!
 
         try:
