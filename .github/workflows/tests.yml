@@ -109,7 +109,7 @@ jobs:
       matrix:
         platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
             python-version: "3.9"
@@ -126,7 +126,7 @@ jobs:
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 35 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 25 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -186,7 +186,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: |
           echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests+artifacts+pypi.yml \
+          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
           | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
       - uses: actions/cache@v4
         id: cache
@@ -211,10 +211,10 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-13, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_freezing_isotopes_a", "chemistry_freezing_isotopes_b", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d"]
+        test-suite: [ "chemistry_freezing_isotopes_a", "chemistry_freezing_isotopes_b", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ !startsWith(matrix.platform, 'ubuntu-') && 35 || 35 }}
+    timeout-minutes: ${{ !startsWith(matrix.platform, 'ubuntu-') && 30 || 35 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -225,7 +225,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: |
           echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests+artifacts+pypi.yml \
+          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
           | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
       - run: |
           rm -rf $pip_user_site
