@@ -16,3 +16,4 @@ from PySDM.dynamics.eulerian_advection import EulerianAdvection
 from PySDM.dynamics.freezing import Freezing
 from PySDM.dynamics.relaxed_velocity import RelaxedVelocity
 from PySDM.dynamics.seeding import Seeding
+from PySDM.dynamics.vapour_deposition_on_ice import VapourDepositionOnIce

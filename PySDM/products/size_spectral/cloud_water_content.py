@@ -5,6 +5,8 @@ CloudWaterContent is both liquid and ice
 LiquidWaterContent is just liquid
 IceWaterContent is just ice
 
+TODO: why not to call ice a mixing ration then?!
+
 """
 
 import numpy as np
