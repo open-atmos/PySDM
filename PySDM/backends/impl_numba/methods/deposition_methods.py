@@ -68,8 +68,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     thermal_conductivity = formulae.diffusion_ice_kinetics__K(Ka_const,  radius, lambdaK, temperature, rho)  
 
                   
-                    howell_factor = 1. / ((latent_heat_sub / Rv / temperature - 1.) * latent_heat_sub * diffusion_coefficient / temperature / thermal_conductivity +  Rv * temperature  /  pvs_ice)
-                    # print( f" {howell_factor=}, {latent_heat_sub= }, {Rv=}, {Dv_const=}, {diffusion_coefficient=}, {Ka_const=}, {thermal_conductivity=}, {pvs_ice=}")
+                    howell_factor = 1. / ( (latent_heat_sub / Rv / temperature - 1.) * latent_heat_sub * diffusion_coefficient / temperature / thermal_conductivity +  Rv * temperature  /  pvs_ice)
                     
                     saturation_ratio_ice = (
                         ambient_humidity[cid] / ambient_water_activity[cid]
@@ -86,6 +85,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         * np.pi
                         * capacity
                         * diffusion_coefficient
+                        * howell_factor
                         * (saturation_ratio_ice - 1)
                     ) * rho_vs_ice
 
