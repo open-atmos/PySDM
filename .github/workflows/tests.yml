@@ -242,6 +242,7 @@ jobs:
 
       - if: startsWith(matrix.platform, 'ubuntu-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
+          sudo apt-get update
           sudo apt-get install libegl1 libopengl0 ghostscript
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
