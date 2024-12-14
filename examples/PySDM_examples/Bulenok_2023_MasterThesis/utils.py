@@ -260,9 +260,10 @@ def plot_processed_results(
 
 
 def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
-    plot_processed_results(coal_d, plot_label="-c")
-    plot_processed_results(break_d, plot_label="-b")
-    plot_processed_results(coal_break_d, plot_label="-cb")
+    filename = "same_plot.svg"
+    plot_processed_results(coal_d, plot_label="-c", plot_filename=filename)
+    plot_processed_results(break_d, plot_label="-b", plot_filename=filename)
+    plot_processed_results(coal_break_d, plot_label="-cb", plot_filename=filename)
 
 
 def plot_time_per_step(

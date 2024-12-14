@@ -4,9 +4,6 @@ import os
 from datetime import datetime
 import numba  # pylint: disable=unused-import
 
-from PySDM.backends import GPU, CPU
-from PySDM.physics import si
-
 from PySDM_examples.Bulenok_2023_MasterThesis.utils import (
     go_benchmark,
     process_results,
@@ -19,30 +16,35 @@ from PySDM_examples.Bulenok_2023_MasterThesis.setups import (
     setup_coalescence_breakup_sim,
 )
 
+from PySDM.backends import GPU, CPU
+from PySDM.physics import si
+
 TIMESTAMP = str(datetime.now().strftime("%Y-%d-%m_%Hh-%Mm-%Ss"))
 
-SIM_RUN_FILENAME = "env_name_" + TIMESTAMP
+SIM_RUN_FNAME = "env_name_" + TIMESTAMP
 
-assert not os.path.isfile(SIM_RUN_FILENAME)
+assert not os.path.isfile(SIM_RUN_FNAME)
 
 subprocess.run(
-    [
+    [  # pylint: disable=no-member
         "bash",
         "-c",
-        f"echo NUMBA_DEFAULT_NUM_THREADS: {numba.config.NUMBA_DEFAULT_NUM_THREADS} >> {SIM_RUN_FILENAME}",
-    ]
+        f"echo NUMBA_DEFAULT_NUM_THREADS: {numba.config.NUMBA_DEFAULT_NUM_THREADS} >> {SIM_RUN_FNAME}",
+    ],
+    check=False,
 )
 subprocess.run(
-    [
+    [  # pylint: disable=no-member
         "bash",
         "-c",
-        f"echo NUMBA_NUM_THREADS: {numba.config.NUMBA_NUM_THREADS} >> {SIM_RUN_FILENAME}",
-    ]
+        f"echo NUMBA_NUM_THREADS: {numba.config.NUMBA_NUM_THREADS} >> {SIM_RUN_FNAME}",
+    ],
+    check=False,
 )
-subprocess.run(["bash", "-c", f"lscpu >> {SIM_RUN_FILENAME}"])
-subprocess.run(["bash", "-c", f"nvidia-smi >> {SIM_RUN_FILENAME}"])
-subprocess.run(["bash", "-c", f"nvidia-smi -L >> {SIM_RUN_FILENAME}"])
-subprocess.run(["bash", "-c", f"cat /proc/cpuinfo >> {SIM_RUN_FILENAME}"])
+subprocess.run(["bash", "-c", f"lscpu >> {SIM_RUN_FNAME}"], check=False)
+subprocess.run(["bash", "-c", f"nvidia-smi >> {SIM_RUN_FNAME}"], check=False)
+subprocess.run(["bash", "-c", f"nvidia-smi -L >> {SIM_RUN_FNAME}"], check=False)
+subprocess.run(["bash", "-c", f"cat /proc/cpuinfo >> {SIM_RUN_FNAME}"], check=False)
 
 CI = "CI" in os.environ
 
@@ -68,11 +70,11 @@ res_coalescence_only = go_benchmark(
     seeds,
     numba_n_threads=numba_n_threads,
     double_precision=True,
-    sim_run_filename=SIM_RUN_FILENAME + "-coalescence",
+    sim_run_filename=SIM_RUN_FNAME + "-coalescence",
     backends=[CPU, GPU],
 )
 coalescence_only_processed = process_results(res_coalescence_only)
-filename = f"{SIM_RUN_FILENAME}-results-coalescence-double-n_steps{n_steps_short}"
+filename = f"{SIM_RUN_FNAME}-results-coalescence-double-n_steps{n_steps_short}"
 plot_processed_results(
     coalescence_only_processed,
     plot_title=f"coalescence-only (n_steps: {n_steps_short})",
@@ -89,11 +91,11 @@ res_breakup_only = go_benchmark(
     seeds,
     numba_n_threads=numba_n_threads,
     double_precision=True,
-    sim_run_filename=SIM_RUN_FILENAME + "-breakup",
+    sim_run_filename=SIM_RUN_FNAME + "-breakup",
     backends=[CPU, GPU],
 )
 breakup_only_processed = process_results(res_breakup_only)
-filename = f"{SIM_RUN_FILENAME}-results-breakup-double-n_steps{n_steps_short}"
+filename = f"{SIM_RUN_FNAME}-results-breakup-double-n_steps{n_steps_short}"
 plot_processed_results(
     breakup_only_processed,
     plot_title=f"breakup-only  (n_steps: {n_steps_short})",
@@ -110,11 +112,11 @@ res_coal_breakup = go_benchmark(
     seeds,
     numba_n_threads=numba_n_threads,
     double_precision=True,
-    sim_run_filename=SIM_RUN_FILENAME + "-coal-break",
+    sim_run_filename=SIM_RUN_FNAME + "-coal-break",
     backends=[CPU, GPU],
 )
 coal_breakup_processed = process_results(res_coal_breakup)
-filename = f"{SIM_RUN_FILENAME}-results-coal_with_breakup-double-n_steps{n_steps_full}"
+filename = f"{SIM_RUN_FNAME}-results-coal_with_breakup-double-n_steps{n_steps_full}"
 plot_processed_results(
     coal_breakup_processed,
     plot_title=f"coalescence+breakup (n_steps: {n_steps_full})",
@@ -142,15 +144,13 @@ res_coalescence_only_scaled = go_benchmark(
     seeds,
     numba_n_threads=numba_n_threads,
     double_precision=True,
-    sim_run_filename=SIM_RUN_FILENAME + "-coalescence-scaled",
+    sim_run_filename=SIM_RUN_FNAME + "-coalescence-scaled",
     total_number=total_number_from_n_sd,
     dv=dv_from_n_sd,
     backends=[CPU, GPU],
 )
 coalescence_only_processed_scaled = process_results(res_coalescence_only_scaled)
-filename = (
-    f"{SIM_RUN_FILENAME}-results-scaled-coalescence-double-n_steps{n_steps_short}"
-)
+filename = f"{SIM_RUN_FNAME}-results-scaled-coalescence-double-n_steps{n_steps_short}"
 plot_processed_results(
     coalescence_only_processed_scaled,
     plot_title=f"coalescence-only with scaling (n_steps: {n_steps_short})",
@@ -167,13 +167,13 @@ res_breakup_only_scaled = go_benchmark(
     seeds,
     numba_n_threads=numba_n_threads,
     double_precision=True,
-    sim_run_filename=SIM_RUN_FILENAME + "-breakup-scaled",
+    sim_run_filename=SIM_RUN_FNAME + "-breakup-scaled",
     total_number=total_number_from_n_sd,
     dv=dv_from_n_sd,
     backends=[CPU, GPU],
 )
 breakup_only_processed_scaled = process_results(res_breakup_only_scaled)
-filename = f"{SIM_RUN_FILENAME}-results-scaled-breakup-double-n_steps{n_steps_short}"
+filename = f"{SIM_RUN_FNAME}-results-scaled-breakup-double-n_steps{n_steps_short}"
 plot_processed_results(
     breakup_only_processed_scaled,
     plot_title=f"breakup-only with scaling (n_steps: {n_steps_short})",
@@ -190,14 +190,14 @@ res_coal_breakup_scaled = go_benchmark(
     seeds,
     numba_n_threads=numba_n_threads,
     double_precision=True,
-    sim_run_filename=SIM_RUN_FILENAME + "-coal-break-scaled",
+    sim_run_filename=SIM_RUN_FNAME + "-coal-break-scaled",
     total_number=total_number_from_n_sd,
     dv=dv_from_n_sd,
     backends=[CPU, GPU],
 )
 coal_breakup_processed_scaled = process_results(res_coal_breakup_scaled)
 filename = (
-    f"{SIM_RUN_FILENAME}-results-scaled-coal_with_breakup-double-n_steps{n_steps_full}"
+    f"{SIM_RUN_FNAME}-results-scaled-coal_with_breakup-double-n_steps{n_steps_full}"
 )
 plot_processed_results(
     coal_breakup_processed_scaled,
