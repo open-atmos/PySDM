@@ -25,14 +25,12 @@ SIM_RUN_FNAME = "env_name_" + TIMESTAMP
 
 assert not os.path.isfile(SIM_RUN_FNAME)
 
-subprocess.run(
-    [  # pylint: disable=no-member
-        "bash",
-        "-c",
-        f"echo NUMBA_DEFAULT_NUM_THREADS: {numba.config.NUMBA_DEFAULT_NUM_THREADS} >> {SIM_RUN_FNAME}",
-    ],
-    check=False,
-)
+cmd = [  # pylint: disable=no-member
+    "bash",
+    "-c",
+    f"echo NUMBA_DEFAULT_NUM_THREADS: {numba.config.NUMBA_DEFAULT_NUM_THREADS} >> {SIM_RUN_FNAME}",
+]
+subprocess.run(cmd, check=False)
 subprocess.run(
     [  # pylint: disable=no-member
         "bash",
