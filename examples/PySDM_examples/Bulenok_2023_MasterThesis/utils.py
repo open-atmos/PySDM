@@ -264,6 +264,7 @@ def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
     plot_processed_results(break_d, plot_label="-b")
     plot_processed_results(coal_break_d, plot_label="-cb")
 
+
 def plot_time_per_step(
     processed_d,
     n_sd,
