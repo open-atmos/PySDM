@@ -109,11 +109,7 @@ def main(save=None, show_plot=True):
     rtols = [1e-7, 1e-11]
     schemes = ["CPU", "SciPy"]
     setups_num = len(setups)
-    input_data = data(
-        80 if "CI" not in os.environ else 20,
-        rtols,
-        schemes,
-        setups_num)
+    input_data = data(80 if "CI" not in os.environ else 20, rtols, schemes, setups_num)
     plot(input_data, rtols, schemes, setups_num, show_plot, save)
 
 
