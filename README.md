@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
+# <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
 
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
 [![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
@@ -35,6 +35,8 @@ The package features a Pythonic high-performance implementation of the
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
 
+PySDM documentation is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
+
 There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) exemplifying how to perform 
   various types of calculations and simulations using PySDM.
 Most of the example notebooks reproduce results and plot from literature, see below for 
@@ -64,14 +66,6 @@ For an overview of PySDM features (and the preferred way to cite PySDM in papers
   
 PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
 For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
-
-A [pdoc-generated](https://pdoc.dev/) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
-
-## Example Jupyter notebooks (reproducing results from literature):
-
-See [PySDM-examples README](https://github.com/open-atmos/PySDM/blob/main/examples/README.md).
-
-![animation](https://github.com/open-atmos/PySDM/wiki/files/kinematic_2D_example.gif)
 
 ## Dependencies and Installation
 
