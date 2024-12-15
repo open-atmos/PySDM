@@ -23,10 +23,10 @@ TEST_SUITES = {
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
         "Bolot_et_al_2013",
-        "Merlivat_and_Nief_1967",
-        "Van_Hook_1968",
     ],
     "chemistry_freezing_isotopes_b": [
+        "Merlivat_and_Nief_1967",
+        "Van_Hook_1968",
         "Pierchala_et_al_2022",
         "Gedzelman_and_Arnold_1994",
         "Graf_et_al_2019",
