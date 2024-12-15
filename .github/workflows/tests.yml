@@ -14,7 +14,7 @@ on:
 
 jobs:
   precommit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
@@ -29,7 +29,7 @@ jobs:
         run: git diff
 
   pylint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4.1.6
       with:
@@ -58,7 +58,7 @@ jobs:
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
   devops:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -70,7 +70,7 @@ jobs:
         run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
 
   zenodo_json:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: notiz-dev/github-action-json-property@release
@@ -80,7 +80,7 @@ jobs:
 
   nojit_and_codecov:
     needs: [precommit, pylint, devops, zenodo_json]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       NUMBA_DISABLE_JIT: 1
     steps:
@@ -107,7 +107,7 @@ jobs:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
+        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
