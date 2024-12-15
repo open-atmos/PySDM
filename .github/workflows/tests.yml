@@ -220,7 +220,7 @@ jobs:
               test-suite: "examples_tests/coagulation"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ !startsWith(matrix.platform, 'ubuntu-') && 30 || 35 }}
+    timeout-minutes: ${{ !startsWith(matrix.platform, 'macos-') && 35 || 30 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
