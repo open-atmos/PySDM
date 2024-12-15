@@ -216,7 +216,7 @@ jobs:
         test-suite: [ "chemistry_freezing_isotopes_a", "chemistry_freezing_isotopes_b", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
         exclude:
             # TODO #1469
-            - test-suite: "examples_tests/coagulation"
+            - test-suite: "coagulation"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ !startsWith(matrix.platform, 'macos-') && 35 || 30 }}
