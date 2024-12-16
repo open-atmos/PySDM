@@ -16,15 +16,16 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "chemistry_freezing_isotopes_a": [
+    "chemistry_freezing": [
         "Jaruga_and_Pawlowska_2018",
         "Kreidenweis_et_al_2003",
         "Alpert_and_Knopf_2016",
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
-        "Bolot_et_al_2013",
+
     ],
-    "chemistry_freezing_isotopes_b": [
+    "isotopes": [
+        "Bolot_et_al_2013",
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
         "Pierchala_et_al_2022",
@@ -33,7 +34,6 @@ TEST_SUITES = {
         "Lamb_et_al_2017",
         "Miyake_et_al_1968",
         "Rozanski_and_Sonntag_1982",
-        "Abade_and_Albuquerque_2024",
         "Bolin_1958",
     ],
     "condensation_a": [
@@ -49,6 +49,7 @@ TEST_SUITES = {
     "condensation_c": [
         "Grabowski_and_Pawlowska_2023",
         "Jensen_and_Nugent_2017",
+        "Abade_and_Albuquerque_2024",
     ],
     "coagulation": ["Berry_1967", "Shima_et_al_2009"],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
