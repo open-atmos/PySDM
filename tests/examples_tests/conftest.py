@@ -22,7 +22,6 @@ TEST_SUITES = {
         "Alpert_and_Knopf_2016",
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
-
     ],
     "isotopes": [
         "Bolot_et_al_2013",
