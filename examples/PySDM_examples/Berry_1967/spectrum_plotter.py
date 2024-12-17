@@ -8,7 +8,7 @@ from PySDM_examples.Shima_et_al_2009.spectrum_plotter import (
 class SpectrumPlotter(SuperSpectrumPlotter):
     def __init__(self, settings, title=None, grid=True, legend=False):
         size = 2 * 5.236
-        pyplot.figure(num=1, figsize=(size, size * 0.54))
+        pyplot.figure(figsize=(size, size * 0.54))
         pyplot.xlabel("particle radius [µm]")
         pyplot.ylabel("dm/dlnr [g/m^3/(unit dr/r)]")
         super().__init__(settings, title=title, grid=grid, legend=legend, log_base=2)
