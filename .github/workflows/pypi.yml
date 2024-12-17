@@ -33,6 +33,7 @@ jobs:
       - run: pip install twine build
 
       - run: |
+          set -x
           unset CI
           cd ${{ matrix.packages-dir }}
           python -m build 2>&1 | tee build.log
@@ -42,7 +43,7 @@ jobs:
             | grep -v -E "UserWarning: version of PySDM(-examples)? already set" \
             | wc -l`
           twine check --strict dist/*
-          [ `ls dist | grep "+" | wc -l` != 0 ] && exit 1  # PyPI fails if version string contains "+" char 
+          [ `ls dist/*+* | tee /dev/stderr | wc -l` -ne 0 ] && exit 1  # PyPI fails if version string contains "+" char 
 
       - uses: actions/upload-artifact@v4
         with:
