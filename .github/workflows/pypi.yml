@@ -42,6 +42,7 @@ jobs:
             | grep -v -E "UserWarning: version of PySDM(-examples)? already set" \
             | wc -l`
           twine check --strict dist/*
+          [ `ls dist | grep "+" | wc -l` == 0 ]  # PyPI fails if version string contains "+" char 
 
       - uses: actions/upload-artifact@v4
         with:
