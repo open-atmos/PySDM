@@ -47,7 +47,7 @@ jobs:
       - name: check if version string does not contain PyPI-incompatible + char 
         run: |
           set -x
-          [ `ls ${{ matrix.packages-dir }}/dist | fgrep + | tee /dev/stderr | wc -l` -ne 0 ] && exit 1  
+          [ `ls ${{ matrix.packages-dir }}/dist | fgrep + | tee /dev/stderr | wc -l` -ne 0 ] && exit 1 || echo OK
 
       - uses: actions/upload-artifact@v4
         with:
