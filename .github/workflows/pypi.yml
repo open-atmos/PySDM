@@ -36,8 +36,9 @@ jobs:
         run: |
           set -x
           unset CI
+          python -m pip install -e ${{ matrix.packages-dir }}  # see https://github.com/pypa/setuptools-scm/issues/1084
           cd ${{ matrix.packages-dir }}
-          python -m build 2>&1 | tee build.log
+          python -m build --no-isolation 2>&1 | tee build.log  # --no isolation due to above setuptools-scm/1084
           exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py \
             | grep -v "no previously-included files matching" \
             | grep -v "version of {dist_name} already set" \
