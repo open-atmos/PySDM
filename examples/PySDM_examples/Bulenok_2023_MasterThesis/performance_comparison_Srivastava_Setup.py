@@ -20,7 +20,7 @@ from PySDM.backends import GPU, CPU
 from PySDM.physics import si
 
 
-def main():
+def main(plot: bool = True, save: str = None):
 
     TIMESTAMP = str(datetime.now().strftime("%Y-%d-%m_%Hh-%Mm-%Ss"))
 
@@ -78,12 +78,14 @@ def main():
     )
     coalescence_only_processed = process_results(res_coalescence_only)
     filename = f"{SIM_RUN_FNAME}-results-coalescence-double-n_steps{n_steps_short}"
-    plot_processed_results(
-        coalescence_only_processed,
-        plot_title=f"coalescence-only (n_steps: {n_steps_short})",
-        plot_filename=filename + ".svg",
-    )
-    write_to_file(filename=filename + ".txt", d=coalescence_only_processed)
+    if plot:
+        plot_processed_results(
+            coalescence_only_processed,
+            plot_title=f"coalescence-only (n_steps: {n_steps_short})",
+            plot_filename=filename + ".svg",
+        )
+    if save is not None:
+        write_to_file(filename=filename + ".txt", d=coalescence_only_processed)
 
     # ### Breakup-only
 
@@ -99,12 +101,14 @@ def main():
     )
     breakup_only_processed = process_results(res_breakup_only)
     filename = f"{SIM_RUN_FNAME}-results-breakup-double-n_steps{n_steps_short}"
-    plot_processed_results(
-        breakup_only_processed,
-        plot_title=f"breakup-only  (n_steps: {n_steps_short})",
-        plot_filename=filename + ".svg",
-    )
-    write_to_file(filename=filename + ".txt", d=breakup_only_processed)
+    if plot:
+        plot_processed_results(
+            breakup_only_processed,
+            plot_title=f"breakup-only  (n_steps: {n_steps_short})",
+            plot_filename=filename + ".svg",
+        )
+    if save is not None:
+        write_to_file(filename=filename + ".txt", d=breakup_only_processed)
 
     # ### Coalescence and Breakup
 
@@ -120,12 +124,14 @@ def main():
     )
     coal_breakup_processed = process_results(res_coal_breakup)
     filename = f"{SIM_RUN_FNAME}-results-coal_with_breakup-double-n_steps{n_steps_full}"
-    plot_processed_results(
-        coal_breakup_processed,
-        plot_title=f"coalescence+breakup (n_steps: {n_steps_full})",
-        plot_filename=filename + ".svg",
-    )
-    write_to_file(filename=filename + ".txt", d=coal_breakup_processed)
+    if plot:
+        plot_processed_results(
+            coal_breakup_processed,
+            plot_title=f"coalescence+breakup (n_steps: {n_steps_full})",
+            plot_filename=filename + ".svg",
+        )
+    if save is not None:
+        write_to_file(filename=filename + ".txt", d=coal_breakup_processed)
 
     # # Benchmark setup with scaling
 
@@ -153,12 +159,14 @@ def main():
     filename = (
         f"{SIM_RUN_FNAME}-results-scaled-coalescence-double-n_steps{n_steps_short}"
     )
-    plot_processed_results(
-        coalescence_only_processed_scaled,
-        plot_title=f"coalescence-only with scaling (n_steps: {n_steps_short})",
-        plot_filename=filename + ".svg",
-    )
-    write_to_file(filename=filename + ".txt", d=coalescence_only_processed_scaled)
+    if plot:
+        plot_processed_results(
+            coalescence_only_processed_scaled,
+            plot_title=f"coalescence-only with scaling (n_steps: {n_steps_short})",
+            plot_filename=filename + ".svg",
+        )
+    if save is not None:
+        write_to_file(filename=filename + ".txt", d=coalescence_only_processed_scaled)
 
     # ### Breakup-only
 
@@ -176,12 +184,14 @@ def main():
     )
     breakup_only_processed_scaled = process_results(res_breakup_only_scaled)
     filename = f"{SIM_RUN_FNAME}-results-scaled-breakup-double-n_steps{n_steps_short}"
-    plot_processed_results(
-        breakup_only_processed_scaled,
-        plot_title=f"breakup-only with scaling (n_steps: {n_steps_short})",
-        plot_filename=filename + ".svg",
-    )
-    write_to_file(filename=filename + ".txt", d=breakup_only_processed_scaled)
+    if plot:
+        plot_processed_results(
+            breakup_only_processed_scaled,
+            plot_title=f"breakup-only with scaling (n_steps: {n_steps_short})",
+            plot_filename=filename + ".svg",
+        )
+    if save is not None:
+        write_to_file(filename=filename + ".txt", d=breakup_only_processed_scaled)
 
     # ### Coalescence and Breakup
 
@@ -201,13 +211,15 @@ def main():
     filename = (
         f"{SIM_RUN_FNAME}-results-scaled-coal_with_breakup-double-n_steps{n_steps_full}"
     )
-    plot_processed_results(
-        coal_breakup_processed_scaled,
-        plot_title=f"coalescence+breakup with scaling (n_steps: {n_steps_full})",
-        plot_filename=filename + ".svg",
-    )
-    write_to_file(filename=filename + ".txt", d=coal_breakup_processed_scaled)
+    if plot:
+        plot_processed_results(
+            coal_breakup_processed_scaled,
+            plot_title=f"coalescence+breakup with scaling (n_steps: {n_steps_full})",
+            plot_filename=filename + ".svg",
+        )
+    if save is not None:
+        write_to_file(filename=filename + ".txt", d=coal_breakup_processed_scaled)
 
 
 if __name__ == "__main__":
-    main()
+    main(plot="CI" not in os.environ, save=".")
