@@ -2,7 +2,7 @@
 profile = "black"
 
 [tool.setuptools_scm]
-local_scheme = "PySDM.impl.scm_version:scheme"
+local_scheme = "no-local-version"
 version_scheme = "post-release"
 
 [build-system]
