@@ -27,7 +27,7 @@ class AerosolChamber(DryAerosolMixture):
                 "CaCO3": True,
             },
             ionic_dissociation_phi={
-                "CaCO3": 2,
+                "CaCO3": 1,
             },
         )
         self.modes = (
@@ -41,8 +41,8 @@ class AerosolChamber(DryAerosolMixture):
                     m_mode=158 * si.nm,
                     s_geom=2,
                 ),
-                # mean diameter 316nm, standard deviation 257nm
-                # not sure how to interpret the standard deviation given in the paper
-                # because it looks like it's a lognormal distribution in Fig 2
             },
         )
+        # mean diameter 316nm, standard deviation 257nm
+        # not sure how to interpret the standard deviation given in the paper
+        # because it looks like it's a lognormal distribution in Fig 2

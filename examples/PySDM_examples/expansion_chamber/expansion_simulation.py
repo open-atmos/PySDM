@@ -16,32 +16,32 @@ def run_expansion(
     aerosol,
     n_sd_per_mode,
     RH0=0.7,
-    dp=500 * si.hPa,
     T0=296 * si.K,
     p0=1000 * si.hPa,
+    pf=500 * si.hPa,
     dz=10 * si.m,
     t_lift=2 * si.s,
-    t_max=5 * si.s,
+    t_max=4 * si.s,
 ):
 
     # calculate w, dt, n_steps
     H = 8500 * si.m  # atmospheric scale height
-    z_lift = -H * np.log(dp / p0)
+    z_lift = -H * np.log(pf / p0)
     w_lift = z_lift / t_lift
-    w = lambda t: w_lift if t < t_lift else 1e-5
+    w = lambda t: w_lift if t < t_lift else 1e-9
     dt = dz / w_lift
     n_steps = int(np.ceil(t_max / dt))
     # print(f"z_lift={z_lift}")
     # print(f"w_lift={w_lift}")
     # print(f"dz={dz}")
     # print(f"dt={dt}")
-    print(f"n_steps={n_steps}")
+    # print(f"n_steps={n_steps}")
 
     dry_radius_bin_edges = np.geomspace(50 * si.nm, 2000 * si.nm, 40, endpoint=False)
     wet_radius_bin_edges = np.geomspace(1 * si.um, 40 * si.um, 40, endpoint=False)
     products = (
         PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid_water_mixing_ratio"),
-        PySDM_products.PeakSupersaturation(name="smax"),
+        PySDM_products.PeakSupersaturation(name="s"),
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.AmbientTemperature(name="T"),
         PySDM_products.AmbientPressure(name="p"),
@@ -61,6 +61,9 @@ def run_expansion(
             unit="m^-3 m^-1",
             radius_bins_edges=wet_radius_bin_edges,
             dry=False,
+        ),
+        PySDM_products.ActivatedEffectiveRadius(
+            name="reff", unit="um", count_activated=True, count_unactivated=False
         ),
     )
 
