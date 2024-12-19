@@ -479,3 +479,21 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.attributes.mark_updated("multiplicity")
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
+
+    def deposition(self):
+        self.backend.deposition(
+            multiplicity=self.attributes["multiplicity"],
+            water_mass=self.attributes["water mass"],
+            ambient_temperature=self.environment["T"],
+            ambient_total_pressure=self.environment["P"],
+            ambient_humidity=self.environment["RH"],
+            ambient_water_activity=self.environment["a_w_ice"],
+            ambient_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
+            ambient_dry_air_density=self.environment["rhod"],
+            cell_volume=self.environment.mesh.dv,
+            time_step=self.dt,
+            cell_id=self.attributes["cell id"],
+            reynolds_number=self.attributes["Reynolds number"],
+            schmidt_number=self.environment["Schmidt number"],
+        )
+        self.attributes.mark_updated("water mass")
