@@ -14,7 +14,7 @@ on:
 
 jobs:
   precommit:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: actions/setup-python@v5.0.0
@@ -29,7 +29,7 @@ jobs:
         run: git diff
 
   pylint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4.1.6
       with:
@@ -58,7 +58,7 @@ jobs:
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
   devops:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -70,7 +70,7 @@ jobs:
         run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
 
   zenodo_json:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: notiz-dev/github-action-json-property@release
@@ -80,7 +80,7 @@ jobs:
 
   nojit_and_codecov:
     needs: [precommit, pylint, devops, zenodo_json]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       NUMBA_DISABLE_JIT: 1
     steps:
@@ -107,9 +107,9 @@ jobs:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
+        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation)", "unit_tests/dynamics/condensation", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
             python-version: "3.9"
@@ -121,12 +121,14 @@ jobs:
           - platform: "macos-14"
             test-suite: "smoke_tests/parcel_a"
           - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_d"
+          - platform: "macos-14"
             test-suite: "smoke_tests/kinematic_2d"
           - platform: "macos-14"
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 40 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -211,10 +213,10 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-13, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_freezing_isotopes", "condensation_a", "condensation_b", "coagulation", "breakup", "multi-process_a", "multi-process_b"]
+        test-suite: [ "chemistry_freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ !startsWith(matrix.platform, 'ubuntu-') && 65 || 50 }}
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -240,26 +242,27 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
-      - if: startsWith(matrix.platform, 'ubuntu-') && matrix.test-suite == 'multi-process_a'
+      - if: startsWith(matrix.platform, 'ubuntu-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
+          sudo apt-get update
           sudo apt-get install libegl1 libopengl0 ghostscript
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `pwd`/`dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
           
-      - if: startsWith(matrix.platform, 'macos-') && matrix.test-suite == 'multi-process_a'
+      - if: startsWith(matrix.platform, 'macos-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
           brew install ghostscript
 
-      - if: startsWith(matrix.platform, 'windows-') && matrix.test-suite == 'multi-process_a'
+      - if: startsWith(matrix.platform, 'windows-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           curl "https://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Windows&downloadFile=ParaView-5.13.1-Windows-Python3.10-msvc2017-AMD64.msi" -o paraview.msi
           msiexec //i paraview.msi //quiet //qn //norestart 
           echo "C:\\Program Files\\ParaView 5.13.1\\bin\\" >> $GITHUB_PATH
 
-      - if: matrix.test-suite == 'multi-process_a'
+      - if: matrix.test-suite == (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           pvpython --version
           pvpython -c "from paraview import simple"
