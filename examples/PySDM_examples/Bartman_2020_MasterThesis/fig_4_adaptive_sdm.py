@@ -7,7 +7,7 @@ from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
 
 
 def main(plot: bool = True, save: str = None):
-    n_sds = [13, 15, 17]
+    n_sds = [13, 15, 17] if "CI" not in os.environ else [13, 15]
     dts = [10, 5, 1, "adaptive"]
     iters = 10
     base_time = None
