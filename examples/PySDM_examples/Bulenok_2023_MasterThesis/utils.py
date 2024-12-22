@@ -6,7 +6,6 @@ import time
 import numba
 import numpy as np
 from matplotlib import pyplot
-from open_atmos_jupyter_utils import show_plot
 
 from PySDM.backends import CPU, GPU
 
@@ -208,11 +207,11 @@ class PlottingHelpers:
 
 def plot_processed_results(
     processed_d,
-    show=True,
+    *,
     plot_label="",
     plot_title=None,
     metric="min",
-    plot_filename=None,
+    plot_filename,
     markers=None,
     colors=None,
 ):
@@ -257,33 +256,27 @@ def plot_processed_results(
     if plot_title:
         pyplot.title(plot_title)
 
-    if show:
-        if plot_filename:
-            show_plot(filename=plot_filename)
-        else:
-            pyplot.show()
+    pyplot.savefig(plot_filename)
 
 
 def plot_processed_on_same_plot(coal_d, break_d, coal_break_d):
-    plot_processed_results(coal_d, plot_label="-c", show=False)
-    plot_processed_results(break_d, plot_label="-b", show=False)
-    plot_processed_results(coal_break_d, plot_label="-cb", show=False)
-
-    show_plot()
+    filename = "same_plot.svg"
+    plot_processed_results(coal_d, plot_label="-c", plot_filename=filename)
+    plot_processed_results(break_d, plot_label="-b", plot_filename=filename)
+    plot_processed_results(coal_break_d, plot_label="-cb", plot_filename=filename)
 
 
 def plot_time_per_step(
     processed_d,
     n_sd,
-    show=True,
+    *,
     plot_label="",
     plot_title=None,
     metric="mean",
-    plot_filename=None,
+    plot_filename,
     step_from_to=None,
 ):
     backends = PlottingHelpers.get_sorted_backend_list(processed_d)
-
     markers = PlottingHelpers.get_backend_markers(backends)
 
     for backend in backends:
@@ -305,8 +298,4 @@ def plot_time_per_step(
     if plot_title:
         pyplot.title(plot_title + f"(n_sd: {n_sd})")
 
-    if show:
-        if plot_filename:
-            show_plot(filename=plot_filename)
-        else:
-            pyplot.show()
+    pyplot.savefig(plot_filename)
