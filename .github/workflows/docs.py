@@ -1,5 +1,6 @@
 """Script to generate docs based on given input directory (first argument)
 and output directory (second argument)"""
+import os
 import subprocess
 import sys
 import glob
@@ -27,6 +28,6 @@ subprocess.run(
         "--math",
         "--mermaid",
     ],
-    env={"PDOC_ALLOW_EXEC": "1"},
+    env={**os.environ, "PDOC_ALLOW_EXEC": "1"},
     check=True,
 )
