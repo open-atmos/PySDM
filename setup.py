@@ -54,7 +54,7 @@ setup(
             if CI
             else ""
         ),
-        "Pint" + ("==0.21.1" if CI else ""),
+        "Pint" + ("==0.24.4" if CI else ""),
         "chempy" + ("==0.9.0" if CI else ""),
         "scipy"
         + (
