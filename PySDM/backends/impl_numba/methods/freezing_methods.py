@@ -93,7 +93,7 @@ class FreezingMethods(BackendMethods):
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
 
-        j_hom = self.formulae._ice_nucleation_rate.j_hom
+        j_hom = self.formulae.homogeneous_ice_nucleation_rate.j_hom
 
         @numba.njit(**self.default_jit_flags)
         def freeze_time_dependent_homogeneous_body(  # pylint: disable=unused-argument,too-many-arguments
