@@ -185,7 +185,14 @@ ABIFM_M = np.inf
 ABIFM_C = np.inf
 ABIFM_UNIT = 1 / si.cm**2 / si.s
 
+KOOP_2000_C1 = -906.7
+KOOP_2000_C2 = 8502
+KOOP_2000_C3 = 26924
+KOOP_2000_C4 = 29180
+KOOP_UNIT = 1 / si.cm**3 / si.s
+
 J_HET = np.nan
+J_HOM = np.nan
 
 STRAUB_E_D1 = 0.04 * si.cm
 STRAUB_MU2 = 0.095 * si.cm

@@ -1,5 +1,5 @@
 """
-CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
+CPU implementation of backend methods for homogeneous freezing and heterogeneous freezing (singular and time-dependent immersion freezing)
 """
 
 import numba
@@ -92,6 +92,49 @@ class FreezingMethods(BackendMethods):
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
+
+        j_hom = self.formulae._ice_nucleation_rate.j_hom
+
+        @numba.njit(**self.default_jit_flags)
+        def freeze_time_dependent_homogeneous_body(  # pylint: disable=unused-argument,too-many-arguments
+            rand,
+            attributes,
+            timestep,
+            cell,
+            a_w_ice,
+            temperature,
+            relative_humidity,
+            record_freezing_temperature,
+            freezing_temperature,
+            thaw,
+        ):
+
+            n_sd = len(attributes.water_mass)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+
+                cell_id = cell[i]
+                relative_humidity_ice = relative_humidity[cell_id] / a_w_ice[cell_id]
+                if thaw and frozen_and_above_freezing_point(
+                    attributes.water_mass[i], temperature[cell_id]
+                ):
+                    _thaw(attributes.water_mass, i)
+                elif unfrozen_and_ice_saturated(
+                    attributes.water_mass[i], relative_humidity_ice
+                ):
+                    d_a_w_ice = (relative_humidity_ice - 1) * a_w_ice[cell_id]
+                    rate = j_hom(temperature, d_a_w_ice)
+                    # TODO #594: this assumes constant T throughout timestep, can we do better?
+                    prob = 1 - np.exp(  # TODO #599: common code for Poissonian prob
+                        -rate * attributes.volume[i] * timestep
+                    )
+                    if rand[i] < prob:
+                        _freeze(attributes.water_mass, i)
+                        # if record_freezing_temperature:
+                        #     freezing_temperature[i] = temperature[cell_id]
+
+        
+        self.freeze_time_dependent_homogeneous_body = freeze_time_dependent_homogeneous_body
+            
     def freeze_singular(
         self, *, attributes, temperature, relative_humidity, cell, thaw: bool
     ):
@@ -137,3 +180,38 @@ class FreezingMethods(BackendMethods):
             ),
             thaw=thaw,
         )
+
+
+
+    def freeze_time_dependent_homogeneous(
+        self,
+        *,
+        rand,
+        attributes,
+        timestep,
+        cell,
+        a_w_ice,
+        temperature,
+        relative_humidity,
+        record_freezing_temperature,
+        freezing_temperature,
+        thaw: bool
+    ):
+        self.freeze_time_dependent_homogeneous_body(
+            rand.data,
+            TimeDependentAttributes(
+                volume=attributes.volume.data,
+                water_mass=attributes.water_mass.data,
+            ),
+            timestep,
+            cell.data,
+            a_w_ice.data,
+            temperature.data,
+            relative_humidity.data,
+            record_freezing_temperature=record_freezing_temperature,
+            freezing_temperature=(
+                freezing_temperature.data if record_freezing_temperature else None
+            ),
+            thaw=thaw,
+        )
+

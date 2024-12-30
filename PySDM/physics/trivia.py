@@ -80,6 +80,10 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return water_mass > 0 and relative_humidity > 1
 
     @staticmethod
+    def unfrozen_and_ice_saturated(water_mass, relative_humidity_ice):
+        return water_mass > 0 and relative_humidity_ice > 1
+
+    @staticmethod
     def frozen_and_above_freezing_point(const, water_mass, temperature):
         return water_mass < 0 and temperature > const.T0
 

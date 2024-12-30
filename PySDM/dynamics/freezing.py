@@ -36,6 +36,7 @@ class Freezing:
                 builder.formulae.heterogeneous_ice_nucleation_rate, Null
             )
             builder.request_attribute("immersed surface area")
+            builder.request_attribute("volume")
             self.rand = self.particulator.Storage.empty(
                 self.particulator.n_sd, dtype=float
             )
