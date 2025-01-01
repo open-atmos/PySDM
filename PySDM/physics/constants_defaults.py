@@ -303,7 +303,7 @@ BARKAN_AND_LUZ_2005_EXPONENT = 0.529
 """ eq. 11 in [Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180) """
 BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 
-""" [Craig 1961](https://doi.org/10.1126/science.133.3465.170) """
+""" [Craig 1961](https://doi.org/10.1126/science.133.3465.1702) """
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 
@@ -321,7 +321,7 @@ diffusion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
 diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 """
-[Pruppacher & Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036<1255:AWTIOT>2.0.CO;2)
+[Pruppacher & Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2)
 """
 PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
 PRUPPACHER_RASMUSSEN_1979_CONSTSMALL = 1.0 * si.dimensionless
