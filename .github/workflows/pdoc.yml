@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: |
-          pip install pdoc nbformat git
+          pip install pdoc nbformat gitpython
           pip install -e .
           pip install -e examples
 
