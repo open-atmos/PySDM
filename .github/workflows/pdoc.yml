@@ -31,7 +31,7 @@ jobs:
           pip install -e .
           pip install -e examples
 
-          python -We .github/workflows/docs.py . .
+          python -We docs/generate_html.py . .
         
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
