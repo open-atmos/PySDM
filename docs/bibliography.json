@@ -163,7 +163,8 @@
   },
   "https://doi.org/10.5194/acp-7-1961-2007": {
     "usages": [
-      "PySDM/physics/hygroscopicity/kappa_koehler.py"
+      "PySDM/physics/hygroscopicity/kappa_koehler.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Petters & Kreidenweis 2007 (Atmos. Chem. Phys. 7)",
     "title": "A single parameter representation of hygroscopic growth and cloud condensation nucleus activity"
@@ -178,7 +179,8 @@
   },
   "https://doi.org/10.1175/MWR-D-14-00319.1": {
     "usages": [
-      "PySDM/physics/bulk_phase_partitioning/kaul_et_al_2015.py"
+      "PySDM/physics/bulk_phase_partitioning/kaul_et_al_2015.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Kaul et al. 2015 (Mon. Weather Rev. 143)",
     "title": "Sensitivities in Large-Eddy Simulations of Mixed-Phase Arctic Stratocumulus Clouds Using a Simple Microphysics Approach"
@@ -723,5 +725,30 @@
     "usages": ["PySDM/physics/constants_defaults.py"],
     "title": "Ueber die Berechnung der Expansivkraft des Wasserdunstes",
     "label": "August 1828 (Ann. Phys. Chem. 89)"
+  },
+  "https://doi.org/10.1016/C2013-0-08278-3": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "The Physics of Ice",
+    "label": "Pounder 1965 (Pergamon Press)"
+  },
+  "https://doi.org/10.1175/1520-0469(1976)033%3C1995:TSOIPF%3E2.0.CO;2": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "The Survival of Ice Particles Falling from Cirrus Clouds in Subsaturated Air",
+    "label": "Hall & Pruppacher 1976 (J. Atmos. Sci. 33)"
+  },
+  "https://doi.org/10.1016/S0074-6142(10)09908-0": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Fundamental Equations Governing Cloud Processes",
+    "label": "Cotton et al. 2011 (International Geophysics 99)"
+  },
+  "https://doi.org/10.1007/978-0-306-48100-0": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Microphysics of Clouds and Precipitation",
+    "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
+  },
+  "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Microphysics of Clouds and Precipitation",
+    "label": "Seinfeld & Pandis 2006 (Wiley)"
   }
 }

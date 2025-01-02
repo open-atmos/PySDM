@@ -174,22 +174,16 @@ L77I_A5 = 4.838803174e-8 * si.hPa / si.K**5
 L77I_A6 = 1.838826904e-10 * si.hPa / si.K**6
 """ 〃 """
 
-rho_w = 1 * si.kilograms / si.litres
 rho_i = 916.8 * si.kg / si.metres**3
+""" density of ice, for discussion, see [Pounder 1965](https://doi.org/10.1016/C2013-0-08278-3) """
+rho_w = 1 * si.kilograms / si.litres
+""" 〃 of water, 〃 """
+
 pH_w = 7
-sgm_w = 0.072 * si.joule / si.metre**2
-
-D0 = 2.26e-5 * si.metre**2 / si.second
-D_exp = 1.81
-
-K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
+""" pH of pure water """
 
 p1000 = 1000 * si.hectopascals
-c_pd = 1005 * si.joule / si.kilogram / si.kelvin
-c_pv = 1850 * si.joule / si.kilogram / si.kelvin
-g_std = sci.g * si.metre / si.second**2
-
-c_pw = 4218 * si.joule / si.kilogram / si.kelvin
+""" 1000 hPa reference pressure as in the definition of potential temperature"""
 
 p_tri = 611.657 * si.pascal
 """ water triple point characteristics as recommended in
@@ -199,10 +193,13 @@ T_tri = 273.16 * si.kelvin
 L_tri = 45051 * si.joule / si.mol
 """ 〃 """
 
-# Seinfeld and Pandis, Appendix 16.1, 16A.2
-# default constant values according to Lowe et al. (2019), from ICPM code
 l_l19_a = 0.167 * si.dimensionless
+""" [Seinfeld and Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
+Appendix 16.1, 16A.2 default constant values according to
+[Lowe et al. 2019](https://doi.org/10.1038/s41467-019-12982-0),
+from ICPM code """  # pylint: disable=line-too-long
 l_l19_b = 3.65e-4 / si.kelvin
+""" 〃 """
 
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 """ Thermal diffusivity constants from
@@ -212,12 +209,17 @@ k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
 """ 〃 """
 
-# Delta v for diffusivity in Pruppacher & Klett eq. 13-14
 dv_pk05 = 0.0 * si.metres
+""" Delta v for diffusivity in [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0)
+eq. 13-14 """
 
-# Seinfeld & Pandis eq. 15.65 (Hall & Pruppacher 1976)
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
+""" [Seinfeld & Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
+eq. 15.65
+[Hall & Pruppacher 1976](https://doi.org/10.1175/1520-0469(1976)033%3C1995:TSOIPF%3E2.0.CO;2)
+"""  # pylint: disable=line-too-long
 d_l19_b = 1.94
+""" 〃 """
 
 MK05_ICE_C1 = 1 * si.Pa
 """ [Murphy and Koop 2005](https://doi.org/10.1256/qj.04.94) """
@@ -258,11 +260,14 @@ MK05_LIQ_C12 = 1 * si.K
 MK05_LIQ_C13 = 0.014025 / si.K
 """ 〃 """
 
-# standard pressure and temperature (ICAO)
 T_STP = (sci.zero_Celsius + 15) * si.kelvin
+""" standard temperature (ICAO) ... """
 p_STP = 101325 * si.pascal
+""" ... and pressure """
 
 ROOM_TEMP = T_tri + 25 * si.K
+""" room temperature """
+
 dT_u = si.K
 
 sgm_org = np.nan
@@ -563,6 +568,8 @@ W76W_G7 = 2.858487
 """ 〃 """
 W76W_G8 = 1 * si.Pa
 """ 〃 """
+one_kelvin = 1 * si.K
+""" 〃 """
 
 B80W_G0 = 6.112 * si.hPa
 """ [Bolton 1980](https://doi.org/10.1175/1520-0493(1980)108%3C1046:TCOEPT%3E2.0.CO;2)
@@ -572,12 +579,35 @@ B80W_G1 = 17.67 * si.dimensionless
 B80W_G2 = 243.5 * si.K
 """ 〃 """
 
-one_kelvin = 1 * si.K
+sgm_w = 0.072 * si.joule / si.metre**2
+""" surface tension of water/air interface, value compatible with the kappa-Koehler hygroscopicity
+ parameterisation [Petters & Kreidenweis 2007](https://doi.org/10.5194/acp-7-1961-2007) """
+
+D0 = 2.26e-5 * si.metre**2 / si.second
+""" diffusivity of water vapor in air (Tracy et al. 2010, "Properties of Air", page 22) """
+D_exp = 1.81
+""" 〃 """
+
+K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
+""" thermal conductivity of air (see Tracy et al. 2010, "Properties of Air", page 32) """
+
+c_pd = 1005 * si.joule / si.kilogram / si.kelvin
+""" specific heat at constant pressure of dry air, as in Table 2.1 in
+ [Cotton et al. 2011](https://doi.org/10.1016/S0074-6142(10)09908-0) """
+c_pv = 1850 * si.joule / si.kilogram / si.kelvin
+""" 〃 of water vapour 〃 """
+c_pw = 4218 * si.joule / si.kilogram / si.kelvin
+""" 〃 of liquid water 〃 """
+
+g_std = sci.g * si.metre / si.second**2
+""" standard gravitational acceleration (value from SciPy) """
 
 bulk_phase_partitioning_T_cold = 235 * si.K
+""" [Kaul et al. 2015](https://doi.org/10.1175/MWR-D-14-00319.1) """
 bulk_phase_partitioning_T_warm = 273 * si.K
+""" 〃 """
 bulk_phase_partitioning_exponent = np.nan
-
+""" 〃 """
 
 BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 = np.nan * si.dimensionless
 """
