@@ -9,7 +9,7 @@ from scipy.constants import physical_constants
 
 from PySDM import Formulae
 from PySDM.physics import constants, constants_defaults, si
-from PySDM.physics.constants_defaults import Substance
+from chempy import Substance
 
 
 def consecutive_seeds():
