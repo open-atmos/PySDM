@@ -7,19 +7,6 @@ mark {
     color: black;
 }
 
-table {
-    table-layout: fixed;
-}
-
-td, th {
-    overflow-wrap: break-word;
-}
-
-.pdoc table{
-    display: table;
-    width: 100%;
-}
-
 ul {
     margin-left: 2em;
 }
