@@ -11,7 +11,7 @@
     <style>/*! theme.css */:root{--pdoc-background:#212529;}.pdoc{--text:#f7f7f7;--muted:#9d9d9d;--link:#58a6ff;--link-hover:#3989ff;--code:#333;--active:#555;--accent:#343434;--accent2:#555;--nav-hover:rgba(0, 0, 0, 0.1);--name:#77C1FF;--def:#0cdd0c;--annotation:#00c037;}</style>
     <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;z-index:999;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;opacity:0;}nav.pdoc{--pad:clamp(0.5rem, 2vw, 1.75rem);--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent; z-index:1}nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc > div > ul{margin-left:calc(0px - var(--pad));}nav.pdoc li a{padding:.2rem 0 .2rem calc(var(--pad) + var(--indent));}nav.pdoc > div > ul > li > a{padding-left:var(--pad);}nav.pdoc li{transition:all 100ms;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
     <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{cursor:pointer;display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .alert{padding:1rem 1rem 1rem calc(1.5rem + 24px);border:1px solid transparent;border-radius:.25rem;background-repeat:no-repeat;background-position:.75rem center;margin-bottom:1rem;}.pdoc .alert > em{display:none;}.pdoc .alert > *:last-child{margin-bottom:0;}.pdoc .alert.note {color:#084298;background-color:#cfe2ff;border-color:#b6d4fe;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23084298%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2016A8%208%200%201%200%208%200a8%208%200%200%200%200%2016zm.93-9.412-1%204.705c-.07.34.029.533.304.533.194%200%20.487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703%200-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381%202.29-.287zM8%205.5a1%201%200%201%201%200-2%201%201%200%200%201%200%202z%22/%3E%3C/svg%3E");}.pdoc .alert.warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23664d03%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8.982%201.566a1.13%201.13%200%200%200-1.96%200L.165%2013.233c-.457.778.091%201.767.98%201.767h13.713c.889%200%201.438-.99.98-1.767L8.982%201.566zM8%205c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%205.995A.905.905%200%200%201%208%205zm.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2z%22/%3E%3C/svg%3E");}.pdoc .alert.danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5.52.359A.5.5%200%200%201%206%200h4a.5.5%200%200%201%20.474.658L8.694%206H12.5a.5.5%200%200%201%20.395.807l-7%209a.5.5%200%200%201-.873-.454L6.823%209.5H3.5a.5.5%200%200%201-.48-.641l2.5-8.5z%22/%3E%3C/svg%3E");}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc > section:not(.module-info) h1{font-size:1.5rem;font-weight:500;}.pdoc > section:not(.module-info) h2{font-size:1.4rem;font-weight:500;}.pdoc > section:not(.module-info) h3{font-size:1.3rem;font-weight:500;}.pdoc > section:not(.module-info) h4{font-size:1.2rem;}.pdoc > section:not(.module-info) h5{font-size:1.1rem;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--accent);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc > section:not(.module-info){margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.view-source-toggle-state,.view-source-toggle-state ~ .pdoc-code{display:none;}.view-source-toggle-state:checked ~ .pdoc-code{display:block;}.view-source-button{display:inline-block;float:right;font-size:.75rem;line-height:1.5rem;color:var(--muted);padding:0 .4rem 0 1.3rem;cursor:pointer;text-indent:-2px;}.view-source-button > span{visibility:hidden;}.module-info .view-source-button{float:none;display:flex;justify-content:flex-end;margin:-1.2rem .4rem -.2rem 0;}.view-source-button::before{position:absolute;content:"View Source";display:list-item;list-style-type:disclosure-closed;}.view-source-toggle-state:checked ~ .attr .view-source-button::before,.view-source-toggle-state:checked ~ .view-source-button::before{list-style-type:disclosure-open;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc section:not(.module-info) .docstring{margin-left:clamp(0rem, 5vw - 2rem, 1rem);}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target,.pdoc .pdoc-code > pre > span:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc .pdoc-code > pre > span:target{display:block;}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc *{scroll-margin:2rem;}.pdoc .pdoc-code .linenos{user-select:none;}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc section, .pdoc .classattr{position:relative;}.pdoc .headerlink{--width:clamp(1rem, 3vw, 2rem);position:absolute;top:0;left:calc(0rem - var(--width));transition:all 100ms ease-in-out;opacity:0;}.pdoc .headerlink::before{content:"#";display:block;text-align:center;width:var(--width);height:2.3rem;line-height:2.3rem;font-size:1.5rem;}.pdoc .attr:hover ~ .headerlink,.pdoc *:target > .headerlink,.pdoc .headerlink:hover{opacity:1;}.pdoc .attr{display:block;margin:.5rem 0 .5rem;padding:.4rem .4rem .4rem 1rem;background-color:var(--accent);overflow-x:auto;}.pdoc .classattr{margin-left:2rem;}.pdoc .decorator-deprecated{color:#842029;}.pdoc .decorator-deprecated ~ span{filter:grayscale(1) opacity(0.8);}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{background-color:transparent;}.pdoc .param, .pdoc .return-annotation{white-space:pre;}.pdoc .signature.multiline .param{display:block;}.pdoc .signature.condensed .param{display:inline-block;}.pdoc .annotation{color:var(--annotation);}.pdoc .view-value-toggle-state,.pdoc .view-value-toggle-state ~ .default_value{display:none;}.pdoc .view-value-toggle-state:checked ~ .default_value{display:inherit;}.pdoc .view-value-button{font-size:.5rem;vertical-align:middle;border-style:dashed;margin-top:-0.1rem;}.pdoc .view-value-button:hover{background:white;}.pdoc .view-value-button::before{content:"show";text-align:center;width:2.2em;display:inline-block;}.pdoc .view-value-toggle-state:checked ~ .view-value-button::before{content:"hide";}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
-    <style>/*! custom.css */img{max-width:100%;}mark{background-color:#859bed;color:black;}</style>
+    <style>/*! custom.css */img{max-width:100%;}mark{background-color:#859bed;color:black;}ul{margin-left:2em;}</style>
     <style>header.pdoc{display:flex;align-items:center;flex-wrap:wrap;}header.pdoc img{max-width:200px;max-height:75px;padding-right:2rem;}header.pdoc input[type=search]{outline-offset:0;font-size:1.5rem;min-width:60%;flex-grow:1;padding-left:.5rem;margin:1.75rem 0;}</style><script>
     window.MathJax = {
         tex: {
@@ -217,197 +217,286 @@ jupyter-notebook PySDM/examples</code></pre>
         </p>
         <p>
           Development of PySDM was supported by:
-          <ul style="list-style:square; margin-left:1em;">
+        </p>
+        <ul style="list-style:square;">
             <li><a href="https://www.fnp.org.pl/en/">Foundation for Polish Science</a> (grant no. POIR.04.04.00-00-5E1C/18 co-financed by the European Union under the European Regional Development Fund)</li>
             <li><a href="https://ncn.gov.pl/en">Polish National Science Centre</a> (grant no. 2020/39/D/ST10/01220)</li>
             <li><a href="https://science.energy.gov">US Department of Energy</a> via the <a href="https://www.krellinst.org/csgf/">Computational Science Graduate Fellowship</a> and via the <a href="https://asr.science.energy.gov/">Atmospheric System Research Program</a> (grant no. DE-SC0021034)</li>
             <li><a href="https://www.schmidtfutures.org/our-people/#eric-schmidt">Eric</a> and <a href="https://www.schmidtfutures.org/our-people/#wendy-schmidt">Wendy Schmidt</a> (by recommendation of <a href="https://www.schmidtfutures.org/">Schmidt Futures</a>)</li>
             <li><a href="https://www.hsfoundation.org/">Heising-Simons Foundation</a></li>
             <li><a href="https://www.nsf.gov/">National Science Foundation</a> (grant AGS-1835860)</li>
-          </ul>
-        </p>
+        </ul>
     </div>
+        <div>
+            <h2>Bibliography with code cross-references</h2>
+            <p>
+                The list below summarises all literature references included in PySDM codebase and includes links to both the referenced papers, as well as to the referring PySDM source files.
+            </p>
+<ol>
+<li>
+<a href="https://doi.org/10.1002/qj.4775">Abade & Albuquerque 2024 (Q. J. R. Meteorol. Soc. 150): "<em>Persistent mixed-phase states in adiabatic cloud parcels under idealised conditions</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Abade_and_Albuquerque_2024/__init__.py">examples/PySDM_examples/Abade_and_Albuquerque_2024/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Abade_and_Albuquerque_2024/fig_2.ipynb">examples/PySDM_examples/Abade_and_Albuquerque_2024/fig_2.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/1999JD901161">Abdul-Razzak & Ghan 2000 (J. Geophys. Res. Atmos. 105): "<em>A parameterization of aerosol activation: 2. Multiple aerosol types</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py">examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-16-2083-2016">Alpert & Knopf 16 (Atmos. Chem. Phys. 16): "<em>Analysis of isothermal and cooling-rate-dependent immersion freezing by a unifying stochastic ice nucleation model</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Alpert_and_Knopf_2016/__init__.py">examples/PySDM_examples/Alpert_and_Knopf_2016/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_1.ipynb">examples/PySDM_examples/Alpert_and_Knopf_2016/fig_1.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_2.ipynb">examples/PySDM_examples/Alpert_and_Knopf_2016/fig_2.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb">examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb">examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb">examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/npg-24-535-2017">Arabas & Shima 2017 (Nonlin. Proc. Geophys. 24): "<em>On the CCN (de)activation nonlinearities</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Arabas_and_Shima_2017/__init__.py">examples/PySDM_examples/Arabas_and_Shima_2017/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb">examples/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/gmd-8-1677-2015">Arabas et al. 2015 (Geosci. Model Dev. 2015): "<em>libcloudph++ 1.0: a single-moment bulk, double-moment bulk, and particle-based warm-rain microphysics library in C++</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/displacement.py">PySDM/dynamics/displacement.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/particle_advection/implicit_in_space.py">PySDM/physics/particle_advection/implicit_in_space.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb">examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.48550/arXiv.2308.05015">Arabas et al. 2023 (arXiv:2308.05015): "<em>Immersion freezing in particle-based aerosol-cloud microphysics: a probabilistic perspective on singular and time-dependent models</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Arabas_et_al_2023/__init__.py">examples/PySDM_examples/Arabas_et_al_2023/__init__.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1002/rcm.2250">Barkan & Luz 2005 (Rapid Commun. Mass Spectrom. 19): "<em>High precision measurements of <sup>17</sup>O/<sup>16</sup>O and <sup>18</sup>O/<sup>16</sup>O ratios in H<sub>2</sub>O</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/barkan_and_luz_2005.py">PySDM/physics/isotope_equilibrium_fractionation_factors/barkan_and_luz_2005.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1002/rcm.3180">Barkan & Luz 2007 (Rapid Commun. Mass Spectrom. 21): "<em>Diffusivity fractionations of H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>17</sup>O and H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>18</sup>O in air and their implications for isotope hydrology</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_meteoric_water_line_excess/barkan_and_luz_2007.py">PySDM/physics/isotope_meteoric_water_line_excess/barkan_and_luz_2007.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.21105/joss.03896">Bartman et al. 2022 (J. Open Source Soft. 7): "<em>PyMPDATA v1: Numba-accelerated implementation of MPDATA with examples in Python, Julia and Matlab</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.21105/joss.03219">Bartman et al. 2022 (J. Open Source Soft. 7): "<em>PySDM v1: particle-based cloud modeling package for warm-rain microphysics and aqueous chemistry</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/README.md">README.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2">Berry 1967 (J. Atmos. Sci. 24): "<em>Cloud Droplet Growth by Collection</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/collision_kernels/electric.py">PySDM/dynamics/collisions/collision_kernels/electric.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py">PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Berry_1967/__init__.py">examples/PySDM_examples/Berry_1967/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb">examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/2022MS002994">Bieli et al. 2022 (J. Adv. Model. Earth Sys. 14): "<em>An Efficient Bayesian Approach to Learning Droplet Collision Kernels: Proof of Concept Using “Cloudy,” a New n-Moment Bulk Microphysics Scheme</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Bieli_et_al_2022/__init__.py">examples/PySDM_examples/Bieli_et_al_2022/__init__.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1088/0370-1301/66/8/309">Bigg 1953 (Proc. Phys. Soc. B 66): "<em>The Supercooling of Water</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/freezing_temperature_spectrum/bigg_1953.py">PySDM/physics/freezing_temperature_spectrum/bigg_1953.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1119/1.15109">Bohren 1987 (Am. J. Phys. 55): "<em>Multiple scattering of light and some of its observable consequences</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/optical_albedo/bohren1987.py">PySDM/physics/optical_albedo/bohren1987.py</a></li></ul>
+<li>
+<a href="https://digitallibrary.un.org/record/3892725">Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy): "<em>On the Use of Tritium as a Tracer for Water in Nature</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_relaxation_timescale/bolin_1958.py">PySDM/physics/isotope_relaxation_timescale/bolin_1958.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Bolin_1958/table_1.ipynb">examples/PySDM_examples/Bolin_1958/table_1.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-13-7903-2013">Bolot et al. 2013 (Atmos. Chem. Phys. 13): "<em>Modelling and interpreting the isotopic composition of water vapour in convective updrafts </em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Bolot_et_al_2013/__init__.py">examples/PySDM_examples/Bolot_et_al_2013/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tests/unit_tests/physics/test_isotope_equilibrium_fractionation_factors.py">tests/unit_tests/physics/test_isotope_equilibrium_fractionation_factors.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0493(1980)108%3C1046:TCOEPT%3E2.0.CO;2">Bolton 1980 (Mon. Weather Rev. 108): "<em>The Computation of Equivalent Potential Temperature</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/saturation_vapour_pressure/bolton_1980.py">PySDM/physics/saturation_vapour_pressure/bolton_1980.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/2003JD003597">Cappa et al. 2003 (J. Geophys. Res. Atmos. 108): "<em>Isotopic fractionation of water during evaporation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py">PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1126/science.133.3465.1702">Craig 1961 (Science 133): "<em>Isotopic Variations in Meteoric Waters</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tests/unit_tests/physics/test_isotope_meteoric_water_line_excess.py">tests/unit_tests/physics/test_isotope_meteoric_water_line_excess.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.3402/tellusa.v16i4.8993">Dansgaard 1964 (Tellus A 16): "<em>Stable isotopes in precipitation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_meteoric_water_line_excess/dansgaard_1964.py">PySDM/physics/isotope_meteoric_water_line_excess/dansgaard_1964.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/gmd-16-4193-2023">de Jong et al. 2023 (Geosci. Model Dev. 16): "<em>Breakups are complicated: an efficient representation of collisional breakup in the superdroplet method</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/deJong_Mackay_et_al_2023/__init__.py">examples/PySDM_examples/deJong_Mackay_et_al_2023/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.21105/joss.04968">de Jong et al. 2023 (J. Open Source Soft. 8): "<em>New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol initialization, and adaptive time-stepping</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/README.md">README.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.1002/rcm.6668">Ellehoj et al. 2013 (Rapid Commun. Mass Spectrom. 27): "<em>Ice-vapor equilibrium fractionation factor of hydrogen and oxygen isotopes: Experimental investigations and implications for stable water isotope studies</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/ellehoj_et_al_2013.py">PySDM/physics/isotope_equilibrium_fractionation_factors/ellehoj_et_al_2013.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-12-5807-2012">Ervens & Feingold 2012 (Atmos. Chem. Phys. 12): "<em>On the representation of immersion and condensation freezing in cloud models using different nucleation schemes </em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Ervens_and_Feingold_2012/__init__.py">examples/PySDM_examples/Ervens_and_Feingold_2012/__init__.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0469(1999)056%3C4100:TIOGCC%3E2.0.CO;2">Feingold et al. 1999 (J. Atmos. Sci. 56): "<em>The Impact of Giant Cloud Condensation Nuclei on Drizzle Formation in Stratocumulus: Implications for Cloud Radiative Properties</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/breakup_fragmentations/feingold1988.py">PySDM/dynamics/collisions/breakup_fragmentations/feingold1988.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0450(1992)031%3C1507:PFTSVP%3E2.0.CO;2">Flatau et al. 1992 (J. Appl. Meteorol. Climatol. 31): "<em>Polynomial Fits to Saturation Vapor Pressure</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py">PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/JZ067i007p02761">Friedman et al. 1962 (J. Geophys. Res. 67): "<em>Water-vapor exchange between a water droplet and its environment</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Miyake_et_al_1968/__init__.py">examples/PySDM_examples/Miyake_et_al_1968/__init__.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1142/p027">Gat 2010: "<em>Isotope Hydrology: A Study of the Water Cycle</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/93JD03518">Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99): "<em>Modeling the isotopic composition of precipitation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_ratio_evolution/gedzelman_and_arnold_1994.py">PySDM/physics/isotope_ratio_evolution/gedzelman_and_arnold_1994.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py">PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Gedzelman_and_Arnold_1994/__init__.py">examples/PySDM_examples/Gedzelman_and_Arnold_1994/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb">examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb</a></li></ul>
+<li>
+<a href="http://mi.mathnet.ru/dan27630">Golovin 1963 (Dokl. Akad. Nauk SSSR 148): "<em>К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/collision_kernels/golovin.py">PySDM/dynamics/collisions/collision_kernels/golovin.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/2022GL101917">Grabowski & Pawlowska 2023 (Geophys. Res. Lett. 50): "<em>Adiabatic Evolution of Cloud Droplet Spectral Width: A New Look at an Old Problem</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Grabowski_and_Pawlowska_2023/__init__.py">examples/PySDM_examples/Grabowski_and_Pawlowska_2023/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_1.ipynb">examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_1.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_2.ipynb">examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_2.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_3.ipynb">examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_3.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_4.ipynb">examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_4.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_ripening_rate.ipynb">examples/PySDM_examples/Grabowski_and_Pawlowska_2023/figure_ripening_rate.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_1_and_2.py">tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_1_and_2.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_3.py">tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_3.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_4.py">tests/smoke_tests/parcel_c/grabowski_and_pawlowska_2023/test_figure_4.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1016/j.atmosres.2010.10.020">Grabowski et al. 2011 (Atmos. Res. 99): "<em>Droplet growth in a bin warm-rain scheme with Twomey CCN activation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/diffusion_kinetics/grabowski_et_al_2011.py">PySDM/physics/diffusion_kinetics/grabowski_et_al_2011.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/diffusion_thermics/grabowski_et_al_2011.py">PySDM/physics/diffusion_thermics/grabowski_et_al_2011.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-19-747-2019">Graf et al. 2019 (Atmos. Chem. Phys. 19): "<em>A new interpretative framework for below-cloud effects on stable water isotopes in vapour and rain</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb">examples/PySDM_examples/Graf_et_al_2019/Table_1.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Graf_et_al_2019/__init__.py">examples/PySDM_examples/Graf_et_al_2019/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Graf_et_al_2019/figure_4.ipynb">examples/PySDM_examples/Graf_et_al_2019/figure_4.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2">Gunn & Kinzer 1949 (J. Atmos. Sci. 6): "<em>The Terminal Velocity of Fall for Water Droplets in Stagnant Air</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/terminal_velocity/gunn_and_kinzer.py">PySDM/dynamics/terminal_velocity/gunn_and_kinzer.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/terminal_velocity/gunn_kinzer_1949.py">PySDM/physics/terminal_velocity/gunn_kinzer_1949.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/2020GL089999">Hellmann & Harvey 2020 (Geophys. Res. Lett. 47): "<em>First-Principles Diffusivity Ratios for Kinetic Isotope Fractionation of Water in Air</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_diffusivity_ratios/hellmann_and_harvey_2020.py">PySDM/physics/isotope_diffusivity_ratios/hellmann_and_harvey_2020.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py">PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1016/0016-7037(94)90096-5">Horita & Wesolowski 1994 (Geochim. Cosmochim. Acta 58): "<em>Liquid-vapor fractionation of oxygen and hydrogen isotopes of water from the freezing to the critical temperature</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/horita_and_wesolowski_1994.py">PySDM/physics/isotope_equilibrium_fractionation_factors/horita_and_wesolowski_1994.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1080/10256010801887174">Horita et al. 2008 (Isot. Environ. Healt. S. 44): "<em>Isotope effects in the evaporation of water: a status report of the Craig–Gordon model</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_diffusivity_ratios/grahams_law.py">PySDM/physics/isotope_diffusivity_ratios/grahams_law.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py">PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tests/unit_tests/physics/test_isotope_diffusivity_ratios.py">tests/unit_tests/physics/test_isotope_diffusivity_ratios.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-16-1693-2016">Hoyle et al. 2016 (Atmos. Chem. Phys. 16): "<em>Aqueous phase oxidation of sulphur dioxide by ozone in cloud droplets</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/backends/impl_numba/methods/chemistry_methods.py">PySDM/backends/impl_numba/methods/chemistry_methods.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/gmd-11-3623-2018">Jaruga & Pawlowska 2018 (Geosci. Model Dev. 11): "<em>libcloudph++ 2.0: aqueous-phase chemistry extension of the particle-based cloud microphysics scheme</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/__init__.py">examples/PySDM_examples/Jaruga_and_Pawlowska_2018/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb">examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb">examples/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/JAS-D-15-0370.1">Jensen & Nugent 2017 (J. Atmos. Sci. 74): "<em>Condensational Growth of Drops Formed on Giant Sea-Salt Aerosol Particles</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_1.ipynb">examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_1.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_3_and_Tab_4_upper_rows.ipynb">examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_3_and_Tab_4_upper_rows.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_4_and_7_and_Tab_4_bottom_rows.ipynb">examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_4_and_7_and_Tab_4_bottom_rows.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_5.ipynb">examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_5.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_6.ipynb">examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_6.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_8.ipynb">examples/PySDM_examples/Jensen_and_Nugent_2017/Fig_8.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/gmd-9-1455-2016">Jokulsdottir & Archer 2016 (Geosci. Model Dev. 9): "<em>A stochastic, Lagrangian model of sinking biogenic aggregates in the ocean (SLAMS 1.0): model formulation, validation and sensitivity</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/breakup_fragmentations/slams.py">PySDM/dynamics/collisions/breakup_fragmentations/slams.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/MWR-D-14-00319.1">Kaul et al. 2015 (Mon. Weather Rev. 143): "<em>Sensitivities in Large-Eddy Simulations of Mixed-Phase Arctic Stratocumulus Clouds Using a Simple Microphysics Approach</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/bulk_phase_partitioning/kaul_et_al_2015.py">PySDM/physics/bulk_phase_partitioning/kaul_et_al_2015.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1007/978-1-935704-36-2_1">Kessler 1969 (Meteorol. Monogr. 10): "<em>On the Distribution and Continuity of Water Substance in Atmospheric Circulations</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.1039/C3FD00035D">Knopf & Alpert 2013 (Faraday Discuss. 165): "<em>A water activity based model of heterogeneous ice nucleation kinetics for freezing of water and aqueous solution droplets</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/heterogeneous_ice_nucleation_rate/abifm.py">PySDM/physics/heterogeneous_ice_nucleation_rate/abifm.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/2002JD002697">Kreidenweis et al. 2003 (J. Geophys. Res. 108): "<em>Modification of aerosol mass and size distribution due to aqueous-phase SO<sub>2</sub> oxidation in clouds: Comparisons of several models</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Kreidenweis_et_al_2003/__init__.py">examples/PySDM_examples/Kreidenweis_et_al_2003/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb">examples/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-5-461-2005">Laaksonen et al. 2005 (Atmos. Chem. Phys. 5): "<em>Commentary on cloud modelling and the mass accommodation coefficient of water</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/diffusion_kinetics/fuchs_sutugin.py">PySDM/physics/diffusion_kinetics/fuchs_sutugin.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1073/pnas.1618374114">Lamb et al. 2017 (PNAS 114): "<em>Laboratory measurements of HDO/H<sub>2</sub>O isotopic fractionation during ice deposition in simulated cirrus clouds</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/lamb_et_al_2017.py">PySDM/physics/isotope_equilibrium_fractionation_factors/lamb_et_al_2017.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Lamb_et_al_2017/__init__.py">examples/PySDM_examples/Lamb_et_al_2017/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Lamb_et_al_2017/fig_4.ipynb">examples/PySDM_examples/Lamb_et_al_2017/fig_4.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/JD092iD04p04171">Lind et al. 1987 (J. Geophys. Res. Atmos. 92): "<em>Aqueous phase oxidation of sulfur(IV) by hydrogen peroxide, methylhydroperoxide, and peroxyacetic acid</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/backends/impl_numba/methods/chemistry_methods.py">PySDM/backends/impl_numba/methods/chemistry_methods.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0469(1982)039%3C1607:CCABOR%3E2.0.CO;2">Low & List 1982 (J. Atmos. Sci. 39): "<em>Collision, Coalescence and Breakup of Raindrops. Part II: Parameterization of Fragment Size Distributions</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/breakup_fragmentations/lowlist82.py">PySDM/dynamics/collisions/breakup_fragmentations/lowlist82.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0450(1977)016%3C0100:AAPFTC%3E2.0.CO;2">Lowe 1977 (J. Appl. Meteorol. Climatol. 16): "<em>An Approximating Polynomial for the Computation of Saturation Vapor Pressure</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/saturation_vapour_pressure/lowe1977.py">PySDM/physics/saturation_vapour_pressure/lowe1977.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1038/s41467-019-12982-0">Lowe et al. 2019 (Nature Comm. 10): "<em>Key drivers of cloud response to surface-active organics</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py">PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/diffusion_thermics/lowe_et_al_2019.py">PySDM/physics/diffusion_thermics/lowe_et_al_2019.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Lowe_et_al_2019/__init__.py">examples/PySDM_examples/Lowe_et_al_2019/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Lowe_et_al_2019/fig_1.ipynb">examples/PySDM_examples/Lowe_et_al_2019/fig_1.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Lowe_et_al_2019/fig_2.ipynb">examples/PySDM_examples/Lowe_et_al_2019/fig_2.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Lowe_et_al_2019/fig_3.ipynb">examples/PySDM_examples/Lowe_et_al_2019/fig_3.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Lowe_et_al_2019/fig_s2.ipynb">examples/PySDM_examples/Lowe_et_al_2019/fig_s2.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1038/2261242a0">Majoube 1970 (Nature 226): "<em>Fractionation Factor of <sup>18</sup>O between Water Vapour and Ice</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/majoube_1970.py">PySDM/physics/isotope_equilibrium_fractionation_factors/majoube_1970.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1051/jcp/1971680625">Majoube 1971 ( J. Chim. Phys. 68): "<em>Fractionnement en 180 entre la glace et la vapeur d’eau</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/majoube_1970.py">PySDM/physics/isotope_equilibrium_fractionation_factors/majoube_1970.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1051/jcp/1971681423">Majoube 1971 (J. Chim. Phys. 68): "<em>Fractionnement en oxygène 18 et en deutérium entre l’eau et sa vapeur</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/majoube_1971.py">PySDM/physics/isotope_equilibrium_fractionation_factors/majoube_1971.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1088/0370-1301/64/9/307">Mason 1951 (Proc. Phys. Soc. B 64): "<em>Spontaneous Condensation of Water Vapour in Expansion Chamber Experiments</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/drop_growth/mason_1951.py">PySDM/physics/drop_growth/mason_1951.py</a></li></ul>
+<li>
+<a href="https://archive.org/details/physicsofclouds0000maso">Mason 1971 (Clarendon Press, Oxford): "<em>The Physics of Clouds</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/drop_growth/mason_1971.py">PySDM/physics/drop_growth/mason_1971.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/JC084iC08p05029">Merlivat & Jouzel 1979 (J. Geophys. Res. Oceans 84): "<em>Global climatic interpretation of the deuterium-oxygen 18 relationship for precipitation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py">PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tests/unit_tests/physics/test_isotope_ratio_evolution.py">tests/unit_tests/physics/test_isotope_ratio_evolution.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.3402/tellusa.v19i1.9756">Merlivat & Nief 1967 (Tellus A 19): "<em>Fractionnement isotopique lors des changements d’état solide-vapeur et liquide-vapeur de l’eau à des températures inférieures à 0°C</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/merlivat_and_nief_1967.py">PySDM/physics/isotope_equilibrium_fractionation_factors/merlivat_and_nief_1967.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Merlivat_and_Nief_1967/__init__.py">examples/PySDM_examples/Merlivat_and_Nief_1967/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Merlivat_and_Nief_1967/fig_2.ipynb">examples/PySDM_examples/Merlivat_and_Nief_1967/fig_2.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1063/1.436884">Merlivat 1978 (J. Chem. Phys. 69): "<em>Molecular diffusivities of H<sub>2</sub><sup>16</sup>O, HD<sup>16</sup>O and H<sub>2</sub><sup>18</sup>O in gases</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py">PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.2467/mripapers1950.19.2_243">Miyake et al. 1968 (Pap. Meteorol. Geophys. 19): "<em>An Isotopic Study on Meteoric Precipitation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py">PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Miyake_et_al_1968/fig_19.ipynb">examples/PySDM_examples/Miyake_et_al_1968/fig_19.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/JAS3980">Morrison & Grabowski 2007 (J. Atmos. Sci. 64): "<em>Comparison of Bulk and Bin Warm-Rain Microphysics Models Using a Kinematic Framework</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py">examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_2.ipynb">examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_2.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_3.ipynb">examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_3.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.1256/qj.04.94">Murphy & Koop 2005 (Q. J. R. Meteorol. Soc. 131): "<em>Review of the vapour pressures of ice and supercooled water for atmospheric applications</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/saturation_vapour_pressure/murphy_koop_2005.py">PySDM/physics/saturation_vapour_pressure/murphy_koop_2005.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1002/2013GL058684">Niedermeier et al. 2014 (Geophys. Res. Lett. 41): "<em>A computationally efficient description of heterogeneous freezing: A simplified version of the Soccer ball model</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Niedermeier_et_al_2014/__init__.py">examples/PySDM_examples/Niedermeier_et_al_2014/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Niedermeier_et_al_2014/fig_2.ipynb">examples/PySDM_examples/Niedermeier_et_al_2014/fig_2.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/JAS-D-11-0249.1">Niedermeier et al. 2014 (J. Atmos. Sci. 69): "<em>A computationally efficient description of heterogeneous freezing: A simplified version of the Soccer ball model</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/freezing_temperature_spectrum/niemand_et_al_2012.py">PySDM/physics/freezing_temperature_spectrum/niemand_et_al_2012.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1063/1.1840906">Okuyama & Zung 1967 (J. Chem. Phys. 1967): "<em>Evaporation—Condensation Coefficient for Small Droplets</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2005.py">PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2005.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1038/nature22806">Ovadnevaite et al. 2017 (Nature 546): "<em>Surface tension prevails over solute effect in organic-influenced cloud droplet activation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/surface_tension/compressed_film_ovadnevaite.py">PySDM/physics/surface_tension/compressed_film_ovadnevaite.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-7-1961-2007">Petters & Kreidenweis 2007 (Atmos. Chem. Phys. 7): "<em>A single parameter representation of hygroscopic growth and cloud condensation nucleus activity</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/hygroscopicity/kappa_koehler.py">PySDM/physics/hygroscopicity/kappa_koehler.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1016/j.gca.2022.01.020">Pierchala et al. 2022 (Geochim. Cosmochim. Acta 322): "<em>Quantification the diffusion-induced fractionation of <sup>1</sup>H<sub>2</sub><sup>17</sup>O isotopologue in air accompanying the process of water evaporation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Pierchala_et_al_2022/__init__.py">examples/PySDM_examples/Pierchala_et_al_2022/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Pierchala_et_al_2022/commons.py">examples/PySDM_examples/Pierchala_et_al_2022/commons.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb">examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb">examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2">Pruppacher & Rasmussen 1979 (J. Atmos. Sci. 36): "<em>A Wind Tunnel Investigation of the Rate of Evaporation of Large Water Drops Falling at Terminal Velocity in Air</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/ventilation/pruppacher_rasmussen_1979.py">PySDM/physics/ventilation/pruppacher_rasmussen_1979.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.3402/tellusa.v34i2.10795">Rozanski & Sonntag 1982 (Tellus A 34): "<em>Vertical distribution of deuterium in atmospheric water vapour</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py">examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Rozanski_and_Sonntag_1982/figs_4_5_6.ipynb">examples/PySDM_examples/Rozanski_and_Sonntag_1982/figs_4_5_6.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1126/science.aad4889">Ruehl et al. 2016 (Science 351): "<em>An interfacial mechanism for cloud droplet formation on organic aerosols</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/surface_tension/compressed_film_ruehl.py">PySDM/physics/surface_tension/compressed_film_ruehl.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/surface_tension/szyszkowski_langmuir.py">PySDM/physics/surface_tension/szyszkowski_langmuir.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1002/qj.441">Shima et al. 2009 (Q. J. R. Meteorol. Soc. 135): "<em>The super-droplet method for the numerical simulation of clouds and precipitation: a particle-based and probabilistic microphysics model coupled with a non-hydrostatic model</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/collision.py">PySDM/dynamics/collisions/collision.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/collision.py">PySDM/dynamics/collisions/collision.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/docs/markdown/pysdm_landing.md">docs/markdown/pysdm_landing.md</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Shima_et_al_2009/__init__.py">examples/PySDM_examples/Shima_et_al_2009/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb">examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/tutorials/collisions/collisions_playground.ipynb">tutorials/collisions/collisions_playground.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/gmd-13-4107-2020">Shima et al. 2020 (Geosci. Model Dev. 13): "<em>Predicting the morphology of ice particles in deep convection using the super-droplet method: development and evaluation of SCALE-SDM 0.2.5-2.2.0, -2.2.1, and -2.2.2</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/particle_shape_and_density/porous_spheroids.py">PySDM/physics/particle_shape_and_density/porous_spheroids.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1002/qj.1913">Shipway & Hill 2012 (Q. J. R. Meteorol. Soc. 138): "<em>Diagnosis of systematic differences between multiple parametrizations of warm rain microphysics using a kinematic framework</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Shipway_and_Hill_2012/__init__.py">examples/PySDM_examples/Shipway_and_Hill_2012/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb">examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb">examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.1002/fld.1071">Smolarkiewicz 2006 (Int. J. Numer. Methods Fluids 50): "<em>Multidimensional positive definite advection transport algorithm: an overview</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.1071/CH9520059">Squires 1952 (Aust. J. Chem. (Aust. J. Sci. Res. 5): "<em>The Growth of Cloud Drops by Condensation. I. General Characteristics</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/ventilation/froessling_1938.py">PySDM/physics/ventilation/froessling_1938.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2">Srivastava 1982 (J. Atmos. Sci. 39): "<em>A Simple Model of Particle Coalescence and Breakup</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Srivastava_1982/__init__.py">examples/PySDM_examples/Srivastava_1982/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Srivastava_1982/equations.py">examples/PySDM_examples/Srivastava_1982/equations.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/docs/pysdm_examples_landing.md">examples/docs/pysdm_examples_landing.md</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-11-12945-2011">Steinke et al. 2011 (Atmos. Chem. Phys. 11): "<em>Ice nucleation properties of fine ash particles from the Eyjafjallajökull eruption in April 2010 </em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Arabas_et_al_2023/aida.ipynb">examples/PySDM_examples/Arabas_et_al_2023/aida.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/1520-0469(1978)035%3C2123:RPIEWC%3E2.0.CO;2">Stephens 1978 (J. Atmos. Sci. 35): "<em>Radiation Profiles in Extended Water Clouds. II: Parameterization Schemes</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/optical_depth/stephens_1978.py">PySDM/physics/optical_depth/stephens_1978.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1029/JC080i009p01133">Stewart 1975 (J. Geophys. Res. Oceans 80): "<em>Stable isotope fractionation due to evaporation and isotopic exchange of falling waterdrops: Applications to atmospheric processes and evaporation of lakes</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py">PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1175/2009JAS3175.1">Straub et al. 2010 (J. Atmos. Sci. 67): "<em>Numerical Investigation of Collision-Induced Breakup of Raindrops. Part II: Parameterizations of Coalescence Efficiencies and Fragment Size Distributions</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/dynamics/collisions/breakup_fragmentations/straub2010.py">PySDM/dynamics/collisions/breakup_fragmentations/straub2010.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/deJong_Mackay_et_al_2023/fig_9.ipynb">examples/PySDM_examples/deJong_Mackay_et_al_2023/fig_9.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1016/S0169-8095(97)00082-3">Szumowski et al. 1998 (Atmos. Res. 45): "<em>Simple two-dimensional kinematic framework designed to test warm rain microphysical models</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Szumowski_et_al_1998/__init__.py">examples/PySDM_examples/Szumowski_et_al_1998/__init__.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.1021/j100850a028">Van Hook 1968 (J. Phys. Chem. 72): "<em>Vapor pressures of the isotopic waters and ices</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/isotope_equilibrium_fractionation_factors/van_hook_1968.py">PySDM/physics/isotope_equilibrium_fractionation_factors/van_hook_1968.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Van_Hook_1968/__init__.py">examples/PySDM_examples/Van_Hook_1968/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb">examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1119/1.15018">Vedder 1987 (Am. J. Phys. 55): "<em>Simple approximations for the error function and its inverse</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/trivia.py">PySDM/physics/trivia.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.6028/jres.080A.071">Wexler 1976 (J. Res. NBS A Phys. Ch. 80A): "<em>Vapor Pressure Formulation for Water in Range 0 to f 00 °C. A Revision</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/saturation_vapour_pressure/wexler_1976.py">PySDM/physics/saturation_vapour_pressure/wexler_1976.py</a></li></ul>
+<li>
+<a href="https://doi.org/10.5194/acp-18-7313-2018">Yang et al. 2018 (Atmos. Chem. Phys. 18): "<em>Cloud droplet size distribution broadening during diffusional growth: ripening amplified by deactivation and reactivation</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Yang_et_al_2018/__init__.py">examples/PySDM_examples/Yang_et_al_2018/__init__.py</a></li><li><a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb">examples/PySDM_examples/Yang_et_al_2018/fig_2.ipynb</a></li></ul>
+<li>
+<a href="https://doi.org/10.1016/0045-7825(87)90003-X">Zografos et al. 1987 (Comput. Method. Appl. M. 61): "<em>Equations of properties as a function of temperature for seven fluids</em>"</a>
+<ul style="list-style-type:square;font-size:smaller;"><li><a href="https://github.com/open-atmos/PySDM/tree/main/PySDM/physics/constants_defaults.py">PySDM/physics/constants_defaults.py</a></li></ul>
+</ol>            <h2>EOF</h2>
+        </div>
     </main>
-<script>
-    function escapeHTML(html) {
-        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
-    }
 
-    const originalContent = document.querySelector("main.pdoc");
-    let currentContent = originalContent;
-
-    function setContent(innerHTML) {
-        let elem;
-        if (innerHTML) {
-            elem = document.createElement("main");
-            elem.classList.add("pdoc");
-            elem.innerHTML = innerHTML;
-        } else {
-            elem = originalContent;
-        }
-        if (currentContent !== elem) {
-            currentContent.replaceWith(elem);
-            currentContent = elem;
-        }
-    }
-
-    function getSearchTerm() {
-        return (new URL(window.location)).searchParams.get("search");
-    }
-
-    const searchBox = document.querySelector(".pdoc input[type=search]");
-    searchBox.addEventListener("input", function () {
-        let url = new URL(window.location);
-        if (searchBox.value.trim()) {
-            url.hash = "";
-            url.searchParams.set("search", searchBox.value);
-        } else {
-            url.searchParams.delete("search");
-        }
-        history.replaceState("", "", url.toString());
-        onInput();
-    });
-    window.addEventListener("popstate", onInput);
-
-
-    let search, searchErr;
-
-    async function initialize() {
-        try {
-            search = await new Promise((resolve, reject) => {
-                const script = document.createElement("script");
-                script.type = "text/javascript";
-                script.async = true;
-                script.onload = () => resolve(window.pdocSearch);
-                script.onerror = (e) => reject(e);
-                script.src = "search.js";
-                document.getElementsByTagName("head")[0].appendChild(script);
-            });
-        } catch (e) {
-            console.error("Cannot fetch pdoc search index");
-            searchErr = "Cannot fetch search index.";
-        }
-        onInput();
-
-        document.querySelector("nav.pdoc").addEventListener("click", e => {
-            if (e.target.hash) {
-                searchBox.value = "";
-                searchBox.dispatchEvent(new Event("input"));
-            }
-        });
-    }
-
-    function onInput() {
-        setContent((() => {
-            const term = getSearchTerm();
-            if (!term) {
-                return null
-            }
-            if (searchErr) {
-                return `<h3>Error: ${searchErr}</h3>`
-            }
-            if (!search) {
-                return "<h3>Searching...</h3>"
-            }
-
-            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
-
-            const results = search(term);
-
-            let html;
-            if (results.length === 0) {
-                html = `No search results for '${escapeHTML(term)}'.`
-            } else {
-                html = `<h4>${results.length} search result${results.length > 1 ? "s" : ""} for '${escapeHTML(term)}'.</h4>`;
-            }
-            for (let result of results.slice(0, 10)) {
-                let doc = result.doc;
-                let url = `${doc.modulename.replaceAll(".", "/")}.html`;
-                if (doc.qualname) {
-                    url += `#${doc.qualname}`;
-                }
-
-                let heading;
-                switch (result.doc.kind) {
-                    case "function":
-                        if (doc.fullname.endsWith(".__init__")) {
-                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
-                        } else {
-                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
-                        }
-                        break;
-                    case "class":
-                        heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
-                        if (doc.bases)
-                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
-                        heading += `:`;
-                        break;
-                    case "variable":
-                        heading = `<span class="name">${doc.fullname}</span>`;
-                        if (doc.annotation)
-                            heading += `<span class="annotation">${doc.annotation}</span>`;
-                        if (doc.default_value)
-                            heading += `<span class="default_value"> = ${doc.default_value}</span>`;
-                        break;
-                    default:
-                        heading = `<span class="name">${doc.fullname}</span>`;
-                        break;
-                }
-                html += `
-                        <section class="search-result">
-                        <a href="${url}" class="attr ${doc.kind}">${heading}</a>
-                        <div class="docstring">${doc.doc}</div>
-                        </section>
-                    `;
-
-            }
-            return html;
-        })());
-    }
-
-    if (getSearchTerm()) {
-        initialize();
-        searchBox.value = getSearchTerm();
-        onInput();
-    } else {
-        searchBox.addEventListener("focus", initialize, {once: true});
-    }
-
-    searchBox.addEventListener("keydown", e => {
-        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
-            let focused = currentContent.querySelector(".search-result.focused");
-            if (!focused) {
-                currentContent.querySelector(".search-result").classList.add("focused");
-            } else if (
-                e.key === "ArrowDown"
-                && focused.nextElementSibling
-                && focused.nextElementSibling.classList.contains("search-result")
-            ) {
-                focused.classList.remove("focused");
-                focused.nextElementSibling.classList.add("focused");
-                focused.nextElementSibling.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "nearest"
-                });
-            } else if (
-                e.key === "ArrowUp"
-                && focused.previousElementSibling
-                && focused.previousElementSibling.classList.contains("search-result")
-            ) {
-                focused.classList.remove("focused");
-                focused.previousElementSibling.classList.add("focused");
-                focused.previousElementSibling.scrollIntoView({
-                    behavior: "smooth",
-                    block: "nearest",
-                    inline: "nearest"
-                });
-            } else if (
-                e.key === "Enter"
-            ) {
-                focused.querySelector("a").click();
-            }
-        }
-    });
-</script></body>
+</body>
 </html>

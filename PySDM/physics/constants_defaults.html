@@ -11,7 +11,7 @@
     <style>/*! theme.css */:root{--pdoc-background:#212529;}.pdoc{--text:#f7f7f7;--muted:#9d9d9d;--link:#58a6ff;--link-hover:#3989ff;--code:#333;--active:#555;--accent:#343434;--accent2:#555;--nav-hover:rgba(0, 0, 0, 0.1);--name:#77C1FF;--def:#0cdd0c;--annotation:#00c037;}</style>
     <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;z-index:999;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;opacity:0;}nav.pdoc{--pad:clamp(0.5rem, 2vw, 1.75rem);--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent; z-index:1}nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc > div > ul{margin-left:calc(0px - var(--pad));}nav.pdoc li a{padding:.2rem 0 .2rem calc(var(--pad) + var(--indent));}nav.pdoc > div > ul > li > a{padding-left:var(--pad);}nav.pdoc li{transition:all 100ms;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
     <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{cursor:pointer;display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .alert{padding:1rem 1rem 1rem calc(1.5rem + 24px);border:1px solid transparent;border-radius:.25rem;background-repeat:no-repeat;background-position:.75rem center;margin-bottom:1rem;}.pdoc .alert > em{display:none;}.pdoc .alert > *:last-child{margin-bottom:0;}.pdoc .alert.note {color:#084298;background-color:#cfe2ff;border-color:#b6d4fe;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23084298%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2016A8%208%200%201%200%208%200a8%208%200%200%200%200%2016zm.93-9.412-1%204.705c-.07.34.029.533.304.533.194%200%20.487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703%200-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381%202.29-.287zM8%205.5a1%201%200%201%201%200-2%201%201%200%200%201%200%202z%22/%3E%3C/svg%3E");}.pdoc .alert.warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23664d03%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8.982%201.566a1.13%201.13%200%200%200-1.96%200L.165%2013.233c-.457.778.091%201.767.98%201.767h13.713c.889%200%201.438-.99.98-1.767L8.982%201.566zM8%205c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%205.995A.905.905%200%200%201%208%205zm.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2z%22/%3E%3C/svg%3E");}.pdoc .alert.danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5.52.359A.5.5%200%200%201%206%200h4a.5.5%200%200%201%20.474.658L8.694%206H12.5a.5.5%200%200%201%20.395.807l-7%209a.5.5%200%200%201-.873-.454L6.823%209.5H3.5a.5.5%200%200%201-.48-.641l2.5-8.5z%22/%3E%3C/svg%3E");}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc > section:not(.module-info) h1{font-size:1.5rem;font-weight:500;}.pdoc > section:not(.module-info) h2{font-size:1.4rem;font-weight:500;}.pdoc > section:not(.module-info) h3{font-size:1.3rem;font-weight:500;}.pdoc > section:not(.module-info) h4{font-size:1.2rem;}.pdoc > section:not(.module-info) h5{font-size:1.1rem;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--accent);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc > section:not(.module-info){margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.view-source-toggle-state,.view-source-toggle-state ~ .pdoc-code{display:none;}.view-source-toggle-state:checked ~ .pdoc-code{display:block;}.view-source-button{display:inline-block;float:right;font-size:.75rem;line-height:1.5rem;color:var(--muted);padding:0 .4rem 0 1.3rem;cursor:pointer;text-indent:-2px;}.view-source-button > span{visibility:hidden;}.module-info .view-source-button{float:none;display:flex;justify-content:flex-end;margin:-1.2rem .4rem -.2rem 0;}.view-source-button::before{position:absolute;content:"View Source";display:list-item;list-style-type:disclosure-closed;}.view-source-toggle-state:checked ~ .attr .view-source-button::before,.view-source-toggle-state:checked ~ .view-source-button::before{list-style-type:disclosure-open;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc section:not(.module-info) .docstring{margin-left:clamp(0rem, 5vw - 2rem, 1rem);}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target,.pdoc .pdoc-code > pre > span:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc .pdoc-code > pre > span:target{display:block;}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc *{scroll-margin:2rem;}.pdoc .pdoc-code .linenos{user-select:none;}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc section, .pdoc .classattr{position:relative;}.pdoc .headerlink{--width:clamp(1rem, 3vw, 2rem);position:absolute;top:0;left:calc(0rem - var(--width));transition:all 100ms ease-in-out;opacity:0;}.pdoc .headerlink::before{content:"#";display:block;text-align:center;width:var(--width);height:2.3rem;line-height:2.3rem;font-size:1.5rem;}.pdoc .attr:hover ~ .headerlink,.pdoc *:target > .headerlink,.pdoc .headerlink:hover{opacity:1;}.pdoc .attr{display:block;margin:.5rem 0 .5rem;padding:.4rem .4rem .4rem 1rem;background-color:var(--accent);overflow-x:auto;}.pdoc .classattr{margin-left:2rem;}.pdoc .decorator-deprecated{color:#842029;}.pdoc .decorator-deprecated ~ span{filter:grayscale(1) opacity(0.8);}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{background-color:transparent;}.pdoc .param, .pdoc .return-annotation{white-space:pre;}.pdoc .signature.multiline .param{display:block;}.pdoc .signature.condensed .param{display:inline-block;}.pdoc .annotation{color:var(--annotation);}.pdoc .view-value-toggle-state,.pdoc .view-value-toggle-state ~ .default_value{display:none;}.pdoc .view-value-toggle-state:checked ~ .default_value{display:inherit;}.pdoc .view-value-button{font-size:.5rem;vertical-align:middle;border-style:dashed;margin-top:-0.1rem;}.pdoc .view-value-button:hover{background:white;}.pdoc .view-value-button::before{content:"show";text-align:center;width:2.2em;display:inline-block;}.pdoc .view-value-toggle-state:checked ~ .view-value-button::before{content:"hide";}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
-    <style>/*! custom.css */img{max-width:100%;}mark{background-color:#859bed;color:black;}</style><script>
+    <style>/*! custom.css */img{max-width:100%;}mark{background-color:#859bed;color:black;}ul{margin-left:2em;}</style><script>
     window.MathJax = {
         tex: {
             inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -1018,7 +1018,7 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="n">VEDDER_1987_b</span> <span class="o">=</span> <span class="mi">89</span> <span class="o">/</span> <span class="mi">880</span>
 </span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="n">VEDDER_1987_A</span> <span class="o">=</span> <span class="mi">993</span> <span class="o">/</span> <span class="mi">880</span> <span class="o">/</span> <span class="mi">3</span> <span class="o">/</span> <span class="n">VEDDER_1987_b</span>
 </span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>
-</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="sd">&quot;&quot;&quot; [eq. 5 in Merlivat and Nief (1967)](https://doi.org/10.3402/tellusa.v19i1.9756) &quot;&quot;&quot;</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="sd">&quot;&quot;&quot; [eq. 5 in Merlivat and Nief 1967](https://doi.org/10.3402/tellusa.v19i1.9756) &quot;&quot;&quot;</span>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="n">MERLIVAT_NIEF_1967_ALPHA_L_2H_T2</span> <span class="o">=</span> <span class="mi">15013</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
 </span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="n">MERLIVAT_NIEF_1967_ALPHA_L_2H_T1</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="n">MERLIVAT_NIEF_1967_ALPHA_L_2H_T0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.1</span>
@@ -1027,17 +1027,17 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="n">MERLIVAT_NIEF_1967_ALPHA_I_2H_T1</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="n">MERLIVAT_NIEF_1967_ALPHA_I_2H_T0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.0945</span>
 </span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>
-</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a><span class="sd">&quot;&quot;&quot; [Lamb et al. (2017)](https://doi.org/10.1073/pnas.1618374114) &quot;&quot;&quot;</span>
+</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a><span class="sd">&quot;&quot;&quot; [Lamb et al. 2017](https://doi.org/10.1073/pnas.1618374114) &quot;&quot;&quot;</span>
 </span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="n">LAMB_ET_AL_2017_ALPHA_I_2H_T2</span> <span class="o">=</span> <span class="mi">13525</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
 </span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a><span class="n">LAMB_ET_AL_2017_ALPHA_I_2H_T1</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a><span class="n">LAMB_ET_AL_2017_ALPHA_I_2H_T0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.0559</span>
 </span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>
-</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="sd">&quot;&quot;&quot; [Ellehoj et al. (2013)](https://doi.org/10.1002/rcm.6668) &quot;&quot;&quot;</span>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="sd">&quot;&quot;&quot; [Ellehoj et al. 2013](https://doi.org/10.1002/rcm.6668) &quot;&quot;&quot;</span>
 </span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a><span class="n">ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T2</span> <span class="o">=</span> <span class="mi">48888</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
 </span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="n">ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">203.1</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a><span class="n">ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0</span> <span class="o">=</span> <span class="mf">0.2133</span>
 </span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="sd">&quot;&quot;&quot; [Majoube (1971)](https://doi.org/10.1051/jcp/1971681423) &quot;&quot;&quot;</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="sd">&quot;&quot;&quot; [Majoube 1971](https://doi.org/10.1051/jcp/1971681423) &quot;&quot;&quot;</span>
 </span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a><span class="c1"># values taken from Jouzel 1986 (eqs. 1)</span>
 </span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="n">MAJOUBE_1971_ALPHA_L_18O_T2</span> <span class="o">=</span> <span class="mi">1137</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
 </span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="n">MAJOUBE_1971_ALPHA_L_18O_T1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.4156</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
@@ -1048,12 +1048,12 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a><span class="n">MAJOUBE_1971_ALPHA_L_2H_T1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">76.248</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a><span class="n">MAJOUBE_1971_ALPHA_L_2H_T0</span> <span class="o">=</span> <span class="mf">0.052612</span>
 </span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>
-</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="sd">&quot;&quot;&quot; [Majoube (1970)](https://doi.org/10.1038/2261242a0) &quot;&quot;&quot;</span>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="sd">&quot;&quot;&quot; [Majoube 1970](https://doi.org/10.1038/2261242a0) &quot;&quot;&quot;</span>
 </span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a><span class="n">MAJOUBE_1970_ALPHA_I_18O_T2</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
 </span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a><span class="n">MAJOUBE_1970_ALPHA_I_18O_T1</span> <span class="o">=</span> <span class="mf">11.839</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a><span class="n">MAJOUBE_1970_ALPHA_I_18O_T0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.028224</span>
 </span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>
-</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a><span class="sd">&quot;&quot;&quot; [Van Hook (1968)](https://doi.org/10.1021/j100850a028) &quot;&quot;&quot;</span>
+</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a><span class="sd">&quot;&quot;&quot; [Van Hook 1968](https://doi.org/10.1021/j100850a028) &quot;&quot;&quot;</span>
 </span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a><span class="n">VAN_HOOK_1968_ALPHA_I_2H_A</span> <span class="o">=</span> <span class="mf">11484.5</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
 </span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a><span class="n">VAN_HOOK_1968_ALPHA_I_2H_B</span> <span class="o">=</span> <span class="mf">35.3315</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a><span class="n">VAN_HOOK_1968_ALPHA_I_2H_C</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.159290</span>
@@ -1110,7 +1110,7 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-285"><a href="#L-285"><span class="linenos">285</span></a><span class="n">VAN_HOOK_1968_ALPHA_L_DOD_B</span> <span class="o">=</span> <span class="o">-</span><span class="mf">164.266</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-286"><a href="#L-286"><span class="linenos">286</span></a><span class="n">VAN_HOOK_1968_ALPHA_L_DOD_C</span> <span class="o">=</span> <span class="mf">0.140049</span>
 </span><span id="L-287"><a href="#L-287"><span class="linenos">287</span></a>
-</span><span id="L-288"><a href="#L-288"><span class="linenos">288</span></a><span class="sd">&quot;&quot;&quot; [Horita and Wesolowski (1994)](https://doi.org/10.1016/0016-7037(94)90096-5) &quot;&quot;&quot;</span>
+</span><span id="L-288"><a href="#L-288"><span class="linenos">288</span></a><span class="sd">&quot;&quot;&quot; [Horita and Wesolowski 1994](https://doi.org/10.1016/0016-7037(94)90096-5) &quot;&quot;&quot;</span>
 </span><span id="L-289"><a href="#L-289"><span class="linenos">289</span></a><span class="n">HORITA_AND_WESOLOWSKI_1994_ALPHA_L_18O_T3</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="mf">0.35041e9</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">3</span>
 </span><span id="L-290"><a href="#L-290"><span class="linenos">290</span></a><span class="n">HORITA_AND_WESOLOWSKI_1994_ALPHA_L_18O_T2</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.6664e6</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span><span class="o">**</span><span class="mi">2</span>
 </span><span id="L-291"><a href="#L-291"><span class="linenos">291</span></a><span class="n">HORITA_AND_WESOLOWSKI_1994_ALPHA_L_18O_T1</span> <span class="o">=</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="mf">6.7123e3</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
@@ -1128,7 +1128,7 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a><span class="sd">&quot;&quot;&quot; eq. 11 in [Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180) &quot;&quot;&quot;</span>
 </span><span id="L-304"><a href="#L-304"><span class="linenos">304</span></a><span class="n">BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF</span> <span class="o">=</span> <span class="mf">0.528</span>
 </span><span id="L-305"><a href="#L-305"><span class="linenos">305</span></a>
-</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a><span class="sd">&quot;&quot;&quot; [Craig 1961](https://doi.org/10.1126/science.133.3465.170) &quot;&quot;&quot;</span>
+</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a><span class="sd">&quot;&quot;&quot; [Craig 1961](https://doi.org/10.1126/science.133.3465.1702) &quot;&quot;&quot;</span>
 </span><span id="L-307"><a href="#L-307"><span class="linenos">307</span></a><span class="n">CRAIG_1961_SLOPE_COEFF</span> <span class="o">=</span> <span class="mi">8</span>
 </span><span id="L-308"><a href="#L-308"><span class="linenos">308</span></a><span class="n">CRAIG_1961_INTERCEPT_COEFF</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">PER_MILLE</span>
 </span><span id="L-309"><a href="#L-309"><span class="linenos">309</span></a>
@@ -1146,7 +1146,7 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-321"><a href="#L-321"><span class="linenos">321</span></a><span class="n">diffusion_thermics_K_G11_D</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.9e-4</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">W</span> <span class="o">/</span> <span class="n">si</span><span class="o">.</span><span class="n">m</span> <span class="o">/</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
 </span><span id="L-322"><a href="#L-322"><span class="linenos">322</span></a>
 </span><span id="L-323"><a href="#L-323"><span class="linenos">323</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-324"><a href="#L-324"><span class="linenos">324</span></a><span class="sd">[Pruppacher &amp; Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036&lt;1255:AWTIOT&gt;2.0.CO;2)</span>
+</span><span id="L-324"><a href="#L-324"><span class="linenos">324</span></a><span class="sd">[Pruppacher &amp; Rasmussen 1979](https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2)</span>
 </span><span id="L-325"><a href="#L-325"><span class="linenos">325</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-326"><a href="#L-326"><span class="linenos">326</span></a><span class="n">PRUPPACHER_RASMUSSEN_1979_XTHRES</span> <span class="o">=</span> <span class="mf">1.4</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">dimensionless</span>
 </span><span id="L-327"><a href="#L-327"><span class="linenos">327</span></a><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTSMALL</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">dimensionless</span>
@@ -1155,7 +1155,7 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-330"><a href="#L-330"><span class="linenos">330</span></a><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTBIG</span> <span class="o">=</span> <span class="mf">0.78</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">dimensionless</span>
 </span><span id="L-331"><a href="#L-331"><span class="linenos">331</span></a><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFBIG</span> <span class="o">=</span> <span class="mf">0.308</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">dimensionless</span>
 </span><span id="L-332"><a href="#L-332"><span class="linenos">332</span></a>
-</span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a><span class="sd">&quot;&quot;&quot;[Zografos et al. (1987)](https://doi.org/10.1016/0045-7825(87)90003-X) Table 1&quot;&quot;&quot;</span>
+</span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a><span class="sd">&quot;&quot;&quot;[Zografos et al. 1987](https://doi.org/10.1016/0045-7825(87)90003-X) Table 1&quot;&quot;&quot;</span>
 </span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a><span class="n">ZOGRAFOS_1987_COEFF_T3</span> <span class="o">=</span> <span class="mf">2.5914e-15</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">Pa</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">s</span>
 </span><span id="L-335"><a href="#L-335"><span class="linenos">335</span></a><span class="n">ZOGRAFOS_1987_COEFF_T2</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.4346e-11</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">Pa</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">s</span>
 </span><span id="L-336"><a href="#L-336"><span class="linenos">336</span></a><span class="n">ZOGRAFOS_1987_COEFF_T1</span> <span class="o">=</span> <span class="mf">5.0523e-8</span> <span class="o">/</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">Pa</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">s</span>
@@ -2631,7 +2631,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#VEDDER_1987_A"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.3402/tellusa.v19i1.9756">eq. 5 in Merlivat and Nief (1967)</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.3402/tellusa.v19i1.9756">eq. 5 in Merlivat and Nief 1967</a></p>
 </div>
 
 
@@ -2705,7 +2705,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#MERLIVAT_NIEF_1967_ALPHA_I_2H_T0"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1073/pnas.1618374114">Lamb et al. (2017)</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1073/pnas.1618374114">Lamb et al. 2017</a></p>
 </div>
 
 
@@ -2743,7 +2743,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#LAMB_ET_AL_2017_ALPHA_I_2H_T0"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1002/rcm.6668">Ellehoj et al. (2013)</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1002/rcm.6668">Ellehoj et al. 2013</a></p>
 </div>
 
 
@@ -2781,7 +2781,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1051/jcp/1971681423">Majoube (1971)</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1051/jcp/1971681423">Majoube 1971</a></p>
 </div>
 
 
@@ -2855,7 +2855,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#MAJOUBE_1971_ALPHA_L_2H_T0"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1038/2261242a0">Majoube (1970)</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1038/2261242a0">Majoube 1970</a></p>
 </div>
 
 
@@ -2893,7 +2893,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#MAJOUBE_1970_ALPHA_I_18O_T0"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1021/j100850a028">Van Hook (1968)</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1021/j100850a028">Van Hook 1968</a></p>
 </div>
 
 
@@ -3399,7 +3399,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#VAN_HOOK_1968_ALPHA_L_DOD_C"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1016/0016-7037(94)90096-5">Horita and Wesolowski (1994)</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1016/0016-7037(94)90096-5">Horita and Wesolowski 1994</a></p>
 </div>
 
 
@@ -3537,7 +3537,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1126/science.133.3465.170">Craig 1961</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1126/science.133.3465.1702">Craig 1961</a></p>
 </div>
 
 
@@ -3663,7 +3663,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#diffusion_thermics_K_G11_D"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1175/1520-0469(1979)036&lt;1255:AWTIOT&gt;2.0.CO;2">Pruppacher &amp; Rasmussen (1979))</a></p>
+            <div class="docstring"><p><a href="https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2">Pruppacher &amp; Rasmussen 1979</a></p>
 </div>
 
 
@@ -3737,7 +3737,7 @@ Unless, there is a very specific and sound reason, everything here should
     </div>
     <a class="headerlink" href="#PRUPPACHER_RASMUSSEN_1979_COEFFBIG"></a>
     
-            <div class="docstring"><p><a href="https://doi.org/10.1016/0045-7825(87)90003-X">Zografos et al. (1987)</a> Table 1</p>
+            <div class="docstring"><p><a href="https://doi.org/10.1016/0045-7825(87)90003-X">Zografos et al. 1987</a> Table 1</p>
 </div>
 
 
