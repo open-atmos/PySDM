@@ -187,7 +187,8 @@
     "usages": [
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb",
-      "examples/PySDM_examples/Pierchala_et_al_2022/__init__.py"
+      "examples/PySDM_examples/Pierchala_et_al_2022/__init__.py",
+      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py"
     ],
     "label": "Pierchala et al. 2022 (Geochim. Cosmochim. Acta 322)",
     "title": "Quantification the diffusion-induced fractionation of <sup>1</sup>H<sub>2</sub><sup>17</sup>O isotopologue in air accompanying the process of water evaporation"
@@ -380,7 +381,8 @@
     "usages": [
       "examples/PySDM_examples/Van_Hook_1968/fig_1.ipynb",
       "examples/PySDM_examples/Van_Hook_1968/__init__.py",
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/isotope_equilibrium_fractionation_factors/van_hook_1968.py"
     ],
     "label": "Van Hook 1968 (J. Phys. Chem. 72)",
     "title": "Vapor pressures of the isotopic waters and ices"
@@ -648,5 +650,36 @@
     ],
     "label": "Merlivat 1978 (J. Chem. Phys. 69)",
     "title": "Molecular diffusivities of H<sub>2</sub><sup>16</sup>O, HD<sup>16</sup>O and H<sub>2</sub><sup>18</sup>O in gases"
+  },
+  "https://doi.org/10.1029/JD092iD04p04171": {
+    "usages": [
+      "PySDM/backends/impl_numba/methods/chemistry_methods.py"
+    ],
+    "label": "Lind et al. 1987 (J. Geophys. Res. Atmos. 92)",
+    "title": "Aqueous phase oxidation of sulfur(IV) by hydrogen peroxide, methylhydroperoxide, and peroxyacetic acid"
+  },
+  "https://digitallibrary.un.org/record/3892725": {
+    "usages": [
+      "PySDM/physics/isotope_relaxation_timescale/bolin_1958.py",
+      "PySDM/physics/constants_defaults.py",
+      "examples/PySDM_examples/Bolin_1958/table_1.ipynb"
+    ],
+    "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
+    "title": "On the Use of Tritium as a Tracer for Water in Nature"
+  },
+  "http://mi.mathnet.ru/dan27630": {
+    "usages": ["PySDM/dynamics/collisions/collision_kernels/golovin.py"],
+    "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
+    "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
+  },
+  "https://doi.org/10.5194/acp-16-1693-2016": {
+    "usages": ["PySDM/backends/impl_numba/methods/chemistry_methods.py"],
+    "label": "Hoyle et al. 2016 (Atmos. Chem. Phys. 16)",
+    "title": "Aqueous phase oxidation of sulphur dioxide by ozone in cloud droplets"
+  },
+  "https://doi.org/10.48550/arXiv.2308.05015": {
+    "usages": ["examples/PySDM_examples/Arabas_et_al_2023/__init__.py"],
+    "label": "Arabas et al. 2023 (arXiv:2308.05015)",
+    "title": "Immersion freezing in particle-based aerosol-cloud microphysics: a probabilistic perspective on singular and time-dependent models"
   }
 }

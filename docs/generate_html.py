@@ -46,51 +46,62 @@ def generate_badges_md_files():
                 fout.write(nbformat.read(fin, nbformat.NO_CONVERT).cells[0].source)
 
 
-def read_dois_from_json(code_path):
+def read_urls_from_json(code_path):
     """loads bibliography data from .json file"""
     bibliography_json_path = f"{code_path}/docs/bibliography.json"
-    dois_from_json = {}
+    urls_from_json = {}
     if os.path.exists(bibliography_json_path):
         with open(bibliography_json_path, "r", encoding="utf8") as fin:
-            dois_from_json = json.load(fin)
-    return dois_from_json
+            urls_from_json = json.load(fin)
+    return urls_from_json
 
 
-def check_dois(dois_from_json):
+def check_urls(urls_from_json):
     """checks if all bib entries are referenced from code and vice versa"""
-    found_dois = []
+    found_urls = []
     for extension in (".md", ".ipynb", ".py"):
         for full_path in find_files(file_extension=extension):
             with open(full_path, "r", encoding="utf-8") as fin:
                 text = fin.read()
-            dois = re.findall(
+            for pattern in (
                 r"\b(https://doi\.org/10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>^\\])\S)+)\b",
-                text,
-            )
-            if dois:
-                found_dois.extend((full_path, doi) for doi in dois)
+                r"\b(https://digitallibrary\.un\.org/record/(?:[0-9])+)\b",
+                r"\b(http://mi\.mathnet\.ru/dan(?:[0-9])+)\b",
+            ):
+                urls = re.findall(pattern, text)
+                if urls:
+                    found_urls.extend((full_path, url) for url in urls)
 
-    unique_dois_found = {doi for _, doi in found_dois}
-    unique_dois_read = set(dois_from_json.keys())
+    unique_urls_found = {url for _, url in found_urls}
+    unique_urls_read = set(urls_from_json.keys())
 
-    for doi in unique_dois_found:
-        assert doi in unique_dois_read, f"{doi} not found in the json file"
-    for doi in unique_dois_read:
-        assert doi in unique_dois_found, f"{doi} not referenced in the code"
+    for url in unique_urls_found:
+        assert url in unique_urls_read, f"{url} not found in the json file"
+    for url in unique_urls_read:
+        assert url in unique_urls_found, f"{url} not referenced in the code"
+
+    url_usages_found = {
+        url: sorted([path for path, d in found_urls if d == url])
+        for url in unique_urls_found
+    }
+    for url in unique_urls_read:
+        assert url_usages_found[url] == sorted(
+            urls_from_json[url]["usages"]
+        ), f"{url} usages mismatch:\n\texpected: {url_usages_found[url]}\n\tactual:   {urls_from_json[url]['usages']}"
 
 
-def create_references_html(dois_from_json, code_path):
+def create_references_html(urls_from_json, code_path):
     """writes HTML file with the reference list"""
     with open(
         f"{code_path}/docs/templates/bibliography.html", "w", encoding="utf8"
     ) as fout:
         fout.write("<ol>\n")
-        for doi, data in sorted(
-            dois_from_json.items(), key=lambda item: item[1]["label"].lower()
+        for url, data in sorted(
+            urls_from_json.items(), key=lambda item: item[1]["label"].lower()
         ):
             fout.write("<li>\n")
             fout.write(
-                f'<a href="{doi}">{data["label"]}: "<em>{data["title"]}</em>"</a>\n'
+                f'<a href="{url}">{data["label"]}: "<em>{data["title"]}</em>"</a>\n'
             )
             fout.write('<ul style="list-style-type:square;font-size:smaller;">')
             for path in data["usages"]:
@@ -128,9 +139,9 @@ def _main():
     assert len(sys.argv) == 3, f"usage: {sys.argv[0]} code_path out_path"
     code_path, out_path = sys.argv[1], sys.argv[2]
     generate_badges_md_files()
-    dois_from_json = read_dois_from_json(code_path)
-    check_dois(dois_from_json)
-    create_references_html(dois_from_json, code_path)
+    urls_from_json = read_urls_from_json(code_path)
+    check_urls(urls_from_json)
+    create_references_html(urls_from_json, code_path)
     run_pdoc(code_path, out_path)
 
 

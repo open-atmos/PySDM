@@ -1,6 +1,6 @@
 """
 box-model and 2D prescribed-flow immersion-freezing examples based on
-[Arabas et al. 2023](https://arxiv.org/abs/2308.05015)
+[Arabas et al. 2023](https://doi.org/10.48550/arXiv.2308.05015)
 
 aida.ipynb:
 .. include:: ./aida.ipynb.badges.md
