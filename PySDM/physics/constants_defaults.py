@@ -38,47 +38,50 @@ VSMOW_R_2H = 155.76 * PPM
 """
 [IAEA VSMOW-SLAP](https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf)
 heavy-to-light isotope abundance ratio for deuterium
-"""
+"""  # pylint: disable=line-too-long
 VSMOW_R_3H = 1.85e-11 * PPM
 """
-[IAEA VSMOW-SLAP](https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf)
-heavy-to-light isotope abundance ratio for tritium
+〃 for tritium
 """
 VSMOW_R_18O = 2005.20 * PPM
 """
-[IAEA VSMOW-SLAP](https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf)
-heavy-to-light isotope abundance ratio for oxygen-18
+〃 for oxygen-18
 """
 VSMOW_R_17O = 379.9 * PPM
 """
-[IAEA VSMOW-SLAP](https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf)
-heavy-to-light isotope abundance ratio for oxygen-17
+〃 for oxygen-17
 """
 
 M_1H = 1.00782503224 * si.g / si.mole
 """
-[NIST atomic weight of hydrogen](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H)
+hydrogen atomic weight as in
+[NIST database](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H)
 """
 M_2H = 2.01410177812 * si.g / si.mole
 """
-[NIST atomic weight of deuterium](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H)
+deuterium atomic weight as in
+[NIST database](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H)
 """
 M_3H = 3.01604927792 * si.g / si.mole
 """
-[NIST atomic weight of tritium](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H)
+tritium atomic weight as in
+[NIST database](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=H)
 """
 
 M_16O = 15.99491461957 * si.g / si.mole
 """
-[NIST atomic weight of oxygen-16](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O)
+oxygen-16 atomic weight as in
+[NIST database](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O)
 """
 M_17O = 16.99913175651 * si.g / si.mole
 """
-[NIST atomic weight of oxygen-17](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O)
+oxygen-17 atomic weight as in
+[NIST database](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O)
 """
 M_18O = 17.99915961287 * si.g / si.mole
 """
-[NIST atomic weight of oxygen-18](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O)
+oxygen-18 atomic weight as in
+[NIST database](https://physics.nist.gov/cgi-bin/Compositions/stand_alone.pl?ele=O)
 """
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
@@ -97,7 +100,7 @@ HAC = 1.0
 ARM_C1 = 6.1094 * si.hectopascal
 """ [August](https://doi.org/10.1002/andp.18280890511) Roche Magnus formula coefficients
 (values from [Alduchov & Eskridge 1996](https://doi.org/10.1175%2F1520-0450%281996%29035%3C0601%3AIMFAOS%3E2.0.CO%3B2))
-"""
+"""  # pylint: disable=line-too-long
 ARM_C2 = 17.625 * si.dimensionless
 """ 〃 """
 ARM_C3 = 243.04 * si.kelvin
@@ -202,7 +205,8 @@ l_l19_a = 0.167 * si.dimensionless
 l_l19_b = 3.65e-4 / si.kelvin
 
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
-""" Thermal diffusivity constants from [Lowe et al. 2019](https://doi.org/10.1038/s41467-019-12982-0) """
+""" Thermal diffusivity constants from
+[Lowe et al. 2019](https://doi.org/10.1038/s41467-019-12982-0) """
 k_l19_b = 1.0456 * si.dimensionless
 """ 〃 """
 k_l19_c = 0.017 / si.kelvin
@@ -276,7 +280,8 @@ NIEMAND_A = np.nan
 NIEMAND_B = np.nan
 
 ABIFM_UNIT = 1 / si.cm**2 / si.s
-""" ice nucleation rate using ABIFM ([Knopf & Alpert 2013](https://doi.org/10.1039/C3FD00035D)) """
+""" ice nucleation rate using ABIFM
+([Knopf & Alpert 2013](https://doi.org/10.1039/C3FD00035D)) """
 ABIFM_M = np.inf
 """ 〃 """
 ABIFM_C = np.inf
@@ -295,9 +300,8 @@ VEDDER_1987_b = 89 / 880
 VEDDER_1987_A = 993 / 880 / 3 / VEDDER_1987_b
 """ 〃 """
 
-""" [eq. 5 in Merlivat and Nief 1967](https://doi.org/10.3402/tellusa.v19i1.9756) """
 MERLIVAT_NIEF_1967_ALPHA_L_2H_T2 = 15013 * si.K**2
-""" 〃 """
+""" [eq. 5 in Merlivat and Nief 1967](https://doi.org/10.3402/tellusa.v19i1.9756) """
 MERLIVAT_NIEF_1967_ALPHA_L_2H_T1 = 0 * si.K
 """ 〃 """
 MERLIVAT_NIEF_1967_ALPHA_L_2H_T0 = -0.1
@@ -323,10 +327,9 @@ ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T1 = -203.1 * si.K
 ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0 = 0.2133
 """ 〃 """
 
+MAJOUBE_1971_ALPHA_L_18O_T2 = 1137 * si.K**2
 """ [Majoube 1971](https://doi.org/10.1051/jcp/1971681423)
 (values taken from [Jouzel 1986](https://doi.org/10.1016/b978-0-444-42225-5.50007-3)) """
-MAJOUBE_1971_ALPHA_L_18O_T2 = 1137 * si.K**2
-""" 〃 """
 MAJOUBE_1971_ALPHA_L_18O_T1 = -0.4156 * si.K
 """ 〃 """
 MAJOUBE_1971_ALPHA_L_18O_T0 = -0.0020667
@@ -531,7 +534,8 @@ HELLMANN_HARVEY_EQ8_COEFF2 = -0.004861
 
 ROGERS_YAU_TERM_VEL_SMALL_K = 1.19e6 / si.cm / si.s
 """ terminal velocity formulation from
-[Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2) (equations: 8.5, 8.6, 8.8) """
+[Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2)
+(equations: 8.5, 8.6, 8.8) """
 ROGERS_YAU_TERM_VEL_MEDIUM_K = 8e3 / si.s
 """ 〃 """
 ROGERS_YAU_TERM_VEL_LARGE_K = 2.01e3 * si.cm**0.5 / si.s
@@ -561,7 +565,8 @@ W76W_G8 = 1 * si.Pa
 """ 〃 """
 
 B80W_G0 = 6.112 * si.hPa
-""" [Bolton 1980](https://doi.org/10.1175/1520-0493(1980)108%3C1046:TCOEPT%3E2.0.CO;2) saturation vapour pressure """
+""" [Bolton 1980](https://doi.org/10.1175/1520-0493(1980)108%3C1046:TCOEPT%3E2.0.CO;2)
+saturation vapour pressure """
 B80W_G1 = 17.67 * si.dimensionless
 """ 〃 """
 B80W_G2 = 243.5 * si.K

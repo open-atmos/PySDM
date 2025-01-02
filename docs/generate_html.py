@@ -82,7 +82,7 @@ def check_urls(urls_from_json):
         assert url in unique_urls_found, f"{url} not referenced in the code"
 
     url_usages_found = {
-        url: sorted(set([path for path, d in found_urls if d == url]))
+        url: sorted({path for path, d in found_urls if d == url})
         for url in unique_urls_found
     }
     for url in unique_urls_read:
