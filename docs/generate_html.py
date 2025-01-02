@@ -85,9 +85,11 @@ def check_urls(urls_from_json):
         for url in unique_urls_found
     }
     for url in unique_urls_read:
-        assert url_usages_found[url] == sorted(
-            urls_from_json[url]["usages"]
-        ), f"{url} usages mismatch:\n\texpected: {url_usages_found[url]}\n\tactual:   {urls_from_json[url]['usages']}"
+        assert url_usages_found[url] == sorted(urls_from_json[url]["usages"]), (
+            f"{url} usages mismatch:\n"
+            f"\texpected: {url_usages_found[url]}\n"
+            f"\tactual:   {urls_from_json[url]['usages']}"
+        )
 
 
 def create_references_html(urls_from_json, code_path):
