@@ -681,5 +681,15 @@
     "usages": ["examples/PySDM_examples/Arabas_et_al_2023/__init__.py"],
     "label": "Arabas et al. 2023 (arXiv:2308.05015)",
     "title": "Immersion freezing in particle-based aerosol-cloud microphysics: a probabilistic perspective on singular and time-dependent models"
+  },
+  "https://archive.org/details/physicsofclouds0000maso": {
+    "usages": ["PySDM/physics/drop_growth/mason_1971.py"],
+    "title": "The Physics of Clouds",
+    "label": "Mason 1971 (Clarendon Press, Oxford)"
+  },
+  "https://doi.org/10.6028/jres.080A.071": {
+    "usages": ["PySDM/physics/saturation_vapour_pressure/wexler_1976.py"],
+    "title": "Vapor Pressure Formulation for Water in Range 0 to f 00 °C. A Revision",
+    "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
   }
 }

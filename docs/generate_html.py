@@ -67,6 +67,7 @@ def check_urls(urls_from_json):
                 r"\b(https://doi\.org/10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>^\\])\S)+)\b",
                 r"\b(https://digitallibrary\.un\.org/record/(?:[0-9])+)\b",
                 r"\b(http://mi\.mathnet\.ru/dan(?:[0-9])+)\b",
+                r"\b(https://archive.org/details/(?:[0-9a-z])+)\b",
             ):
                 urls = re.findall(pattern, text)
                 if urls:
@@ -106,7 +107,7 @@ def create_references_html(urls_from_json, code_path):
                 f'<a href="{url}">{data["label"]}: "<em>{data["title"]}</em>"</a>\n'
             )
             fout.write('<ul style="list-style-type:square;font-size:smaller;">')
-            for path in data["usages"]:
+            for path in sorted(data["usages"]):
                 fout.write(
                     f'<li><a href="https://github.com/open-atmos/PySDM/tree/main/{path}">'
                 )
