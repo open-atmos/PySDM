@@ -62,9 +62,13 @@ D_exp = 1.81
 
 K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
 
-# mass and heat accommodation coefficients
+# mass and heat accommodation coefficients for condensation
 MAC = 1.0
 HAC = 1.0
+
+# mass and heat accommodation coefficients for vapour deposition on ice
+MAC_ice = 0.5
+HAC_ice = 0.7
 
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
@@ -127,6 +131,7 @@ l_tri = 2.5e6 * si.joule / si.kilogram
 l_l19_a = 0.167 * si.dimensionless
 l_l19_b = 3.65e-4 / si.kelvin
 
+
 # Thermal diffusivity constants from Lowe et al. (2019)
 k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
@@ -134,6 +139,10 @@ k_l19_c = 0.017 / si.kelvin
 
 # Delta v for diffusivity in Pruppacher & Klett eq. 13-14
 dv_pk05 = 0.0 * si.metres
+
+# mean free path of lambda of water molecules
+# in pruppacher und klett
+lmbd_w_0 = 6.6e-8 * si.metre
 
 # Seinfeld & Pandis eq. 15.65 (Hall & Pruppacher 1976)
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
@@ -159,6 +168,13 @@ MK05_LIQ_C10 = 1331.22 * si.K
 MK05_LIQ_C11 = 9.44523 * si.dimensionless
 MK05_LIQ_C12 = 1 * si.K
 MK05_LIQ_C13 = 0.014025 / si.K
+
+# Latent heat of sublimation from Murphy and Koop (2005)
+MK05_SUB_C1 = 46782.5 * si.joule / si.mole
+MK05_SUB_C2 = 35.8925 * si.joule / si.mole / si.kelvin
+MK05_SUB_C3 = 0.07414 * si.joule / si.mole / si.kelvin**2
+MK05_SUB_C4 = 541.5 * si.joule / si.mole
+MK05_SUB_C5 = 123.75 * si.kelvin
 
 # standard pressure and temperature (ICAO)
 T_STP = (sci.zero_Celsius + 15) * si.kelvin
