@@ -6,10 +6,10 @@ import numpy as np
 import pint
 import pytest
 from scipy.constants import physical_constants
+from chempy import Substance
 
 from PySDM import Formulae
 from PySDM.physics import constants, constants_defaults, si
-from PySDM.physics.constants_defaults import Substance
 
 
 def consecutive_seeds():

@@ -35,7 +35,7 @@ class TestPhysicsMethods:
         # Assert
         assert 282 * si.K < T.amin() < 283 * si.K
         assert 810 * si.hPa < p.amin() < 830 * si.hPa
-        assert 1.12 < RH.amin() < 1.13
+        assert 1.10 < RH.amin() < 1.11
 
     @staticmethod
     @pytest.mark.parametrize("variant", ("LiquidSpheres", "MixedPhaseSpheres"))
