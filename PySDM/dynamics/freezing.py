@@ -13,11 +13,11 @@ from PySDM.dynamics.impl import register_dynamic
 
 @register_dynamic()
 class Freezing:
-    def __init__(self, *, singular=True, hom_freezing=False, het_freezing=True, record_freezing_temperature=False, thaw=False):
+    def __init__(self, *, singular=True, homogeneous_freezing=False, immersion_freezing=True, record_freezing_temperature=False, thaw=False):
         assert not (record_freezing_temperature and singular)
         self.singular = singular
-        self.hom_freezing = hom_freezing
-        self.het_freezing = het_freezing
+        self.homogeneous_freezing = homogeneous_freezing
+        self.immersion_freezing = immersion_freezing
         self.record_freezing_temperature = record_freezing_temperature
         self.thaw = thaw
         self.enable = True
@@ -38,7 +38,7 @@ class Freezing:
             assert not isinstance(
                 builder.formulae.heterogeneous_ice_nucleation_rate, Null
             )
-            if self.het_freezing:
+            if self.immersion_freezing:
                 builder.request_attribute("immersed surface area")
             self.rand = self.particulator.Storage.empty(
                 self.particulator.n_sd, dtype=float
@@ -59,7 +59,7 @@ class Freezing:
         if not self.enable:
             return
 
-        if self.het_freezing:
+        if self.immersion_freezing:
             
             if self.singular:
                 self.particulator.backend.freeze_singular(
@@ -99,7 +99,7 @@ class Freezing:
                 )
 
 
-        if self.hom_freezing:
+        if self.homogeneous_freezing:
 
 
             if self.singular:
