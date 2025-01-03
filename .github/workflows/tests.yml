@@ -113,7 +113,7 @@ jobs:
         include:
           - platform: "windows-latest"
             python-version: "3.12"
-            test-suite: "smoke_tests/parcel_d""
+            test-suite: "smoke_tests/parcel_d"
 #        exclude:
 #          - platform: "macos-14"
 #            python-version: "3.9"
