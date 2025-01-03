@@ -69,22 +69,20 @@ def test_iwc_lower_after_timestep(
         temperature * particulator.formulae.constants.Rd
     )
 
-
-
     # act
-    T0   = temperature
+    T0 = temperature
     iwc_old = particulator.products["ice water content"].get().copy()
     particulator.run(steps=1)
-    T_new   = particulator.environment["T"][0]
+    T_new = particulator.environment["T"][0]
     iwc_new = particulator.products["ice water content"].get().copy()
-    
+
     rv_new = particulator.environment["water_vapour_mixing_ratio"][0]
     # assert
     if water_mass < 0 and RHi != 1:
         if RHi > 1:
             assert (iwc_new > iwc_old).all()
             assert rv_new < rv0
-            assert T_new > T0 
+            assert T_new > T0
         elif RHi < 1:
             assert (iwc_new < iwc_old).all()
             assert rv_new > rv0

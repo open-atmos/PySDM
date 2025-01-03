@@ -141,7 +141,7 @@ k_l19_c = 0.017 / si.kelvin
 dv_pk05 = 0.0 * si.metres
 
 # mean free path of lambda of water molecules
-# in pruppacher und klett 
+# in pruppacher und klett
 lmbd_w_0 = 6.6e-8 * si.metre
 
 # Seinfeld & Pandis eq. 15.65 (Hall & Pruppacher 1976)
@@ -170,10 +170,10 @@ MK05_LIQ_C12 = 1 * si.K
 MK05_LIQ_C13 = 0.014025 / si.K
 
 # Latent heat of sublimation from Murphy and Koop (2005)
-MK05_SUB_C1 = 46782.5 * si.joule /  si.mole
-MK05_SUB_C2 = 35.8925 * si.joule /  si.mole / si.kelvin
-MK05_SUB_C3 = 0.07414 * si.joule /  si.mole / si.kelvin**2
-MK05_SUB_C4 = 541.5 * si.joule /  si.mole
+MK05_SUB_C1 = 46782.5 * si.joule / si.mole
+MK05_SUB_C2 = 35.8925 * si.joule / si.mole / si.kelvin
+MK05_SUB_C3 = 0.07414 * si.joule / si.mole / si.kelvin**2
+MK05_SUB_C4 = 541.5 * si.joule / si.mole
 MK05_SUB_C5 = 123.75 * si.kelvin
 
 # standard pressure and temperature (ICAO)

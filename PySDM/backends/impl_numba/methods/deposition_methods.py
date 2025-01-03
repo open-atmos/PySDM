@@ -13,7 +13,6 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
         formulae = self.formulae_flattened
         liquid = formulae.trivia__unfrozen
-        
 
         @numba.jit(**self.default_jit_flags)
         def body(
@@ -41,17 +40,17 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     radius = formulae.particle_shape_and_density__ice_mass_to_radius(
                         water_mass[i]
                     )
-                    diameter = radius * 2.
+                    diameter = radius * 2.0
 
                     temperature = ambient_temperature[cid]
                     pressure = ambient_total_pressure[cid]
                     rho = ambient_dry_air_density[cid]
                     Rv = formulae.constants.Rv
-                    pvs_ice =  formulae.saturation_vapour_pressure__pvs_ice(temperature)
+                    pvs_ice = formulae.saturation_vapour_pressure__pvs_ice(temperature)
                     latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
-               
-                    capacity = formulae.diffusion_ice_capacity__capacity( diameter )
-                    
+
+                    capacity = formulae.diffusion_ice_capacity__capacity(diameter)
+
                     ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=reynolds_number[i],
@@ -60,26 +59,36 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     )
 
                     Dv_const = formulae.diffusion_thermics__D(temperature, pressure)
-                    lambdaD = formulae.diffusion_ice_kinetics__lambdaD(temperature, pressure)
-                    diffusion_coefficient = formulae.diffusion_ice_kinetics__D(Dv_const, radius, lambdaD, temperature)
+                    lambdaD = formulae.diffusion_ice_kinetics__lambdaD(
+                        temperature, pressure
+                    )
+                    diffusion_coefficient = formulae.diffusion_ice_kinetics__D(
+                        Dv_const, radius, lambdaD, temperature
+                    )
 
                     Ka_const = formulae.diffusion_thermics__K(temperature, pressure)
-                    lambdaK = formulae.diffusion_ice_kinetics__lambdaK(temperature, pressure)
-                    thermal_conductivity = formulae.diffusion_ice_kinetics__K(Ka_const,  radius, lambdaK, temperature, rho)  
+                    lambdaK = formulae.diffusion_ice_kinetics__lambdaK(
+                        temperature, pressure
+                    )
+                    thermal_conductivity = formulae.diffusion_ice_kinetics__K(
+                        Ka_const, radius, lambdaK, temperature, rho
+                    )
 
-                  
-                    howell_factor = 1. / ( (latent_heat_sub / Rv / temperature - 1.) * latent_heat_sub * diffusion_coefficient / temperature / thermal_conductivity +  Rv * temperature  /  pvs_ice)
-                    
+                    howell_factor = 1.0 / (
+                        (latent_heat_sub / Rv / temperature - 1.0)
+                        * latent_heat_sub
+                        * diffusion_coefficient
+                        / temperature
+                        / thermal_conductivity
+                        + Rv * temperature / pvs_ice
+                    )
+
                     saturation_ratio_ice = (
                         ambient_humidity[cid] / ambient_water_activity[cid]
                     )
 
-                    rho_vs_ice = (
-                        pvs_ice
-                        / Rv
-                        / temperature
-                    )
-                    
+                    rho_vs_ice = pvs_ice / Rv / temperature
+
                     dm_dt = (
                         4
                         * np.pi
@@ -93,17 +102,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         continue
 
                     delta_rv_i = (
-                        -dm_dt
-                        * multiplicity[i]
-                        * time_step
-                        / (cell_volume * rho)
+                        -dm_dt * multiplicity[i] * time_step / (cell_volume * rho)
                     )
                     if -delta_rv_i > ambient_vapour_mixing_ratio[cid]:
                         assert False
                     ambient_vapour_mixing_ratio[cid] += delta_rv_i
 
                     delta_T = -delta_rv_i * latent_heat_sub / formulae.constants.c_pd
-                    ambient_temperature[cid] += delta_T 
+                    ambient_temperature[cid] += delta_T
 
                     x_old = formulae.diffusion_coordinate__x(ice_mass)
                     dx_dt_old = formulae.diffusion_coordinate__dx_dt(x_old, dm_dt)
