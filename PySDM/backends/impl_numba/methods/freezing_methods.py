@@ -10,6 +10,7 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
+    TimeDependentHomogeneousAttributes,
 )
 
 
@@ -17,6 +18,7 @@ class FreezingMethods(BackendMethods):
     def __init__(self):
         BackendMethods.__init__(self)
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
+        unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
         frozen_and_above_freezing_point = (
             self.formulae.trivia.frozen_and_above_freezing_point
         )
@@ -111,7 +113,6 @@ class FreezingMethods(BackendMethods):
 
             n_sd = len(attributes.water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
-
                 cell_id = cell[i]
                 relative_humidity_ice = relative_humidity[cell_id] / a_w_ice[cell_id]
                 if thaw and frozen_and_above_freezing_point(
@@ -199,7 +200,7 @@ class FreezingMethods(BackendMethods):
     ):
         self.freeze_time_dependent_homogeneous_body(
             rand.data,
-            TimeDependentAttributes(
+            TimeDependentHomogeneousAttributes(
                 volume=attributes.volume.data,
                 water_mass=attributes.water_mass.data,
             ),
