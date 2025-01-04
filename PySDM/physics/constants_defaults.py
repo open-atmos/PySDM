@@ -191,6 +191,8 @@ KOOP_2000_C3 = 26924
 KOOP_2000_C4 = 29180
 KOOP_UNIT = 1 / si.cm**3 / si.s
 
+KOOP_CORR = −1.522
+
 J_HET = np.nan
 J_HOM = np.nan
 
