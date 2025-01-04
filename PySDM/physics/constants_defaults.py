@@ -201,6 +201,8 @@ KOOP_MURRAY_C4 = −1.66203e−2
 KOOP_MURRAY_C5 = −1.71736e-4
 KOOP_MURRAY_C6 = −7.46953e-7
 
+T_hom_freeze = 235. * si.kelvin
+
 J_HET = np.nan
 J_HOM = np.nan
 
