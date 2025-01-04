@@ -150,20 +150,7 @@ class FreezingMethods(BackendMethods):
             thaw=thaw,
         )
 
-
-    def freeze_singular_homogeneous(
-        self, *, attributes, temperature, relative_humidity, cell, thaw: bool
-    ):
-        self.freeze_singular_body(
-            SingularAttributes(
-                freezing_temperature=attributes.freezing_temperature.data,
-                water_mass=attributes.water_mass.data,
-            ),
-            temperature.data,
-            relative_humidity.data,
-            cell.data,
-            thaw=thaw,
-        )
+        
 
     def freeze_time_dependent(
         self,
