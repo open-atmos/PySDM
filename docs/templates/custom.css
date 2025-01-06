@@ -1,0 +1,12 @@
+img {
+    max-width: 100%;
+}
+
+mark {
+    background-color: #859bed;
+    color: black;
+}
+
+ul {
+    margin-left: 2em;
+}

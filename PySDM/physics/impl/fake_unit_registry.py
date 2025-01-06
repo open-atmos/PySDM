@@ -12,7 +12,7 @@ def _fake(si_unit):
 class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
     def __init__(self, si):
         self.dimensionless = 1.0
-        for prefix in ("nano", "micro", "milli", "centi", "", "hecto", "kilo"):
+        for prefix in ("nano", "micro", "milli", "centi", "deci", "", "hecto", "kilo"):
             for unit in (
                 "bar",
                 "metre",
@@ -34,7 +34,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
                     prefix + unit + "s", _fake(si.__getattr__(prefix + unit + "s"))
                 )
 
-        for prefix in ("n", "u", "m", "c", "", "h", "k"):
+        for prefix in ("n", "u", "m", "c", "d", "", "h", "k"):
             for unit in (
                 "b",
                 "m",

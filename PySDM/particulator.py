@@ -399,10 +399,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def remove_precipitated(
         self, *, displacement, precipitation_counting_level_index
     ) -> float:
-        res = self.backend.flag_precipitated(
+        rainfall_mass = self.backend.flag_precipitated(
             cell_origin=self.attributes["cell origin"],
             position_in_cell=self.attributes["position in cell"],
-            volume=self.attributes["volume"],
+            water_mass=self.attributes["water mass"],
             multiplicity=self.attributes["multiplicity"],
             idx=self.attributes._ParticleAttributes__idx,
             length=self.attributes.super_droplet_count,
@@ -411,7 +411,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             displacement=displacement,
         )
         self.attributes.sanitize()
-        return res
+        return rainfall_mass
 
     def flag_out_of_column(self):
         self.backend.flag_out_of_column(
