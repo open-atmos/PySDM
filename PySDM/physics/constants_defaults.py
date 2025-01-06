@@ -193,7 +193,7 @@ STRAUB_MU2 = 0.095 * si.cm
 VEDDER_1987_b = 89 / 880
 VEDDER_1987_A = 993 / 880 / 3 / VEDDER_1987_b
 
-""" [eq. 5 in Merlivat and Nief (1967)](https://doi.org/10.3402/tellusa.v19i1.9756) """
+""" [eq. 5 in Merlivat and Nief 1967](https://doi.org/10.3402/tellusa.v19i1.9756) """
 MERLIVAT_NIEF_1967_ALPHA_L_2H_T2 = 15013 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_L_2H_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_L_2H_T0 = -0.1
@@ -202,17 +202,17 @@ MERLIVAT_NIEF_1967_ALPHA_I_2H_T2 = 16289 * si.K**2
 MERLIVAT_NIEF_1967_ALPHA_I_2H_T1 = 0 * si.K
 MERLIVAT_NIEF_1967_ALPHA_I_2H_T0 = -0.0945
 
-""" [Lamb et al. (2017)](https://doi.org/10.1073/pnas.1618374114) """
+""" [Lamb et al. 2017](https://doi.org/10.1073/pnas.1618374114) """
 LAMB_ET_AL_2017_ALPHA_I_2H_T2 = 13525 * si.K**2
 LAMB_ET_AL_2017_ALPHA_I_2H_T1 = 0 * si.K
 LAMB_ET_AL_2017_ALPHA_I_2H_T0 = -0.0559
 
-""" [Ellehoj et al. (2013)](https://doi.org/10.1002/rcm.6668) """
+""" [Ellehoj et al. 2013](https://doi.org/10.1002/rcm.6668) """
 ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T2 = 48888 * si.K**2
 ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T1 = -203.1 * si.K
 ELLEHOJ_ET_AL_2013_ALPHA_I_2H_T0 = 0.2133
 
-""" [Majoube (1971)](https://doi.org/10.1051/jcp/1971681423) """
+""" [Majoube 1971](https://doi.org/10.1051/jcp/1971681423) """
 # values taken from Jouzel 1986 (eqs. 1)
 MAJOUBE_1971_ALPHA_L_18O_T2 = 1137 * si.K**2
 MAJOUBE_1971_ALPHA_L_18O_T1 = -0.4156 * si.K
@@ -223,12 +223,12 @@ MAJOUBE_1971_ALPHA_L_2H_T2 = 24844 * si.K**2
 MAJOUBE_1971_ALPHA_L_2H_T1 = -76.248 * si.K
 MAJOUBE_1971_ALPHA_L_2H_T0 = 0.052612
 
-""" [Majoube (1970)](https://doi.org/10.1038/2261242a0) """
+""" [Majoube 1970](https://doi.org/10.1038/2261242a0) """
 MAJOUBE_1970_ALPHA_I_18O_T2 = 0 * si.K**2
 MAJOUBE_1970_ALPHA_I_18O_T1 = 11.839 * si.K
 MAJOUBE_1970_ALPHA_I_18O_T0 = -0.028224
 
-""" [Van Hook (1968)](https://doi.org/10.1021/j100850a028) """
+""" [Van Hook 1968](https://doi.org/10.1021/j100850a028) """
 VAN_HOOK_1968_ALPHA_I_2H_A = 11484.5 * si.K**2
 VAN_HOOK_1968_ALPHA_I_2H_B = 35.3315 * si.K
 VAN_HOOK_1968_ALPHA_I_2H_C = -0.159290
@@ -285,7 +285,7 @@ VAN_HOOK_1968_ALPHA_L_DOD_A = 49314.9 * si.K**2
 VAN_HOOK_1968_ALPHA_L_DOD_B = -164.266 * si.K
 VAN_HOOK_1968_ALPHA_L_DOD_C = 0.140049
 
-""" [Horita and Wesolowski (1994)](https://doi.org/10.1016/0016-7037(94)90096-5) """
+""" [Horita and Wesolowski 1994](https://doi.org/10.1016/0016-7037(94)90096-5) """
 HORITA_AND_WESOLOWSKI_1994_ALPHA_L_18O_T3 = 1e-3 * 0.35041e9 * si.K**3
 HORITA_AND_WESOLOWSKI_1994_ALPHA_L_18O_T2 = 1e-3 * -1.6664e6 * si.K**2
 HORITA_AND_WESOLOWSKI_1994_ALPHA_L_18O_T1 = 1e-3 * 6.7123e3 * si.K
@@ -303,7 +303,7 @@ BARKAN_AND_LUZ_2005_EXPONENT = 0.529
 """ eq. 11 in [Barkan and Luz 2007](https://doi.org/10.1002/rcm.3180) """
 BARKAN_AND_LUZ_2007_EXCESS_18O_COEFF = 0.528
 
-""" [Craig 1961](https://doi.org/10.1126/science.133.3465.170) """
+""" [Craig 1961](https://doi.org/10.1126/science.133.3465.1702) """
 CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 
@@ -321,7 +321,7 @@ diffusion_thermics_K_G11_C = 1e-4 * si.W / si.m / si.K**2
 diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 """
-[Pruppacher & Rasmussen (1979))](https://doi.org/10.1175/1520-0469(1979)036<1255:AWTIOT>2.0.CO;2)
+[Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2)
 """
 PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
 PRUPPACHER_RASMUSSEN_1979_CONSTSMALL = 1.0 * si.dimensionless
@@ -330,7 +330,7 @@ PRUPPACHER_RASMUSSEN_1979_POWSMALL = 2 * si.dimensionless
 PRUPPACHER_RASMUSSEN_1979_CONSTBIG = 0.78 * si.dimensionless
 PRUPPACHER_RASMUSSEN_1979_COEFFBIG = 0.308 * si.dimensionless
 
-"""[Zografos et al. (1987)](https://doi.org/10.1016/0045-7825(87)90003-X) Table 1"""
+"""[Zografos et al. 1987](https://doi.org/10.1016/0045-7825(87)90003-X) Table 1"""
 ZOGRAFOS_1987_COEFF_T3 = 2.5914e-15 * si.K ** (-3) * si.Pa * si.s
 ZOGRAFOS_1987_COEFF_T2 = -1.4346e-11 * si.K ** (-2) * si.Pa * si.s
 ZOGRAFOS_1987_COEFF_T1 = 5.0523e-8 / si.K * si.Pa * si.s
