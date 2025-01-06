@@ -50,12 +50,6 @@ class Seeding:
                 f" ({self.particulator.attributes.get_extensive_attribute_keys()})"
             )
 
-        self.tmp_dry_vol = self.seeded_particle_extensive_attributes["dry volume"]
-        self.tmp_kappa_times_dry_vol = self.seeded_particle_extensive_attributes[
-            "kappa times dry volume"
-        ]
-        self.tmp_cell_id = self.seeded_particle_cell_id
-
         self.index = self.particulator.Index.identity_index(
             len(self.seeded_particle_multiplicity)
         )
