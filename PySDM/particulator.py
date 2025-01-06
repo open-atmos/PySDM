@@ -447,12 +447,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         *,
         seeded_particle_index,
         seeded_particle_multiplicity,
-        seeded_particle_cell_id,
-        seeded_particle_cell_origin,
-        seeded_particle_pos_cell,
-        seeded_particle_volume,
         seeded_particle_extensive_attributes,
         number_of_super_particles_to_inject,
+        seeded_particle_cell_id=None,
+        seeded_particle_cell_origin=None,
+        seeded_particle_pos_cell=None,
+        seeded_particle_volume=None,
     ):
         n_null = self.n_sd - self.attributes.super_droplet_count
         if n_null == 0:
@@ -471,23 +471,44 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 Instead increase multiplicity of injected particles."
             )
 
-        self.backend.seeding(
-            idx=self.attributes._ParticleAttributes__idx,
-            multiplicity=self.attributes["multiplicity"],
-            cell_id=self.attributes["cell id"],
-            cell_origin=self.attributes["cell origin"],
-            pos_cell=self.attributes["position in cell"],
-            volume=self.attributes["volume"],
-            extensive_attributes=self.attributes.get_extensive_attribute_storage(),
-            seeded_particle_index=seeded_particle_index,
-            seeded_particle_multiplicity=seeded_particle_multiplicity,
-            seeded_particle_cell_id=seeded_particle_cell_id,
-            seeded_particle_cell_origin=seeded_particle_cell_origin,
-            seeded_particle_pos_cell=seeded_particle_pos_cell,
-            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
-            seeded_particle_volume=seeded_particle_volume,
-            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
-        )
+        if self.environment.__class__.__name__ == "Parcel":
+            self.backend.seeding(
+                idx=self.attributes._ParticleAttributes__idx,
+                multiplicity=self.attributes["multiplicity"],
+                extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+                seeded_particle_index=seeded_particle_index,
+                seeded_particle_multiplicity=seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+                seeded_particle_cell_id=seeded_particle_cell_id,
+                seeded_particle_cell_origin=seeded_particle_cell_origin,
+                seeded_particle_pos_cell=seeded_particle_pos_cell,
+                seeded_particle_volume=seeded_particle_volume,
+                cell_id=None,
+                cell_origin=None,
+                pos_cell=None,
+                volume=None,
+            )
+
+        else:
+            self.backend.seeding(
+                idx=self.attributes._ParticleAttributes__idx,
+                multiplicity=self.attributes["multiplicity"],
+                extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+                seeded_particle_index=seeded_particle_index,
+                seeded_particle_multiplicity=seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+                seeded_particle_cell_id=seeded_particle_cell_id.data,
+                seeded_particle_cell_origin=seeded_particle_cell_origin.data,
+                seeded_particle_pos_cell=seeded_particle_pos_cell.data,
+                seeded_particle_volume=seeded_particle_volume.data,
+                cell_id=self.attributes["cell id"].data,
+                cell_origin=self.attributes["cell origin"].data,
+                pos_cell=self.attributes["position in cell"].data,
+                volume=self.attributes["volume"].data,
+            )
+
         self.attributes.reset_idx()
         self.attributes.sanitize()
 
