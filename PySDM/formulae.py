@@ -44,6 +44,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         hydrostatics: str = "Default",
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
+        homogeneous_liquid_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_meteoric_water_line_excess: str = "Null",
@@ -76,6 +77,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.hydrostatics = hydrostatics
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
+        self.homogeneous_liquid_nucleation_rate = homogeneous_liquid_nucleation_rate
         self.fragmentation_function = fragmentation_function
         self.isotope_equilibrium_fractionation_factors = (
             isotope_equilibrium_fractionation_factors

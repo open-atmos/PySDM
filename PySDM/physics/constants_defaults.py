@@ -56,6 +56,7 @@ M_18O = 17.99915961287 * si.g / si.mole
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
+k_B = sci.k * si.joule / si.kelvin
 
 D0 = 2.26e-5 * si.metre**2 / si.second
 D_exp = 1.81
