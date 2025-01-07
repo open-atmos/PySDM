@@ -4,14 +4,14 @@ do-nothing null formulation (needed as other formulations require parameters
 """
 
 
-class Null:  # pylint: disable=too-few-public-methods,unused-argument
+class Null:  # pylint: disable=unused-argument
     def __init__(self, _):
         pass
 
     @staticmethod
-    def j_liq_homo(const, T, S):
+    def j_liq_homo(const, T, S, e_s):
         return 0
 
     @staticmethod
-    def r_liq_homo(const, T, S):  # pylint: disable=unused-argument
+    def r_liq_homo(const, T, S):
         return 0
