@@ -691,5 +691,15 @@
     "usages": ["PySDM/physics/saturation_vapour_pressure/wexler_1976.py"],
     "title": "Vapor Pressure Formulation for Water in Range 0 to f 00 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
+  },
+  "https://doi.org/10.48550/arXiv.2501.01467": {
+    "usages": ["examples/PySDM_examples/expansion_chamber/aerosol.py"],
+    "title": "Droplet Nucleation In a Rapid Expansion Aerosol Chamber",
+    "label": "Erinin et al. 2024 (arXiv:2501.01467)"
+  },
+  "https://books.google.com/books/about/Atmospheric_Chemistry_and_Physics.html?id=n_RmCgAAQBAJ": {
+    "usages": ["PySDM/physics/homogeneous_liquid_nucleation_rate/cnt.py"],
+    "title": "Atmospheric Chemistry and Physics: From Air Pollution to Climate Change, 3rd Edition",
+    "label": "Seinfeld and Pandis, Ed.3"
   }
 }
