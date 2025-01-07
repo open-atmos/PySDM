@@ -67,7 +67,7 @@ def check_urls(urls_from_json):
                 r"\b(https://doi\.org/10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>^\\])\S)+)\b",
                 r"\b(https://digitallibrary\.un\.org/record/(?:[0-9])+)\b",
                 r"\b(http://mi\.mathnet\.ru/dan(?:[0-9])+)\b",
-                r"\b(https://archive.org/details/(?:[0-9a-z])+)\b",
+                r"\b(https://archive.org/details/(?:[0-9a-z_\.-])+)\b",
             ):
                 urls = re.findall(pattern, text)
                 if urls:
