@@ -1,3 +1,5 @@
+""" aerosol parameters from [Erinin et al. 2025](https://doi.org/10.48550/arXiv.2501.01467) """
+
 from chempy import Substance
 from pystrict import strict
 

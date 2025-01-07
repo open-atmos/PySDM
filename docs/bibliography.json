@@ -697,9 +697,9 @@
     "title": "Droplet Nucleation In a Rapid Expansion Aerosol Chamber",
     "label": "Erinin et al. 2024 (arXiv:2501.01467)"
   },
-  "https://books.google.com/books/about/Atmospheric_Chemistry_and_Physics.html?id=n_RmCgAAQBAJ": {
+  "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
     "usages": ["PySDM/physics/homogeneous_liquid_nucleation_rate/cnt.py"],
-    "title": "Atmospheric Chemistry and Physics: From Air Pollution to Climate Change, 3rd Edition",
-    "label": "Seinfeld and Pandis, Ed.3"
+    "title": "Atmospheric Chemistry and Physics: From Air Pollution to Climate Change, 2nd Edition",
+    "label": "Seinfeld & Pandis 2006 (Wiley)"
   }
 }

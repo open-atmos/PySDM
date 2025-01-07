@@ -1,7 +1,8 @@
 """
 classical nucleation theory (CNT)
-formulae from Seinfeld and Pandis Eq (11.47) and (11.52)
-"""
+formulae from [Seinfeld and Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
+Eq (11.47) and (11.52)
+"""  # pylint: disable=line-too-long
 
 import numpy as np
 
