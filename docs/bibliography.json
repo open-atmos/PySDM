@@ -693,7 +693,7 @@
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
   },
   "https://doi.org/10.48550/arXiv.2501.01467": {
-    "usages": ["examples/PySDM_examples/expansion_chamber/aerosol.py"],
+    "usages": ["examples/PySDM_examples/expansion_chamber/aerosol.py", "examples/PySDM_examples/expansion_chamber/expansion_experiment.ipynb"],
     "title": "Droplet Nucleation In a Rapid Expansion Aerosol Chamber",
     "label": "Erinin et al. 2024 (arXiv:2501.01467)"
   },
