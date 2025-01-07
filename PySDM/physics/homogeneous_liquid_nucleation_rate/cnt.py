@@ -1,6 +1,6 @@
 """
 classical nucleation theory (CNT)
-formulae from Seinfeld and Pandis Eq (11.47)
+formulae from Seinfeld and Pandis Eq (11.47) and (11.52)
 """
 
 import numpy as np
