@@ -143,20 +143,20 @@
 
                         <label class="view-source-button" for="mod-settings-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">pystrict</span> <span class="kn">import</span> <span class="n">strict</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pystrict</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">PySDM</span> <span class="kn">import</span> <span class="n">Formulae</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">PySDM.dynamics.collisions.collision_kernels</span> <span class="kn">import</span> <span class="n">Golovin</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation</span> <span class="kn">import</span> <span class="n">spectra</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM</span><span class="w"> </span><span class="kn">import</span> <span class="n">Formulae</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.dynamics.collisions.collision_kernels</span><span class="w"> </span><span class="kn">import</span> <span class="n">Golovin</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectra</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="nd">@strict</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="n">steps</span> <span class="o">=</span> <span class="n">steps</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">2400</span><span class="p">,</span> <span class="mi">3600</span><span class="p">]</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">Formulae</span><span class="p">()</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n_sd</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">13</span>
@@ -176,7 +176,7 @@
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="p">)</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="nd">@property</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="k">def</span> <span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">]</span>
 </span></pre></div>
 
@@ -195,8 +195,8 @@
     </div>
     <a class="headerlink" href="#Settings"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings-13"><a href="#Settings-13"><span class="linenos">13</span></a><span class="nd">@strict</span>
-</span><span id="Settings-14"><a href="#Settings-14"><span class="linenos">14</span></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
-</span><span id="Settings-15"><a href="#Settings-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="Settings-14"><a href="#Settings-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="Settings-15"><a href="#Settings-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 </span><span id="Settings-16"><a href="#Settings-16"><span class="linenos">16</span></a>        <span class="n">steps</span> <span class="o">=</span> <span class="n">steps</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">2400</span><span class="p">,</span> <span class="mi">3600</span><span class="p">]</span>
 </span><span id="Settings-17"><a href="#Settings-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">Formulae</span><span class="p">()</span>
 </span><span id="Settings-18"><a href="#Settings-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n_sd</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">13</span>
@@ -216,7 +216,7 @@
 </span><span id="Settings-32"><a href="#Settings-32"><span class="linenos">32</span></a>        <span class="p">)</span>
 </span><span id="Settings-33"><a href="#Settings-33"><span class="linenos">33</span></a>
 </span><span id="Settings-34"><a href="#Settings-34"><span class="linenos">34</span></a>    <span class="nd">@property</span>
-</span><span id="Settings-35"><a href="#Settings-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Settings-35"><a href="#Settings-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Settings-36"><a href="#Settings-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">]</span>
 </span></pre></div>
 
@@ -233,7 +233,7 @@
 
     </div>
     <a class="headerlink" href="#Settings.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.__init__-15"><a href="#Settings.__init__-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.__init__-15"><a href="#Settings.__init__-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steps</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 </span><span id="Settings.__init__-16"><a href="#Settings.__init__-16"><span class="linenos">16</span></a>        <span class="n">steps</span> <span class="o">=</span> <span class="n">steps</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">2400</span><span class="p">,</span> <span class="mi">3600</span><span class="p">]</span>
 </span><span id="Settings.__init__-17"><a href="#Settings.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">Formulae</span><span class="p">()</span>
 </span><span id="Settings.__init__-18"><a href="#Settings.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">n_sd</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">13</span>
@@ -421,7 +421,7 @@
     </div>
     <a class="headerlink" href="#Settings.output_steps"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.output_steps-34"><a href="#Settings.output_steps-34"><span class="linenos">34</span></a>    <span class="nd">@property</span>
-</span><span id="Settings.output_steps-35"><a href="#Settings.output_steps-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Settings.output_steps-35"><a href="#Settings.output_steps-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Settings.output_steps-36"><a href="#Settings.output_steps-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">step</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span><span class="p">]</span>
 </span></pre></div>
 

@@ -119,22 +119,22 @@
 
                         <label class="view-source-button" for="mod-example_fig_6-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">minimize</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">PySDM.backends</span> <span class="kn">import</span> <span class="n">CPU</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">CPU</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="n">backend</span> <span class="o">=</span> <span class="n">CPU</span><span class="p">()</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="n">um</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">si</span><span class="o">.</span><span class="n">um</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="k">def</span> <span class="nf">full_params</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="k">def</span><span class="w"> </span><span class="nf">full_params</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="k">def</span> <span class="nf">print_collection_efficiency_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="k">def</span><span class="w"> </span><span class="nf">print_collection_efficiency_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="n">size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">5.236</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="n">points</span> <span class="o">=</span> <span class="mi">200</span>
@@ -181,7 +181,7 @@
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="n">radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="mi">8</span> <span class="o">*</span> <span class="n">um</span><span class="p">,</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">um</span><span class="p">,</span> <span class="mi">14</span> <span class="o">*</span> <span class="n">um</span><span class="p">,</span> <span class="mi">16</span> <span class="o">*</span> <span class="n">um</span><span class="p">,</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">um</span><span class="p">,</span> <span class="mi">136</span> <span class="o">*</span> <span class="n">um</span><span class="p">))</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="k">def</span> <span class="nf">Y_c_portrait</span><span class="p">(</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="k">def</span><span class="w"> </span><span class="nf">Y_c_portrait</span><span class="p">(</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="n">params</span><span class="p">,</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="p">):</span>
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="n">Y_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expected</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -204,12 +204,12 @@
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>    <span class="k">return</span> <span class="n">Y_c</span>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="n">Y_c</span> <span class="o">=</span> <span class="n">Y_c_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Y_c</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Y_c</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">expected</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
 </span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="k">def</span> <span class="nf">error2</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="k">def</span><span class="w"> </span><span class="nf">error2</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>    <span class="n">Y_c</span> <span class="o">=</span> <span class="n">Y_c_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Y_c</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">expected</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>        <span class="n">Y_c</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">expected</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
@@ -263,7 +263,7 @@
 
     </div>
     <a class="headerlink" href="#full_params"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="full_params-13"><a href="#full_params-13"><span class="linenos">13</span></a><span class="k">def</span> <span class="nf">full_params</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="full_params-13"><a href="#full_params-13"><span class="linenos">13</span></a><span class="k">def</span><span class="w"> </span><span class="nf">full_params</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="full_params-14"><a href="#full_params-14"><span class="linenos">14</span></a>    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span><span class="p">)</span>
 </span></pre></div>
 
@@ -282,7 +282,7 @@
 
     </div>
     <a class="headerlink" href="#print_collection_efficiency_portrait"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="print_collection_efficiency_portrait-17"><a href="#print_collection_efficiency_portrait-17"><span class="linenos">17</span></a><span class="k">def</span> <span class="nf">print_collection_efficiency_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="print_collection_efficiency_portrait-17"><a href="#print_collection_efficiency_portrait-17"><span class="linenos">17</span></a><span class="k">def</span><span class="w"> </span><span class="nf">print_collection_efficiency_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="print_collection_efficiency_portrait-18"><a href="#print_collection_efficiency_portrait-18"><span class="linenos">18</span></a>    <span class="n">size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">5.236</span>
 </span><span id="print_collection_efficiency_portrait-19"><a href="#print_collection_efficiency_portrait-19"><span class="linenos">19</span></a>    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
 </span><span id="print_collection_efficiency_portrait-20"><a href="#print_collection_efficiency_portrait-20"><span class="linenos">20</span></a>    <span class="n">points</span> <span class="o">=</span> <span class="mi">200</span>
@@ -372,7 +372,7 @@
 
     </div>
     <a class="headerlink" href="#Y_c_portrait"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Y_c_portrait-64"><a href="#Y_c_portrait-64"><span class="linenos">64</span></a><span class="k">def</span> <span class="nf">Y_c_portrait</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Y_c_portrait-64"><a href="#Y_c_portrait-64"><span class="linenos">64</span></a><span class="k">def</span><span class="w"> </span><span class="nf">Y_c_portrait</span><span class="p">(</span>
 </span><span id="Y_c_portrait-65"><a href="#Y_c_portrait-65"><span class="linenos">65</span></a>    <span class="n">params</span><span class="p">,</span>
 </span><span id="Y_c_portrait-66"><a href="#Y_c_portrait-66"><span class="linenos">66</span></a><span class="p">):</span>
 </span><span id="Y_c_portrait-67"><a href="#Y_c_portrait-67"><span class="linenos">67</span></a>    <span class="n">Y_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">expected</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -410,7 +410,7 @@
 
     </div>
     <a class="headerlink" href="#error"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="error-87"><a href="#error-87"><span class="linenos">87</span></a><span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="error-87"><a href="#error-87"><span class="linenos">87</span></a><span class="k">def</span><span class="w"> </span><span class="nf">error</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="error-88"><a href="#error-88"><span class="linenos">88</span></a>    <span class="n">Y_c</span> <span class="o">=</span> <span class="n">Y_c_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 </span><span id="error-89"><a href="#error-89"><span class="linenos">89</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Y_c</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Y_c</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">expected</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 </span></pre></div>
@@ -430,7 +430,7 @@
 
     </div>
     <a class="headerlink" href="#error2"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="error2-92"><a href="#error2-92"><span class="linenos">92</span></a><span class="k">def</span> <span class="nf">error2</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="error2-92"><a href="#error2-92"><span class="linenos">92</span></a><span class="k">def</span><span class="w"> </span><span class="nf">error2</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
 </span><span id="error2-93"><a href="#error2-93"><span class="linenos">93</span></a>    <span class="n">Y_c</span> <span class="o">=</span> <span class="n">Y_c_portrait</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 </span><span id="error2-94"><a href="#error2-94"><span class="linenos">94</span></a>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">Y_c</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">expected</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span>
 </span><span id="error2-95"><a href="#error2-95"><span class="linenos">95</span></a>        <span class="n">Y_c</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">expected</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>

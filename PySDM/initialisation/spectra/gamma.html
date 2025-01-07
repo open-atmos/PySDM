@@ -106,13 +106,13 @@
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd"> [SciPy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html)</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">gamma</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">gamma</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation.impl.spectrum</span> <span class="kn">import</span> <span class="n">Spectrum</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation.impl.spectrum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Spectrum</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span> <span class="nc">Gamma</span><span class="p">(</span><span class="n">Spectrum</span><span class="p">):</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Gamma</span><span class="p">(</span><span class="n">Spectrum</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="n">gamma</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span><span class="p">),</span> <span class="n">norm_factor</span>  <span class="c1"># shape factor  # loc  # scale</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="p">)</span>
@@ -131,8 +131,8 @@
 
     </div>
     <a class="headerlink" href="#Gamma"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Gamma-12"><a href="#Gamma-12"><span class="linenos">12</span></a><span class="k">class</span> <span class="nc">Gamma</span><span class="p">(</span><span class="n">Spectrum</span><span class="p">):</span>
-</span><span id="Gamma-13"><a href="#Gamma-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Gamma-12"><a href="#Gamma-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Gamma</span><span class="p">(</span><span class="n">Spectrum</span><span class="p">):</span>
+</span><span id="Gamma-13"><a href="#Gamma-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
 </span><span id="Gamma-14"><a href="#Gamma-14"><span class="linenos">14</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Gamma-15"><a href="#Gamma-15"><span class="linenos">15</span></a>            <span class="n">gamma</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span><span class="p">),</span> <span class="n">norm_factor</span>  <span class="c1"># shape factor  # loc  # scale</span>
 </span><span id="Gamma-16"><a href="#Gamma-16"><span class="linenos">16</span></a>        <span class="p">)</span>
@@ -151,7 +151,7 @@
 
     </div>
     <a class="headerlink" href="#Gamma.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Gamma.__init__-13"><a href="#Gamma.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Gamma.__init__-13"><a href="#Gamma.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
 </span><span id="Gamma.__init__-14"><a href="#Gamma.__init__-14"><span class="linenos">14</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Gamma.__init__-15"><a href="#Gamma.__init__-15"><span class="linenos">15</span></a>            <span class="n">gamma</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta</span><span class="p">),</span> <span class="n">norm_factor</span>  <span class="c1"># shape factor  # loc  # scale</span>
 </span><span id="Gamma.__init__-16"><a href="#Gamma.__init__-16"><span class="linenos">16</span></a>        <span class="p">)</span>

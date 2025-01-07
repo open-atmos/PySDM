@@ -118,23 +118,23 @@
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">  in [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005)</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">FuchsSutugin</span><span class="p">:</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FuchsSutugin</span><span class="p">:</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">lambdaD</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">lambdaD</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">D</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="nf">lambdaK</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">lambdaK</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">/</span> <span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">K0</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">p</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Rd</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">D</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">D</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">D</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">lmbd</span> <span class="o">/</span> <span class="n">r</span><span class="p">)</span>
@@ -146,7 +146,7 @@
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="p">)</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="k">def</span> <span class="nf">K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="n">K</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">lmbd</span> <span class="o">/</span> <span class="n">r</span><span class="p">)</span>
@@ -171,20 +171,20 @@
 
     </div>
     <a class="headerlink" href="#FuchsSutugin"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin-10"><a href="#FuchsSutugin-10"><span class="linenos">10</span></a><span class="k">class</span> <span class="nc">FuchsSutugin</span><span class="p">:</span>
-</span><span id="FuchsSutugin-11"><a href="#FuchsSutugin-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin-10"><a href="#FuchsSutugin-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">FuchsSutugin</span><span class="p">:</span>
+</span><span id="FuchsSutugin-11"><a href="#FuchsSutugin-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="FuchsSutugin-12"><a href="#FuchsSutugin-12"><span class="linenos">12</span></a>        <span class="k">pass</span>
 </span><span id="FuchsSutugin-13"><a href="#FuchsSutugin-13"><span class="linenos">13</span></a>
 </span><span id="FuchsSutugin-14"><a href="#FuchsSutugin-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin-15"><a href="#FuchsSutugin-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="nf">lambdaD</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="FuchsSutugin-15"><a href="#FuchsSutugin-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">lambdaD</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="FuchsSutugin-16"><a href="#FuchsSutugin-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">D</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
 </span><span id="FuchsSutugin-17"><a href="#FuchsSutugin-17"><span class="linenos">17</span></a>
 </span><span id="FuchsSutugin-18"><a href="#FuchsSutugin-18"><span class="linenos">18</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin-19"><a href="#FuchsSutugin-19"><span class="linenos">19</span></a>    <span class="k">def</span> <span class="nf">lambdaK</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+</span><span id="FuchsSutugin-19"><a href="#FuchsSutugin-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">lambdaK</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 </span><span id="FuchsSutugin-20"><a href="#FuchsSutugin-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">/</span> <span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">K0</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">p</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Rd</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
 </span><span id="FuchsSutugin-21"><a href="#FuchsSutugin-21"><span class="linenos">21</span></a>
 </span><span id="FuchsSutugin-22"><a href="#FuchsSutugin-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin-23"><a href="#FuchsSutugin-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="nf">D</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
+</span><span id="FuchsSutugin-23"><a href="#FuchsSutugin-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">D</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
 </span><span id="FuchsSutugin-24"><a href="#FuchsSutugin-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="FuchsSutugin-25"><a href="#FuchsSutugin-25"><span class="linenos">25</span></a>            <span class="n">D</span>
 </span><span id="FuchsSutugin-26"><a href="#FuchsSutugin-26"><span class="linenos">26</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">lmbd</span> <span class="o">/</span> <span class="n">r</span><span class="p">)</span>
@@ -196,7 +196,7 @@
 </span><span id="FuchsSutugin-32"><a href="#FuchsSutugin-32"><span class="linenos">32</span></a>        <span class="p">)</span>
 </span><span id="FuchsSutugin-33"><a href="#FuchsSutugin-33"><span class="linenos">33</span></a>
 </span><span id="FuchsSutugin-34"><a href="#FuchsSutugin-34"><span class="linenos">34</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin-35"><a href="#FuchsSutugin-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
+</span><span id="FuchsSutugin-35"><a href="#FuchsSutugin-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
 </span><span id="FuchsSutugin-36"><a href="#FuchsSutugin-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="FuchsSutugin-37"><a href="#FuchsSutugin-37"><span class="linenos">37</span></a>            <span class="n">K</span>
 </span><span id="FuchsSutugin-38"><a href="#FuchsSutugin-38"><span class="linenos">38</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">lmbd</span> <span class="o">/</span> <span class="n">r</span><span class="p">)</span>
@@ -221,7 +221,7 @@
 
     </div>
     <a class="headerlink" href="#FuchsSutugin.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin.__init__-11"><a href="#FuchsSutugin.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin.__init__-11"><a href="#FuchsSutugin.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="FuchsSutugin.__init__-12"><a href="#FuchsSutugin.__init__-12"><span class="linenos">12</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
@@ -242,7 +242,7 @@
     </div>
     <a class="headerlink" href="#FuchsSutugin.lambdaD"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin.lambdaD-14"><a href="#FuchsSutugin.lambdaD-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin.lambdaD-15"><a href="#FuchsSutugin.lambdaD-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="nf">lambdaD</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="FuchsSutugin.lambdaD-15"><a href="#FuchsSutugin.lambdaD-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">lambdaD</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="FuchsSutugin.lambdaD-16"><a href="#FuchsSutugin.lambdaD-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">D</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
 </span></pre></div>
 
@@ -263,7 +263,7 @@
     </div>
     <a class="headerlink" href="#FuchsSutugin.lambdaK"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin.lambdaK-18"><a href="#FuchsSutugin.lambdaK-18"><span class="linenos">18</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin.lambdaK-19"><a href="#FuchsSutugin.lambdaK-19"><span class="linenos">19</span></a>    <span class="k">def</span> <span class="nf">lambdaK</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+</span><span id="FuchsSutugin.lambdaK-19"><a href="#FuchsSutugin.lambdaK-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">lambdaK</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 </span><span id="FuchsSutugin.lambdaK-20"><a href="#FuchsSutugin.lambdaK-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">/</span> <span class="mi">5</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">K0</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">p</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Rd</span> <span class="o">*</span> <span class="n">T</span><span class="p">)</span>
 </span></pre></div>
 
@@ -284,7 +284,7 @@
     </div>
     <a class="headerlink" href="#FuchsSutugin.D"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin.D-22"><a href="#FuchsSutugin.D-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin.D-23"><a href="#FuchsSutugin.D-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="nf">D</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
+</span><span id="FuchsSutugin.D-23"><a href="#FuchsSutugin.D-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">D</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
 </span><span id="FuchsSutugin.D-24"><a href="#FuchsSutugin.D-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="FuchsSutugin.D-25"><a href="#FuchsSutugin.D-25"><span class="linenos">25</span></a>            <span class="n">D</span>
 </span><span id="FuchsSutugin.D-26"><a href="#FuchsSutugin.D-26"><span class="linenos">26</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">lmbd</span> <span class="o">/</span> <span class="n">r</span><span class="p">)</span>
@@ -313,7 +313,7 @@
     </div>
     <a class="headerlink" href="#FuchsSutugin.K"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="FuchsSutugin.K-34"><a href="#FuchsSutugin.K-34"><span class="linenos">34</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="FuchsSutugin.K-35"><a href="#FuchsSutugin.K-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
+</span><span id="FuchsSutugin.K-35"><a href="#FuchsSutugin.K-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">lmbd</span><span class="p">):</span>
 </span><span id="FuchsSutugin.K-36"><a href="#FuchsSutugin.K-36"><span class="linenos">36</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="FuchsSutugin.K-37"><a href="#FuchsSutugin.K-37"><span class="linenos">37</span></a>            <span class="n">K</span>
 </span><span id="FuchsSutugin.K-38"><a href="#FuchsSutugin.K-38"><span class="linenos">38</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">lmbd</span> <span class="o">/</span> <span class="n">r</span><span class="p">)</span>

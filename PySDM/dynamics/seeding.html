@@ -136,17 +136,17 @@ at multiplicity discretisation</p>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">enough particles flagged with NaN multiplicity (translated to zeros</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">at multiplicity discretisation &quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sized</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sized</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">PySDM.dynamics.impl</span> <span class="kn">import</span> <span class="n">register_dynamic</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation</span> <span class="kn">import</span> <span class="n">discretise_multiplicities</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.dynamics.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_dynamic</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation</span><span class="w"> </span><span class="kn">import</span> <span class="n">discretise_multiplicities</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span> <span class="nc">Seeding</span><span class="p">:</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Seeding</span><span class="p">:</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">super_droplet_injection_rate</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
@@ -163,10 +163,10 @@ at multiplicity discretisation</p>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">u01</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span> <span class="nf">post_register_setup_when_attributes_are_known</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">post_register_setup_when_attributes_are_known</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">(</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">seeded_particle_extensive_attributes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="p">):</span>
@@ -201,7 +201,7 @@ at multiplicity discretisation</p>
 </span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>            <span class="p">)</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>        <span class="p">)</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>
-</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">post_register_setup_when_attributes_are_known</span><span class="p">()</span>
 </span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>
@@ -243,8 +243,8 @@ at multiplicity discretisation</p>
     </div>
     <a class="headerlink" href="#Seeding"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding-14"><a href="#Seeding-14"><span class="linenos">14</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
-</span><span id="Seeding-15"><a href="#Seeding-15"><span class="linenos">15</span></a><span class="k">class</span> <span class="nc">Seeding</span><span class="p">:</span>
-</span><span id="Seeding-16"><a href="#Seeding-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Seeding-15"><a href="#Seeding-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Seeding</span><span class="p">:</span>
+</span><span id="Seeding-16"><a href="#Seeding-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Seeding-17"><a href="#Seeding-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Seeding-18"><a href="#Seeding-18"><span class="linenos">18</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Seeding-19"><a href="#Seeding-19"><span class="linenos">19</span></a>        <span class="n">super_droplet_injection_rate</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
@@ -261,10 +261,10 @@ at multiplicity discretisation</p>
 </span><span id="Seeding-30"><a href="#Seeding-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">u01</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Seeding-31"><a href="#Seeding-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Seeding-32"><a href="#Seeding-32"><span class="linenos">32</span></a>
-</span><span id="Seeding-33"><a href="#Seeding-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="Seeding-33"><a href="#Seeding-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Seeding-34"><a href="#Seeding-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
 </span><span id="Seeding-35"><a href="#Seeding-35"><span class="linenos">35</span></a>
-</span><span id="Seeding-36"><a href="#Seeding-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">post_register_setup_when_attributes_are_known</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Seeding-36"><a href="#Seeding-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">post_register_setup_when_attributes_are_known</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Seeding-37"><a href="#Seeding-37"><span class="linenos">37</span></a>        <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">(</span>
 </span><span id="Seeding-38"><a href="#Seeding-38"><span class="linenos">38</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">seeded_particle_extensive_attributes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span><span id="Seeding-39"><a href="#Seeding-39"><span class="linenos">39</span></a>        <span class="p">):</span>
@@ -299,7 +299,7 @@ at multiplicity discretisation</p>
 </span><span id="Seeding-68"><a href="#Seeding-68"><span class="linenos">68</span></a>            <span class="p">)</span>
 </span><span id="Seeding-69"><a href="#Seeding-69"><span class="linenos">69</span></a>        <span class="p">)</span>
 </span><span id="Seeding-70"><a href="#Seeding-70"><span class="linenos">70</span></a>
-</span><span id="Seeding-71"><a href="#Seeding-71"><span class="linenos">71</span></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Seeding-71"><a href="#Seeding-71"><span class="linenos">71</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Seeding-72"><a href="#Seeding-72"><span class="linenos">72</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="Seeding-73"><a href="#Seeding-73"><span class="linenos">73</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">post_register_setup_when_attributes_are_known</span><span class="p">()</span>
 </span><span id="Seeding-74"><a href="#Seeding-74"><span class="linenos">74</span></a>
@@ -339,7 +339,7 @@ at multiplicity discretisation</p>
 
     </div>
     <a class="headerlink" href="#Seeding.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.__init__-16"><a href="#Seeding.__init__-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.__init__-16"><a href="#Seeding.__init__-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Seeding.__init__-17"><a href="#Seeding.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Seeding.__init__-18"><a href="#Seeding.__init__-18"><span class="linenos">18</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Seeding.__init__-19"><a href="#Seeding.__init__-19"><span class="linenos">19</span></a>        <span class="n">super_droplet_injection_rate</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
@@ -449,7 +449,7 @@ at multiplicity discretisation</p>
 
     </div>
     <a class="headerlink" href="#Seeding.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.register-33"><a href="#Seeding.register-33"><span class="linenos">33</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.register-33"><a href="#Seeding.register-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Seeding.register-34"><a href="#Seeding.register-34"><span class="linenos">34</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
 </span></pre></div>
 
@@ -468,7 +468,7 @@ at multiplicity discretisation</p>
 
     </div>
     <a class="headerlink" href="#Seeding.post_register_setup_when_attributes_are_known"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.post_register_setup_when_attributes_are_known-36"><a href="#Seeding.post_register_setup_when_attributes_are_known-36"><span class="linenos">36</span></a>    <span class="k">def</span> <span class="nf">post_register_setup_when_attributes_are_known</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.post_register_setup_when_attributes_are_known-36"><a href="#Seeding.post_register_setup_when_attributes_are_known-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">post_register_setup_when_attributes_are_known</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Seeding.post_register_setup_when_attributes_are_known-37"><a href="#Seeding.post_register_setup_when_attributes_are_known-37"><span class="linenos">37</span></a>        <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">get_extensive_attribute_keys</span><span class="p">())</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">(</span>
 </span><span id="Seeding.post_register_setup_when_attributes_are_known-38"><a href="#Seeding.post_register_setup_when_attributes_are_known-38"><span class="linenos">38</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">seeded_particle_extensive_attributes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 </span><span id="Seeding.post_register_setup_when_attributes_are_known-39"><a href="#Seeding.post_register_setup_when_attributes_are_known-39"><span class="linenos">39</span></a>        <span class="p">):</span>
@@ -519,7 +519,7 @@ at multiplicity discretisation</p>
 
     </div>
     <a class="headerlink" href="#Seeding.instantiate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.instantiate-8"><a href="#Seeding.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span> <span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Seeding.instantiate-8"><a href="#Seeding.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Seeding.instantiate-9"><a href="#Seeding.instantiate-9"><span class="linenos"> 9</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Seeding.instantiate-10"><a href="#Seeding.instantiate-10"><span class="linenos">10</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="o">=</span><span class="n">builder</span><span class="p">)</span>
 </span><span id="Seeding.instantiate-11"><a href="#Seeding.instantiate-11"><span class="linenos">11</span></a>    <span class="k">return</span> <span class="n">copy</span>

@@ -107,19 +107,19 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">CPU implementation of moment calculation backend methods</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span> <span class="nn">numba</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numba</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_common.backend_methods</span> <span class="kn">import</span> <span class="n">BackendMethods</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_numba.atomic_operations</span> <span class="kn">import</span> <span class="n">atomic_add</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_common.backend_methods</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendMethods</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_numba.atomic_operations</span><span class="w"> </span><span class="kn">import</span> <span class="n">atomic_add</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="k">class</span> <span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="k">def</span> <span class="nf">_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>            <span class="o">*</span><span class="p">,</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>            <span class="n">moment_0</span><span class="p">,</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>            <span class="n">moments</span><span class="p">,</span>
@@ -168,7 +168,7 @@
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="k">def</span> <span class="nf">moments</span><span class="p">(</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -204,9 +204,9 @@
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="p">)</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">def</span> <span class="nf">_spectrum_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_spectrum_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">)</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>            <span class="o">*</span><span class="p">,</span>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>            <span class="n">moment_0</span><span class="p">,</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>            <span class="n">moments</span><span class="p">,</span>
@@ -253,7 +253,7 @@
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>    <span class="k">def</span> <span class="nf">spectrum_moments</span><span class="p">(</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -300,11 +300,11 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods-14"><a href="#MomentsMethods-14"><span class="linenos"> 14</span></a><span class="k">class</span> <span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods-14"><a href="#MomentsMethods-14"><span class="linenos"> 14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>
 </span><span id="MomentsMethods-15"><a href="#MomentsMethods-15"><span class="linenos"> 15</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-16"><a href="#MomentsMethods-16"><span class="linenos"> 16</span></a>    <span class="k">def</span> <span class="nf">_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-16"><a href="#MomentsMethods-16"><span class="linenos"> 16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="MomentsMethods-17"><a href="#MomentsMethods-17"><span class="linenos"> 17</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">)</span>
-</span><span id="MomentsMethods-18"><a href="#MomentsMethods-18"><span class="linenos"> 18</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>
+</span><span id="MomentsMethods-18"><a href="#MomentsMethods-18"><span class="linenos"> 18</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span>
 </span><span id="MomentsMethods-19"><a href="#MomentsMethods-19"><span class="linenos"> 19</span></a>            <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods-20"><a href="#MomentsMethods-20"><span class="linenos"> 20</span></a>            <span class="n">moment_0</span><span class="p">,</span>
 </span><span id="MomentsMethods-21"><a href="#MomentsMethods-21"><span class="linenos"> 21</span></a>            <span class="n">moments</span><span class="p">,</span>
@@ -353,7 +353,7 @@
 </span><span id="MomentsMethods-64"><a href="#MomentsMethods-64"><span class="linenos"> 64</span></a>
 </span><span id="MomentsMethods-65"><a href="#MomentsMethods-65"><span class="linenos"> 65</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="MomentsMethods-66"><a href="#MomentsMethods-66"><span class="linenos"> 66</span></a>
-</span><span id="MomentsMethods-67"><a href="#MomentsMethods-67"><span class="linenos"> 67</span></a>    <span class="k">def</span> <span class="nf">moments</span><span class="p">(</span>
+</span><span id="MomentsMethods-67"><a href="#MomentsMethods-67"><span class="linenos"> 67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
 </span><span id="MomentsMethods-68"><a href="#MomentsMethods-68"><span class="linenos"> 68</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="MomentsMethods-69"><a href="#MomentsMethods-69"><span class="linenos"> 69</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods-70"><a href="#MomentsMethods-70"><span class="linenos"> 70</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -389,9 +389,9 @@
 </span><span id="MomentsMethods-100"><a href="#MomentsMethods-100"><span class="linenos">100</span></a>        <span class="p">)</span>
 </span><span id="MomentsMethods-101"><a href="#MomentsMethods-101"><span class="linenos">101</span></a>
 </span><span id="MomentsMethods-102"><a href="#MomentsMethods-102"><span class="linenos">102</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-103"><a href="#MomentsMethods-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">_spectrum_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-103"><a href="#MomentsMethods-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_spectrum_moments_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="MomentsMethods-104"><a href="#MomentsMethods-104"><span class="linenos">104</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">)</span>
-</span><span id="MomentsMethods-105"><a href="#MomentsMethods-105"><span class="linenos">105</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>
+</span><span id="MomentsMethods-105"><a href="#MomentsMethods-105"><span class="linenos">105</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span>
 </span><span id="MomentsMethods-106"><a href="#MomentsMethods-106"><span class="linenos">106</span></a>            <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods-107"><a href="#MomentsMethods-107"><span class="linenos">107</span></a>            <span class="n">moment_0</span><span class="p">,</span>
 </span><span id="MomentsMethods-108"><a href="#MomentsMethods-108"><span class="linenos">108</span></a>            <span class="n">moments</span><span class="p">,</span>
@@ -438,7 +438,7 @@
 </span><span id="MomentsMethods-149"><a href="#MomentsMethods-149"><span class="linenos">149</span></a>
 </span><span id="MomentsMethods-150"><a href="#MomentsMethods-150"><span class="linenos">150</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="MomentsMethods-151"><a href="#MomentsMethods-151"><span class="linenos">151</span></a>
-</span><span id="MomentsMethods-152"><a href="#MomentsMethods-152"><span class="linenos">152</span></a>    <span class="k">def</span> <span class="nf">spectrum_moments</span><span class="p">(</span>
+</span><span id="MomentsMethods-152"><a href="#MomentsMethods-152"><span class="linenos">152</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
 </span><span id="MomentsMethods-153"><a href="#MomentsMethods-153"><span class="linenos">153</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="MomentsMethods-154"><a href="#MomentsMethods-154"><span class="linenos">154</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods-155"><a href="#MomentsMethods-155"><span class="linenos">155</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -486,7 +486,7 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods.moments"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.moments-67"><a href="#MomentsMethods.moments-67"><span class="linenos"> 67</span></a>    <span class="k">def</span> <span class="nf">moments</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.moments-67"><a href="#MomentsMethods.moments-67"><span class="linenos"> 67</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
 </span><span id="MomentsMethods.moments-68"><a href="#MomentsMethods.moments-68"><span class="linenos"> 68</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="MomentsMethods.moments-69"><a href="#MomentsMethods.moments-69"><span class="linenos"> 69</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods.moments-70"><a href="#MomentsMethods.moments-70"><span class="linenos"> 70</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -537,7 +537,7 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods.spectrum_moments"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.spectrum_moments-152"><a href="#MomentsMethods.spectrum_moments-152"><span class="linenos">152</span></a>    <span class="k">def</span> <span class="nf">spectrum_moments</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.spectrum_moments-152"><a href="#MomentsMethods.spectrum_moments-152"><span class="linenos">152</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
 </span><span id="MomentsMethods.spectrum_moments-153"><a href="#MomentsMethods.spectrum_moments-153"><span class="linenos">153</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="MomentsMethods.spectrum_moments-154"><a href="#MomentsMethods.spectrum_moments-154"><span class="linenos">154</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods.spectrum_moments-155"><a href="#MomentsMethods.spectrum_moments-155"><span class="linenos">155</span></a>        <span class="n">moment_0</span><span class="p">,</span>

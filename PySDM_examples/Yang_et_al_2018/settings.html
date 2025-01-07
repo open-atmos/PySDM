@@ -161,21 +161,21 @@
 
                         <label class="view-source-button" for="mod-settings-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">pystrict</span> <span class="kn">import</span> <span class="n">strict</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pystrict</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">PySDM_examples</span> <span class="kn">import</span> <span class="n">Jensen_and_Nugent_2017</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples</span><span class="w"> </span><span class="kn">import</span> <span class="n">Jensen_and_Nugent_2017</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">PySDM.backends</span> <span class="kn">import</span> <span class="n">CPU</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">PySDM.dynamics</span> <span class="kn">import</span> <span class="n">condensation</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation</span> <span class="kn">import</span> <span class="n">spectra</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation.sampling</span> <span class="kn">import</span> <span class="n">spectral_sampling</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">CPU</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="n">condensation</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectra</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation.sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectral_sampling</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="nd">@strict</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="n">n_sd</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">dt_output</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
@@ -221,7 +221,7 @@
 </span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="mi">1200</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">second</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f0</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">hertz</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="k">def</span> <span class="nf">w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>            <span class="mf">0.5</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>            <span class="o">*</span> <span class="p">(</span>
@@ -251,8 +251,8 @@
     </div>
     <a class="headerlink" href="#Settings"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings-14"><a href="#Settings-14"><span class="linenos">14</span></a><span class="nd">@strict</span>
-</span><span id="Settings-15"><a href="#Settings-15"><span class="linenos">15</span></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
-</span><span id="Settings-16"><a href="#Settings-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Settings-15"><a href="#Settings-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="Settings-16"><a href="#Settings-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Settings-17"><a href="#Settings-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Settings-18"><a href="#Settings-18"><span class="linenos">18</span></a>        <span class="n">n_sd</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
 </span><span id="Settings-19"><a href="#Settings-19"><span class="linenos">19</span></a>        <span class="n">dt_output</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
@@ -298,7 +298,7 @@
 </span><span id="Settings-59"><a href="#Settings-59"><span class="linenos">59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="mi">1200</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">second</span>
 </span><span id="Settings-60"><a href="#Settings-60"><span class="linenos">60</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f0</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">hertz</span>
 </span><span id="Settings-61"><a href="#Settings-61"><span class="linenos">61</span></a>
-</span><span id="Settings-62"><a href="#Settings-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="Settings-62"><a href="#Settings-62"><span class="linenos">62</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 </span><span id="Settings-63"><a href="#Settings-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="Settings-64"><a href="#Settings-64"><span class="linenos">64</span></a>            <span class="mf">0.5</span>
 </span><span id="Settings-65"><a href="#Settings-65"><span class="linenos">65</span></a>            <span class="o">*</span> <span class="p">(</span>
@@ -326,7 +326,7 @@
 
     </div>
     <a class="headerlink" href="#Settings.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.__init__-16"><a href="#Settings.__init__-16"><span class="linenos">16</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.__init__-16"><a href="#Settings.__init__-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Settings.__init__-17"><a href="#Settings.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Settings.__init__-18"><a href="#Settings.__init__-18"><span class="linenos">18</span></a>        <span class="n">n_sd</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
 </span><span id="Settings.__init__-19"><a href="#Settings.__init__-19"><span class="linenos">19</span></a>        <span class="n">dt_output</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">second</span><span class="p">,</span>
@@ -608,7 +608,7 @@
 
     </div>
     <a class="headerlink" href="#Settings.w"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.w-62"><a href="#Settings.w-62"><span class="linenos">62</span></a>    <span class="k">def</span> <span class="nf">w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.w-62"><a href="#Settings.w-62"><span class="linenos">62</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">w</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 </span><span id="Settings.w-63"><a href="#Settings.w-63"><span class="linenos">63</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="Settings.w-64"><a href="#Settings.w-64"><span class="linenos">64</span></a>            <span class="mf">0.5</span>
 </span><span id="Settings.w-65"><a href="#Settings.w-65"><span class="linenos">65</span></a>            <span class="o">*</span> <span class="p">(</span>

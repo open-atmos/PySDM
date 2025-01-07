@@ -116,13 +116,13 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">GPU implementation of moment calculation backend methods</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_thrust_rtc.conf</span> <span class="kn">import</span> <span class="n">NICE_THRUST_FLAGS</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_thrust_rtc.nice_thrust</span> <span class="kn">import</span> <span class="n">nice_thrust</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_thrust_rtc.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">NICE_THRUST_FLAGS</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_thrust_rtc.nice_thrust</span><span class="w"> </span><span class="kn">import</span> <span class="n">nice_thrust</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">..conf</span> <span class="kn">import</span> <span class="n">trtc</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span> <span class="nn">..methods.thrust_rtc_backend_methods</span> <span class="kn">import</span> <span class="n">ThrustRTCBackendMethods</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">..conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">trtc</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">..methods.thrust_rtc_backend_methods</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThrustRTCBackendMethods</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="c1"># https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#atomic-functions</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="n">DOUBLE_ATOMIC_ADD_FOR_COMPUTE_LT_60</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -149,8 +149,8 @@
 </span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="s2">&quot;&quot;&quot;</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>
-</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="k">class</span> <span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">ThrustRTCBackendMethods</span><span class="p">):</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">double_precision</span><span class="p">):</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">ThrustRTCBackendMethods</span><span class="p">):</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">double_precision</span><span class="p">):</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="n">ThrustRTCBackendMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>        <span class="k">if</span> <span class="n">trtc</span><span class="o">.</span><span class="n">Get_PTX_Arch</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">60</span> <span class="ow">and</span> <span class="n">double_precision</span><span class="p">:</span>
@@ -159,7 +159,7 @@
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="k">def</span> <span class="nf">__moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>            <span class="p">(</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
@@ -196,7 +196,7 @@
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>        <span class="p">)</span>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>    <span class="k">def</span> <span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>            <span class="p">(</span><span class="s2">&quot;n_ranks&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>            <span class="s2">&quot;c_id&quot;</span><span class="p">,</span>
@@ -213,7 +213,7 @@
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="p">)</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">def</span> <span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>            <span class="p">(</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
@@ -250,7 +250,7 @@
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>        <span class="p">)</span>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
 </span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="k">def</span> <span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>            <span class="p">(</span><span class="s2">&quot;n_bins&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
 </span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -267,7 +267,7 @@
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="p">)</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>
 </span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    <span class="k">def</span> <span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
 </span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
@@ -275,7 +275,7 @@
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>    <span class="c1"># TODO #684</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="k">def</span> <span class="nf">moments</span><span class="p">(</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
 </span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -333,7 +333,7 @@
 </span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>    <span class="c1"># TODO #684</span>
 </span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
 </span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>    <span class="k">def</span> <span class="nf">spectrum_moments</span><span class="p">(</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -414,8 +414,8 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods-39"><a href="#MomentsMethods-39"><span class="linenos"> 39</span></a><span class="k">class</span> <span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">ThrustRTCBackendMethods</span><span class="p">):</span>
-</span><span id="MomentsMethods-40"><a href="#MomentsMethods-40"><span class="linenos"> 40</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">double_precision</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods-39"><a href="#MomentsMethods-39"><span class="linenos"> 39</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MomentsMethods</span><span class="p">(</span><span class="n">ThrustRTCBackendMethods</span><span class="p">):</span>
+</span><span id="MomentsMethods-40"><a href="#MomentsMethods-40"><span class="linenos"> 40</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">double_precision</span><span class="p">):</span>
 </span><span id="MomentsMethods-41"><a href="#MomentsMethods-41"><span class="linenos"> 41</span></a>        <span class="n">ThrustRTCBackendMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="MomentsMethods-42"><a href="#MomentsMethods-42"><span class="linenos"> 42</span></a>
 </span><span id="MomentsMethods-43"><a href="#MomentsMethods-43"><span class="linenos"> 43</span></a>        <span class="k">if</span> <span class="n">trtc</span><span class="o">.</span><span class="n">Get_PTX_Arch</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">60</span> <span class="ow">and</span> <span class="n">double_precision</span><span class="p">:</span>
@@ -424,7 +424,7 @@
 </span><span id="MomentsMethods-46"><a href="#MomentsMethods-46"><span class="linenos"> 46</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 </span><span id="MomentsMethods-47"><a href="#MomentsMethods-47"><span class="linenos"> 47</span></a>
 </span><span id="MomentsMethods-48"><a href="#MomentsMethods-48"><span class="linenos"> 48</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-49"><a href="#MomentsMethods-49"><span class="linenos"> 49</span></a>    <span class="k">def</span> <span class="nf">__moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-49"><a href="#MomentsMethods-49"><span class="linenos"> 49</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="MomentsMethods-50"><a href="#MomentsMethods-50"><span class="linenos"> 50</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="MomentsMethods-51"><a href="#MomentsMethods-51"><span class="linenos"> 51</span></a>            <span class="p">(</span>
 </span><span id="MomentsMethods-52"><a href="#MomentsMethods-52"><span class="linenos"> 52</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
@@ -461,7 +461,7 @@
 </span><span id="MomentsMethods-83"><a href="#MomentsMethods-83"><span class="linenos"> 83</span></a>        <span class="p">)</span>
 </span><span id="MomentsMethods-84"><a href="#MomentsMethods-84"><span class="linenos"> 84</span></a>
 </span><span id="MomentsMethods-85"><a href="#MomentsMethods-85"><span class="linenos"> 85</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-86"><a href="#MomentsMethods-86"><span class="linenos"> 86</span></a>    <span class="k">def</span> <span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-86"><a href="#MomentsMethods-86"><span class="linenos"> 86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="MomentsMethods-87"><a href="#MomentsMethods-87"><span class="linenos"> 87</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="MomentsMethods-88"><a href="#MomentsMethods-88"><span class="linenos"> 88</span></a>            <span class="p">(</span><span class="s2">&quot;n_ranks&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
 </span><span id="MomentsMethods-89"><a href="#MomentsMethods-89"><span class="linenos"> 89</span></a>            <span class="s2">&quot;c_id&quot;</span><span class="p">,</span>
@@ -478,7 +478,7 @@
 </span><span id="MomentsMethods-100"><a href="#MomentsMethods-100"><span class="linenos">100</span></a>        <span class="p">)</span>
 </span><span id="MomentsMethods-101"><a href="#MomentsMethods-101"><span class="linenos">101</span></a>
 </span><span id="MomentsMethods-102"><a href="#MomentsMethods-102"><span class="linenos">102</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-103"><a href="#MomentsMethods-103"><span class="linenos">103</span></a>    <span class="k">def</span> <span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-103"><a href="#MomentsMethods-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="MomentsMethods-104"><a href="#MomentsMethods-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="MomentsMethods-105"><a href="#MomentsMethods-105"><span class="linenos">105</span></a>            <span class="p">(</span>
 </span><span id="MomentsMethods-106"><a href="#MomentsMethods-106"><span class="linenos">106</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
@@ -515,7 +515,7 @@
 </span><span id="MomentsMethods-137"><a href="#MomentsMethods-137"><span class="linenos">137</span></a>        <span class="p">)</span>
 </span><span id="MomentsMethods-138"><a href="#MomentsMethods-138"><span class="linenos">138</span></a>
 </span><span id="MomentsMethods-139"><a href="#MomentsMethods-139"><span class="linenos">139</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-140"><a href="#MomentsMethods-140"><span class="linenos">140</span></a>    <span class="k">def</span> <span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-140"><a href="#MomentsMethods-140"><span class="linenos">140</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="MomentsMethods-141"><a href="#MomentsMethods-141"><span class="linenos">141</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="MomentsMethods-142"><a href="#MomentsMethods-142"><span class="linenos">142</span></a>            <span class="p">(</span><span class="s2">&quot;n_bins&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
 </span><span id="MomentsMethods-143"><a href="#MomentsMethods-143"><span class="linenos">143</span></a>            <span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -532,7 +532,7 @@
 </span><span id="MomentsMethods-154"><a href="#MomentsMethods-154"><span class="linenos">154</span></a>        <span class="p">)</span>
 </span><span id="MomentsMethods-155"><a href="#MomentsMethods-155"><span class="linenos">155</span></a>
 </span><span id="MomentsMethods-156"><a href="#MomentsMethods-156"><span class="linenos">156</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MomentsMethods-157"><a href="#MomentsMethods-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="MomentsMethods-157"><a href="#MomentsMethods-157"><span class="linenos">157</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 </span><span id="MomentsMethods-158"><a href="#MomentsMethods-158"><span class="linenos">158</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
 </span><span id="MomentsMethods-159"><a href="#MomentsMethods-159"><span class="linenos">159</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
 </span><span id="MomentsMethods-160"><a href="#MomentsMethods-160"><span class="linenos">160</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
@@ -540,7 +540,7 @@
 </span><span id="MomentsMethods-162"><a href="#MomentsMethods-162"><span class="linenos">162</span></a>    <span class="c1"># TODO #684</span>
 </span><span id="MomentsMethods-163"><a href="#MomentsMethods-163"><span class="linenos">163</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
 </span><span id="MomentsMethods-164"><a href="#MomentsMethods-164"><span class="linenos">164</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="MomentsMethods-165"><a href="#MomentsMethods-165"><span class="linenos">165</span></a>    <span class="k">def</span> <span class="nf">moments</span><span class="p">(</span>
+</span><span id="MomentsMethods-165"><a href="#MomentsMethods-165"><span class="linenos">165</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
 </span><span id="MomentsMethods-166"><a href="#MomentsMethods-166"><span class="linenos">166</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="MomentsMethods-167"><a href="#MomentsMethods-167"><span class="linenos">167</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods-168"><a href="#MomentsMethods-168"><span class="linenos">168</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -598,7 +598,7 @@
 </span><span id="MomentsMethods-220"><a href="#MomentsMethods-220"><span class="linenos">220</span></a>    <span class="c1"># TODO #684</span>
 </span><span id="MomentsMethods-221"><a href="#MomentsMethods-221"><span class="linenos">221</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
 </span><span id="MomentsMethods-222"><a href="#MomentsMethods-222"><span class="linenos">222</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="MomentsMethods-223"><a href="#MomentsMethods-223"><span class="linenos">223</span></a>    <span class="k">def</span> <span class="nf">spectrum_moments</span><span class="p">(</span>
+</span><span id="MomentsMethods-223"><a href="#MomentsMethods-223"><span class="linenos">223</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
 </span><span id="MomentsMethods-224"><a href="#MomentsMethods-224"><span class="linenos">224</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="MomentsMethods-225"><a href="#MomentsMethods-225"><span class="linenos">225</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="MomentsMethods-226"><a href="#MomentsMethods-226"><span class="linenos">226</span></a>        <span class="n">moment_0</span><span class="p">,</span>
@@ -666,7 +666,7 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.__init__-40"><a href="#MomentsMethods.__init__-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">double_precision</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.__init__-40"><a href="#MomentsMethods.__init__-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">double_precision</span><span class="p">):</span>
 </span><span id="MomentsMethods.__init__-41"><a href="#MomentsMethods.__init__-41"><span class="linenos">41</span></a>        <span class="n">ThrustRTCBackendMethods</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="MomentsMethods.__init__-42"><a href="#MomentsMethods.__init__-42"><span class="linenos">42</span></a>
 </span><span id="MomentsMethods.__init__-43"><a href="#MomentsMethods.__init__-43"><span class="linenos">43</span></a>        <span class="k">if</span> <span class="n">trtc</span><span class="o">.</span><span class="n">Get_PTX_Arch</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">60</span> <span class="ow">and</span> <span class="n">double_precision</span><span class="p">:</span>
@@ -692,7 +692,7 @@
     </div>
     <a class="headerlink" href="#MomentsMethods.ensure_floating_point"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.ensure_floating_point-156"><a href="#MomentsMethods.ensure_floating_point-156"><span class="linenos">156</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MomentsMethods.ensure_floating_point-157"><a href="#MomentsMethods.ensure_floating_point-157"><span class="linenos">157</span></a>    <span class="k">def</span> <span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="MomentsMethods.ensure_floating_point-157"><a href="#MomentsMethods.ensure_floating_point-157"><span class="linenos">157</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 </span><span id="MomentsMethods.ensure_floating_point-158"><a href="#MomentsMethods.ensure_floating_point-158"><span class="linenos">158</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
 </span><span id="MomentsMethods.ensure_floating_point-159"><a href="#MomentsMethods.ensure_floating_point-159"><span class="linenos">159</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
 </span><span id="MomentsMethods.ensure_floating_point-160"><a href="#MomentsMethods.ensure_floating_point-160"><span class="linenos">160</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
@@ -713,7 +713,7 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods.moments"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.moments-11"><a href="#MomentsMethods.moments-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.moments-11"><a href="#MomentsMethods.moments-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="MomentsMethods.moments-12"><a href="#MomentsMethods.moments-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="MomentsMethods.moments-13"><a href="#MomentsMethods.moments-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="MomentsMethods.moments-14"><a href="#MomentsMethods.moments-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -737,7 +737,7 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods.spectrum_moments"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.spectrum_moments-11"><a href="#MomentsMethods.spectrum_moments-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.spectrum_moments-11"><a href="#MomentsMethods.spectrum_moments-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="MomentsMethods.spectrum_moments-12"><a href="#MomentsMethods.spectrum_moments-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="MomentsMethods.spectrum_moments-13"><a href="#MomentsMethods.spectrum_moments-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="MomentsMethods.spectrum_moments-14"><a href="#MomentsMethods.spectrum_moments-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>

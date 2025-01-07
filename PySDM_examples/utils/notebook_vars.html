@@ -96,12 +96,12 @@
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot; helper routines for use in smoke tests &quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">nbformat</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">nbformat</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">def</span> <span class="nf">notebook_vars</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">notebook_vars</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes the code from all cells of the Jupyter notebook `file` and</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">    returns a dictionary with the notebook variables. If the `plot` argument</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">    is set to `True`, any code line within the notebook starting with `show_plot(`</span>
@@ -140,7 +140,7 @@
 
     </div>
     <a class="headerlink" href="#notebook_vars"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="notebook_vars-9"><a href="#notebook_vars-9"><span class="linenos"> 9</span></a><span class="k">def</span> <span class="nf">notebook_vars</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="notebook_vars-9"><a href="#notebook_vars-9"><span class="linenos"> 9</span></a><span class="k">def</span><span class="w"> </span><span class="nf">notebook_vars</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">plot</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 </span><span id="notebook_vars-10"><a href="#notebook_vars-10"><span class="linenos">10</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes the code from all cells of the Jupyter notebook `file` and</span>
 </span><span id="notebook_vars-11"><a href="#notebook_vars-11"><span class="linenos">11</span></a><span class="sd">    returns a dictionary with the notebook variables. If the `plot` argument</span>
 </span><span id="notebook_vars-12"><a href="#notebook_vars-12"><span class="linenos">12</span></a><span class="sd">    is set to `True`, any code line within the notebook starting with `show_plot(`</span>

@@ -155,19 +155,19 @@
 
                         <label class="view-source-button" for="mod-settings-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">PySDM_examples.Lowe_et_al_2019.constants_def</span> <span class="kn">import</span> <span class="n">LOWE_CONSTS</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">pystrict</span> <span class="kn">import</span> <span class="n">strict</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples.Lowe_et_al_2019.constants_def</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOWE_CONSTS</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pystrict</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span> <span class="nn">PySDM</span> <span class="kn">import</span> <span class="n">Formulae</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation.aerosol_composition</span> <span class="kn">import</span> <span class="n">DryAerosolMixture</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation.sampling</span> <span class="kn">import</span> <span class="n">spectral_sampling</span> <span class="k">as</span> <span class="n">spec_sampling</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM</span><span class="w"> </span><span class="kn">import</span> <span class="n">Formulae</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation.aerosol_composition</span><span class="w"> </span><span class="kn">import</span> <span class="n">DryAerosolMixture</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation.sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectral_sampling</span> <span class="k">as</span> <span class="n">spec_sampling</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="nd">@strict</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="n">dz</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="n">n_sd_per_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -213,7 +213,7 @@
 </span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>        <span class="p">)</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>
 </span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>    <span class="nd">@property</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>    <span class="k">def</span> <span class="nf">rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="n">const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">constants</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>        <span class="n">rhod0</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">p_d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
@@ -223,18 +223,18 @@
 </span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>        <span class="k">return</span> <span class="n">rhod0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>
 </span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>    <span class="nd">@property</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="k">def</span> <span class="nf">nt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">nt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>        <span class="n">nt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_max</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>        <span class="n">nt_int</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
 </span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">nt_int</span><span class="p">)</span>
 </span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>        <span class="k">return</span> <span class="n">nt_int</span>
 </span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>
 </span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>    <span class="nd">@property</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>    <span class="k">def</span> <span class="nf">steps_per_output_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">steps_per_output_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_interval</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
 </span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>
 </span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>    <span class="nd">@property</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>    <span class="k">def</span> <span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps_per_output_interval</span><span class="p">)</span>
 </span></pre></div>
 
@@ -253,8 +253,8 @@
     </div>
     <a class="headerlink" href="#Settings"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings-12"><a href="#Settings-12"><span class="linenos">12</span></a><span class="nd">@strict</span>
-</span><span id="Settings-13"><a href="#Settings-13"><span class="linenos">13</span></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">:</span>
-</span><span id="Settings-14"><a href="#Settings-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Settings-13"><a href="#Settings-13"><span class="linenos">13</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">:</span>
+</span><span id="Settings-14"><a href="#Settings-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Settings-15"><a href="#Settings-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Settings-16"><a href="#Settings-16"><span class="linenos">16</span></a>        <span class="n">dz</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span id="Settings-17"><a href="#Settings-17"><span class="linenos">17</span></a>        <span class="n">n_sd_per_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -300,7 +300,7 @@
 </span><span id="Settings-57"><a href="#Settings-57"><span class="linenos">57</span></a>        <span class="p">)</span>
 </span><span id="Settings-58"><a href="#Settings-58"><span class="linenos">58</span></a>
 </span><span id="Settings-59"><a href="#Settings-59"><span class="linenos">59</span></a>    <span class="nd">@property</span>
-</span><span id="Settings-60"><a href="#Settings-60"><span class="linenos">60</span></a>    <span class="k">def</span> <span class="nf">rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Settings-60"><a href="#Settings-60"><span class="linenos">60</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Settings-61"><a href="#Settings-61"><span class="linenos">61</span></a>        <span class="n">const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">constants</span>
 </span><span id="Settings-62"><a href="#Settings-62"><span class="linenos">62</span></a>        <span class="n">rhod0</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="Settings-63"><a href="#Settings-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">p_d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
@@ -310,18 +310,18 @@
 </span><span id="Settings-67"><a href="#Settings-67"><span class="linenos">67</span></a>        <span class="k">return</span> <span class="n">rhod0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
 </span><span id="Settings-68"><a href="#Settings-68"><span class="linenos">68</span></a>
 </span><span id="Settings-69"><a href="#Settings-69"><span class="linenos">69</span></a>    <span class="nd">@property</span>
-</span><span id="Settings-70"><a href="#Settings-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">nt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Settings-70"><a href="#Settings-70"><span class="linenos">70</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">nt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Settings-71"><a href="#Settings-71"><span class="linenos">71</span></a>        <span class="n">nt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_max</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="Settings-72"><a href="#Settings-72"><span class="linenos">72</span></a>        <span class="n">nt_int</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
 </span><span id="Settings-73"><a href="#Settings-73"><span class="linenos">73</span></a>        <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">nt_int</span><span class="p">)</span>
 </span><span id="Settings-74"><a href="#Settings-74"><span class="linenos">74</span></a>        <span class="k">return</span> <span class="n">nt_int</span>
 </span><span id="Settings-75"><a href="#Settings-75"><span class="linenos">75</span></a>
 </span><span id="Settings-76"><a href="#Settings-76"><span class="linenos">76</span></a>    <span class="nd">@property</span>
-</span><span id="Settings-77"><a href="#Settings-77"><span class="linenos">77</span></a>    <span class="k">def</span> <span class="nf">steps_per_output_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Settings-77"><a href="#Settings-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">steps_per_output_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Settings-78"><a href="#Settings-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_interval</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
 </span><span id="Settings-79"><a href="#Settings-79"><span class="linenos">79</span></a>
 </span><span id="Settings-80"><a href="#Settings-80"><span class="linenos">80</span></a>    <span class="nd">@property</span>
-</span><span id="Settings-81"><a href="#Settings-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="Settings-81"><a href="#Settings-81"><span class="linenos">81</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="Settings-82"><a href="#Settings-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps_per_output_interval</span><span class="p">)</span>
 </span></pre></div>
 
@@ -338,7 +338,7 @@
 
     </div>
     <a class="headerlink" href="#Settings.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.__init__-14"><a href="#Settings.__init__-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.__init__-14"><a href="#Settings.__init__-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Settings.__init__-15"><a href="#Settings.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Settings.__init__-16"><a href="#Settings.__init__-16"><span class="linenos">16</span></a>        <span class="n">dz</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span id="Settings.__init__-17"><a href="#Settings.__init__-17"><span class="linenos">17</span></a>        <span class="n">n_sd_per_mode</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -563,7 +563,7 @@
     </div>
     <a class="headerlink" href="#Settings.rho0"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.rho0-59"><a href="#Settings.rho0-59"><span class="linenos">59</span></a>    <span class="nd">@property</span>
-</span><span id="Settings.rho0-60"><a href="#Settings.rho0-60"><span class="linenos">60</span></a>    <span class="k">def</span> <span class="nf">rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Settings.rho0-60"><a href="#Settings.rho0-60"><span class="linenos">60</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Settings.rho0-61"><a href="#Settings.rho0-61"><span class="linenos">61</span></a>        <span class="n">const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">constants</span>
 </span><span id="Settings.rho0-62"><a href="#Settings.rho0-62"><span class="linenos">62</span></a>        <span class="n">rhod0</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="Settings.rho0-63"><a href="#Settings.rho0-63"><span class="linenos">63</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">p_d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
@@ -587,7 +587,7 @@
     </div>
     <a class="headerlink" href="#Settings.nt"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.nt-69"><a href="#Settings.nt-69"><span class="linenos">69</span></a>    <span class="nd">@property</span>
-</span><span id="Settings.nt-70"><a href="#Settings.nt-70"><span class="linenos">70</span></a>    <span class="k">def</span> <span class="nf">nt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Settings.nt-70"><a href="#Settings.nt-70"><span class="linenos">70</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">nt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Settings.nt-71"><a href="#Settings.nt-71"><span class="linenos">71</span></a>        <span class="n">nt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_max</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="Settings.nt-72"><a href="#Settings.nt-72"><span class="linenos">72</span></a>        <span class="n">nt_int</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
 </span><span id="Settings.nt-73"><a href="#Settings.nt-73"><span class="linenos">73</span></a>        <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="n">nt_int</span><span class="p">)</span>
@@ -608,7 +608,7 @@
     </div>
     <a class="headerlink" href="#Settings.steps_per_output_interval"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.steps_per_output_interval-76"><a href="#Settings.steps_per_output_interval-76"><span class="linenos">76</span></a>    <span class="nd">@property</span>
-</span><span id="Settings.steps_per_output_interval-77"><a href="#Settings.steps_per_output_interval-77"><span class="linenos">77</span></a>    <span class="k">def</span> <span class="nf">steps_per_output_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="Settings.steps_per_output_interval-77"><a href="#Settings.steps_per_output_interval-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">steps_per_output_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="Settings.steps_per_output_interval-78"><a href="#Settings.steps_per_output_interval-78"><span class="linenos">78</span></a>        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_interval</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
@@ -626,7 +626,7 @@
     </div>
     <a class="headerlink" href="#Settings.output_steps"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Settings.output_steps-80"><a href="#Settings.output_steps-80"><span class="linenos">80</span></a>    <span class="nd">@property</span>
-</span><span id="Settings.output_steps-81"><a href="#Settings.output_steps-81"><span class="linenos">81</span></a>    <span class="k">def</span> <span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+</span><span id="Settings.output_steps-81"><a href="#Settings.output_steps-81"><span class="linenos">81</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">output_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 </span><span id="Settings.output_steps-82"><a href="#Settings.output_steps-82"><span class="linenos">82</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps_per_output_interval</span><span class="p">)</span>
 </span></pre></div>
 

@@ -110,15 +110,15 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">[Murphy and Koop 2005](https://doi.org/10.1256/qj.04.94)</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span> <span class="nc">MurphyKoop2005</span><span class="p">:</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MurphyKoop2005</span><span class="p">:</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for 123 &lt; T &lt; 332 K, eq (10)&quot;&quot;&quot;</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">MK05_LIQ_C1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">MK05_LIQ_C2</span>
@@ -135,7 +135,7 @@
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="p">)</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for T &gt; 110 K, eq (7)&quot;&quot;&quot;</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">MK05_ICE_C1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">MK05_ICE_C2</span>
@@ -158,12 +158,12 @@
 
     </div>
     <a class="headerlink" href="#MurphyKoop2005"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MurphyKoop2005-9"><a href="#MurphyKoop2005-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">MurphyKoop2005</span><span class="p">:</span>
-</span><span id="MurphyKoop2005-10"><a href="#MurphyKoop2005-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MurphyKoop2005-9"><a href="#MurphyKoop2005-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MurphyKoop2005</span><span class="p">:</span>
+</span><span id="MurphyKoop2005-10"><a href="#MurphyKoop2005-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="MurphyKoop2005-11"><a href="#MurphyKoop2005-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
 </span><span id="MurphyKoop2005-12"><a href="#MurphyKoop2005-12"><span class="linenos">12</span></a>
 </span><span id="MurphyKoop2005-13"><a href="#MurphyKoop2005-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MurphyKoop2005-14"><a href="#MurphyKoop2005-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="MurphyKoop2005-14"><a href="#MurphyKoop2005-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="MurphyKoop2005-15"><a href="#MurphyKoop2005-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for 123 &lt; T &lt; 332 K, eq (10)&quot;&quot;&quot;</span>
 </span><span id="MurphyKoop2005-16"><a href="#MurphyKoop2005-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">MK05_LIQ_C1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
 </span><span id="MurphyKoop2005-17"><a href="#MurphyKoop2005-17"><span class="linenos">17</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">MK05_LIQ_C2</span>
@@ -180,7 +180,7 @@
 </span><span id="MurphyKoop2005-28"><a href="#MurphyKoop2005-28"><span class="linenos">28</span></a>        <span class="p">)</span>
 </span><span id="MurphyKoop2005-29"><a href="#MurphyKoop2005-29"><span class="linenos">29</span></a>
 </span><span id="MurphyKoop2005-30"><a href="#MurphyKoop2005-30"><span class="linenos">30</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MurphyKoop2005-31"><a href="#MurphyKoop2005-31"><span class="linenos">31</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="MurphyKoop2005-31"><a href="#MurphyKoop2005-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="MurphyKoop2005-32"><a href="#MurphyKoop2005-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for T &gt; 110 K, eq (7)&quot;&quot;&quot;</span>
 </span><span id="MurphyKoop2005-33"><a href="#MurphyKoop2005-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">MK05_ICE_C1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
 </span><span id="MurphyKoop2005-34"><a href="#MurphyKoop2005-34"><span class="linenos">34</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">MK05_ICE_C2</span>
@@ -203,7 +203,7 @@
 
     </div>
     <a class="headerlink" href="#MurphyKoop2005.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MurphyKoop2005.__init__-10"><a href="#MurphyKoop2005.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MurphyKoop2005.__init__-10"><a href="#MurphyKoop2005.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="MurphyKoop2005.__init__-11"><a href="#MurphyKoop2005.__init__-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
@@ -224,7 +224,7 @@
     </div>
     <a class="headerlink" href="#MurphyKoop2005.pvs_water"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MurphyKoop2005.pvs_water-13"><a href="#MurphyKoop2005.pvs_water-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MurphyKoop2005.pvs_water-14"><a href="#MurphyKoop2005.pvs_water-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="MurphyKoop2005.pvs_water-14"><a href="#MurphyKoop2005.pvs_water-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pvs_water</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="MurphyKoop2005.pvs_water-15"><a href="#MurphyKoop2005.pvs_water-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for 123 &lt; T &lt; 332 K, eq (10)&quot;&quot;&quot;</span>
 </span><span id="MurphyKoop2005.pvs_water-16"><a href="#MurphyKoop2005.pvs_water-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">MK05_LIQ_C1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
 </span><span id="MurphyKoop2005.pvs_water-17"><a href="#MurphyKoop2005.pvs_water-17"><span class="linenos">17</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">MK05_LIQ_C2</span>
@@ -260,7 +260,7 @@
     </div>
     <a class="headerlink" href="#MurphyKoop2005.pvs_ice"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="MurphyKoop2005.pvs_ice-30"><a href="#MurphyKoop2005.pvs_ice-30"><span class="linenos">30</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MurphyKoop2005.pvs_ice-31"><a href="#MurphyKoop2005.pvs_ice-31"><span class="linenos">31</span></a>    <span class="k">def</span> <span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+</span><span id="MurphyKoop2005.pvs_ice-31"><a href="#MurphyKoop2005.pvs_ice-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pvs_ice</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
 </span><span id="MurphyKoop2005.pvs_ice-32"><a href="#MurphyKoop2005.pvs_ice-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;valid for T &gt; 110 K, eq (7)&quot;&quot;&quot;</span>
 </span><span id="MurphyKoop2005.pvs_ice-33"><a href="#MurphyKoop2005.pvs_ice-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">MK05_ICE_C1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
 </span><span id="MurphyKoop2005.pvs_ice-34"><a href="#MurphyKoop2005.pvs_ice-34"><span class="linenos">34</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">MK05_ICE_C2</span>

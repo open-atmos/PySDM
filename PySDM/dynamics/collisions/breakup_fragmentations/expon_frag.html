@@ -103,13 +103,13 @@ P(x) = exp(-x / lambda); lambda specified in volume units</p>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">P(x) = exp(-x / lambda); lambda specified in volume units</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span> <span class="nn">warnings</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">.exponential</span> <span class="kn">import</span> <span class="n">Exponential</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.exponential</span><span class="w"> </span><span class="kn">import</span> <span class="n">Exponential</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span> <span class="nc">ExponFrag</span><span class="p">(</span><span class="n">Exponential</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ExponFrag</span><span class="p">(</span><span class="n">Exponential</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Class has been renamed&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
 </span></pre></div>
 
@@ -126,8 +126,8 @@ P(x) = exp(-x / lambda); lambda specified in volume units</p>
 
     </div>
     <a class="headerlink" href="#ExponFrag"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ExponFrag-12"><a href="#ExponFrag-12"><span class="linenos">12</span></a><span class="k">class</span> <span class="nc">ExponFrag</span><span class="p">(</span><span class="n">Exponential</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="ExponFrag-13"><a href="#ExponFrag-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ExponFrag-12"><a href="#ExponFrag-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ExponFrag</span><span class="p">(</span><span class="n">Exponential</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="ExponFrag-13"><a href="#ExponFrag-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__init_subclass__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 </span><span id="ExponFrag-14"><a href="#ExponFrag-14"><span class="linenos">14</span></a>        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Class has been renamed&quot;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
 </span></pre></div>
 

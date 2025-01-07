@@ -110,13 +110,13 @@
 
                         <label class="view-source-button" for="mod-progbar_updater-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="k">class</span> <span class="nc">ProgbarUpdater</span><span class="p">:</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">2</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progbar</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">):</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">1</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ProgbarUpdater</span><span class="p">:</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">2</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progbar</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">):</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">3</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">4</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">5</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">progbar</span> <span class="o">=</span> <span class="n">progbar</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">7</span></a>    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">7</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">8</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">progbar</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="p">)</span>
 </span></pre></div>
@@ -134,13 +134,13 @@
 
     </div>
     <a class="headerlink" href="#ProgbarUpdater"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ProgbarUpdater-2"><a href="#ProgbarUpdater-2"><span class="linenos"> 2</span></a><span class="k">class</span> <span class="nc">ProgbarUpdater</span><span class="p">:</span>
-</span><span id="ProgbarUpdater-3"><a href="#ProgbarUpdater-3"><span class="linenos"> 3</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progbar</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ProgbarUpdater-2"><a href="#ProgbarUpdater-2"><span class="linenos"> 2</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ProgbarUpdater</span><span class="p">:</span>
+</span><span id="ProgbarUpdater-3"><a href="#ProgbarUpdater-3"><span class="linenos"> 3</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progbar</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">):</span>
 </span><span id="ProgbarUpdater-4"><a href="#ProgbarUpdater-4"><span class="linenos"> 4</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
 </span><span id="ProgbarUpdater-5"><a href="#ProgbarUpdater-5"><span class="linenos"> 5</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ProgbarUpdater-6"><a href="#ProgbarUpdater-6"><span class="linenos"> 6</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">progbar</span> <span class="o">=</span> <span class="n">progbar</span>
 </span><span id="ProgbarUpdater-7"><a href="#ProgbarUpdater-7"><span class="linenos"> 7</span></a>
-</span><span id="ProgbarUpdater-8"><a href="#ProgbarUpdater-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ProgbarUpdater-8"><a href="#ProgbarUpdater-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="ProgbarUpdater-9"><a href="#ProgbarUpdater-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
 </span><span id="ProgbarUpdater-10"><a href="#ProgbarUpdater-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">progbar</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="p">)</span>
 </span></pre></div>
@@ -158,7 +158,7 @@
 
     </div>
     <a class="headerlink" href="#ProgbarUpdater.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ProgbarUpdater.__init__-3"><a href="#ProgbarUpdater.__init__-3"><span class="linenos">3</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progbar</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ProgbarUpdater.__init__-3"><a href="#ProgbarUpdater.__init__-3"><span class="linenos">3</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progbar</span><span class="p">,</span> <span class="n">max_steps</span><span class="p">):</span>
 </span><span id="ProgbarUpdater.__init__-4"><a href="#ProgbarUpdater.__init__-4"><span class="linenos">4</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span> <span class="o">=</span> <span class="n">max_steps</span>
 </span><span id="ProgbarUpdater.__init__-5"><a href="#ProgbarUpdater.__init__-5"><span class="linenos">5</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="ProgbarUpdater.__init__-6"><a href="#ProgbarUpdater.__init__-6"><span class="linenos">6</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">progbar</span> <span class="o">=</span> <span class="n">progbar</span>
@@ -212,7 +212,7 @@
 
     </div>
     <a class="headerlink" href="#ProgbarUpdater.notify"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ProgbarUpdater.notify-8"><a href="#ProgbarUpdater.notify-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ProgbarUpdater.notify-8"><a href="#ProgbarUpdater.notify-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">notify</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="ProgbarUpdater.notify-9"><a href="#ProgbarUpdater.notify-9"><span class="linenos"> 9</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
 </span><span id="ProgbarUpdater.notify-10"><a href="#ProgbarUpdater.notify-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">progbar</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">steps</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_steps</span><span class="p">)</span>
 </span></pre></div>

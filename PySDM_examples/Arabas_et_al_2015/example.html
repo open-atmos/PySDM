@@ -92,17 +92,17 @@
 
                         <label class="view-source-button" for="mod-example-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span> <span class="nn">open_atmos_jupyter_utils</span> <span class="kn">import</span> <span class="n">TemporaryFile</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span> <span class="nn">PySDM_examples.Arabas_et_al_2015</span> <span class="kn">import</span> <span class="n">Settings</span><span class="p">,</span> <span class="n">SpinUp</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">PySDM_examples.Szumowski_et_al_1998</span> <span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">Storage</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span> <span class="nn">PySDM_examples.utils</span> <span class="kn">import</span> <span class="n">DummyController</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">open_atmos_jupyter_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemporaryFile</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples.Arabas_et_al_2015</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span><span class="p">,</span> <span class="n">SpinUp</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples.Szumowski_et_al_1998</span><span class="w"> </span><span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">Storage</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">DummyController</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">PySDM</span> <span class="kn">import</span> <span class="n">Formulae</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">PySDM.exporters</span> <span class="kn">import</span> <span class="n">NetCDFExporter</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM</span><span class="w"> </span><span class="kn">import</span> <span class="n">Formulae</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.exporters</span><span class="w"> </span><span class="kn">import</span> <span class="n">NetCDFExporter</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">Formulae</span><span class="p">())</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">settings</span><span class="o">.</span><span class="n">n_sd_per_gridbox</span> <span class="o">=</span> <span class="mi">25</span>
@@ -135,7 +135,7 @@
 
     </div>
     <a class="headerlink" href="#main"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="main-12"><a href="#main-12"><span class="linenos">12</span></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="main-12"><a href="#main-12"><span class="linenos">12</span></a><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
 </span><span id="main-13"><a href="#main-13"><span class="linenos">13</span></a>    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">(</span><span class="n">Formulae</span><span class="p">())</span>
 </span><span id="main-14"><a href="#main-14"><span class="linenos">14</span></a>
 </span><span id="main-15"><a href="#main-15"><span class="linenos">15</span></a>    <span class="n">settings</span><span class="o">.</span><span class="n">n_sd_per_gridbox</span> <span class="o">=</span> <span class="mi">25</span>

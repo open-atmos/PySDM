@@ -146,13 +146,13 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos">   2</span></a><span class="sd">GPU implementation of backend methods for particle collisions</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">   3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">   4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">   5</span></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">   5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">   6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">   7</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_thrust_rtc.conf</span> <span class="kn">import</span> <span class="n">NICE_THRUST_FLAGS</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">   8</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_thrust_rtc.nice_thrust</span> <span class="kn">import</span> <span class="n">nice_thrust</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">   7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_thrust_rtc.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">NICE_THRUST_FLAGS</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">   8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_thrust_rtc.nice_thrust</span><span class="w"> </span><span class="kn">import</span> <span class="n">nice_thrust</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">   9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">  10</span></a><span class="kn">from</span> <span class="nn">..conf</span> <span class="kn">import</span> <span class="n">trtc</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">  11</span></a><span class="kn">from</span> <span class="nn">..methods.thrust_rtc_backend_methods</span> <span class="kn">import</span> <span class="n">ThrustRTCBackendMethods</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">  10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">..conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">trtc</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">  11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">..methods.thrust_rtc_backend_methods</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThrustRTCBackendMethods</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">  12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">  13</span></a><span class="c1"># pylint: disable=too-many-lines</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">  14</span></a>
@@ -359,11 +359,11 @@
 </span><span id="L-215"><a href="#L-215"><span class="linenos"> 215</span></a><span class="s2">&quot;&quot;&quot;</span>
 </span><span id="L-216"><a href="#L-216"><span class="linenos"> 216</span></a>
 </span><span id="L-217"><a href="#L-217"><span class="linenos"> 217</span></a>
-</span><span id="L-218"><a href="#L-218"><span class="linenos"> 218</span></a><span class="k">class</span> <span class="nc">CollisionsMethods</span><span class="p">(</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos"> 218</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CollisionsMethods</span><span class="p">(</span>
 </span><span id="L-219"><a href="#L-219"><span class="linenos"> 219</span></a>    <span class="n">ThrustRTCBackendMethods</span>
 </span><span id="L-220"><a href="#L-220"><span class="linenos"> 220</span></a><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 </span><span id="L-221"><a href="#L-221"><span class="linenos"> 221</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-222"><a href="#L-222"><span class="linenos"> 222</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos"> 222</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-223"><a href="#L-223"><span class="linenos"> 223</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos"> 224</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;dt_todo&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_left&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_max&quot;</span><span class="p">),</span>
 </span><span id="L-225"><a href="#L-225"><span class="linenos"> 225</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;cid&quot;</span><span class="p">,</span>
@@ -373,7 +373,7 @@
 </span><span id="L-229"><a href="#L-229"><span class="linenos"> 229</span></a>        <span class="p">)</span>
 </span><span id="L-230"><a href="#L-230"><span class="linenos"> 230</span></a>
 </span><span id="L-231"><a href="#L-231"><span class="linenos"> 231</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-232"><a href="#L-232"><span class="linenos"> 232</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-232"><a href="#L-232"><span class="linenos"> 232</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-233"><a href="#L-233"><span class="linenos"> 233</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-234"><a href="#L-234"><span class="linenos"> 234</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="L-235"><a href="#L-235"><span class="linenos"> 235</span></a>                <span class="s2">&quot;prob&quot;</span><span class="p">,</span>
@@ -406,7 +406,7 @@
 </span><span id="L-262"><a href="#L-262"><span class="linenos"> 262</span></a>        <span class="p">)</span>
 </span><span id="L-263"><a href="#L-263"><span class="linenos"> 263</span></a>
 </span><span id="L-264"><a href="#L-264"><span class="linenos"> 264</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-265"><a href="#L-265"><span class="linenos"> 265</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-265"><a href="#L-265"><span class="linenos"> 265</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-266"><a href="#L-266"><span class="linenos"> 266</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-267"><a href="#L-267"><span class="linenos"> 267</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;prob&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;dt&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_todo&quot;</span><span class="p">),</span>
 </span><span id="L-268"><a href="#L-268"><span class="linenos"> 268</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -427,7 +427,7 @@
 </span><span id="L-283"><a href="#L-283"><span class="linenos"> 283</span></a>        <span class="p">)</span>
 </span><span id="L-284"><a href="#L-284"><span class="linenos"> 284</span></a>
 </span><span id="L-285"><a href="#L-285"><span class="linenos"> 285</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-286"><a href="#L-286"><span class="linenos"> 286</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-286"><a href="#L-286"><span class="linenos"> 286</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-287"><a href="#L-287"><span class="linenos"> 287</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-288"><a href="#L-288"><span class="linenos"> 288</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;dt_left&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_todo&quot;</span><span class="p">,</span> <span class="s2">&quot;stats_n_substep&quot;</span><span class="p">),</span>
 </span><span id="L-289"><a href="#L-289"><span class="linenos"> 289</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;cid&quot;</span><span class="p">,</span>
@@ -440,7 +440,7 @@
 </span><span id="L-296"><a href="#L-296"><span class="linenos"> 296</span></a>        <span class="p">)</span>
 </span><span id="L-297"><a href="#L-297"><span class="linenos"> 297</span></a>
 </span><span id="L-298"><a href="#L-298"><span class="linenos"> 298</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-299"><a href="#L-299"><span class="linenos"> 299</span></a>    <span class="k">def</span> <span class="nf">__sort_by_cell_id_and_update_cell_start_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-299"><a href="#L-299"><span class="linenos"> 299</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sort_by_cell_id_and_update_cell_start_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-300"><a href="#L-300"><span class="linenos"> 300</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-301"><a href="#L-301"><span class="linenos"> 301</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_start&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">),</span>
 </span><span id="L-302"><a href="#L-302"><span class="linenos"> 302</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -459,7 +459,7 @@
 </span><span id="L-315"><a href="#L-315"><span class="linenos"> 315</span></a>        <span class="p">)</span>
 </span><span id="L-316"><a href="#L-316"><span class="linenos"> 316</span></a>
 </span><span id="L-317"><a href="#L-317"><span class="linenos"> 317</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-318"><a href="#L-318"><span class="linenos"> 318</span></a>    <span class="k">def</span> <span class="nf">__collision_coalescence_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-318"><a href="#L-318"><span class="linenos"> 318</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__collision_coalescence_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-319"><a href="#L-319"><span class="linenos"> 319</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-320"><a href="#L-320"><span class="linenos"> 320</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="L-321"><a href="#L-321"><span class="linenos"> 321</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
@@ -494,7 +494,7 @@
 </span><span id="L-350"><a href="#L-350"><span class="linenos"> 350</span></a>        <span class="p">)</span>
 </span><span id="L-351"><a href="#L-351"><span class="linenos"> 351</span></a>
 </span><span id="L-352"><a href="#L-352"><span class="linenos"> 352</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-353"><a href="#L-353"><span class="linenos"> 353</span></a>    <span class="k">def</span> <span class="nf">__collision_coalescence_breakup_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-353"><a href="#L-353"><span class="linenos"> 353</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__collision_coalescence_breakup_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-354"><a href="#L-354"><span class="linenos"> 354</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-355"><a href="#L-355"><span class="linenos"> 355</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="L-356"><a href="#L-356"><span class="linenos"> 356</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
@@ -569,7 +569,7 @@
 </span><span id="L-425"><a href="#L-425"><span class="linenos"> 425</span></a>        <span class="p">)</span>
 </span><span id="L-426"><a href="#L-426"><span class="linenos"> 426</span></a>
 </span><span id="L-427"><a href="#L-427"><span class="linenos"> 427</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-428"><a href="#L-428"><span class="linenos"> 428</span></a>    <span class="k">def</span> <span class="nf">__compute_gamma_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-428"><a href="#L-428"><span class="linenos"> 428</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_gamma_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-429"><a href="#L-429"><span class="linenos"> 429</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-430"><a href="#L-430"><span class="linenos"> 430</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="L-431"><a href="#L-431"><span class="linenos"> 431</span></a>                <span class="s2">&quot;prob&quot;</span><span class="p">,</span>
@@ -615,7 +615,7 @@
 </span><span id="L-471"><a href="#L-471"><span class="linenos"> 471</span></a>        <span class="p">)</span>
 </span><span id="L-472"><a href="#L-472"><span class="linenos"> 472</span></a>
 </span><span id="L-473"><a href="#L-473"><span class="linenos"> 473</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-474"><a href="#L-474"><span class="linenos"> 474</span></a>    <span class="k">def</span> <span class="nf">__normalize_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-474"><a href="#L-474"><span class="linenos"> 474</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__normalize_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-475"><a href="#L-475"><span class="linenos"> 475</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-476"><a href="#L-476"><span class="linenos"> 476</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_start&quot;</span><span class="p">,</span> <span class="s2">&quot;norm_factor&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_div_dv&quot;</span><span class="p">),</span>
 </span><span id="L-477"><a href="#L-477"><span class="linenos"> 477</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -632,7 +632,7 @@
 </span><span id="L-488"><a href="#L-488"><span class="linenos"> 488</span></a>        <span class="p">)</span>
 </span><span id="L-489"><a href="#L-489"><span class="linenos"> 489</span></a>
 </span><span id="L-490"><a href="#L-490"><span class="linenos"> 490</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-491"><a href="#L-491"><span class="linenos"> 491</span></a>    <span class="k">def</span> <span class="nf">__normalize_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-491"><a href="#L-491"><span class="linenos"> 491</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__normalize_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-492"><a href="#L-492"><span class="linenos"> 492</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-493"><a href="#L-493"><span class="linenos"> 493</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;prob&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;norm_factor&quot;</span><span class="p">),</span>
 </span><span id="L-494"><a href="#L-494"><span class="linenos"> 494</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -642,7 +642,7 @@
 </span><span id="L-498"><a href="#L-498"><span class="linenos"> 498</span></a>        <span class="p">)</span>
 </span><span id="L-499"><a href="#L-499"><span class="linenos"> 499</span></a>
 </span><span id="L-500"><a href="#L-500"><span class="linenos"> 500</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-501"><a href="#L-501"><span class="linenos"> 501</span></a>    <span class="k">def</span> <span class="nf">__remove_zero_n_or_flagged_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-501"><a href="#L-501"><span class="linenos"> 501</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__remove_zero_n_or_flagged_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-502"><a href="#L-502"><span class="linenos"> 502</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-503"><a href="#L-503"><span class="linenos"> 503</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">,</span> <span class="s2">&quot;n_sd&quot;</span><span class="p">),</span>
 </span><span id="L-504"><a href="#L-504"><span class="linenos"> 504</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -654,7 +654,7 @@
 </span><span id="L-510"><a href="#L-510"><span class="linenos"> 510</span></a>        <span class="p">)</span>
 </span><span id="L-511"><a href="#L-511"><span class="linenos"> 511</span></a>
 </span><span id="L-512"><a href="#L-512"><span class="linenos"> 512</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-513"><a href="#L-513"><span class="linenos"> 513</span></a>    <span class="k">def</span> <span class="nf">__cell_id_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-513"><a href="#L-513"><span class="linenos"> 513</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__cell_id_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-514"><a href="#L-514"><span class="linenos"> 514</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-515"><a href="#L-515"><span class="linenos"> 515</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_origin&quot;</span><span class="p">,</span> <span class="s2">&quot;strides&quot;</span><span class="p">,</span> <span class="s2">&quot;n_dims&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">),</span>
 </span><span id="L-516"><a href="#L-516"><span class="linenos"> 516</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -667,7 +667,7 @@
 </span><span id="L-523"><a href="#L-523"><span class="linenos"> 523</span></a>        <span class="p">)</span>
 </span><span id="L-524"><a href="#L-524"><span class="linenos"> 524</span></a>
 </span><span id="L-525"><a href="#L-525"><span class="linenos"> 525</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-526"><a href="#L-526"><span class="linenos"> 526</span></a>    <span class="k">def</span> <span class="nf">__exp_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-526"><a href="#L-526"><span class="linenos"> 526</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__exp_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-527"><a href="#L-527"><span class="linenos"> 527</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-528"><a href="#L-528"><span class="linenos"> 528</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">,</span> <span class="s2">&quot;tol&quot;</span><span class="p">),</span>
 </span><span id="L-529"><a href="#L-529"><span class="linenos"> 529</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -677,7 +677,7 @@
 </span><span id="L-533"><a href="#L-533"><span class="linenos"> 533</span></a>        <span class="p">)</span>
 </span><span id="L-534"><a href="#L-534"><span class="linenos"> 534</span></a>
 </span><span id="L-535"><a href="#L-535"><span class="linenos"> 535</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-536"><a href="#L-536"><span class="linenos"> 536</span></a>    <span class="k">def</span> <span class="nf">__fragmentation_limiters_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-536"><a href="#L-536"><span class="linenos"> 536</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__fragmentation_limiters_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-537"><a href="#L-537"><span class="linenos"> 537</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-538"><a href="#L-538"><span class="linenos"> 538</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="L-539"><a href="#L-539"><span class="linenos"> 539</span></a>                <span class="s2">&quot;n_fragment&quot;</span><span class="p">,</span>
@@ -707,7 +707,7 @@
 </span><span id="L-563"><a href="#L-563"><span class="linenos"> 563</span></a>        <span class="p">)</span>
 </span><span id="L-564"><a href="#L-564"><span class="linenos"> 564</span></a>
 </span><span id="L-565"><a href="#L-565"><span class="linenos"> 565</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-566"><a href="#L-566"><span class="linenos"> 566</span></a>    <span class="k">def</span> <span class="nf">__gauss_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-566"><a href="#L-566"><span class="linenos"> 566</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__gauss_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-567"><a href="#L-567"><span class="linenos"> 567</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-568"><a href="#L-568"><span class="linenos"> 568</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">),</span>
 </span><span id="L-569"><a href="#L-569"><span class="linenos"> 569</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -721,7 +721,7 @@
 </span><span id="L-577"><a href="#L-577"><span class="linenos"> 577</span></a>        <span class="p">)</span>
 </span><span id="L-578"><a href="#L-578"><span class="linenos"> 578</span></a>
 </span><span id="L-579"><a href="#L-579"><span class="linenos"> 579</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-580"><a href="#L-580"><span class="linenos"> 580</span></a>    <span class="k">def</span> <span class="nf">__slams_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-580"><a href="#L-580"><span class="linenos"> 580</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__slams_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-581"><a href="#L-581"><span class="linenos"> 581</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-582"><a href="#L-582"><span class="linenos"> 582</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;n_fragment&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;x_plus_y&quot;</span><span class="p">,</span> <span class="s2">&quot;probs&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">),</span>
 </span><span id="L-583"><a href="#L-583"><span class="linenos"> 583</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -741,7 +741,7 @@
 </span><span id="L-597"><a href="#L-597"><span class="linenos"> 597</span></a>        <span class="p">)</span>
 </span><span id="L-598"><a href="#L-598"><span class="linenos"> 598</span></a>
 </span><span id="L-599"><a href="#L-599"><span class="linenos"> 599</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-600"><a href="#L-600"><span class="linenos"> 600</span></a>    <span class="k">def</span> <span class="nf">__feingold1988_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-600"><a href="#L-600"><span class="linenos"> 600</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__feingold1988_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-601"><a href="#L-601"><span class="linenos"> 601</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-602"><a href="#L-602"><span class="linenos"> 602</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;x_plus_y&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">,</span> <span class="s2">&quot;fragtol&quot;</span><span class="p">),</span>
 </span><span id="L-603"><a href="#L-603"><span class="linenos"> 603</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -758,7 +758,7 @@
 </span><span id="L-614"><a href="#L-614"><span class="linenos"> 614</span></a>        <span class="p">)</span>
 </span><span id="L-615"><a href="#L-615"><span class="linenos"> 615</span></a>
 </span><span id="L-616"><a href="#L-616"><span class="linenos"> 616</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-617"><a href="#L-617"><span class="linenos"> 617</span></a>    <span class="k">def</span> <span class="nf">__straub_Nr_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-617"><a href="#L-617"><span class="linenos"> 617</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__straub_Nr_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-618"><a href="#L-618"><span class="linenos"> 618</span></a>        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 </span><span id="L-619"><a href="#L-619"><span class="linenos"> 619</span></a><span class="s2">                if (gam[i] * CW[i] &gt;= 7.0) {</span>
 </span><span id="L-620"><a href="#L-620"><span class="linenos"> 620</span></a><span class="s2">                    Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);</span>
@@ -777,7 +777,7 @@
 </span><span id="L-633"><a href="#L-633"><span class="linenos"> 633</span></a><span class="s2">        &quot;&quot;&quot;</span>
 </span><span id="L-634"><a href="#L-634"><span class="linenos"> 634</span></a>
 </span><span id="L-635"><a href="#L-635"><span class="linenos"> 635</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-636"><a href="#L-636"><span class="linenos"> 636</span></a>    <span class="k">def</span> <span class="nf">__straub_mass_remainder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-636"><a href="#L-636"><span class="linenos"> 636</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__straub_mass_remainder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-637"><a href="#L-637"><span class="linenos"> 637</span></a>        <span class="n">const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">constants</span>
 </span><span id="L-638"><a href="#L-638"><span class="linenos"> 638</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 </span><span id="L-639"><a href="#L-639"><span class="linenos"> 639</span></a><span class="s2">                Nr1[i] = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2) / 2);</span>
@@ -794,7 +794,7 @@
 </span><span id="L-650"><a href="#L-650"><span class="linenos"> 650</span></a><span class="s2">        &quot;&quot;&quot;</span>
 </span><span id="L-651"><a href="#L-651"><span class="linenos"> 651</span></a>
 </span><span id="L-652"><a href="#L-652"><span class="linenos"> 652</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-653"><a href="#L-653"><span class="linenos"> 653</span></a>    <span class="k">def</span> <span class="nf">__straub_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-653"><a href="#L-653"><span class="linenos"> 653</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__straub_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-654"><a href="#L-654"><span class="linenos"> 654</span></a>        <span class="n">const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">constants</span>
 </span><span id="L-655"><a href="#L-655"><span class="linenos"> 655</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-656"><a href="#L-656"><span class="linenos"> 656</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
@@ -853,7 +853,7 @@
 </span><span id="L-709"><a href="#L-709"><span class="linenos"> 709</span></a>        <span class="p">)</span>
 </span><span id="L-710"><a href="#L-710"><span class="linenos"> 710</span></a>
 </span><span id="L-711"><a href="#L-711"><span class="linenos"> 711</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-712"><a href="#L-712"><span class="linenos"> 712</span></a>    <span class="k">def</span> <span class="nf">adaptive_sdm_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt_left</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">):</span>
+</span><span id="L-712"><a href="#L-712"><span class="linenos"> 712</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">adaptive_sdm_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt_left</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">):</span>
 </span><span id="L-713"><a href="#L-713"><span class="linenos"> 713</span></a>        <span class="n">i</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">Find</span><span class="p">(</span><span class="n">dt_left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 </span><span id="L-714"><a href="#L-714"><span class="linenos"> 714</span></a>        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="L-715"><a href="#L-715"><span class="linenos"> 715</span></a>            <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dt_left</span><span class="p">)</span>
@@ -861,7 +861,7 @@
 </span><span id="L-717"><a href="#L-717"><span class="linenos"> 717</span></a>
 </span><span id="L-718"><a href="#L-718"><span class="linenos"> 718</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="L-719"><a href="#L-719"><span class="linenos"> 719</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-720"><a href="#L-720"><span class="linenos"> 720</span></a>    <span class="k">def</span> <span class="nf">scale_prob_for_adaptive_sdm_gamma</span><span class="p">(</span>
+</span><span id="L-720"><a href="#L-720"><span class="linenos"> 720</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">scale_prob_for_adaptive_sdm_gamma</span><span class="p">(</span>
 </span><span id="L-721"><a href="#L-721"><span class="linenos"> 721</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-722"><a href="#L-722"><span class="linenos"> 722</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-723"><a href="#L-723"><span class="linenos"> 723</span></a>        <span class="n">prob</span><span class="p">,</span>
@@ -910,7 +910,7 @@
 </span><span id="L-766"><a href="#L-766"><span class="linenos"> 766</span></a>        <span class="p">)</span>
 </span><span id="L-767"><a href="#L-767"><span class="linenos"> 767</span></a>
 </span><span id="L-768"><a href="#L-768"><span class="linenos"> 768</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-769"><a href="#L-769"><span class="linenos"> 769</span></a>    <span class="k">def</span> <span class="nf">cell_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_origin</span><span class="p">,</span> <span class="n">strides</span><span class="p">):</span>
+</span><span id="L-769"><a href="#L-769"><span class="linenos"> 769</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cell_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_origin</span><span class="p">,</span> <span class="n">strides</span><span class="p">):</span>
 </span><span id="L-770"><a href="#L-770"><span class="linenos"> 770</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_id</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="L-771"><a href="#L-771"><span class="linenos"> 771</span></a>            <span class="k">return</span>
 </span><span id="L-772"><a href="#L-772"><span class="linenos"> 772</span></a>
@@ -926,7 +926,7 @@
 </span><span id="L-782"><a href="#L-782"><span class="linenos"> 782</span></a>
 </span><span id="L-783"><a href="#L-783"><span class="linenos"> 783</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="L-784"><a href="#L-784"><span class="linenos"> 784</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-785"><a href="#L-785"><span class="linenos"> 785</span></a>    <span class="k">def</span> <span class="nf">collision_coalescence</span><span class="p">(</span>
+</span><span id="L-785"><a href="#L-785"><span class="linenos"> 785</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">collision_coalescence</span><span class="p">(</span>
 </span><span id="L-786"><a href="#L-786"><span class="linenos"> 786</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-787"><a href="#L-787"><span class="linenos"> 787</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-788"><a href="#L-788"><span class="linenos"> 788</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
@@ -959,7 +959,7 @@
 </span><span id="L-815"><a href="#L-815"><span class="linenos"> 815</span></a>        <span class="p">)</span>
 </span><span id="L-816"><a href="#L-816"><span class="linenos"> 816</span></a>
 </span><span id="L-817"><a href="#L-817"><span class="linenos"> 817</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-818"><a href="#L-818"><span class="linenos"> 818</span></a>    <span class="k">def</span> <span class="nf">collision_coalescence_breakup</span><span class="p">(</span>  <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
+</span><span id="L-818"><a href="#L-818"><span class="linenos"> 818</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">collision_coalescence_breakup</span><span class="p">(</span>  <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
 </span><span id="L-819"><a href="#L-819"><span class="linenos"> 819</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-820"><a href="#L-820"><span class="linenos"> 820</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-821"><a href="#L-821"><span class="linenos"> 821</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
@@ -1011,7 +1011,7 @@
 </span><span id="L-867"><a href="#L-867"><span class="linenos"> 867</span></a>        <span class="p">)</span>
 </span><span id="L-868"><a href="#L-868"><span class="linenos"> 868</span></a>
 </span><span id="L-869"><a href="#L-869"><span class="linenos"> 869</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-870"><a href="#L-870"><span class="linenos"> 870</span></a>    <span class="k">def</span> <span class="nf">compute_gamma</span><span class="p">(</span>
+</span><span id="L-870"><a href="#L-870"><span class="linenos"> 870</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">compute_gamma</span><span class="p">(</span>
 </span><span id="L-871"><a href="#L-871"><span class="linenos"> 871</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-872"><a href="#L-872"><span class="linenos"> 872</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-873"><a href="#L-873"><span class="linenos"> 873</span></a>        <span class="n">prob</span><span class="p">,</span>
@@ -1041,14 +1041,14 @@
 </span><span id="L-897"><a href="#L-897"><span class="linenos"> 897</span></a>        <span class="p">)</span>
 </span><span id="L-898"><a href="#L-898"><span class="linenos"> 898</span></a>
 </span><span id="L-899"><a href="#L-899"><span class="linenos"> 899</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
-</span><span id="L-900"><a href="#L-900"><span class="linenos"> 900</span></a>    <span class="k">def</span> <span class="nf">make_cell_caretaker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx_shape</span><span class="p">,</span> <span class="n">idx_dtype</span><span class="p">,</span> <span class="n">cell_start_len</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="L-900"><a href="#L-900"><span class="linenos"> 900</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">make_cell_caretaker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx_shape</span><span class="p">,</span> <span class="n">idx_dtype</span><span class="p">,</span> <span class="n">cell_start_len</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="L-901"><a href="#L-901"><span class="linenos"> 901</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">scheme</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">):</span>
 </span><span id="L-902"><a href="#L-902"><span class="linenos"> 902</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </span><span id="L-903"><a href="#L-903"><span class="linenos"> 903</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_by_cell_id_and_update_cell_start</span>
 </span><span id="L-904"><a href="#L-904"><span class="linenos"> 904</span></a>
 </span><span id="L-905"><a href="#L-905"><span class="linenos"> 905</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="L-906"><a href="#L-906"><span class="linenos"> 906</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-907"><a href="#L-907"><span class="linenos"> 907</span></a>    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span>
+</span><span id="L-907"><a href="#L-907"><span class="linenos"> 907</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">normalize</span><span class="p">(</span>
 </span><span id="L-908"><a href="#L-908"><span class="linenos"> 908</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_idx</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">dv</span>
 </span><span id="L-909"><a href="#L-909"><span class="linenos"> 909</span></a>    <span class="p">):</span>
 </span><span id="L-910"><a href="#L-910"><span class="linenos"> 910</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">cell_start</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
@@ -1061,7 +1061,7 @@
 </span><span id="L-917"><a href="#L-917"><span class="linenos"> 917</span></a>        <span class="p">)</span>
 </span><span id="L-918"><a href="#L-918"><span class="linenos"> 918</span></a>
 </span><span id="L-919"><a href="#L-919"><span class="linenos"> 919</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-920"><a href="#L-920"><span class="linenos"> 920</span></a>    <span class="k">def</span> <span class="nf">remove_zero_n_or_flagged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="L-920"><a href="#L-920"><span class="linenos"> 920</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">remove_zero_n_or_flagged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="L-921"><a href="#L-921"><span class="linenos"> 921</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
 </span><span id="L-922"><a href="#L-922"><span class="linenos"> 922</span></a>
 </span><span id="L-923"><a href="#L-923"><span class="linenos"> 923</span></a>        <span class="c1"># Warning: (potential bug source): reading from outside of array</span>
@@ -1074,7 +1074,7 @@
 </span><span id="L-930"><a href="#L-930"><span class="linenos"> 930</span></a>
 </span><span id="L-931"><a href="#L-931"><span class="linenos"> 931</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="L-932"><a href="#L-932"><span class="linenos"> 932</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-933"><a href="#L-933"><span class="linenos"> 933</span></a>    <span class="k">def</span> <span class="nf">_sort_by_cell_id_and_update_cell_start</span><span class="p">(</span>
+</span><span id="L-933"><a href="#L-933"><span class="linenos"> 933</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_sort_by_cell_id_and_update_cell_start</span><span class="p">(</span>
 </span><span id="L-934"><a href="#L-934"><span class="linenos"> 934</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_idx</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">,</span> <span class="n">idx</span>
 </span><span id="L-935"><a href="#L-935"><span class="linenos"> 935</span></a>    <span class="p">):</span>
 </span><span id="L-936"><a href="#L-936"><span class="linenos"> 936</span></a>        <span class="c1"># TODO #330</span>
@@ -1090,7 +1090,7 @@
 </span><span id="L-946"><a href="#L-946"><span class="linenos"> 946</span></a>                <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cell_start</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </span><span id="L-947"><a href="#L-947"><span class="linenos"> 947</span></a>            <span class="p">)</span>
 </span><span id="L-948"><a href="#L-948"><span class="linenos"> 948</span></a>
-</span><span id="L-949"><a href="#L-949"><span class="linenos"> 949</span></a>    <span class="k">def</span> <span class="nf">exp_fragmentation</span><span class="p">(</span>
+</span><span id="L-949"><a href="#L-949"><span class="linenos"> 949</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp_fragmentation</span><span class="p">(</span>
 </span><span id="L-950"><a href="#L-950"><span class="linenos"> 950</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-951"><a href="#L-951"><span class="linenos"> 951</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-952"><a href="#L-952"><span class="linenos"> 952</span></a>        <span class="n">n_fragment</span><span class="p">,</span>
@@ -1124,7 +1124,7 @@
 </span><span id="L-980"><a href="#L-980"><span class="linenos"> 980</span></a>            <span class="p">),</span>
 </span><span id="L-981"><a href="#L-981"><span class="linenos"> 981</span></a>        <span class="p">)</span>
 </span><span id="L-982"><a href="#L-982"><span class="linenos"> 982</span></a>
-</span><span id="L-983"><a href="#L-983"><span class="linenos"> 983</span></a>    <span class="k">def</span> <span class="nf">gauss_fragmentation</span><span class="p">(</span>
+</span><span id="L-983"><a href="#L-983"><span class="linenos"> 983</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">gauss_fragmentation</span><span class="p">(</span>
 </span><span id="L-984"><a href="#L-984"><span class="linenos"> 984</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_fragment</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">frag_volume</span><span class="p">,</span> <span class="n">x_plus_y</span><span class="p">,</span> <span class="n">rand</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">nfmax</span>
 </span><span id="L-985"><a href="#L-985"><span class="linenos"> 985</span></a>    <span class="p">):</span>
 </span><span id="L-986"><a href="#L-986"><span class="linenos"> 986</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__gauss_fragmentation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
@@ -1149,7 +1149,7 @@
 </span><span id="L-1005"><a href="#L-1005"><span class="linenos">1005</span></a>            <span class="p">),</span>
 </span><span id="L-1006"><a href="#L-1006"><span class="linenos">1006</span></a>        <span class="p">)</span>
 </span><span id="L-1007"><a href="#L-1007"><span class="linenos">1007</span></a>
-</span><span id="L-1008"><a href="#L-1008"><span class="linenos">1008</span></a>    <span class="k">def</span> <span class="nf">slams_fragmentation</span><span class="p">(</span>
+</span><span id="L-1008"><a href="#L-1008"><span class="linenos">1008</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">slams_fragmentation</span><span class="p">(</span>
 </span><span id="L-1009"><a href="#L-1009"><span class="linenos">1009</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">n_fragment</span><span class="p">,</span> <span class="n">frag_volume</span><span class="p">,</span> <span class="n">x_plus_y</span><span class="p">,</span> <span class="n">probs</span><span class="p">,</span> <span class="n">rand</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">nfmax</span>
 </span><span id="L-1010"><a href="#L-1010"><span class="linenos">1010</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="L-1011"><a href="#L-1011"><span class="linenos">1011</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__slams_fragmentation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
@@ -1175,7 +1175,7 @@
 </span><span id="L-1031"><a href="#L-1031"><span class="linenos">1031</span></a>            <span class="p">),</span>
 </span><span id="L-1032"><a href="#L-1032"><span class="linenos">1032</span></a>        <span class="p">)</span>
 </span><span id="L-1033"><a href="#L-1033"><span class="linenos">1033</span></a>
-</span><span id="L-1034"><a href="#L-1034"><span class="linenos">1034</span></a>    <span class="k">def</span> <span class="nf">feingold1988_fragmentation</span><span class="p">(</span>
+</span><span id="L-1034"><a href="#L-1034"><span class="linenos">1034</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">feingold1988_fragmentation</span><span class="p">(</span>
 </span><span id="L-1035"><a href="#L-1035"><span class="linenos">1035</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-1036"><a href="#L-1036"><span class="linenos">1036</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-1037"><a href="#L-1037"><span class="linenos">1037</span></a>        <span class="n">n_fragment</span><span class="p">,</span>
@@ -1210,7 +1210,7 @@
 </span><span id="L-1066"><a href="#L-1066"><span class="linenos">1066</span></a>            <span class="p">),</span>
 </span><span id="L-1067"><a href="#L-1067"><span class="linenos">1067</span></a>        <span class="p">)</span>
 </span><span id="L-1068"><a href="#L-1068"><span class="linenos">1068</span></a>
-</span><span id="L-1069"><a href="#L-1069"><span class="linenos">1069</span></a>    <span class="k">def</span> <span class="nf">straub_fragmentation</span><span class="p">(</span>
+</span><span id="L-1069"><a href="#L-1069"><span class="linenos">1069</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">straub_fragmentation</span><span class="p">(</span>
 </span><span id="L-1070"><a href="#L-1070"><span class="linenos">1070</span></a>        <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
 </span><span id="L-1071"><a href="#L-1071"><span class="linenos">1071</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-1072"><a href="#L-1072"><span class="linenos">1072</span></a>        <span class="o">*</span><span class="p">,</span>
@@ -1288,11 +1288,11 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods-219"><a href="#CollisionsMethods-219"><span class="linenos"> 219</span></a><span class="k">class</span> <span class="nc">CollisionsMethods</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods-219"><a href="#CollisionsMethods-219"><span class="linenos"> 219</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CollisionsMethods</span><span class="p">(</span>
 </span><span id="CollisionsMethods-220"><a href="#CollisionsMethods-220"><span class="linenos"> 220</span></a>    <span class="n">ThrustRTCBackendMethods</span>
 </span><span id="CollisionsMethods-221"><a href="#CollisionsMethods-221"><span class="linenos"> 221</span></a><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
 </span><span id="CollisionsMethods-222"><a href="#CollisionsMethods-222"><span class="linenos"> 222</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-223"><a href="#CollisionsMethods-223"><span class="linenos"> 223</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-223"><a href="#CollisionsMethods-223"><span class="linenos"> 223</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-224"><a href="#CollisionsMethods-224"><span class="linenos"> 224</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-225"><a href="#CollisionsMethods-225"><span class="linenos"> 225</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;dt_todo&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_left&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_max&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-226"><a href="#CollisionsMethods-226"><span class="linenos"> 226</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;cid&quot;</span><span class="p">,</span>
@@ -1302,7 +1302,7 @@
 </span><span id="CollisionsMethods-230"><a href="#CollisionsMethods-230"><span class="linenos"> 230</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-231"><a href="#CollisionsMethods-231"><span class="linenos"> 231</span></a>
 </span><span id="CollisionsMethods-232"><a href="#CollisionsMethods-232"><span class="linenos"> 232</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-233"><a href="#CollisionsMethods-233"><span class="linenos"> 233</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-233"><a href="#CollisionsMethods-233"><span class="linenos"> 233</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-234"><a href="#CollisionsMethods-234"><span class="linenos"> 234</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-235"><a href="#CollisionsMethods-235"><span class="linenos"> 235</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="CollisionsMethods-236"><a href="#CollisionsMethods-236"><span class="linenos"> 236</span></a>                <span class="s2">&quot;prob&quot;</span><span class="p">,</span>
@@ -1335,7 +1335,7 @@
 </span><span id="CollisionsMethods-263"><a href="#CollisionsMethods-263"><span class="linenos"> 263</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-264"><a href="#CollisionsMethods-264"><span class="linenos"> 264</span></a>
 </span><span id="CollisionsMethods-265"><a href="#CollisionsMethods-265"><span class="linenos"> 265</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-266"><a href="#CollisionsMethods-266"><span class="linenos"> 266</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-266"><a href="#CollisionsMethods-266"><span class="linenos"> 266</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_3</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-267"><a href="#CollisionsMethods-267"><span class="linenos"> 267</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-268"><a href="#CollisionsMethods-268"><span class="linenos"> 268</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;prob&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;dt&quot;</span><span class="p">,</span> <span class="s2">&quot;is_first_in_pair&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_todo&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-269"><a href="#CollisionsMethods-269"><span class="linenos"> 269</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1356,7 +1356,7 @@
 </span><span id="CollisionsMethods-284"><a href="#CollisionsMethods-284"><span class="linenos"> 284</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-285"><a href="#CollisionsMethods-285"><span class="linenos"> 285</span></a>
 </span><span id="CollisionsMethods-286"><a href="#CollisionsMethods-286"><span class="linenos"> 286</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-287"><a href="#CollisionsMethods-287"><span class="linenos"> 287</span></a>    <span class="k">def</span> <span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-287"><a href="#CollisionsMethods-287"><span class="linenos"> 287</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__scale_prob_for_adaptive_sdm_gamma_body_4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-288"><a href="#CollisionsMethods-288"><span class="linenos"> 288</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-289"><a href="#CollisionsMethods-289"><span class="linenos"> 289</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;dt_left&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_todo&quot;</span><span class="p">,</span> <span class="s2">&quot;stats_n_substep&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-290"><a href="#CollisionsMethods-290"><span class="linenos"> 290</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;cid&quot;</span><span class="p">,</span>
@@ -1369,7 +1369,7 @@
 </span><span id="CollisionsMethods-297"><a href="#CollisionsMethods-297"><span class="linenos"> 297</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-298"><a href="#CollisionsMethods-298"><span class="linenos"> 298</span></a>
 </span><span id="CollisionsMethods-299"><a href="#CollisionsMethods-299"><span class="linenos"> 299</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-300"><a href="#CollisionsMethods-300"><span class="linenos"> 300</span></a>    <span class="k">def</span> <span class="nf">__sort_by_cell_id_and_update_cell_start_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-300"><a href="#CollisionsMethods-300"><span class="linenos"> 300</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__sort_by_cell_id_and_update_cell_start_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-301"><a href="#CollisionsMethods-301"><span class="linenos"> 301</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-302"><a href="#CollisionsMethods-302"><span class="linenos"> 302</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_start&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-303"><a href="#CollisionsMethods-303"><span class="linenos"> 303</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1388,7 +1388,7 @@
 </span><span id="CollisionsMethods-316"><a href="#CollisionsMethods-316"><span class="linenos"> 316</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-317"><a href="#CollisionsMethods-317"><span class="linenos"> 317</span></a>
 </span><span id="CollisionsMethods-318"><a href="#CollisionsMethods-318"><span class="linenos"> 318</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-319"><a href="#CollisionsMethods-319"><span class="linenos"> 319</span></a>    <span class="k">def</span> <span class="nf">__collision_coalescence_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-319"><a href="#CollisionsMethods-319"><span class="linenos"> 319</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__collision_coalescence_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-320"><a href="#CollisionsMethods-320"><span class="linenos"> 320</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-321"><a href="#CollisionsMethods-321"><span class="linenos"> 321</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="CollisionsMethods-322"><a href="#CollisionsMethods-322"><span class="linenos"> 322</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
@@ -1423,7 +1423,7 @@
 </span><span id="CollisionsMethods-351"><a href="#CollisionsMethods-351"><span class="linenos"> 351</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-352"><a href="#CollisionsMethods-352"><span class="linenos"> 352</span></a>
 </span><span id="CollisionsMethods-353"><a href="#CollisionsMethods-353"><span class="linenos"> 353</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-354"><a href="#CollisionsMethods-354"><span class="linenos"> 354</span></a>    <span class="k">def</span> <span class="nf">__collision_coalescence_breakup_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-354"><a href="#CollisionsMethods-354"><span class="linenos"> 354</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__collision_coalescence_breakup_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-355"><a href="#CollisionsMethods-355"><span class="linenos"> 355</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-356"><a href="#CollisionsMethods-356"><span class="linenos"> 356</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="CollisionsMethods-357"><a href="#CollisionsMethods-357"><span class="linenos"> 357</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
@@ -1498,7 +1498,7 @@
 </span><span id="CollisionsMethods-426"><a href="#CollisionsMethods-426"><span class="linenos"> 426</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-427"><a href="#CollisionsMethods-427"><span class="linenos"> 427</span></a>
 </span><span id="CollisionsMethods-428"><a href="#CollisionsMethods-428"><span class="linenos"> 428</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-429"><a href="#CollisionsMethods-429"><span class="linenos"> 429</span></a>    <span class="k">def</span> <span class="nf">__compute_gamma_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-429"><a href="#CollisionsMethods-429"><span class="linenos"> 429</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__compute_gamma_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-430"><a href="#CollisionsMethods-430"><span class="linenos"> 430</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-431"><a href="#CollisionsMethods-431"><span class="linenos"> 431</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="CollisionsMethods-432"><a href="#CollisionsMethods-432"><span class="linenos"> 432</span></a>                <span class="s2">&quot;prob&quot;</span><span class="p">,</span>
@@ -1544,7 +1544,7 @@
 </span><span id="CollisionsMethods-472"><a href="#CollisionsMethods-472"><span class="linenos"> 472</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-473"><a href="#CollisionsMethods-473"><span class="linenos"> 473</span></a>
 </span><span id="CollisionsMethods-474"><a href="#CollisionsMethods-474"><span class="linenos"> 474</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-475"><a href="#CollisionsMethods-475"><span class="linenos"> 475</span></a>    <span class="k">def</span> <span class="nf">__normalize_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-475"><a href="#CollisionsMethods-475"><span class="linenos"> 475</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__normalize_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-476"><a href="#CollisionsMethods-476"><span class="linenos"> 476</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-477"><a href="#CollisionsMethods-477"><span class="linenos"> 477</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_start&quot;</span><span class="p">,</span> <span class="s2">&quot;norm_factor&quot;</span><span class="p">,</span> <span class="s2">&quot;dt_div_dv&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-478"><a href="#CollisionsMethods-478"><span class="linenos"> 478</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1561,7 +1561,7 @@
 </span><span id="CollisionsMethods-489"><a href="#CollisionsMethods-489"><span class="linenos"> 489</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-490"><a href="#CollisionsMethods-490"><span class="linenos"> 490</span></a>
 </span><span id="CollisionsMethods-491"><a href="#CollisionsMethods-491"><span class="linenos"> 491</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-492"><a href="#CollisionsMethods-492"><span class="linenos"> 492</span></a>    <span class="k">def</span> <span class="nf">__normalize_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-492"><a href="#CollisionsMethods-492"><span class="linenos"> 492</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__normalize_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-493"><a href="#CollisionsMethods-493"><span class="linenos"> 493</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-494"><a href="#CollisionsMethods-494"><span class="linenos"> 494</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;prob&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;norm_factor&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-495"><a href="#CollisionsMethods-495"><span class="linenos"> 495</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1571,7 +1571,7 @@
 </span><span id="CollisionsMethods-499"><a href="#CollisionsMethods-499"><span class="linenos"> 499</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-500"><a href="#CollisionsMethods-500"><span class="linenos"> 500</span></a>
 </span><span id="CollisionsMethods-501"><a href="#CollisionsMethods-501"><span class="linenos"> 501</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-502"><a href="#CollisionsMethods-502"><span class="linenos"> 502</span></a>    <span class="k">def</span> <span class="nf">__remove_zero_n_or_flagged_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-502"><a href="#CollisionsMethods-502"><span class="linenos"> 502</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__remove_zero_n_or_flagged_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-503"><a href="#CollisionsMethods-503"><span class="linenos"> 503</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-504"><a href="#CollisionsMethods-504"><span class="linenos"> 504</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">,</span> <span class="s2">&quot;n_sd&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-505"><a href="#CollisionsMethods-505"><span class="linenos"> 505</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1583,7 +1583,7 @@
 </span><span id="CollisionsMethods-511"><a href="#CollisionsMethods-511"><span class="linenos"> 511</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-512"><a href="#CollisionsMethods-512"><span class="linenos"> 512</span></a>
 </span><span id="CollisionsMethods-513"><a href="#CollisionsMethods-513"><span class="linenos"> 513</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-514"><a href="#CollisionsMethods-514"><span class="linenos"> 514</span></a>    <span class="k">def</span> <span class="nf">__cell_id_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-514"><a href="#CollisionsMethods-514"><span class="linenos"> 514</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__cell_id_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-515"><a href="#CollisionsMethods-515"><span class="linenos"> 515</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-516"><a href="#CollisionsMethods-516"><span class="linenos"> 516</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;cell_id&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_origin&quot;</span><span class="p">,</span> <span class="s2">&quot;strides&quot;</span><span class="p">,</span> <span class="s2">&quot;n_dims&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-517"><a href="#CollisionsMethods-517"><span class="linenos"> 517</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1596,7 +1596,7 @@
 </span><span id="CollisionsMethods-524"><a href="#CollisionsMethods-524"><span class="linenos"> 524</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-525"><a href="#CollisionsMethods-525"><span class="linenos"> 525</span></a>
 </span><span id="CollisionsMethods-526"><a href="#CollisionsMethods-526"><span class="linenos"> 526</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-527"><a href="#CollisionsMethods-527"><span class="linenos"> 527</span></a>    <span class="k">def</span> <span class="nf">__exp_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-527"><a href="#CollisionsMethods-527"><span class="linenos"> 527</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__exp_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-528"><a href="#CollisionsMethods-528"><span class="linenos"> 528</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-529"><a href="#CollisionsMethods-529"><span class="linenos"> 529</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">,</span> <span class="s2">&quot;tol&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-530"><a href="#CollisionsMethods-530"><span class="linenos"> 530</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1606,7 +1606,7 @@
 </span><span id="CollisionsMethods-534"><a href="#CollisionsMethods-534"><span class="linenos"> 534</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-535"><a href="#CollisionsMethods-535"><span class="linenos"> 535</span></a>
 </span><span id="CollisionsMethods-536"><a href="#CollisionsMethods-536"><span class="linenos"> 536</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-537"><a href="#CollisionsMethods-537"><span class="linenos"> 537</span></a>    <span class="k">def</span> <span class="nf">__fragmentation_limiters_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-537"><a href="#CollisionsMethods-537"><span class="linenos"> 537</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__fragmentation_limiters_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-538"><a href="#CollisionsMethods-538"><span class="linenos"> 538</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-539"><a href="#CollisionsMethods-539"><span class="linenos"> 539</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
 </span><span id="CollisionsMethods-540"><a href="#CollisionsMethods-540"><span class="linenos"> 540</span></a>                <span class="s2">&quot;n_fragment&quot;</span><span class="p">,</span>
@@ -1636,7 +1636,7 @@
 </span><span id="CollisionsMethods-564"><a href="#CollisionsMethods-564"><span class="linenos"> 564</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-565"><a href="#CollisionsMethods-565"><span class="linenos"> 565</span></a>
 </span><span id="CollisionsMethods-566"><a href="#CollisionsMethods-566"><span class="linenos"> 566</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-567"><a href="#CollisionsMethods-567"><span class="linenos"> 567</span></a>    <span class="k">def</span> <span class="nf">__gauss_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-567"><a href="#CollisionsMethods-567"><span class="linenos"> 567</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__gauss_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-568"><a href="#CollisionsMethods-568"><span class="linenos"> 568</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-569"><a href="#CollisionsMethods-569"><span class="linenos"> 569</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="s2">&quot;sigma&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-570"><a href="#CollisionsMethods-570"><span class="linenos"> 570</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1650,7 +1650,7 @@
 </span><span id="CollisionsMethods-578"><a href="#CollisionsMethods-578"><span class="linenos"> 578</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-579"><a href="#CollisionsMethods-579"><span class="linenos"> 579</span></a>
 </span><span id="CollisionsMethods-580"><a href="#CollisionsMethods-580"><span class="linenos"> 580</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-581"><a href="#CollisionsMethods-581"><span class="linenos"> 581</span></a>    <span class="k">def</span> <span class="nf">__slams_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-581"><a href="#CollisionsMethods-581"><span class="linenos"> 581</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__slams_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-582"><a href="#CollisionsMethods-582"><span class="linenos"> 582</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-583"><a href="#CollisionsMethods-583"><span class="linenos"> 583</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;n_fragment&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;x_plus_y&quot;</span><span class="p">,</span> <span class="s2">&quot;probs&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-584"><a href="#CollisionsMethods-584"><span class="linenos"> 584</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1670,7 +1670,7 @@
 </span><span id="CollisionsMethods-598"><a href="#CollisionsMethods-598"><span class="linenos"> 598</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-599"><a href="#CollisionsMethods-599"><span class="linenos"> 599</span></a>
 </span><span id="CollisionsMethods-600"><a href="#CollisionsMethods-600"><span class="linenos"> 600</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-601"><a href="#CollisionsMethods-601"><span class="linenos"> 601</span></a>    <span class="k">def</span> <span class="nf">__feingold1988_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-601"><a href="#CollisionsMethods-601"><span class="linenos"> 601</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__feingold1988_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-602"><a href="#CollisionsMethods-602"><span class="linenos"> 602</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-603"><a href="#CollisionsMethods-603"><span class="linenos"> 603</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span> <span class="s2">&quot;frag_volume&quot;</span><span class="p">,</span> <span class="s2">&quot;x_plus_y&quot;</span><span class="p">,</span> <span class="s2">&quot;rand&quot;</span><span class="p">,</span> <span class="s2">&quot;fragtol&quot;</span><span class="p">),</span>
 </span><span id="CollisionsMethods-604"><a href="#CollisionsMethods-604"><span class="linenos"> 604</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -1687,7 +1687,7 @@
 </span><span id="CollisionsMethods-615"><a href="#CollisionsMethods-615"><span class="linenos"> 615</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-616"><a href="#CollisionsMethods-616"><span class="linenos"> 616</span></a>
 </span><span id="CollisionsMethods-617"><a href="#CollisionsMethods-617"><span class="linenos"> 617</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-618"><a href="#CollisionsMethods-618"><span class="linenos"> 618</span></a>    <span class="k">def</span> <span class="nf">__straub_Nr_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-618"><a href="#CollisionsMethods-618"><span class="linenos"> 618</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__straub_Nr_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-619"><a href="#CollisionsMethods-619"><span class="linenos"> 619</span></a>        <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
 </span><span id="CollisionsMethods-620"><a href="#CollisionsMethods-620"><span class="linenos"> 620</span></a><span class="s2">                if (gam[i] * CW[i] &gt;= 7.0) {</span>
 </span><span id="CollisionsMethods-621"><a href="#CollisionsMethods-621"><span class="linenos"> 621</span></a><span class="s2">                    Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);</span>
@@ -1706,7 +1706,7 @@
 </span><span id="CollisionsMethods-634"><a href="#CollisionsMethods-634"><span class="linenos"> 634</span></a><span class="s2">        &quot;&quot;&quot;</span>
 </span><span id="CollisionsMethods-635"><a href="#CollisionsMethods-635"><span class="linenos"> 635</span></a>
 </span><span id="CollisionsMethods-636"><a href="#CollisionsMethods-636"><span class="linenos"> 636</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-637"><a href="#CollisionsMethods-637"><span class="linenos"> 637</span></a>    <span class="k">def</span> <span class="nf">__straub_mass_remainder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-637"><a href="#CollisionsMethods-637"><span class="linenos"> 637</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__straub_mass_remainder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-638"><a href="#CollisionsMethods-638"><span class="linenos"> 638</span></a>        <span class="n">const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">constants</span>
 </span><span id="CollisionsMethods-639"><a href="#CollisionsMethods-639"><span class="linenos"> 639</span></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 </span><span id="CollisionsMethods-640"><a href="#CollisionsMethods-640"><span class="linenos"> 640</span></a><span class="s2">                Nr1[i] = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2) / 2);</span>
@@ -1723,7 +1723,7 @@
 </span><span id="CollisionsMethods-651"><a href="#CollisionsMethods-651"><span class="linenos"> 651</span></a><span class="s2">        &quot;&quot;&quot;</span>
 </span><span id="CollisionsMethods-652"><a href="#CollisionsMethods-652"><span class="linenos"> 652</span></a>
 </span><span id="CollisionsMethods-653"><a href="#CollisionsMethods-653"><span class="linenos"> 653</span></a>    <span class="nd">@cached_property</span>
-</span><span id="CollisionsMethods-654"><a href="#CollisionsMethods-654"><span class="linenos"> 654</span></a>    <span class="k">def</span> <span class="nf">__straub_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CollisionsMethods-654"><a href="#CollisionsMethods-654"><span class="linenos"> 654</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__straub_fragmentation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="CollisionsMethods-655"><a href="#CollisionsMethods-655"><span class="linenos"> 655</span></a>        <span class="n">const</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">constants</span>
 </span><span id="CollisionsMethods-656"><a href="#CollisionsMethods-656"><span class="linenos"> 656</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="CollisionsMethods-657"><a href="#CollisionsMethods-657"><span class="linenos"> 657</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span>
@@ -1782,7 +1782,7 @@
 </span><span id="CollisionsMethods-710"><a href="#CollisionsMethods-710"><span class="linenos"> 710</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-711"><a href="#CollisionsMethods-711"><span class="linenos"> 711</span></a>
 </span><span id="CollisionsMethods-712"><a href="#CollisionsMethods-712"><span class="linenos"> 712</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-713"><a href="#CollisionsMethods-713"><span class="linenos"> 713</span></a>    <span class="k">def</span> <span class="nf">adaptive_sdm_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt_left</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">):</span>
+</span><span id="CollisionsMethods-713"><a href="#CollisionsMethods-713"><span class="linenos"> 713</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">adaptive_sdm_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt_left</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">):</span>
 </span><span id="CollisionsMethods-714"><a href="#CollisionsMethods-714"><span class="linenos"> 714</span></a>        <span class="n">i</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">Find</span><span class="p">(</span><span class="n">dt_left</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
 </span><span id="CollisionsMethods-715"><a href="#CollisionsMethods-715"><span class="linenos"> 715</span></a>        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="CollisionsMethods-716"><a href="#CollisionsMethods-716"><span class="linenos"> 716</span></a>            <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dt_left</span><span class="p">)</span>
@@ -1790,7 +1790,7 @@
 </span><span id="CollisionsMethods-718"><a href="#CollisionsMethods-718"><span class="linenos"> 718</span></a>
 </span><span id="CollisionsMethods-719"><a href="#CollisionsMethods-719"><span class="linenos"> 719</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="CollisionsMethods-720"><a href="#CollisionsMethods-720"><span class="linenos"> 720</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-721"><a href="#CollisionsMethods-721"><span class="linenos"> 721</span></a>    <span class="k">def</span> <span class="nf">scale_prob_for_adaptive_sdm_gamma</span><span class="p">(</span>
+</span><span id="CollisionsMethods-721"><a href="#CollisionsMethods-721"><span class="linenos"> 721</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">scale_prob_for_adaptive_sdm_gamma</span><span class="p">(</span>
 </span><span id="CollisionsMethods-722"><a href="#CollisionsMethods-722"><span class="linenos"> 722</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods-723"><a href="#CollisionsMethods-723"><span class="linenos"> 723</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods-724"><a href="#CollisionsMethods-724"><span class="linenos"> 724</span></a>        <span class="n">prob</span><span class="p">,</span>
@@ -1839,7 +1839,7 @@
 </span><span id="CollisionsMethods-767"><a href="#CollisionsMethods-767"><span class="linenos"> 767</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-768"><a href="#CollisionsMethods-768"><span class="linenos"> 768</span></a>
 </span><span id="CollisionsMethods-769"><a href="#CollisionsMethods-769"><span class="linenos"> 769</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-770"><a href="#CollisionsMethods-770"><span class="linenos"> 770</span></a>    <span class="k">def</span> <span class="nf">cell_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_origin</span><span class="p">,</span> <span class="n">strides</span><span class="p">):</span>
+</span><span id="CollisionsMethods-770"><a href="#CollisionsMethods-770"><span class="linenos"> 770</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cell_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_origin</span><span class="p">,</span> <span class="n">strides</span><span class="p">):</span>
 </span><span id="CollisionsMethods-771"><a href="#CollisionsMethods-771"><span class="linenos"> 771</span></a>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cell_id</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 </span><span id="CollisionsMethods-772"><a href="#CollisionsMethods-772"><span class="linenos"> 772</span></a>            <span class="k">return</span>
 </span><span id="CollisionsMethods-773"><a href="#CollisionsMethods-773"><span class="linenos"> 773</span></a>
@@ -1855,7 +1855,7 @@
 </span><span id="CollisionsMethods-783"><a href="#CollisionsMethods-783"><span class="linenos"> 783</span></a>
 </span><span id="CollisionsMethods-784"><a href="#CollisionsMethods-784"><span class="linenos"> 784</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="CollisionsMethods-785"><a href="#CollisionsMethods-785"><span class="linenos"> 785</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-786"><a href="#CollisionsMethods-786"><span class="linenos"> 786</span></a>    <span class="k">def</span> <span class="nf">collision_coalescence</span><span class="p">(</span>
+</span><span id="CollisionsMethods-786"><a href="#CollisionsMethods-786"><span class="linenos"> 786</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">collision_coalescence</span><span class="p">(</span>
 </span><span id="CollisionsMethods-787"><a href="#CollisionsMethods-787"><span class="linenos"> 787</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods-788"><a href="#CollisionsMethods-788"><span class="linenos"> 788</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods-789"><a href="#CollisionsMethods-789"><span class="linenos"> 789</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
@@ -1888,7 +1888,7 @@
 </span><span id="CollisionsMethods-816"><a href="#CollisionsMethods-816"><span class="linenos"> 816</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-817"><a href="#CollisionsMethods-817"><span class="linenos"> 817</span></a>
 </span><span id="CollisionsMethods-818"><a href="#CollisionsMethods-818"><span class="linenos"> 818</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-819"><a href="#CollisionsMethods-819"><span class="linenos"> 819</span></a>    <span class="k">def</span> <span class="nf">collision_coalescence_breakup</span><span class="p">(</span>  <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
+</span><span id="CollisionsMethods-819"><a href="#CollisionsMethods-819"><span class="linenos"> 819</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">collision_coalescence_breakup</span><span class="p">(</span>  <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
 </span><span id="CollisionsMethods-820"><a href="#CollisionsMethods-820"><span class="linenos"> 820</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods-821"><a href="#CollisionsMethods-821"><span class="linenos"> 821</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods-822"><a href="#CollisionsMethods-822"><span class="linenos"> 822</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
@@ -1940,7 +1940,7 @@
 </span><span id="CollisionsMethods-868"><a href="#CollisionsMethods-868"><span class="linenos"> 868</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-869"><a href="#CollisionsMethods-869"><span class="linenos"> 869</span></a>
 </span><span id="CollisionsMethods-870"><a href="#CollisionsMethods-870"><span class="linenos"> 870</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-871"><a href="#CollisionsMethods-871"><span class="linenos"> 871</span></a>    <span class="k">def</span> <span class="nf">compute_gamma</span><span class="p">(</span>
+</span><span id="CollisionsMethods-871"><a href="#CollisionsMethods-871"><span class="linenos"> 871</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">compute_gamma</span><span class="p">(</span>
 </span><span id="CollisionsMethods-872"><a href="#CollisionsMethods-872"><span class="linenos"> 872</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods-873"><a href="#CollisionsMethods-873"><span class="linenos"> 873</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods-874"><a href="#CollisionsMethods-874"><span class="linenos"> 874</span></a>        <span class="n">prob</span><span class="p">,</span>
@@ -1970,14 +1970,14 @@
 </span><span id="CollisionsMethods-898"><a href="#CollisionsMethods-898"><span class="linenos"> 898</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-899"><a href="#CollisionsMethods-899"><span class="linenos"> 899</span></a>
 </span><span id="CollisionsMethods-900"><a href="#CollisionsMethods-900"><span class="linenos"> 900</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
-</span><span id="CollisionsMethods-901"><a href="#CollisionsMethods-901"><span class="linenos"> 901</span></a>    <span class="k">def</span> <span class="nf">make_cell_caretaker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx_shape</span><span class="p">,</span> <span class="n">idx_dtype</span><span class="p">,</span> <span class="n">cell_start_len</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="CollisionsMethods-901"><a href="#CollisionsMethods-901"><span class="linenos"> 901</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">make_cell_caretaker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx_shape</span><span class="p">,</span> <span class="n">idx_dtype</span><span class="p">,</span> <span class="n">cell_start_len</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="CollisionsMethods-902"><a href="#CollisionsMethods-902"><span class="linenos"> 902</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">scheme</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">):</span>
 </span><span id="CollisionsMethods-903"><a href="#CollisionsMethods-903"><span class="linenos"> 903</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </span><span id="CollisionsMethods-904"><a href="#CollisionsMethods-904"><span class="linenos"> 904</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_by_cell_id_and_update_cell_start</span>
 </span><span id="CollisionsMethods-905"><a href="#CollisionsMethods-905"><span class="linenos"> 905</span></a>
 </span><span id="CollisionsMethods-906"><a href="#CollisionsMethods-906"><span class="linenos"> 906</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="CollisionsMethods-907"><a href="#CollisionsMethods-907"><span class="linenos"> 907</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-908"><a href="#CollisionsMethods-908"><span class="linenos"> 908</span></a>    <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span>
+</span><span id="CollisionsMethods-908"><a href="#CollisionsMethods-908"><span class="linenos"> 908</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">normalize</span><span class="p">(</span>
 </span><span id="CollisionsMethods-909"><a href="#CollisionsMethods-909"><span class="linenos"> 909</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_idx</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">,</span> <span class="n">timestep</span><span class="p">,</span> <span class="n">dv</span>
 </span><span id="CollisionsMethods-910"><a href="#CollisionsMethods-910"><span class="linenos"> 910</span></a>    <span class="p">):</span>
 </span><span id="CollisionsMethods-911"><a href="#CollisionsMethods-911"><span class="linenos"> 911</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">cell_start</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
@@ -1990,7 +1990,7 @@
 </span><span id="CollisionsMethods-918"><a href="#CollisionsMethods-918"><span class="linenos"> 918</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-919"><a href="#CollisionsMethods-919"><span class="linenos"> 919</span></a>
 </span><span id="CollisionsMethods-920"><a href="#CollisionsMethods-920"><span class="linenos"> 920</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-921"><a href="#CollisionsMethods-921"><span class="linenos"> 921</span></a>    <span class="k">def</span> <span class="nf">remove_zero_n_or_flagged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+</span><span id="CollisionsMethods-921"><a href="#CollisionsMethods-921"><span class="linenos"> 921</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">remove_zero_n_or_flagged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 </span><span id="CollisionsMethods-922"><a href="#CollisionsMethods-922"><span class="linenos"> 922</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">idx</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
 </span><span id="CollisionsMethods-923"><a href="#CollisionsMethods-923"><span class="linenos"> 923</span></a>
 </span><span id="CollisionsMethods-924"><a href="#CollisionsMethods-924"><span class="linenos"> 924</span></a>        <span class="c1"># Warning: (potential bug source): reading from outside of array</span>
@@ -2003,7 +2003,7 @@
 </span><span id="CollisionsMethods-931"><a href="#CollisionsMethods-931"><span class="linenos"> 931</span></a>
 </span><span id="CollisionsMethods-932"><a href="#CollisionsMethods-932"><span class="linenos"> 932</span></a>    <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="CollisionsMethods-933"><a href="#CollisionsMethods-933"><span class="linenos"> 933</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="CollisionsMethods-934"><a href="#CollisionsMethods-934"><span class="linenos"> 934</span></a>    <span class="k">def</span> <span class="nf">_sort_by_cell_id_and_update_cell_start</span><span class="p">(</span>
+</span><span id="CollisionsMethods-934"><a href="#CollisionsMethods-934"><span class="linenos"> 934</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_sort_by_cell_id_and_update_cell_start</span><span class="p">(</span>
 </span><span id="CollisionsMethods-935"><a href="#CollisionsMethods-935"><span class="linenos"> 935</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">cell_idx</span><span class="p">,</span> <span class="n">cell_start</span><span class="p">,</span> <span class="n">idx</span>
 </span><span id="CollisionsMethods-936"><a href="#CollisionsMethods-936"><span class="linenos"> 936</span></a>    <span class="p">):</span>
 </span><span id="CollisionsMethods-937"><a href="#CollisionsMethods-937"><span class="linenos"> 937</span></a>        <span class="c1"># TODO #330</span>
@@ -2019,7 +2019,7 @@
 </span><span id="CollisionsMethods-947"><a href="#CollisionsMethods-947"><span class="linenos"> 947</span></a>                <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">cell_start</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </span><span id="CollisionsMethods-948"><a href="#CollisionsMethods-948"><span class="linenos"> 948</span></a>            <span class="p">)</span>
 </span><span id="CollisionsMethods-949"><a href="#CollisionsMethods-949"><span class="linenos"> 949</span></a>
-</span><span id="CollisionsMethods-950"><a href="#CollisionsMethods-950"><span class="linenos"> 950</span></a>    <span class="k">def</span> <span class="nf">exp_fragmentation</span><span class="p">(</span>
+</span><span id="CollisionsMethods-950"><a href="#CollisionsMethods-950"><span class="linenos"> 950</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods-951"><a href="#CollisionsMethods-951"><span class="linenos"> 951</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods-952"><a href="#CollisionsMethods-952"><span class="linenos"> 952</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods-953"><a href="#CollisionsMethods-953"><span class="linenos"> 953</span></a>        <span class="n">n_fragment</span><span class="p">,</span>
@@ -2053,7 +2053,7 @@
 </span><span id="CollisionsMethods-981"><a href="#CollisionsMethods-981"><span class="linenos"> 981</span></a>            <span class="p">),</span>
 </span><span id="CollisionsMethods-982"><a href="#CollisionsMethods-982"><span class="linenos"> 982</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-983"><a href="#CollisionsMethods-983"><span class="linenos"> 983</span></a>
-</span><span id="CollisionsMethods-984"><a href="#CollisionsMethods-984"><span class="linenos"> 984</span></a>    <span class="k">def</span> <span class="nf">gauss_fragmentation</span><span class="p">(</span>
+</span><span id="CollisionsMethods-984"><a href="#CollisionsMethods-984"><span class="linenos"> 984</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">gauss_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods-985"><a href="#CollisionsMethods-985"><span class="linenos"> 985</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_fragment</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">frag_volume</span><span class="p">,</span> <span class="n">x_plus_y</span><span class="p">,</span> <span class="n">rand</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">nfmax</span>
 </span><span id="CollisionsMethods-986"><a href="#CollisionsMethods-986"><span class="linenos"> 986</span></a>    <span class="p">):</span>
 </span><span id="CollisionsMethods-987"><a href="#CollisionsMethods-987"><span class="linenos"> 987</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__gauss_fragmentation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
@@ -2078,7 +2078,7 @@
 </span><span id="CollisionsMethods-1006"><a href="#CollisionsMethods-1006"><span class="linenos">1006</span></a>            <span class="p">),</span>
 </span><span id="CollisionsMethods-1007"><a href="#CollisionsMethods-1007"><span class="linenos">1007</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-1008"><a href="#CollisionsMethods-1008"><span class="linenos">1008</span></a>
-</span><span id="CollisionsMethods-1009"><a href="#CollisionsMethods-1009"><span class="linenos">1009</span></a>    <span class="k">def</span> <span class="nf">slams_fragmentation</span><span class="p">(</span>
+</span><span id="CollisionsMethods-1009"><a href="#CollisionsMethods-1009"><span class="linenos">1009</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">slams_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods-1010"><a href="#CollisionsMethods-1010"><span class="linenos">1010</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">n_fragment</span><span class="p">,</span> <span class="n">frag_volume</span><span class="p">,</span> <span class="n">x_plus_y</span><span class="p">,</span> <span class="n">probs</span><span class="p">,</span> <span class="n">rand</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">nfmax</span>
 </span><span id="CollisionsMethods-1011"><a href="#CollisionsMethods-1011"><span class="linenos">1011</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="CollisionsMethods-1012"><a href="#CollisionsMethods-1012"><span class="linenos">1012</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__slams_fragmentation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
@@ -2104,7 +2104,7 @@
 </span><span id="CollisionsMethods-1032"><a href="#CollisionsMethods-1032"><span class="linenos">1032</span></a>            <span class="p">),</span>
 </span><span id="CollisionsMethods-1033"><a href="#CollisionsMethods-1033"><span class="linenos">1033</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-1034"><a href="#CollisionsMethods-1034"><span class="linenos">1034</span></a>
-</span><span id="CollisionsMethods-1035"><a href="#CollisionsMethods-1035"><span class="linenos">1035</span></a>    <span class="k">def</span> <span class="nf">feingold1988_fragmentation</span><span class="p">(</span>
+</span><span id="CollisionsMethods-1035"><a href="#CollisionsMethods-1035"><span class="linenos">1035</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">feingold1988_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods-1036"><a href="#CollisionsMethods-1036"><span class="linenos">1036</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods-1037"><a href="#CollisionsMethods-1037"><span class="linenos">1037</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods-1038"><a href="#CollisionsMethods-1038"><span class="linenos">1038</span></a>        <span class="n">n_fragment</span><span class="p">,</span>
@@ -2139,7 +2139,7 @@
 </span><span id="CollisionsMethods-1067"><a href="#CollisionsMethods-1067"><span class="linenos">1067</span></a>            <span class="p">),</span>
 </span><span id="CollisionsMethods-1068"><a href="#CollisionsMethods-1068"><span class="linenos">1068</span></a>        <span class="p">)</span>
 </span><span id="CollisionsMethods-1069"><a href="#CollisionsMethods-1069"><span class="linenos">1069</span></a>
-</span><span id="CollisionsMethods-1070"><a href="#CollisionsMethods-1070"><span class="linenos">1070</span></a>    <span class="k">def</span> <span class="nf">straub_fragmentation</span><span class="p">(</span>
+</span><span id="CollisionsMethods-1070"><a href="#CollisionsMethods-1070"><span class="linenos">1070</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">straub_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods-1071"><a href="#CollisionsMethods-1071"><span class="linenos">1071</span></a>        <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
 </span><span id="CollisionsMethods-1072"><a href="#CollisionsMethods-1072"><span class="linenos">1072</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods-1073"><a href="#CollisionsMethods-1073"><span class="linenos">1073</span></a>        <span class="o">*</span><span class="p">,</span>
@@ -2205,7 +2205,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.adaptive_sdm_end"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.adaptive_sdm_end-11"><a href="#CollisionsMethods.adaptive_sdm_end-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.adaptive_sdm_end-11"><a href="#CollisionsMethods.adaptive_sdm_end-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.adaptive_sdm_end-12"><a href="#CollisionsMethods.adaptive_sdm_end-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.adaptive_sdm_end-13"><a href="#CollisionsMethods.adaptive_sdm_end-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.adaptive_sdm_end-14"><a href="#CollisionsMethods.adaptive_sdm_end-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2229,7 +2229,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.scale_prob_for_adaptive_sdm_gamma"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-11"><a href="#CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-11"><a href="#CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-12"><a href="#CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-13"><a href="#CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-14"><a href="#CollisionsMethods.scale_prob_for_adaptive_sdm_gamma-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2253,7 +2253,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.cell_id"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.cell_id-11"><a href="#CollisionsMethods.cell_id-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.cell_id-11"><a href="#CollisionsMethods.cell_id-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.cell_id-12"><a href="#CollisionsMethods.cell_id-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.cell_id-13"><a href="#CollisionsMethods.cell_id-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.cell_id-14"><a href="#CollisionsMethods.cell_id-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2277,7 +2277,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.collision_coalescence"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.collision_coalescence-11"><a href="#CollisionsMethods.collision_coalescence-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.collision_coalescence-11"><a href="#CollisionsMethods.collision_coalescence-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.collision_coalescence-12"><a href="#CollisionsMethods.collision_coalescence-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.collision_coalescence-13"><a href="#CollisionsMethods.collision_coalescence-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.collision_coalescence-14"><a href="#CollisionsMethods.collision_coalescence-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2301,7 +2301,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.collision_coalescence_breakup"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.collision_coalescence_breakup-11"><a href="#CollisionsMethods.collision_coalescence_breakup-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.collision_coalescence_breakup-11"><a href="#CollisionsMethods.collision_coalescence_breakup-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.collision_coalescence_breakup-12"><a href="#CollisionsMethods.collision_coalescence_breakup-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.collision_coalescence_breakup-13"><a href="#CollisionsMethods.collision_coalescence_breakup-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.collision_coalescence_breakup-14"><a href="#CollisionsMethods.collision_coalescence_breakup-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2325,7 +2325,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.compute_gamma"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.compute_gamma-11"><a href="#CollisionsMethods.compute_gamma-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.compute_gamma-11"><a href="#CollisionsMethods.compute_gamma-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.compute_gamma-12"><a href="#CollisionsMethods.compute_gamma-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.compute_gamma-13"><a href="#CollisionsMethods.compute_gamma-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.compute_gamma-14"><a href="#CollisionsMethods.compute_gamma-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2349,7 +2349,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.make_cell_caretaker"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.make_cell_caretaker-901"><a href="#CollisionsMethods.make_cell_caretaker-901"><span class="linenos">901</span></a>    <span class="k">def</span> <span class="nf">make_cell_caretaker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx_shape</span><span class="p">,</span> <span class="n">idx_dtype</span><span class="p">,</span> <span class="n">cell_start_len</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.make_cell_caretaker-901"><a href="#CollisionsMethods.make_cell_caretaker-901"><span class="linenos">901</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">make_cell_caretaker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx_shape</span><span class="p">,</span> <span class="n">idx_dtype</span><span class="p">,</span> <span class="n">cell_start_len</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 </span><span id="CollisionsMethods.make_cell_caretaker-902"><a href="#CollisionsMethods.make_cell_caretaker-902"><span class="linenos">902</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">scheme</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">):</span>
 </span><span id="CollisionsMethods.make_cell_caretaker-903"><a href="#CollisionsMethods.make_cell_caretaker-903"><span class="linenos">903</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </span><span id="CollisionsMethods.make_cell_caretaker-904"><a href="#CollisionsMethods.make_cell_caretaker-904"><span class="linenos">904</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sort_by_cell_id_and_update_cell_start</span>
@@ -2370,7 +2370,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.normalize"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.normalize-11"><a href="#CollisionsMethods.normalize-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.normalize-11"><a href="#CollisionsMethods.normalize-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.normalize-12"><a href="#CollisionsMethods.normalize-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.normalize-13"><a href="#CollisionsMethods.normalize-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.normalize-14"><a href="#CollisionsMethods.normalize-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2394,7 +2394,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.remove_zero_n_or_flagged"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.remove_zero_n_or_flagged-11"><a href="#CollisionsMethods.remove_zero_n_or_flagged-11"><span class="linenos">11</span></a>        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.remove_zero_n_or_flagged-11"><a href="#CollisionsMethods.remove_zero_n_or_flagged-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span id="CollisionsMethods.remove_zero_n_or_flagged-12"><a href="#CollisionsMethods.remove_zero_n_or_flagged-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
 </span><span id="CollisionsMethods.remove_zero_n_or_flagged-13"><a href="#CollisionsMethods.remove_zero_n_or_flagged-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
 </span><span id="CollisionsMethods.remove_zero_n_or_flagged-14"><a href="#CollisionsMethods.remove_zero_n_or_flagged-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -2418,7 +2418,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.exp_fragmentation"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.exp_fragmentation-950"><a href="#CollisionsMethods.exp_fragmentation-950"><span class="linenos">950</span></a>    <span class="k">def</span> <span class="nf">exp_fragmentation</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.exp_fragmentation-950"><a href="#CollisionsMethods.exp_fragmentation-950"><span class="linenos">950</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">exp_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods.exp_fragmentation-951"><a href="#CollisionsMethods.exp_fragmentation-951"><span class="linenos">951</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods.exp_fragmentation-952"><a href="#CollisionsMethods.exp_fragmentation-952"><span class="linenos">952</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods.exp_fragmentation-953"><a href="#CollisionsMethods.exp_fragmentation-953"><span class="linenos">953</span></a>        <span class="n">n_fragment</span><span class="p">,</span>
@@ -2468,7 +2468,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.gauss_fragmentation"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.gauss_fragmentation-984"><a href="#CollisionsMethods.gauss_fragmentation-984"><span class="linenos"> 984</span></a>    <span class="k">def</span> <span class="nf">gauss_fragmentation</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.gauss_fragmentation-984"><a href="#CollisionsMethods.gauss_fragmentation-984"><span class="linenos"> 984</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">gauss_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods.gauss_fragmentation-985"><a href="#CollisionsMethods.gauss_fragmentation-985"><span class="linenos"> 985</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_fragment</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">frag_volume</span><span class="p">,</span> <span class="n">x_plus_y</span><span class="p">,</span> <span class="n">rand</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">nfmax</span>
 </span><span id="CollisionsMethods.gauss_fragmentation-986"><a href="#CollisionsMethods.gauss_fragmentation-986"><span class="linenos"> 986</span></a>    <span class="p">):</span>
 </span><span id="CollisionsMethods.gauss_fragmentation-987"><a href="#CollisionsMethods.gauss_fragmentation-987"><span class="linenos"> 987</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__gauss_fragmentation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
@@ -2509,7 +2509,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.slams_fragmentation"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.slams_fragmentation-1009"><a href="#CollisionsMethods.slams_fragmentation-1009"><span class="linenos">1009</span></a>    <span class="k">def</span> <span class="nf">slams_fragmentation</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.slams_fragmentation-1009"><a href="#CollisionsMethods.slams_fragmentation-1009"><span class="linenos">1009</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">slams_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods.slams_fragmentation-1010"><a href="#CollisionsMethods.slams_fragmentation-1010"><span class="linenos">1010</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">n_fragment</span><span class="p">,</span> <span class="n">frag_volume</span><span class="p">,</span> <span class="n">x_plus_y</span><span class="p">,</span> <span class="n">probs</span><span class="p">,</span> <span class="n">rand</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">nfmax</span>
 </span><span id="CollisionsMethods.slams_fragmentation-1011"><a href="#CollisionsMethods.slams_fragmentation-1011"><span class="linenos">1011</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="CollisionsMethods.slams_fragmentation-1012"><a href="#CollisionsMethods.slams_fragmentation-1012"><span class="linenos">1012</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__slams_fragmentation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
@@ -2551,7 +2551,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.feingold1988_fragmentation"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.feingold1988_fragmentation-1035"><a href="#CollisionsMethods.feingold1988_fragmentation-1035"><span class="linenos">1035</span></a>    <span class="k">def</span> <span class="nf">feingold1988_fragmentation</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.feingold1988_fragmentation-1035"><a href="#CollisionsMethods.feingold1988_fragmentation-1035"><span class="linenos">1035</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">feingold1988_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods.feingold1988_fragmentation-1036"><a href="#CollisionsMethods.feingold1988_fragmentation-1036"><span class="linenos">1036</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods.feingold1988_fragmentation-1037"><a href="#CollisionsMethods.feingold1988_fragmentation-1037"><span class="linenos">1037</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="CollisionsMethods.feingold1988_fragmentation-1038"><a href="#CollisionsMethods.feingold1988_fragmentation-1038"><span class="linenos">1038</span></a>        <span class="n">n_fragment</span><span class="p">,</span>
@@ -2602,7 +2602,7 @@
 
     </div>
     <a class="headerlink" href="#CollisionsMethods.straub_fragmentation"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.straub_fragmentation-1070"><a href="#CollisionsMethods.straub_fragmentation-1070"><span class="linenos">1070</span></a>    <span class="k">def</span> <span class="nf">straub_fragmentation</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CollisionsMethods.straub_fragmentation-1070"><a href="#CollisionsMethods.straub_fragmentation-1070"><span class="linenos">1070</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">straub_fragmentation</span><span class="p">(</span>
 </span><span id="CollisionsMethods.straub_fragmentation-1071"><a href="#CollisionsMethods.straub_fragmentation-1071"><span class="linenos">1071</span></a>        <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
 </span><span id="CollisionsMethods.straub_fragmentation-1072"><a href="#CollisionsMethods.straub_fragmentation-1072"><span class="linenos">1072</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="CollisionsMethods.straub_fragmentation-1073"><a href="#CollisionsMethods.straub_fragmentation-1073"><span class="linenos">1073</span></a>        <span class="o">*</span><span class="p">,</span>

@@ -134,16 +134,16 @@
 
                         <label class="view-source-button" for="mod-aerosol_code-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">from</span> <span class="nn">chempy</span> <span class="kn">import</span> <span class="n">Substance</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span> <span class="nn">pystrict</span> <span class="kn">import</span> <span class="n">strict</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">chempy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Substance</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pystrict</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation</span> <span class="kn">import</span> <span class="n">spectra</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation.aerosol_composition</span> <span class="kn">import</span> <span class="n">DryAerosolMixture</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectra</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation.aerosol_composition</span><span class="w"> </span><span class="kn">import</span> <span class="n">DryAerosolMixture</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="nd">@strict</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="k">class</span> <span class="nc">AerosolMarine</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolMarine</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>    <span class="c1"># cd MAV</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>    <span class="c1"># MODAL_PARS.CONC         = [223  137];   %[number/cm3]</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="c1"># MODAL_PARS.GSD          = [1.68 1.68];</span>
@@ -155,7 +155,7 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="c1"># NMODE                   = [1 1];</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>    <span class="c1"># DENSITY                 = [1.841, 1.78, 1.77, 0.852, 1.5, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">137</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>    <span class="p">):</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>        <span class="n">Aitken</span> <span class="o">=</span> <span class="p">{</span>
@@ -221,7 +221,7 @@
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="nd">@strict</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="k">class</span> <span class="nc">AerosolBoreal</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolBoreal</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>    <span class="c1">#     cd HYY</span>
 </span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="c1">#     MODAL_PARS.CONC         = [1110   540];</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="c1">#     MODAL_PARS.GSD          = [1.75   1.62];</span>
@@ -242,7 +242,7 @@
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="c1"># DENSITY                     = [1.841, 1.78, 1.77, 1.5, 1.5, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="c1"># DENSITY                     = [1.72, 1.78, 1.77, 1.2, 1.4, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.668</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">540</span>
 </span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="p">):</span>
 </span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="c1"># TODO #1247: SOA1 or SOA2 unclear from the paper</span>
@@ -319,7 +319,7 @@
 </span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>
 </span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>
 </span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a><span class="nd">@strict</span>
-</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="k">class</span> <span class="nc">AerosolNascent</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolNascent</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
 </span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>    <span class="c1"># cd NUM</span>
 </span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>    <span class="c1"># MODAL_PARS.CONC         = [2000  30];</span>
 </span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>    <span class="c1"># MODAL_PARS.GSD          = [1.71  1.703];</span>
@@ -332,7 +332,7 @@
 </span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>    <span class="c1"># DENSITY                 = [1.841, 1.78, 1.77, 1.2, 1.24, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>
-</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Acc_Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">30</span>
 </span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>    <span class="p">):</span>
 </span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>        <span class="c1"># TODO #1247: CAN&#39;T FIND WHEN PHI IS MULTIPLIED FOR KÖHLER B IN ICPM CODE</span>
@@ -412,7 +412,7 @@
     </div>
     <a class="headerlink" href="#AerosolMarine"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolMarine-10"><a href="#AerosolMarine-10"><span class="linenos">10</span></a><span class="nd">@strict</span>
-</span><span id="AerosolMarine-11"><a href="#AerosolMarine-11"><span class="linenos">11</span></a><span class="k">class</span> <span class="nc">AerosolMarine</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="AerosolMarine-11"><a href="#AerosolMarine-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolMarine</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
 </span><span id="AerosolMarine-12"><a href="#AerosolMarine-12"><span class="linenos">12</span></a>    <span class="c1"># cd MAV</span>
 </span><span id="AerosolMarine-13"><a href="#AerosolMarine-13"><span class="linenos">13</span></a>    <span class="c1"># MODAL_PARS.CONC         = [223  137];   %[number/cm3]</span>
 </span><span id="AerosolMarine-14"><a href="#AerosolMarine-14"><span class="linenos">14</span></a>    <span class="c1"># MODAL_PARS.GSD          = [1.68 1.68];</span>
@@ -424,7 +424,7 @@
 </span><span id="AerosolMarine-20"><a href="#AerosolMarine-20"><span class="linenos">20</span></a>    <span class="c1"># NMODE                   = [1 1];</span>
 </span><span id="AerosolMarine-21"><a href="#AerosolMarine-21"><span class="linenos">21</span></a>    <span class="c1"># DENSITY                 = [1.841, 1.78, 1.77, 0.852, 1.5, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="AerosolMarine-22"><a href="#AerosolMarine-22"><span class="linenos">22</span></a>
-</span><span id="AerosolMarine-23"><a href="#AerosolMarine-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="AerosolMarine-23"><a href="#AerosolMarine-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolMarine-24"><a href="#AerosolMarine-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">137</span>
 </span><span id="AerosolMarine-25"><a href="#AerosolMarine-25"><span class="linenos">25</span></a>    <span class="p">):</span>
 </span><span id="AerosolMarine-26"><a href="#AerosolMarine-26"><span class="linenos">26</span></a>        <span class="n">Aitken</span> <span class="o">=</span> <span class="p">{</span>
@@ -502,7 +502,7 @@
 
     </div>
     <a class="headerlink" href="#AerosolMarine.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolMarine.__init__-23"><a href="#AerosolMarine.__init__-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolMarine.__init__-23"><a href="#AerosolMarine.__init__-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolMarine.__init__-24"><a href="#AerosolMarine.__init__-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">137</span>
 </span><span id="AerosolMarine.__init__-25"><a href="#AerosolMarine.__init__-25"><span class="linenos">25</span></a>    <span class="p">):</span>
 </span><span id="AerosolMarine.__init__-26"><a href="#AerosolMarine.__init__-26"><span class="linenos">26</span></a>        <span class="n">Aitken</span> <span class="o">=</span> <span class="p">{</span>
@@ -579,7 +579,7 @@
     </div>
     <a class="headerlink" href="#AerosolMarine.modes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolMarine.modes-39"><a href="#AerosolMarine.modes-39"><span class="linenos">39</span></a>    <span class="nd">@property</span>
-</span><span id="AerosolMarine.modes-40"><a href="#AerosolMarine.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AerosolMarine.modes-40"><a href="#AerosolMarine.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="AerosolMarine.modes-41"><a href="#AerosolMarine.modes-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span>
 </span></pre></div>
 
@@ -631,7 +631,7 @@
     </div>
     <a class="headerlink" href="#AerosolBoreal"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolBoreal-88"><a href="#AerosolBoreal-88"><span class="linenos"> 88</span></a><span class="nd">@strict</span>
-</span><span id="AerosolBoreal-89"><a href="#AerosolBoreal-89"><span class="linenos"> 89</span></a><span class="k">class</span> <span class="nc">AerosolBoreal</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="AerosolBoreal-89"><a href="#AerosolBoreal-89"><span class="linenos"> 89</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolBoreal</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
 </span><span id="AerosolBoreal-90"><a href="#AerosolBoreal-90"><span class="linenos"> 90</span></a>    <span class="c1">#     cd HYY</span>
 </span><span id="AerosolBoreal-91"><a href="#AerosolBoreal-91"><span class="linenos"> 91</span></a>    <span class="c1">#     MODAL_PARS.CONC         = [1110   540];</span>
 </span><span id="AerosolBoreal-92"><a href="#AerosolBoreal-92"><span class="linenos"> 92</span></a>    <span class="c1">#     MODAL_PARS.GSD          = [1.75   1.62];</span>
@@ -652,7 +652,7 @@
 </span><span id="AerosolBoreal-107"><a href="#AerosolBoreal-107"><span class="linenos">107</span></a>    <span class="c1"># DENSITY                     = [1.841, 1.78, 1.77, 1.5, 1.5, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="AerosolBoreal-108"><a href="#AerosolBoreal-108"><span class="linenos">108</span></a>    <span class="c1"># DENSITY                     = [1.72, 1.78, 1.77, 1.2, 1.4, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="AerosolBoreal-109"><a href="#AerosolBoreal-109"><span class="linenos">109</span></a>
-</span><span id="AerosolBoreal-110"><a href="#AerosolBoreal-110"><span class="linenos">110</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="AerosolBoreal-110"><a href="#AerosolBoreal-110"><span class="linenos">110</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolBoreal-111"><a href="#AerosolBoreal-111"><span class="linenos">111</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.668</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">540</span>
 </span><span id="AerosolBoreal-112"><a href="#AerosolBoreal-112"><span class="linenos">112</span></a>    <span class="p">):</span>
 </span><span id="AerosolBoreal-113"><a href="#AerosolBoreal-113"><span class="linenos">113</span></a>        <span class="c1"># TODO #1247: SOA1 or SOA2 unclear from the paper</span>
@@ -741,7 +741,7 @@
 
     </div>
     <a class="headerlink" href="#AerosolBoreal.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolBoreal.__init__-110"><a href="#AerosolBoreal.__init__-110"><span class="linenos">110</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolBoreal.__init__-110"><a href="#AerosolBoreal.__init__-110"><span class="linenos">110</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolBoreal.__init__-111"><a href="#AerosolBoreal.__init__-111"><span class="linenos">111</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.668</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">540</span>
 </span><span id="AerosolBoreal.__init__-112"><a href="#AerosolBoreal.__init__-112"><span class="linenos">112</span></a>    <span class="p">):</span>
 </span><span id="AerosolBoreal.__init__-113"><a href="#AerosolBoreal.__init__-113"><span class="linenos">113</span></a>        <span class="c1"># TODO #1247: SOA1 or SOA2 unclear from the paper</span>
@@ -829,7 +829,7 @@
     </div>
     <a class="headerlink" href="#AerosolBoreal.modes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolBoreal.modes-39"><a href="#AerosolBoreal.modes-39"><span class="linenos">39</span></a>    <span class="nd">@property</span>
-</span><span id="AerosolBoreal.modes-40"><a href="#AerosolBoreal.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AerosolBoreal.modes-40"><a href="#AerosolBoreal.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="AerosolBoreal.modes-41"><a href="#AerosolBoreal.modes-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span>
 </span></pre></div>
 
@@ -881,7 +881,7 @@
     </div>
     <a class="headerlink" href="#AerosolNascent"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolNascent-186"><a href="#AerosolNascent-186"><span class="linenos">186</span></a><span class="nd">@strict</span>
-</span><span id="AerosolNascent-187"><a href="#AerosolNascent-187"><span class="linenos">187</span></a><span class="k">class</span> <span class="nc">AerosolNascent</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="AerosolNascent-187"><a href="#AerosolNascent-187"><span class="linenos">187</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolNascent</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
 </span><span id="AerosolNascent-188"><a href="#AerosolNascent-188"><span class="linenos">188</span></a>    <span class="c1"># cd NUM</span>
 </span><span id="AerosolNascent-189"><a href="#AerosolNascent-189"><span class="linenos">189</span></a>    <span class="c1"># MODAL_PARS.CONC         = [2000  30];</span>
 </span><span id="AerosolNascent-190"><a href="#AerosolNascent-190"><span class="linenos">190</span></a>    <span class="c1"># MODAL_PARS.GSD          = [1.71  1.703];</span>
@@ -894,7 +894,7 @@
 </span><span id="AerosolNascent-197"><a href="#AerosolNascent-197"><span class="linenos">197</span></a>
 </span><span id="AerosolNascent-198"><a href="#AerosolNascent-198"><span class="linenos">198</span></a>    <span class="c1"># DENSITY                 = [1.841, 1.78, 1.77, 1.2, 1.24, 2., 2.65, 2.165]; %[gcm-3]</span>
 </span><span id="AerosolNascent-199"><a href="#AerosolNascent-199"><span class="linenos">199</span></a>
-</span><span id="AerosolNascent-200"><a href="#AerosolNascent-200"><span class="linenos">200</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="AerosolNascent-200"><a href="#AerosolNascent-200"><span class="linenos">200</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolNascent-201"><a href="#AerosolNascent-201"><span class="linenos">201</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Acc_Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">30</span>
 </span><span id="AerosolNascent-202"><a href="#AerosolNascent-202"><span class="linenos">202</span></a>    <span class="p">):</span>
 </span><span id="AerosolNascent-203"><a href="#AerosolNascent-203"><span class="linenos">203</span></a>        <span class="c1"># TODO #1247: CAN&#39;T FIND WHEN PHI IS MULTIPLIED FOR KÖHLER B IN ICPM CODE</span>
@@ -972,7 +972,7 @@
 
     </div>
     <a class="headerlink" href="#AerosolNascent.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolNascent.__init__-200"><a href="#AerosolNascent.__init__-200"><span class="linenos">200</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolNascent.__init__-200"><a href="#AerosolNascent.__init__-200"><span class="linenos">200</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolNascent.__init__-201"><a href="#AerosolNascent.__init__-201"><span class="linenos">201</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Acc_Forg</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">Acc_N2</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">30</span>
 </span><span id="AerosolNascent.__init__-202"><a href="#AerosolNascent.__init__-202"><span class="linenos">202</span></a>    <span class="p">):</span>
 </span><span id="AerosolNascent.__init__-203"><a href="#AerosolNascent.__init__-203"><span class="linenos">203</span></a>        <span class="c1"># TODO #1247: CAN&#39;T FIND WHEN PHI IS MULTIPLIED FOR KÖHLER B IN ICPM CODE</span>
@@ -1049,7 +1049,7 @@
     </div>
     <a class="headerlink" href="#AerosolNascent.modes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolNascent.modes-39"><a href="#AerosolNascent.modes-39"><span class="linenos">39</span></a>    <span class="nd">@property</span>
-</span><span id="AerosolNascent.modes-40"><a href="#AerosolNascent.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AerosolNascent.modes-40"><a href="#AerosolNascent.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="AerosolNascent.modes-41"><a href="#AerosolNascent.modes-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span>
 </span></pre></div>
 

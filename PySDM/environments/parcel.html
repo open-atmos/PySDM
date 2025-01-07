@@ -158,22 +158,22 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="sd">Zero-dimensional adiabatic parcel framework</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span> <span class="nn">PySDM.environments.impl.moist</span> <span class="kn">import</span> <span class="n">Moist</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">PySDM.impl.mesh</span> <span class="kn">import</span> <span class="n">Mesh</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation.equilibrate_wet_radii</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.environments.impl.moist</span><span class="w"> </span><span class="kn">import</span> <span class="n">Moist</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.impl.mesh</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mesh</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation.equilibrate_wet_radii</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>    <span class="n">default_rtol</span><span class="p">,</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="n">equilibrate_wet_radii</span><span class="p">,</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="p">)</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span> <span class="nn">PySDM.environments.impl</span> <span class="kn">import</span> <span class="n">register_environment</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.environments.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_environment</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a><span class="nd">@register_environment</span><span class="p">()</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="k">class</span> <span class="nc">Parcel</span><span class="p">(</span><span class="n">Moist</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Parcel</span><span class="p">(</span><span class="n">Moist</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>        <span class="n">dt</span><span class="p">,</span>
@@ -202,13 +202,13 @@
 </span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="nd">@property</span>
-</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="k">def</span> <span class="nf">dv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>        <span class="n">rhod_mean</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_predicted</span><span class="p">(</span><span class="s2">&quot;rhod&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;rhod&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">volume_of_density_mass</span><span class="p">(</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>            <span class="n">rhod_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a>        <span class="p">)</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>        <span class="n">pd0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">p_d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>        <span class="n">rhod0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">state_variable_triplet</span><span class="o">.</span><span class="n">rhod_of_pd_T</span><span class="p">(</span><span class="n">pd0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
@@ -236,7 +236,7 @@
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>        <span class="n">Moist</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>    <span class="k">def</span> <span class="nf">init_attributes</span><span class="p">(</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">init_attributes</span><span class="p">(</span>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="n">n_in_dv</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -264,7 +264,7 @@
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;dry volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dry_volume</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="n">attributes</span>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">def</span> <span class="nf">advance_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">advance_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -299,13 +299,13 @@
 </span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">[</span><span class="s2">&quot;rhod&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;rhod&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span>
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>        <span class="p">)</span>
 </span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="k">def</span> <span class="nf">get_thd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_thd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;thd&quot;</span><span class="p">]</span>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="k">def</span> <span class="nf">get_water_vapour_mixing_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_water_vapour_mixing_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">]</span>
 </span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="k">def</span> <span class="nf">sync_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sync_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">delta_liquid_water_mixing_ratio</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>            <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -313,7 +313,7 @@
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span>
 </span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sync_parcel_vars</span><span class="p">()</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">advance_parcel_vars</span><span class="p">()</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
@@ -334,8 +334,8 @@
     </div>
     <a class="headerlink" href="#Parcel"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel-19"><a href="#Parcel-19"><span class="linenos"> 19</span></a><span class="nd">@register_environment</span><span class="p">()</span>
-</span><span id="Parcel-20"><a href="#Parcel-20"><span class="linenos"> 20</span></a><span class="k">class</span> <span class="nc">Parcel</span><span class="p">(</span><span class="n">Moist</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
-</span><span id="Parcel-21"><a href="#Parcel-21"><span class="linenos"> 21</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Parcel-20"><a href="#Parcel-20"><span class="linenos"> 20</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Parcel</span><span class="p">(</span><span class="n">Moist</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+</span><span id="Parcel-21"><a href="#Parcel-21"><span class="linenos"> 21</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Parcel-22"><a href="#Parcel-22"><span class="linenos"> 22</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Parcel-23"><a href="#Parcel-23"><span class="linenos"> 23</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Parcel-24"><a href="#Parcel-24"><span class="linenos"> 24</span></a>        <span class="n">dt</span><span class="p">,</span>
@@ -364,13 +364,13 @@
 </span><span id="Parcel-47"><a href="#Parcel-47"><span class="linenos"> 47</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Parcel-48"><a href="#Parcel-48"><span class="linenos"> 48</span></a>
 </span><span id="Parcel-49"><a href="#Parcel-49"><span class="linenos"> 49</span></a>    <span class="nd">@property</span>
-</span><span id="Parcel-50"><a href="#Parcel-50"><span class="linenos"> 50</span></a>    <span class="k">def</span> <span class="nf">dv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Parcel-50"><a href="#Parcel-50"><span class="linenos"> 50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel-51"><a href="#Parcel-51"><span class="linenos"> 51</span></a>        <span class="n">rhod_mean</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_predicted</span><span class="p">(</span><span class="s2">&quot;rhod&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;rhod&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
 </span><span id="Parcel-52"><a href="#Parcel-52"><span class="linenos"> 52</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">volume_of_density_mass</span><span class="p">(</span>
 </span><span id="Parcel-53"><a href="#Parcel-53"><span class="linenos"> 53</span></a>            <span class="n">rhod_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span>
 </span><span id="Parcel-54"><a href="#Parcel-54"><span class="linenos"> 54</span></a>        <span class="p">)</span>
 </span><span id="Parcel-55"><a href="#Parcel-55"><span class="linenos"> 55</span></a>
-</span><span id="Parcel-56"><a href="#Parcel-56"><span class="linenos"> 56</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="Parcel-56"><a href="#Parcel-56"><span class="linenos"> 56</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Parcel-57"><a href="#Parcel-57"><span class="linenos"> 57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span>
 </span><span id="Parcel-58"><a href="#Parcel-58"><span class="linenos"> 58</span></a>        <span class="n">pd0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">p_d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
 </span><span id="Parcel-59"><a href="#Parcel-59"><span class="linenos"> 59</span></a>        <span class="n">rhod0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">state_variable_triplet</span><span class="o">.</span><span class="n">rhod_of_pd_T</span><span class="p">(</span><span class="n">pd0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
@@ -398,7 +398,7 @@
 </span><span id="Parcel-81"><a href="#Parcel-81"><span class="linenos"> 81</span></a>        <span class="n">Moist</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Parcel-82"><a href="#Parcel-82"><span class="linenos"> 82</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
 </span><span id="Parcel-83"><a href="#Parcel-83"><span class="linenos"> 83</span></a>
-</span><span id="Parcel-84"><a href="#Parcel-84"><span class="linenos"> 84</span></a>    <span class="k">def</span> <span class="nf">init_attributes</span><span class="p">(</span>
+</span><span id="Parcel-84"><a href="#Parcel-84"><span class="linenos"> 84</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">init_attributes</span><span class="p">(</span>
 </span><span id="Parcel-85"><a href="#Parcel-85"><span class="linenos"> 85</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Parcel-86"><a href="#Parcel-86"><span class="linenos"> 86</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Parcel-87"><a href="#Parcel-87"><span class="linenos"> 87</span></a>        <span class="n">n_in_dv</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -426,7 +426,7 @@
 </span><span id="Parcel-109"><a href="#Parcel-109"><span class="linenos">109</span></a>            <span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;dry volume&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dry_volume</span>
 </span><span id="Parcel-110"><a href="#Parcel-110"><span class="linenos">110</span></a>        <span class="k">return</span> <span class="n">attributes</span>
 </span><span id="Parcel-111"><a href="#Parcel-111"><span class="linenos">111</span></a>
-</span><span id="Parcel-112"><a href="#Parcel-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">advance_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Parcel-112"><a href="#Parcel-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">advance_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel-113"><a href="#Parcel-113"><span class="linenos">113</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="Parcel-114"><a href="#Parcel-114"><span class="linenos">114</span></a>        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="Parcel-115"><a href="#Parcel-115"><span class="linenos">115</span></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -461,13 +461,13 @@
 </span><span id="Parcel-144"><a href="#Parcel-144"><span class="linenos">144</span></a>            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">[</span><span class="s2">&quot;rhod&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;rhod&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span>
 </span><span id="Parcel-145"><a href="#Parcel-145"><span class="linenos">145</span></a>        <span class="p">)</span>
 </span><span id="Parcel-146"><a href="#Parcel-146"><span class="linenos">146</span></a>
-</span><span id="Parcel-147"><a href="#Parcel-147"><span class="linenos">147</span></a>    <span class="k">def</span> <span class="nf">get_thd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Parcel-147"><a href="#Parcel-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_thd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel-148"><a href="#Parcel-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;thd&quot;</span><span class="p">]</span>
 </span><span id="Parcel-149"><a href="#Parcel-149"><span class="linenos">149</span></a>
-</span><span id="Parcel-150"><a href="#Parcel-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">get_water_vapour_mixing_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Parcel-150"><a href="#Parcel-150"><span class="linenos">150</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_water_vapour_mixing_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel-151"><a href="#Parcel-151"><span class="linenos">151</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">]</span>
 </span><span id="Parcel-152"><a href="#Parcel-152"><span class="linenos">152</span></a>
-</span><span id="Parcel-153"><a href="#Parcel-153"><span class="linenos">153</span></a>    <span class="k">def</span> <span class="nf">sync_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Parcel-153"><a href="#Parcel-153"><span class="linenos">153</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sync_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel-154"><a href="#Parcel-154"><span class="linenos">154</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">delta_liquid_water_mixing_ratio</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="Parcel-155"><a href="#Parcel-155"><span class="linenos">155</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="Parcel-156"><a href="#Parcel-156"><span class="linenos">156</span></a>            <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -475,7 +475,7 @@
 </span><span id="Parcel-158"><a href="#Parcel-158"><span class="linenos">158</span></a>        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
 </span><span id="Parcel-159"><a href="#Parcel-159"><span class="linenos">159</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">var</span><span class="p">][:]</span>
 </span><span id="Parcel-160"><a href="#Parcel-160"><span class="linenos">160</span></a>
-</span><span id="Parcel-161"><a href="#Parcel-161"><span class="linenos">161</span></a>    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Parcel-161"><a href="#Parcel-161"><span class="linenos">161</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel-162"><a href="#Parcel-162"><span class="linenos">162</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sync_parcel_vars</span><span class="p">()</span>
 </span><span id="Parcel-163"><a href="#Parcel-163"><span class="linenos">163</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">advance_parcel_vars</span><span class="p">()</span>
 </span><span id="Parcel-164"><a href="#Parcel-164"><span class="linenos">164</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
@@ -494,7 +494,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.__init__-21"><a href="#Parcel.__init__-21"><span class="linenos">21</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.__init__-21"><a href="#Parcel.__init__-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Parcel.__init__-22"><a href="#Parcel.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Parcel.__init__-23"><a href="#Parcel.__init__-23"><span class="linenos">23</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Parcel.__init__-24"><a href="#Parcel.__init__-24"><span class="linenos">24</span></a>        <span class="n">dt</span><span class="p">,</span>
@@ -636,7 +636,7 @@
     </div>
     <a class="headerlink" href="#Parcel.dv"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.dv-49"><a href="#Parcel.dv-49"><span class="linenos">49</span></a>    <span class="nd">@property</span>
-</span><span id="Parcel.dv-50"><a href="#Parcel.dv-50"><span class="linenos">50</span></a>    <span class="k">def</span> <span class="nf">dv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Parcel.dv-50"><a href="#Parcel.dv-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel.dv-51"><a href="#Parcel.dv-51"><span class="linenos">51</span></a>        <span class="n">rhod_mean</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_predicted</span><span class="p">(</span><span class="s2">&quot;rhod&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;rhod&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
 </span><span id="Parcel.dv-52"><a href="#Parcel.dv-52"><span class="linenos">52</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">volume_of_density_mass</span><span class="p">(</span>
 </span><span id="Parcel.dv-53"><a href="#Parcel.dv-53"><span class="linenos">53</span></a>            <span class="n">rhod_mean</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_of_dry_air</span>
@@ -658,7 +658,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.register-56"><a href="#Parcel.register-56"><span class="linenos">56</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.register-56"><a href="#Parcel.register-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Parcel.register-57"><a href="#Parcel.register-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span>
 </span><span id="Parcel.register-58"><a href="#Parcel.register-58"><span class="linenos">58</span></a>        <span class="n">pd0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">trivia</span><span class="o">.</span><span class="n">p_d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_water_vapour_mixing_ratio</span><span class="p">)</span>
 </span><span id="Parcel.register-59"><a href="#Parcel.register-59"><span class="linenos">59</span></a>        <span class="n">rhod0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">state_variable_triplet</span><span class="o">.</span><span class="n">rhod_of_pd_T</span><span class="p">(</span><span class="n">pd0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T0</span><span class="p">)</span>
@@ -702,7 +702,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.init_attributes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.init_attributes-84"><a href="#Parcel.init_attributes-84"><span class="linenos"> 84</span></a>    <span class="k">def</span> <span class="nf">init_attributes</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.init_attributes-84"><a href="#Parcel.init_attributes-84"><span class="linenos"> 84</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">init_attributes</span><span class="p">(</span>
 </span><span id="Parcel.init_attributes-85"><a href="#Parcel.init_attributes-85"><span class="linenos"> 85</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Parcel.init_attributes-86"><a href="#Parcel.init_attributes-86"><span class="linenos"> 86</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Parcel.init_attributes-87"><a href="#Parcel.init_attributes-87"><span class="linenos"> 87</span></a>        <span class="n">n_in_dv</span><span class="p">:</span> <span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -746,7 +746,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.advance_parcel_vars"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.advance_parcel_vars-112"><a href="#Parcel.advance_parcel_vars-112"><span class="linenos">112</span></a>    <span class="k">def</span> <span class="nf">advance_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.advance_parcel_vars-112"><a href="#Parcel.advance_parcel_vars-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">advance_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel.advance_parcel_vars-113"><a href="#Parcel.advance_parcel_vars-113"><span class="linenos">113</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="Parcel.advance_parcel_vars-114"><a href="#Parcel.advance_parcel_vars-114"><span class="linenos">114</span></a>        <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="Parcel.advance_parcel_vars-115"><a href="#Parcel.advance_parcel_vars-115"><span class="linenos">115</span></a>        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -797,7 +797,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.get_thd"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.get_thd-147"><a href="#Parcel.get_thd-147"><span class="linenos">147</span></a>    <span class="k">def</span> <span class="nf">get_thd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.get_thd-147"><a href="#Parcel.get_thd-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_thd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel.get_thd-148"><a href="#Parcel.get_thd-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;thd&quot;</span><span class="p">]</span>
 </span></pre></div>
 
@@ -816,7 +816,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.get_water_vapour_mixing_ratio"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.get_water_vapour_mixing_ratio-150"><a href="#Parcel.get_water_vapour_mixing_ratio-150"><span class="linenos">150</span></a>    <span class="k">def</span> <span class="nf">get_water_vapour_mixing_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.get_water_vapour_mixing_ratio-150"><a href="#Parcel.get_water_vapour_mixing_ratio-150"><span class="linenos">150</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get_water_vapour_mixing_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel.get_water_vapour_mixing_ratio-151"><a href="#Parcel.get_water_vapour_mixing_ratio-151"><span class="linenos">151</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">]</span>
 </span></pre></div>
 
@@ -835,7 +835,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.sync_parcel_vars"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.sync_parcel_vars-153"><a href="#Parcel.sync_parcel_vars-153"><span class="linenos">153</span></a>    <span class="k">def</span> <span class="nf">sync_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.sync_parcel_vars-153"><a href="#Parcel.sync_parcel_vars-153"><span class="linenos">153</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sync_parcel_vars</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel.sync_parcel_vars-154"><a href="#Parcel.sync_parcel_vars-154"><span class="linenos">154</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">delta_liquid_water_mixing_ratio</span> <span class="o">=</span> <span class="p">(</span>
 </span><span id="Parcel.sync_parcel_vars-155"><a href="#Parcel.sync_parcel_vars-155"><span class="linenos">155</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">_tmp</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="Parcel.sync_parcel_vars-156"><a href="#Parcel.sync_parcel_vars-156"><span class="linenos">156</span></a>            <span class="o">-</span> <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;water_vapour_mixing_ratio&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -859,7 +859,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.sync"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.sync-161"><a href="#Parcel.sync-161"><span class="linenos">161</span></a>    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.sync-161"><a href="#Parcel.sync-161"><span class="linenos">161</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Parcel.sync-162"><a href="#Parcel.sync-162"><span class="linenos">162</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">sync_parcel_vars</span><span class="p">()</span>
 </span><span id="Parcel.sync-163"><a href="#Parcel.sync-163"><span class="linenos">163</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">advance_parcel_vars</span><span class="p">()</span>
 </span><span id="Parcel.sync-164"><a href="#Parcel.sync-164"><span class="linenos">164</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
@@ -880,7 +880,7 @@
 
     </div>
     <a class="headerlink" href="#Parcel.instantiate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.instantiate-8"><a href="#Parcel.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span> <span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Parcel.instantiate-8"><a href="#Parcel.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Parcel.instantiate-9"><a href="#Parcel.instantiate-9"><span class="linenos"> 9</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Parcel.instantiate-10"><a href="#Parcel.instantiate-10"><span class="linenos">10</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="o">=</span><span class="n">builder</span><span class="p">)</span>
 </span><span id="Parcel.instantiate-11"><a href="#Parcel.instantiate-11"><span class="linenos">11</span></a>    <span class="k">return</span> <span class="n">copy</span>

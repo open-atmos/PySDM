@@ -830,11 +830,11 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="sd">  be provided in SI units.</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span> <span class="nn">chempy</span> <span class="kn">import</span> <span class="n">Substance</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">sci</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">chempy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Substance</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">sci</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">from</span> <span class="nn">.constants</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># pylint: disable=unused-import</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># pylint: disable=unused-import</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>    <span class="n">FOUR</span><span class="p">,</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="n">ONE_THIRD</span><span class="p">,</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="n">PER_CENT</span><span class="p">,</span>
@@ -852,7 +852,7 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>    <span class="n">M</span><span class="p">,</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a>    <span class="n">si</span><span class="p">,</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="p">)</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="kn">from</span> <span class="nn">.trivia</span> <span class="kn">import</span> <span class="n">Trivia</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.trivia</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trivia</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
 </span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a><span class="c1"># https://physics.nist.gov/cgi-bin/Star/compos.pl?matno=104</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="n">Md</span> <span class="o">=</span> <span class="p">(</span>
@@ -1189,7 +1189,7 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-364"><a href="#L-364"><span class="linenos">364</span></a><span class="n">ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT</span> <span class="o">=</span> <span class="mi">600</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">um</span>
 </span><span id="L-365"><a href="#L-365"><span class="linenos">365</span></a>
 </span><span id="L-366"><a href="#L-366"><span class="linenos">366</span></a>
-</span><span id="L-367"><a href="#L-367"><span class="linenos">367</span></a><span class="k">def</span> <span class="nf">compute_derived_values</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="L-367"><a href="#L-367"><span class="linenos">367</span></a><span class="k">def</span><span class="w"> </span><span class="nf">compute_derived_values</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 </span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-369"><a href="#L-369"><span class="linenos">369</span></a><span class="sd">    computes derived quantities such as molar mass ratios, etc.</span>
 </span><span id="L-370"><a href="#L-370"><span class="linenos">370</span></a>
@@ -4012,7 +4012,7 @@ Unless, there is a very specific and sound reason, everything here should
 
     </div>
     <a class="headerlink" href="#compute_derived_values"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="compute_derived_values-368"><a href="#compute_derived_values-368"><span class="linenos">368</span></a><span class="k">def</span> <span class="nf">compute_derived_values</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="compute_derived_values-368"><a href="#compute_derived_values-368"><span class="linenos">368</span></a><span class="k">def</span><span class="w"> </span><span class="nf">compute_derived_values</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 </span><span id="compute_derived_values-369"><a href="#compute_derived_values-369"><span class="linenos">369</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="compute_derived_values-370"><a href="#compute_derived_values-370"><span class="linenos">370</span></a><span class="sd">    computes derived quantities such as molar mass ratios, etc.</span>
 </span><span id="compute_derived_values-371"><a href="#compute_derived_values-371"><span class="linenos">371</span></a>

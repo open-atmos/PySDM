@@ -102,18 +102,18 @@
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot; CPU implementation of backend methods for particle injections &quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">cached_property</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">numba</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numba</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_common.backend_methods</span> <span class="kn">import</span> <span class="n">BackendMethods</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_common.backend_methods</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendMethods</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">class</span> <span class="nc">SeedingMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SeedingMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">_seeding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_seeding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">,</span> <span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="n">idx</span><span class="p">,</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="n">multiplicity</span><span class="p">,</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="n">extensive_attributes</span><span class="p">,</span>
@@ -148,7 +148,7 @@
 </span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
 </span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">def</span> <span class="nf">seeding</span><span class="p">(</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">seeding</span><span class="p">(</span>
 </span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="n">idx</span><span class="p">,</span>
@@ -183,11 +183,11 @@
 
     </div>
     <a class="headerlink" href="#SeedingMethods"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SeedingMethods-11"><a href="#SeedingMethods-11"><span class="linenos">11</span></a><span class="k">class</span> <span class="nc">SeedingMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SeedingMethods-11"><a href="#SeedingMethods-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SeedingMethods</span><span class="p">(</span><span class="n">BackendMethods</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
 </span><span id="SeedingMethods-12"><a href="#SeedingMethods-12"><span class="linenos">12</span></a>    <span class="nd">@cached_property</span>
-</span><span id="SeedingMethods-13"><a href="#SeedingMethods-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">_seeding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="SeedingMethods-13"><a href="#SeedingMethods-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_seeding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="SeedingMethods-14"><a href="#SeedingMethods-14"><span class="linenos">14</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">,</span> <span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
-</span><span id="SeedingMethods-15"><a href="#SeedingMethods-15"><span class="linenos">15</span></a>        <span class="k">def</span> <span class="nf">body</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+</span><span id="SeedingMethods-15"><a href="#SeedingMethods-15"><span class="linenos">15</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
 </span><span id="SeedingMethods-16"><a href="#SeedingMethods-16"><span class="linenos">16</span></a>            <span class="n">idx</span><span class="p">,</span>
 </span><span id="SeedingMethods-17"><a href="#SeedingMethods-17"><span class="linenos">17</span></a>            <span class="n">multiplicity</span><span class="p">,</span>
 </span><span id="SeedingMethods-18"><a href="#SeedingMethods-18"><span class="linenos">18</span></a>            <span class="n">extensive_attributes</span><span class="p">,</span>
@@ -222,7 +222,7 @@
 </span><span id="SeedingMethods-47"><a href="#SeedingMethods-47"><span class="linenos">47</span></a>
 </span><span id="SeedingMethods-48"><a href="#SeedingMethods-48"><span class="linenos">48</span></a>        <span class="k">return</span> <span class="n">body</span>
 </span><span id="SeedingMethods-49"><a href="#SeedingMethods-49"><span class="linenos">49</span></a>
-</span><span id="SeedingMethods-50"><a href="#SeedingMethods-50"><span class="linenos">50</span></a>    <span class="k">def</span> <span class="nf">seeding</span><span class="p">(</span>
+</span><span id="SeedingMethods-50"><a href="#SeedingMethods-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">seeding</span><span class="p">(</span>
 </span><span id="SeedingMethods-51"><a href="#SeedingMethods-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="SeedingMethods-52"><a href="#SeedingMethods-52"><span class="linenos">52</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="SeedingMethods-53"><a href="#SeedingMethods-53"><span class="linenos">53</span></a>        <span class="n">idx</span><span class="p">,</span>
@@ -258,7 +258,7 @@
 
     </div>
     <a class="headerlink" href="#SeedingMethods.seeding"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SeedingMethods.seeding-50"><a href="#SeedingMethods.seeding-50"><span class="linenos">50</span></a>    <span class="k">def</span> <span class="nf">seeding</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SeedingMethods.seeding-50"><a href="#SeedingMethods.seeding-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">seeding</span><span class="p">(</span>
 </span><span id="SeedingMethods.seeding-51"><a href="#SeedingMethods.seeding-51"><span class="linenos">51</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="SeedingMethods.seeding-52"><a href="#SeedingMethods.seeding-52"><span class="linenos">52</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="SeedingMethods.seeding-53"><a href="#SeedingMethods.seeding-53"><span class="linenos">53</span></a>        <span class="n">idx</span><span class="p">,</span>

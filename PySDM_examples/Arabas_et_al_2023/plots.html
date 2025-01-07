@@ -107,20 +107,20 @@
 
                         <label class="view-source-button" for="mod-plots-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span> <span class="nn">matplotlib</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">PySDM_examples.Arabas_et_al_2023.curved_text</span> <span class="kn">import</span> <span class="n">CurvedText</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">PySDM_examples.Arabas_et_al_2023.frozen_fraction</span> <span class="kn">import</span> <span class="n">FrozenFraction</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyplot</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples.Arabas_et_al_2023.curved_text</span><span class="w"> </span><span class="kn">import</span> <span class="n">CurvedText</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples.Arabas_et_al_2023.frozen_fraction</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrozenFraction</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;singular/INAS&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;time-dependent/ABIFM&quot;</span><span class="p">}</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="n">colors</span> <span class="o">=</span> <span class="p">{</span><span class="kc">True</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="s2">&quot;teal&quot;</span><span class="p">}</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="n">qi_unit</span> <span class="o">=</span> <span class="n">si</span><span class="o">.</span><span class="n">g</span> <span class="o">/</span> <span class="n">si</span><span class="o">.</span><span class="n">m</span><span class="o">**</span><span class="mi">3</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="k">def</span> <span class="nf">make_temperature_plot</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="k">def</span><span class="w"> </span><span class="nf">make_temperature_plot</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>    <span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;time [s]&quot;</span><span class="p">)</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="n">xy1</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
@@ -152,7 +152,7 @@
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>    <span class="n">xy2</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>  <span class="c1"># bbox_to_anchor=(.7, 1.15))</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>
 </span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a>
-</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="k">def</span> <span class="nf">make_freezing_spec_plot</span><span class="p">(</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="k">def</span><span class="w"> </span><span class="nf">make_freezing_spec_plot</span><span class="p">(</span>
 </span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>    <span class="n">data</span><span class="p">,</span>
 </span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a>    <span class="n">formulae</span><span class="p">,</span>
 </span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a>    <span class="n">volume</span><span class="p">,</span>
@@ -228,7 +228,7 @@
 </span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="n">prim</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 </span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>
 </span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="k">def</span> <span class="nf">make_pdf_plot</span><span class="p">(</span><span class="n">A_spec</span><span class="p">,</span> <span class="n">Shima_T_fz</span><span class="p">,</span> <span class="n">A_range</span><span class="p">,</span> <span class="n">T_range</span><span class="p">):</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="k">def</span><span class="w"> </span><span class="nf">make_pdf_plot</span><span class="p">(</span><span class="n">A_spec</span><span class="p">,</span> <span class="n">Shima_T_fz</span><span class="p">,</span> <span class="n">A_range</span><span class="p">,</span> <span class="n">T_range</span><span class="p">):</span>
 </span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a>    <span class="n">N</span> <span class="o">=</span> <span class="mi">256</span>
 </span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a>    <span class="n">T_space</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">T_range</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
 </span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a>    <span class="n">A_space</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">A_range</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
@@ -318,7 +318,7 @@
 
     </div>
     <a class="headerlink" href="#make_temperature_plot"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="make_temperature_plot-15"><a href="#make_temperature_plot-15"><span class="linenos">15</span></a><span class="k">def</span> <span class="nf">make_temperature_plot</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="make_temperature_plot-15"><a href="#make_temperature_plot-15"><span class="linenos">15</span></a><span class="k">def</span><span class="w"> </span><span class="nf">make_temperature_plot</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 </span><span id="make_temperature_plot-16"><a href="#make_temperature_plot-16"><span class="linenos">16</span></a>    <span class="n">pyplot</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;time [s]&quot;</span><span class="p">)</span>
 </span><span id="make_temperature_plot-17"><a href="#make_temperature_plot-17"><span class="linenos">17</span></a>
 </span><span id="make_temperature_plot-18"><a href="#make_temperature_plot-18"><span class="linenos">18</span></a>    <span class="n">xy1</span> <span class="o">=</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
@@ -365,7 +365,7 @@
 
     </div>
     <a class="headerlink" href="#make_freezing_spec_plot"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="make_freezing_spec_plot-47"><a href="#make_freezing_spec_plot-47"><span class="linenos"> 47</span></a><span class="k">def</span> <span class="nf">make_freezing_spec_plot</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="make_freezing_spec_plot-47"><a href="#make_freezing_spec_plot-47"><span class="linenos"> 47</span></a><span class="k">def</span><span class="w"> </span><span class="nf">make_freezing_spec_plot</span><span class="p">(</span>
 </span><span id="make_freezing_spec_plot-48"><a href="#make_freezing_spec_plot-48"><span class="linenos"> 48</span></a>    <span class="n">data</span><span class="p">,</span>
 </span><span id="make_freezing_spec_plot-49"><a href="#make_freezing_spec_plot-49"><span class="linenos"> 49</span></a>    <span class="n">formulae</span><span class="p">,</span>
 </span><span id="make_freezing_spec_plot-50"><a href="#make_freezing_spec_plot-50"><span class="linenos"> 50</span></a>    <span class="n">volume</span><span class="p">,</span>
@@ -456,7 +456,7 @@
 
     </div>
     <a class="headerlink" href="#make_pdf_plot"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="make_pdf_plot-123"><a href="#make_pdf_plot-123"><span class="linenos">123</span></a><span class="k">def</span> <span class="nf">make_pdf_plot</span><span class="p">(</span><span class="n">A_spec</span><span class="p">,</span> <span class="n">Shima_T_fz</span><span class="p">,</span> <span class="n">A_range</span><span class="p">,</span> <span class="n">T_range</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="make_pdf_plot-123"><a href="#make_pdf_plot-123"><span class="linenos">123</span></a><span class="k">def</span><span class="w"> </span><span class="nf">make_pdf_plot</span><span class="p">(</span><span class="n">A_spec</span><span class="p">,</span> <span class="n">Shima_T_fz</span><span class="p">,</span> <span class="n">A_range</span><span class="p">,</span> <span class="n">T_range</span><span class="p">):</span>
 </span><span id="make_pdf_plot-124"><a href="#make_pdf_plot-124"><span class="linenos">124</span></a>    <span class="n">N</span> <span class="o">=</span> <span class="mi">256</span>
 </span><span id="make_pdf_plot-125"><a href="#make_pdf_plot-125"><span class="linenos">125</span></a>    <span class="n">T_space</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">T_range</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
 </span><span id="make_pdf_plot-126"><a href="#make_pdf_plot-126"><span class="linenos">126</span></a>    <span class="n">A_space</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">*</span><span class="n">A_range</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>

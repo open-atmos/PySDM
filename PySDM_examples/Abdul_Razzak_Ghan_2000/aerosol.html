@@ -116,12 +116,12 @@
 
                         <label class="view-source-button" for="mod-aerosol-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">from</span> <span class="nn">chempy</span> <span class="kn">import</span> <span class="n">Substance</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span> <span class="nn">pystrict</span> <span class="kn">import</span> <span class="n">strict</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">chempy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Substance</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">pystrict</span><span class="w"> </span><span class="kn">import</span> <span class="n">strict</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation</span> <span class="kn">import</span> <span class="n">spectra</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span> <span class="nn">PySDM.initialisation.aerosol_composition</span> <span class="kn">import</span> <span class="n">DryAerosolMixture</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation</span><span class="w"> </span><span class="kn">import</span> <span class="n">spectra</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.initialisation.aerosol_composition</span><span class="w"> </span><span class="kn">import</span> <span class="n">DryAerosolMixture</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="c1"># not in the paper - guessed and checked to match</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="n">CONSTANTS_ARG</span> <span class="o">=</span> <span class="p">{</span>
@@ -131,8 +131,8 @@
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="nd">@strict</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="k">class</span> <span class="nc">AerosolARG</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolARG</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>        <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>        <span class="n">M2_sol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -175,8 +175,8 @@
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="nd">@strict</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="k">class</span> <span class="nc">AerosolWhitby</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolWhitby</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>        <span class="n">nuclei</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="n">accum</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>        <span class="n">coarse</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
@@ -247,8 +247,8 @@
     </div>
     <a class="headerlink" href="#AerosolARG"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolARG-16"><a href="#AerosolARG-16"><span class="linenos">16</span></a><span class="nd">@strict</span>
-</span><span id="AerosolARG-17"><a href="#AerosolARG-17"><span class="linenos">17</span></a><span class="k">class</span> <span class="nc">AerosolARG</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
-</span><span id="AerosolARG-18"><a href="#AerosolARG-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="AerosolARG-17"><a href="#AerosolARG-17"><span class="linenos">17</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolARG</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="AerosolARG-18"><a href="#AerosolARG-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolARG-19"><a href="#AerosolARG-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="AerosolARG-20"><a href="#AerosolARG-20"><span class="linenos">20</span></a>        <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span id="AerosolARG-21"><a href="#AerosolARG-21"><span class="linenos">21</span></a>        <span class="n">M2_sol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -303,7 +303,7 @@
 
     </div>
     <a class="headerlink" href="#AerosolARG.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolARG.__init__-18"><a href="#AerosolARG.__init__-18"><span class="linenos">18</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolARG.__init__-18"><a href="#AerosolARG.__init__-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="AerosolARG.__init__-19"><a href="#AerosolARG.__init__-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="AerosolARG.__init__-20"><a href="#AerosolARG.__init__-20"><span class="linenos">20</span></a>        <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
 </span><span id="AerosolARG.__init__-21"><a href="#AerosolARG.__init__-21"><span class="linenos">21</span></a>        <span class="n">M2_sol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -359,7 +359,7 @@
     </div>
     <a class="headerlink" href="#AerosolARG.modes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolARG.modes-39"><a href="#AerosolARG.modes-39"><span class="linenos">39</span></a>    <span class="nd">@property</span>
-</span><span id="AerosolARG.modes-40"><a href="#AerosolARG.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AerosolARG.modes-40"><a href="#AerosolARG.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="AerosolARG.modes-41"><a href="#AerosolARG.modes-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span>
 </span></pre></div>
 
@@ -399,8 +399,8 @@
     </div>
     <a class="headerlink" href="#AerosolWhitby"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolWhitby-60"><a href="#AerosolWhitby-60"><span class="linenos"> 60</span></a><span class="nd">@strict</span>
-</span><span id="AerosolWhitby-61"><a href="#AerosolWhitby-61"><span class="linenos"> 61</span></a><span class="k">class</span> <span class="nc">AerosolWhitby</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
-</span><span id="AerosolWhitby-62"><a href="#AerosolWhitby-62"><span class="linenos"> 62</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+</span><span id="AerosolWhitby-61"><a href="#AerosolWhitby-61"><span class="linenos"> 61</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AerosolWhitby</span><span class="p">(</span><span class="n">DryAerosolMixture</span><span class="p">):</span>
+</span><span id="AerosolWhitby-62"><a href="#AerosolWhitby-62"><span class="linenos"> 62</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 </span><span id="AerosolWhitby-63"><a href="#AerosolWhitby-63"><span class="linenos"> 63</span></a>        <span class="n">nuclei</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 </span><span id="AerosolWhitby-64"><a href="#AerosolWhitby-64"><span class="linenos"> 64</span></a>        <span class="n">accum</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 </span><span id="AerosolWhitby-65"><a href="#AerosolWhitby-65"><span class="linenos"> 65</span></a>        <span class="n">coarse</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
@@ -457,7 +457,7 @@
 
     </div>
     <a class="headerlink" href="#AerosolWhitby.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolWhitby.__init__-62"><a href="#AerosolWhitby.__init__-62"><span class="linenos"> 62</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolWhitby.__init__-62"><a href="#AerosolWhitby.__init__-62"><span class="linenos"> 62</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">water_molar_volume</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
 </span><span id="AerosolWhitby.__init__-63"><a href="#AerosolWhitby.__init__-63"><span class="linenos"> 63</span></a>        <span class="n">nuclei</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 </span><span id="AerosolWhitby.__init__-64"><a href="#AerosolWhitby.__init__-64"><span class="linenos"> 64</span></a>        <span class="n">accum</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 </span><span id="AerosolWhitby.__init__-65"><a href="#AerosolWhitby.__init__-65"><span class="linenos"> 65</span></a>        <span class="n">coarse</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(NH4)2SO4&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
@@ -515,7 +515,7 @@
     </div>
     <a class="headerlink" href="#AerosolWhitby.modes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="AerosolWhitby.modes-39"><a href="#AerosolWhitby.modes-39"><span class="linenos">39</span></a>    <span class="nd">@property</span>
-</span><span id="AerosolWhitby.modes-40"><a href="#AerosolWhitby.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span> <span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AerosolWhitby.modes-40"><a href="#AerosolWhitby.modes-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="AerosolWhitby.modes-41"><a href="#AerosolWhitby.modes-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span>
 </span></pre></div>
 

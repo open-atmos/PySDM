@@ -109,34 +109,34 @@
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd"> SciPy adaptive-timestep ODE solver, for use in tests only</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">import</span> <span class="nn">types</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">import</span> <span class="nn">numba</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">import</span> <span class="nn">scipy.integrate</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numba</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">scipy.integrate</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="kn">from</span> <span class="nn">PySDM.backends</span> <span class="kn">import</span> <span class="n">Numba</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_numba.conf</span> <span class="kn">import</span> <span class="n">JIT_FLAGS</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span> <span class="nn">PySDM.backends.impl_numba.methods.condensation_methods</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">Numba</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_numba.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">JIT_FLAGS</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends.impl_numba.methods.condensation_methods</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a>    <span class="n">_RelativeTolerances</span><span class="p">,</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>    <span class="n">_Attributes</span><span class="p">,</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>    <span class="n">_CellData</span><span class="p">,</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>    <span class="n">_Counters</span><span class="p">,</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="p">)</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="kn">from</span> <span class="nn">PySDM.physics.constants_defaults</span> <span class="kn">import</span> <span class="n">PI_4_3</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics.constants_defaults</span><span class="w"> </span><span class="kn">import</span> <span class="n">PI_4_3</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="n">idx_thd</span> <span class="o">=</span> <span class="mi">0</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="n">idx_x</span> <span class="o">=</span> <span class="mi">1</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="n">rtol</span> <span class="o">=</span> <span class="mf">1e-6</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>
 </span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a>
-</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="k">def</span> <span class="nf">patch_particulator</span><span class="p">(</span><span class="n">particulator</span><span class="p">):</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="k">def</span><span class="w"> </span><span class="nf">patch_particulator</span><span class="p">(</span><span class="n">particulator</span><span class="p">):</span>
 </span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a>    <span class="n">particulator</span><span class="o">.</span><span class="n">condensation_solver</span> <span class="o">=</span> <span class="n">_make_solve</span><span class="p">(</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="p">)</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a>    <span class="n">particulator</span><span class="o">.</span><span class="n">condensation</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">_condensation</span><span class="p">,</span> <span class="n">particulator</span><span class="p">)</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
 </span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="k">def</span> <span class="nf">_condensation</span><span class="p">(</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_condensation</span><span class="p">(</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a>    <span class="n">particulator</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rtol_x</span><span class="p">,</span> <span class="n">rtol_thd</span><span class="p">,</span> <span class="n">counters</span><span class="p">,</span> <span class="n">RH_max</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">cell_order</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="p">):</span>
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>    <span class="n">func</span> <span class="o">=</span> <span class="n">Numba</span><span class="o">.</span><span class="n">_condensation</span>
@@ -193,11 +193,11 @@
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="nd">@lru_cache</span><span class="p">()</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="k">def</span> <span class="nf">_make_solve</span><span class="p">(</span><span class="n">formulae</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-statements,too-many-locals</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_make_solve</span><span class="p">(</span><span class="n">formulae</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-many-statements,too-many-locals</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="n">jit_formulae</span> <span class="o">=</span> <span class="n">formulae</span><span class="o">.</span><span class="n">flatten</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">JIT_FLAGS</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="k">def</span> <span class="nf">_liquid_water_mixing_ratio</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">m_d_mean</span><span class="p">):</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_liquid_water_mixing_ratio</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">m_d_mean</span><span class="p">):</span>
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                <span class="n">n</span>
@@ -209,7 +209,7 @@
 </span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="p">)</span>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">JIT_FLAGS</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">def</span> <span class="nf">_impl</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
 </span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="n">dy_dt</span><span class="p">,</span>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="n">x</span><span class="p">,</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>        <span class="n">T</span><span class="p">,</span>
@@ -282,7 +282,7 @@
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>        <span class="p">)</span>
 </span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>
 </span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">JIT_FLAGS</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
-</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>    <span class="k">def</span> <span class="nf">_odesys</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_odesys</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
 </span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>        <span class="n">t</span><span class="p">,</span>
 </span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>        <span class="n">y</span><span class="p">,</span>
 </span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>        <span class="n">kappa</span><span class="p">,</span>
@@ -338,7 +338,7 @@
 </span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>        <span class="p">)</span>
 </span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>        <span class="k">return</span> <span class="n">dy_dt</span>
 </span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>
-</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals,unused-argument</span>
+</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals,unused-argument</span>
 </span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>        <span class="n">attributes</span><span class="p">,</span>
 </span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>        <span class="n">cell_idx</span><span class="p">,</span>
 </span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>        <span class="n">thd</span><span class="p">,</span>
@@ -479,7 +479,7 @@
 
     </div>
     <a class="headerlink" href="#patch_particulator"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="patch_particulator-29"><a href="#patch_particulator-29"><span class="linenos">29</span></a><span class="k">def</span> <span class="nf">patch_particulator</span><span class="p">(</span><span class="n">particulator</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="patch_particulator-29"><a href="#patch_particulator-29"><span class="linenos">29</span></a><span class="k">def</span><span class="w"> </span><span class="nf">patch_particulator</span><span class="p">(</span><span class="n">particulator</span><span class="p">):</span>
 </span><span id="patch_particulator-30"><a href="#patch_particulator-30"><span class="linenos">30</span></a>    <span class="n">particulator</span><span class="o">.</span><span class="n">condensation_solver</span> <span class="o">=</span> <span class="n">_make_solve</span><span class="p">(</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="p">)</span>
 </span><span id="patch_particulator-31"><a href="#patch_particulator-31"><span class="linenos">31</span></a>    <span class="n">particulator</span><span class="o">.</span><span class="n">condensation</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">_condensation</span><span class="p">,</span> <span class="n">particulator</span><span class="p">)</span>
 </span></pre></div>

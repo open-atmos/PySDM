@@ -154,12 +154,12 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="sd">with implicit-in-particle-size integration and adaptive timestepping</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span> <span class="nn">PySDM.physics</span> <span class="kn">import</span> <span class="n">si</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span> <span class="nn">PySDM.dynamics.impl</span> <span class="kn">import</span> <span class="n">register_dynamic</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.dynamics.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_dynamic</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="n">DEFAULTS</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;rtol_x&quot;</span><span class="p">,</span> <span class="s2">&quot;rtol_thd&quot;</span><span class="p">,</span> <span class="s2">&quot;cond_range&quot;</span><span class="p">,</span> <span class="s2">&quot;schedule&quot;</span><span class="p">))(</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>    <span class="n">rtol_x</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span>
@@ -170,8 +170,8 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="k">class</span> <span class="nc">Condensation</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Condensation</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a>        <span class="n">rtol_x</span><span class="o">=</span><span class="n">DEFAULTS</span><span class="o">.</span><span class="n">rtol_x</span><span class="p">,</span>
@@ -208,7 +208,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 </span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a>
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">update_thd</span> <span class="o">=</span> <span class="n">update_thd</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">_set_condensation_parameters</span><span class="p">(</span>
@@ -243,7 +243,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">[:]</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_cell</span><span class="p">)</span>
 </span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">:</span>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">==</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">:</span>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">cell_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counters</span><span class="p">[</span><span class="s2">&quot;n_substeps&quot;</span><span class="p">])</span>
@@ -309,8 +309,8 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
     </div>
     <a class="headerlink" href="#Condensation"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Condensation-22"><a href="#Condensation-22"><span class="linenos"> 22</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
-</span><span id="Condensation-23"><a href="#Condensation-23"><span class="linenos"> 23</span></a><span class="k">class</span> <span class="nc">Condensation</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
-</span><span id="Condensation-24"><a href="#Condensation-24"><span class="linenos"> 24</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Condensation-23"><a href="#Condensation-23"><span class="linenos"> 23</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Condensation</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+</span><span id="Condensation-24"><a href="#Condensation-24"><span class="linenos"> 24</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Condensation-25"><a href="#Condensation-25"><span class="linenos"> 25</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Condensation-26"><a href="#Condensation-26"><span class="linenos"> 26</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Condensation-27"><a href="#Condensation-27"><span class="linenos"> 27</span></a>        <span class="n">rtol_x</span><span class="o">=</span><span class="n">DEFAULTS</span><span class="o">.</span><span class="n">rtol_x</span><span class="p">,</span>
@@ -347,7 +347,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 </span><span id="Condensation-58"><a href="#Condensation-58"><span class="linenos"> 58</span></a>
 </span><span id="Condensation-59"><a href="#Condensation-59"><span class="linenos"> 59</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">update_thd</span> <span class="o">=</span> <span class="n">update_thd</span>
 </span><span id="Condensation-60"><a href="#Condensation-60"><span class="linenos"> 60</span></a>
-</span><span id="Condensation-61"><a href="#Condensation-61"><span class="linenos"> 61</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="Condensation-61"><a href="#Condensation-61"><span class="linenos"> 61</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Condensation-62"><a href="#Condensation-62"><span class="linenos"> 62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
 </span><span id="Condensation-63"><a href="#Condensation-63"><span class="linenos"> 63</span></a>
 </span><span id="Condensation-64"><a href="#Condensation-64"><span class="linenos"> 64</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">_set_condensation_parameters</span><span class="p">(</span>
@@ -382,7 +382,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 </span><span id="Condensation-93"><a href="#Condensation-93"><span class="linenos"> 93</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">[:]</span> <span class="o">=</span> <span class="kc">False</span>
 </span><span id="Condensation-94"><a href="#Condensation-94"><span class="linenos"> 94</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">n_cell</span><span class="p">)</span>
 </span><span id="Condensation-95"><a href="#Condensation-95"><span class="linenos"> 95</span></a>
-</span><span id="Condensation-96"><a href="#Condensation-96"><span class="linenos"> 96</span></a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Condensation-96"><a href="#Condensation-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="Condensation-97"><a href="#Condensation-97"><span class="linenos"> 97</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">:</span>
 </span><span id="Condensation-98"><a href="#Condensation-98"><span class="linenos"> 98</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schedule</span> <span class="o">==</span> <span class="s2">&quot;dynamic&quot;</span><span class="p">:</span>
 </span><span id="Condensation-99"><a href="#Condensation-99"><span class="linenos"> 99</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">cell_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">counters</span><span class="p">[</span><span class="s2">&quot;n_substeps&quot;</span><span class="p">])</span>
@@ -434,7 +434,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 
     </div>
     <a class="headerlink" href="#Condensation.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Condensation.__init__-24"><a href="#Condensation.__init__-24"><span class="linenos">24</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Condensation.__init__-24"><a href="#Condensation.__init__-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
 </span><span id="Condensation.__init__-25"><a href="#Condensation.__init__-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="p">,</span>
 </span><span id="Condensation.__init__-26"><a href="#Condensation.__init__-26"><span class="linenos">26</span></a>        <span class="o">*</span><span class="p">,</span>
 </span><span id="Condensation.__init__-27"><a href="#Condensation.__init__-27"><span class="linenos">27</span></a>        <span class="n">rtol_x</span><span class="o">=</span><span class="n">DEFAULTS</span><span class="o">.</span><span class="n">rtol_x</span><span class="p">,</span>
@@ -630,7 +630,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 
     </div>
     <a class="headerlink" href="#Condensation.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Condensation.register-61"><a href="#Condensation.register-61"><span class="linenos">61</span></a>    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Condensation.register-61"><a href="#Condensation.register-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Condensation.register-62"><a href="#Condensation.register-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
 </span><span id="Condensation.register-63"><a href="#Condensation.register-63"><span class="linenos">63</span></a>
 </span><span id="Condensation.register-64"><a href="#Condensation.register-64"><span class="linenos">64</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">_set_condensation_parameters</span><span class="p">(</span>
@@ -681,7 +681,7 @@ with implicit-in-particle-size integration and adaptive timestepping</p>
 
     </div>
     <a class="headerlink" href="#Condensation.instantiate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Condensation.instantiate-8"><a href="#Condensation.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span> <span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Condensation.instantiate-8"><a href="#Condensation.instantiate-8"><span class="linenos"> 8</span></a><span class="k">def</span><span class="w"> </span><span class="nf">_instantiate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="Condensation.instantiate-9"><a href="#Condensation.instantiate-9"><span class="linenos"> 9</span></a>    <span class="n">copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </span><span id="Condensation.instantiate-10"><a href="#Condensation.instantiate-10"><span class="linenos">10</span></a>    <span class="n">copy</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="o">=</span><span class="n">builder</span><span class="p">)</span>
 </span><span id="Condensation.instantiate-11"><a href="#Condensation.instantiate-11"><span class="linenos">11</span></a>    <span class="k">return</span> <span class="n">copy</span>

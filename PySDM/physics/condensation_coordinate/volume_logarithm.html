@@ -113,15 +113,15 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">logarithm of particle volume as coordinate (ensures non-negative values)</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span> <span class="nc">VolumeLogarithm</span><span class="p">:</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VolumeLogarithm</span><span class="p">:</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span> <span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="o">*</span> <span class="n">r_dr_dt</span>
@@ -130,11 +130,11 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="p">)</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
 </span></pre></div>
 
@@ -151,12 +151,12 @@
 
     </div>
     <a class="headerlink" href="#VolumeLogarithm"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm-9"><a href="#VolumeLogarithm-9"><span class="linenos"> 9</span></a><span class="k">class</span> <span class="nc">VolumeLogarithm</span><span class="p">:</span>
-</span><span id="VolumeLogarithm-10"><a href="#VolumeLogarithm-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm-9"><a href="#VolumeLogarithm-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VolumeLogarithm</span><span class="p">:</span>
+</span><span id="VolumeLogarithm-10"><a href="#VolumeLogarithm-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="VolumeLogarithm-11"><a href="#VolumeLogarithm-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
 </span><span id="VolumeLogarithm-12"><a href="#VolumeLogarithm-12"><span class="linenos">12</span></a>
 </span><span id="VolumeLogarithm-13"><a href="#VolumeLogarithm-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm-14"><a href="#VolumeLogarithm-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
+</span><span id="VolumeLogarithm-14"><a href="#VolumeLogarithm-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
 </span><span id="VolumeLogarithm-15"><a href="#VolumeLogarithm-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="VolumeLogarithm-16"><a href="#VolumeLogarithm-16"><span class="linenos">16</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
 </span><span id="VolumeLogarithm-17"><a href="#VolumeLogarithm-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="n">r_dr_dt</span>
@@ -165,11 +165,11 @@
 </span><span id="VolumeLogarithm-20"><a href="#VolumeLogarithm-20"><span class="linenos">20</span></a>        <span class="p">)</span>
 </span><span id="VolumeLogarithm-21"><a href="#VolumeLogarithm-21"><span class="linenos">21</span></a>
 </span><span id="VolumeLogarithm-22"><a href="#VolumeLogarithm-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm-23"><a href="#VolumeLogarithm-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="VolumeLogarithm-23"><a href="#VolumeLogarithm-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 </span><span id="VolumeLogarithm-24"><a href="#VolumeLogarithm-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </span><span id="VolumeLogarithm-25"><a href="#VolumeLogarithm-25"><span class="linenos">25</span></a>
 </span><span id="VolumeLogarithm-26"><a href="#VolumeLogarithm-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm-27"><a href="#VolumeLogarithm-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
+</span><span id="VolumeLogarithm-27"><a href="#VolumeLogarithm-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
 </span><span id="VolumeLogarithm-28"><a href="#VolumeLogarithm-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
 </span></pre></div>
 
@@ -186,7 +186,7 @@
 
     </div>
     <a class="headerlink" href="#VolumeLogarithm.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.__init__-10"><a href="#VolumeLogarithm.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.__init__-10"><a href="#VolumeLogarithm.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="VolumeLogarithm.__init__-11"><a href="#VolumeLogarithm.__init__-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
@@ -207,7 +207,7 @@
     </div>
     <a class="headerlink" href="#VolumeLogarithm.dx_dt"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.dx_dt-13"><a href="#VolumeLogarithm.dx_dt-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm.dx_dt-14"><a href="#VolumeLogarithm.dx_dt-14"><span class="linenos">14</span></a>    <span class="k">def</span> <span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
+</span><span id="VolumeLogarithm.dx_dt-14"><a href="#VolumeLogarithm.dx_dt-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
 </span><span id="VolumeLogarithm.dx_dt-15"><a href="#VolumeLogarithm.dx_dt-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="VolumeLogarithm.dx_dt-16"><a href="#VolumeLogarithm.dx_dt-16"><span class="linenos">16</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
 </span><span id="VolumeLogarithm.dx_dt-17"><a href="#VolumeLogarithm.dx_dt-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="n">r_dr_dt</span>
@@ -233,7 +233,7 @@
     </div>
     <a class="headerlink" href="#VolumeLogarithm.volume"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.volume-22"><a href="#VolumeLogarithm.volume-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm.volume-23"><a href="#VolumeLogarithm.volume-23"><span class="linenos">23</span></a>    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="VolumeLogarithm.volume-23"><a href="#VolumeLogarithm.volume-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 </span><span id="VolumeLogarithm.volume-24"><a href="#VolumeLogarithm.volume-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </span></pre></div>
 
@@ -254,7 +254,7 @@
     </div>
     <a class="headerlink" href="#VolumeLogarithm.x"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.x-26"><a href="#VolumeLogarithm.x-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm.x-27"><a href="#VolumeLogarithm.x-27"><span class="linenos">27</span></a>    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
+</span><span id="VolumeLogarithm.x-27"><a href="#VolumeLogarithm.x-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
 </span><span id="VolumeLogarithm.x-28"><a href="#VolumeLogarithm.x-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
 </span></pre></div>
 

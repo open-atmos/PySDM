@@ -108,12 +108,12 @@
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span> <span class="nc">ImplicitInSpace</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImplicitInSpace</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="k">pass</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">position_in_cell</span><span class="p">,</span> <span class="n">c_l</span><span class="p">,</span> <span class="n">c_r</span><span class="p">):</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">displacement</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">position_in_cell</span><span class="p">,</span> <span class="n">c_l</span><span class="p">,</span> <span class="n">c_r</span><span class="p">):</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">c_l</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">position_in_cell</span><span class="p">)</span> <span class="o">+</span> <span class="n">c_r</span> <span class="o">*</span> <span class="n">position_in_cell</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">c_r</span> <span class="o">+</span> <span class="n">c_l</span><span class="p">)</span>
 </span></pre></div>
 
@@ -130,12 +130,12 @@
 
     </div>
     <a class="headerlink" href="#ImplicitInSpace"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitInSpace-7"><a href="#ImplicitInSpace-7"><span class="linenos"> 7</span></a><span class="k">class</span> <span class="nc">ImplicitInSpace</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="ImplicitInSpace-8"><a href="#ImplicitInSpace-8"><span class="linenos"> 8</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitInSpace-7"><a href="#ImplicitInSpace-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ImplicitInSpace</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="ImplicitInSpace-8"><a href="#ImplicitInSpace-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="ImplicitInSpace-9"><a href="#ImplicitInSpace-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
 </span><span id="ImplicitInSpace-10"><a href="#ImplicitInSpace-10"><span class="linenos">10</span></a>
 </span><span id="ImplicitInSpace-11"><a href="#ImplicitInSpace-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="ImplicitInSpace-12"><a href="#ImplicitInSpace-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">position_in_cell</span><span class="p">,</span> <span class="n">c_l</span><span class="p">,</span> <span class="n">c_r</span><span class="p">):</span>
+</span><span id="ImplicitInSpace-12"><a href="#ImplicitInSpace-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">displacement</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">position_in_cell</span><span class="p">,</span> <span class="n">c_l</span><span class="p">,</span> <span class="n">c_r</span><span class="p">):</span>
 </span><span id="ImplicitInSpace-13"><a href="#ImplicitInSpace-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">c_l</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">position_in_cell</span><span class="p">)</span> <span class="o">+</span> <span class="n">c_r</span> <span class="o">*</span> <span class="n">position_in_cell</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">c_r</span> <span class="o">+</span> <span class="n">c_l</span><span class="p">)</span>
 </span></pre></div>
 
@@ -152,7 +152,7 @@
 
     </div>
     <a class="headerlink" href="#ImplicitInSpace.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitInSpace.__init__-8"><a href="#ImplicitInSpace.__init__-8"><span class="linenos">8</span></a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitInSpace.__init__-8"><a href="#ImplicitInSpace.__init__-8"><span class="linenos">8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="ImplicitInSpace.__init__-9"><a href="#ImplicitInSpace.__init__-9"><span class="linenos">9</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
@@ -173,7 +173,7 @@
     </div>
     <a class="headerlink" href="#ImplicitInSpace.displacement"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ImplicitInSpace.displacement-11"><a href="#ImplicitInSpace.displacement-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="ImplicitInSpace.displacement-12"><a href="#ImplicitInSpace.displacement-12"><span class="linenos">12</span></a>    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">position_in_cell</span><span class="p">,</span> <span class="n">c_l</span><span class="p">,</span> <span class="n">c_r</span><span class="p">):</span>
+</span><span id="ImplicitInSpace.displacement-12"><a href="#ImplicitInSpace.displacement-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">displacement</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">position_in_cell</span><span class="p">,</span> <span class="n">c_l</span><span class="p">,</span> <span class="n">c_r</span><span class="p">):</span>
 </span><span id="ImplicitInSpace.displacement-13"><a href="#ImplicitInSpace.displacement-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">c_l</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">position_in_cell</span><span class="p">)</span> <span class="o">+</span> <span class="n">c_r</span> <span class="o">*</span> <span class="n">position_in_cell</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">c_r</span> <span class="o">+</span> <span class="n">c_l</span><span class="p">)</span>
 </span></pre></div>
 
