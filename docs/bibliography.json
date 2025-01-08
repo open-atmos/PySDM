@@ -492,7 +492,8 @@
       "examples/docs/pysdm_examples_landing.md",
       "examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb",
       "examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb",
-      "examples/PySDM_examples/Shipway_and_Hill_2012/__init__.py"
+      "examples/PySDM_examples/Shipway_and_Hill_2012/__init__.py",
+      "examples/PySDM_examples/seeding/SH2012_seeding.ipynb"
     ],
     "label": "Shipway & Hill 2012 (Q. J. R. Meteorol. Soc. 138)",
     "title": "Diagnosis of systematic differences between multiple parametrizations of warm rain microphysics using a kinematic framework"
