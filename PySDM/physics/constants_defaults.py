@@ -437,3 +437,9 @@ for the falling drop evaporation timescale of equilibration with ambient air voi
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).
 """
+
+PICCIOTTO_18O_A = -0.9 * PER_MILLE / si.K
+PICCIOTTO_18O_B = 6.4 * PER_MILLE
+""" linear fit coefficients from [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)
+for atmospheric temperature inference from water isotopic composition
+(note that the sign of A coefficient is opposite to match the paper plot - typo in the paper?) """

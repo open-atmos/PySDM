@@ -691,5 +691,14 @@
     "usages": ["PySDM/physics/saturation_vapour_pressure/wexler_1976.py"],
     "title": "Vapor Pressure Formulation for Water in Range 0 to f 00 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
+  },
+  "https://doi.org/10.1038/187857a0": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/isotope_temperature_inference/picciotto_et_al_1960.py",
+      "tests/unit_tests/physics/test_isotope_temperature_inference.py"
+    ],
+    "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
+    "label": "Picciotto et al. 1960 (Nature 187)"
   }
 }
