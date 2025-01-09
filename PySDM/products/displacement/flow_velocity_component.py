@@ -1,6 +1,5 @@
 """
-reports on the maximum Courant field value for each cell (maximum of
-absolute values of Courant number on all edges of a cell)
+reports on the flow velocity
 """
 
 import numpy as np

@@ -1,5 +1,5 @@
 """
-[Wexler 1976](https://nvlpubs.nist.gov/nistpubs/jres/80A/jresv80An5-6p775_A1b.pdf)
+[Wexler 1976](https://doi.org/10.6028/jres.080A.071)
 """
 
 import numpy as np
