@@ -20,6 +20,15 @@ from PySDM.backends import GPU
             T0=300 * si.K,
             w=np.nan,
         ),
+          Parcel(
+            mixed_phase=True,
+            dt=np.nan,
+            mass_of_dry_air=np.nan,
+            p0=500 * si.hPa,
+            initial_water_vapour_mixing_ratio=0.2 * si.g / si.kg,
+            T0=250 * si.K,
+            w=np.nan,
+        ),
     ),
 )
 def test_ice_properties(backend_instance, env):
@@ -33,11 +42,14 @@ def test_ice_properties(backend_instance, env):
     # act
     thermo = {
         key: builder.particulator.environment[key].to_ndarray()[0]
-        for key in ("RH", "RH_ice", "a_w_ice")
+        for key in ("RH", "RH_ice", "a_w_ice", "T")
     }
 
     # assert
-    assert 1 > thermo["RH"] > thermo["RH_ice"] > 0
+    if ( thermo["T"] >  273.16   ): 
+        assert 1 > thermo["RH"] > thermo["RH_ice"] > 0
+    else:
+        assert 1 > thermo["RH_ice"] > thermo["RH"] > 0
     np.testing.assert_approx_equal(
         thermo["a_w_ice"] * thermo["RH_ice"], thermo["RH"], significant=10
     )
