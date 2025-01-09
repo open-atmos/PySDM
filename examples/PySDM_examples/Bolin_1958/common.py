@@ -1,7 +1,27 @@
+import numpy as np
+from PySDM.physics import si
 from PySDM import Formulae
-from PySDM_examples.Szumowski_et_al_1998.sounding import temperature
 
-
+formulae = Formulae(
+    terminal_velocity="RogersYau",
+    drop_growth="Mason1951",
+    diffusion_thermics="Neglect",
+    saturation_vapour_pressure="AugustRocheMagnus",
+    ventilation="Froessling1938",
+    particle_shape_and_density="LiquidSpheres",
+    air_dynamic_viscosity="ZografosEtAl1987",
+    constants={"BOLIN_ISOTOPE_TIMESCALE_COEFF_C1": 1.63},
+    isotope_relaxation_timescale="Bolin1958",
+)
+const = formulae.constants
+any_non_zero_value = 44.0
+radii = np.asarray([0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.20]) * si.cm
+temperature = const.T0 + 10 * si.K
+pressure = const.p_STP
+pvs = formulae.saturation_vapour_pressure.pvs_water(temperature)
+v_term = formulae.terminal_velocity.v_term(radii)
+eta_air = formulae.air_dynamic_viscosity.eta_air(temperature)
+D = formulae.diffusion_thermics.D(T=temperature, p=pressure)
 class IsotopeTimescale:
     def __init__(self, *, settings, temperature, radii):
         self.radii = radii
@@ -23,61 +43,33 @@ class IsotopeTimescale:
         eta_air = self.formulae.air_dynamic_viscosity.eta_air(self.temperature)
         air_density = self.pressure / self.formulae.constants.Rd / self.temperature
 
-        assert abs(air_density - 1) / air_density < 0.3
+air_density = pressure / const.Rd / temperature
+assert abs(air_density - 1) / air_density < 0.3
+Re = formulae.particle_shape_and_density.reynolds_number(
+    radius=radii,
+    velocity_wrt_air=v_term,
+    dynamic_viscosity=eta_air,
+    density=air_density,
+)
+Sc = formulae.trivia.air_schmidt_number(
+    dynamic_viscosity=eta_air,
+    diffusivity=D,
+    density=air_density,
+)
+F = formulae.ventilation.ventilation_coefficient(
+    sqrt_re_times_cbrt_sc=Re ** (1 / 2) * Sc ** (1 / 3)
+)
 
-        Re = self.formulae.particle_shape_and_density.reynolds_number(
-            radius=self.radii,
-            velocity_wrt_air=self.v_term,
-            dynamic_viscosity=eta_air,
-            density=air_density,
-        )
-        Sc = self.formulae.trivia.air_schmidt_number(
-            dynamic_viscosity=eta_air,
-            diffusivity=self.D,
-            density=air_density,
-        )
-
-        return self.formulae.ventilation.ventilation_coefficient(
-            sqrt_re_times_cbrt_sc=self.formulae.trivia.sqrt_re_times_cbrt_sc(
-                Re=Re, Sc=Sc
-            )
-        )
-
-    def r_dr_dt(self, RH, RH_eq, lv):
-        return self.formulae.drop_growth.r_dr_dt(
-            T=self.temperature,
-            pvs=self.pvs_water,
-            D=self.D,
-            K=self.K,
-            ventilation_factor=self.vent_coeff_fun(),
-            RH=RH,
-            RH_eq=RH_eq,
-            lv=lv,
-        )
-
-    def k(self, lv, J, rho_s, R_v):
-        return 1 / (
-            1 / rho_s(self.temperature)
-            + self.f * self.D * J * lv**2 / R_v / self.temperature**2 / self.K
-        )
-
-    # def M_rat(self, isotope):
-    #    if (getattr(self.formulae.constants, f"M_{isotope}"))
-    def c1(self, isotope, R_vap, RH, pv_iso, pv_water, alpha):
-        return (
-            -self.vent_coeff_fun()  # TODO f_iso!
-            / getattr(self.formulae.isotope_diffusivity_ratios, f"ratio_{isotope}")(
-                self.temperature
-            )
-            # * self.k_iso
-            # / self.k
-            / self.vent_coeff_fun()
-            / (getattr(self.formulae.constants, f"M_{isotope}"))
-            * (pv_iso / pv_water * RH / R_vap - 1)
-            / alpha
-            * (RH - 1)
-            * R_vap
-        )
+r_dr_dt = formulae.drop_growth.r_dr_dt(
+    RH_eq=1,
+    T=temperature,
+    RH=0,
+    lv=0,
+    pvs=pvs,
+    D=D,
+    K=any_non_zero_value,
+    ventilation_factor=F,
+)
 
     def tau_rh(self, rh):
         return 3
