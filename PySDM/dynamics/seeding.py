@@ -75,13 +75,7 @@ class Seeding:
             )
         )
 
-        if self.particulator.environment.__class__.__name__ == "Parcel":
-            self.seeded_particle_cell_id = None
-            self.seeded_particle_cell_origin = None
-            self.seeded_particle_pos_cell = None
-            self.seeded_particle_volume = None
-
-        else:
+        if self.particulator.environment.mesh.n_dims > 0:
             self.seeded_particle_cell_id = (
                 self.particulator.IndexedStorage.from_ndarray(
                     self.index,

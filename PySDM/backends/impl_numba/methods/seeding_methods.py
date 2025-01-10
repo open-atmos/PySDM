@@ -50,9 +50,10 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
 
                     if cell_id is not None:
                         cell_id[i] = seeded_particle_cell_id[s]
-                        cell_origin[0][i] = seeded_particle_cell_origin[0][s]
-                        pos_cell[0][i] = seeded_particle_pos_cell[0][s]
                         volume[i] = seeded_particle_volume[s]
+                        for dim in range(len(cell_origin)):
+                            cell_origin[dim][i] = seeded_particle_cell_origin[dim][s]
+                            pos_cell[dim][i] = seeded_particle_pos_cell[dim][s]
 
             assert (
                 number_of_super_particles_to_inject

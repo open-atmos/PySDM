@@ -471,7 +471,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 Instead increase multiplicity of injected particles."
             )
 
-        if self.environment.__class__.__name__ == "Parcel":
+        if self.environment.mesh.n_dims == 0:
             self.backend.seeding(
                 idx=self.attributes._ParticleAttributes__idx,
                 multiplicity=self.attributes["multiplicity"],
