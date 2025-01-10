@@ -13,20 +13,20 @@ class CNT:
 
     @staticmethod
     def j_liq_homo(const, T, S, e_s):
-        m1 = const.Mv / const.N_A  # kg per molecule
-        v1 = m1 / const.rho_w  # m3 per molecule
-        N1 = (S * e_s) / (m1 * const.Rv * T)  # molecules per m3
+        mass_per_moleculue = const.Mv / const.N_A
+        volume_per_molecule = mass_per_moleculue / const.rho_w
+        N1 = (S * e_s) / (mass_per_moleculue * const.Rv * T)  # molecules per m3
         return (
-            ((2 * const.sgm_w) / (np.pi * m1)) ** (1 / 2)
-            * (v1 * N1**2 / S)
+            ((2 * const.sgm_w) / (np.pi * mass_per_moleculue)) ** (1 / 2)
+            * (volume_per_molecule * N1**2 / S)
             * np.exp(
-                (-16 * np.pi * v1**2 * const.sgm_w**3)
+                (-16 * np.pi * volume_per_molecule**2 * const.sgm_w**3)
                 / (3 * const.k_B**3 * T**3 * np.log(S) ** 2)
             )
         )
 
     @staticmethod
     def r_liq_homo(const, T, S):
-        m1 = const.Mv / const.N_A  # kg per molecule
-        v1 = m1 / const.rho_w  # m3 per molecule
-        return (2 * const.sgm_w * v1) / (const.k_B * T * np.log(S))
+        mass_per_moleculue = const.Mv / const.N_A
+        volume_per_molecule = mass_per_moleculue / const.rho_w
+        return (2 * const.sgm_w * volume_per_molecule) / (const.k_B * T * np.log(S))
