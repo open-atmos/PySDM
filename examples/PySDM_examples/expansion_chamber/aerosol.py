@@ -38,13 +38,10 @@ class AerosolChamber(DryAerosolMixture):
                     mass_fractions=mode1,
                     water_molar_volume=water_molar_volume,
                 ),
-                "spectrum": spectra.Lognormal(
+                "spectrum": spectra.Gaussian(
                     norm_factor=N,
-                    m_mode=158 * si.nm,
-                    s_geom=2,
+                    loc=316 / 2 * si.nm,
+                    scale=257 / 2 * si.nm,
                 ),
             },
         )
-        # mean diameter 316nm, standard deviation 257nm
-        # not sure how to interpret the standard deviation given in the paper
-        # because it looks like it's a lognormal distribution in Fig 2
