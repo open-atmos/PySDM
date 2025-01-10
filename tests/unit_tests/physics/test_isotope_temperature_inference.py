@@ -2,12 +2,14 @@
 
 import numpy as np
 from matplotlib import pyplot
+from sympy.abc import delta
+
 from PySDM import Formulae
-from PySDM.physics.constants import PER_MILLE
+from PySDM.physics.constants import PER_MILLE, PER_CENT
 from PySDM.physics import in_unit
 
 
-def test_fig_3(plot=False):
+def test_fig_3(plot=True):
     # arrange
     formulae = Formulae(isotope_temperature_inference="PicciottoEtAl1960")
     delta_18O = np.linspace(-35, -9) * PER_MILLE
@@ -44,3 +46,33 @@ def test_fig_3(plot=False):
     assert monotonic_temperature
     assert -32 < (temperature[0] - T0) < -31
     assert -3 < (temperature[-1] - T0) < -2
+
+def test_fig_2(plot=True):
+    # arrange
+    formulae = Formulae(isotope_temperature_inference="PicciottoEtAl1960")
+    delta_18O = np.linspace(-35, -13) * PER_MILLE
+    # act
+    delta_deuterium = formulae.isotope_temperature_inference.temperature_from_delta_deuterium(
+        in_unit(delta_18O, PER_MILLE)
+    )
+
+    # plot
+    pyplot.figure(figsize=(5, 6))
+    for side in ("top", "right"):
+        pyplot.gca().spines[side].set_visible(False)
+    pyplot.plot(in_unit(delta_deuterium, PER_CENT), in_unit(delta_18O, PER_MILLE), color="k")
+
+    pyplot.xlabel("$\Delta$ D [%]")
+    pyplot.xlim(-35, -10)
+    pyplot.xticks(range(-35, -10, 5))
+
+    pyplot.ylabel("δ$^{18}$O [‰]")
+    pyplot.ylim(in_unit(delta_18O[0], PER_MILLE), in_unit(delta_18O[-1], PER_MILLE))
+    pyplot.yticks(range(-35, -10, 5))
+
+    pyplot.grid(color="k")
+    pyplot.savefig("pysdm_fig2.pdf")
+    if plot:
+        pyplot.show()
+    else:
+        pyplot.clf()

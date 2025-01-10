@@ -443,3 +443,6 @@ PICCIOTTO_18O_B = 6.4 * PER_MILLE
 """ linear fit coefficients from [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)
 for atmospheric temperature inference from water isotopic composition
 (note that the sign of A coefficient is opposite to match the paper plot - typo in the paper?) """
+
+PICCIOTTO_180_TO_DEUTERIUM_A = 0.8 * PER_CENT
+PICCIOTTO_180_TO_DEUTERIUM_B = 1.8 * PER_CENT
