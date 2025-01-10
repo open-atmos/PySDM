@@ -4,29 +4,29 @@ from pathlib import Path
 paraview.simple._DisableFirstRenderCameraReset()
 
 
-def command_line_argument_parser_using_argparse(ap):
+def cli_using_argparse(ap):
     ap.add_argument("product_path", help = 'path to pvd products file')
     ap.add_argument("attributes_path", help=' path to pvd attributes file')
-
     ap.add_argument('--multiplicity_preset', default = 'Inferno (matplotlib)', help = 'Preset for multiplicity')
-    ap.add_argument('--multiplicity_logscale', action = 'store_true', help = 'Use log scale for multiplicity')
+    ap.add_argument('--multiplicity_logscale', action = 'store_false', help = 'Use log scale for multiplicity')
     ap.add_argument('--effectiveradius_preset', default = 'Black, Blue and White', help = 'Preset for effectiveradius')
-    ap.add_argument('--effectiveradius_logscale', action = 'store_true', help = 'Use log scale for effectiveradius')
+    ap.add_argument('--effectiveradius_logscale', action = 'store_false', help = 'Use log scale for effectiveradius')
     ap.add_argument('--effectiveradius_nan_color', nargs = 3, type = float, default = [0.666, 0.333, 1.0], help = 'Nan color in RGB format for effectiveradius')
     ap.add_argument('--sd_products_opacity', type = float, default = 0.9, help = 'Opacity for sd_products')
     ap.add_argument('--calculator1_opacity', type = float, default = 0.19, help = 'Opacity for calculator1')
     ap.add_argument('--sd_attributes_opacity', type = float, default = 0.77, help = 'Opacity for sd_attributes')
+
 ap = argparse.ArgumentParser()
-command_line_argument_parser_using_argparse(ap)
+cli_using_argparse(ap)
 
 args = ap.parse_args()
 sd_productspvd = OpenDataFile(args.product_path)
 sd_attributespvd = OpenDataFile(args.attributes_path)
 
 
-# startup settings
-multiplicityLUT = GetColorTransferFunction('multiplicity')
+#startup_settings
 renderView1 = GetActiveViewOrCreate('RenderView')
+multiplicityLUT = GetColorTransferFunction('multiplicity')
 sd_attributespvdDisplay = Show(sd_attributespvd, renderView1, 'UnstructuredGridRepresentation')
 sd_attributespvdDisplay = GetDisplayProperties(sd_attributespvd, view=renderView1)
 effectiveradiusLUT = GetColorTransferFunction('effectiveradius')
@@ -34,12 +34,12 @@ multiplicityLUT.RescaleTransferFunction(19951.0, 50461190157.0)
 effectiveradiusLUT.RescaleTransferFunction(0.1380997175392798, 207.7063518856934)
 sd_productspvdDisplay = GetDisplayProperties(sd_productspvd, view=renderView1)
 sd_productspvdDisplay.SetRepresentationType('Surface With Edges')
+renderView1.Update()
 
 
-def create_new_calculator(registrationame, input, index, representation, function, color_by1, color_by2, color_by3, scalar_coloring = False, hide = False):
+def create_new_calculator(registrationame, input, representation, function, color_by1, color_by2, color_by3, scalar_coloring = False, hide = False):
     calculator = Calculator(registrationName=registrationame, Input=input)
-    variable_name = f"calculator{index}Display"
-    display = globals()[variable_name] = Show(calculator, renderView1, representation)
+    display = Show(calculator, renderView1, representation)
     calculator.Function = function
     renderView1.Update()
     if scalar_coloring == True:
@@ -50,31 +50,30 @@ def create_new_calculator(registrationame, input, index, representation, functio
         Hide(calculator, renderView1)
     else:
         None
+    renderView1.Update()
 
-calculator1 = create_new_calculator('Calculator1', sd_attributespvd, 1, 'UnstructuredGridRepresentation', '"relative fall velocity"*(-iHat)', 'None', 'None', 'None')
+calculator1 = create_new_calculator('Calculator1', sd_attributespvd, 'UnstructuredGridRepresentation', '"relative fall velocity"*(-iHat)', 'None', 'None', 'None')
 
 
-def color_bar_legend(): 
+def scalar_bar():
+    calculator1Display = Show(calculator1, renderView1, 'UnstructuredGridRepresentation')
     calculator1Display.SetScalarBarVisibility(renderView1, True)
     scalarBar = GetScalarBar(effectiveradiusLUT, renderView1)
     scalarBar.ComponentTitle = ""
     scalarBar.Title = "effective radius [um]"
     renderView1.Update()
 
-color_bar_legend()
+scalar_bar()
 
 
-def create_glyph(registration_name, input, scale_array1, scale_array2, scalarbar = True, color_by = False):
+def create_glyph(registration_name, input, scale_array1, scale_array2, color_by = False):
     glyph = Glyph(registrationName=registration_name, Input=input,
         GlyphType='Arrow')
     glyphDisplay = Show(glyph, renderView1, 'GeometryRepresentation')
     glyphDisplay.Representation = 'Surface'
     glyph.ScaleArray = [scale_array1, scale_array2]
     glyph.ScaleFactor = 100
-    if scalarbar == True:
-        glyphDisplay.SetScalarBarVisibility(renderView1, True)
-    else:
-        glyphDisplay.SetScalarBarVisibility(renderView1, False)
+    glyphDisplay.SetScalarBarVisibility(renderView1, True)
     if color_by == True:
         ColorBy(glyphDisplay, None)
     else:
@@ -83,12 +82,11 @@ def create_glyph(registration_name, input, scale_array1, scale_array2, scalarbar
 
 glyph1 = create_glyph('Glyph1', calculator1, 'POINTS', 'relative fall velocity')
 
-calculator2 = create_new_calculator('Calculator2', sd_productspvd, 2, 'StructuredGridRepresentation', 'cx*jHat+cy*iHat', 'CELLS', 'Result', 'Magnitude', True, True)
-
-glyph2 = create_glyph('Glyph2', calculator2, 'CELLS', 'Result', False, True)
+calculator2 = create_new_calculator('Calculator2', sd_productspvd, 'StructuredGridRepresentation', 'cx*jHat+cy*iHat', 'CELLS', 'Result', 'Magnitude', True, True)
 
 
 def apply_presets_logscale_opacity_and_update():
+    calculator1Display = Show(calculator1, renderView1, 'UnstructuredGridRepresentation')
     multiplicityLUT.ApplyPreset(args.multiplicity_preset, True)
     if args.multiplicity_logscale:
         multiplicityLUT.MapControlPointsToLogSpace()
@@ -114,6 +112,8 @@ def apply_presets_logscale_opacity_and_update():
     renderView1.Update()
 
 apply_presets_logscale_opacity_and_update()
+
+glyph2 = create_glyph('Glyph2', calculator2, 'CELLS', 'Result', True)
 
 
 def get_layout():
@@ -169,10 +169,22 @@ axes_settings()
 
 def time_annotation():
     time = AnnotateTimeFilter(guiName = "AnnotateTimeFilter1", Format = 'Time:{time:f}s')
-    repr = Show(time, view)
+    repr = Show(time, renderView1)
     renderView1.Update()
 
 time_annotation()
+
+
+def text(): 
+    text = Text()
+    #TODO finish the text
+    text.Text = "Arrows depict Courant numbers"
+    textDisplay = Show(text, renderView1)
+    textDisplay.Color = [1.0, 1.0, 1.0]  
+    textDisplay.WindowLocation = 'Any Location'
+    textDisplay.Position = [0.01, 0.7]
+
+text()
 
 
 # save animation to an Ogg Vorbis file
@@ -187,5 +199,5 @@ for t in sd_productspvd.TimestepValues:
             view=renderView1,
             Rasterize3Dgeometry= False,
             GL2PSdepthsortmethod= 'BSP sorting (slow, best)',
-     )
+    )
 RenderAllViews()
