@@ -3,41 +3,68 @@
 import pytest
 import numpy as np
 from PySDM.environments import Parcel
-from PySDM.physics import si
+from PySDM.physics import si, constants_defaults
 from PySDM import Builder
 from PySDM.backends import GPU
 
+COMMON_PARCEL_CTOR_ARGS = {
+    "mixed_phase": True,
+    "dt": np.nan,
+    "mass_of_dry_air": np.nan,
+    "w": np.nan,
+}
+T0 = constants_defaults.T0
+
 
 @pytest.mark.parametrize(
-    "env",
+    "env, check",
     (
-        Parcel(
-            mixed_phase=True,
-            dt=np.nan,
-            mass_of_dry_air=np.nan,
-            p0=1000 * si.hPa,
-            initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
-            T0=300 * si.K,
-            w=np.nan,
+        (
+            Parcel(
+                p0=1000 * si.hPa,
+                initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
+                T0=300 * si.K,
+                **COMMON_PARCEL_CTOR_ARGS,
+            ),
+            f"_['T']>{T0} and _['RH']<1 and _['RH_ice']<1",
         ),
-          Parcel(
-            mixed_phase=True,
-            dt=np.nan,
-            mass_of_dry_air=np.nan,
-            p0=500 * si.hPa,
-            initial_water_vapour_mixing_ratio=0.2 * si.g / si.kg,
-            T0=250 * si.K,
-            w=np.nan,
+        (
+            Parcel(
+                p0=1000 * si.hPa,
+                initial_water_vapour_mixing_ratio=25 * si.g / si.kg,
+                T0=300 * si.K,
+                **COMMON_PARCEL_CTOR_ARGS,
+            ),
+            f"_['T']>{T0} and _['RH']>1 and _['RH_ice']<1",
+        ),
+        (
+            Parcel(
+                p0=500 * si.hPa,
+                initial_water_vapour_mixing_ratio=0.2 * si.g / si.kg,
+                T0=250 * si.K,
+                **COMMON_PARCEL_CTOR_ARGS,
+            ),
+            f"_['T']<{T0} and _['RH']<1 and _['RH_ice']<1",
+        ),
+        (
+            Parcel(
+                p0=500 * si.hPa,
+                initial_water_vapour_mixing_ratio=1 * si.g / si.kg,
+                T0=250 * si.K,
+                **COMMON_PARCEL_CTOR_ARGS,
+            ),
+            f"_['T']<{T0} and _['RH']<1 and _['RH_ice']>1",
         ),
     ),
 )
-def test_ice_properties(backend_instance, env):
+def test_ice_properties(backend_instance, env, check):
     """checks ice-related values in recalculated thermodynamic state make sense"""
     if isinstance(backend_instance, GPU):
         pytest.skip("TODO #1495")
 
     # arrange
     builder = Builder(n_sd=0, backend=backend_instance, environment=env)
+    const = builder.particulator.formulae.constants
 
     # act
     thermo = {
@@ -46,10 +73,11 @@ def test_ice_properties(backend_instance, env):
     }
 
     # assert
-    if ( thermo["T"] >  273.16   ): 
-        assert 1 > thermo["RH"] > thermo["RH_ice"] > 0
+    exec(f"assert {check}", {"_": thermo})  # pylint: disable=exec-used
+    if thermo["T"] - const.T0 > 0:
+        assert thermo["RH"] > thermo["RH_ice"] > 0
     else:
-        assert 1 > thermo["RH_ice"] > thermo["RH"] > 0
+        assert thermo["RH_ice"] > thermo["RH"] > 0
     np.testing.assert_approx_equal(
         thermo["a_w_ice"] * thermo["RH_ice"], thermo["RH"], significant=10
     )
