@@ -175,16 +175,16 @@ def time_annotation():
 time_annotation()
 
 
-def text(): 
+def text(text_in, position_y): 
     text = Text()
-    #TODO finish the text
-    text.Text = "Arrows depict Courant numbers"
+    text.Text = text_in
     textDisplay = Show(text, renderView1)
     textDisplay.Color = [1.0, 1.0, 1.0]  
     textDisplay.WindowLocation = 'Any Location'
-    textDisplay.Position = [0.01, 0.7]
+    textDisplay.Position = [0.01, position_y]
 
-text()
+text("Arrows scale with Courant number C=u*Δt/Δx,", 0.7)
+text("reflecting the grid spacing Δx and Δy.", 0.65)
 
 
 # save animation to an Ogg Vorbis file
