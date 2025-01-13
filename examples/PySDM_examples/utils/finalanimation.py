@@ -1,8 +1,7 @@
-from paraview.simple import *
+from paraview import simple as pvs  # pylint: disable=import-error
 import argparse
-from pathlib import Path
 
-paraview.simple._DisableFirstRenderCameraReset()
+pvs._DisableFirstRenderCameraReset()
 
 
 def cli_using_argparse(ap):
@@ -56,25 +55,25 @@ ap = argparse.ArgumentParser()
 cli_using_argparse(ap)
 
 args = ap.parse_args()
-sd_productspvd = OpenDataFile(args.product_path)
-sd_attributespvd = OpenDataFile(args.attributes_path)
+sd_productspvd = pvs.OpenDataFile(args.product_path)
+sd_attributespvd = pvs.OpenDataFile(args.attributes_path)
 
 
 # startup_settings
 from collections import namedtuple
 
-x = {"renderView1": GetActiveViewOrCreate("RenderView")}
+x = {"renderView1": pvs.GetActiveViewOrCreate("RenderView")}
 x = namedtuple("X", x.keys())(**x)
 
-multiplicityLUT = GetColorTransferFunction("multiplicity")
-sd_attributespvdDisplay = Show(
+multiplicityLUT = pvs.GetColorTransferFunction("multiplicity")
+sd_attributespvdDisplay = pvs.Show(
     sd_attributespvd, x.renderView1, "UnstructuredGridRepresentation"
 )
-sd_attributespvdDisplay = GetDisplayProperties(sd_attributespvd, view=x.renderView1)
-effectiveradiusLUT = GetColorTransferFunction("effectiveradius")
+sd_attributespvdDisplay = pvs.GetDisplayProperties(sd_attributespvd, view=x.renderView1)
+effectiveradiusLUT = pvs.GetColorTransferFunction("effectiveradius")
 multiplicityLUT.RescaleTransferFunction(19951.0, 50461190157.0)
 effectiveradiusLUT.RescaleTransferFunction(0.1380997175392798, 207.7063518856934)
-sd_productspvdDisplay = GetDisplayProperties(sd_productspvd, view=x.renderView1)
+sd_productspvdDisplay = pvs.GetDisplayProperties(sd_productspvd, view=x.renderView1)
 x.renderView1.Update()
 
 
@@ -91,27 +90,27 @@ def create_new_calculator(
     y,
     registrationame,
 ):
-    calculator = Calculator(registrationName=registrationame, Input=input)
-    display = Show(calculator, y.renderView1, representation)
+    calculator = pvs.Calculator(registrationName=registrationame, Input=input)
+    display = pvs.Show(calculator, y.renderView1, representation)
     calculator.Function = function
     y.renderView1.Update()
     if scalar_coloring == True:
-        ColorBy(display, (color_by1, color_by2, color_by3))
+        pvs.ColorBy(display, (color_by1, color_by2, color_by3))
     else:
         None
     if hide == True:
-        Hide(calculator, y.renderView1)
+        pvs.Hide(calculator, y.renderView1)
     else:
         None
     y.renderView1.Update()
 
 
 def scalar_bar(*, y):
-    calculator1Display = Show(
+    calculator1Display = pvs.Show(
         calculator1, y.renderView1, "UnstructuredGridRepresentation"
     )
     calculator1Display.SetScalarBarVisibility(y.renderView1, True)
-    scalarBar = GetScalarBar(effectiveradiusLUT, y.renderView1)
+    scalarBar = pvs.GetScalarBar(effectiveradiusLUT, y.renderView1)
     scalarBar.ComponentTitle = ""
     scalarBar.Title = "effective radius [um]"
     y.renderView1.Update()
@@ -120,21 +119,23 @@ def scalar_bar(*, y):
 def create_glyph(
     registration_name, input, scale_array1, scale_array2, color_by=False, *, y
 ):
-    glyph = Glyph(registrationName=registration_name, Input=input, GlyphType="Arrow")
-    glyphDisplay = Show(glyph, y.renderView1, "GeometryRepresentation")
+    glyph = pvs.Glyph(
+        registrationName=registration_name, Input=input, GlyphType="Arrow"
+    )
+    glyphDisplay = pvs.Show(glyph, y.renderView1, "GeometryRepresentation")
     glyphDisplay.Representation = "Surface"
     glyph.ScaleArray = [scale_array1, scale_array2]
     glyph.ScaleFactor = 100
     glyphDisplay.SetScalarBarVisibility(y.renderView1, True)
     if color_by == True:
-        ColorBy(glyphDisplay, None)
+        pvs.ColorBy(glyphDisplay, None)
     else:
         None
     y.renderView1.Update()
 
 
 def apply_presets_logscale_opacity_and_update(*, y):
-    calculator1Display = Show(
+    calculator1Display = pvs.Show(
         calculator1, y.renderView1, "UnstructuredGridRepresentation"
     )
     multiplicityLUT.ApplyPreset(args.multiplicity_preset, True)
@@ -164,7 +165,7 @@ def apply_presets_logscale_opacity_and_update(*, y):
 
 
 def get_layout(*, y):
-    layout1 = GetLayout()
+    layout1 = pvs.GetLayout()
     layout1.SetSize(1205, 739)
     y.renderView1.Update()
 
@@ -212,15 +213,17 @@ def axes_settings(*, view):
 
 
 def time_annotation(*, y):
-    time = AnnotateTimeFilter(guiName="AnnotateTimeFilter1", Format="Time:{time:f}s")
-    repr = Show(time, y.renderView1)
+    time = pvs.AnnotateTimeFilter(
+        guiName="AnnotateTimeFilter1", Format="Time:{time:f}s"
+    )
+    repr = pvs.Show(time, y.renderView1)
     y.renderView1.Update()
 
 
 def text(text_in, position_y, *, view):
-    text = Text()
+    text = pvs.Text()
     text.Text = text_in
-    textDisplay = Show(text, view)
+    textDisplay = pvs.Show(text, view)
     textDisplay.Color = [1.0, 1.0, 1.0]
     textDisplay.WindowLocation = "Any Location"
     textDisplay.Position = [0.01, position_y]
@@ -260,16 +263,16 @@ text("Arrows scale with Courant number C=u*Δt/Δx,", 0.7, view=x.renderView1)
 text("reflecting the grid spacing Δx and Δy.", 0.65, view=x.renderView1)
 
 # save animation to an Ogg Vorbis file
-SaveAnimation("output/anim2.ogv", x.renderView1, FrameRate=5)
+pvs.SaveAnimation("output/anim2.ogv", x.renderView1, FrameRate=5)
 # save animation frame as pdfs
 for t in sd_productspvd.TimestepValues:
     x.renderView1.ViewTime = t
     for reader in (sd_productspvd, sd_attributespvd):
         reader.UpdatePipeline(t)
-        ExportView(
+        pvs.ExportView(
             filename=f"output/anim_frame_{t}.pdf",
             view=x.renderView1,
             Rasterize3Dgeometry=False,
             GL2PSdepthsortmethod="BSP sorting (slow, best)",
         )
-RenderAllViews()
+pvs.RenderAllViews()
