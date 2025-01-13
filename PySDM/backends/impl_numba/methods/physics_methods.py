@@ -80,7 +80,9 @@ class PhysicsMethods(BackendMethods):
         ff = self.formulae_flattened
 
         @numba.njit(**self.default_jit_flags)
-        def body(*, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out):
+        def body(
+            *, T_in, p_in, RH_in, water_vapour_mixing_ratio_in, a_w_ice_out, RH_ice_out
+        ):
             for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
                 pvi = ff.saturation_vapour_pressure__pvs_ice(T_in[i])
                 pv = ff.state_variable_triplet__pv(
@@ -88,16 +90,18 @@ class PhysicsMethods(BackendMethods):
                 )
                 pvs = pv / RH_in[i]
                 a_w_ice_out[i] = pvi / pvs
+                RH_ice_out[i] = pv / pvi
 
         return body
 
-    def a_w_ice(self, *, T, p, RH, water_vapour_mixing_ratio, a_w_ice):
+    def a_w_ice(self, *, T, p, RH, water_vapour_mixing_ratio, a_w_ice, RH_ice):
         self._a_w_ice_body(
             T_in=T.data,
             p_in=p.data,
             RH_in=RH.data,
             water_vapour_mixing_ratio_in=water_vapour_mixing_ratio.data,
             a_w_ice_out=a_w_ice.data,
+            RH_ice_out=RH_ice.data,
         )
 
     @cached_property
