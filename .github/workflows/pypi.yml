@@ -32,7 +32,9 @@ jobs:
 
       - run: pip install twine build
 
-      - run: |
+      - name: run python -m build to generate wheel files, check for warnings
+        run: |
+          set -x
           unset CI
           cd ${{ matrix.packages-dir }}
           python -m build 2>&1 | tee build.log
@@ -41,7 +43,11 @@ jobs:
             | grep -v "version of {dist_name} already set" \
             | grep -v -E "UserWarning: version of PySDM(-examples)? already set" \
             | wc -l`
-          twine check --strict dist/*
+      - run: twine check --strict ${{ matrix.packages-dir }}/dist/*
+      - name: check if version string does not contain PyPI-incompatible + char 
+        run: |
+          set -x
+          [ `ls ${{ matrix.packages-dir }}/dist | fgrep + | tee /dev/stderr | wc -l` -ne 0 ] && exit 1 || echo OK
 
       - uses: actions/upload-artifact@v4
         with:

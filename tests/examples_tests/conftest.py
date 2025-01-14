@@ -54,6 +54,7 @@ TEST_SUITES = {
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process_a": [
         "Arabas_et_al_2015",
+        "_HOWTOs",
     ],
     "multi-process_b": [
         "Arabas_et_al_2023",
@@ -71,7 +72,6 @@ TEST_SUITES = {
         "Morrison_and_Grabowski_2007",
         "Shipway_and_Hill_2012",
         "seeding",
-        "_HOWTOs",
         "utils",
     ],
 }
