@@ -121,23 +121,31 @@ class TestIsotopeMeteoricWaterLine:
             ),
             desired=0,
         )
+
     @staticmethod
     def test_picciotto_et_al_1960_fig_2(plot=False):
         # arrange
         delta_deuterium = np.linspace(-31, -10) * PER_CENT
         # act
 
-        delta_18O = {paper: Formulae(isotope_meteoric_water_line=paper).isotope_meteoric_water_line.d18O_of_d2H(
-            delta_deuterium
-            ) for paper in ('PicciottoEtAl1960', 'Dansgaard1964')}
+        delta_18O = {
+            paper: Formulae(
+                isotope_meteoric_water_line=paper
+            ).isotope_meteoric_water_line.d18O_of_d2H(delta_deuterium)
+            for paper in ("PicciottoEtAl1960", "Dansgaard1964")
+        }
 
         # plot
         pyplot.figure(figsize=(5, 6))
         for paper, delta in delta_18O.items():
-            pyplot.plot(in_unit(delta_deuterium, PER_CENT), in_unit(delta, PER_MILLE), label=paper)
+            pyplot.plot(
+                in_unit(delta_deuterium, PER_CENT),
+                in_unit(delta, PER_MILLE),
+                label=paper,
+            )
 
-        pyplot.xlabel('$\delta$ $^2$H [%]')
-        pyplot.ylabel('$\delta$ $^{18}$O [‰]')
+        pyplot.xlabel("$\delta$ $^2$H [%]")
+        pyplot.ylabel("$\delta$ $^{18}$O [‰]")
 
         pyplot.grid(color="k")
         pyplot.legend()
@@ -147,7 +155,7 @@ class TestIsotopeMeteoricWaterLine:
             pyplot.clf()
 
         # assert
-        delta = delta_18O['PicciottoEtAl1960']
+        delta = delta_18O["PicciottoEtAl1960"]
         monotonic = (np.diff(delta) > 0).all()
         assert monotonic
         assert -37 < in_unit(delta[0], PER_MILLE) < -36

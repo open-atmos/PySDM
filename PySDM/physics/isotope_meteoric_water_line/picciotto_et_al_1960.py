@@ -9,4 +9,6 @@ class PicciottoEtAl1960:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def d18O_of_d2H(const, delta_2H):
-        return (delta_2H - const.PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF) / const.PICCIOTTO_18O_TO_2H_SLOPE_COEFF
+        return (
+            delta_2H - const.PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF
+        ) / const.PICCIOTTO_18O_TO_2H_SLOPE_COEFF

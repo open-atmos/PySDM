@@ -56,7 +56,9 @@ class TestPicciottoEtAl1960:
         )
         delta_2H = np.linspace(-35, -9) * PER_CENT
         delta_18O = formulae.isotope_meteoric_water_line.d18O_of_d2H(delta_2H)
-        T18O = formulae.isotope_temperature_inference.temperature_from_delta_18O(delta_18O)
+        T18O = formulae.isotope_temperature_inference.temperature_from_delta_18O(
+            delta_18O
+        )
 
         # act
         T2H = formulae.isotope_temperature_inference.temperature_from_delta_2H(delta_2H)
