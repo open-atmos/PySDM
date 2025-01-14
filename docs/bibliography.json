@@ -696,6 +696,7 @@
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/isotope_temperature_inference/picciotto_et_al_1960.py",
+      "PySDM/physics/isotope_meteoric_water_line/picciotto_et_al_1960.py",
       "tests/unit_tests/physics/test_isotope_temperature_inference.py"
     ],
     "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",

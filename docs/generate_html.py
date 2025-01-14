@@ -87,7 +87,7 @@ def check_urls(urls_from_json):
     }
     for url in unique_urls_read:
         assert url_usages_found[url] == sorted(urls_from_json[url]["usages"]), (
-            f"{url} usages mismatch:\n"
+            f"{url} usages mismatch (please fix docs/bibliography.json):\n"
             f"\texpected: {url_usages_found[url]}\n"
             f"\tactual:   {urls_from_json[url]['usages']}"
         )
