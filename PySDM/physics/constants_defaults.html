@@ -797,6 +797,24 @@
             <li>
                     <a class="variable" href="#BOLIN_ISOTOPE_TIMESCALE_COEFF_C1">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</a>
             </li>
+            <li>
+                    <a class="variable" href="#PICCIOTTO_18O_A">PICCIOTTO_18O_A</a>
+            </li>
+            <li>
+                    <a class="variable" href="#PICCIOTTO_18O_B">PICCIOTTO_18O_B</a>
+            </li>
+            <li>
+                    <a class="variable" href="#PICCIOTTO_2H_A">PICCIOTTO_2H_A</a>
+            </li>
+            <li>
+                    <a class="variable" href="#PICCIOTTO_2H_B">PICCIOTTO_2H_B</a>
+            </li>
+            <li>
+                    <a class="variable" href="#PICCIOTTO_18O_TO_2H_SLOPE_COEFF">PICCIOTTO_18O_TO_2H_SLOPE_COEFF</a>
+            </li>
+            <li>
+                    <a class="variable" href="#PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF">PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF</a>
+            </li>
     </ul>
 
 
@@ -1262,6 +1280,25 @@ Unless, there is a very specific and sound reason, everything here should
 </span><span id="L-437"><a href="#L-437"><span class="linenos">437</span></a><span class="sd">isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium</span>
 </span><span id="L-438"><a href="#L-438"><span class="linenos">438</span></a><span class="sd">in the environment around the drop (Table 1).</span>
 </span><span id="L-439"><a href="#L-439"><span class="linenos">439</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-440"><a href="#L-440"><span class="linenos">440</span></a>
+</span><span id="L-441"><a href="#L-441"><span class="linenos">441</span></a><span class="n">PICCIOTTO_18O_A</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.9</span> <span class="o">*</span> <span class="n">PER_MILLE</span> <span class="o">/</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
+</span><span id="L-442"><a href="#L-442"><span class="linenos">442</span></a><span class="sd">&quot;&quot;&quot; linear fit coefficients from [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)</span>
+</span><span id="L-443"><a href="#L-443"><span class="linenos">443</span></a><span class="sd">for atmospheric temperature inference from water isotopic composition</span>
+</span><span id="L-444"><a href="#L-444"><span class="linenos">444</span></a><span class="sd">(note that the sign of A coefficient is opposite to match the paper plot - typo in the paper?) &quot;&quot;&quot;</span>
+</span><span id="L-445"><a href="#L-445"><span class="linenos">445</span></a><span class="n">PICCIOTTO_18O_B</span> <span class="o">=</span> <span class="mf">6.4</span> <span class="o">*</span> <span class="n">PER_MILLE</span>
+</span><span id="L-446"><a href="#L-446"><span class="linenos">446</span></a><span class="sd">&quot;&quot;&quot;〃&quot;&quot;&quot;</span>
+</span><span id="L-447"><a href="#L-447"><span class="linenos">447</span></a><span class="n">PICCIOTTO_2H_A</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">PER_CENT</span> <span class="o">/</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
+</span><span id="L-448"><a href="#L-448"><span class="linenos">448</span></a><span class="sd">&quot;&quot;&quot;〃&quot;&quot;&quot;</span>
+</span><span id="L-449"><a href="#L-449"><span class="linenos">449</span></a><span class="n">PICCIOTTO_2H_B</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">PER_CENT</span>
+</span><span id="L-450"><a href="#L-450"><span class="linenos">450</span></a><span class="sd">&quot;&quot;&quot;〃&quot;&quot;&quot;</span>
+</span><span id="L-451"><a href="#L-451"><span class="linenos">451</span></a>
+</span><span id="L-452"><a href="#L-452"><span class="linenos">452</span></a><span class="n">PICCIOTTO_18O_TO_2H_SLOPE_COEFF</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="o">*</span> <span class="n">PER_CENT</span> <span class="o">/</span> <span class="n">PER_MILLE</span>
+</span><span id="L-453"><a href="#L-453"><span class="linenos">453</span></a><span class="sd">&quot;&quot;&quot; [hydro]meteoric water line [Picciotto et al. 1960](https://doi.org/10.1038/187857a0) coeffs</span>
+</span><span id="L-454"><a href="#L-454"><span class="linenos">454</span></a><span class="sd">(note that the delta-2H and delta-18O are swapped to match the paper plot - typo in the paper?)</span>
+</span><span id="L-455"><a href="#L-455"><span class="linenos">455</span></a><span class="sd">(note that the sign of INTERCEPT is opposite to match the paper plot - typo in the paper?)</span>
+</span><span id="L-456"><a href="#L-456"><span class="linenos">456</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-457"><a href="#L-457"><span class="linenos">457</span></a><span class="n">PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.8</span> <span class="o">*</span> <span class="n">PER_CENT</span>
+</span><span id="L-458"><a href="#L-458"><span class="linenos">458</span></a><span class="sd">&quot;&quot;&quot;〃&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -4277,6 +4314,94 @@ for discussion, see:</p>
 for the falling drop evaporation timescale of equilibration with ambient air void of a given
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).</p>
+</div>
+
+
+                </section>
+                <section id="PICCIOTTO_18O_A">
+                    <div class="attr variable">
+            <span class="name">PICCIOTTO_18O_A</span>        =
+<span class="default_value">-0.0009000000000000001</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PICCIOTTO_18O_A"></a>
+    
+            <div class="docstring"><p>linear fit coefficients from <a href="https://doi.org/10.1038/187857a0">Picciotto et al. 1960</a>
+for atmospheric temperature inference from water isotopic composition
+(note that the sign of A coefficient is opposite to match the paper plot - typo in the paper?)</p>
+</div>
+
+
+                </section>
+                <section id="PICCIOTTO_18O_B">
+                    <div class="attr variable">
+            <span class="name">PICCIOTTO_18O_B</span>        =
+<span class="default_value">0.0064</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PICCIOTTO_18O_B"></a>
+    
+            <div class="docstring"><p>〃</p>
+</div>
+
+
+                </section>
+                <section id="PICCIOTTO_2H_A">
+                    <div class="attr variable">
+            <span class="name">PICCIOTTO_2H_A</span>        =
+<span class="default_value">-0.008</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PICCIOTTO_2H_A"></a>
+    
+            <div class="docstring"><p>〃</p>
+</div>
+
+
+                </section>
+                <section id="PICCIOTTO_2H_B">
+                    <div class="attr variable">
+            <span class="name">PICCIOTTO_2H_B</span>        =
+<span class="default_value">0.08</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PICCIOTTO_2H_B"></a>
+    
+            <div class="docstring"><p>〃</p>
+</div>
+
+
+                </section>
+                <section id="PICCIOTTO_18O_TO_2H_SLOPE_COEFF">
+                    <div class="attr variable">
+            <span class="name">PICCIOTTO_18O_TO_2H_SLOPE_COEFF</span>        =
+<span class="default_value">8.0</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PICCIOTTO_18O_TO_2H_SLOPE_COEFF"></a>
+    
+            <div class="docstring"><p>[hydro]meteoric water line <a href="https://doi.org/10.1038/187857a0">Picciotto et al. 1960</a> coeffs
+(note that the delta-2H and delta-18O are swapped to match the paper plot - typo in the paper?)
+(note that the sign of INTERCEPT is opposite to match the paper plot - typo in the paper?)</p>
+</div>
+
+
+                </section>
+                <section id="PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF">
+                    <div class="attr variable">
+            <span class="name">PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF</span>        =
+<span class="default_value">-0.018000000000000002</span>
+
+        
+    </div>
+    <a class="headerlink" href="#PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF"></a>
+    
+            <div class="docstring"><p>〃</p>
 </div>
 
 
