@@ -1,5 +1,6 @@
 """ based on [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)
- where delta(T)=-(a*T + b) formulae given, here cast as T(delta)=(-delta-b)/a
+ where delta(2H)= slope_coeff * delta(18O) + intercept_coeff formulae is given
+ with swapped 2H and 18O in a paper
  """
 
 

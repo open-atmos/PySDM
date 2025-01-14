@@ -160,3 +160,23 @@ class TestIsotopeMeteoricWaterLine:
         assert monotonic
         assert -37 < in_unit(delta[0], PER_MILLE) < -36
         assert -11 < in_unit(delta[-1], PER_MILLE) < -10
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "delta_2H", (-30 * PER_MILLE, -10 * PER_MILLE, 10 * PER_MILLE, 30 * PER_MILLE)
+    )
+    def test_picciotto_et_al_1960_d18O_of_d2H(delta_2H):
+        # arrange
+        formulae = Formulae(isotope_meteoric_water_line="PicciottoEtAl1960")
+        sut = formulae.isotope_meteoric_water_line.d18O_of_d2H
+
+        # act
+        delta_18O = sut(delta_2H=delta_2H)
+
+        # assert
+        np.testing.assert_approx_equal(
+            actual=delta_2H
+            - formulae.constants.PICCIOTTO_18O_TO_2H_SLOPE_COEFF * delta_18O,
+            desired=formulae.constants.PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF,
+            significant=3,
+        )
