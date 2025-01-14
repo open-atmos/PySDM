@@ -5,10 +5,10 @@ from matplotlib import pyplot
 
 from PySDM import Formulae
 from PySDM.physics import in_unit
-from PySDM.physics.constants_defaults import PER_MILLE
+from PySDM.physics.constants_defaults import PER_MILLE, PER_CENT
 
 
-class TestIsotopeMeteoricWaterLineExcess:
+class TestIsotopeMeteoricWaterLine:
     @staticmethod
     def test_craig_1961_science_fig_1(plot=False):
         """see Fig. 1 in [Craig 1961](https://doi.org/10.1126/science.133.3465.1702)"""
@@ -87,15 +87,15 @@ class TestIsotopeMeteoricWaterLineExcess:
     )
     def test_d18O_of_d2H(delta_2H):
         # arrange
-        formulae = Formulae(isotope_meteoric_water_line_excess="Dansgaard1964")
-        sut = formulae.isotope_meteoric_water_line_excess.d18O_of_d2H
+        formulae = Formulae(isotope_meteoric_water_line="Dansgaard1964")
+        sut = formulae.isotope_meteoric_water_line.d18O_of_d2H
 
         # act
         delta_18O = sut(delta_2H=delta_2H)
 
         # assert
         np.testing.assert_approx_equal(
-            actual=formulae.isotope_meteoric_water_line_excess.excess_d(
+            actual=formulae.isotope_meteoric_water_line.excess_d(
                 delta_18O=delta_18O, delta_2H=delta_2H
             ),
             desired=formulae.constants.CRAIG_1961_INTERCEPT_COEFF,
@@ -108,16 +108,47 @@ class TestIsotopeMeteoricWaterLineExcess:
     )
     def test_d17O_of_d18O(delta_18O):
         # arrange
-        formulae = Formulae(isotope_meteoric_water_line_excess="BarkanAndLuz2007")
-        sut = formulae.isotope_meteoric_water_line_excess.d17O_of_d18O
+        formulae = Formulae(isotope_meteoric_water_line="BarkanAndLuz2007")
+        sut = formulae.isotope_meteoric_water_line.d17O_of_d18O
 
         # act
         delta_17O = sut(delta_18O=delta_18O)
 
         # assert
         np.testing.assert_almost_equal(
-            actual=formulae.isotope_meteoric_water_line_excess.excess_17O(
+            actual=formulae.isotope_meteoric_water_line.excess_17O(
                 delta_18O=delta_18O, delta_17O=delta_17O
             ),
             desired=0,
         )
+    @staticmethod
+    def test_picciotto_et_al_1960_fig_2(plot=False):
+        # arrange
+        delta_deuterium = np.linspace(-31, -10) * PER_CENT
+        # act
+
+        delta_18O = {paper: Formulae(isotope_meteoric_water_line=paper).isotope_meteoric_water_line.d18O_of_d2H(
+            delta_deuterium
+            ) for paper in ('PicciottoEtAl1960', 'Dansgaard1964')}
+
+        # plot
+        pyplot.figure(figsize=(5, 6))
+        for paper, delta in delta_18O.items():
+            pyplot.plot(in_unit(delta_deuterium, PER_CENT), in_unit(delta, PER_MILLE), label=paper)
+
+        pyplot.xlabel('$\delta$ $^2$H [%]')
+        pyplot.ylabel('$\delta$ $^{18}$O [‰]')
+
+        pyplot.grid(color="k")
+        pyplot.legend()
+        if plot:
+            pyplot.show()
+        else:
+            pyplot.clf()
+
+        # assert
+        delta = delta_18O['PicciottoEtAl1960']
+        monotonic = (np.diff(delta) > 0).all()
+        assert monotonic
+        assert -37 < in_unit(delta[0], PER_MILLE) < -36
+        assert -11 < in_unit(delta[-1], PER_MILLE) < -10

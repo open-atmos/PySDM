@@ -29,7 +29,7 @@ from . import (
     hygroscopicity,
     impl,
     isotope_equilibrium_fractionation_factors,
-    isotope_meteoric_water_line_excess,
+    isotope_meteoric_water_line,
     isotope_ratio_evolution,
     isotope_diffusivity_ratios,
     isotope_relaxation_timescale,

@@ -178,7 +178,7 @@
   },
   "https://doi.org/10.3402/tellusa.v16i4.8993": {
     "usages": [
-      "PySDM/physics/isotope_meteoric_water_line_excess/dansgaard_1964.py"
+      "PySDM/physics/isotope_meteoric_water_line/dansgaard_1964.py"
     ],
     "label": "Dansgaard 1964 (Tellus A 16)",
     "title": "Stable isotopes in precipitation"
@@ -481,7 +481,7 @@
   "https://doi.org/10.1002/rcm.3180": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/isotope_meteoric_water_line_excess/barkan_and_luz_2007.py"
+      "PySDM/physics/isotope_meteoric_water_line/barkan_and_luz_2007.py"
     ],
     "label": "Barkan & Luz 2007 (Rapid Commun. Mass Spectrom. 21)",
     "title": "Diffusivity fractionations of H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>17</sup>O and H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>18</sup>O in air and their implications for isotope hydrology"
@@ -616,7 +616,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
-      "tests/unit_tests/physics/test_isotope_meteoric_water_line_excess.py",
+      "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
     "label": "Craig 1961 (Science 133)",

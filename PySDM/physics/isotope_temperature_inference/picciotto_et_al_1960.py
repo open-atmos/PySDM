@@ -12,5 +12,5 @@ class PicciottoEtAl1960:  # pylint: disable=too-few-public-methods
         return const.T0 + (-delta_18O - const.PICCIOTTO_18O_B) / const.PICCIOTTO_18O_A
 
     @staticmethod
-    def temperature_from_delta_deuterium(const, delta_180):
-        return const.PICCIOTTO_180_TO_DEUTERIUM_A * delta_180 - const.PICCIOTTO_180_TO_DEUTERIUM_B
+    def temperature_from_delta_2H(const, delta_2H):
+        return const.T0 + (-delta_2H - const.PICCIOTTO_2H_B) / const.PICCIOTTO_2H_A
