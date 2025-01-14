@@ -62,7 +62,7 @@ class TestFig4:
         np.testing.assert_approx_equal(
             actual=notebook_local_variables[
                 "formulae"
-            ].isotope_meteoric_water_line_excess.excess_17O(
+            ].isotope_meteoric_water_line.excess_17O(
                 deltas_per_rh[RH]["17O"][index], deltas_per_rh[RH]["18O"][index]
             ),
             desired=excess_17O,
