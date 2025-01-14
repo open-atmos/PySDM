@@ -144,8 +144,8 @@ class TestIsotopeMeteoricWaterLine:
                 label=paper,
             )
 
-        pyplot.xlabel("$\delta$ $^2$H [%]")
-        pyplot.ylabel("$\delta$ $^{18}$O [‰]")
+        pyplot.xlabel(r"$\delta$ $^2$H [%]")
+        pyplot.ylabel(r"$\delta$ $^{18}$O [‰]")
 
         pyplot.grid(color="k")
         pyplot.legend()
