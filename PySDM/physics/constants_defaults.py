@@ -438,3 +438,22 @@ for the falling drop evaporation timescale of equilibration with ambient air voi
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).
 """
+
+PICCIOTTO_18O_A = -0.9 * PER_MILLE / si.K
+""" linear fit coefficients from [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)
+for atmospheric temperature inference from water isotopic composition
+(note that the sign of A coefficient is opposite to match the paper plot - typo in the paper?) """
+PICCIOTTO_18O_B = 6.4 * PER_MILLE
+"""〃"""
+PICCIOTTO_2H_A = -0.8 * PER_CENT / si.K
+"""〃"""
+PICCIOTTO_2H_B = 8 * PER_CENT
+"""〃"""
+
+PICCIOTTO_18O_TO_2H_SLOPE_COEFF = 0.8 * PER_CENT / PER_MILLE
+""" [hydro]meteoric water line [Picciotto et al. 1960](https://doi.org/10.1038/187857a0) coeffs
+(note that the delta-2H and delta-18O are swapped to match the paper plot - typo in the paper?)
+(note that the sign of INTERCEPT is opposite to match the paper plot - typo in the paper?)
+"""
+PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF = -1.8 * PER_CENT
+"""〃"""
