@@ -105,24 +105,24 @@ class FreezingMethods(BackendMethods):
             cell,
             a_w_ice,
             temperature,
-            relative_humidity,
+            relative_humidity_ice,
             record_freezing_temperature,
             freezing_temperature,
             thaw,
         ):
-
+            
             n_sd = len(attributes.water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 cell_id = cell[i]
-                relative_humidity_ice = relative_humidity[cell_id] / a_w_ice[cell_id]
+                #relative_humidity_ice = relative_humidity[cell_id] / a_w_ice[cell_id]
                 if thaw and frozen_and_above_freezing_point(
                     attributes.water_mass[i], temperature[cell_id]
                 ):
                     _thaw(attributes.water_mass, i)
                 elif unfrozen_and_ice_saturated(
-                    attributes.water_mass[i], relative_humidity_ice
+                    attributes.water_mass[i], relative_humidity_ice[cell_id]
                 ):
-                    d_a_w_ice = (relative_humidity_ice - 1) * a_w_ice[cell_id]
+                    d_a_w_ice = (relative_humidity_ice[cell_id] - 1) * a_w_ice[cell_id]
                     rate = j_hom(temperature, d_a_w_ice)
                     # TODO #594: this assumes constant T throughout timestep, can we do better?
                     prob = 1 - np.exp(  # TODO #599: common code for Poissonian prob
@@ -195,7 +195,7 @@ class FreezingMethods(BackendMethods):
         cell,
         a_w_ice,
         temperature,
-        relative_humidity,
+        relative_humidity_ice,
         record_freezing_temperature,
         freezing_temperature,
         thaw: bool
@@ -210,7 +210,7 @@ class FreezingMethods(BackendMethods):
             cell.data,
             a_w_ice.data,
             temperature.data,
-            relative_humidity.data,
+            relative_humidity_ice.data,
             record_freezing_temperature=record_freezing_temperature,
             freezing_temperature=(
                 freezing_temperature.data if record_freezing_temperature else None

@@ -1,5 +1,5 @@
 """
-immersion freezing using either singular or time-dependent formulation
+homogeneous freezing and heterogeneous freezing (singular and time-dependent immersion freezing)
 """
 
 from PySDM.backends.impl_common.freezing_attributes import (
@@ -100,31 +100,27 @@ class Freezing:
 
 
         if self.homogeneous_freezing:
-
-
-            if self.singular:
-                pass
-            else:
-                self.rand.urand(self.rng)
-                self.particulator.backend.freeze_time_dependent_homogeneous(
-                    rand=self.rand,
-                    attributes=TimeDependentHomogeneousAttributes(
-                    volume=self.particulator.attributes["volume"],
-                    water_mass=self.particulator.attributes["water mass"],
-                    ),
-                    timestep=self.particulator.dt,
-                    cell=self.particulator.attributes["cell id"],
-                    a_w_ice=self.particulator.environment["a_w_ice"],
-                    temperature=self.particulator.environment["T"],
-                    relative_humidity=self.particulator.environment["RH"],
-                    record_freezing_temperature=self.record_freezing_temperature,
-                    freezing_temperature=(
-                        self.particulator.attributes["freezing temperature"]
-                        if self.record_freezing_temperature
-                        else None
-                    ),
-                    thaw=self.thaw,
-                )
+        
+            self.rand.urand(self.rng)
+            self.particulator.backend.freeze_time_dependent_homogeneous(
+                rand=self.rand,
+                attributes=TimeDependentHomogeneousAttributes(
+                volume=self.particulator.attributes["volume"],
+                water_mass=self.particulator.attributes["water mass"],
+                ),
+                timestep=self.particulator.dt,
+                cell=self.particulator.attributes["cell id"],
+                a_w_ice=self.particulator.environment["a_w_ice"],
+                temperature=self.particulator.environment["T"],
+                relative_humidity_ice=self.particulator.environment["RH_ice"],
+                record_freezing_temperature=self.record_freezing_temperature,
+                freezing_temperature=(
+                    self.particulator.attributes["freezing temperature"]
+                    if self.record_freezing_temperature
+                    else None
+                ),
+                thaw=self.thaw,
+            )
 
             
 

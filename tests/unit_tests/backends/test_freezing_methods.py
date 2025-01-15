@@ -286,14 +286,10 @@ class TestFreezingMethods:
                 "multiplicity": np.full(n_sd, int(case["N"])),
                 "water mass": np.full(n_sd, initial_water_mass),
             }
-            particulator = builder.build(attributes=attributes, products=products)
-
-           
+            particulator = builder.build(attributes=attributes, products=products)  
             pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(T)
             pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(T)
-            vapour_pressure = RHi * pvs_ice
-            RH = vapour_pressure / pvs_water
-            particulator.environment["RH"] = RH
+            particulator.environment["RH_ice"] = RHi
             particulator.environment["a_w_ice"] = pvs_ice / pvs_water
             particulator.environment["T"] = T
 
