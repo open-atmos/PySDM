@@ -11,3 +11,8 @@ class MiyakeEtAl1968:  # pylint: disable=too-few-public-methods
         return (radius**2 * alpha * const.rho_w * const.R_str * temperature) / (
             3 * e_s * D * M * vent_coeff
         )
+
+    @staticmethod
+    # pylint: disable=too-many-arguments
+    def tau_less_arguments(const, radius, r_dr_dt, alpha):
+        return -(radius**2) / 3 / r_dr_dt * alpha
