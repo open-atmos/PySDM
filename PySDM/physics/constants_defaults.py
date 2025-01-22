@@ -194,8 +194,8 @@ p_tri = 611.657 * si.pascal
 [Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94) """
 T_tri = 273.16 * si.kelvin
 """ 〃 """
-L_tri = 45051 * si.joule / si.mol
-""" 〃 """
+
+l_tri = 2.5e6 * si.joule / si.kilogram
 
 l_l19_a = 0.167 * si.dimensionless
 """ [Seinfeld and Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
@@ -684,5 +684,3 @@ def compute_derived_values(c: dict):
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
-
-    c["l_tri"] = c["L_tri"] / c["Mv"]  # 2.5e6 * si.joule / si.kilogram
