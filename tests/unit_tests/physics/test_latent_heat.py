@@ -13,7 +13,7 @@ def test_latent_heats(plot=False):
     const = Formulae().constants
     temperature = np.linspace(-20, 20) + const.T_tri
     # Plot
-    pyplot.axhline(formulae.l_tri, label="triple point", color="red")
+    pyplot.axhline(const.l_tri, label="triple point", color="red")
     pyplot.axvline(const.T_tri, color="red")
     for key, val in formulae.items():
         for name, func in inspect.getmembers(val.latent_heat):
