@@ -707,7 +707,7 @@
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
   },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
-    "usages": ["PySDM/physics/constants_defaults.py"],
+    "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
   },
