@@ -6,6 +6,7 @@ Unless, there is a very specific and sound reason, everything here should
 """
 
 import numpy as np
+from chempy import Substance
 from scipy import constants as sci
 
 from .constants import (  # pylint: disable=unused-import
