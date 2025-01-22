@@ -17,13 +17,13 @@ class TestDropGrowth:
         with DimensionalAnalysis():
             # arrange
             formulae = Formulae(drop_growth=paper)
-
+            const = formulae.constants
             # act
             r_dr_dt = formulae.drop_growth.r_dr_dt(
                 RH_eq=1,
                 T=constants_defaults.T_tri,
                 RH=1.05,
-                lv=constants_defaults.l_tri,
+                lv=const.l_tri,
                 pvs=constants_defaults.p_tri,
                 D=constants_defaults.D0,
                 K=constants_defaults.K0,
@@ -48,7 +48,7 @@ class TestDropGrowth:
                 RH_eq=1,
                 T=temperatures,
                 RH=1.05,
-                lv=constants_defaults.l_tri,
+                lv=formulae[paper].constants.l_tri,
                 pvs=constants_defaults.p_tri,
                 D=constants_defaults.D0,
                 K=constants_defaults.K0,
