@@ -110,26 +110,22 @@ jobs:
         platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
-        include:
-          - platform: "windows-latest"
-            python-version: "3.12"
+        exclude:
+          - platform: "macos-14"
+            python-version: "3.9"
+          - test-suite: "devops_tests"
+            python-version: "3.9"
+          # TODO #1406
+          - platform: "macos-14"
+            test-suite: "smoke_tests/box"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_a"
+          - platform: "macos-14"
             test-suite: "smoke_tests/parcel_d"
-#        exclude:
-#          - platform: "macos-14"
-#            python-version: "3.9"
-#          - test-suite: "devops_tests"
-#            python-version: "3.9"
-#          # TODO #1406
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/box"
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/parcel_a"
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/parcel_d"
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/kinematic_2d"
-#          - platform: "macos-14"
-#            test-suite: "unit_tests/!(dynamics)"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/kinematic_2d"
+          - platform: "macos-14"
+            test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
