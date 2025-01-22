@@ -28,11 +28,14 @@ from .constants import (  # pylint: disable=unused-import
 )
 from .trivia import Trivia
 
-Md = 28.966 * si.g / si.mole
-"""
-A "twenty-first century" value of dry-air molar mass recommended in
-[Gatley et al. 2008](https://doi.org/10.1080/10789669.2008.10391032)
-"""
+# https://physics.nist.gov/cgi-bin/Star/compos.pl?matno=104
+# TODO #1507
+Md = (
+    0.755267 * Substance.from_formula("N2").mass * si.gram / si.mole
+    + 0.231781 * Substance.from_formula("O2").mass * si.gram / si.mole
+    + 0.012827 * Substance.from_formula("Ar").mass * si.gram / si.mole
+    + 0.000124 * Substance.from_formula("C").mass * si.gram / si.mole
+)
 
 VSMOW_R_2H = 155.76 * PPM
 """
@@ -617,6 +620,24 @@ isotopologue; in the paper timescale is calculated for tritium with assumption o
 in the environment around the drop (Table 1).
 """
 
+PICCIOTTO_18O_A = -0.9 * PER_MILLE / si.K
+""" linear fit coefficients from [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)
+for atmospheric temperature inference from water isotopic composition
+(note that the sign of A coefficient is opposite to match the paper plot - typo in the paper?) """
+PICCIOTTO_18O_B = 6.4 * PER_MILLE
+"""〃"""
+PICCIOTTO_2H_A = -0.8 * PER_CENT / si.K
+"""〃"""
+PICCIOTTO_2H_B = 8 * PER_CENT
+"""〃"""
+
+PICCIOTTO_18O_TO_2H_SLOPE_COEFF = 0.8 * PER_CENT / PER_MILLE
+""" [hydro]meteoric water line [Picciotto et al. 1960](https://doi.org/10.1038/187857a0) coeffs
+(note that the delta-2H and delta-18O are swapped to match the paper plot - typo in the paper?)
+(note that the sign of INTERCEPT is opposite to match the paper plot - typo in the paper?)
+"""
+PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF = -1.8 * PER_CENT
+"""〃"""
 
 def compute_derived_values(c: dict):
     """

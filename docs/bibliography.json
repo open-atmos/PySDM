@@ -187,7 +187,7 @@
   },
   "https://doi.org/10.3402/tellusa.v16i4.8993": {
     "usages": [
-      "PySDM/physics/isotope_meteoric_water_line_excess/dansgaard_1964.py"
+      "PySDM/physics/isotope_meteoric_water_line/dansgaard_1964.py"
     ],
     "label": "Dansgaard 1964 (Tellus A 16)",
     "title": "Stable isotopes in precipitation"
@@ -491,7 +491,7 @@
   "https://doi.org/10.1002/rcm.3180": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/isotope_meteoric_water_line_excess/barkan_and_luz_2007.py"
+      "PySDM/physics/isotope_meteoric_water_line/barkan_and_luz_2007.py"
     ],
     "label": "Barkan & Luz 2007 (Rapid Commun. Mass Spectrom. 21)",
     "title": "Diffusivity fractionations of H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>17</sup>O and H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>18</sup>O in air and their implications for isotope hydrology"
@@ -627,7 +627,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
-      "tests/unit_tests/physics/test_isotope_meteoric_water_line_excess.py",
+      "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
     "label": "Craig 1961 (Science 133)",
@@ -706,11 +706,6 @@
     "title": "Vapor Pressure Formulation for Water in Range 0 to 100 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
   },
-  "https://doi.org/10.1080/10789669.2008.10391032": {
-    "usages": ["PySDM/physics/constants_defaults.py"],
-    "title": "A Twenty-First Century Molar Mass for Dry Air",
-    "label": "Gatley et al. 2008 (HVAC&R Res. 14)"
-  },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
     "usages": ["PySDM/physics/constants_defaults.py"],
     "title": "A short course in clouds physics",
@@ -750,5 +745,15 @@
     "usages": ["PySDM/physics/constants_defaults.py"],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Seinfeld & Pandis 2006 (Wiley)"
+  },
+  "https://doi.org/10.1038/187857a0": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/isotope_temperature_inference/picciotto_et_al_1960.py",
+      "PySDM/physics/isotope_meteoric_water_line/picciotto_et_al_1960.py",
+      "tests/unit_tests/physics/test_isotope_temperature_inference.py"
+    ],
+    "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
+    "label": "Picciotto et al. 1960 (Nature 187)"
   }
 }
