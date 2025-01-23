@@ -5,7 +5,7 @@ from matplotlib import pyplot
 import numpy as np
 
 from PySDM.formulae import _choices, Formulae
-from PySDM.physics import drop_growth, constants_defaults, si, in_unit
+from PySDM.physics import drop_growth, si, in_unit
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
@@ -18,15 +18,16 @@ class TestDropGrowth:
             # arrange
             formulae = Formulae(drop_growth=paper)
             const = formulae.constants
+
             # act
             r_dr_dt = formulae.drop_growth.r_dr_dt(
                 RH_eq=1,
-                T=constants_defaults.T_tri,
+                T=const.T_tri,
                 RH=1.05,
                 lv=const.l_tri,
-                pvs=constants_defaults.p_tri,
-                D=constants_defaults.D0,
-                K=constants_defaults.K0,
+                pvs=const.p_tri,
+                D=const.D0,
+                K=const.K0,
                 ventilation_factor=1,
             )
 
@@ -49,9 +50,9 @@ class TestDropGrowth:
                 T=temperatures,
                 RH=1.05,
                 lv=formulae[paper].constants.l_tri,
-                pvs=constants_defaults.p_tri,
-                D=constants_defaults.D0,
-                K=constants_defaults.K0,
+                pvs=formulae[paper].constants.p_tri,
+                D=formulae[paper].constants.D0,
+                K=formulae[paper].constants.K0,
                 ventilation_factor=1,
             )
             for paper in papers

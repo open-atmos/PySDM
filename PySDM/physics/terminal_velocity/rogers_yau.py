@@ -1,5 +1,6 @@
 """
-Rogers & Yau "A short course in cloud physics" (equations: 8.5, 8.6, 8.8)
+equations 8.5, 8.6, 8.8 in
+[Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2)
 """
 
 import numpy as np
