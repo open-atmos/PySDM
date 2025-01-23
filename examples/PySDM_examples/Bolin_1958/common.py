@@ -1,3 +1,6 @@
+from functools import partial
+
+
 def r_dr_dt_fun(*, formulae, v_term, radii, temperature, K):
 
     pvs = formulae.saturation_vapour_pressure.pvs_water(temperature)
@@ -26,11 +29,9 @@ def r_dr_dt_fun(*, formulae, v_term, radii, temperature, K):
         sqrt_re_times_cbrt_sc=sqrt_re_times_cbrt_sc
     )
 
-    return formulae.drop_growth.r_dr_dt(
-        RH_eq=1,
+    return partial(
+        formulae.drop_growth.r_dr_dt,
         T=temperature,
-        RH=0,
-        lv=0,
         pvs=pvs,
         D=D,
         K=K,
