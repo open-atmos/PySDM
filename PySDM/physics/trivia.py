@@ -137,3 +137,11 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def sqrt_re_times_cbrt_sc(const, Re, Sc):
         return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)
+
+    @staticmethod
+    def K2C(const, TK):
+        return TK - const.T0
+
+    @staticmethod
+    def C2K(const, TC):
+        return TC + const.T0

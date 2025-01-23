@@ -5,7 +5,8 @@ from matplotlib import pyplot
 import numpy as np
 
 from PySDM.formulae import _choices, Formulae
-from PySDM.physics import drop_growth, si, in_unit
+from PySDM.physics import drop_growth
+from PySDM.physics.constants import PER_CENT, si, in_unit
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
@@ -39,7 +40,7 @@ class TestDropGrowth:
         """checks the relative difference between Mason's 1951 and 1971 formulae
         for a range of temperatures"""
         # arrange
-        temperatures = constants_defaults.T0 + np.linspace(-10, 40) * si.K
+        temperatures = Formulae().trivia.C2K(np.linspace(-10, 40) * si.K)
         papers = ("Mason1951", "Mason1971")
 
         # act
@@ -60,7 +61,7 @@ class TestDropGrowth:
         relative_error = r_dr_dt["Mason1971"] / r_dr_dt["Mason1951"] - 1
 
         # plot
-        pyplot.plot(temperatures, in_unit(relative_error, constants_defaults.PER_CENT))
+        pyplot.plot(temperatures, in_unit(relative_error, PER_CENT))
         pyplot.title("")
         pyplot.xlabel("temperature [K]")
         pyplot.ylabel("r dr/dt relative difference (1971 vs. 1951) [%]")
