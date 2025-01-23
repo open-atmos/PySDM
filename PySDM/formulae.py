@@ -56,6 +56,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         terminal_velocity: str = "GunnKinzer1949",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
         bulk_phase_partitioning: str = "Null",
+        ccn_activation_spectrum: str = "Null",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -88,7 +89,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
         self.bulk_phase_partitioning = bulk_phase_partitioning
-
+        self.ccn_activation_spectrum = ccn_activation_spectrum
+        
         self._components = tuple(
             i
             for i in dir(self)

@@ -46,5 +46,6 @@ from . import (
     air_dynamic_viscosity,
     terminal_velocity,
     bulk_phase_partitioning,
+    ccn_activation_spectrum,
 )
 from .constants import convert_to, in_unit, si

@@ -437,3 +437,5 @@ for the falling drop evaporation timescale of equilibration with ambient air voi
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).
 """
+TWOMEY_K = np.nan
+TWOMEY_N0 = np.nan
