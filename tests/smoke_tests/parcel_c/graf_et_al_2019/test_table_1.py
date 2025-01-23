@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from PySDM_examples.utils import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Graf_et_al_2019
 
 from PySDM.physics.constants import PER_MILLE

@@ -1,6 +1,6 @@
 # Introduction
 
-<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
+<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
 
 PySDM examples are engineered as Jupyter Python notebooks supported by auxiliary Python commons
   that constitute a separate <mark>PySDM-examples</mark> Python package which is also
