@@ -1,6 +1,6 @@
 """
 polynomial fits from
-[Lowe et al. 1977](https://doi.org/10.1175/1520-0450(1977)016<0100:AAPFTC>2.0.CO;2)
+[Lowe et al. 1977](https://doi.org/10.1175/1520-0450(1977)016%3C0100:AAPFTC%3E2.0.CO;2)
 """
 
 

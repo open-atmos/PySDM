@@ -94,10 +94,10 @@ class TestFormulae:
     @pytest.mark.parametrize("arg", ("Dansgaard1964+BarkanAndLuz2007", "Dansgaard1964"))
     def test_plus_separated_ctor_arg(arg):
         # arrange
-        sut = formulae.Formulae(isotope_meteoric_water_line_excess=arg)
+        sut = formulae.Formulae(isotope_meteoric_water_line=arg)
 
         # act
-        class_name = sut.isotope_meteoric_water_line_excess.__name__
+        class_name = sut.isotope_meteoric_water_line.__name__
 
         # assert
         assert class_name == arg

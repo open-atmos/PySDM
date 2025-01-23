@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from PySDM_examples.utils.notebook_vars import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Lamb_et_al_2017
 
 PLOT = False
