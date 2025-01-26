@@ -7,7 +7,7 @@ def r_dr_dt_fun(*, formulae, v_term, radii, temperature, K):
     eta_air = formulae.air_dynamic_viscosity.eta_air(temperature)
     const = formulae.constants
     pressure = const.p_STP
-    D = formulae.diffusion_thermics.D(T=temperature, p=const.p_STP)
+    D = formulae.diffusion_thermics.D(T=temperature, p=pressure)
 
     air_density = pressure / const.Rd / temperature
 
