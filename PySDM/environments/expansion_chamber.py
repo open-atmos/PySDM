@@ -2,137 +2,90 @@
 Zero-dimensional expansion chamber framework
 """
 
-import numpy as np
+from typing import Optional, List
 
-from PySDM.environments.impl.moist import Moist
+from PySDM.environments.impl.moist_lagrangian import MoistLagrangian
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.equilibrate_wet_radii import (
-    default_rtol,
-    equilibrate_wet_radii,
-)
 from PySDM.environments.impl import register_environment
 
 
 @register_environment()
-class ExpansionChamber(Moist):
+class ExpansionChamber(MoistLagrangian):
     def __init__(
         self,
         *,
         dt,
         volume: float,
-        p0: float,
-        T0: float,
-        initial_water_vapour_mixing_ratio: float,
-        pf: float,
-        tf: float,
-        variables,
+        initial_pressure: float,
+        initial_temperature: float,
+        initial_relative_humidity: float,
+        delta_pressure: float,
+        delta_temperature: float,
+        delta_time: float,
+        variables: Optional[List[str]] = None,
         mixed_phase=False,
     ):
+        variables = (variables or []) + ["rhod"]
+
         super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
-        self.volume = volume
-        self.p0 = p0
-        self.T0 = T0
-        self.initial_water_vapour_mixing_ratio = initial_water_vapour_mixing_ratio
-        self.pf = pf
-        self.tf = tf
-
-        self.formulae = None
-        self.delta_liquid_water_mixing_ratio = np.nan
-        self.params = None
+        self.dv = volume
+        self.initial_pressure = initial_pressure
+        self.initial_temperature = initial_temperature
+        self.initial_relative_humidity = initial_relative_humidity
+        self.delta_time = delta_time
+        self.dp_dt = delta_pressure / delta_time
+        self.dT_dt = delta_temperature / delta_time
 
     def register(self, builder):
-        self.formulae = builder.particulator.formulae
-        pd0 = self.formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
-        rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-        self.mesh.dv = self.volume
+        self.mesh.dv = self.dv
 
-        Moist.register(self, builder)
+        super().register(builder)
 
-        params = (self.p0, self.T0, self.initial_water_vapour_mixing_ratio, 0)
-        self["p"][:] = params[0]
-        self["T"][:] = params[1]
-        self["water_vapour_mixing_ratio"][:] = params[2]
-        self["t"][:] = params[3]
-
-        self._tmp["water_vapour_mixing_ratio"][:] = params[0]
-        self.sync_chamber_vars()
-        Moist.sync(self)
-        self.notify()
-
-    def init_attributes(
-        self,
-        *,
-        n_in_dv: [float, np.ndarray],
-        kappa: float,
-        r_dry: [float, np.ndarray],
-        rtol=default_rtol,
-        include_dry_volume_in_attribute: bool = True,
-    ):
-        if not isinstance(n_in_dv, np.ndarray):
-            r_dry = np.array([r_dry])
-            n_in_dv = np.array([n_in_dv])
-
-        attributes = {}
-        dry_volume = self.formulae.trivia.volume(radius=r_dry)
-        attributes["kappa times dry volume"] = dry_volume * kappa
-        attributes["multiplicity"] = n_in_dv
-        r_wet = equilibrate_wet_radii(
-            r_dry=r_dry,
-            environment=self,
-            kappa_times_dry_volume=attributes["kappa times dry volume"],
-            rtol=rtol,
+        formulae = self.particulator.formulae
+        pv0 = (
+            self.initial_relative_humidity
+            * formulae.saturation_vapour_pressure.pvs_water(self.initial_temperature)
         )
-        attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
-        if include_dry_volume_in_attribute:
-            attributes["dry volume"] = dry_volume
-        return attributes
-
-    def formulae_drho_dp(const, p, T, water_vapour_mixing_ratio, lv, dql_dp):
-        R_q = const.Rv / (1 / water_vapour_mixing_ratio + 1) + const.Rd / (
-            1 + water_vapour_mixing_ratio
+        th_std = formulae.trivia.th_std(
+            p=self.initial_pressure, T=self.initial_temperature
         )
-        cp_q = const.c_pv / (1 / water_vapour_mixing_ratio + 1) + const.c_pd / (
-            1 + water_vapour_mixing_ratio
+        initial_water_vapour_mixing_ratio = (
+            formulae.constants.eps * pv0 / (self.initial_pressure - pv0)
         )
-        return -1 / R_q / T - p / R_q / T**2 * lv / cp_q * dql_dp
 
-    def advance_chamber_vars(self):
+        self["rhod"][:] = formulae.state_variable_triplet.rho_d(
+            p=self.initial_pressure,
+            water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
+            theta_std=th_std,
+        )
+        self["thd"][:] = formulae.state_variable_triplet.th_dry(
+            th_std, initial_water_vapour_mixing_ratio
+        )
+        self["water_vapour_mixing_ratio"][:] = initial_water_vapour_mixing_ratio
+
+        self.post_register()
+
+    def advance_moist_vars(self):
+        """compute new values of dry density and thd, and write them to self._tmp and self["thd"]
+        assuming water-vapour mixing ratio is not altered by the expansion"""
         dt = self.particulator.dt
-        T = self["T"][0]
-        p = self["p"][0]
-        t = self["t"][0]
+        t_new = (self.particulator.n_steps + 1) * dt
+        if t_new > self.delta_time:
+            return
 
-        dp_dt = (self.pf - self.p0) / (self.tf) * (self.dt / 2)  # mid-point
-        water_vapour_mixing_ratio = (
-            self["water_vapour_mixing_ratio"][0]
-            - self.delta_liquid_water_mixing_ratio / 2
-        )
+        formulae = self.particulator.formulae
+        p_new = self["p"][0] + self.dp_dt * dt
+        T_new = self["T"][0] + self.dT_dt * dt
+        wvmr_new = self._tmp["water_vapour_mixing_ratio"][
+            0
+        ]  # TODO #1492 - should _tmp or self[] be used?
+        pv_new = wvmr_new * p_new / (wvmr_new + formulae.constants.eps)
+        pd_new = p_new - pv_new
 
-        drho_dp = self.formulae_drho_dp(
-            p=p,
-            T=T,
-            water_vapour_mixing_ratio=water_vapour_mixing_ratio,
-            lv=self.formulae.latent_heat.lv(T),
-            dql_dp=self.delta_liquid_water_mixing_ratio / dt,
-        )
-        drhod_dp = drho_dp
+        self._tmp["rhod"][:] = pd_new / T_new / formulae.constants.Rd
+        self["thd"][:] = formulae.trivia.th_std(p=pd_new, T=T_new)
 
-        self.particulator.backend.explicit_euler(self._tmp["t"], dt, 1)
-        self.particulator.backend.explicit_euler(self._tmp["p"], dt, dp_dt)
-        self.particulator.backend.explicit_euler(
-            self._tmp["rhod"], dt, drhod_dp * dp_dt
-        )
-
-    def sync_chamber_vars(self):
-        self.delta_liquid_water_mixing_ratio = (
-            self._tmp["water_vapour_mixing_ratio"][0]
-            - self["water_vapour_mixing_ratio"][0]
-        )
+    def sync_moist_vars(self):
         for var in self.variables:
             self._tmp[var][:] = self[var][:]
-
-    def sync(self):
-        self.sync_chamber_vars()
-        self.advance_chamber_vars()
-        super().sync()

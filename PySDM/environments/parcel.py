@@ -6,7 +6,7 @@ from typing import List, Optional
 
 import numpy as np
 
-from PySDM.environments.impl.moist import Moist
+from PySDM.environments.impl.moist_lagrangian import MoistLagrangian
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import (
     default_rtol,
@@ -16,7 +16,7 @@ from PySDM.environments.impl import register_environment
 
 
 @register_environment()
-class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
+class Parcel(MoistLagrangian):  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
@@ -60,7 +60,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             rhod0, self.mass_of_dry_air
         )
 
-        Moist.register(self, builder)
+        super().register(builder)
 
         params = (
             self.initial_water_vapour_mixing_ratio,
@@ -74,11 +74,9 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self["rhod"][:] = params[2]
         self["z"][:] = params[3]
         self["t"][:] = params[4]
-
         self._tmp["water_vapour_mixing_ratio"][:] = params[0]
-        self.sync_parcel_vars()
-        Moist.sync(self)
-        self.notify()
+
+        self.post_register()
 
     def init_attributes(
         self,
@@ -108,7 +106,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             attributes["dry volume"] = dry_volume
         return attributes
 
-    def advance_parcel_vars(self):
+    def advance_moist_vars(self):
         dt = self.particulator.dt
         T = self["T"][0]
         p = self["p"][0]
@@ -143,21 +141,10 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             (self._tmp["rhod"][0] + self["rhod"][0]) / 2, self.mass_of_dry_air
         )
 
-    def get_thd(self):
-        return self["thd"]
-
-    def get_water_vapour_mixing_ratio(self):
-        return self["water_vapour_mixing_ratio"]
-
-    def sync_parcel_vars(self):
+    def sync_moist_vars(self):
         self.delta_liquid_water_mixing_ratio = (
             self._tmp["water_vapour_mixing_ratio"][0]
             - self["water_vapour_mixing_ratio"][0]
         )
         for var in self.variables:
             self._tmp[var][:] = self[var][:]
-
-    def sync(self):
-        self.sync_parcel_vars()
-        self.advance_parcel_vars()
-        super().sync()
