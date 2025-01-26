@@ -52,16 +52,20 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         formulae = builder.particulator.formulae
         pd0 = formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
         rhod0 = formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-        self.mesh.dv = formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
+        self.mesh.dv = formulae.trivia.volume_of_density_mass(
+            rhod0, self.mass_of_dry_air
+        )
 
         Moist.register(self, builder)
 
-        self["water_vapour_mixing_ratio"][:] =  self.initial_water_vapour_mixing_ratio
+        self["water_vapour_mixing_ratio"][:] = self.initial_water_vapour_mixing_ratio
         self["thd"][:] = formulae.trivia.th_std(pd0, self.T0)
         self["rhod"][:] = rhod0
         self["z"][:] = self.z0
 
-        self._tmp["water_vapour_mixing_ratio"][:] = self.initial_water_vapour_mixing_ratio
+        self._tmp["water_vapour_mixing_ratio"][
+            :
+        ] = self.initial_water_vapour_mixing_ratio
         self.sync_parcel_vars()
         Moist.sync(self)
         self.notify()
@@ -95,13 +99,15 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         return attributes
 
     def advance_parcel_vars(self):
-        """ compute new values of time, displacement, dry density and volume
-         and write them to self._tmp and self.mesh.dv """
+        """compute new values of time, displacement, dry density and volume
+        and write them to self._tmp and self.mesh.dv"""
         formulae = self.particulator.formulae
         T = self["T"][0]
         p = self["p"][0]
 
-        dz_dt = self.w((self.particulator.n_steps + 1 / 2) * self.particulator.dt)  # "mid-point"
+        dz_dt = self.w(
+            (self.particulator.n_steps + 1 / 2) * self.particulator.dt
+        )  # "mid-point"
         water_vapour_mixing_ratio = (
             self["water_vapour_mixing_ratio"][0]
             - self.delta_liquid_water_mixing_ratio / 2
@@ -120,7 +126,9 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         )
         drhod_dz = drho_dz  # TODO #407
 
-        self.particulator.backend.explicit_euler(self._tmp["z"], self.particulator.dt, dz_dt)
+        self.particulator.backend.explicit_euler(
+            self._tmp["z"], self.particulator.dt, dz_dt
+        )
         self.particulator.backend.explicit_euler(
             self._tmp["rhod"], self.particulator.dt, dz_dt * drhod_dz
         )
