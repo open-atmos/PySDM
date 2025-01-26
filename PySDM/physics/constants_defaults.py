@@ -190,7 +190,7 @@ p_tri = 611.657 * si.pascal
 [Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94) """
 T_tri = 273.16 * si.kelvin
 """ 〃 """
-L_tri = 45051 * si.joule / si.mol
+L_tri = 45051.0 * si.joule / si.mol
 """ 〃 """
 
 l_l19_a = 0.167 * si.dimensionless
