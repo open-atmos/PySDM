@@ -650,7 +650,7 @@ def compute_derived_values(c: dict):
 
     c["Mv"] = (
         (
-            1
+            1.0
             - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
             - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
