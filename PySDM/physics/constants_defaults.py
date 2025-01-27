@@ -190,7 +190,7 @@ p_tri = 611.657 * si.pascal
 [Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94) """
 T_tri = 273.16 * si.kelvin
 """ 〃 """
-L1_tri = 45051.0 * si.joule / si.mol
+L_tri = 45051.0 * si.joule / si.mol
 """ 〃 """
 
 l_l19_a = 0.167 * si.dimensionless
@@ -657,16 +657,16 @@ def compute_derived_values(c: dict):
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         )
         * (c["M_1H"] * 2 + c["M_16O"])
-        + 2
+        + 2.0
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
         * (c["M_2H"] + c["M_1H"] + c["M_16O"])
-        + 2
+        + 2.0
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
         * (c["M_3H"] + c["M_1H"] + c["M_16O"])
-        + 1
+        + 1.0
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
         * (c["M_1H"] * 2 + c["M_17O"])
-        + 1
+        + 1.0
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         * (c["M_1H"] * 2 + c["M_18O"])
     )
@@ -681,4 +681,4 @@ def compute_derived_values(c: dict):
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
 
-    c["l_tri"] = c["L1_tri"] / c["Mv"]  # 2.5e6 * si.joule / si.kilogram
+    c["l_tri"] = c["L_tri"] / c["Mv"]  # 2.5e6 * si.joule / si.kilogram
