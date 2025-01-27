@@ -77,6 +77,8 @@ setup(
             "matplotlib",
             "pytest",
             "pytest-timeout",
+            "PySDM-examples",
+            "open-atmos-jupyter-utils>=v1.2.0",
         ]
         + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
         + (

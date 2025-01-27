@@ -67,7 +67,7 @@ def check_urls(urls_from_json):
                 r"\b(https://doi\.org/10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>^\\])\S)+)\b",
                 r"\b(https://digitallibrary\.un\.org/record/(?:[0-9])+)\b",
                 r"\b(http://mi\.mathnet\.ru/dan(?:[0-9])+)\b",
-                r"\b(https://archive.org/details/(?:[0-9a-z])+)\b",
+                r"\b(https://archive.org/details/(?:[0-9a-z_\.-])+)\b",
             ):
                 urls = re.findall(pattern, text)
                 if urls:
@@ -82,12 +82,14 @@ def check_urls(urls_from_json):
         assert url in unique_urls_found, f"{url} not referenced in the code"
 
     url_usages_found = {
-        url: sorted([path for path, d in found_urls if d == url])
+        url: sorted({path for path, d in found_urls if d == url})
         for url in unique_urls_found
     }
     for url in unique_urls_read:
-        assert url_usages_found[url] == sorted(urls_from_json[url]["usages"]), (
-            f"{url} usages mismatch:\n"
+        assert set(url_usages_found[url]) == set(
+            sorted(urls_from_json[url]["usages"])
+        ), (
+            f"{url} usages mismatch (please fix docs/bibliography.json):\n"
             f"\texpected: {url_usages_found[url]}\n"
             f"\tactual:   {urls_from_json[url]['usages']}"
         )
