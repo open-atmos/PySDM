@@ -99,8 +99,8 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         return attributes
 
     def advance_parcel_vars(self):
-        """compute new values of time, displacement, dry density and volume
-        and write them to self._tmp and self.mesh.dv"""
+        """compute new values of displacement, dry-air density and volume,
+        and write them to self._tmp and self.mesh.dv """
         formulae = self.particulator.formulae
         T = self["T"][0]
         p = self["p"][0]
