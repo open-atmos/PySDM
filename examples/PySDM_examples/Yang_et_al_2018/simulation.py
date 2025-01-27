@@ -89,6 +89,7 @@ class Simulation:
         volume = _sp.attributes["volume"].to_ndarray()
         output["r"].append(self.formulae.trivia.radius(volume=volume))
         output["S"].append(_sp.environment["RH"][cell_id] - 1)
+        output["t"].append(_sp.products["t"].get())
         for key in ("water_vapour_mixing_ratio", "T", "z"):
             output[key].append(_sp.environment[key][cell_id])
         for key in (
@@ -97,7 +98,6 @@ class Simulation:
             "ripening rate",
             "r_mean_gt_1_um",
             "r_act",
-            "t",
         ):
             output[key].append(_sp.products[key].get()[cell_id].copy())
 
