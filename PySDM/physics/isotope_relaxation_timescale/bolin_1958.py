@@ -12,12 +12,12 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     # pylint: disable=too-many-arguments
-    def tau(const, radius, r_dr_dt, alpha):
+    def tau_of_rdrdt(const, radius, r_dr_dt, alpha):
         """timescale for evaporation of a falling drop with tritium"""
         return -(radius**2) / 3 / r_dr_dt / const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
 
     @staticmethod
-    def tau_of_rdrdt(const, radius, r_dr_dt, alpha, R_liq, rho_v):
+    def tau(const, radius, r_dr_dt, alpha, R_liq, rho_v):
         """timescale for evaporation of a falling drop with tritium"""
         bolin_coeff_c1 = R_liq * const.rho_w / alpha / rho_v
         return -(radius**2) / 3 / r_dr_dt / bolin_coeff_c1
