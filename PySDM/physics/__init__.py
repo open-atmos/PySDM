@@ -48,5 +48,6 @@ from . import (
     air_dynamic_viscosity,
     terminal_velocity,
     bulk_phase_partitioning,
+    adiabatic_exponent,
 )
 from .constants import convert_to, in_unit, si

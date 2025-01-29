@@ -74,9 +74,11 @@ class ExpansionChamber(MoistLagrangian):
 
         formulae = self.particulator.formulae
         p_new = self["p"][0] + self.dp_dt * dt
-        T_new = self.initial_temperature * (self.initial_pressure / p_new) ** (
-            -2 / 7
-        )  # adiabatic condition
+        qv = self["water_vapour_mixing_ratio"][0]
+        gg = (
+            1 - formulae.adiabatic_exponent.gamma(qv)
+        ) / formulae.adiabatic_exponent.gamma(qv)
+        T_new = self.initial_temperature * (self.initial_pressure / p_new) ** gg
         wvmr_new = self._tmp["water_vapour_mixing_ratio"][
             0
         ]  # TODO #1492 - should _tmp or self[] be used?
