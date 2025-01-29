@@ -20,7 +20,6 @@ class ExpansionChamber(MoistLagrangian):
         initial_temperature: float,
         initial_relative_humidity: float,
         delta_pressure: float,
-        delta_temperature: float,
         delta_time: float,
         variables: Optional[List[str]] = None,
         mixed_phase=False,
@@ -35,7 +34,6 @@ class ExpansionChamber(MoistLagrangian):
         self.initial_relative_humidity = initial_relative_humidity
         self.delta_time = delta_time
         self.dp_dt = delta_pressure / delta_time
-        self.dT_dt = delta_temperature / delta_time
 
     def register(self, builder):
         self.mesh.dv = self.dv
@@ -76,7 +74,9 @@ class ExpansionChamber(MoistLagrangian):
 
         formulae = self.particulator.formulae
         p_new = self["p"][0] + self.dp_dt * dt
-        T_new = self["T"][0] + self.dT_dt * dt
+        T_new = self.initial_temperature * (self.initial_pressure / p_new) ** (
+            -2 / 7
+        )  # adiabatic condition
         wvmr_new = self._tmp["water_vapour_mixing_ratio"][
             0
         ]  # TODO #1492 - should _tmp or self[] be used?

@@ -17,15 +17,14 @@ def run_expansion(
     n_sd_per_mode,
     RH0=0.7,
     T0=296 * si.K,
-    Tf=261 * si.K,
     p0=1000 * si.hPa,
     pf=500 * si.hPa,
-    t_lift=2 * si.s,
-    t_max=4 * si.s,
+    delta_time=2 * si.s,
+    total_time=4 * si.s,
     dt=0.1 * si.s,
-    dv=0.14 * si.m**3,
+    volume=0.14 * si.m**3,
 ):
-    n_steps = int(np.ceil(t_max / dt))
+    n_steps = int(np.ceil(total_time / dt))
     dry_radius_bin_edges = np.geomspace(50 * si.nm, 2000 * si.nm, 40, endpoint=False)
     wet_radius_bin_edges = np.geomspace(1 * si.um, 40 * si.um, 40, endpoint=False)
     products = (
@@ -60,10 +59,9 @@ def run_expansion(
         initial_pressure=p0,
         delta_pressure=pf - p0,
         initial_temperature=T0,
-        delta_temperature=Tf - T0,
         initial_relative_humidity=RH0,
-        delta_time=t_lift,
-        volume=dv,
+        delta_time=delta_time,
+        volume=volume,
     )
 
     n_sd = n_sd_per_mode * len(aerosol.modes)
