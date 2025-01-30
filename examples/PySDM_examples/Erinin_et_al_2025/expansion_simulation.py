@@ -19,6 +19,7 @@ def run_expansion(
     formulae,
     aerosol,
     n_sd_per_mode,
+    n_sd_homo_liq_nucleation=100,
     RH0=0.7,
     T0=296 * si.K,
     p0=1000 * si.hPa,
@@ -68,7 +69,7 @@ def run_expansion(
         volume=volume,
     )
 
-    n_sd = n_sd_per_mode * len(aerosol.modes)
+    n_sd = n_sd_per_mode * len(aerosol.modes) + n_sd_homo_liq_nucleation
 
     builder = Builder(
         backend=CPU(formulae, override_jit_flags={"parallel": False}),
@@ -103,7 +104,18 @@ def run_expansion(
     )
     attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet)
 
-    particulator = builder.build(attributes, products=products)
+    particulator = builder.build(
+        attributes={
+            k: np.pad(
+                array=v,
+                pad_width=(0, n_sd_homo_liq_nucleation),
+                mode="constant",
+                constant_values=np.nan if k == "multiplicity" else 0,
+            )
+            for k, v in attributes.items()
+        },
+        products=products,
+    )
 
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {
