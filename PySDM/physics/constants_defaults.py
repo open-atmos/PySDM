@@ -94,6 +94,9 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
+k_B = sci.k * si.joule / si.kelvin
+""" Boltzmann constant (value from SciPy) """
+
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
