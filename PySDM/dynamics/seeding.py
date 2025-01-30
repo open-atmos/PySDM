@@ -8,10 +8,11 @@ import numpy as np
 
 from PySDM.dynamics.impl import register_dynamic
 from PySDM.initialisation import discretise_multiplicities
+from PySDM.dynamics.impl import SuperParticleSpawningDynamic
 
 
 @register_dynamic()
-class Seeding:
+class Seeding(SuperParticleSpawningDynamic):
     def __init__(
         self,
         *,
@@ -86,9 +87,9 @@ class Seeding:
                 # or if the number of super particles to inject
                 # is equal to the number of possible seeds
                 self.index.shuffle(self.u01)
-            self.particulator.seeding(
-                seeded_particle_index=self.index,
-                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
-                seeded_particle_multiplicity=self.seeded_particle_multiplicity,
-                seeded_particle_extensive_attributes=self.seeded_particle_extensive_attributes,
+            self.particulator.spawn(
+                spawned_particle_index=self.index,
+                number_of_super_particles_to_spawn=number_of_super_particles_to_inject,
+                spawned_particle_multiplicity=self.seeded_particle_multiplicity,
+                spawned_particle_extensive_attributes=self.seeded_particle_extensive_attributes,
             )
