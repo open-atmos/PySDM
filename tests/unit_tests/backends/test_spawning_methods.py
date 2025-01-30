@@ -11,7 +11,7 @@ from PySDM.backends import CPU
 from PySDM.physics import si
 
 
-class TestSeeding:
+class TestSpawningMethods:
     max_number_to_inject = 4
 
     @staticmethod
@@ -54,29 +54,31 @@ class TestSeeding:
             },
         )
 
-        seeded_particle_extensive_attributes = {
-            "water mass": [0.0001 * si.ng] * TestSeeding.max_number_to_inject,
+        spawned_particle_extensive_attributes = {
+            "water mass": [0.0001 * si.ng] * TestSpawningMethods.max_number_to_inject,
         }
-        seeded_particle_multiplicity = [1] * TestSeeding.max_number_to_inject
+        spawned_particle_multiplicity = [1] * TestSpawningMethods.max_number_to_inject
 
-        seeded_particle_index = particulator.Index.identity_index(
-            len(seeded_particle_multiplicity)
+        spawned_particle_index = particulator.Index.identity_index(
+            len(spawned_particle_multiplicity)
         )
-        seeded_particle_multiplicity = particulator.IndexedStorage.from_ndarray(
-            seeded_particle_index,
-            np.asarray(seeded_particle_multiplicity),
+        spawned_particle_multiplicity = particulator.IndexedStorage.from_ndarray(
+            spawned_particle_index,
+            np.asarray(spawned_particle_multiplicity),
         )
-        seeded_particle_extensive_attributes = particulator.IndexedStorage.from_ndarray(
-            seeded_particle_index,
-            np.asarray(list(seeded_particle_extensive_attributes.values())),
+        spawned_particle_extensive_attributes = (
+            particulator.IndexedStorage.from_ndarray(
+                spawned_particle_index,
+                np.asarray(list(spawned_particle_extensive_attributes.values())),
+            )
         )
 
         # act
         with context:
-            particulator.seeding(
-                seeded_particle_index=seeded_particle_index,
-                seeded_particle_multiplicity=seeded_particle_multiplicity,
-                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+            particulator.spawning(
+                spawned_particle_index=spawned_particle_index,
+                spawned_particle_multiplicity=spawned_particle_multiplicity,
+                spawned_particle_extensive_attributes=spawned_particle_extensive_attributes,
                 number_of_super_particles_to_inject=number_of_super_particles_to_inject,
             )
 
@@ -88,7 +90,7 @@ class TestSeeding:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "seeded_particle_index, context",
+        "spawned_particle_index, context",
         (
             ([0, 0, 0], nullcontext()),
             ([0, 1, 2], nullcontext()),
@@ -102,8 +104,8 @@ class TestSeeding:
             ),
         ),
     )
-    def test_seeded_particle_index_multiplicity_extensive_attributes(
-        seeded_particle_index,
+    def test_spawned_particle_index_multiplicity_extensive_attributes(
+        spawned_particle_index,
         context,
         n_sd=3,
         number_of_super_particles_to_inject=3,
@@ -117,42 +119,42 @@ class TestSeeding:
             },
         )
 
-        seeded_particle_extensive_attributes = {
+        spawned_particle_extensive_attributes = {
             "water mass": [0.0001, 0.0003, 0.0002],
         }
-        seeded_particle_multiplicity = [1, 2, 3]
+        spawned_particle_multiplicity = [1, 2, 3]
 
-        seeded_particle_index_impl = particulator.Index.from_ndarray(
-            np.asarray(seeded_particle_index)
+        spawned_particle_index_impl = particulator.Index.from_ndarray(
+            np.asarray(spawned_particle_index)
         )
-        seeded_particle_multiplicity_impl = particulator.IndexedStorage.from_ndarray(
-            seeded_particle_index_impl,
-            np.asarray(seeded_particle_multiplicity),
+        spawned_particle_multiplicity_impl = particulator.IndexedStorage.from_ndarray(
+            spawned_particle_index_impl,
+            np.asarray(spawned_particle_multiplicity),
         )
-        seeded_particle_extensive_attributes_impl = (
+        spawned_particle_extensive_attributes_impl = (
             particulator.IndexedStorage.from_ndarray(
-                seeded_particle_index_impl,
-                np.asarray(list(seeded_particle_extensive_attributes.values())),
+                spawned_particle_index_impl,
+                np.asarray(list(spawned_particle_extensive_attributes.values())),
             )
         )
 
         # act
         with context:
-            particulator.seeding(
-                seeded_particle_index=seeded_particle_index_impl,
-                seeded_particle_multiplicity=seeded_particle_multiplicity_impl,
-                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes_impl,
+            particulator.spawning(
+                spawned_particle_index=spawned_particle_index_impl,
+                spawned_particle_multiplicity=spawned_particle_multiplicity_impl,
+                spawned_particle_extensive_attributes=spawned_particle_extensive_attributes_impl,
                 number_of_super_particles_to_inject=number_of_super_particles_to_inject,
             )
 
             # assert
             np.testing.assert_array_equal(
                 particulator.attributes["multiplicity"].to_ndarray(),
-                np.asarray(seeded_particle_multiplicity)[seeded_particle_index],
+                np.asarray(spawned_particle_multiplicity)[spawned_particle_index],
             )
             np.testing.assert_array_equal(
                 particulator.attributes["water mass"].to_ndarray(),
-                np.asarray(seeded_particle_extensive_attributes["water mass"])[
-                    seeded_particle_index
+                np.asarray(spawned_particle_extensive_attributes["water mass"])[
+                    spawned_particle_index
                 ],
             )
