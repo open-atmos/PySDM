@@ -94,9 +94,6 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
-k_B = sci.k * si.joule / si.kelvin
-""" Boltzmann constant (value from SciPy) """
-
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
@@ -690,3 +687,5 @@ def compute_derived_values(c: dict):
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
+
+    c["k_B"] = c["R_str"] / c["N_A"]
