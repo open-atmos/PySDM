@@ -1,4 +1,4 @@
-""" Seeding backend tests of injection logic """
+""" Seeding backend tests of spawning logic """
 
 from contextlib import nullcontext
 
@@ -12,35 +12,35 @@ from PySDM.physics import si
 
 
 class TestSpawningMethods:
-    max_number_to_inject = 4
+    max_number_to_spawn = 4
 
     @staticmethod
     @pytest.mark.parametrize(
-        "n_sd, number_of_super_particles_to_inject, context",
+        "n_sd, number_of_super_particles_to_spawn, context",
         (
             (1, 1, nullcontext()),
             (
                 1,
                 2,
                 pytest.raises(
-                    ValueError, match="inject more super particles than space available"
+                    ValueError, match="spawn more super particles than space available"
                 ),
             ),
-            (max_number_to_inject, max_number_to_inject - 1, nullcontext()),
-            (max_number_to_inject, max_number_to_inject, nullcontext()),
+            (max_number_to_spawn, max_number_to_spawn - 1, nullcontext()),
+            (max_number_to_spawn, max_number_to_spawn, nullcontext()),
             (
-                max_number_to_inject + 2,
-                max_number_to_inject + 1,
+                max_number_to_spawn + 2,
+                max_number_to_spawn + 1,
                 pytest.raises(
                     ValueError,
-                    match="inject multiple super particles with the same attributes",
+                    match="spawn multiple super particles with the same attributes",
                 ),
             ),
         ),
     )
-    def test_number_of_super_particles_to_inject(
+    def test_number_of_super_particles_to_spawn(
         n_sd,
-        number_of_super_particles_to_inject,
+        number_of_super_particles_to_spawn,
         context,
         dt=1,
         dv=1,
@@ -55,9 +55,9 @@ class TestSpawningMethods:
         )
 
         spawned_particle_extensive_attributes = {
-            "water mass": [0.0001 * si.ng] * TestSpawningMethods.max_number_to_inject,
+            "water mass": [0.0001 * si.ng] * TestSpawningMethods.max_number_to_spawn,
         }
-        spawned_particle_multiplicity = [1] * TestSpawningMethods.max_number_to_inject
+        spawned_particle_multiplicity = [1] * TestSpawningMethods.max_number_to_spawn
 
         spawned_particle_index = particulator.Index.identity_index(
             len(spawned_particle_multiplicity)
@@ -79,12 +79,12 @@ class TestSpawningMethods:
                 spawned_particle_index=spawned_particle_index,
                 spawned_particle_multiplicity=spawned_particle_multiplicity,
                 spawned_particle_extensive_attributes=spawned_particle_extensive_attributes,
-                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+                number_of_super_particles_to_spawn=number_of_super_particles_to_spawn,
             )
 
             # assert
             assert (
-                number_of_super_particles_to_inject
+                number_of_super_particles_to_spawn
                 == particulator.attributes.super_droplet_count
             )
 
@@ -108,7 +108,7 @@ class TestSpawningMethods:
         spawned_particle_index,
         context,
         n_sd=3,
-        number_of_super_particles_to_inject=3,
+        number_of_super_particles_to_spawn=3,
     ):
         # arrange
         builder = Builder(n_sd, CPU(), Box(dt=np.nan, dv=np.nan))
@@ -144,7 +144,7 @@ class TestSpawningMethods:
                 spawned_particle_index=spawned_particle_index_impl,
                 spawned_particle_multiplicity=spawned_particle_multiplicity_impl,
                 spawned_particle_extensive_attributes=spawned_particle_extensive_attributes_impl,
-                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+                number_of_super_particles_to_spawn=number_of_super_particles_to_spawn,
             )
 
             # assert
