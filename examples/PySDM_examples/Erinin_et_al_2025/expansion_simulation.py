@@ -4,7 +4,11 @@ import numpy as np
 from PySDM import Builder
 from PySDM import products as PySDM_products
 from PySDM.backends import CPU
-from PySDM.dynamics import AmbientThermodynamics, Condensation
+from PySDM.dynamics import (
+    AmbientThermodynamics,
+    Condensation,
+    HomogeneousLiquidNucleation,
+)
 from PySDM.environments import ExpansionChamber
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
@@ -73,6 +77,7 @@ def run_expansion(
     )
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
+    builder.add_dynamic(HomogeneousLiquidNucleation())
     builder.request_attribute("critical supersaturation")
 
     attributes = {

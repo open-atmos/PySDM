@@ -15,11 +15,17 @@ class HomogeneousLiquidNucleation(SuperParticleSpawningDynamic):
         self.index = self.particulator.Index.identity_index(1)
 
     def __call__(self):
-        env = self.particulator.environment
-        e_s = self.formulae.equilibrium_supersaturation(env["T"])
-        j = self.formulae.j_liq_homo(env["T"], env["RH"], e_s)
+        env = {
+            k: self.particulator.environment[k].to_ndarray()[0] for k in ("T", "RH")
+        }  # TODO: >0D
+        e_s = self.formulae.saturation_vapour_pressure.pvs_water(
+            env["T"]
+        )  # @Clare - is this change OK?
+        j = self.formulae.homogeneous_liquid_nucleation_rate.j_liq_homo(
+            env["T"], env["RH"], e_s
+        )
 
-        # TODO: take care of caseswhere round yields zero -> MC sampling?
+        # TODO: take care of cases where round yields zero -> MC sampling?
         new_sd_multiplicity = round(j * env.dv * self.particulator.dt)
 
         if new_sd_multiplicity > 0:
