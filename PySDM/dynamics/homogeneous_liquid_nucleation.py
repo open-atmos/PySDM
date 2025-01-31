@@ -1,3 +1,4 @@
+import numpy as np
 from PySDM.dynamics.impl import register_dynamic
 from PySDM.dynamics.impl import SuperParticleSpawningDynamic
 
@@ -41,7 +42,7 @@ class HomogeneousLiquidNucleation(SuperParticleSpawningDynamic):
             self.particulator.spawn(
                 spawned_particle_index=self.index,
                 number_of_super_particles_to_spawn=1,
-                spawned_particle_multiplicity=new_sd_multiplicity,
+                spawned_particle_multiplicity=np.asarray((new_sd_multiplicity,)),
                 spawned_particle_extensive_attributes=new_sd_extensive_attributes,
             )
             # TODO: subtract the water mass from ambient vapour

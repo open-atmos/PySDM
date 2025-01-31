@@ -119,10 +119,13 @@ def run_expansion(
 
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {
-        "multiplicity": tuple([] for _ in range(particulator.n_sd)),
-        "volume": tuple([] for _ in range(particulator.n_sd)),
-        "critical volume": tuple([] for _ in range(particulator.n_sd)),
-        "critical supersaturation": tuple([] for _ in range(particulator.n_sd)),
+        k: []
+        for k in (
+            "multiplicity",
+            "volume",
+            "critical volume",
+            "critical supersaturation",
+        )
     }
 
     for _ in range(n_steps):
@@ -135,10 +138,13 @@ def run_expansion(
                 output[product.name].append(value)
             else:
                 output[product.name].append(value[0])
+        mult = particulator.attributes["multiplicity"].to_ndarray(raw=True)
         for key, attr in output_attributes.items():
-            attr_data = particulator.attributes[key].to_ndarray()
-            for drop_id in range(particulator.n_sd):
-                attr[drop_id].append(attr_data[drop_id])
+            if key == "multiplicity":
+                continue
+            data = particulator.attributes[key].to_ndarray(raw=True)
+            data[mult == 0] = np.nan
+            attr.append(data)
 
     dry_spectrum = particulator.products["dry:dN/dR"].get()
     wet_spectrum = particulator.products["wet:dN/dR"].get()

@@ -464,7 +464,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 Instead increase multiplicity of spawned particles."
             )
 
-        self.backend.spawn(
+        self.backend.spawning(
             idx=self.attributes._ParticleAttributes__idx,
             multiplicity=self.attributes["multiplicity"],
             extensive_attributes=self.attributes.get_extensive_attribute_storage(),
