@@ -18,13 +18,13 @@ class SpawningMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             spawned_particle_index,
             spawned_particle_multiplicity,
             spawned_particle_extensive_attributes,
-            number_of_super_particles_to_inject: int,
+            number_of_super_particles_to_spawn: int,
         ):
             number_of_super_particles_already_injected = 0
             # TODO #1387 start enumerating from the end of valid particle set
             for i, mult in enumerate(multiplicity):
                 if (
-                    number_of_super_particles_to_inject
+                    number_of_super_particles_to_spawn
                     == number_of_super_particles_already_injected
                 ):
                     break
@@ -40,7 +40,7 @@ class SpawningMethods(BackendMethods):  # pylint: disable=too-few-public-methods
                             spawned_particle_extensive_attributes[a, s]
                         )
             assert (
-                number_of_super_particles_to_inject
+                number_of_super_particles_to_spawn
                 == number_of_super_particles_already_injected
             )
 
@@ -62,7 +62,7 @@ class SpawningMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             multiplicity=multiplicity.data,
             extensive_attributes=extensive_attributes.data,
             spawned_particle_index=spawned_particle_index.data,
-            spawnd_particle_multiplicity=spawned_particle_multiplicity.data,
-            spawnd_particle_extensive_attributes=spawned_particle_extensive_attributes.data,
+            spawned_particle_multiplicity=spawned_particle_multiplicity.data,
+            spawned_particle_extensive_attributes=spawned_particle_extensive_attributes.data,
             number_of_super_particles_to_spawn=number_of_super_particles_to_spawn,
         )

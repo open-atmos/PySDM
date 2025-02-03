@@ -34,15 +34,10 @@ class Seeding(SuperParticleSpawningDynamic):
         self.particulator = builder.particulator
 
     def post_register_setup_when_attributes_are_known(self):
-        if tuple(self.particulator.attributes.get_extensive_attribute_keys()) != tuple(
-            self.seeded_particle_extensive_attributes.keys()
-        ):
-            raise ValueError(
-                f"extensive attributes ({self.seeded_particle_extensive_attributes.keys()})"
-                " do not match those used in particulator"
-                f" ({self.particulator.attributes.get_extensive_attribute_keys()})"
-            )
-
+        SuperParticleSpawningDynamic.check_extensive_attribute_keys(
+            particulator_attributes=self.particulator.attributes,
+            spawned_attributes=self.seeded_particle_extensive_attributes,
+        )
         self.index = self.particulator.Index.identity_index(
             len(self.seeded_particle_multiplicity)
         )

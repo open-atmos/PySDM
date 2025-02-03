@@ -35,14 +35,21 @@ class HomogeneousLiquidNucleation(SuperParticleSpawningDynamic):
             )
             v_wet = self.formulae.trivia.volume(radius=r_wet)
             new_sd_extensive_attributes = {
-                "water mass": v_wet * self.formulae.constants.rho_w,
-                "dry volume": 0,
-                "kappa times dry volume": 0,
+                "water mass": (v_wet * self.formulae.constants.rho_w,),
+                "dry volume": (0,),
+                "kappa times dry volume": (0,),
             }
+            self.check_extensive_attribute_keys(
+                particulator_attributes=self.particulator.attributes,
+                spawned_attributes=new_sd_extensive_attributes,
+            )
             self.particulator.spawn(
                 spawned_particle_index=self.index,
                 number_of_super_particles_to_spawn=1,
                 spawned_particle_multiplicity=np.asarray((new_sd_multiplicity,)),
-                spawned_particle_extensive_attributes=new_sd_extensive_attributes,
+                spawned_particle_extensive_attributes=self.particulator.IndexedStorage.from_ndarray(
+                    self.index,
+                    np.asarray(list(new_sd_extensive_attributes.values())),
+                ),
             )
             # TODO: subtract the water mass from ambient vapour
