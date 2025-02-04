@@ -33,6 +33,7 @@ def run_expansion(
     dry_radius_bin_edges = np.geomspace(50 * si.nm, 2000 * si.nm, 40, endpoint=False)
     wet_radius_bin_edges = np.geomspace(1 * si.um, 40 * si.um, 40, endpoint=False)
     products = (
+        PySDM_products.SuperDropletCountPerGridbox(name="sd_count"),
         PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid_water_mixing_ratio"),
         PySDM_products.PeakSupersaturation(name="s"),
         PySDM_products.AmbientRelativeHumidity(name="RH"),
@@ -55,7 +56,16 @@ def run_expansion(
             dry=False,
         ),
         PySDM_products.ActivatedEffectiveRadius(
-            name="reff", unit="um", count_activated=True, count_unactivated=False
+            name="act_reff", unit="um", count_activated=True, count_unactivated=False
+        ),
+        PySDM_products.EffectiveRadius(
+            name="reff",
+            unit="um",
+        ),
+        PySDM_products.ParticleConcentration(
+            name="n_drop",
+            unit="cm^-3",
+            # radius_range=(0.5 * si.um, 25 * si.um),
         ),
     )
 
