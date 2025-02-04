@@ -77,7 +77,7 @@ def run_expansion(
         environment=env,
     )
     builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(Condensation())
+    builder.add_dynamic(Condensation(adaptive=False))
     builder.add_dynamic(HomogeneousLiquidNucleation())
     builder.request_attribute("critical supersaturation")
 

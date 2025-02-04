@@ -39,17 +39,28 @@ class HomogeneousLiquidNucleation(SuperParticleSpawningDynamic):
                 "dry volume": (0,),
                 "kappa times dry volume": (0,),
             }
+
+            # TODO: to be done once, not every time we spawn
             self.check_extensive_attribute_keys(
                 particulator_attributes=self.particulator.attributes,
                 spawned_attributes=new_sd_extensive_attributes,
             )
+
+            # TODO: allocate once, reuse
+            new_sd_extensive_attributes = self.particulator.IndexedStorage.from_ndarray(
+                self.index,
+                np.asarray(list(new_sd_extensive_attributes.values())),
+            )
+            # TODO: ditto
+            new_sd_multiplicity = self.particulator.IndexedStorage.from_ndarray(
+                self.index,
+                np.asarray((new_sd_multiplicity,), dtype=np.int64),
+            )
+
             self.particulator.spawn(
                 spawned_particle_index=self.index,
                 number_of_super_particles_to_spawn=1,
-                spawned_particle_multiplicity=np.asarray((new_sd_multiplicity,)),
-                spawned_particle_extensive_attributes=self.particulator.IndexedStorage.from_ndarray(
-                    self.index,
-                    np.asarray(list(new_sd_extensive_attributes.values())),
-                ),
+                spawned_particle_multiplicity=new_sd_multiplicity,
+                spawned_particle_extensive_attributes=new_sd_extensive_attributes,
             )
             # TODO: subtract the water mass from ambient vapour
