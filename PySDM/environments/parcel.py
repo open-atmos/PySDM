@@ -101,13 +101,12 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def advance_parcel_vars(self):
         """compute new values of displacement, dry-air density and volume,
         and write them to self._tmp and self.mesh.dv"""
+        dt = self.particulator.dt
         formulae = self.particulator.formulae
         T = self["T"][0]
         p = self["p"][0]
 
-        dz_dt = self.w(
-            (self.particulator.n_steps + 1 / 2) * self.particulator.dt
-        )  # "mid-point"
+        dz_dt = self.w((self.particulator.n_steps + 1 / 2) * dt)  # "mid-point"
         water_vapour_mixing_ratio = (
             self["water_vapour_mixing_ratio"][0]
             - self.delta_liquid_water_mixing_ratio / 2
@@ -121,16 +120,14 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             water_vapour_mixing_ratio=water_vapour_mixing_ratio,
             lv=formulae.latent_heat.lv(T),
             d_liquid_water_mixing_ratio__dz=(
-                self.delta_liquid_water_mixing_ratio / dz_dt / self.particulator.dt
+                self.delta_liquid_water_mixing_ratio / dz_dt / dt
             ),
         )
         drhod_dz = drho_dz  # TODO #407
 
+        self.particulator.backend.explicit_euler(self._tmp["z"], dt, dz_dt)
         self.particulator.backend.explicit_euler(
-            self._tmp["z"], self.particulator.dt, dz_dt
-        )
-        self.particulator.backend.explicit_euler(
-            self._tmp["rhod"], self.particulator.dt, dz_dt * drhod_dz
+            self._tmp["rhod"], dt, dz_dt * drhod_dz
         )
 
         self.mesh.dv = formulae.trivia.volume_of_density_mass(
