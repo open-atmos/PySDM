@@ -707,14 +707,17 @@
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
   },
   "https://doi.org/10.48550/arXiv.2501.01467": {
-    "usages": ["examples/PySDM_examples/expansion_chamber/aerosol.py", "examples/PySDM_examples/expansion_chamber/expansion_experiment.ipynb"],
+    "usages": [
+      "examples/PySDM_examples/Erinin_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Erinin_et_al_2025/aerosol.py",
+      "examples/PySDM_examples/Erinin_et_al_2025/expansion_experiment.ipynb"],
     "title": "Droplet Nucleation In a Rapid Expansion Aerosol Chamber",
     "label": "Erinin et al. 2024 (arXiv:2501.01467)"
   },
   "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
     "usages": [
       "PySDM/physics/homogeneous_liquid_nucleation_rate/cnt.py",
-      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "title": "Atmospheric Chemistry and Physics: From Air Pollution to Climate Change, 2nd Edition",
     "label": "Seinfeld & Pandis 2006 (Wiley)"
@@ -764,3 +767,4 @@
     "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
     "label": "Picciotto et al. 1960 (Nature 187)"
   }
+}

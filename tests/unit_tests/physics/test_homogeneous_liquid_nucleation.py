@@ -1,4 +1,4 @@
-""" tests checking homogeneous liquid nucleation formulae """
+"""tests checking homogeneous liquid nucleation formulae"""
 
 import pytest
 
