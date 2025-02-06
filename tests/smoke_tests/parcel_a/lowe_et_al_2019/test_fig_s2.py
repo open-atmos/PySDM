@@ -1,7 +1,7 @@
 """
-    test for supplementary figure 2 in Lowe et al 2019 paper.
-    checks that values from panels d)-f) are in a reasonable range
-    and decrease/increase monotonically with updraft velocity
+test for supplementary figure 2 in Lowe et al 2019 paper.
+checks that values from panels d)-f) are in a reasonable range
+and decrease/increase monotonically with updraft velocity
 """
 
 import os

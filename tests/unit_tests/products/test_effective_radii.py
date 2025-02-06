@@ -1,4 +1,4 @@
-""" tests different formulations of effective radius product """
+"""tests different formulations of effective radius product"""
 
 import numpy as np
 

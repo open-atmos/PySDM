@@ -1,5 +1,5 @@
-""" decorator for environment classes
-ensuring that their instances can be re-used with multiple builders """
+"""decorator for environment classes
+ensuring that their instances can be re-used with multiple builders"""
 
 from copy import deepcopy
 

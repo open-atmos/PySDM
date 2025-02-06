@@ -1,4 +1,4 @@
-""" common parent class for gravitational collision kernels """
+"""common parent class for gravitational collision kernels"""
 
 
 class Gravitational:  # pylint: disable=too-few-public-methods

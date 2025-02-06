@@ -1,4 +1,4 @@
-""" regression tests asserting on values from the plots """
+"""regression tests asserting on values from the plots"""
 
 from pathlib import Path
 

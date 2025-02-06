@@ -1,4 +1,4 @@
-""" CPU implementation of backend methods for particle injections """
+"""CPU implementation of backend methods for particle injections"""
 
 from functools import cached_property
 

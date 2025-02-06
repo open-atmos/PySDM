@@ -1,4 +1,4 @@
-""" tests for optical formulae (albedo, optical depth, ...) """
+"""tests for optical formulae (albedo, optical depth, ...)"""
 
 import pytest
 

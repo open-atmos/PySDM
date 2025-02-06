@@ -1,4 +1,4 @@
-""" Tests for formulae from [Merlivat and Jouzel 1979](https://doi.org/10.1029/JC084iC08p05029) """
+"""Tests for formulae from [Merlivat and Jouzel 1979](https://doi.org/10.1029/JC084iC08p05029)"""
 
 from functools import partial
 
