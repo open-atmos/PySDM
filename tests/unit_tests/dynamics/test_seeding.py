@@ -1,4 +1,4 @@
-""" Seeding dynamic tests """
+"""Seeding dynamic tests"""
 
 from collections import namedtuple
 

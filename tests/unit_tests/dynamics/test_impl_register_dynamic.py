@@ -1,4 +1,4 @@
-""" checks if @register_product makes dynamics instances reusable """
+"""checks if @register_product makes dynamics instances reusable"""
 
 import numpy as np
 
