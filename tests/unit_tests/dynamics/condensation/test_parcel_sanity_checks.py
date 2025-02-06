@@ -1,4 +1,4 @@
-""" tests ensuring proper condensation solver operation in some parcel-model based cases """
+"""tests ensuring proper condensation solver operation in some parcel-model based cases"""
 
 import numpy as np
 

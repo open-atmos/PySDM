@@ -1,4 +1,4 @@
-""" constant value """
+"""constant value"""
 
 
 class ConstEc:

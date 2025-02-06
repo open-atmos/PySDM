@@ -1,4 +1,4 @@
-""" CPU implementation of backend methods for particle spawning """
+"""CPU implementation of backend methods for particle spawning"""
 
 from functools import cached_property
 

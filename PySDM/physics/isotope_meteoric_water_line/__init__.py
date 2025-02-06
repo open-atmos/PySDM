@@ -1,4 +1,4 @@
-""" definitions of meteoric water line parameters
+"""definitions of meteoric water line parameters
 and definitions of the excess quantities"""
 
 from PySDM.impl.null_physics_class import Null

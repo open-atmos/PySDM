@@ -1,6 +1,6 @@
-""" checks the attribute registry logic mapping attribute names to classes implementing them
- and handling different variants of these implementations picked depending on the choice of
- dynamics and formulae options """
+"""checks the attribute registry logic mapping attribute names to classes implementing them
+and handling different variants of these implementations picked depending on the choice of
+dynamics and formulae options"""
 
 import pytest
 
