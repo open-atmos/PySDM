@@ -2,7 +2,6 @@ from collections import namedtuple
 
 import numpy as np
 from PySDM import Builder
-from PySDM import products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.dynamics import (
     AmbientThermodynamics,
@@ -16,6 +15,7 @@ from PySDM.physics import si
 
 
 def run_expansion(
+    *,
     formulae,
     aerosol,
     n_sd_per_mode,
@@ -28,46 +28,9 @@ def run_expansion(
     total_time=4 * si.s,
     dt=0.1 * si.s,
     volume=0.14 * si.m**3,
+    products=None,
 ):
     n_steps = int(np.ceil(total_time / dt))
-    dry_radius_bin_edges = np.geomspace(50 * si.nm, 2000 * si.nm, 40, endpoint=False)
-    wet_radius_bin_edges = np.geomspace(1 * si.um, 40 * si.um, 40, endpoint=False)
-    products = (
-        PySDM_products.SuperDropletCountPerGridbox(name="sd_count"),
-        PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid_water_mixing_ratio"),
-        PySDM_products.PeakSupersaturation(name="s"),
-        PySDM_products.AmbientRelativeHumidity(name="RH"),
-        PySDM_products.AmbientTemperature(name="T"),
-        PySDM_products.AmbientPressure(name="p"),
-        PySDM_products.AmbientWaterVapourMixingRatio(
-            unit="g/kg", name="water_vapour_mixing_ratio"
-        ),
-        PySDM_products.Time(name="t"),
-        PySDM_products.ParticleSizeSpectrumPerVolume(
-            name="dry:dN/dR",
-            unit="m^-3 m^-1",
-            radius_bins_edges=dry_radius_bin_edges,
-            dry=True,
-        ),
-        PySDM_products.ParticleSizeSpectrumPerVolume(
-            name="wet:dN/dR",
-            unit="m^-3 m^-1",
-            radius_bins_edges=wet_radius_bin_edges,
-            dry=False,
-        ),
-        PySDM_products.ActivatedEffectiveRadius(
-            name="act_reff", unit="um", count_activated=True, count_unactivated=False
-        ),
-        PySDM_products.EffectiveRadius(
-            name="reff",
-            unit="um",
-        ),
-        PySDM_products.ParticleConcentration(
-            name="n_drop",
-            unit="cm^-3",
-            # radius_range=(0.5 * si.um, 25 * si.um),
-        ),
-    )
 
     env = ExpansionChamber(
         dt=dt,
@@ -87,7 +50,7 @@ def run_expansion(
         environment=env,
     )
     builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(Condensation(adaptive=False))
+    builder.add_dynamic(Condensation(adaptive=True))
     builder.add_dynamic(HomogeneousLiquidNucleation())
     builder.request_attribute("critical supersaturation")
 
@@ -124,7 +87,7 @@ def run_expansion(
             )
             for k, v in attributes.items()
         },
-        products=products,
+        products=products or (),
     )
 
     output = {product.name: [] for product in particulator.products.values()}
@@ -161,22 +124,27 @@ def run_expansion(
 
     Output = namedtuple(
         "Output",
-        [
+        (
             "profile",
             "attributes",
             "aerosol",
-            "dry_radius_bin_edges",
             "dry_spectrum",
-            "wet_radius_bin_edges",
             "wet_spectrum",
-        ],
+            "units",
+        ),
     )
     return Output(
         profile=output,
         attributes=output_attributes,
         aerosol=aerosol,
-        dry_radius_bin_edges=dry_radius_bin_edges,
         dry_spectrum=dry_spectrum,
-        wet_radius_bin_edges=wet_radius_bin_edges,
         wet_spectrum=wet_spectrum,
+        units={
+            key: (
+                product.unit[2:]
+                if product.unit[0:2] == "1 "
+                else product.unit[4:] if product.unit[0:4] == "1.0 " else product.unit
+            ).replace("**", "^")
+            for key, product in particulator.products.items()
+        },
     )
