@@ -114,6 +114,7 @@ def run_expansion(
         mult = particulator.attributes["multiplicity"].to_ndarray(raw=True)
         for key, attr in output_attributes.items():
             if key == "multiplicity":
+                attr.append(mult)
                 continue
             data = particulator.attributes[key].to_ndarray(raw=True)
             data[mult == 0] = np.nan
