@@ -1,39 +1,50 @@
 from functools import partial
 
+from tests.unit_tests.initialisation.test_spectro_glacial_discretisation import formulae
 
-def r_dr_dt_fun(*, formulae, v_term, radii, temperature, K):
 
-    pvs = formulae.saturation_vapour_pressure.pvs_water(temperature)
-    eta_air = formulae.air_dynamic_viscosity.eta_air(temperature)
-    const = formulae.constants
-    pressure = const.p_STP
-    D = formulae.diffusion_thermics.D(T=temperature, p=pressure)
+class IsotopeTimescaleCommon:
+    def __init__(self, formulae):
+        self.radii = None
+        self.formulae = formulae
+        self.vent_coeff = None
+        self.temperature = None
+        self.pressure = self.formulae.constants.p_STP
+        self.v_term
 
-    air_density = pressure / const.Rd / temperature
+    def D(self):
+        return self.formulae.diffusion_thermics.D(T=self.temperature, p=self.pressure)
 
-    assert abs(air_density - 1) / air_density < 0.3
+    def vent_coeff(self):
+        eta_air = self.formulae.air_dynamic_viscosity.eta_air(self.temperature)
+        air_density = self.pressure / self.formulae.constants.Rd / self.temperature
 
-    Re = formulae.particle_shape_and_density.reynolds_number(
-        radius=radii,
-        velocity_wrt_air=v_term,
-        dynamic_viscosity=eta_air,
-        density=air_density,
-    )
-    Sc = formulae.trivia.air_schmidt_number(
-        dynamic_viscosity=eta_air,
-        diffusivity=D,
-        density=air_density,
-    )
-    sqrt_re_times_cbrt_sc = formulae.trivia.sqrt_re_times_cbrt_sc(Re=Re, Sc=Sc)
-    F = formulae.ventilation.ventilation_coefficient(
-        sqrt_re_times_cbrt_sc=sqrt_re_times_cbrt_sc
-    )
+        assert abs(air_density - 1) / air_density < 0.3
 
-    return partial(
-        formulae.drop_growth.r_dr_dt,
-        T=temperature,
-        pvs=pvs,
-        D=D,
-        K=K,
-        ventilation_factor=F,
-    )
+        Re = self.formulae.particle_shape_and_density.reynolds_number(
+            radius=self.radii,
+            velocity_wrt_air=self.v_term,
+            dynamic_viscosity=eta_air,
+            density=air_density,
+        )
+        Sc = self.formulae.trivia.air_schmidt_number(
+            dynamic_viscosity=eta_air,
+            diffusivity=self.D,
+            density=air_density,
+        )
+
+        return self.formulae.ventilation.ventilation_coefficient(
+            sqrt_re_times_cbrt_sc=self.formulae.trivia.sqrt_re_times_cbrt_sc(
+                Re=Re, Sc=Sc
+            )
+        )
+
+    def r_dr_dt_fun(self, v_term, K):
+        return partial(
+            self.formulae.drop_growth.r_dr_dt,
+            T=self.temperature,
+            pvs=self.formulae.saturation_vapour_pressure.pvs_water(self.temperature),
+            D=self.D,
+            K=K,
+            ventilation_factor=self.vent_coeff,
+        )
