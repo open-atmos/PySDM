@@ -13,6 +13,6 @@ class MiyakeEtAl1968:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments unused-argument
     def tau_of_rdrdt(const, radius, r_dr_dt, alpha):
         return -(radius**2) / 3 / r_dr_dt * alpha
