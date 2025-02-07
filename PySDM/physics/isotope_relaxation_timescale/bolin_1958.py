@@ -2,6 +2,7 @@
     Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725) """
 
 import numpy as np
+from sympy.physics.units import temperature
 
 
 class Bolin1958:  # pylint: disable=too-few-public-methods
@@ -18,22 +19,51 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     # pylint: disable=too-many-arguments
-    def tau(const, radius, r_dr_dt, alpha, R_liq, rho_vs):
+    def c1_coeff(
+        const,
+        vent_coeff_iso,
+        vent_coeff,
+        D_iso,
+        D,
+        alpha,
+        R_vap,
+        rho_env_iso,
+        rho_env,
+        M_iso,
+        pvs_iso,
+        pvs_water,
+    ):
+        return (
+            vent_coeff_iso
+            * D_iso
+            / vent_coeff
+            / D
+            / alpha
+            / R_vap
+            * (rho_env_iso / M_iso - pvs_iso / const.R_STR / temperature)
+            / (rho_env / const.Mv - pvs_water / const.R_STR / temperature)
+        )
+
+    @staticmethod
+    # pylint: disable=too-many-arguments
+    def tau_of_rdrdt_c1(const, radius, r_dr_dt, alpha, c1_coeff):
         """timescale for evaporation of a falling drop with tritium"""
-        bolin_coeff_c1 = R_liq * const.rho_w / alpha / rho_vs
-        return -(radius**2) / 3 / r_dr_dt / bolin_coeff_c1
+        return -(radius**2) / 3 / r_dr_dt / c1_coeff
 
     @staticmethod
     # pylint: disable=too-many-arguments
     def tau_without_assumptions(
-        const, radius, alpha, rho_v, D, vent_coeff, Mv, rho_env_iso, Mv_iso, Rv_iso
+        const, radius, alpha, D, vent_coeff, rho_env, M, temperature, pvs_water, pvs
     ):
         return (
             alpha
             * radius**2
-            * const.rho_w
             / 3
+            * const.rho_w
             / D
             / vent_coeff
-            / (rho_v - Mv * rho_env_iso / Mv_iso / Rv_iso)
+            / const.Mv
+            * pvs
+            / pvs_water
+            / (rho_env / M - pvs / const.R_STR / temperature)
         )
