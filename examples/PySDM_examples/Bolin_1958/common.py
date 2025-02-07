@@ -1,10 +1,11 @@
 from functools import partial
+from PySDM import Formulae
 
 
 class IsotopeTimescaleCommon:
-    def __init__(self, formulae, temperature, radii):
+    def __init__(self, settings, temperature, radii):
         self.radii = radii
-        self.formulae = formulae
+        self.formulae = Formulae(**settings)
         self.temperature = temperature
         self.pressure = self.formulae.constants.p_STP
         self.v_term = self.formulae.terminal_velocity.v_term(radii)
