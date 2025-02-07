@@ -26,12 +26,12 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
         D_iso,
         D,
         alpha,
-        R_vap,
         rho_env_iso,
         rho_env,
         M_iso,
         pvs_iso,
         pvs_water,
+        temperature,
     ):
         return (
             vent_coeff_iso
@@ -39,9 +39,10 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
             / vent_coeff
             / D
             / alpha
-            / R_vap
-            * (rho_env_iso / M_iso - pvs_iso / const.R_STR / temperature)
-            / (rho_env / const.Mv - pvs_water / const.R_STR / temperature)
+            / pvs_iso
+            * pvs_water
+            * (rho_env_iso / M_iso - pvs_iso / const.R_str / temperature)
+            / (rho_env / const.Mv - pvs_water / const.R_str / temperature)
         )
 
     @staticmethod

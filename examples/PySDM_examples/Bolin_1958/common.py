@@ -1,21 +1,16 @@
 from functools import partial
 
-from tests.unit_tests.initialisation.test_spectro_glacial_discretisation import formulae
-
 
 class IsotopeTimescaleCommon:
-    def __init__(self, formulae):
-        self.radii = None
+    def __init__(self, formulae, temperature, radii):
+        self.radii = radii
         self.formulae = formulae
-        self.vent_coeff = None
-        self.temperature = None
+        self.temperature = temperature
         self.pressure = self.formulae.constants.p_STP
-        self.v_term
+        self.v_term = self.formulae.terminal_velocity.v_term(radii)
+        self.D = self.formulae.diffusion_thermics.D(T=self.temperature, p=self.pressure)
 
-    def D(self):
-        return self.formulae.diffusion_thermics.D(T=self.temperature, p=self.pressure)
-
-    def vent_coeff(self):
+    def vent_coeff_fun(self):
         eta_air = self.formulae.air_dynamic_viscosity.eta_air(self.temperature)
         air_density = self.pressure / self.formulae.constants.Rd / self.temperature
 
@@ -39,12 +34,12 @@ class IsotopeTimescaleCommon:
             )
         )
 
-    def r_dr_dt_fun(self, v_term, K):
+    def r_dr_dt_fun(self, K):
         return partial(
             self.formulae.drop_growth.r_dr_dt,
             T=self.temperature,
             pvs=self.formulae.saturation_vapour_pressure.pvs_water(self.temperature),
             D=self.D,
             K=K,
-            ventilation_factor=self.vent_coeff,
+            ventilation_factor=self.vent_coeff_fun(),
         )
