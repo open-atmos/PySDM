@@ -72,3 +72,20 @@ class TestTrivia:
 
             # Assert
             assert sc.check("[]")
+
+    @staticmethod
+    def test_poissonian_avoidance_function():
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae()
+            si = constants_defaults.si
+            sut = formulae.trivia.poissonian_avoidance_function
+
+            # Act
+            sc = sut(
+                r=1 / si.s,
+                dt=10 * si.min,
+            )
+
+            # Assert
+            assert sc.check("[]")

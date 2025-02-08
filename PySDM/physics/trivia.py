@@ -137,3 +137,11 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def sqrt_re_times_cbrt_sc(const, Re, Sc):
         return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)
+
+    @staticmethod
+    def poissonian_avoidance_function(r, dt):
+        """cumulative probability of zero events occurring within time `dt`
+        (or void probability, or avoidance function) in a Poisson counting
+        process with a constant rate `r`
+        """
+        return np.exp(-r * dt)
