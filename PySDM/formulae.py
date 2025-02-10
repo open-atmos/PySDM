@@ -269,11 +269,19 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     post = r"([ )/*\-+,]|$)"
     real_fmt = ".32g"
     source = ""
+    in_docstring = False
     for line in inspect.getsourcelines(fun)[0]:
         stripped = line.strip()
+        if in_docstring:
+            if stripped.endswith('"""'):
+                in_docstring = False
+            continue
         if stripped.startswith("@"):
             continue
         if stripped.startswith("//"):
+            continue
+        if stripped.startswith('"""'):
+            in_docstring = True
             continue
         if stripped.startswith("def "):
             continue

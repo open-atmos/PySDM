@@ -3,7 +3,6 @@ CPU implementation of backend methods for freezing (singular and time-dependent 
 """
 
 import numba
-import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
@@ -54,6 +53,7 @@ class FreezingMethods(BackendMethods):
         self.freeze_singular_body = freeze_singular_body
 
         j_het = self.formulae.heterogeneous_ice_nucleation_rate.j_het
+        prob_zero_events = self.formulae.trivia.poissonian_avoidance_function
 
         @numba.njit(**self.default_jit_flags)
         def freeze_time_dependent_body(  # pylint: disable=unused-argument,too-many-arguments
@@ -80,10 +80,11 @@ class FreezingMethods(BackendMethods):
                 elif unfrozen_and_saturated(
                     attributes.water_mass[i], relative_humidity[cell_id]
                 ):
-                    rate = j_het(a_w_ice[cell_id])
-                    # TODO #594: this assumes constant T throughout timestep, can we do better?
-                    prob = 1 - np.exp(  # TODO #599: common code for Poissonian prob
-                        -rate * attributes.immersed_surface_area[i] * timestep
+                    rate_assuming_constant_temperature_within_dt = (
+                        j_het(a_w_ice[cell_id]) * attributes.immersed_surface_area[i]
+                    )
+                    prob = 1 - prob_zero_events(
+                        r=rate_assuming_constant_temperature_within_dt, dt=timestep
                     )
                     if rand[i] < prob:
                         _freeze(attributes.water_mass, i)
