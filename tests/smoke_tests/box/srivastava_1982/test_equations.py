@@ -17,7 +17,7 @@ class TestEquations:
             m_e = eqs.eq10(m0=0.1 * si.kg / frag_mass, tau=eqs.tau(1 * si.s))
 
             # assert
-            assert m_e.check("[]")
+            assert m_e.check(si.dimensionless)
 
     def test_eq12(self):
         with DimensionalAnalysis():
@@ -30,7 +30,7 @@ class TestEquations:
             m_e = eqs.eq12()
 
             # assert
-            assert m_e.check("[]")
+            assert m_e.check(si.dimensionless)
 
     def test_eq13(self):
         with DimensionalAnalysis():
@@ -43,7 +43,7 @@ class TestEquations:
             m_e = eqs.eq13(m0=0.1 * si.kg / frag_mass, tau=eqs.tau(1 * si.s))
 
             # assert
-            assert m_e.check("[]")
+            assert m_e.check(si.dimensionless)
 
     def test_eq14(self):
         with DimensionalAnalysis():
@@ -55,4 +55,4 @@ class TestEquations:
             m_e = eqs.eq14()
 
             # assert
-            assert m_e.check("[]")
+            assert m_e.check(si.dimensionless)

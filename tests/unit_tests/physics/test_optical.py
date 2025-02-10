@@ -24,7 +24,7 @@ class TestOptical:
             albedo = formulae.optical_albedo.albedo(tau)
 
             # assert
-            assert albedo.check("[]")
+            assert albedo.check(si.dimensionless)
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -44,4 +44,4 @@ class TestOptical:
             )
 
             # assert
-            assert tau.check("[]")
+            assert tau.check(si.dimensionless)
