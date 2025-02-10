@@ -1,15 +1,23 @@
-from functools import partial
 from PySDM import Formulae
 
 
-class IsotopeTimescaleCommon:
-    def __init__(self, settings, temperature, radii):
+class IsotopeTimescale:
+    def __init__(self, *, settings, temperature, radii):
         self.radii = radii
         self.formulae = Formulae(**settings)
         self.temperature = temperature
         self.pressure = self.formulae.constants.p_STP
         self.v_term = self.formulae.terminal_velocity.v_term(radii)
         self.D = self.formulae.diffusion_thermics.D(T=self.temperature, p=self.pressure)
+        self.D_iso = self.formulae.isotope_diffusivity_ratios.ratio_3H(self.temperature)
+        self.K = 44.0  # any non-zero value
+        self.pvs_water = self.formulae.saturation_vapour_pressure.pvs_water(
+            self.temperature
+        )
+        self.alpha = self.formulae.isotope_equilibrium_fractionation_factors.alpha_i_3H(
+            self.temperature
+        )  # check i/l
+        self.M_iso = self.formulae.constants.M_3H
 
     def vent_coeff_fun(self):
         eta_air = self.formulae.air_dynamic_viscosity.eta_air(self.temperature)
@@ -35,12 +43,29 @@ class IsotopeTimescaleCommon:
             )
         )
 
-    def r_dr_dt_fun(self, K):
-        return partial(
-            self.formulae.drop_growth.r_dr_dt,
+    def r_dr_dt(self, RH, RH_eq, lv):
+        return self.formulae.drop_growth.r_dr_dt(
             T=self.temperature,
-            pvs=self.formulae.saturation_vapour_pressure.pvs_water(self.temperature),
+            pvs=self.pvs_water,
             D=self.D,
-            K=K,
+            K=self.K,
             ventilation_factor=self.vent_coeff_fun(),
+            RH=RH,
+            RH_eq=RH_eq,
+            lv=lv,
+        )
+
+    def c1_coeff(self, *, vent_coeff_iso, rho_env, pvs_iso):
+        return self.formulae.isotope_relaxation_timescale.c1_coeff(
+            vent_coeff_iso=vent_coeff_iso,
+            vent_coeff=self.vent_coeff_fun(),
+            D_iso=self.D_iso,
+            D=self.D,
+            alpha=self.alpha,
+            rho_env_iso=self.formulae.constants.VSMOW_R_3H,
+            rho_env=rho_env,
+            M_iso=self.M_iso,
+            pvs_iso=pvs_iso,  # any number
+            pvs_water=self.pvs_water,
+            temperature=self.temperature,
         )
