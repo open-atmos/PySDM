@@ -74,10 +74,10 @@ class ExpansionChamber(MoistLagrangian):
 
         formulae = self.particulator.formulae
         p_new = self["p"][0] + self.dp_dt * dt
-        qv = self["water_vapour_mixing_ratio"][0]
+        vapour_mixing_ratio = self["water_vapour_mixing_ratio"][0]
         gg = (
-            1 - formulae.adiabatic_exponent.gamma(qv)
-        ) / formulae.adiabatic_exponent.gamma(qv)
+            1 - formulae.adiabatic_exponent.gamma(vapour_mixing_ratio)
+        ) / formulae.adiabatic_exponent.gamma(vapour_mixing_ratio)
         T_new = self.initial_temperature * (self.initial_pressure / p_new) ** gg
         wvmr_new = self._tmp["water_vapour_mixing_ratio"][
             0

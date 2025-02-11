@@ -9,10 +9,12 @@ class MoistLeadingTerms:
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def gamma(const, qv):
+    def gamma(const, vapour_mixing_ratio):
         return (
             1
             + const.Rd / const.c_vd
-            + (const.Rv * qv) / (const.c_vd * (1 - qv))
-            - (const.Rd * qv * const.c_vv) / (const.c_vd**2 * (1 - qv))
+            + (const.Rv * vapour_mixing_ratio)
+            / (const.c_vd * (1 - vapour_mixing_ratio))
+            - (const.Rd * vapour_mixing_ratio * const.c_vv)
+            / (const.c_vd**2 * (1 - vapour_mixing_ratio))
         )
