@@ -40,12 +40,13 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         water_mass="water_mass[i]",
                         relative_humidity="relative_humidity[cell[i]]"
                     )}) {{
-                    auto rate = {self.formulae.heterogeneous_ice_nucleation_rate.j_het.c_inline(
+                    auto rate_assuming_constant_temperature_within_dt = {self.formulae.heterogeneous_ice_nucleation_rate.j_het.c_inline(
                         a_w_ice="a_w_ice[cell[i]]"
+                    )} * immersed_surface_area[i];
+                    auto prob = 1 - {self.formulae.trivia.poissonian_avoidance_function.c_inline(
+                        r="rate_assuming_constant_temperature_within_dt",
+                        dt="timestep"
                     )};
-                    auto prob = 1 - exp(
-                        -rate * immersed_surface_area[i] * timestep
-                    );
                     if (rand[i] < prob) {{
                         water_mass[i] = -1 * water_mass[i];
                     }}
