@@ -71,7 +71,7 @@ class TestTrivia:
             )
 
             # Assert
-            assert sc.check("[]")
+            assert sc.check(si.dimensionless)
 
     @staticmethod
     def test_poissonian_avoidance_function():
@@ -82,10 +82,10 @@ class TestTrivia:
             sut = formulae.trivia.poissonian_avoidance_function
 
             # Act
-            sc = sut(
+            prob = sut(
                 r=1 / si.s,
                 dt=10 * si.min,
             )
 
             # Assert
-            assert sc.check("[]")
+            assert prob.check(si.dimensionless)
