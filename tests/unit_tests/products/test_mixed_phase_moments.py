@@ -9,16 +9,16 @@ from PySDM import Formulae
 from PySDM.environments import Box
 
 
-VOLUMES = [10.0, -10.0]
+MASSES = (10.0 * si.ug, -10.0 * si.ug)
 
 
 @pytest.mark.parametrize(
-    "particle_volume", [np.asarray((v1, v2)) for v1 in VOLUMES for v2 in VOLUMES]
+    "particle_mass", [np.asarray((v1, v2)) for v1 in MASSES for v2 in MASSES]
 )
-def test_mixed_phase_moments(particle_volume, backend_class):
+def test_mixed_phase_moments(particle_mass, backend_class):
     # arrange
     particulator = Builder(
-        n_sd=len(particle_volume),
+        n_sd=len(particle_mass),
         environment=Box(dt=np.nan, dv=1 * si.m**3),
         backend=backend_class(
             formulae=Formulae(
@@ -27,8 +27,8 @@ def test_mixed_phase_moments(particle_volume, backend_class):
         ),
     ).build(
         attributes={
-            "multiplicity": np.full_like(particle_volume, fill_value=1),
-            "volume": particle_volume,
+            "multiplicity": np.full_like(particle_mass, fill_value=1),
+            "signed water mass": particle_mass,
         },
         products=(
             PySDM_products.WaterMixingRatio(name="water", radius_range=(0, np.inf)),

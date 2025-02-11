@@ -1,13 +1,48 @@
 """
-particle mass, derived attribute for coalescence
-in simulation involving mixed-phase clouds, positive values correspond to
+particle mass attributes
+in simulations involving mixed-phase clouds, positive values correspond to
 liquid water and negative values to ice
 """
 
-from PySDM.attributes.impl import ExtensiveAttribute, register_attribute
+from PySDM.attributes.impl import (
+    ExtensiveAttribute,
+    DerivedAttribute,
+    register_attribute,
+)
 
 
-@register_attribute()
+@register_attribute(
+    name="water mass",
+    variant=lambda _, formulae: not formulae.particle_shape_and_density.supports_mixed_phase(),
+)
 class WaterMass(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name="water mass")
+
+
+@register_attribute(
+    name="signed water mass",
+    variant=lambda _, formulae: formulae.particle_shape_and_density.supports_mixed_phase(),
+)
+class SignedWaterMass(ExtensiveAttribute):
+    def __init__(self, builder):
+        super().__init__(builder, name="signed water mass")
+
+
+@register_attribute(
+    name="water mass",
+    variant=lambda _, formulae: formulae.particle_shape_and_density.supports_mixed_phase(),
+)
+class DerivedWaterMass(DerivedAttribute):
+    def __init__(self, builder):
+        self.signed_water_mass = builder.get_attribute("signed water mass")
+
+        super().__init__(
+            builder,
+            name="water mass",
+            dependencies=(self.signed_water_mass,),
+        )
+
+    def recalculate(self):
+        self.data.fill(self.signed_water_mass.data)
+        self.data.abs()

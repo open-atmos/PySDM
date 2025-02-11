@@ -27,8 +27,6 @@ def make_particulator(
     volume,
     thaw=False
 ):
-    attributes = {"volume": np.ones(n_sd) * droplet_volume}
-
     formulae_ctor_args = {
         "seed": seed,
         "constants": constants,
@@ -38,6 +36,10 @@ def make_particulator(
     }
     formulae = Formulae(**formulae_ctor_args)
     backend = CPU(formulae, override_jit_flags={"parallel": False})
+
+    attributes = {
+        "signed water mass": np.ones(n_sd) * droplet_volume * formulae.constants.rho_w
+    }
 
     sampling = SpectroGlacialSampling(
         freezing_temperature_spectrum=formulae.freezing_temperature_spectrum,
