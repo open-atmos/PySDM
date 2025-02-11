@@ -59,7 +59,7 @@ class Freezing:
                     freezing_temperature=self.particulator.attributes[
                         "freezing temperature"
                     ],
-                    water_mass=self.particulator.attributes["signed water mass"],
+                    signed_water_mass=self.particulator.attributes["signed water mass"],
                 ),
                 temperature=self.particulator.environment["T"],
                 relative_humidity=self.particulator.environment["RH"],
