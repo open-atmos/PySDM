@@ -54,12 +54,13 @@ class Simulation(BasicSimulation):
             "volume": None,
             "immersed surface area": immersed_surface_area,
         }
-        attributes["volume"] = settings.formulae.trivia.volume(
+        attributes["signed water mass"] = settings.formulae.trivia.volume(
             radius=equilibrate_wet_radii(
                 r_dry=ccn_diameter / 2,
                 environment=builder.particulator.environment,
                 kappa_times_dry_volume=attributes["kappa times dry volume"],
             )
+            * settings.formulae.constants.rho_w
         )
 
         for attribute, data in attributes.items():

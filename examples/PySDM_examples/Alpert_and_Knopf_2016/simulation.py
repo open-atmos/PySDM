@@ -230,7 +230,7 @@ def simulation(
     attributes = {
         "multiplicity": discretise_multiplicities(_conc * volume),
         "immersed surface area": _isa,
-        "volume": np.full(n_sd, droplet_volume),
+        "signed water mass": np.full(n_sd, droplet_volume * formulae.constants.rho_w),
     }
     np.testing.assert_almost_equal(attributes["multiplicity"], multiplicity)
     products = (
