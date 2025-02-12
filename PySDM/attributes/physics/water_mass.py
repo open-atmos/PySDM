@@ -38,7 +38,7 @@ class ViewWaterMass(DerivedAttribute):
     def allocate(self, idx):
         pass
 
-    def release(self, idx):
+    def recalculate(self):
         pass
 
 
