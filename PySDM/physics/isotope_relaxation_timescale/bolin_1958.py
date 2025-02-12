@@ -49,21 +49,3 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
     def tau_of_rdrdt_c1(radius, r_dr_dt, c1_coeff):
         """timescale for evaporation of a falling drop with tritium"""
         return -(radius**2) / 3 / r_dr_dt / c1_coeff
-
-    @staticmethod
-    # pylint: disable=too-many-arguments
-    def tau_without_assumptions(
-        const, radius, alpha, D, vent_coeff, rho_env, M, temperature, pvs_water, pvs
-    ):
-        return (
-            alpha
-            * radius**2
-            / 3
-            * const.rho_w
-            / D
-            / vent_coeff
-            / const.Mv
-            * pvs
-            / pvs_water
-            / (rho_env / M - pvs / const.R_STR / temperature)
-        )
