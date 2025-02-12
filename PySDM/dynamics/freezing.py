@@ -27,7 +27,7 @@ class Freezing:
 
         assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
 
-        builder.request_attribute("volume")
+        builder.request_attribute("signed water mass")
         if self.singular or self.record_freezing_temperature:
             builder.request_attribute("freezing temperature")
 

@@ -51,7 +51,6 @@ class Simulation(BasicSimulation):
             "multiplicity": ccn_conc_float * air_volume,
             "dry volume": dry_volume,
             "kappa times dry volume": settings.kappa * dry_volume,
-            "volume": None,
             "immersed surface area": immersed_surface_area,
         }
         attributes["signed water mass"] = settings.formulae.trivia.volume(

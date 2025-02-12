@@ -11,19 +11,7 @@ from PySDM.attributes.impl import (
 )
 
 
-@register_attribute(
-    name="water mass",
-    variant=lambda _, formulae: not formulae.particle_shape_and_density.supports_mixed_phase(),
-)
-class WaterMass(ExtensiveAttribute):
-    def __init__(self, builder):
-        super().__init__(builder, name="water mass")
-
-
-@register_attribute(
-    name="signed water mass",
-    variant=lambda _, formulae: formulae.particle_shape_and_density.supports_mixed_phase(),
-)
+@register_attribute()
 class SignedWaterMass(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name="signed water mass")
@@ -31,9 +19,31 @@ class SignedWaterMass(ExtensiveAttribute):
 
 @register_attribute(
     name="water mass",
+    variant=lambda _, formulae: not formulae.particle_shape_and_density.supports_mixed_phase(),
+)
+class ViewWaterMass(DerivedAttribute):
+    def __init__(self, builder):
+        self.signed_water_mass = builder.get_attribute("signed water mass")
+        self.data = self.signed_water_mass.data
+
+        super().__init__(
+            builder,
+            name="water mass",
+            dependencies=(self.signed_water_mass,),
+        )
+
+    def mark_updated(self):
+        self.signed_water_mass.mark_updated()
+
+    def allocate(self, idx):
+        pass
+
+
+@register_attribute(
+    name="water mass",
     variant=lambda _, formulae: formulae.particle_shape_and_density.supports_mixed_phase(),
 )
-class DerivedWaterMass(DerivedAttribute):
+class AbsWaterMass(DerivedAttribute):
     def __init__(self, builder):
         self.signed_water_mass = builder.get_attribute("signed water mass")
 
