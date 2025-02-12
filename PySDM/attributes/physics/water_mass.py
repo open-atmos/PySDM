@@ -38,6 +38,9 @@ class ViewWaterMass(DerivedAttribute):
     def allocate(self, idx):
         pass
 
+    def release(self, idx):
+        pass
+
 
 @register_attribute(
     name="water mass",
