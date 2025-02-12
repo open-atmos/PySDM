@@ -1,7 +1,7 @@
 """isotope relaxation timescale"""
 
 
-class Zaba2025:
+class ZabaAndArabas2025:
     @staticmethod
     def tau(
         const,
