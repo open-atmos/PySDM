@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from scipy import signal
-from PySDM_examples.utils import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Jensen_and_Nugent_2017
 from PySDM.physics.constants import PER_CENT
 from PySDM.physics import si

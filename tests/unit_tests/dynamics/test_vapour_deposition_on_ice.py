@@ -65,7 +65,6 @@ def test_iwc_lower_after_timestep(
     )
 
 
-
     # act
     T0   = temperature
     iwc_old = particulator.products["ice water content"].get().copy()

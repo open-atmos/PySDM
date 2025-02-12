@@ -1,4 +1,4 @@
-""" tests of the product-class-generating `make_arbitrary_moment_product` function """
+"""tests of the product-class-generating `make_arbitrary_moment_product` function"""
 
 import pytest
 import numpy as np

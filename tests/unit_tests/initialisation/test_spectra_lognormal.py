@@ -1,4 +1,4 @@
-""" tests for lognormal probability distribution """
+"""tests for lognormal probability distribution"""
 
 import numpy as np
 import pytest

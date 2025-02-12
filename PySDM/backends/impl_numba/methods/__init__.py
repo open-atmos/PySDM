@@ -1,4 +1,4 @@
-""" method classes of the CPU backend """
+"""method classes of the CPU backend"""
 
 from .chemistry_methods import ChemistryMethods
 from .collisions_methods import CollisionsMethods

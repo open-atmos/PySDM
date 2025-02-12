@@ -1,6 +1,6 @@
 # Introduction
 
-<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
+<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
 
 PySDM examples are engineered as Jupyter Python notebooks supported by auxiliary Python commons
   that constitute a separate <mark>PySDM-examples</mark> Python package which is also
@@ -121,5 +121,6 @@ The box environment is also featured in the <a href="https://open-atmos.github.i
   - `PySDM_examples.Pierchala_et_al_2022`: reproducing model plots for a <mark>triple-isotope</mark> lab study, including <mark>kinetic fractionation</mark>
 - isotopic relaxation timescale:
   - `PySDM_examples.Miyake_et_al_1968`: incl. comparison of different <mark>ventilation</mark> parameterisations
+  - `PySDM_examples.Bolin_1958`
 - below-cloud <mark>kinetic fractionation</mark>:
   - `PySDM_examples.Gedzelman_and_Arnold_1994`
