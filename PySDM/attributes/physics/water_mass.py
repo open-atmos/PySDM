@@ -24,7 +24,6 @@ class SignedWaterMass(ExtensiveAttribute):
 class ViewWaterMass(DerivedAttribute):
     def __init__(self, builder):
         self.signed_water_mass = builder.get_attribute("signed water mass")
-        self.data = self.signed_water_mass.data
 
         super().__init__(
             builder,
@@ -40,6 +39,9 @@ class ViewWaterMass(DerivedAttribute):
 
     def recalculate(self):
         pass
+
+    def get(self):
+        return self.signed_water_mass.data
 
 
 @register_attribute(
