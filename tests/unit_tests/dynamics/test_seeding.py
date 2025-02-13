@@ -200,16 +200,16 @@ class TestSeeding:
                 self.seeding_call_count = 0
                 self.indices = []
 
-            def seeding(
+            def spawn(
                 self,
                 *,
-                seeded_particle_index,
-                number_of_super_particles_to_inject,  # pylint: disable=unused-argument
-                seeded_particle_multiplicity,  # pylint: disable=unused-argument
-                seeded_particle_extensive_attributes,  # pylint: disable=unused-argument
+                spawned_particle_index,
+                number_of_super_particles_to_spawn,  # pylint: disable=unused-argument
+                spawned_particle_multiplicity,  # pylint: disable=unused-argument
+                spawned_particle_extensive_attributes,  # pylint: disable=unused-argument
             ):
                 self.seeding_call_count += 1
-                self.indices.append(seeded_particle_index.to_ndarray())
+                self.indices.append(spawned_particle_index.to_ndarray())
 
             Index = make_Index(backend)
             IndexedStorage = make_IndexedStorage(backend)
