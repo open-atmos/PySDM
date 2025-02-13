@@ -710,6 +710,7 @@
     "usages": [
       "examples/PySDM_examples/Erinin_et_al_2025/__init__.py",
       "examples/PySDM_examples/Erinin_et_al_2025/aerosol.py",
+      "tests/smoke_tests/chamber/erinin_et_al_2025/test_fig_3.py",
       "examples/PySDM_examples/Erinin_et_al_2025/expansion_experiment.ipynb"],
     "title": "Droplet Nucleation In a Rapid Expansion Aerosol Chamber",
     "label": "Erinin et al. 2024 (arXiv:2501.01467)"
