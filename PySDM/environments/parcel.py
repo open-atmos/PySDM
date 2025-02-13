@@ -58,20 +58,13 @@ class Parcel(MoistLagrangian):  # pylint: disable=too-many-instance-attributes
 
         super().register(builder)
 
-        params = (
-            self.initial_water_vapour_mixing_ratio,
-            self.formulae.trivia.th_std(pd0, self.T0),
-            rhod0,
-            self.z0,
-            0,
-        )
-        self["water_vapour_mixing_ratio"][:] = params[0]
-        self["thd"][:] = params[1]
-        self["rhod"][:] = params[2]
-        self["z"][:] = params[3]
-        self["t"][:] = params[4]
-        self._tmp["water_vapour_mixing_ratio"][:] = params[0]
-
+        self["water_vapour_mixing_ratio"][:] = self.initial_water_vapour_mixing_ratio
+        self["thd"][:] = formulae.trivia.th_std(pd0, self.T0)
+        self["rhod"][:] = rhod0
+        self["z"][:] = self.z0
+        self._tmp["water_vapour_mixing_ratio"][
+            :
+        ] = self.initial_water_vapour_mixing_ratio
         self.post_register()
 
     def init_attributes(
