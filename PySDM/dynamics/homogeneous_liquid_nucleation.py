@@ -1,3 +1,5 @@
+"""nucleation of droplets in CCN-void air that spawns new super-droplets"""
+
 import numpy as np
 from PySDM.dynamics.impl import register_dynamic
 from PySDM.dynamics.impl import SuperParticleSpawningDynamic
