@@ -21,6 +21,10 @@ class HomogeneousLiquidNucleation(SuperParticleSpawningDynamic):
         env = {
             k: self.particulator.environment[k].to_ndarray()[0] for k in ("T", "RH")
         }  # TODO #1492: >0D
+
+        if env["RH"] < 1:
+            return
+
         e_s = self.formulae.saturation_vapour_pressure.pvs_water(env["T"])
         j = self.formulae.homogeneous_liquid_nucleation_rate.j_liq_homo(
             env["T"], env["RH"], e_s
