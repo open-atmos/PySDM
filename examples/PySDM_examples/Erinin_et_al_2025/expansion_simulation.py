@@ -57,7 +57,7 @@ def run_expansion(
     attributes = {
         k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "multiplicity")
     }
-    for i, mode in enumerate(aerosol.modes):
+    for mode in aerosol.modes:
         kappa, spectrum = mode["kappa"]["Constant"], mode["spectrum"]
         r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
         v_dry = builder.formulae.trivia.volume(radius=r_dry)
@@ -104,7 +104,7 @@ def run_expansion(
     for _ in range(n_steps):
         particulator.run(steps=1)
         for product in particulator.products.values():
-            if product.name == "dry:dN/dR" or product.name == "wet:dN/dR":
+            if product.name in ("dry:dN/dR", "wet:dN/dR"):
                 continue
             value = product.get()
             if product.name == "t":
