@@ -220,6 +220,7 @@ def simulation(
         environment=Box(dt=time_step, dv=volume),
     )
     builder.add_dynamic(Freezing(singular=False))
+    builder.request_attribute("volume")
 
     if hasattr(spectrum, "s_geom") and spectrum.s_geom == 1:
         _isa, _conc = np.full(n_sd, spectrum.m_mode), np.full(
