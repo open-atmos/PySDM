@@ -1,9 +1,12 @@
+"""tests supporting the
+[Erinin et al. 2025](https://doi.org/10.48550/arXiv.2501.01467) example"""
+
 from pathlib import Path
 import numpy as np
 import pytest
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM.physics import si
 from PySDM_examples import Erinin_et_al_2025
+from PySDM.physics import si
 
 PLOT = False
 
