@@ -3,11 +3,10 @@ adiabatic exponent, moist air, expanding to first order in qv, assuming qt=qv
 """
 
 
-class MoistLeadingTerms:
+class MoistLeadingTerms:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
-    # pylint: disable=too-many-arguments
     @staticmethod
     def gamma(const, vapour_mixing_ratio):
         return (

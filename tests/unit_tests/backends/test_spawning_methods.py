@@ -75,7 +75,7 @@ class TestSpawningMethods:
 
         # act
         with context:
-            particulator.spawning(
+            particulator.spawn(
                 spawned_particle_index=spawned_particle_index,
                 spawned_particle_multiplicity=spawned_particle_multiplicity,
                 spawned_particle_extensive_attributes=spawned_particle_extensive_attributes,
@@ -140,7 +140,7 @@ class TestSpawningMethods:
 
         # act
         with context:
-            particulator.spawning(
+            particulator.spawn(
                 spawned_particle_index=spawned_particle_index_impl,
                 spawned_particle_multiplicity=spawned_particle_multiplicity_impl,
                 spawned_particle_extensive_attributes=spawned_particle_extensive_attributes_impl,

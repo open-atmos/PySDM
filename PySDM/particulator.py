@@ -450,7 +450,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         n_null = self.n_sd - self.attributes.super_droplet_count
         if n_null == 0:
             raise ValueError(
-                "No available null SDs to spawn. Please provide particles with nan filled attributes."
+                "No available null SDs to spawn. Please provide SDs with nan filled attributes."
             )
 
         if number_of_super_particles_to_spawn > n_null:

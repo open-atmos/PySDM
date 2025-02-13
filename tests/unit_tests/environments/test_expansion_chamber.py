@@ -18,7 +18,7 @@ def test_expansion_chamber(backend_instance):
         delta_pressure=np.nan,
         delta_time=np.nan,
     )
-    particulator = Builder(n_sd=1, backend=backend_instance, environment=env).build(
+    _ = Builder(n_sd=1, backend=backend_instance, environment=env).build(
         attributes={
             "multiplicity": np.asarray([1]),
             "water mass": np.asarray([np.nan]),
