@@ -4,25 +4,30 @@
 class ZabaAndArabas2025:
     @staticmethod
     def tau(
-        const,
         radius,
         alpha,
         D_iso,
         vent_coeff_iso,
-        rho_env,
-        M_iso,
-        temperature,
+        k_coeff_iso,
+        e_s_env,
+        rho_liq,
+        T_env,
         Rv,
-        pvs_iso,
+        saturation,
+        R_vap_env,
+        R_vap_eq,
     ):
+        """alpha calcualted in the temperature of a droplet"""
         return (
-            alpha
-            * radius**2
+            radius**2
+            * alpha
+            * rho_liq
             / 3
-            * const.rho_w
-            / D_iso
             / vent_coeff_iso
-            / const.Mv
+            / k_coeff_iso
+            / D_iso
             * Rv
-            / (rho_env / M_iso - pvs_iso / const.R_STR / temperature)
+            * T_env
+            / e_s_env
+            / (saturation * R_vap_env / R_vap_eq - 1)
         )
