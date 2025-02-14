@@ -106,10 +106,10 @@ class TestHomogeneousLiquidNucleation:
             # act & assert
             if check == "j":
                 assert sut.j_liq_homo(
-                    T=1 * si.K, S=1 * si.dimensionless, e_s=1 * si.Pa
+                    T=300 * si.K, S=2 * si.dimensionless, e_s=600 * si.Pa
                 ).check("[frequency] / [volume]")
             elif check == "r":
-                assert sut.r_liq_homo(T=1 * si.K, S=1 * si.dimensionless).check(
+                assert sut.r_liq_homo(T=300 * si.K, S=2 * si.dimensionless).check(
                     "[length]"
                 )
             else:
