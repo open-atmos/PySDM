@@ -1,5 +1,7 @@
 """isotope relaxation timescale"""
 
+import numpy as np
+
 
 class ZabaAndArabas2025:
     @staticmethod
@@ -31,3 +33,7 @@ class ZabaAndArabas2025:
             / e_s_env
             / (saturation * R_vap_env / R_vap_eq - 1)
         )
+
+    @staticmethod
+    def mason_T0_to_Tinf_factor(latant_heat, K, radius, dm_dt):
+        return 1 + latant_heat / 4 / np.pi / K / radius * dm_dt
