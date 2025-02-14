@@ -67,6 +67,7 @@ def make_particulator(
     env["rhod"] = 1.0
 
     builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
+    builder.request_attribute("volume")
 
     return builder.build(
         attributes=attributes,
