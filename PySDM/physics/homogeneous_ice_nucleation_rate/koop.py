@@ -5,7 +5,7 @@ valid for 0.26 < da_w_ice < 0.34
 """
 
 
-class KOOP:  # pylint: disable=too-few-public-methods
+class Koop2000:  # pylint: disable=too-few-public-methods
     def __init__(self, const):
         pass
 
