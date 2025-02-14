@@ -9,4 +9,9 @@ class MurphyKoop:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def ls(const, T):  # pylint: disable=unused-argument
-        return (const.MK05_SUB_C1 + const.MK05_SUB_C2 * T - const.MK05_SUB_C3 * T**2. + const.MK05_SUB_C4 * np.exp(-(T/const.MK05_SUB_C5)**2.)) / const.Mv
+        return (
+            const.MK05_SUB_C1
+            + const.MK05_SUB_C2 * T
+            - const.MK05_SUB_C3 * T**2.0
+            + const.MK05_SUB_C4 * np.exp(-((T / const.MK05_SUB_C5) ** 2.0))
+        ) / const.Mv
