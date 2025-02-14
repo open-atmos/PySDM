@@ -299,6 +299,12 @@ ABIFM_C = np.inf
 J_HET = np.nan
 """ constant ice nucleation rate """
 
+J_LIQ_HOMO = np.nan
+""" constant liquid homogeneous-nucleation rate """
+
+R_LIQ_HOMO = np.nan
+""" constant particle size for liquid homogeneous nucleation """
+
 STRAUB_E_D1 = 0.04 * si.cm
 """ [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1) """
 STRAUB_MU2 = 0.095 * si.cm
