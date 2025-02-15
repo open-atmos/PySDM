@@ -6,7 +6,7 @@ such that it coincides with homogeneous nucleation rate parameterization for pur
 """
 
 
-class KOOP_CORR:  # pylint: disable=too-few-public-methods
+class Koop_Correction:  # pylint: disable=too-few-public-methods
     def __init__(self, const):
         pass
 

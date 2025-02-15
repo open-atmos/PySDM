@@ -18,12 +18,14 @@ class Settings:
         N_solution_droplet: float,
         r_solution_droplet: float,
         kappa: float,
+        rate: str,
     ):
 
         self.n_sd = n_sd
         self.w_updraft = w_updraft
         self.r_solution_droplet = r_solution_droplet
         self.N_solution_drople = N_solution_droplet
+        self.rate = rate
 
         self.mass_of_dry_air = 1000 * si.kilogram
         self.initial_pressure = 220 * si.hectopascals
@@ -33,7 +35,8 @@ class Settings:
 
         self.formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
-            homogeneous_ice_nucleation_rate="Constant",
+            homogeneous_ice_nucleation_rate=rate,
+ #           homogeneous_ice_nucleation_rate="Constant",
             constants={"J_HOM": 1.e15},
         )
         const = self.formulae.constants
@@ -71,6 +74,8 @@ r_solution_droplets = ( 0.0555 * si.micrometre, )
 
 kappas = ( 0.64, )
 
+hom_rates = ( "Constant","Koop2000", "Koop_Correction")
+
 setups = []
 for n_sd in n_sds:
     for w_updraft in w_updrafts:
@@ -78,13 +83,15 @@ for n_sd in n_sds:
             for N_solution_droplet in N_solution_droplets:
                 for r_solution_droplet in r_solution_droplets:
                     for kappa in kappas:
-                        setups.append(
-                            Settings(
-                                n_sd=n_sd,
-                                w_updraft=w_updraft,
-                                T0=T0,
-                                N_solution_droplet=N_solution_droplet,
-                                r_solution_droplet=r_solution_droplet,
-                                kappa=kappa,
+                        for rate in hom_rates:
+                            setups.append(
+                                Settings(
+                                    n_sd=n_sd,
+                                    w_updraft=w_updraft,
+                                    T0=T0,
+                                    N_solution_droplet=N_solution_droplet,
+                                    r_solution_droplet=r_solution_droplet,
+                                    kappa=kappa,
+                                    rate=rate,
+                                )
                             )
-                        )

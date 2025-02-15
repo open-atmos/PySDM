@@ -5,7 +5,7 @@ at water saturation
 """
 
 
-class KOOP_MURRAY:  # pylint: disable=too-few-public-methods
+class KoopMurray2016:  # pylint: disable=too-few-public-methods
     def __init__(self, const):
         pass
 

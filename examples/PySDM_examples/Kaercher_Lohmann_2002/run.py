@@ -41,7 +41,7 @@ def plot( output, setting, pp ):
     fig, axs = pyplot.subplots(3, 2, figsize=(10, 10), sharex=True)
 
 
-    title = f"w: {setting.w_updraft:.2f} m s-1    T0: {setting.initial_temperature:.2f} K   Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f}"
+    title = f"w: {setting.w_updraft:.2f} m s-1    T0: {setting.initial_temperature:.2f} K   Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f} rate: " + setting.rate
     # $\mathrm{m \, s^{-1}}$
     fig.suptitle(title)
 
@@ -95,7 +95,7 @@ def plot( output, setting, pp ):
     )
     #axWC.set_yscale('log')
     axWC.legend()
-    axWC.set_ylim(-0.5, 10)
+    axWC.set_ylim(-0.5, 100)
     axWC.set_xlabel("time [s]")
     axWC.set_ylabel(r"mass content [$\mathrm{\mu g \, kg^{-1}}$]")
 
