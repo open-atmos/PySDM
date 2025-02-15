@@ -24,7 +24,7 @@ class Settings:
         self.n_sd = n_sd
         self.w_updraft = w_updraft
         self.r_solution_droplet = r_solution_droplet
-        self.N_solution_drople = N_solution_droplet
+        self.N_solution_droplet = N_solution_droplet
         self.rate = rate
 
         self.mass_of_dry_air = 1000 * si.kilogram
@@ -36,7 +36,6 @@ class Settings:
         self.formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             homogeneous_ice_nucleation_rate=rate,
- #           homogeneous_ice_nucleation_rate="Constant",
             constants={"J_HOM": 1.e15},
         )
         const = self.formulae.constants

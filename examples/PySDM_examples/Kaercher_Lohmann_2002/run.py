@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from matplotlib import pyplot
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
@@ -7,7 +8,28 @@ from simulation import Simulation
 from reference import critical_supersaturation
 
 
-kgtoug = 1.e9
+kg_to_µg = 1.e9
+m_to_µm  = 1.e6
+
+def plot_size_distribution(r_wet, r_dry, N, setting, pp ):
+
+    r_wet, r_dry = r_wet * m_to_µm, r_dry * m_to_µm
+
+    title = f"N0: {setting.N_solution_droplet*1e-6:.2E} cm-3  R0: {setting.r_solution_droplet*m_to_µm:.2E} µm Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f}"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1,1,1)
+
+    ax.scatter( r_dry, N, color="red", label = "dry" )
+    ax.scatter( r_wet, N, color="blue", label = "wet" )
+    ax.set_title(title)
+    ax.legend()
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.set_xlabel(r"radius [µm]")
+    ax.set_ylabel("multiplicty")
+
+    pp.savefig()
 
 
 def plot( output, setting, pp ):
@@ -24,10 +46,10 @@ def plot( output, setting, pp ):
 
     print(f"{rh=},{rhi=},{rhi_crit=}")
 
-    lwc = np.asarray(output["LWC"]) * kgtoug
-    iwc = abs(np.asarray(output["IWC"])) * kgtoug
+    lwc = np.asarray(output["LWC"]) * kg_to_µg
+    iwc = abs(np.asarray(output["IWC"])) * kg_to_µg
     twc = lwc + iwc
-    qv = np.asarray(output["qv"]) * kgtoug
+    qv = np.asarray(output["qv"]) * kg_to_µg
 
     print(f"{lwc=},{iwc=},{twc=},{qv=}")
 
@@ -42,7 +64,7 @@ def plot( output, setting, pp ):
 
 
     title = f"w: {setting.w_updraft:.2f} m s-1    T0: {setting.initial_temperature:.2f} K   Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f} rate: " + setting.rate
-    # $\mathrm{m \, s^{-1}}$
+
     fig.suptitle(title)
 
     axTz = axs[0,0]
@@ -134,6 +156,7 @@ def plot( output, setting, pp ):
     pp.savefig()
 
 pp = PdfPages( "hom_freezing.pdf" )
+pp_size = PdfPages( "hom_freezing_initial_size_distribution.pdf" )
     
 
 for setting in setups:
@@ -143,8 +166,11 @@ for setting in setups:
 
     output = model.run()
 
+    plot_size_distribution( model.r_wet, model.r_dry, model.multiplicities, setting, pp_size)
+
     plot( output, setting, pp )
 
 
     
 pp.close()
+pp_size.close()

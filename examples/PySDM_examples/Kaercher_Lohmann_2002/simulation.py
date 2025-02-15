@@ -51,19 +51,18 @@ class Simulation:
         builder.add_dynamic(Freezing(singular=False,homogeneous_freezing=True,immersion_freezing=False))
 
 
-        multiplicities = discretise_multiplicities(settings.specific_concentration * env.mass_of_dry_air)
-        r_dry = settings.r_dry
-        v_dry = settings.formulae.trivia.volume(radius=r_dry)
+        self.multiplicities = discretise_multiplicities(settings.specific_concentration * env.mass_of_dry_air)
+        self.r_dry = settings.r_dry
+        v_dry = settings.formulae.trivia.volume(radius=self.r_dry)
         kappa = settings.kappa
 
-        r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
-
+        self.r_wet = equilibrate_wet_radii(r_dry=self.r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
         
         attributes = {
-            "multiplicity": multiplicities,
+            "multiplicity": self.multiplicities,
             'dry volume': v_dry,
             'kappa times dry volume': kappa * v_dry,
-            'volume': formulae.trivia.volume(radius=r_wet),
+            'volume': formulae.trivia.volume(radius=self.r_wet),
         }
                
                
@@ -73,7 +72,6 @@ class Simulation:
             PySDM_products.Time(name="t"),
             PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
             PySDM_products.AmbientRelativeHumidity(name="RH_ice", unit="%"),
-            #PySDM_products.AmbientRelativeHumidity(var="RH",name="RH_ice", ice=True, unit="%"),
             PySDM_products.AmbientTemperature(name="T"),
             PySDM_products.WaterMixingRatio(name="water", radius_range=(0, np.inf)),
             PySDM_products.WaterMixingRatio(name="ice", radius_range=(-np.inf, 0)),
@@ -93,9 +91,6 @@ class Simulation:
             PySDM_products.MeanRadius(
                     name='r_i', unit='µm',
                     radius_range=(-np.inf,0)),
-            # PySDM_products.ParticleConcentration(
-            #         name='n_c', unit='1/kg',
-            #         radius_range=(0, np.inf)),
             ]
 
         self.particulator = builder.build(attributes, products)
