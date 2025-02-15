@@ -19,7 +19,6 @@ class Simulation:
         #     self.n_substeps += 1
         
         dt = settings.dt
-        T0 = settings.T0
 
         formulae = settings.formulae
 
@@ -27,9 +26,9 @@ class Simulation:
                 mixed_phase = True,
                 dt=dt,
                 mass_of_dry_air=settings.mass_of_dry_air,
-                p0=settings.p0,
+                p0=settings.initial_pressure,
                 initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                T0=settings.T0,
+                T0=settings.initial_temperature,
                 w=settings.w_updraft,
             )
         
@@ -56,13 +55,8 @@ class Simulation:
         r_dry = settings.r_dry
         v_dry = settings.formulae.trivia.volume(radius=r_dry)
         kappa = settings.kappa
-        
-        # print( multiplicities )
-        # print( settings.specific_concentration * env.mass_of_dry_air)
-
 
         r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
-        # print( f"{kappa=},{r_wet=},{r_dry=}," )
 
         
         attributes = {
@@ -78,8 +72,8 @@ class Simulation:
             PySDM_products.ParcelDisplacement(name="z"),
             PySDM_products.Time(name="t"),
             PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
-            #PySDM_products.AmbientRelativeHumidity(name="RH_ice", unit="%"),
-            PySDM_products.AmbientRelativeHumidity(var="RH",name="RH_ice", ice=True, unit="%"),
+            PySDM_products.AmbientRelativeHumidity(name="RH_ice", unit="%"),
+            #PySDM_products.AmbientRelativeHumidity(var="RH",name="RH_ice", ice=True, unit="%"),
             PySDM_products.AmbientTemperature(name="T"),
             PySDM_products.WaterMixingRatio(name="water", radius_range=(0, np.inf)),
             PySDM_products.WaterMixingRatio(name="ice", radius_range=(-np.inf, 0)),
@@ -105,7 +99,6 @@ class Simulation:
             ]
 
         self.particulator = builder.build(attributes, products)
-        builder.request_attribute("critical supersaturation")
 
 
         self.n_output = settings.n_output

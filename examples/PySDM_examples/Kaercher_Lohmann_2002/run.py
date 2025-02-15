@@ -2,9 +2,9 @@ from matplotlib import pyplot
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 
-from PySDM_examples.Kaercher_Lohmann_2002.settings import setups
-from PySDM_examples.Kaercher_Lohmann_2002.simulation import Simulation
-from PySDM_examples.Kaercher_Lohmann_2002.reference import critical_supersaturation
+from settings import setups
+from simulation import Simulation
+from reference import critical_supersaturation
 
 
 kgtoug = 1.e9
@@ -19,16 +19,15 @@ def plot( output, setting, pp ):
     
     rh = output["RH"]
     rhi = output["RHi"] 
-    rhi_crit = critical_supersaturation(temperature) 
+    rhi_crit = critical_supersaturation(temperature) * 100.
 
 
-    print(f"{rh=},{rhi=}")
+    print(f"{rh=},{rhi=},{rhi_crit=}")
 
     lwc = np.asarray(output["LWC"]) * kgtoug
     iwc = abs(np.asarray(output["IWC"])) * kgtoug
-    #twc = np.asarray(output["TWC"]) * kgtoug
     twc = lwc + iwc
-    qv = output["qv"]
+    qv = np.asarray(output["qv"]) * kgtoug
 
     print(f"{lwc=},{iwc=},{twc=},{qv=}")
 
@@ -38,12 +37,11 @@ def plot( output, setting, pp ):
     ri = output["ri"]
     print(f"{ns=},{ni=},{rs=},{ri=},")
 
-    print(f"{z=},")
 
     fig, axs = pyplot.subplots(3, 2, figsize=(10, 10), sharex=True)
 
 
-    title = f"w: {setting.w_updraft:.2f} m s-1    T0: {setting.T0:.2f} K   Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f}"
+    title = f"w: {setting.w_updraft:.2f} m s-1    T0: {setting.initial_temperature:.2f} K   Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f}"
     # $\mathrm{m \, s^{-1}}$
     fig.suptitle(title)
 
@@ -143,16 +141,7 @@ for setting in setups:
 
     model = Simulation(setting)
 
-    
-   
-
-
-
     output = model.run()
-
-
-     #print( output )
-
 
     plot( output, setting, pp )
 
