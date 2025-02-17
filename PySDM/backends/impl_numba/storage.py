@@ -208,3 +208,6 @@ class Storage(StorageBase):
 
     def exp(self):
         self.data[:] = np.exp(self.data)
+
+    def abs(self):
+        self.data[:] = np.abs(self.data)
