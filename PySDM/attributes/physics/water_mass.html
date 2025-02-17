@@ -69,10 +69,49 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="class" href="#WaterMass">WaterMass</a>
+                    <a class="class" href="#SignedWaterMass">SignedWaterMass</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#WaterMass.__init__">WaterMass</a>
+                                <a class="function" href="#SignedWaterMass.__init__">SignedWaterMass</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#ViewWaterMass">ViewWaterMass</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#ViewWaterMass.__init__">ViewWaterMass</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#ViewWaterMass.signed_water_mass">signed_water_mass</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ViewWaterMass.mark_updated">mark_updated</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ViewWaterMass.allocate">allocate</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ViewWaterMass.recalculate">recalculate</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#ViewWaterMass.get">get</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#AbsWaterMass">AbsWaterMass</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#AbsWaterMass.__init__">AbsWaterMass</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#AbsWaterMass.signed_water_mass">signed_water_mass</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#AbsWaterMass.recalculate">recalculate</a>
                         </li>
                 </ul>
 
@@ -93,8 +132,8 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../attributes.html">attributes</a><wbr>.<a href="./../physics.html">physics</a><wbr>.water_mass    </h1>
 
-                        <div class="docstring"><p>particle mass, derived attribute for coalescence
-in simulation involving mixed-phase clouds, positive values correspond to
+                        <div class="docstring"><p>particle mass attributes
+in simulations involving mixed-phase clouds, positive values correspond to
 liquid water and negative values to ice</p>
 </div>
 
@@ -103,55 +142,105 @@ liquid water and negative values to ice</p>
                         <label class="view-source-button" for="mod-water_mass-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">particle mass, derived attribute for coalescence</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">in simulation involving mixed-phase clouds, positive values correspond to</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">particle mass attributes</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">in simulations involving mixed-phase clouds, positive values correspond to</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">liquid water and negative values to ice</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.attributes.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtensiveAttribute</span><span class="p">,</span> <span class="n">register_attribute</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WaterMass</span><span class="p">(</span><span class="n">ExtensiveAttribute</span><span class="p">):</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">)</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.attributes.impl</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="n">ExtensiveAttribute</span><span class="p">,</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="n">DerivedAttribute</span><span class="p">,</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">register_attribute</span><span class="p">,</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="p">)</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SignedWaterMass</span><span class="p">(</span><span class="n">ExtensiveAttribute</span><span class="p">):</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="nd">@register_attribute</span><span class="p">(</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="n">variant</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">,</span> <span class="n">formulae</span><span class="p">:</span> <span class="ow">not</span> <span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">(),</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="p">)</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ViewWaterMass</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,),</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="p">)</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mark_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">()</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="k">pass</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="k">pass</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a><span class="nd">@register_attribute</span><span class="p">(</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>    <span class="n">variant</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">,</span> <span class="n">formulae</span><span class="p">:</span> <span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">(),</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="p">)</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AbsWaterMass</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,),</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="p">)</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
 </span></pre></div>
 
 
             </section>
-                <section id="WaterMass">
-                            <input id="WaterMass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="SignedWaterMass">
+                            <input id="SignedWaterMass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
                     <div class="decorator decorator-register_attribute">@register_attribute()</div>
 
     <span class="def">class</span>
-    <span class="name">WaterMass</span><wbr>(<span class="base"><a href="../impl/extensive_attribute.html#ExtensiveAttribute">PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute</a></span>):
+    <span class="name">SignedWaterMass</span><wbr>(<span class="base"><a href="../impl/extensive_attribute.html#ExtensiveAttribute">PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute</a></span>):
 
-                <label class="view-source-button" for="WaterMass-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="SignedWaterMass-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#WaterMass"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass-11"><a href="#WaterMass-11"><span class="linenos">11</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
-</span><span id="WaterMass-12"><a href="#WaterMass-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WaterMass</span><span class="p">(</span><span class="n">ExtensiveAttribute</span><span class="p">):</span>
-</span><span id="WaterMass-13"><a href="#WaterMass-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="WaterMass-14"><a href="#WaterMass-14"><span class="linenos">14</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">)</span>
+    <a class="headerlink" href="#SignedWaterMass"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SignedWaterMass-15"><a href="#SignedWaterMass-15"><span class="linenos">15</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="SignedWaterMass-16"><a href="#SignedWaterMass-16"><span class="linenos">16</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SignedWaterMass</span><span class="p">(</span><span class="n">ExtensiveAttribute</span><span class="p">):</span>
+</span><span id="SignedWaterMass-17"><a href="#SignedWaterMass-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="SignedWaterMass-18"><a href="#SignedWaterMass-18"><span class="linenos">18</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
     
 
-                            <div id="WaterMass.__init__" class="classattr">
-                                        <input id="WaterMass.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="SignedWaterMass.__init__" class="classattr">
+                                        <input id="SignedWaterMass.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">WaterMass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+        <span class="name">SignedWaterMass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
 
-                <label class="view-source-button" for="WaterMass.__init__-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="SignedWaterMass.__init__-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#WaterMass.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass.__init__-13"><a href="#WaterMass.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="WaterMass.__init__-14"><a href="#WaterMass.__init__-14"><span class="linenos">14</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">)</span>
+    <a class="headerlink" href="#SignedWaterMass.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SignedWaterMass.__init__-17"><a href="#SignedWaterMass.__init__-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="SignedWaterMass.__init__-18"><a href="#SignedWaterMass.__init__-18"><span class="linenos">18</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -162,22 +251,311 @@ liquid water and negative values to ice</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="../impl/base_attribute.html#BaseAttribute">PySDM.attributes.impl.base_attribute.BaseAttribute</a></dt>
-                                <dd id="WaterMass.init" class="function"><a href="../impl/base_attribute.html#BaseAttribute.init">init</a></dd>
+                                <dd id="SignedWaterMass.init" class="function"><a href="../impl/base_attribute.html#BaseAttribute.init">init</a></dd>
 
             </div>
             <div><dt><a href="../impl/attribute.html#Attribute">PySDM.attributes.impl.attribute.Attribute</a></dt>
-                                <dd id="WaterMass.particulator" class="variable"><a href="../impl/attribute.html#Attribute.particulator">particulator</a></dd>
-                <dd id="WaterMass.timestamp" class="variable"><a href="../impl/attribute.html#Attribute.timestamp">timestamp</a></dd>
-                <dd id="WaterMass.data" class="variable"><a href="../impl/attribute.html#Attribute.data">data</a></dd>
-                <dd id="WaterMass.dtype" class="variable"><a href="../impl/attribute.html#Attribute.dtype">dtype</a></dd>
-                <dd id="WaterMass.n_vector_components" class="variable"><a href="../impl/attribute.html#Attribute.n_vector_components">n_vector_components</a></dd>
-                <dd id="WaterMass.name" class="variable"><a href="../impl/attribute.html#Attribute.name">name</a></dd>
-                <dd id="WaterMass.formulae" class="variable"><a href="../impl/attribute.html#Attribute.formulae">formulae</a></dd>
-                <dd id="WaterMass.allocate" class="function"><a href="../impl/attribute.html#Attribute.allocate">allocate</a></dd>
-                <dd id="WaterMass.set_data" class="function"><a href="../impl/attribute.html#Attribute.set_data">set_data</a></dd>
-                <dd id="WaterMass.get" class="function"><a href="../impl/attribute.html#Attribute.get">get</a></dd>
-                <dd id="WaterMass.update" class="function"><a href="../impl/attribute.html#Attribute.update">update</a></dd>
-                <dd id="WaterMass.mark_updated" class="function"><a href="../impl/attribute.html#Attribute.mark_updated">mark_updated</a></dd>
+                                <dd id="SignedWaterMass.particulator" class="variable"><a href="../impl/attribute.html#Attribute.particulator">particulator</a></dd>
+                <dd id="SignedWaterMass.timestamp" class="variable"><a href="../impl/attribute.html#Attribute.timestamp">timestamp</a></dd>
+                <dd id="SignedWaterMass.data" class="variable"><a href="../impl/attribute.html#Attribute.data">data</a></dd>
+                <dd id="SignedWaterMass.dtype" class="variable"><a href="../impl/attribute.html#Attribute.dtype">dtype</a></dd>
+                <dd id="SignedWaterMass.n_vector_components" class="variable"><a href="../impl/attribute.html#Attribute.n_vector_components">n_vector_components</a></dd>
+                <dd id="SignedWaterMass.name" class="variable"><a href="../impl/attribute.html#Attribute.name">name</a></dd>
+                <dd id="SignedWaterMass.formulae" class="variable"><a href="../impl/attribute.html#Attribute.formulae">formulae</a></dd>
+                <dd id="SignedWaterMass.allocate" class="function"><a href="../impl/attribute.html#Attribute.allocate">allocate</a></dd>
+                <dd id="SignedWaterMass.set_data" class="function"><a href="../impl/attribute.html#Attribute.set_data">set_data</a></dd>
+                <dd id="SignedWaterMass.get" class="function"><a href="../impl/attribute.html#Attribute.get">get</a></dd>
+                <dd id="SignedWaterMass.update" class="function"><a href="../impl/attribute.html#Attribute.update">update</a></dd>
+                <dd id="SignedWaterMass.mark_updated" class="function"><a href="../impl/attribute.html#Attribute.mark_updated">mark_updated</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="ViewWaterMass">
+                            <input id="ViewWaterMass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator decorator-register_attribute">@register_attribute(name=&#39;water mass&#39;, variant=lambda _, formulae: not formulae.particle_shape_and_density.supports_mixed_phase())</div>
+
+    <span class="def">class</span>
+    <span class="name">ViewWaterMass</span><wbr>(<span class="base"><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></span>):
+
+                <label class="view-source-button" for="ViewWaterMass-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ViewWaterMass"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ViewWaterMass-21"><a href="#ViewWaterMass-21"><span class="linenos">21</span></a><span class="nd">@register_attribute</span><span class="p">(</span>
+</span><span id="ViewWaterMass-22"><a href="#ViewWaterMass-22"><span class="linenos">22</span></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="ViewWaterMass-23"><a href="#ViewWaterMass-23"><span class="linenos">23</span></a>    <span class="n">variant</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">,</span> <span class="n">formulae</span><span class="p">:</span> <span class="ow">not</span> <span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">(),</span>
+</span><span id="ViewWaterMass-24"><a href="#ViewWaterMass-24"><span class="linenos">24</span></a><span class="p">)</span>
+</span><span id="ViewWaterMass-25"><a href="#ViewWaterMass-25"><span class="linenos">25</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ViewWaterMass</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
+</span><span id="ViewWaterMass-26"><a href="#ViewWaterMass-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="ViewWaterMass-27"><a href="#ViewWaterMass-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="ViewWaterMass-28"><a href="#ViewWaterMass-28"><span class="linenos">28</span></a>
+</span><span id="ViewWaterMass-29"><a href="#ViewWaterMass-29"><span class="linenos">29</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="ViewWaterMass-30"><a href="#ViewWaterMass-30"><span class="linenos">30</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="ViewWaterMass-31"><a href="#ViewWaterMass-31"><span class="linenos">31</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="ViewWaterMass-32"><a href="#ViewWaterMass-32"><span class="linenos">32</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,),</span>
+</span><span id="ViewWaterMass-33"><a href="#ViewWaterMass-33"><span class="linenos">33</span></a>        <span class="p">)</span>
+</span><span id="ViewWaterMass-34"><a href="#ViewWaterMass-34"><span class="linenos">34</span></a>
+</span><span id="ViewWaterMass-35"><a href="#ViewWaterMass-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mark_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ViewWaterMass-36"><a href="#ViewWaterMass-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">()</span>
+</span><span id="ViewWaterMass-37"><a href="#ViewWaterMass-37"><span class="linenos">37</span></a>
+</span><span id="ViewWaterMass-38"><a href="#ViewWaterMass-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+</span><span id="ViewWaterMass-39"><a href="#ViewWaterMass-39"><span class="linenos">39</span></a>        <span class="k">pass</span>
+</span><span id="ViewWaterMass-40"><a href="#ViewWaterMass-40"><span class="linenos">40</span></a>
+</span><span id="ViewWaterMass-41"><a href="#ViewWaterMass-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ViewWaterMass-42"><a href="#ViewWaterMass-42"><span class="linenos">42</span></a>        <span class="k">pass</span>
+</span><span id="ViewWaterMass-43"><a href="#ViewWaterMass-43"><span class="linenos">43</span></a>
+</span><span id="ViewWaterMass-44"><a href="#ViewWaterMass-44"><span class="linenos">44</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ViewWaterMass-45"><a href="#ViewWaterMass-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span>
+</span></pre></div>
+
+
+    
+
+                            <div id="ViewWaterMass.__init__" class="classattr">
+                                        <input id="ViewWaterMass.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">ViewWaterMass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+
+                <label class="view-source-button" for="ViewWaterMass.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ViewWaterMass.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ViewWaterMass.__init__-26"><a href="#ViewWaterMass.__init__-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="ViewWaterMass.__init__-27"><a href="#ViewWaterMass.__init__-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="ViewWaterMass.__init__-28"><a href="#ViewWaterMass.__init__-28"><span class="linenos">28</span></a>
+</span><span id="ViewWaterMass.__init__-29"><a href="#ViewWaterMass.__init__-29"><span class="linenos">29</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="ViewWaterMass.__init__-30"><a href="#ViewWaterMass.__init__-30"><span class="linenos">30</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="ViewWaterMass.__init__-31"><a href="#ViewWaterMass.__init__-31"><span class="linenos">31</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="ViewWaterMass.__init__-32"><a href="#ViewWaterMass.__init__-32"><span class="linenos">32</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,),</span>
+</span><span id="ViewWaterMass.__init__-33"><a href="#ViewWaterMass.__init__-33"><span class="linenos">33</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="ViewWaterMass.signed_water_mass" class="classattr">
+                                <div class="attr variable">
+            <span class="name">signed_water_mass</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ViewWaterMass.signed_water_mass"></a>
+    
+    
+
+                            </div>
+                            <div id="ViewWaterMass.mark_updated" class="classattr">
+                                        <input id="ViewWaterMass.mark_updated-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">mark_updated</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="ViewWaterMass.mark_updated-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ViewWaterMass.mark_updated"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ViewWaterMass.mark_updated-35"><a href="#ViewWaterMass.mark_updated-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mark_updated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ViewWaterMass.mark_updated-36"><a href="#ViewWaterMass.mark_updated-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="ViewWaterMass.allocate" class="classattr">
+                                        <input id="ViewWaterMass.allocate-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">allocate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">idx</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="ViewWaterMass.allocate-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ViewWaterMass.allocate"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ViewWaterMass.allocate-38"><a href="#ViewWaterMass.allocate-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+</span><span id="ViewWaterMass.allocate-39"><a href="#ViewWaterMass.allocate-39"><span class="linenos">39</span></a>        <span class="k">pass</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="ViewWaterMass.recalculate" class="classattr">
+                                        <input id="ViewWaterMass.recalculate-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">recalculate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="ViewWaterMass.recalculate-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ViewWaterMass.recalculate"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ViewWaterMass.recalculate-41"><a href="#ViewWaterMass.recalculate-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ViewWaterMass.recalculate-42"><a href="#ViewWaterMass.recalculate-42"><span class="linenos">42</span></a>        <span class="k">pass</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="ViewWaterMass.get" class="classattr">
+                                        <input id="ViewWaterMass.get-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="ViewWaterMass.get-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ViewWaterMass.get"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ViewWaterMass.get-44"><a href="#ViewWaterMass.get-44"><span class="linenos">44</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="ViewWaterMass.get-45"><a href="#ViewWaterMass.get-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></dt>
+                                <dd id="ViewWaterMass.dependencies" class="variable"><a href="../impl/derived_attribute.html#DerivedAttribute.dependencies">dependencies</a></dd>
+                <dd id="ViewWaterMass.update" class="function"><a href="../impl/derived_attribute.html#DerivedAttribute.update">update</a></dd>
+
+            </div>
+            <div><dt><a href="../impl/attribute.html#Attribute">PySDM.attributes.impl.attribute.Attribute</a></dt>
+                                <dd id="ViewWaterMass.particulator" class="variable"><a href="../impl/attribute.html#Attribute.particulator">particulator</a></dd>
+                <dd id="ViewWaterMass.timestamp" class="variable"><a href="../impl/attribute.html#Attribute.timestamp">timestamp</a></dd>
+                <dd id="ViewWaterMass.data" class="variable"><a href="../impl/attribute.html#Attribute.data">data</a></dd>
+                <dd id="ViewWaterMass.dtype" class="variable"><a href="../impl/attribute.html#Attribute.dtype">dtype</a></dd>
+                <dd id="ViewWaterMass.n_vector_components" class="variable"><a href="../impl/attribute.html#Attribute.n_vector_components">n_vector_components</a></dd>
+                <dd id="ViewWaterMass.name" class="variable"><a href="../impl/attribute.html#Attribute.name">name</a></dd>
+                <dd id="ViewWaterMass.formulae" class="variable"><a href="../impl/attribute.html#Attribute.formulae">formulae</a></dd>
+                <dd id="ViewWaterMass.set_data" class="function"><a href="../impl/attribute.html#Attribute.set_data">set_data</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="AbsWaterMass">
+                            <input id="AbsWaterMass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator decorator-register_attribute">@register_attribute(name=&#39;water mass&#39;, variant=lambda _, formulae: formulae.particle_shape_and_density.supports_mixed_phase())</div>
+
+    <span class="def">class</span>
+    <span class="name">AbsWaterMass</span><wbr>(<span class="base"><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></span>):
+
+                <label class="view-source-button" for="AbsWaterMass-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AbsWaterMass"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AbsWaterMass-48"><a href="#AbsWaterMass-48"><span class="linenos">48</span></a><span class="nd">@register_attribute</span><span class="p">(</span>
+</span><span id="AbsWaterMass-49"><a href="#AbsWaterMass-49"><span class="linenos">49</span></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="AbsWaterMass-50"><a href="#AbsWaterMass-50"><span class="linenos">50</span></a>    <span class="n">variant</span><span class="o">=</span><span class="k">lambda</span> <span class="n">_</span><span class="p">,</span> <span class="n">formulae</span><span class="p">:</span> <span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">(),</span>
+</span><span id="AbsWaterMass-51"><a href="#AbsWaterMass-51"><span class="linenos">51</span></a><span class="p">)</span>
+</span><span id="AbsWaterMass-52"><a href="#AbsWaterMass-52"><span class="linenos">52</span></a><span class="k">class</span><span class="w"> </span><span class="nc">AbsWaterMass</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
+</span><span id="AbsWaterMass-53"><a href="#AbsWaterMass-53"><span class="linenos">53</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="AbsWaterMass-54"><a href="#AbsWaterMass-54"><span class="linenos">54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="AbsWaterMass-55"><a href="#AbsWaterMass-55"><span class="linenos">55</span></a>
+</span><span id="AbsWaterMass-56"><a href="#AbsWaterMass-56"><span class="linenos">56</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="AbsWaterMass-57"><a href="#AbsWaterMass-57"><span class="linenos">57</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="AbsWaterMass-58"><a href="#AbsWaterMass-58"><span class="linenos">58</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="AbsWaterMass-59"><a href="#AbsWaterMass-59"><span class="linenos">59</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,),</span>
+</span><span id="AbsWaterMass-60"><a href="#AbsWaterMass-60"><span class="linenos">60</span></a>        <span class="p">)</span>
+</span><span id="AbsWaterMass-61"><a href="#AbsWaterMass-61"><span class="linenos">61</span></a>
+</span><span id="AbsWaterMass-62"><a href="#AbsWaterMass-62"><span class="linenos">62</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AbsWaterMass-63"><a href="#AbsWaterMass-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="AbsWaterMass-64"><a href="#AbsWaterMass-64"><span class="linenos">64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            <div id="AbsWaterMass.__init__" class="classattr">
+                                        <input id="AbsWaterMass.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">AbsWaterMass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+
+                <label class="view-source-button" for="AbsWaterMass.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AbsWaterMass.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AbsWaterMass.__init__-53"><a href="#AbsWaterMass.__init__-53"><span class="linenos">53</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="AbsWaterMass.__init__-54"><a href="#AbsWaterMass.__init__-54"><span class="linenos">54</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="AbsWaterMass.__init__-55"><a href="#AbsWaterMass.__init__-55"><span class="linenos">55</span></a>
+</span><span id="AbsWaterMass.__init__-56"><a href="#AbsWaterMass.__init__-56"><span class="linenos">56</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="AbsWaterMass.__init__-57"><a href="#AbsWaterMass.__init__-57"><span class="linenos">57</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="AbsWaterMass.__init__-58"><a href="#AbsWaterMass.__init__-58"><span class="linenos">58</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;water mass&quot;</span><span class="p">,</span>
+</span><span id="AbsWaterMass.__init__-59"><a href="#AbsWaterMass.__init__-59"><span class="linenos">59</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,),</span>
+</span><span id="AbsWaterMass.__init__-60"><a href="#AbsWaterMass.__init__-60"><span class="linenos">60</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="AbsWaterMass.signed_water_mass" class="classattr">
+                                <div class="attr variable">
+            <span class="name">signed_water_mass</span>
+
+        
+    </div>
+    <a class="headerlink" href="#AbsWaterMass.signed_water_mass"></a>
+    
+    
+
+                            </div>
+                            <div id="AbsWaterMass.recalculate" class="classattr">
+                                        <input id="AbsWaterMass.recalculate-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">recalculate</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="AbsWaterMass.recalculate-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#AbsWaterMass.recalculate"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="AbsWaterMass.recalculate-62"><a href="#AbsWaterMass.recalculate-62"><span class="linenos">62</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="AbsWaterMass.recalculate-63"><a href="#AbsWaterMass.recalculate-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+</span><span id="AbsWaterMass.recalculate-64"><a href="#AbsWaterMass.recalculate-64"><span class="linenos">64</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></dt>
+                                <dd id="AbsWaterMass.dependencies" class="variable"><a href="../impl/derived_attribute.html#DerivedAttribute.dependencies">dependencies</a></dd>
+                <dd id="AbsWaterMass.update" class="function"><a href="../impl/derived_attribute.html#DerivedAttribute.update">update</a></dd>
+                <dd id="AbsWaterMass.mark_updated" class="function"><a href="../impl/derived_attribute.html#DerivedAttribute.mark_updated">mark_updated</a></dd>
+
+            </div>
+            <div><dt><a href="../impl/attribute.html#Attribute">PySDM.attributes.impl.attribute.Attribute</a></dt>
+                                <dd id="AbsWaterMass.particulator" class="variable"><a href="../impl/attribute.html#Attribute.particulator">particulator</a></dd>
+                <dd id="AbsWaterMass.timestamp" class="variable"><a href="../impl/attribute.html#Attribute.timestamp">timestamp</a></dd>
+                <dd id="AbsWaterMass.data" class="variable"><a href="../impl/attribute.html#Attribute.data">data</a></dd>
+                <dd id="AbsWaterMass.dtype" class="variable"><a href="../impl/attribute.html#Attribute.dtype">dtype</a></dd>
+                <dd id="AbsWaterMass.n_vector_components" class="variable"><a href="../impl/attribute.html#Attribute.n_vector_components">n_vector_components</a></dd>
+                <dd id="AbsWaterMass.name" class="variable"><a href="../impl/attribute.html#Attribute.name">name</a></dd>
+                <dd id="AbsWaterMass.formulae" class="variable"><a href="../impl/attribute.html#Attribute.formulae">formulae</a></dd>
+                <dd id="AbsWaterMass.allocate" class="function"><a href="../impl/attribute.html#Attribute.allocate">allocate</a></dd>
+                <dd id="AbsWaterMass.set_data" class="function"><a href="../impl/attribute.html#Attribute.set_data">set_data</a></dd>
+                <dd id="AbsWaterMass.get" class="function"><a href="../impl/attribute.html#Attribute.get">get</a></dd>
 
             </div>
                                 </dl>

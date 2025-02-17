@@ -78,7 +78,7 @@
                                 <a class="variable" href="#SingularAttributes.freezing_temperature">freezing_temperature</a>
                         </li>
                         <li>
-                                <a class="variable" href="#SingularAttributes.water_mass">water_mass</a>
+                                <a class="variable" href="#SingularAttributes.signed_water_mass">signed_water_mass</a>
                         </li>
                 </ul>
 
@@ -93,7 +93,7 @@
                                 <a class="variable" href="#TimeDependentAttributes.immersed_surface_area">immersed_surface_area</a>
                         </li>
                         <li>
-                                <a class="variable" href="#TimeDependentAttributes.water_mass">water_mass</a>
+                                <a class="variable" href="#TimeDependentAttributes.signed_water_mass">signed_water_mass</a>
                         </li>
                 </ul>
 
@@ -114,7 +114,7 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../backends.html">backends</a><wbr>.<a href="./../impl_common.html">impl_common</a><wbr>.freezing_attributes    </h1>
 
-                        <div class="docstring"><p>groups of attributes used in either singular or time-dependent immmersion freezing regimes</p>
+                        <div class="docstring"><p>groups of attributes used in either singular or time-dependent immersion freezing regimes</p>
 </div>
 
                         <input id="mod-freezing_attributes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -122,26 +122,32 @@
                         <label class="view-source-button" for="mod-freezing_attributes-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">groups of attributes used in either singular or time-dependent immmersion freezing regimes</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">groups of attributes used in either singular or time-dependent immersion freezing regimes</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SingularAttributes</span><span class="p">(</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;SingularAttributes&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;freezing_temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;water_mass&quot;</span><span class="p">))</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in singular regime&quot;&quot;&quot;</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="n">namedtuple</span><span class="p">(</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;SingularAttributes&quot;</span><span class="p">,</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;freezing_temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">),</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="p">)</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="p">):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in singular regime&quot;&quot;&quot;</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TimeDependentAttributes</span><span class="p">(</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;TimeDependentAttributes&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;immersed_surface_area&quot;</span><span class="p">,</span> <span class="s2">&quot;water_mass&quot;</span><span class="p">))</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in time-dependent regime&quot;&quot;&quot;</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TimeDependentAttributes</span><span class="p">(</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">namedtuple</span><span class="p">(</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;TimeDependentAttributes&quot;</span><span class="p">,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;immersed_surface_area&quot;</span><span class="p">,</span> <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">),</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="p">)</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="p">):</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in time-dependent regime&quot;&quot;&quot;</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 </span></pre></div>
 
 
@@ -158,11 +164,14 @@
     </div>
     <a class="headerlink" href="#SingularAttributes"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="SingularAttributes-9"><a href="#SingularAttributes-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">SingularAttributes</span><span class="p">(</span>
-</span><span id="SingularAttributes-10"><a href="#SingularAttributes-10"><span class="linenos">10</span></a>    <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;SingularAttributes&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;freezing_temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;water_mass&quot;</span><span class="p">))</span>
-</span><span id="SingularAttributes-11"><a href="#SingularAttributes-11"><span class="linenos">11</span></a><span class="p">):</span>
-</span><span id="SingularAttributes-12"><a href="#SingularAttributes-12"><span class="linenos">12</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in singular regime&quot;&quot;&quot;</span>
-</span><span id="SingularAttributes-13"><a href="#SingularAttributes-13"><span class="linenos">13</span></a>
-</span><span id="SingularAttributes-14"><a href="#SingularAttributes-14"><span class="linenos">14</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+</span><span id="SingularAttributes-10"><a href="#SingularAttributes-10"><span class="linenos">10</span></a>    <span class="n">namedtuple</span><span class="p">(</span>
+</span><span id="SingularAttributes-11"><a href="#SingularAttributes-11"><span class="linenos">11</span></a>        <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;SingularAttributes&quot;</span><span class="p">,</span>
+</span><span id="SingularAttributes-12"><a href="#SingularAttributes-12"><span class="linenos">12</span></a>        <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;freezing_temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">),</span>
+</span><span id="SingularAttributes-13"><a href="#SingularAttributes-13"><span class="linenos">13</span></a>    <span class="p">)</span>
+</span><span id="SingularAttributes-14"><a href="#SingularAttributes-14"><span class="linenos">14</span></a><span class="p">):</span>
+</span><span id="SingularAttributes-15"><a href="#SingularAttributes-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in singular regime&quot;&quot;&quot;</span>
+</span><span id="SingularAttributes-16"><a href="#SingularAttributes-16"><span class="linenos">16</span></a>
+</span><span id="SingularAttributes-17"><a href="#SingularAttributes-17"><span class="linenos">17</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 </span></pre></div>
 
 
@@ -173,13 +182,13 @@
                             <div id="SingularAttributes.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">SingularAttributes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">freezing_temperature</span>, </span><span class="param"><span class="n">water_mass</span></span>)</span>
+        <span class="name">SingularAttributes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">freezing_temperature</span>, </span><span class="param"><span class="n">signed_water_mass</span></span>)</span>
 
         
     </div>
     <a class="headerlink" href="#SingularAttributes.__init__"></a>
     
-            <div class="docstring"><p>Create new instance of SingularAttributes(freezing_temperature, water_mass)</p>
+            <div class="docstring"><p>Create new instance of SingularAttributes(freezing_temperature, signed_water_mass)</p>
 </div>
 
 
@@ -197,13 +206,13 @@
 
 
                             </div>
-                            <div id="SingularAttributes.water_mass" class="classattr">
+                            <div id="SingularAttributes.signed_water_mass" class="classattr">
                                 <div class="attr variable">
-            <span class="name">water_mass</span>
+            <span class="name">signed_water_mass</span>
 
         
     </div>
-    <a class="headerlink" href="#SingularAttributes.water_mass"></a>
+    <a class="headerlink" href="#SingularAttributes.signed_water_mass"></a>
     
             <div class="docstring"><p>Alias for field number 1</p>
 </div>
@@ -222,12 +231,15 @@
 
     </div>
     <a class="headerlink" href="#TimeDependentAttributes"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TimeDependentAttributes-17"><a href="#TimeDependentAttributes-17"><span class="linenos">17</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TimeDependentAttributes</span><span class="p">(</span>
-</span><span id="TimeDependentAttributes-18"><a href="#TimeDependentAttributes-18"><span class="linenos">18</span></a>    <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;TimeDependentAttributes&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;immersed_surface_area&quot;</span><span class="p">,</span> <span class="s2">&quot;water_mass&quot;</span><span class="p">))</span>
-</span><span id="TimeDependentAttributes-19"><a href="#TimeDependentAttributes-19"><span class="linenos">19</span></a><span class="p">):</span>
-</span><span id="TimeDependentAttributes-20"><a href="#TimeDependentAttributes-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in time-dependent regime&quot;&quot;&quot;</span>
-</span><span id="TimeDependentAttributes-21"><a href="#TimeDependentAttributes-21"><span class="linenos">21</span></a>
-</span><span id="TimeDependentAttributes-22"><a href="#TimeDependentAttributes-22"><span class="linenos">22</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TimeDependentAttributes-20"><a href="#TimeDependentAttributes-20"><span class="linenos">20</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TimeDependentAttributes</span><span class="p">(</span>
+</span><span id="TimeDependentAttributes-21"><a href="#TimeDependentAttributes-21"><span class="linenos">21</span></a>    <span class="n">namedtuple</span><span class="p">(</span>
+</span><span id="TimeDependentAttributes-22"><a href="#TimeDependentAttributes-22"><span class="linenos">22</span></a>        <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;TimeDependentAttributes&quot;</span><span class="p">,</span>
+</span><span id="TimeDependentAttributes-23"><a href="#TimeDependentAttributes-23"><span class="linenos">23</span></a>        <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;immersed_surface_area&quot;</span><span class="p">,</span> <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">),</span>
+</span><span id="TimeDependentAttributes-24"><a href="#TimeDependentAttributes-24"><span class="linenos">24</span></a>    <span class="p">)</span>
+</span><span id="TimeDependentAttributes-25"><a href="#TimeDependentAttributes-25"><span class="linenos">25</span></a><span class="p">):</span>
+</span><span id="TimeDependentAttributes-26"><a href="#TimeDependentAttributes-26"><span class="linenos">26</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in time-dependent regime&quot;&quot;&quot;</span>
+</span><span id="TimeDependentAttributes-27"><a href="#TimeDependentAttributes-27"><span class="linenos">27</span></a>
+</span><span id="TimeDependentAttributes-28"><a href="#TimeDependentAttributes-28"><span class="linenos">28</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 </span></pre></div>
 
 
@@ -238,13 +250,13 @@
                             <div id="TimeDependentAttributes.__init__" class="classattr">
                                 <div class="attr function">
             
-        <span class="name">TimeDependentAttributes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">immersed_surface_area</span>, </span><span class="param"><span class="n">water_mass</span></span>)</span>
+        <span class="name">TimeDependentAttributes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">immersed_surface_area</span>, </span><span class="param"><span class="n">signed_water_mass</span></span>)</span>
 
         
     </div>
     <a class="headerlink" href="#TimeDependentAttributes.__init__"></a>
     
-            <div class="docstring"><p>Create new instance of TimeDependentAttributes(immersed_surface_area, water_mass)</p>
+            <div class="docstring"><p>Create new instance of TimeDependentAttributes(immersed_surface_area, signed_water_mass)</p>
 </div>
 
 
@@ -262,13 +274,13 @@
 
 
                             </div>
-                            <div id="TimeDependentAttributes.water_mass" class="classattr">
+                            <div id="TimeDependentAttributes.signed_water_mass" class="classattr">
                                 <div class="attr variable">
-            <span class="name">water_mass</span>
+            <span class="name">signed_water_mass</span>
 
         
     </div>
-    <a class="headerlink" href="#TimeDependentAttributes.water_mass"></a>
+    <a class="headerlink" href="#TimeDependentAttributes.signed_water_mass"></a>
     
             <div class="docstring"><p>Alias for field number 1</p>
 </div>
