@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from PySDM_examples.utils.notebook_vars import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Pierchala_et_al_2022
 
 from PySDM.physics.constants import PER_MEG, PER_MILLE
@@ -62,7 +62,7 @@ class TestFig4:
         np.testing.assert_approx_equal(
             actual=notebook_local_variables[
                 "formulae"
-            ].isotope_meteoric_water_line_excess.excess_17O(
+            ].isotope_meteoric_water_line.excess_17O(
                 deltas_per_rh[RH]["17O"][index], deltas_per_rh[RH]["18O"][index]
             ),
             desired=excess_17O,

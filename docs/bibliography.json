@@ -8,14 +8,16 @@
   },
   "https://doi.org/10.1175/1520-0450(1977)016%3C0100:AAPFTC%3E2.0.CO;2": {
     "usages": [
-      "PySDM/physics/saturation_vapour_pressure/lowe1977.py"
+      "PySDM/physics/saturation_vapour_pressure/lowe1977.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Lowe 1977 (J. Appl. Meteorol. Climatol. 16)",
     "title": "An Approximating Polynomial for the Computation of Saturation Vapor Pressure"
   },
   "https://doi.org/10.1175/1520-0450(1992)031%3C1507:PFTSVP%3E2.0.CO;2": {
     "usages": [
-      "PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py"
+      "PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Flatau et al. 1992 (J. Appl. Meteorol. Climatol. 31)",
     "title": "Polynomial Fits to Saturation Vapor Pressure"
@@ -28,21 +30,24 @@
       "examples/PySDM_examples/Lowe_et_al_2019/fig_s2.ipynb",
       "examples/PySDM_examples/Lowe_et_al_2019/__init__.py",
       "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py",
-      "PySDM/physics/diffusion_thermics/lowe_et_al_2019.py"
+      "PySDM/physics/diffusion_thermics/lowe_et_al_2019.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Lowe et al. 2019 (Nature Comm. 10)",
     "title": "Key drivers of cloud response to surface-active organics"
   },
   "https://doi.org/10.1039/C3FD00035D": {
     "usages": [
-      "PySDM/physics/heterogeneous_ice_nucleation_rate/abifm.py"
+      "PySDM/physics/heterogeneous_ice_nucleation_rate/abifm.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Knopf & Alpert 2013 (Faraday Discuss. 165)",
     "title": "A water activity based model of heterogeneous ice nucleation kinetics for freezing of water and aqueous solution droplets"
   },
   "https://doi.org/10.1256/qj.04.94": {
     "usages": [
-      "PySDM/physics/saturation_vapour_pressure/murphy_koop_2005.py"
+      "PySDM/physics/saturation_vapour_pressure/murphy_koop_2005.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Murphy & Koop 2005 (Q. J. R. Meteorol. Soc. 131)",
     "title": "Review of the vapour pressures of ice and supercooled water for atmospheric applications"
@@ -56,7 +61,8 @@
   },
   "https://doi.org/10.5194/acp-5-461-2005": {
     "usages": [
-      "PySDM/physics/diffusion_kinetics/fuchs_sutugin.py"
+      "PySDM/physics/diffusion_kinetics/fuchs_sutugin.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Laaksonen et al. 2005 (Atmos. Chem. Phys. 5)",
     "title": "Commentary on cloud modelling and the mass accommodation coefficient of water"
@@ -134,6 +140,7 @@
   },
   "https://doi.org/10.1119/1.15018": {
     "usages": [
+      "PySDM/physics/constants_defaults.py",
       "PySDM/physics/trivia.py"
     ],
     "label": "Vedder 1987 (Am. J. Phys. 55)",
@@ -156,7 +163,8 @@
   },
   "https://doi.org/10.5194/acp-7-1961-2007": {
     "usages": [
-      "PySDM/physics/hygroscopicity/kappa_koehler.py"
+      "PySDM/physics/hygroscopicity/kappa_koehler.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Petters & Kreidenweis 2007 (Atmos. Chem. Phys. 7)",
     "title": "A single parameter representation of hygroscopic growth and cloud condensation nucleus activity"
@@ -171,14 +179,15 @@
   },
   "https://doi.org/10.1175/MWR-D-14-00319.1": {
     "usages": [
-      "PySDM/physics/bulk_phase_partitioning/kaul_et_al_2015.py"
+      "PySDM/physics/bulk_phase_partitioning/kaul_et_al_2015.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Kaul et al. 2015 (Mon. Weather Rev. 143)",
     "title": "Sensitivities in Large-Eddy Simulations of Mixed-Phase Arctic Stratocumulus Clouds Using a Simple Microphysics Approach"
   },
   "https://doi.org/10.3402/tellusa.v16i4.8993": {
     "usages": [
-      "PySDM/physics/isotope_meteoric_water_line_excess/dansgaard_1964.py"
+      "PySDM/physics/isotope_meteoric_water_line/dansgaard_1964.py"
     ],
     "label": "Dansgaard 1964 (Tellus A 16)",
     "title": "Stable isotopes in precipitation"
@@ -273,7 +282,8 @@
   "https://doi.org/10.1175/2009JAS3175.1": {
     "usages": [
       "examples/PySDM_examples/deJong_Mackay_et_al_2023/fig_9.ipynb",
-      "PySDM/dynamics/collisions/breakup_fragmentations/straub2010.py"
+      "PySDM/dynamics/collisions/breakup_fragmentations/straub2010.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Straub et al. 2010 (J. Atmos. Sci. 67)",
     "title": "Numerical Investigation of Collision-Induced Breakup of Raindrops. Part II: Parameterizations of Coalescence Efficiencies and Fragment Size Distributions"
@@ -481,7 +491,7 @@
   "https://doi.org/10.1002/rcm.3180": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/isotope_meteoric_water_line_excess/barkan_and_luz_2007.py"
+      "PySDM/physics/isotope_meteoric_water_line/barkan_and_luz_2007.py"
     ],
     "label": "Barkan & Luz 2007 (Rapid Commun. Mass Spectrom. 21)",
     "title": "Diffusivity fractionations of H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>17</sup>O and H<sub>2</sub><sup>16</sup>O/H<sub>2</sub><sup>18</sup>O in air and their implications for isotope hydrology"
@@ -526,7 +536,8 @@
   },
   "https://doi.org/10.1175/1520-0493(1980)108%3C1046:TCOEPT%3E2.0.CO;2": {
     "usages": [
-      "PySDM/physics/saturation_vapour_pressure/bolton_1980.py"
+      "PySDM/physics/saturation_vapour_pressure/bolton_1980.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Bolton 1980 (Mon. Weather Rev. 108)",
     "title": "The Computation of Equivalent Potential Temperature"
@@ -616,7 +627,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
-      "tests/unit_tests/physics/test_isotope_meteoric_water_line_excess.py",
+      "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
     "label": "Craig 1961 (Science 133)",
@@ -688,8 +699,61 @@
     "label": "Mason 1971 (Clarendon Press, Oxford)"
   },
   "https://doi.org/10.6028/jres.080A.071": {
-    "usages": ["PySDM/physics/saturation_vapour_pressure/wexler_1976.py"],
-    "title": "Vapor Pressure Formulation for Water in Range 0 to f 00 °C. A Revision",
+    "usages": [
+      "PySDM/physics/saturation_vapour_pressure/wexler_1976.py",
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "title": "Vapor Pressure Formulation for Water in Range 0 to 100 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
+  },
+  "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
+    "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
+    "title": "A short course in clouds physics",
+    "label": "Rogers & Yau 1989 (Pergamon Press)"
+  },
+  "https://doi.org/10.1016/b978-0-444-42225-5.50007-3": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Isotopes in cloud physics: Multiphase and multistage condensation process",
+    "label": "Jouzel 1986 (The Terrestrial Environment, B)"
+  },
+  "https://doi.org/10.1002/andp.18280890511": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Ueber die Berechnung der Expansivkraft des Wasserdunstes",
+    "label": "August 1828 (Ann. Phys. Chem. 89)"
+  },
+  "https://doi.org/10.1016/C2013-0-08278-3": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "The Physics of Ice",
+    "label": "Pounder 1965 (Pergamon Press)"
+  },
+  "https://doi.org/10.1175/1520-0469(1976)033%3C1995:TSOIPF%3E2.0.CO;2": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "The Survival of Ice Particles Falling from Cirrus Clouds in Subsaturated Air",
+    "label": "Hall & Pruppacher 1976 (J. Atmos. Sci. 33)"
+  },
+  "https://doi.org/10.1016/S0074-6142(10)09908-0": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Fundamental Equations Governing Cloud Processes",
+    "label": "Cotton et al. 2011 (International Geophysics 99)"
+  },
+  "https://doi.org/10.1007/978-0-306-48100-0": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Microphysics of Clouds and Precipitation",
+    "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
+  },
+  "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "Microphysics of Clouds and Precipitation",
+    "label": "Seinfeld & Pandis 2006 (Wiley)"
+  },
+  "https://doi.org/10.1038/187857a0": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/isotope_temperature_inference/picciotto_et_al_1960.py",
+      "PySDM/physics/isotope_meteoric_water_line/picciotto_et_al_1960.py",
+      "tests/unit_tests/physics/test_isotope_temperature_inference.py"
+    ],
+    "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
+    "label": "Picciotto et al. 1960 (Nature 187)"
   }
 }

@@ -1,1 +1,1 @@
-""" method classes of the GPU backend """
+"""method classes of the GPU backend"""

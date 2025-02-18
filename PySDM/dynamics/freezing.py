@@ -1,5 +1,5 @@
 """
-homogeneous freezing and heterogeneous freezing (singular and time-dependent immersion freezing)
+immersion freezing using either singular or time-dependent formulation
 """
 
 from PySDM.backends.impl_common.freezing_attributes import (
@@ -13,7 +13,7 @@ from PySDM.dynamics.impl import register_dynamic
 
 @register_dynamic()
 class Freezing:
-    def __init__(self, *, singular=True, homogeneous_freezing=False, immersion_freezing=True, record_freezing_temperature=False, thaw=False):
+    def __init__(self, *, singular=True, record_freezing_temperature=False, homogeneous_freezing=False, immersion_freezing=True, thaw=False):
         assert not (record_freezing_temperature and singular)
         self.singular = singular
         self.homogeneous_freezing = homogeneous_freezing
@@ -30,24 +30,29 @@ class Freezing:
 
         assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
 
-        builder.request_attribute("volume")
+        builder.request_attribute("signed water mass")
         if self.singular or self.record_freezing_temperature:
             builder.request_attribute("freezing temperature")
 
-        if not self.singular:
+        if self.homogeneous_freezing:
+            assert not isinstance(
+                builder.formulae.homogeneous_ice_nucleation_rate, Null
+            )
+            builder.request_attribute("volume")
+
+        if not self.singular and self.immersion_freezing:
             assert not isinstance(
                 builder.formulae.heterogeneous_ice_nucleation_rate, Null
             )
-            if self.immersion_freezing:
-                builder.request_attribute("immersed surface area")
+            builder.request_attribute("immersed surface area")
+
+        if self.homogeneous_freezing or not self.singular:
             self.rand = self.particulator.Storage.empty(
                 self.particulator.n_sd, dtype=float
             )
             self.rng = self.particulator.Random(
                 self.particulator.n_sd, self.particulator.backend.formulae.seed
             )
-
-            
 
     def __call__(self):
         if "Coalescence" in self.particulator.dynamics:
@@ -59,30 +64,28 @@ class Freezing:
         if not self.enable:
             return
 
-        if self.immersion_freezing:
-            
-            if self.singular:
-                self.particulator.backend.freeze_singular(
-                    attributes=SingularAttributes(
-                        freezing_temperature=self.particulator.attributes[
-                            "freezing temperature"
-                        ],
-                        water_mass=self.particulator.attributes["water mass"],
-                    ),
-                    temperature=self.particulator.environment["T"],
-                    relative_humidity=self.particulator.environment["RH"],
-                    cell=self.particulator.attributes["cell id"],
-                    thaw=self.thaw,
-                )
-            else:
-                self.rand.urand(self.rng)
-                self.particulator.backend.freeze_time_dependent(
-                    rand=self.rand,
-                    attributes=TimeDependentAttributes(
+        if self.singular:
+            self.particulator.backend.freeze_singular(
+                attributes=SingularAttributes(
+                    freezing_temperature=self.particulator.attributes[
+                        "freezing temperature"
+                    ],
+                    signed_water_mass=self.particulator.attributes["signed_water mass"],
+                ),
+                temperature=self.particulator.environment["T"],
+                relative_humidity=self.particulator.environment["RH"],
+                cell=self.particulator.attributes["cell id"],
+                thaw=self.thaw,
+            )
+        else:
+            self.rand.urand(self.rng)
+            self.particulator.backend.freeze_time_dependent(
+                rand=self.rand,
+                attributes=TimeDependentAttributes(
                     immersed_surface_area=self.particulator.attributes[
                         "immersed surface area"
                     ],
-                    water_mass=self.particulator.attributes["water mass"],
+                    signed_water_mass=self.particulator.attributes["signed_water mass"],
                     ),
                     timestep=self.particulator.dt,
                     cell=self.particulator.attributes["cell id"],
@@ -100,13 +103,13 @@ class Freezing:
 
 
         if self.homogeneous_freezing:
-        
+
             self.rand.urand(self.rng)
             self.particulator.backend.freeze_time_dependent_homogeneous(
                 rand=self.rand,
                 attributes=TimeDependentHomogeneousAttributes(
                 volume=self.particulator.attributes["volume"],
-                water_mass=self.particulator.attributes["water mass"],
+                signed_water_mass=self.particulator.attributes["signed_water mass"],
                 ),
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes["cell id"],
@@ -122,8 +125,6 @@ class Freezing:
                 thaw=self.thaw,
             )
 
-            
-
-        self.particulator.attributes.mark_updated("water mass")
+        self.particulator.attributes.mark_updated("signed water mass")
         if self.record_freezing_temperature:
             self.particulator.attributes.mark_updated("freezing temperature")

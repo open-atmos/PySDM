@@ -1,5 +1,5 @@
-""" Timescale derived for tritium with assumption of zero ambient concentration - see text above
-    Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725) """
+"""Timescale derived for tritium with assumption of zero ambient concentration - see text above
+Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)"""
 
 import numpy as np
 

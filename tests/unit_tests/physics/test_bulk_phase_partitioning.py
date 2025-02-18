@@ -1,4 +1,4 @@
-""" unit tests for bulk phase partitioning formulae """
+"""unit tests for bulk phase partitioning formulae"""
 
 import numpy as np
 from matplotlib import pyplot

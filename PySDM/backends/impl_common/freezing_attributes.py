@@ -1,12 +1,15 @@
 """
-groups of attributes used in either singular or time-dependent immmersion freezing regimes
+groups of attributes used in either singular or time-dependent immersion freezing regimes
 """
 
 from collections import namedtuple
 
 
 class SingularAttributes(
-    namedtuple("SingularAttributes", ("freezing_temperature", "water_mass"))
+    namedtuple(
+        typename="SingularAttributes",
+        field_names=("freezing_temperature", "signed_water_mass"),
+    )
 ):
     """groups attributes required in singular regime"""
 
@@ -14,7 +17,10 @@ class SingularAttributes(
 
 
 class TimeDependentAttributes(
-    namedtuple("TimeDependentAttributes", ("immersed_surface_area", "water_mass"))
+    namedtuple(
+        typename="TimeDependentAttributes",
+        field_names=("immersed_surface_area", "signed_water_mass"),
+    )
 ):
     """groups attributes required in time-dependent regime"""
 
@@ -22,7 +28,7 @@ class TimeDependentAttributes(
 
 
 class TimeDependentHomogeneousAttributes(
-    namedtuple("TimeDependentHomogeneousAttributes", ("volume", "water_mass"))
+    namedtuple("TimeDependentHomogeneousAttributes", ("volume", "signed_wwater_mass"))
 ):
     """groups attributes required in time-dependent regime for homogeneous freezing"""
 
