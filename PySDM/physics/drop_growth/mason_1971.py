@@ -13,8 +13,10 @@ class Mason1971:  # pylint: disable=too-few-public-methods
     @staticmethod
     def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K, ventilation_factor):
         return (
-            ventilation_factor
-            * (RH - RH_eq)
+            (RH - RH_eq)
             / const.rho_w
-            / (const.Rv * T / D / pvs + lv / K / T * (lv / T / const.Rv - 1))
+            / (
+                const.Rv * T / (D * ventilation_factor) / pvs
+                + lv / K / T * (lv / T / const.Rv - 1)
+            )
         )
