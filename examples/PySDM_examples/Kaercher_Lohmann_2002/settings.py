@@ -9,22 +9,26 @@ from PySDM.initialisation.sampling import spectral_sampling
 
 
 @strict
-class Settings:
+class settings:
     def __init__(
         self,
+        *,
         n_sd: int,
         w_updraft: float,
         T0: float,
-        N_solution_droplet: float,
-        r_solution_droplet: float,
-        kappa: float,
-        rate: str,
+        N_dv_solution_droplet: float,
+        r_mean_solution_droplet: float,
+        sigma_solution_droplet: float,
+        kappa: float=0.64,
+        rate: str="Koop2000",
+        dt: float=1.,
     ):
 
         self.n_sd = n_sd
         self.w_updraft = w_updraft
-        self.r_solution_droplet = r_solution_droplet
-        self.N_solution_droplet = N_solution_droplet
+        self.r_mean_solution_droplet = r_mean_solution_droplet
+        self.N_dv_solution_droplet = N_dv_solution_droplet
+        self.sigma_solution_droplet = sigma_solution_droplet
         self.rate = rate
 
         self.mass_of_dry_air = 1000 * si.kilogram
@@ -47,50 +51,9 @@ class Settings:
                             / self.initial_temperature
                             / const.Rd )
 
-        spectrum = Lognormal(norm_factor=N_solution_droplet / dry_air_density,  m_mode=r_solution_droplet, s_geom=1.5)
+        spectrum = Lognormal(norm_factor=N_dv_solution_droplet / dry_air_density,  m_mode=r_mean_solution_droplet, s_geom=sigma_solution_droplet)
         self.r_dry, self.specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 
-
-
-
-
-        self.t_duration = 5400 # total duration of simulation
-        self.dt         = 1. 
+        self.t_duration = 10 #5400 # total duration of simulation
+        self.dt         = dt
         self.n_output = 10 # number of output steps
-
-
-n_sds = ( 1000, )
-
-w_updrafts = (
-    10 * si.centimetre / si.second,
-)
-        
-T_starts = ( 220 * si.kelvin, )
-
-N_solution_droplets = ( 2500 / si.centimetre**3, )
-
-r_solution_droplets = ( 0.0555 * si.micrometre, )
-
-kappas = ( 0.64, )
-
-hom_rates = ( "Constant","Koop2000", "Koop_Correction")
-
-setups = []
-for n_sd in n_sds:
-    for w_updraft in w_updrafts:
-        for T0 in T_starts:
-            for N_solution_droplet in N_solution_droplets:
-                for r_solution_droplet in r_solution_droplets:
-                    for kappa in kappas:
-                        for rate in hom_rates:
-                            setups.append(
-                                Settings(
-                                    n_sd=n_sd,
-                                    w_updraft=w_updraft,
-                                    T0=T0,
-                                    N_solution_droplet=N_solution_droplet,
-                                    r_solution_droplet=r_solution_droplet,
-                                    kappa=kappa,
-                                    rate=rate,
-                                )
-                            )

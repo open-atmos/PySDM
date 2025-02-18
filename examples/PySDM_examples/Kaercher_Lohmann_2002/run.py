@@ -3,9 +3,11 @@ from matplotlib import pyplot
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
 
-from settings import setups
+
+from settings import settings
 from simulation import Simulation
 from reference import critical_supersaturation
+from PySDM.physics.constants import si
 
 
 kg_to_µg = 1.e9
@@ -15,7 +17,10 @@ def plot_size_distribution(r_wet, r_dry, N, setting, pp ):
 
     r_wet, r_dry = r_wet * m_to_µm, r_dry * m_to_µm
 
-    title = f"N0: {setting.N_solution_droplet*1e-6:.2E} cm-3  R0: {setting.r_solution_droplet*m_to_µm:.2E} µm Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f}"
+    title = f"N0: {setting.N_dv_solution_droplet*1e-6:.2E} cm-3 \
+    R0: {setting.r_mean_solution_droplet*m_to_µm:.2E} µm \
+    $\sigma$: {setting.sigma_solution_droplet:.2f} \
+    Nsd: {setting.n_sd:d}  $\kappa$: {setting.kappa:.2f}"
 
     fig = plt.figure()
     ax = fig.add_subplot(1,1,1)
@@ -25,6 +30,7 @@ def plot_size_distribution(r_wet, r_dry, N, setting, pp ):
     ax.set_title(title)
     ax.legend()
     ax.set_xscale('log')
+    ax.set_xlim(5.e-3,5.e0)
     ax.set_yscale('log')
     ax.set_xlabel(r"radius [µm]")
     ax.set_ylabel("multiplicty")
@@ -63,7 +69,8 @@ def plot( output, setting, pp ):
     fig, axs = pyplot.subplots(3, 2, figsize=(10, 10), sharex=True)
 
 
-    title = f"w: {setting.w_updraft:.2f} m s-1    T0: {setting.initial_temperature:.2f} K   Nsd: {setting.n_sd:d}   $\kappa$: {setting.kappa:.2f} rate: " + setting.rate
+    title = f"w: {setting.w_updraft:.2f} m s-1 T0: {setting.initial_temperature:.2f} K Nsd: {setting.n_sd:d} \
+    rate: " + setting.rate
 
     fig.suptitle(title)
 
@@ -155,22 +162,28 @@ def plot( output, setting, pp ):
     fig.tight_layout() 
     pp.savefig()
 
-pp = PdfPages( "hom_freezing.pdf" )
-pp_size = PdfPages( "hom_freezing_initial_size_distribution.pdf" )
-    
+general_settings = {"n_sd": 1000, "T0": 220 * si.kelvin, "w_updraft": 10 * si.centimetre / si.second}
+distributions = ({"N_dv_solution_droplet": 2500 / si.centimetre**3, \
+                  "r_mean_solution_droplet": 0.055 * si.micrometre, \
+                  "sigma_solution_droplet": 1.6},
+                 {"N_dv_solution_droplet": 8600 / si.centimetre**3, \
+                  "r_mean_solution_droplet": 0.0275 * si.micrometre, \
+                  "sigma_solution_droplet": 1.3},
+                 {"N_dv_solution_droplet": 2000 / si.centimetre**3, \
+                  "r_mean_solution_droplet": 0.11 * si.micrometre, \
+                  "sigma_solution_droplet": 2.},
+                 )
 
-for setting in setups:
+pp = PdfPages( "hom_freezing_for_size_distributions.pdf" )
 
+for distribution in distributions:
 
+    setting = settings( **{**general_settings, **distribution} )
     model = Simulation(setting)
-
     output = model.run()
 
-    plot_size_distribution( model.r_wet, model.r_dry, model.multiplicities, setting, pp_size)
-
+    plot_size_distribution( model.r_wet, model.r_dry, model.multiplicities, setting, pp)
     plot( output, setting, pp )
 
-
-    
 pp.close()
-pp_size.close()
+
