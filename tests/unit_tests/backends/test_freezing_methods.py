@@ -284,7 +284,7 @@ class TestFreezingMethods:
             builder.add_dynamic(Freezing(singular=False,homogeneous_freezing=True,immersion_freezing=False))
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),
-                "water mass": np.full(n_sd, initial_water_mass),
+                "signed water mass": np.full(n_sd, initial_water_mass),
             }
             particulator = builder.build(attributes=attributes, products=products)  
             pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(T)

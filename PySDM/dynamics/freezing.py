@@ -64,42 +64,43 @@ class Freezing:
         if not self.enable:
             return
 
-        if self.singular:
-            self.particulator.backend.freeze_singular(
-                attributes=SingularAttributes(
-                    freezing_temperature=self.particulator.attributes[
-                        "freezing temperature"
-                    ],
-                    signed_water_mass=self.particulator.attributes["signed_water mass"],
-                ),
-                temperature=self.particulator.environment["T"],
-                relative_humidity=self.particulator.environment["RH"],
-                cell=self.particulator.attributes["cell id"],
-                thaw=self.thaw,
-            )
-        else:
-            self.rand.urand(self.rng)
-            self.particulator.backend.freeze_time_dependent(
-                rand=self.rand,
-                attributes=TimeDependentAttributes(
-                    immersed_surface_area=self.particulator.attributes[
-                        "immersed surface area"
-                    ],
-                    signed_water_mass=self.particulator.attributes["signed_water mass"],
+        if self.immersion_freezing:
+            if self.singular:
+                self.particulator.backend.freeze_singular(
+                    attributes=SingularAttributes(
+                        freezing_temperature=self.particulator.attributes[
+                            "freezing temperature"
+                        ],
+                        signed_water_mass=self.particulator.attributes["signed water mass"],
                     ),
-                    timestep=self.particulator.dt,
-                    cell=self.particulator.attributes["cell id"],
-                    a_w_ice=self.particulator.environment["a_w_ice"],
                     temperature=self.particulator.environment["T"],
                     relative_humidity=self.particulator.environment["RH"],
-                    record_freezing_temperature=self.record_freezing_temperature,
-                    freezing_temperature=(
-                        self.particulator.attributes["freezing temperature"]
-                        if self.record_freezing_temperature
-                        else None
-                    ),
+                    cell=self.particulator.attributes["cell id"],
                     thaw=self.thaw,
                 )
+            else:
+                self.rand.urand(self.rng)
+                self.particulator.backend.freeze_time_dependent(
+                    rand=self.rand,
+                    attributes=TimeDependentAttributes(
+                        immersed_surface_area=self.particulator.attributes[
+                            "immersed surface area"
+                        ],
+                        signed_water_mass=self.particulator.attributes["signed water mass"],
+                        ),
+                        timestep=self.particulator.dt,
+                        cell=self.particulator.attributes["cell id"],
+                        a_w_ice=self.particulator.environment["a_w_ice"],
+                        temperature=self.particulator.environment["T"],
+                        relative_humidity=self.particulator.environment["RH"],
+                        record_freezing_temperature=self.record_freezing_temperature,
+                        freezing_temperature=(
+                            self.particulator.attributes["freezing temperature"]
+                            if self.record_freezing_temperature
+                            else None
+                        ),
+                        thaw=self.thaw,
+                    )
 
 
         if self.homogeneous_freezing:
@@ -108,8 +109,8 @@ class Freezing:
             self.particulator.backend.freeze_time_dependent_homogeneous(
                 rand=self.rand,
                 attributes=TimeDependentHomogeneousAttributes(
-                volume=self.particulator.attributes["volume"],
-                signed_water_mass=self.particulator.attributes["signed_water mass"],
+                    volume=self.particulator.attributes["volume"],
+                    signed_water_mass=self.particulator.attributes["signed water mass"],
                 ),
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes["cell id"],

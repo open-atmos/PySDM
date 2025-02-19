@@ -28,7 +28,10 @@ class TimeDependentAttributes(
 
 
 class TimeDependentHomogeneousAttributes(
-    namedtuple("TimeDependentHomogeneousAttributes", ("volume", "signed_wwater_mass"))
+    namedtuple(
+        typename="TimeDependentHomogeneousAttributes",
+        field_names=("volume", "signed_water_mass"),
+    )
 ):
     """groups attributes required in time-dependent regime for homogeneous freezing"""
 

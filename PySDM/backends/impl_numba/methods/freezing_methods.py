@@ -112,25 +112,25 @@ class FreezingMethods(BackendMethods):
             thaw,
         ):
             
-            n_sd = len(attributes.water_mass)
+            n_sd = len(attributes.signed_water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 cell_id = cell[i]
-                #relative_humidity_ice = relative_humidity[cell_id] / a_w_ice[cell_id]
                 if thaw and frozen_and_above_freezing_point(
-                    attributes.water_mass[i], temperature[cell_id]
+                    attributes.signed_water_mass[i], temperature[cell_id]
                 ):
-                    _thaw(attributes.water_mass, i)
+                    _thaw(attributes.signed_water_mass, i)
                 elif unfrozen_and_ice_saturated(
-                    attributes.water_mass[i], relative_humidity_ice[cell_id]
+                    attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
                 ):
-                    d_a_w_ice = (relative_humidity_ice[cell_id] - 1) * a_w_ice[cell_id]
-                    rate = j_hom(temperature, d_a_w_ice)
-                    # TODO #594: this assumes constant T throughout timestep, can we do better?
-                    prob = 1 - np.exp(  # TODO #599: common code for Poissonian prob
-                        -rate * attributes.volume[i] * timestep
+                    d_a_w_ice = (relative_humidity_ice[cell_id] - 1.) * a_w_ice[cell_id]
+                    rate_assuming_constant_temperature_within_dt = (
+                            j_hom(temperature[cell_id], d_a_w_ice) * attributes.volume[i]
+                    )
+                    prob = 1 - prob_zero_events(
+                        r=rate_assuming_constant_temperature_within_dt, dt=timestep
                     )
                     if rand[i] < prob:
-                        _freeze(attributes.water_mass, i)
+                        _freeze(attributes.signed_water_mass, i)
                         # if record_freezing_temperature:
                         #     freezing_temperature[i] = temperature[cell_id]
 
@@ -205,7 +205,7 @@ class FreezingMethods(BackendMethods):
             rand.data,
             TimeDependentHomogeneousAttributes(
                 volume=attributes.volume.data,
-                water_mass=attributes.signed_water_mass.data,
+                signed_water_mass=attributes.signed_water_mass.data,
             ),
             timestep,
             cell.data,
