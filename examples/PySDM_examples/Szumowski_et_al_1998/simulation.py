@@ -154,6 +154,8 @@ class Simulation:
         )
 
         if self.settings.processes["freezing"]:
+            attributes["signed water mass"] = attributes.pop("water mass")
+
             if self.settings.freezing_inp_spec is None:
                 immersed_surface_area = formulae.trivia.sphere_surface(
                     diameter=2 * formulae.trivia.radius(volume=attributes["dry volume"])

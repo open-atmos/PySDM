@@ -18,7 +18,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
             param_names=(
                 "rand",
                 "immersed_surface_area",
-                "water_mass",
+                "signed_water_mass",
                 "timestep",
                 "cell",
                 "a_w_ice",
@@ -32,12 +32,12 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     return;
                 }}
                 if (thaw && {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
-                    water_mass="water_mass[i]",
+                    signed_water_mass="signed_water_mass[i]",
                     temperature="temperature[cell[i]]"
                 )}) {{
-                    water_mass[i] = -1 * water_mass[i];
+                    signed_water_mass[i] = -1 * signed_water_mass[i];
                 }} else if ({self.formulae.trivia.unfrozen_and_saturated.c_inline(
-                        water_mass="water_mass[i]",
+                        signed_water_mass="signed_water_mass[i]",
                         relative_humidity="relative_humidity[cell[i]]"
                     )}) {{
                     auto rate_assuming_constant_temperature_within_dt = {self.formulae.heterogeneous_ice_nucleation_rate.j_het.c_inline(
@@ -48,7 +48,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         dt="timestep"
                     )};
                     if (rand[i] < prob) {{
-                        water_mass[i] = -1 * water_mass[i];
+                        signed_water_mass[i] = -1 * signed_water_mass[i];
                     }}
                 }}
             """.replace(
@@ -61,7 +61,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         return trtc.For(
             param_names=(
                 "freezing_temperature",
-                "water_mass",
+                "signed_water_mass",
                 "temperature",
                 "relative_humidity",
                 "cell",
@@ -73,17 +73,17 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     return;
                 }}
                 if (thaw && {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
-                    water_mass="water_mass[i]",
+                    signed_water_mass="signed_water_mass[i]",
                     temperature="temperature[cell[i]]"
                 )}) {{
-                    water_mass[i] = -1 * water_mass[i];
+                    signed_water_mass[i] = -1 * signed_water_mass[i];
                 }} else if (
                     {self.formulae.trivia.unfrozen_and_saturated.c_inline(
-                        water_mass="water_mass[i]",
+                        signed_water_mass="signed_water_mass[i]",
                         relative_humidity="relative_humidity[cell[i]]"
                     )} && temperature[cell[i]] <= freezing_temperature[i]
                 ) {{
-                    water_mass[i] = -1 * water_mass[i];
+                    signed_water_mass[i] = -1 * signed_water_mass[i];
                 }}
             """.replace(
                 "real_type", self._get_c_type()
@@ -99,7 +99,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
             n=n_sd,
             args=(
                 attributes.freezing_temperature.data,
-                attributes.water_mass.data,
+                attributes.signed_water_mass.data,
                 temperature.data,
                 relative_humidity.data,
                 cell.data,
@@ -128,7 +128,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
             args=(
                 rand.data,
                 attributes.immersed_surface_area.data,
-                attributes.water_mass.data,
+                attributes.signed_water_mass.data,
                 self._get_floating_point(timestep),
                 cell.data,
                 a_w_ice.data,

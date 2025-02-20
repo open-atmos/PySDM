@@ -17,7 +17,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         @numba.jit(**self.default_jit_flags)
         def body(
             multiplicity,
-            water_mass,
+            signed_water_mass,
             ambient_temperature,
             ambient_total_pressure,
             ambient_humidity,
@@ -30,16 +30,17 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             reynolds_number,
             schmidt_number,
         ):
-            n_sd = len(water_mass)
+            n_sd = len(signed_water_mass)
             ## for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
             for i in range(n_sd):
-                if not liquid(water_mass[i]):
-                    ice_mass = -water_mass[i]
+                if not liquid(signed_water_mass[i]):
+                    ice_mass = -signed_water_mass[i]
                     cid = cell_id[i]
 
-                    radius = formulae.particle_shape_and_density__ice_mass_to_radius(
-                        water_mass[i]
+                    radius = formulae.particle_shape_and_density__mass_to_radius(
+                        signed_water_mass[i]
                     )
+
                     diameter = radius * 2.0
 
                     temperature = ambient_temperature[cid]
@@ -114,8 +115,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     x_old = formulae.diffusion_coordinate__x(ice_mass)
                     dx_dt_old = formulae.diffusion_coordinate__dx_dt(x_old, dm_dt)
                     x_new = formulae.trivia__explicit_euler(x_old, time_step, dx_dt_old)
-
-                    water_mass[i] = -formulae.diffusion_coordinate__mass(x_new)
+                    signed_water_mass[i] = -formulae.diffusion_coordinate__mass(x_new)
 
         return body
 
@@ -123,7 +123,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         self,
         *,
         multiplicity,
-        water_mass,
+        signed_water_mass,
         ambient_temperature,
         ambient_total_pressure,
         ambient_humidity,
@@ -138,7 +138,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
     ):
         self._deposition(
             multiplicity=multiplicity.data,
-            water_mass=water_mass.data,
+            signed_water_mass=signed_water_mass.data,
             ambient_temperature=ambient_temperature.data,
             ambient_total_pressure=ambient_total_pressure.data,
             ambient_humidity=ambient_humidity.data,

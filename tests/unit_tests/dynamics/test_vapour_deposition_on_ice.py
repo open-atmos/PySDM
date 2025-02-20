@@ -39,7 +39,7 @@ def test_iwc_lower_after_timestep(
     particulator = builder.build(
         attributes={
             "multiplicity": np.full(shape=(n_sd,), fill_value=1),
-            "water mass": np.full(shape=(n_sd,), fill_value=water_mass),
+            "signed water mass": np.full(shape=(n_sd,), fill_value=water_mass),
         },
         products=(IceWaterContent(),),
     )

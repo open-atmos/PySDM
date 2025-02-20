@@ -10,7 +10,7 @@ class MixedPhaseSpheres:
         pass
 
     @staticmethod
-    def supports_mixed_phase(_=None):  # TODO: rename to "ice_phase?"
+    def supports_mixed_phase(_=None):
         return True
 
     @staticmethod
@@ -29,8 +29,14 @@ class MixedPhaseSpheres:
 
     @staticmethod
     def radius_to_mass(const, radius):
-        raise NotImplementedError()
+        return (
+            np.maximum(const.ZERO_VOLUME, const.PI_4_3 * radius**3) * const.rho_w
+            + np.minimum(const.ZERO_VOLUME, const.PI_4_3 * radius**3) * const.rho_i
+        )
 
     @staticmethod
-    def ice_mass_to_radius(const, ice_mass):
-        return np.power(-ice_mass / const.PI_4_3 / const.rho_i, const.ONE_THIRD)
+    def mass_to_radius(const, mass):
+        return (
+            np.power(np.maximum(const.ZERO_MASS, mass)  / const.PI_4_3 / const.rho_w, const.ONE_THIRD)
+            + np.power(-np.minimum(const.ZERO_MASS, mass)  / const.PI_4_3 / const.rho_i, const.ONE_THIRD)
+        )
