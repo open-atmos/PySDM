@@ -94,19 +94,21 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
-K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
-
 # mass and heat accommodation coefficients for condensation
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
 HAC = 1.0
-""" thermal accommodation coefficient of uniy as recommended in
+""" thermal accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
 
 # mass and heat accommodation coefficients for vapour deposition on ice
 MAC_ice = 0.5
+""" mass accommodation coefficient for vapour deposition  as recommended in
+[Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
 HAC_ice = 0.7
+""" thermal accommodation coefficient for vapour deposition as recommended in
+[Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
