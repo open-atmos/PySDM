@@ -2,10 +2,6 @@
 immersion freezing using either singular or time-dependent formulation
 """
 
-from PySDM.backends.impl_common.freezing_attributes import (
-    SingularAttributes,
-    TimeDependentAttributes,
-)
 from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
 from PySDM.dynamics.impl import register_dynamic
 
