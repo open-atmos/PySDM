@@ -1,215 +1,163 @@
-[![Build Status](https://travis-ci.org/atmos-cloud-sim-uj/PySDM.svg?branch=master)](https://travis-ci.org/atmos-cloud-sim-uj/PySDM)
-[![Coverage Status](https://img.shields.io/codecov/c/github/atmos-cloud-sim-uj/PySDM/master.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)
+# <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
 
-# PySDM
-PySDM is a package for simulating the dynamics of population of particles 
-  immersed in moist air using the particle-based (a.k.a. super-droplet) approach 
+[![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
+[![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
+[![CUDA](https://img.shields.io/static/v1?label=CUDA&logo=nVidia&color=87ce3e&message=ThrustRTC)](https://pypi.org/project/ThrustRTC/)
+[![Linux OK](https://img.shields.io/static/v1?label=Linux&logo=Linux&color=yellow&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Linux)
+[![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
+[![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Windows)
+[![Jupyter](https://img.shields.io/static/v1?label=Jupyter&logo=Jupyter&color=f37626&message=%E2%9C%93)](https://jupyter.org/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/open-atmos/PySDM/graphs/commit-activity)
+[![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)
+[![status](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9/status.svg)](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9)
+[![DOI](https://zenodo.org/badge/199064632.svg)](https://zenodo.org/badge/latestdoi/199064632)    
+[![EU Funding](https://img.shields.io/static/v1?label=EU%20Funding%20by&color=103069&message=FNP&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAeCAYAAABTwyyaAAAEzklEQVRYw9WYS2yUVRiGn3P5ZzozpZ3aUsrNgoKlKBINmkhpCCwwxIAhsDCpBBIWhmCMMYTEhSJ4i9EgBnSBEm81MRrFBhNXEuUSMCopiRWLQqEGLNgr085M5//POS46NNYFzHQ6qGc1i5nzP/P973m/9ztCrf7A8T9csiibCocUbvTzfxLcAcaM3cY3imXz25lT3Y34G7gQYAKV3+bFAHcATlBTPogJNADG92iY28FHW97kyPbnuW/W7xgzAhukQ9xe04PJeOT0HkQRwK0TlEeGWb/kOO9v3kdD3a8YK9GhDMfa6mg9fxunOm/lWPtcpDI4K7n/jnN8+uQbrFrUSiwU/DtSEUB/MsKKBT+zYslJqiYNgVE4JwhHkzy86wlWvrKVWDSZ/YFjZlU39yw4y/rGoyQGowWB67zl4QQue+jssMdXrQvZ/00jyeHwqCgDKwnsiJjSvkYAxsG5K9WsenYbJdqAtAjhCIxCSZt/4fK1w5A2WCvxrUAKCHwNVoA2aGmvq11jJQQapEXrgMBKqmJJugejKGWLIxXrBPFoigfv/omd675gRkU/xgqUDlAhH3UDaAAlLSqUQekAYyVTyhLs3tDMsvntlIYzOFcEcOcEGd9jx9oDbGs6QO0t/Tijxi9S4bhzxiWaVh5m94Zm0n7oui4ybo0raUlcncQnxx+g+WgDF/vLoYDmoqSl/dJUnt7XRCoTZjij0Z6Pc2LiNS4EBBkNvoeOJXN+yPWWSZeANOhwJq/98nKVwNdoL8B5AROxBKBL0gjh8DMhdCh3eJnrA0yqhLpplwmyup6IajvAOIGfKGVx3VmCRGnOMpe5QAdG0bT8CAeeep0d6z6nqjSJnQiZWEllLMWrmz6k+fE9rGk8MVqYgsGv5ZH2i1Opr+9kajzB5d74hKQ+KS3d/WVMLhtgdu1lriRiOR/4nDVunaR24x7qp3UV5Cb/fJvC83nv26W81LIK58SYNFmwq4hsGx/5BwKlzYRma2NUthgOJSew4i7ru9nJYCQF5tApb2yvjiDQKJV/IfJKh0o6qssSLKv/jcAoRKHQQzE2Lj2OMV5OkWFc4MZIpsev8uXWXRx6ZicbGk8QZLxxgwe+x/rlR3h3816+f2E7lbEU+ZDn3vKVpePCdFovzCISHqbl5EIoQOteKMPB1rto65zNyfOz+KOrGl06lHPQyi/WOohH0/T0l1MZH6A3GUEKl7Pmr2la6wBrBWWRDP2DUcqjKVKBGom9RZmABAykwnglafpSJSPQvsfiOR0EQ7ExVmazA8cY6N4K1iw6RdAXRwi4mgrheT5Dvs4LeuS81a15Ll/3dQisFVSVpnj7sf1sX/sZvhAc+6UOrQyBVUQ8gx/orFmDsZqtaw/y1qZ9zKjp5vDpenyjcNe+cLNmTiUdf/bEOddVQ0VpgsOn54ET+EYxvWKALSu+5tGG76it7MNaiZKGQ23zCIcMfUMxBnrjN3fmHHvCAlp+vJcXWx6itqoXpAEnUNLx8iMfo5Xh1i17R3PJYCpC2cZ3qK3sQ8WGEDDuXlAQuFKGHzpmopXhTNfk0bmxs7uC1w6uJul79AxFkMIiBJy5UoUWjrZLU5DCFdTARDHuDqVw+OkSwI0MCEW4gtNF2BPrBCo8fKNbtILWX9aUDqFqHnn7AAAAAElFTkSuQmCC)](https://www.fnp.org.pl/en/)
+[![PL Funding](https://img.shields.io/static/v1?label=PL%20Funding%20by&color=d21132&message=NCN&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAABmJLR0QA/wD/AP+gvaeTAAAAKUlEQVQ4jWP8////fwYqAiZqGjZqIHUAy4dJS6lqIOMdEZvRZDPcDQQAb3cIaY1Sbi4AAAAASUVORK5CYII=)](https://www.ncn.gov.pl/?language=en)
+[![US Funding](https://img.shields.io/static/v1?label=US%20DOE%20Funding%20by&color=267c32&message=ASR&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAQCAMAAAA25D/gAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAASFBMVEVOTXyyIjRDQnNZWINZWITtzdFUU4BVVIFVVYHWiZM9PG/KZnNXVoJaWYT67/FKSXhgX4hgX4lcW4VbWoX03uHQeIN2VXj///9pZChlAAAAAWJLR0QXC9aYjwAAAAd0SU1FB+EICRMGJV+KCCQAAABdSURBVBjThdBJDoAgEETRkkkZBBX0/kd11QTTpH1/STqpAAwWBkobSlkGbt0o5xmEfqxDZJB2Q6XMoBwnVSbTylWp0hi42rmbwTOYPDfR5Kc+07IIUQQvghX9THsBHcES8/SiF0kAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMDgtMDlUMTk6MDY6MzcrMDA6MDCX1tBgAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTA4LTA5VDE5OjA2OjM3KzAwOjAw5oto3AAAAABJRU5ErkJggg==)](https://asr.science.energy.gov/)
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+
+[![Github Actions Build Status](https://github.com/open-atmos/PySDM/workflows/tests/badge.svg?branch=main)](https://github.com/open-atmos/PySDM/actions)
+[![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/open-atmos/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
+[![Coverage Status](https://codecov.io/gh/open-atmos/PySDM/branch/main/graph/badge.svg)](https://app.codecov.io/gh/open-atmos/PySDM)    
+[![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
+[![API docs](https://shields.mitmproxy.org/badge/docs-pdoc.dev-brightgreen.svg)](https://open-atmos.github.io/PySDM/)
+
+PySDM is a package for simulating the dynamics of population of particles. 
+It is intended to serve as a building block for simulation systems modelling
+  fluid flows involving a dispersed phase,
+  with PySDM being responsible for representation of the dispersed phase.
+Currently, the development is focused on atmospheric cloud physics
+  applications, in particular on modelling the dynamics of particles immersed in moist air 
+  using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
-The package core is a Pythonic high-performance implementation of the 
+The package features a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
-  ([Shima et al. 2009](http://doi.org/10.1002/qj.441)), hence the name. 
-PySDM has three alternative parallel number-crunching backends 
-  available: multi-threaded CPU backends based on [Numba](http://numba.pydata.org/) 
-  and [Pythran](https://pythran.readthedocs.io/en/latest/), and a GPU-resident
-  backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
+  ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
 
-## Dependencies and installation
+PySDM documentation is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
 
-It is worth here to distinguish the dependencies of the PySDM core subpackage 
-(named simply ``PySDM``) vs. ``PySDM_examples`` and ``PySDM_tests`` subpackages.
+There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) exemplifying how to perform 
+  various types of calculations and simulations using PySDM.
+Most of the example notebooks reproduce results and plot from literature, see below for 
+  a list of examples and links to the notebooks (which can be either executed or viewed 
+  "in the cloud").
 
-PySDM core subpackage dependencies are all available through [PyPI](https://pypi.org), 
-  the key dependencies are [Numba](http://numba.pydata.org/) and [Numpy](https://numpy.org/).
+There are also a growing set of [tutorials](https://github.com/open-atmos/PySDM/tree/main/tutorials), also in the form of Jupyter notebooks.
+These tutorials are intended for teaching purposes and include short explanations of cloud microphysical 
+  concepts paired with widgets for running interactive simulations using PySDM.
+Each tutorial also comes with a set of questions at the end that can be used as homework problems.
+Like the examples, these tutorials can be executed or viewed "in the cloud" making it an especially 
+  easy way for students to get started.
 
-The **Numba backend** is the default, and features multi-threaded parallelism for 
-  multi-core CPUs. 
-It uses the just-in-time compilation technique based on the LLVM infrastructure.
-
-The **Pythran backend** uses the ahead-of-time compilation approach (also using LLVM) and
-  offers an alternative implementation of the multi-threaded parallelism in PySDM.
-
-The **ThrustRTC** backend offers GPU-resident operation of PySDM
+PySDM has two alternative parallel number-crunching backends 
+  available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
+  and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
+The [`Numba`](https://open-atmos.github.io/PySDM/PySDM/backends/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
+  multi-core CPUs, it uses the just-in-time compilation technique based on the LLVM infrastructure.
+The [`ThrustRTC`](https://open-atmos.github.io/PySDM/PySDM/backends/thrust_rtc.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
-Note that, as of ThrustRTC v0.2.1, only Python 3.7 is supported by the ThrustRTC PyPI package
-  (i.e., manual installation is needed for other versions of Python).
+Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
 
-The dependencies of PySDM examples and test subpackages are summarised in
-  the [requirements.txt](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/requirements.txt) 
-  file.
-Additionally, the [MPyDATA](https://github.com/atmos-cloud-sim-uj/MPyDATA) package
-  is used in one of the examples (``ICMW_2012_case_1``), and is bundled 
-  in the PySDM repository as a git submodule (``submodules/MPyDATA`` path).
-Hints on the installation workflow can be sought in the [.travis.yml](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/.travis.yml) file
-  used in the continuous integration workflow of PySDM for Linux, OSX and Windows.
-
-## Demos:
-- [Shima et al. 2009](http://doi.org/10.1002/qj.441) Fig. 2 
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FShima_et_al_2009_Fig_2/demo.ipynb)   
-  (Box model, coalescence only, test case employing Golovin analytical solution)
-- [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) Fig. 5
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FArabas_and_Shima_2017_Fig_5/demo.ipynb)   
-  (Adiabatic parcel, monodisperse size spectrum activation/deactivation test case)
-- [Yang et al. 2018](http://doi.org/10.5194/acp-18-7313-2018) Fig. 2:
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FYang_et_al_2018_Fig_2/demo.ipynb)   
-  (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case)
-- ICMW 2012 case 1 (work in progress)
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FICMW_2012_case_1/demo.ipynb)   
-  (2D prescripted flow stratocumulus-mimicking aerosol collisional processing test case)
+For an overview of PySDM features (and the preferred way to cite PySDM in papers), please refer to our JOSS papers:
+- [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
+- [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
   
-## Tutorials:
-- Introduction [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_tutorials%2F_intro.ipynb)
-- Coalescence [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_tutorials%2Fcoalescence.ipynb)
+PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
+For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
-## Usage example
+## Dependencies and Installation
 
-In order to depict the PySDM API with a practical example, the following
-  listings provide a sample code roughly reproducing the 
-  Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441).
-It is a coalescence-only set-up in which the initial particle size 
-  spectrum is exponential and is deterministically sampled to match
-  the condition of each super-droplet having equal initial multiplicity:
-```Python
-from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import constant_multiplicity
-from PySDM.initialisation.spectra import Exponential
-from PySDM.physics.formulae import volume
+PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [SciPy](https://scipy.org/), 
+[Pint](https://pint.readthedocs.io/), [chempy](https://pypi.org/project/chempy/), 
+[pyevtk](https://pypi.org/project/pyevtk/),
+[ThrustRTC](https://fynv.github.io/ThrustRTC/) and [CURandRTC](https://github.com/fynv/CURandRTC).
 
-n_sd = 2**13
-initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
-sampling_range = (volume(radius=10 * si.um), volume(radius=100 * si.um))
-attributes = {}
-attributes['volume'], attributes['n'] = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+To install PySDM using ``pip``, use: ``pip install PySDM`` 
+(or ``pip install git+https://github.com/open-atmos/PySDM.git`` to get updates
+beyond the latest release).
+
+Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. Dependencies of PySDM are available at the following conda channels:
+- numba: [numba](https://anaconda.org/numba/numba)
+- conda-forge: [pyevtk](https://anaconda.org/conda-forge/pyevtk), [pint](https://anaconda.org/conda-forge/pint) and []()
+- fyplus: [ThrustRTC](https://anaconda.org/fyplus/thrustrtc), [CURandRTC](https://anaconda.org/fyplus/curandrtc)
+- bjodah: [chempy](https://anaconda.org/bjodah/chempy)
+- nvidia: [cudatoolkit](https://anaconda.org/nvidia/cudatoolkit)
+
+For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
+Test-time dependencies can be installed with ``pip -e .[tests]``.
+
+PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
+The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM/blob/main/examples/setup.py) file.
+Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
+The suggested install and launch steps are:
 ```
-
-The key element of the PySDM interface is the [``Particles``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
-  class which instances are used to manage the system state and control the simulation.
-Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``
-  as exemplified below:
-```Python
-from PySDM.particles_builder import ParticlesBuilder
-from PySDM.environments import Box
-from PySDM.dynamics import Coalescence
-from PySDM.dynamics.coalescence.kernels import Golovin
-from PySDM.backends import Numba
-from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
-
-particles_builder = ParticlesBuilder(n_sd=n_sd, backend=Numba)
-particles_builder.set_environment(Box, {"dt": 1 * si.s, "dv": 1e6 * si.m**3})
-particles_builder.register_dynamic(Coalescence, {"kernel": Golovin(b=1.5e3 / si.s)})
-products = {ParticlesVolumeSpectrum: {}}
-particles = particles_builder.get_particles(attributes, products)
+git clone https://github.com/open-atmos/PySDM.git
+pip install -e PySDM
+pip install -e PySDM/examples
+jupyter-notebook PySDM/examples/PySDM_examples
 ```
-The ``backend`` argument may be set to ``Numba``, ``Pythran`` or ``ThrustRTC``
-  what translates to choosing one of the multi-threaded backend or the 
-  GPU-resident computation mode, respectively.
-The employed ``Box`` environment corresponds to a zero-dimensional framework
-  (particle positions are not considered).
-The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
-  used to initialise super-droplet attributes.
-The ``SDM`` Monte-Carlo coalescence algorithm is registered as the only
-  dynamic in the system (other available dynamics representing
-  condensational growth and particle displacement).
-Finally, the ``get_particles()`` method is used to obtain an instance
-  of ``Particles`` which can then be used to control time-stepping and
-  access simulation state.
+Alternatively, one can also install the examples package from pypi.org by 
+using ``pip install PySDM-examples`` (note that this does not apply to notebooks itself,
+only the supporting .py files).
 
-The ``run(nt)`` method advances the simulation by ``nt`` timesteps.
-In the listing below, its usage is interleaved with plotting logic
-  which displays a histogram of particle mass distribution 
-  at selected timesteps:
-```Python
-from PySDM.physics.constants import rho_w
-from matplotlib import pyplot
-import numpy as np
+## Contributing, reporting issues, seeking support 
 
-radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
+#### Our technologicial stack:   
+[![Python 3](https://img.shields.io/static/v1?label=+&logo=Python&color=darkred&message=Python)](https://www.python.org/)
+[![Numba](https://img.shields.io/static/v1?label=+&logo=Numba&color=orange&message=Numba)](https://numba.pydata.org)
+[![LLVM](https://img.shields.io/static/v1?label=+&logo=LLVM&color=gold&message=LLVM)](https://llvm.org)
+[![CUDA](https://img.shields.io/static/v1?label=+&logo=nVidia&color=darkgreen&message=ThrustRTC/CUDA)](https://pypi.org/project/ThrustRTC/)
+[![NumPy](https://img.shields.io/static/v1?label=+&logo=numpy&color=blue&message=NumPy)](https://numpy.org/)
+[![pytest](https://img.shields.io/static/v1?label=+&logo=pytest&color=purple&message=pytest)](https://pytest.org/)   
+[![Colab](https://img.shields.io/static/v1?label=+&logo=googlecolab&color=darkred&message=Colab)](https://colab.research.google.com/)
+[![Codecov](https://img.shields.io/static/v1?label=+&logo=codecov&color=orange&message=Codecov)](https://codecov.io/)
+[![PyPI](https://img.shields.io/static/v1?label=+&logo=pypi&color=gold&message=PyPI)](https://pypi.org/)
+[![GithubActions](https://img.shields.io/static/v1?label=+&logo=github&color=darkgreen&message=GitHub&nbsp;Actions)](https://github.com/features/actions)
+[![Jupyter](https://img.shields.io/static/v1?label=+&logo=Jupyter&color=blue&message=Jupyter)](https://jupyter.org/)
+[![PyCharm](https://img.shields.io/static/v1?label=+&logo=pycharm&color=purple&message=PyCharm)](https:///)
 
-for step in [0, 1200, 2400, 3600]:
-    particles.run(step - particles.n_steps)
-    pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particles.products['dv/dlnr'].get(radius_bins_edges) * rho_w / si.g,
-                where='post', label=f"t = {step}s")
+Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/open-atmos/PySDM/pulls) - it helps to keep record of code authorship, 
+track and archive the code review workflow and allows to benefit
+from the continuous integration setup which automates execution of tests 
+with the newly added code. 
 
-pyplot.xscale('log')
-pyplot.xlabel('particle radius [µm]')
-pyplot.ylabel("dm/dlnr [g/m$^3$/(unit dr/r)]")
-pyplot.legend()
-pyplot.show()
-```
-The resultant plot looks as follows:
+Code contributions are assumed to imply transfer of copyright.
+Should there be a need to make an exception, please indicate it when creating
+a pull request or contributing code in any other way. In any case, 
+the license of the contributed code must be compatible with GPL v3.
 
-![plot](https://raw.githubusercontent.com/piotrbartman/PySDM/develop/PySDM_tutorials/pics/readme.png)
+Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
+the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
+The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html)
+and [Pylint](https://pylint.org), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
+code analysis (which are all part of the CI workflows).
 
-## Package structure and API
+We also use [pre-commit hooks](https://pre-commit.com). 
+In our case, the hooks modify files and re-format them.
+The pre-commit hooks can be run locally, and then the resultant changes need to be staged before committing.
+To set up the hooks locally, install pre-commit via `pip install pre-commit` and
+set up the git hooks via `pre-commit install` (this needs to be done every time you clone the project).
+To run all pre-commit hooks, run `pre-commit run --all-files`.
+The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
+  existing ones need to be altered.  
 
-- [backends](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/backends):
-    - [Numba](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/numba): 
-      multi-threaded CPU backend using LLVM-powered just-in-time compilation
-    - [ThrustRTC](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/thrustRTC): 
-      GPU-resident backend using real-time compilation 
-    - [Pythran](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/pythran.py): 
-      multi-threaded CPU backend using LLVM-powered ahead-of-time compilation 
-- [initialisation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/initialisation):
-    - [multiplicities](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/multiplicities.py): 
-      integer-valued discretisation with sanity checks for errors due to type casting 
-    - [r_wet_init](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/r_wet_init.py):
-      kappa-Keohler-based equilibrium in unsaturated conditions (RH=1 used in root-finding above saturation)
-    - [spatial_sampling](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/spatial_sampling.py): 
-      pseudorandom sampling using NumPy's default RNG
-    - [spectra](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/spectra.py):
-        Exponential and Lognormal classes
-    - [spectral_sampling](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/spectral_sampling.py):
-        linear, logarithmic and constant_multiplicity classes
-- [physics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/physics):
-    - [constants](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/constants.py): 
-      physical constants partly imported from [SciPy](https://www.scipy.org/) and [mendeleev](https://pypi.org/project/mendeleev/) packages
-    - [dimensional_analysis](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/dimensional_analysis.py): 
-      tool for enabling dimensional analysis of the code for unit tests (based on [pint](https://pint.readthedocs.io/))
-    - [formulae](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/formulae.py): 
-      physical formulae partly imported from the Numba backend (e.g., for initialisation)
-- [environments](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/environments):
-    - [Box](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/box.py): 
-      bare zero-dimensional framework 
-    - [MoistLagrangianParcelAdiabatic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_lagrangian_parcel_adiabatic.py): 
-      zero-dimensional adiabatic parcel framework
-    - [MoistEulerian2DKinematic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_eulerian_2d_kinematic.py): 
-      two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [MPyDATA](http://github.com/atmos-cloud-sim-uj/MPyDATA/)
-- [dynamics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics):
-    - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence)
-        - [coalescence.kernels](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence/kernels)
-            - [Golovin](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/golovin.py)
-            - [Gravitational](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/gravitational.py)
-    - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation)
-        - solvers (working in arbitrary spectral coordinate specified through external class, defaults to logarithm of volume): 
-            - [default](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/backends/numba/condensation_methods.py):
-              bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
-            - [BDF](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_tests/smoke_tests/utils/bdf.py): 
-              black-box SciPy-based solver for benchmarking (Numba backend only)
-    - [Displacement](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/displacement.py):
-      includes advection with the flow & sedimentation)
-    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection.py)
-- Products (selected):
-    - [SuperDropletCount](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/state/products/super_droplet_count.py)
-    - [ParticlesVolumeSpectrum](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/state/products/particles_volume_spectrum.py)
-    - [CondensationTimestep](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/condensation/products/condensation_timestep.py)    
+Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki)
+  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOS).
 
-## Credits:
+Issues regarding any incorrect, unintuitive or undocumented bahaviour of
+PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).
+Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github.com/open-atmos/PySDM/wiki/Ideas-for-new-features-and-examples).
 
-Development of PySDM is supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
+We encourage to use the [GitHub Discussions](https://github.com/open-atmos/PySDM/discussions) feature
+(rather than the issue tracker) for seeking support in understanding, using and extending PySDM code.
 
-copyright: Jagiellonian University   
-code licence: GPL v3   
-tutorials licence: CC-BY
+We look forward to your contributions and feedback.
 
-## Other open-source SDM implementations:
-- SCALE-SDM (Fortran):    
-  https://github.com/Shima-Lab/SCALE-SDM_BOMEX_Sato2018/blob/master/contrib/SDM/sdm_coalescence.f90
-- Pencil Code (Fortran):    
-  https://github.com/pencil-code/pencil-code/blob/master/src/particles_coagulation.f90
-- PALM LES (Fortran):    
-  https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90
-- libcloudph++ (C++):    
-  https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
-- LCM1D (Python)
-  https://github.com/SimonUnterstrasser/ColumnModel
+## Licensing:
+
+copyright: [Jagiellonian University](https://en.uj.edu.pl/en) (2019-2023) & [AGH University of Krakow](https://agh.edu.pl/en) (2023-...)    
+licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
+
+  

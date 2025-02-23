@@ -1,0 +1,90 @@
+name: readme_snippets
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 13 * * 4'
+
+jobs:
+  python:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: "3.10"
+      - run: python -m pip install $PIP_INSTALL_ARGS -e .
+      - run: python -m pip install $PIP_INSTALL_ARGS pytest-codeblocks pytest
+      - run: python -m pip install $PIP_INSTALL_ARGS "pyparsing<3.0.0"  # https://github.com/matplotlib/matplotlib/issues/25204
+      - run: |
+          python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
+      - run: cat -n readme.py
+      - run: |
+          python -We readme.py
+          sed -i -e 's/CPU/GPU/g' readme.py
+          python -We readme.py
+      
+      - name: artefacts
+        if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            readme.png
+
+  julia:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: "3.10"
+      - run: pip install -e .
+      - run: pip install pytest-codeblocks pytest
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
+      - uses: julia-actions/setup-julia@v1.9.6
+      - run: cat -n readme.jl
+      - run: julia readme.jl
+      - run: sed -i -e 's/CPU/GPU/g' readme.jl
+      - run: julia readme.jl
+
+  matlab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: 3.8
+      - run: pip install -e .
+      - run: pip install pytest-codeblocks pytest
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
+      - run: cat -n readme.m
+      - uses: matlab-actions/setup-matlab@v2.1.0
+        with:
+          release: R2021a
+      - uses: matlab-actions/run-command@v2.1.0
+        with:
+          command: readme
+      - run: sed -i -e 's/CPU/GPU/g' readme.m
+      - uses: matlab-actions/run-command@v2.1.0
+        with:
+          command: readme
+
+      - name: artefacts
+        if: github.ref == 'refs/heads/main'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            parcel.png
+

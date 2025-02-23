@@ -1,0 +1,27 @@
+name: Build JOSS paper draft
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    name: Paper Draft
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.6
+      - name: TeX and PDF
+        uses: docker://openjournals/paperdraft:latest
+        with:
+          args: '-k paper/paper.md'
+        env:
+          GIT_SHA: $GITHUB_SHA
+          JOURNAL: joss
+      - name: Upload
+        uses: actions/upload-artifact@v4.3.1
+        with:
+          name: paper
+          path: paper/

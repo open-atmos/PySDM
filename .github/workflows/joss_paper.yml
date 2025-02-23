@@ -1,0 +1,36 @@
+name: JOSS paper code
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 13 * * 4'
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: 3.11
+      - run: pip install -e .[tests]
+      - run: pip install pytest-codeblocks pytest
+
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('paper/paperv1.md'); f=open('paperv1.py', 'w'); f.writelines(block.code for block in code); f.close()"
+      - run: echo "$(echo 'warnings.simplefilter("ignore", category=DeprecationWarning)'; cat paperv1.py)" > paperv1.py
+      - run: echo "$(echo 'import warnings'; cat paperv1.py)" > paperv1.py
+      - run: python -We paperv1.py
+
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('paper/paper.md'); f=open('paper.py', 'w'); f.writelines(block.code for block in code); f.close()"
+      - run: echo "$(echo 'warnings.simplefilter("ignore", category=DeprecationWarning)'; cat paper.py)" > paper.py
+      - run: echo "$(echo 'warnings.simplefilter("ignore", category=NumbaExperimentalFeatureWarning)'; cat paper.py)" > paper.py
+      - run: echo "$(echo 'import warnings'; cat paper.py)" > paper.py
+      - run: echo "$(echo 'from numba.core.errors import NumbaExperimentalFeatureWarning'; cat paper.py)" > paper.py
+      - run: python -We paper.py

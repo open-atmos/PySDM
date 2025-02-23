@@ -1,4 +1,4 @@
-[submodule "submodules/MPyDATA"]
-	path = submodules/MPyDATA
-	url = https://github.com/atmos-cloud-sim-uj/MPyDATA.git
-	branch = optimization
+[submodule "tests/devops_tests"]
+	path = tests/devops_tests
+	url = https://github.com/open-atmos/devops_tests
+	shallow = true

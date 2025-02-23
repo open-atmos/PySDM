@@ -1,0 +1,42 @@
+branches:
+  only:
+    - main
+environment:
+  matrix:
+  - platform: x86
+#  - platform: x64
+  
+build: false
+
+skip_tags: true
+
+install:
+  - echo Installed Pythons
+  - dir c:\Python*
+
+  - ps: |
+      if ($env:platform -Match "x86") 
+      {
+        $env:PYTHON="C:\Python38\python"
+        Set-Content -Path "setup.py" -Value (get-content -Path "setup.py" | Select-String -Pattern 'PyPartMC' -NotMatch)
+      }
+      elseif ($env:platform -Match "x64") 
+      {
+        $env:PYTHON="C:\Python38-x64\python"
+      }
+
+  - ps: |
+      iex "$env:PYTHON -m pip install --no-warn-script-location pytest pip==21.3.1"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+  
+  - ps: |
+      iex "$env:PYTHON -m pip install --prefer-binary --no-warn-script-location -e .[tests]"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+
+test_script:
+  - ps: |
+      iex "$env:PYTHON -m pytest --durations=10 -We -p no:unraisableexception tests/unit_tests"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

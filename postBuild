@@ -1,2 +1,0 @@
-pip install --user -r submodules/MPyDATA/requirements.txt
-pip install submodules/MPyDATA

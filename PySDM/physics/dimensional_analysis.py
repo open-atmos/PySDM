@@ -1,19 +1,27 @@
+"""
+A context manager (for use with the `with` statement) which
+enables Pint physical-units checks and disables Numba in `PySDM.formulae.Formulae`
+"""
+
 from importlib import reload
-from PySDM.physics import _flag
-from PySDM.physics import constants
-from PySDM.physics import formulae
-from PySDM.backends.numba import numba_helpers
+
+from PySDM import formulae
+from PySDM import physics
+from . import constants, constants_defaults
+from .impl import flag
 
 
 class DimensionalAnalysis:
-    def __enter__(*_):
-        _flag.DIMENSIONAL_ANALYSIS = True
+    def __enter__(*_):  # pylint: disable=no-method-argument,no-self-argument
+        flag.DIMENSIONAL_ANALYSIS = True
         reload(constants)
-        reload(numba_helpers)
+        reload(constants_defaults)
         reload(formulae)
+        reload(physics)
 
-    def __exit__(*_):
-        _flag.DIMENSIONAL_ANALYSIS = False
+    def __exit__(*_):  # pylint: disable=no-method-argument,no-self-argument
+        flag.DIMENSIONAL_ANALYSIS = False
         reload(constants)
-        reload(numba_helpers)
+        reload(constants_defaults)
         reload(formulae)
+        reload(physics)

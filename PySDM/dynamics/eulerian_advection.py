@@ -1,22 +1,22 @@
 """
-Created at 29.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
+wrapper class for triggering integration in the Eulerian advection solver
 """
 
-from PySDM.environments import MoistEulerianInterface
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.dynamics.impl import register_dynamic
 
 
+@register_dynamic()
 class EulerianAdvection:
+    def __init__(self, solvers):
+        self.solvers = solvers
+        self.particulator = None
 
-    def __init__(self, particles_builder: ParticlesBuilder):
-        self.particles = particles_builder.particles
+    def register(self, builder):
+        self.particulator = builder.particulator
 
     def __call__(self):
-        env: MoistEulerianInterface = self.particles.environment
-        self.particles.backend.download(env.get_predicted('qv').reshape(self.particles.mesh.grid), env.get_qv())
-        self.particles.backend.download(env.get_predicted('thd').reshape(self.particles.mesh.grid), env.get_thd())
-
-        env.step()
+        for field in ("water_vapour_mixing_ratio", "thd"):
+            self.particulator.environment.get_predicted(field).download(
+                getattr(self.particulator.environment, f"get_{field}")(), reshape=True
+            )
+        self.solvers(self.particulator.dynamics["Displacement"])

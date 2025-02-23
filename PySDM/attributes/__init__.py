@@ -1,6 +1,9 @@
 """
-Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
+Classes representing super-particle attributes
 """
+
+from .physics import *
+from .numerics import *
+from .ice import *
+from .chemistry import *
+from .isotopes import *

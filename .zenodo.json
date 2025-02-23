@@ -1,0 +1,160 @@
+{
+  "title": "PySDM",
+  "description": "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab",
+  "creators": [
+    {
+      "affiliation": "AGH University of Krakow, Kraków, Poland (2023-...); University of Illinois at Urbana-Champaign, IL, USA (2021-2022); Jagiellonian University, Kraków, Poland (2018-2023)",
+      "name": "Arabas, Sylwester",
+      "orcid": "0000-0003-2361-0082"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Azimi, Sajjad",
+      "orcid": "0000-0002-6329-7775"
+    },
+    {
+      "affiliation": "University of Washington, Seattle, WA, USA",
+      "name": "Barr, Jason"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Bartman, Piotr",
+      "orcid": "0000-0003-0265-6428"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Bhalla, Brady"
+    },
+    {
+      "affiliation": "AGH University of Krakow, Poland",
+      "name": "Bhiogade, Sanket"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Bulenok, Oleksii",
+      "orcid": "0000-0003-2272-8548"
+    },
+    {
+      "affiliation": "Columbia University, New York, NY, USA",
+      "name": "Buch, Jatan",
+      "orcid": "0000-0001-6672-6750"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Croci, Caterina" 
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "de Jong, Emily",
+      "orcid": "0000-0002-5310-4554"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Derlatka, Kacper"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Dula, Isabella"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Górski, Kamil"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Jaruga, Anna",
+      "orcid": "0000-0003-3194-6440"
+    },
+    {
+      "affiliation": "DTN, Aberdeen, Scotland, UK",
+      "name": "Konstantinov, Boris"
+    },
+    {
+      "affiliation": "Columbia University, New York, NY, USA",
+      "name": "Loftus, Kaitlyn",
+      "orcid": "0000-0002-1927-9326"
+    },
+    {
+      "affiliation": "Johannes Gutenberg University Mainz, Germany",
+      "name": "Lüttmer, Tim"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Łazarski, Grzegorz",
+      "orcid": "0000-0002-5595-371X"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Mackay, J. Ben",
+      "orcid": "0000-0001-8677-3562"
+    },
+    {
+      "affiliation": "AGH University of Krakow, Poland",
+      "name": "Magnuszewski, Paweł",
+      "orcid": "0009-0007-9269-6795"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Mints, Mikhail"
+    },
+    {
+      "affiliation": "AGH University of Krakow, Kraków, Poland",
+      "name": "Magnuszewski, Paweł"
+    },
+    {
+      "affiliation": "University of Warsaw, Poland",
+      "name": "Makulska, Agnieszka"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Olesik, Michael",
+      "orcid": "0000-0002-6319-9358"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Piasecki, Bartosz"
+    },
+    {
+      "affiliation": "AGH University of Krakow, Kraków, Poland",
+      "name": "Romaniec, Weronika"
+    },
+    {
+      "affiliation": "NOAA GFDL, Princeton, NJ, USA (2024-); Columbia University, New York, NY, USA (2023-2024); California Institute of Technology, Pasadena, CA, USA (2018-2023)",
+      "name": "Singer, Clare E.",
+      "orcid": "0000-0002-1708-0997"
+    },
+    {
+      "affiliation": "AGH University of Krakow, Kraków, Poland",
+      "name": "Strząbała, Alksandra"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Talar, Aleksandra"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Ward, Ryan X.",
+      "orcid": "0000-0003-2317-3310"
+    },
+    {
+      "affiliation": "AGH University of Krakow, Kraków, Poland",
+      "name": "Wroński, Michał"
+    },
+    {
+      "affiliation": "AGH University of Krakow, Kraków, Poland",
+      "name": "Żaba, Agnieszka",
+      "orcid": "0009-0002-0922-4599"
+    }
+  ],
+  "keywords": [
+    "cloud microphysics",
+    "aerosol microphysics",
+    "aerosol-cloud interactions",
+    "atmospheric physics",
+    "super-droplet method",
+    "particle-based simulation",
+    "Monte-Carlo"
+  ],
+  "license": "GPL-3.0-only",
+  "upload_type": "software"
+}
