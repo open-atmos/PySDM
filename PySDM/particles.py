@@ -9,6 +9,7 @@ import numpy as np
 from PySDM.state.state import State
 from PySDM.stats import Stats
 
+
 class Particles:
 
     def __init__(self, n_sd, backend, stats=None):
