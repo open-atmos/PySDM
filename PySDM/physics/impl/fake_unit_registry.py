@@ -16,6 +16,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
             for unit in (
                 "bar",
                 "metre",
+                "meter",
                 "gram",
                 "hertz",
                 "mole",
@@ -25,6 +26,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
                 "minute",
                 "pascal",
                 "litre",
+                "liter",
                 "hour",
                 "newton",
                 "watt",
