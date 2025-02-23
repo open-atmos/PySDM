@@ -755,5 +755,12 @@
     ],
     "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
     "label": "Picciotto et al. 1960 (Nature 187)"
+  },
+  "https://doi.org/10.1016/0019-1035(80)90173-6": {
+    "usages": [
+      "examples/PySDM_examples/Toon_et_al_1980/fig_1.ipynb"
+    ],
+    "title": "A physical model of Titan’s clouds",
+    "label": "Toon et al. 1980 (Icarus 43)"
   }
 }
