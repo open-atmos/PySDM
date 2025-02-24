@@ -54,6 +54,6 @@ class settings:
         spectrum = Lognormal(norm_factor=N_dv_solution_droplet / dry_air_density,  m_mode=r_mean_solution_droplet, s_geom=sigma_solution_droplet)
         self.r_dry, self.specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 
-        self.t_duration = 10 #5400 # total duration of simulation
+        self.t_duration = 5400 # total duration of simulation
         self.dt         = dt
         self.n_output = 10 # number of output steps

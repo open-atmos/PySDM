@@ -23,13 +23,13 @@ class FreezingMethods(BackendMethods):
         )
 
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        def _freeze(water_mass, i):
-            water_mass[i] = -1 * water_mass[i]
+        def _freeze(signed_water_mass, i):
+            signed_water_mass[i] = -1 * signed_water_mass[i]
             # TODO #599: change thd (latent heat)!
 
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        def _thaw(water_mass, i):
-            water_mass[i] = -1 * water_mass[i]
+        def _thaw(signed_water_mass, i):
+            signed_water_mass[i] = -1 * signed_water_mass[i]
             # TODO #599: change thd (latent heat)!
 
         @numba.njit(**self.default_jit_flags)
@@ -126,14 +126,17 @@ class FreezingMethods(BackendMethods):
                     rate_assuming_constant_temperature_within_dt = (
                             j_hom(temperature[cell_id], d_a_w_ice) * attributes.volume[i]
                     )
+                    rate = j_hom(temperature[cell_id], d_a_w_ice)
                     prob = 1 - prob_zero_events(
                         r=rate_assuming_constant_temperature_within_dt, dt=timestep
                     )
+                    randi = rand[i]
                     if rand[i] < prob:
+                        # print(f"{d_a_w_ice=},{rate=},{prob=},{randi=}")
                         _freeze(attributes.signed_water_mass, i)
                         # if record_freezing_temperature:
                         #     freezing_temperature[i] = temperature[cell_id]
-
+           # print( attributes.signed_water_mass )
         
         self.freeze_time_dependent_homogeneous_body = freeze_time_dependent_homogeneous_body
             

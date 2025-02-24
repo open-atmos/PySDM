@@ -162,7 +162,7 @@ def plot( output, setting, pp ):
     fig.tight_layout() 
     pp.savefig()
 
-general_settings = {"n_sd": 1000, "T0": 220 * si.kelvin, "w_updraft": 10 * si.centimetre / si.second}
+general_settings = {"n_sd": 100, "T0": 220 * si.kelvin, "w_updraft": 10 * si.centimetre / si.second}
 distributions = ({"N_dv_solution_droplet": 2500 / si.centimetre**3, \
                   "r_mean_solution_droplet": 0.055 * si.micrometre, \
                   "sigma_solution_droplet": 1.6},

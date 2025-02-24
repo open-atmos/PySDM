@@ -62,7 +62,8 @@ class Simulation:
             "multiplicity": self.multiplicities,
             'dry volume': v_dry,
             'kappa times dry volume': kappa * v_dry,
-            'volume': formulae.trivia.volume(radius=self.r_wet),
+            #'volume': formulae.trivia.volume(radius=self.r_wet),
+            "signed water mass": formulae.particle_shape_and_density.radius_to_mass(self.r_wet),
         }
                
                
@@ -141,8 +142,12 @@ class Simulation:
 
         self.save(output)
         for _ in range(self.n_output):
+            # print(self.particulator.__dict__)
+            # print(self.particulator.attributes.__dict__)
+            # print(self.particulator.attributes._ParticleAttributes__attributes['signed water mass'])
             self.particulator.run(self.n_substeps)
             #print( self.particulator.products["t"].get() )
+
             self.save(output)
 
         return output
