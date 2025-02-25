@@ -8,3 +8,4 @@ from .box import Box
 from .kinematic_1d import Kinematic1D
 from .kinematic_2d import Kinematic2D
 from .parcel import Parcel
+from .expansion_chamber import ExpansionChamber

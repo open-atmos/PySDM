@@ -91,28 +91,28 @@ class TestParticulator:
         class DP(DummyParticulator):
             pass
 
-        particulator = DP(backend_class, 44)
+        particulator = DP(backend_class, n_sd=44)
         particulator.attributes = ParticleAttributes()
         # fmt: off
-        particulator.backend.seeding = (
+        particulator.backend.spawning = (
             lambda
                 idx,
                 multiplicity,
                 extensive_attributes,
-                seeded_particle_index,
-                seeded_particle_multiplicity,
-                seeded_particle_extensive_attributes,
-                number_of_super_particles_to_inject:
+                spawned_particle_index,
+                spawned_particle_multiplicity,
+                spawned_particle_extensive_attributes,
+                number_of_super_particles_to_spawn:
             None
         )
         # fmt: on
 
         # act
-        particulator.seeding(
-            seeded_particle_index=storage,
-            seeded_particle_multiplicity=storage,
-            seeded_particle_extensive_attributes=storage,
-            number_of_super_particles_to_inject=0,
+        particulator.spawn(
+            spawned_particle_index=storage,
+            spawned_particle_multiplicity=storage,
+            spawned_particle_extensive_attributes=storage,
+            number_of_super_particles_to_spawn=0,
         )
 
         # assert
@@ -121,7 +121,7 @@ class TestParticulator:
         assert particulator.attributes.sane
 
     @staticmethod
-    def test_seeding_fails_if_no_null_super_droplets_availale(backend_class):
+    def test_seeding_fails_if_no_null_super_droplets_available(backend_class):
         # arrange
         a_number = 44
 
@@ -133,10 +133,10 @@ class TestParticulator:
         )(super_droplet_count=a_number)
 
         # act
-        with pytest.raises(ValueError, match="No available seeds to inject"):
-            particulator.seeding(
-                seeded_particle_index=storage,
-                seeded_particle_multiplicity=storage,
-                seeded_particle_extensive_attributes=storage,
-                number_of_super_particles_to_inject=0,
+        with pytest.raises(ValueError, match="No available null SDs to spawn"):
+            particulator.spawn(
+                spawned_particle_index=storage,
+                spawned_particle_multiplicity=storage,
+                spawned_particle_extensive_attributes=storage,
+                number_of_super_particles_to_spawn=0,
             )

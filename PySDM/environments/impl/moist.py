@@ -71,6 +71,8 @@ class Moist:
         )
 
     def sync(self):
+        """fills the "predicted" set of thermodynamic variables with derived values freshly
+        computed from `self.get_thd()` and `self.get_water_vapour_mixing_ratio()`"""
         target = self._tmp
         target["water_vapour_mixing_ratio"].ravel(self.get_water_vapour_mixing_ratio())
         target["thd"].ravel(self.get_thd())
@@ -108,6 +110,8 @@ class Moist:
         raise NotImplementedError()
 
     def notify(self):
+        """invalidates the "predicted" set of thermodynamic variables storing its
+        contents into the "current" set of vars"""
         if self._values["predicted"] is None:
             return
 
