@@ -17,7 +17,7 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
         return -(radius**2) / 3 / r_dr_dt * const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
 
     @staticmethod
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments unused-argument
     def c1_coeff(
         const,
         vent_coeff_iso,
@@ -32,17 +32,7 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
         pvs_water,
         temperature,
     ):
-        return (
-            vent_coeff_iso
-            * D_iso
-            / vent_coeff
-            / D
-            / alpha
-            / pvs_iso
-            * pvs_water
-            * (rho_env_iso / M_iso - pvs_iso / const.R_str / temperature)
-            / (rho_env / const.Mv - pvs_water / const.R_str / temperature)
-        )
+        return RH / alpha
 
     @staticmethod
     # pylint: disable=too-many-arguments

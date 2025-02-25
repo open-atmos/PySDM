@@ -35,5 +35,8 @@ class ZabaAndArabas2025:
         )
 
     @staticmethod
-    def mason_T0_to_Tinf_factor(latant_heat, K, radius, dm_dt):
-        return 1 + latant_heat / 4 / np.pi / K / radius * dm_dt
+    def mason_T0_to_Tinf_factor(const, radius, dm_dt):
+        # return 1 + const.lv / 4 / np.pi / const.K / radius * dm_dt
+        return 1 + vent_coeff * (RH - Rh_eq) / (
+            const.K * Rv * T / const.lv / D / pvs + (const.lv / T / Rv - 1) / T
+        )
