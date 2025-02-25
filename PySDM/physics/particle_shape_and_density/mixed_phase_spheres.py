@@ -29,4 +29,7 @@ class MixedPhaseSpheres:
 
     @staticmethod
     def radius_to_mass(const, radius):
-        raise NotImplementedError()
+        return (
+            np.maximum(const.ZERO_VOLUME, const.PI_4_3 * radius**3) * const.rho_w
+            + np.minimum(const.ZERO_VOLUME, const.PI_4_3 * radius**3) * const.rho_i
+        )
