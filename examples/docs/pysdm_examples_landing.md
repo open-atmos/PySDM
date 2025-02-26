@@ -124,3 +124,7 @@ The box environment is also featured in the <a href="https://open-atmos.github.i
   - `PySDM_examples.Bolin_1958`
 - below-cloud <mark>kinetic fractionation</mark>:
   - `PySDM_examples.Gedzelman_and_Arnold_1994`
+
+## examples depicting extraterrestrial clouds (formulae-only, no simulations yet)
+- Titan:
+  - `PySDM_examples.Toon_et_al_1980`
