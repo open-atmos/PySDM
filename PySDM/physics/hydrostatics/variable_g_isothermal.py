@@ -8,7 +8,7 @@ import numpy as np
 from PySDM.physics import constants_defaults
 
 
-class VariableGIsothermal:
+class VariableGIsothermal:  # pylint: disable=too-few-public-methods
     def __init__(self, const):
         assert np.isfinite(const.celestial_body_radius)
         assert const.g_std != constants_defaults.g_std
