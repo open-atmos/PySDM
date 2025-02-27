@@ -126,5 +126,5 @@ The box environment is also featured in the <a href="https://open-atmos.github.i
   - `PySDM_examples.Gedzelman_and_Arnold_1994`
 
 ## examples depicting extraterrestrial clouds (formulae-only, no simulations yet)
-- Titan:
+- Titan (methane clouds):
   - `PySDM_examples.Toon_et_al_1980`
