@@ -114,7 +114,6 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
 
         # derivative evaluated at p_old, T_old, mixrat_mid, w_mid
         drho_dz = formulae.hydrostatics.drho_dz(
-            g=formulae.constants.g_std,
             p=p,
             T=T,
             water_vapour_mixing_ratio=water_vapour_mixing_ratio,
