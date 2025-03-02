@@ -10,7 +10,7 @@ class IsotopeTimescale:
         self.v_term = self.formulae.terminal_velocity.v_term(radii)
         self.D = self.formulae.diffusion_thermics.D(T=self.temperature, p=self.pressure)
         self.D_iso = self.formulae.isotope_diffusivity_ratios.ratio_3H(self.temperature)
-        self.K = 44.0  # any non-zero value
+        self.K = 10.0  # any non-zero value
         self.pvs_water = self.formulae.saturation_vapour_pressure.pvs_water(
             self.temperature
         )
