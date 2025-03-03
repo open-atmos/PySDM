@@ -9,15 +9,17 @@ class IsotopeTimescale:
         self.pressure = self.formulae.constants.p_STP
         self.v_term = self.formulae.terminal_velocity.v_term(radii)
         self.D = self.formulae.diffusion_thermics.D(T=self.temperature, p=self.pressure)
-        self.D_iso = self.formulae.isotope_diffusivity_ratios.ratio_3H(self.temperature)
-        self.K = 10.0  # any non-zero value
+        self.D_rat = self.formulae.isotope_diffusivity_ratios.ratio_3H(self.temperature)
+        self.K = 44.0  # any non-zero value
         self.pvs_water = self.formulae.saturation_vapour_pressure.pvs_water(
             self.temperature
         )
-        self.alpha = self.formulae.isotope_equilibrium_fractionation_factors.alpha_i_3H(
+        self.alpha = self.formulae.isotope_equilibrium_fractionation_factors.alpha_l_3H(
             self.temperature
         )  # check i/l
         self.M_iso = self.formulae.constants.M_3H
+        self.f = self.vent_coeff_fun()
+        self.f_iso = self.vent_coeff_fun()
 
     def vent_coeff_fun(self):
         eta_air = self.formulae.air_dynamic_viscosity.eta_air(self.temperature)
@@ -55,17 +57,12 @@ class IsotopeTimescale:
             lv=lv,
         )
 
-    def c1_coeff(self, *, vent_coeff_iso, rho_env, pvs_iso):
-        return self.formulae.isotope_relaxation_timescale.c1_coeff(
-            vent_coeff_iso=vent_coeff_iso,
-            vent_coeff=self.vent_coeff_fun(),
-            D_iso=self.D_iso,
-            D=self.D,
-            alpha=self.alpha,
-            rho_env_iso=self.formulae.constants.VSMOW_R_3H,
-            rho_env=rho_env,
-            M_iso=self.M_iso,
-            pvs_iso=pvs_iso,  # any number
-            pvs_water=self.pvs_water,
-            temperature=self.temperature,
+    def c1(self, R_liq, R_vap, RH, pv_iso, pv_water):
+        return (
+            self.f_iso
+            * self.D_rat
+            / self.f
+            / R_liq
+            * (pv_iso / pv_water * RH - R_vap)
+            / (RH - 1)
         )
