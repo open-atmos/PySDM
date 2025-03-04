@@ -1,4 +1,4 @@
-""" """
+"""tests for values on plots on fig. 3-1"""
 
 from pathlib import Path
 
