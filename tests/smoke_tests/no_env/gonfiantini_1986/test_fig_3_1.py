@@ -18,11 +18,26 @@ def notebook_local_variables_fixture():
     )
 
 
+@pytest.mark.parametrize("isotope", ("2H", "18O"))
+def test_top_panels(notebook_local_variables, isotope):
+    """test if deltas for humidity=95% are below zero"""
+    # arrange
+    humidity = 0.95
+    delta = notebook_local_variables["plot_y"][isotope][humidity]
+
+    # act
+    if_below = np.all(delta < 0)
+
+    # assert
+    np.testing.assert_equal(if_below, True)
+
+
 @pytest.mark.parametrize(
     "humidity",
     (0, 0.25, 0.5, 0.75, 0.95),
 )
 def test_slope_bottom_fig(notebook_local_variables, humidity):
+    """test if excess lines are to the left of the meteoric water line"""
     # arrange
     delta_18O = notebook_local_variables["plot_y"]["18O"][humidity]
     delta_2H = notebook_local_variables["plot_y"]["2H"][humidity]
