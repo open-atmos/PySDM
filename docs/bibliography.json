@@ -763,5 +763,10 @@
     ],
     "title": "A physical model of Titan’s clouds",
     "label": "Toon et al. 1980 (Icarus 43)"
+  },
+  "https://doi.org/10.1016/B978-0-444-42225-5.50008-5": {
+    "usages": [
+      "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb"
+    ]
   }
 }
