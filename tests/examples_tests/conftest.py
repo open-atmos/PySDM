@@ -74,6 +74,7 @@ TEST_SUITES = {
         "Shipway_and_Hill_2012",
         "seeding",
         "utils",
+        "Gonfiantini_1986",
     ],
 }
 
