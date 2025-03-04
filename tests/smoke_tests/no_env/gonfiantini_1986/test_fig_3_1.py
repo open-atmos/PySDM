@@ -5,6 +5,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+from PySDM.physics.constants_defaults import CRAIG_1961_SLOPE_COEFF
+
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Gonfiantini_1986
 
@@ -20,7 +22,7 @@ def notebook_local_variables_fixture():
 
 @pytest.mark.parametrize("isotope", ("2H", "18O"))
 def test_top_panels(notebook_local_variables, isotope):
-    """test if deltas for humidity=95% are below zero"""
+    """test if deltas for a given humidity are below zero"""
     # arrange
     humidity = 0.95
     delta = notebook_local_variables["plot_y"][isotope][humidity]
@@ -48,4 +50,4 @@ def test_slope_bottom_fig(notebook_local_variables, humidity):
     )
 
     # assert
-    np.testing.assert_equal(actual=slope < 8, desired=True)
+    np.testing.assert_equal(actual=slope < CRAIG_1961_SLOPE_COEFF, desired=True)
