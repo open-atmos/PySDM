@@ -75,6 +75,7 @@ TEST_SUITES = {
         "seeding",
         "utils",
         "Zaba_et_al_2025",
+        "Gonfiantini_1986",
     ],
 }
 
