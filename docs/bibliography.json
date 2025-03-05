@@ -627,6 +627,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
+      "examples/PySDM_examples/Zaba_et_al_2025/global_meteoric_water_line.ipynb",
       "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
