@@ -119,6 +119,7 @@ The box environment is also featured in the <a href="https://open-atmos.github.i
   - `PySDM_examples.Graf_et_al_2019`
 - <mark>Rayleigh fractionation</mark>:
   - `PySDM_examples.Pierchala_et_al_2022`: reproducing model plots for a <mark>triple-isotope</mark> lab study, including <mark>kinetic fractionation</mark>
+  - `PySDM_examples.Gonfiantini_1986`: flat-surface evaporation at different humidities for D and <sup>18</sup>O
 - isotopic relaxation timescale:
   - `PySDM_examples.Miyake_et_al_1968`: incl. comparison of different <mark>ventilation</mark> parameterisations
   - `PySDM_examples.Bolin_1958`
