@@ -766,7 +766,8 @@
   },
   "https://doi.org/10.1016/B978-0-444-42225-5.50008-5": {
     "usages": [
-      "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb"
+      "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb",
+      "examples/PySDM_examples/Gonfiantini_1986/__init__.py"
     ],
     "title": "Environmental isotopes in lake stadies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
