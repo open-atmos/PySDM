@@ -1,4 +1,4 @@
-""" common code for products computing statistical moments (e.g., effective radius, acidity) """
+"""common code for products computing statistical moments (e.g., effective radius, acidity)"""
 
 from abc import ABC
 

@@ -1,4 +1,4 @@
-""" checks for VTK exporter """
+"""checks for VTK exporter"""
 
 from collections import namedtuple
 

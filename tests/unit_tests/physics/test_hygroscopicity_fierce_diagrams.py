@@ -1,6 +1,6 @@
-""" comparing full and linearised formula for kappa-Koehler hygroscopicity
-  parameterisation using dry-radius/kappa surfaces of critical supersaturation
-  (diagram concept by Laura Fierce) """
+"""comparing full and linearised formula for kappa-Koehler hygroscopicity
+parameterisation using dry-radius/kappa surfaces of critical supersaturation
+(diagram concept by Laura Fierce)"""
 
 import numpy as np
 from matplotlib import pyplot

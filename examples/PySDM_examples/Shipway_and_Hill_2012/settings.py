@@ -99,7 +99,6 @@ class Settings:
             )
         )
 
-        g = self.formulae.constants.g_std
         self.rhod0 = self.formulae.state_variable_triplet.rho_d(
             p=p0,
             water_vapour_mixing_ratio=self.water_vapour_mixing_ratio(0 * si.m),
@@ -123,7 +122,7 @@ class Settings:
             )
             lv = self.formulae.latent_heat.lv(T)
             return self.formulae.hydrostatics.drho_dz(
-                g, p, T, water_vapour_mixing_ratio, lv
+                p, T, water_vapour_mixing_ratio, lv
             ) / (
                 1 + water_vapour_mixing_ratio
             ) - rhod * d_water_vapour_mixing_ratio__dz / (

@@ -1,4 +1,4 @@
-""" checks verifying imeplementation of `discretise_multiplicities` function """
+"""checks verifying imeplementation of `discretise_multiplicities` function"""
 
 import pytest
 import numpy as np

@@ -1,4 +1,4 @@
-""" power-series formulation """
+"""power-series formulation"""
 
 
 class PowerSeries:  # pylint: disable=too-few-public-methods

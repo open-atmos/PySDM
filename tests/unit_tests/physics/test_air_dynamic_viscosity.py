@@ -1,4 +1,4 @@
-""" tests for air dynamic viscosity formulae """
+"""tests for air dynamic viscosity formulae"""
 
 import pytest
 import numpy as np
