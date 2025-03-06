@@ -1,154 +1,272 @@
-from paraview import simple as pvs
-#nowe
 import argparse
+from collections import namedtuple
+from paraview import simple as pvs # pylint: disable=import-error
 
-# load data
-#nowe
+pvs._DisableFirstRenderCameraReset()
+
+def cli_using_argparse(argp):
+    argp.add_argument("product_path", help="path to pvd products file")
+    argp.add_argument("attributes_path", help=" path to pvd attributes file")
+    argp.add_argument(
+        "--multiplicity_preset",
+        default="Inferno (matplotlib)",
+        help="Preset for multiplicity",
+    )
+    argp.add_argument(
+        "--multiplicity_logscale",
+        action="store_false",
+        help="Use log scale for multiplicity",
+    )
+    argp.add_argument(
+        "--effectiveradius_preset",
+        default="Black, Blue and White",
+        help="Preset for effectiveradius",
+    )
+    argp.add_argument(
+        "--effectiveradius_logscale",
+        action="store_false",
+        help="Use log scale for effectiveradius",
+    )
+    argp.add_argument(
+        "--effectiveradius_nan_color",
+        nargs=3,
+        type=float,
+        default=[0.666, 0.333, 1.0],
+        help="Nan color in RGB format for effectiveradius",
+    )
+    argp.add_argument(
+        "--sd_products_opacity", type=float, default=0.9, help="Opacity for sd_products"
+    )
+    argp.add_argument(
+        "--calculator1_opacity",
+        type=float,
+        default=0.19,
+        help="Opacity for calculator1",
+    )
+    argp.add_argument(
+        "--sd_attributes_opacity",
+        type=float,
+        default=0.77,
+        help="Opacity for sd_attributes",
+    )
+
 ap = argparse.ArgumentParser()
-ap.add_argument("product_path", help = 'path to pvd products file')
-ap.add_argument("attributes_path", help=' path to pvd attributes file')
+cli_using_argparse(ap)
+
 args = ap.parse_args()
-reader_prod = pvs.OpenDataFile(args.product_path)
-reader_attr = pvs.OpenDataFile(args.attributes_path)
-#reader_prod = pvs.OpenDataFile("./output/sd_products.pvd")
-#reader_attr = pvs.OpenDataFile("./output/sd_attributes.pvd")
+sd_productspvd = pvs.OpenDataFile(args.product_path)
+sd_attributespvd = pvs.OpenDataFile(args.attributes_path)
 
-# prepare view settings
-view = pvs.GetRenderView()
-view.ViewSize = [2000, 800]
-view.Background = [1, 1, 1]
-view.CenterAxesVisibility = False
-view.OrientationAxesVisibility = False
-axesGrid = view.AxesGrid
-axesGrid.Visibility = True
-axesGrid.XTitle = 'Z [m]'
-axesGrid.YTitle = 'X [m]'
 
-axesGrid.XAxisUseCustomLabels = True
-axesGrid.XAxisLabels = [300, 600, 900, 1200]
-axesGrid.YAxisUseCustomLabels = True
-axesGrid.YAxisLabels = [300, 600, 900, 1200]
+setup = {
+    "renderView1": pvs.GetActiveViewOrCreate("RenderView"),
+    "sd_attributespvdDisplay": pvs.GetDisplayProperties(
+        sd_attributespvd, view = pvs.GetActiveViewOrCreate("RenderView")),
+    "effectiveradiusLUT": pvs.GetColorTransferFunction("effectiveradius"),
+    "sd_productspvdDisplay": pvs.GetDisplayProperties(
+        sd_productspvd, view=pvs.GetActiveViewOrCreate("RenderView"))
+}
 
-axesGrid.XTitleFontSize = 30
-axesGrid.XLabelFontSize = 30
-axesGrid.YTitleFontSize = 30
-axesGrid.YLabelFontSize = 30
+setup = namedtuple("Setup", setup.keys())(**setup)
 
-axesGrid.XTitleColor = [0, 0, 0]
-axesGrid.XLabelColor = [0, 0, 0]
-axesGrid.YTitleColor = [0, 0, 0]
-axesGrid.YLabelColor = [0, 0, 0]
-axesGrid.GridColor = [0.1, 0.1, 0.1]
+setup.effectiveradiusLUT.RescaleTransferFunction(0.1380997175392798, 207.7063518856934)
 
-# render particles
-var = 'radius'
-multiplier = 1e6
-palette = 'Cold and Hot'
-palette_invert = False
-color_range = [0, 10]
-logscale = False
-title = var + ' [um]'
+setup.renderView1.Update()
 
-calculator = pvs.Calculator(reader_attr)
-calculator.Function = f'{var}*{multiplier}'
-display_attr = pvs.Show(calculator, view)
 
-display_attr.SetRepresentationType('Point Gaussian')
-display_attr.ShaderPreset = 'Sphere'
-display_attr.GaussianRadius = 5
-display_attr.MapScalars = 1
+def create_new_calculator(
+    calcinput,
+    representation,
+    function,
+    color_by1,
+    color_by2,
+    color_by3,
+    scalar_coloring=False,
+    hide=False,
+    *,
+    y,
+    registrationame,
+):
+    calculator = pvs.Calculator(registrationName=registrationame, Input=calcinput)
+    display = pvs.Show(calculator, y.renderView1, representation)
+    calculator.Function = function
+    y.renderView1.Update()
+    if scalar_coloring is True:
+        pvs.ColorBy(display, (color_by1, color_by2, color_by3))
+    if hide is True:
+        pvs.Hide(calculator, y.renderView1)
+    return y.renderView1.Update()
 
-display_attr.Ambient = .25
-pvs.ColorBy(display_attr, ('POINTS', 'Result'))
-color_scale_attr = pvs.GetColorTransferFunction('Result')
-color_scale_attr.ApplyPreset(palette, True)
-if palette_invert:
-    color_scale_attr.InvertTransferFunction()
-if color_range is None:
-    display_attr.RescaleTransferFunctionToDataRange(True)
-else:
-    color_scale_attr.RescaleTransferFunction(color_range)
-if logscale:
-    color_scale_attr.MapControlPointsToLogSpace()
-    color_scale_attr.UseLogScale = 1
-colorbar_attr = pvs.GetScalarBar(color_scale_attr, view)
-colorbar_attr.TitleColor = [0, 0, 0]
-colorbar_attr.LabelColor = [0, 0, 0]
-colorbar_attr.Title = title
-colorbar_attr.ComponentTitle = ''
-colorbar_attr.TitleFontSize = 30
-colorbar_attr.LabelFontSize = 30
-colorbar_attr.Visibility = True
-colorbar_attr.WindowLocation = 'Any Location'
-colorbar_attr.Position = [.1, .333]
-colorbar_attr.RangeLabelFormat = '%g'
 
-# render product
-var = 'effective radius'
-palette = 'X Ray'
-palette_invert = True
-color_range = [0 , 10]
-logscale = False
-title = var + ' [um]'
+def scalar_bar(name, *, y, erLUT):
+    calculator1Display = pvs.Show(
+        calculator1, y.renderView1, "UnstructuredGridRepresentation"
+    )
+    calculator1Display.SetScalarBarVisibility(y.renderView1, True)
+    scalarBar = pvs.GetScalarBar(erLUT.effectiveradiusLUT, y.renderView1)
+    scalarBar.ComponentTitle = ""
+    scalarBar.Title = name
+    y.renderView1.Update()
 
-display_prod = pvs.Show(reader_prod)
-display_prod.SetRepresentationType('Surface')
-display_prod.Ambient = .25
-pvs.ColorBy(display_prod, ('CELLS', var))
-color_scale_prod = pvs.GetColorTransferFunction(var)
-if color_range is None:
-    display_prod.RescaleTransferFunctionToDataRange(True)
-else:
-    color_scale_prod.RescaleTransferFunction(color_range)
-color_scale_prod.ApplyPreset(palette, True)
-#nowe
-color_scale_prod.NanColor = [0.0, 0.0, 0.0]
-if palette_invert:
-    color_scale_prod.InvertTransferFunction()
-colorbar_prod = pvs.GetScalarBar(color_scale_prod, view)
-colorbar_prod.TitleColor = [0, 0, 0]
-colorbar_prod.LabelColor = [0, 0, 0]
-colorbar_prod.Title = title
-colorbar_prod.ComponentTitle = ''
-colorbar_prod.TitleFontSize = 30
-colorbar_prod.LabelFontSize = 30
-colorbar_prod.Visibility = True
-colorbar_prod.Position = [.92, .333]
-colorbar_prod.WindowLocation = 'Any Location'
-colorbar_prod.RangeLabelFormat = '%g'
 
-# COS nowe, particles i product in the same time in the same picture, do not cover each other
-render_view = pvs.GetActiveViewOrCreate('RenderView')
-prod_display = pvs.Show(reader_prod, render_view)
-product_display = pvs.Show(reader_prod, render_view)
-attr_display = pvs.Show(reader_attr, render_view)
-prod_display.Representation = 'Surface'
-attr_display.Representation = 'Surface'
-prod_display.Opacity = 0.3
+def create_glyph(
+    registration_name, put, scale_array1, scale_array2, color_by=False, *, y
+):
+    glyph = pvs.Glyph(
+        registrationName=registration_name, Input=put, GlyphType="Arrow"
+    )
+    glyphDisplay = pvs.Show(glyph, y.renderView1, "GeometryRepresentation")
+    glyphDisplay.Representation = "Surface"
+    glyph.ScaleArray = [scale_array1, scale_array2]
+    glyph.ScaleFactor = 100
+    glyphDisplay.SetScalarBarVisibility(y.renderView1, True)
+    if color_by is True:
+        pvs.ColorBy(glyphDisplay, None)
+    y.renderView1.Update()
 
-# compose the scene
-scene = pvs.GetAnimationScene()
-scene.UpdateAnimationUsingDataTimeSteps()
-pvs.Render(view)
-cam = pvs.GetActiveCamera()
-cam.SetViewUp(1, 0, 0)
-pos = list(cam.GetPosition())
-pos[-1] = -pos[-1]
-cam.SetPosition(pos)
-cam.Dolly(1.45)
+
+def apply_presets_logscale_opacity_and_update(*, y, attdisplay, erLUT, proddisplay):
+    multiplicityLUT = pvs.GetColorTransferFunction("multiplicity")
+    multiplicityLUT.RescaleTransferFunction(19951.0, 50461190157.0)
+    calculator1Display = pvs.Show(
+        calculator1, y.renderView1, "UnstructuredGridRepresentation"
+    )
+    multiplicityLUT.ApplyPreset(args.multiplicity_preset, True)
+    if args.multiplicity_logscale:
+        multiplicityLUT.MapControlPointsToLogSpace()
+        multiplicityLUT.UseLogScale = 1
+    else:
+        multiplicityLUT.MapControlPointsToLinearSpace()
+        multiplicityLUT.UseLogScale = 0
+
+    erLUT.effectiveradiusLUT.ApplyPreset(args.effectiveradius_preset, True)
+    if args.effectiveradius_logscale:
+        erLUT.effectiveradiusLUT.MapControlPointsToLogSpace()
+        erLUT.effectiveradiusLUT.UseLogScale = 1
+    else:
+        erLUT.effectiveradiusLUT.MapControlPointsToLinearSpace()
+        erLUT.effectiveradiusLUT.UseLogScale = 0
+
+    erLUT.effectiveradiusLUT.NanColor = args.effectiveradius_nan_color
+
+    proddisplay.sd_productspvdDisplay.SetRepresentationType("Surface With Edges")
+    proddisplay.sd_productspvdDisplay.Opacity = args.sd_products_opacity
+    calculator1Display.Opacity = args.calculator1_opacity
+    attdisplay.sd_attributespvdDisplay.Opacity = args.sd_attributes_opacity
+
+    y.renderView1.Update()
+
+
+def get_layout(*, y):
+    layout1 = pvs.GetLayout()
+    layout1.SetSize(1205, 739)
+    y.renderView1.Update()
+
+
+def set_current_camera_placement(*, y):
+    y.renderView1.InteractionMode = "2D"
+    y.renderView1.CameraPosition = [
+        836.5045867211775,
+        677.8909274570431,
+        -4098.0762113533165,
+    ]
+    y.renderView1.CameraFocalPoint = [836.5045867211775, 677.8909274570431, 0.0]
+    y.renderView1.CameraViewUp = [1.0, 0.0, 0.0]
+    y.renderView1.CameraParallelScale = 1060.6601717798205
+    y.renderView1.Update()
+
+
+def axes_settings(*, view):
+    view.ViewSize = [2000, 800]
+    view.Background = [1, 1, 1]
+    view.CenterAxesVisibility = True
+    view.OrientationAxesVisibility = True
+    axesGrid = view.AxesGrid
+    axesGrid.Visibility = True
+    axesGrid.XTitle = "Z [m]"
+    axesGrid.YTitle = "X [m]"
+
+    axesGrid.XAxisUseCustomLabels = True
+    axesGrid.XAxisLabels = [300, 600, 900, 1200]
+    axesGrid.YAxisUseCustomLabels = True
+    axesGrid.YAxisLabels = [300, 600, 900, 1200]
+
+    axesGrid.XTitleFontSize = 30
+    axesGrid.XLabelFontSize = 30
+    axesGrid.YTitleFontSize = 30
+    axesGrid.YLabelFontSize = 30
+
+    axesGrid.XTitleColor = [0, 0, 0]
+    axesGrid.XLabelColor = [0, 0, 0]
+    axesGrid.YTitleColor = [0, 0, 0]
+    axesGrid.YLabelColor = [0, 0, 0]
+    axesGrid.GridColor = [0.1, 0.1, 0.1]
+    view.CenterAxesVisibility = False
+    view.Update()
+
+
+def time_annotation(*, y):
+    time = pvs.AnnotateTimeFilter(
+        guiName="AnnotateTimeFilter1", Format="Time:{time:f}s"
+    )
+    pvs.Show(time, y.renderView1)
+    y.renderView1.Update()
+
+
+def text(text_in, position_y, *, view):
+    sentence = pvs.Text()
+    sentence.Text = text_in
+    textDisplay = pvs.Show(sentence, view)
+    textDisplay.Color = [1.0, 1.0, 1.0]
+    textDisplay.WindowLocation = "Any Location"
+    textDisplay.Position = [0.01, position_y]
+
+
+calculator1 = create_new_calculator(
+    sd_attributespvd,
+    "UnstructuredGridRepresentation",
+    '"relative fall velocity"*(-iHat)',
+    "None",
+    "None",
+    "None",
+    y=setup,
+    registrationame="Calculator1",
+)
+scalar_bar("effective radius [um]", y=setup, erLUT = setup)
+create_glyph("Glyph1", calculator1, "POINTS", "relative fall velocity", y=setup)
+calculator2 = create_new_calculator(
+    sd_productspvd,
+    "StructuredGridRepresentation",
+    "cx*jHat+cy*iHat",
+    "CELLS",
+    "Result",
+    "Magnitude",
+    True,
+    True,
+    y=setup,
+    registrationame="Calculator2",
+)
+apply_presets_logscale_opacity_and_update(
+    y=setup, attdisplay = setup, erLUT = setup, proddisplay = setup)
+create_glyph("Glyph2", calculator2, "CELLS", "Result", True, y=setup)
+get_layout(y=setup)
+set_current_camera_placement(y=setup)
+axes_settings(view=setup.renderView1)
+time_annotation(y=setup)
+text("Arrows scale with Courant number C=u*Δt/Δx,", 0.7, view=setup.renderView1)
+text("reflecting the grid spacing Δx and Δy.", 0.65, view=setup.renderView1)
 
 # save animation to an Ogg Vorbis file
-pvs.SaveAnimation('output/anim.ogv', view, FrameRate=10)
-
-
+pvs.SaveAnimation("output/anim2.ogv", setup.renderView1, FrameRate=5)
 # save animation frame as pdfs
-for t in reader_prod.TimestepValues:
-    view.ViewTime = t
-    for reader in (reader_prod, reader_attr):
+for t in sd_productspvd.TimestepValues:
+    setup.renderView1.ViewTime = t
+    for reader in (sd_productspvd, sd_attributespvd):
         reader.UpdatePipeline(t)
-    pvs.ExportView(
-        filename=f'output/anim_frame_{t}.pdf',
-        view=view,
-        Rasterize3Dgeometry= False,
-        GL2PSdepthsortmethod= 'BSP sorting (slow, best)',
-    )
+        pvs.ExportView(
+            filename=f"output/anim_frame_{t}.pdf",
+            view=setup.renderView1,
+            Rasterize3Dgeometry=False,
+            GL2PSdepthsortmethod="BSP sorting (slow, best)",
+        )
+pvs.RenderAllViews()
