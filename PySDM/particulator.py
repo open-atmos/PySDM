@@ -313,7 +313,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name="water mass",
+        attr_name="signed water mass",
         attr_range=(-np.inf, np.inf),
         weighting_attribute="water mass",
         weighting_rank=0,
