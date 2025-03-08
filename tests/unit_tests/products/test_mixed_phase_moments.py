@@ -70,12 +70,10 @@ def test_mixed_phase_moments(particle_mass, backend_class):
     assert np.isfinite([n_w, n_i, n_t]).all()
     assert np.isfinite([r_w, r_i, r_t]).all()
 
-    if (any(particle_mass > 0)):
+    if any(particle_mass > 0):
         assert all(product > 0 for product in (lwc, n_w, r_w))
-    if (any(particle_mass < 0)):
+    if any(particle_mass < 0):
         assert all(product > 0 for product in (iwc, n_i, r_i))
     assert twc > 0
     assert lwc + iwc == twc
     assert n_w + n_i == n_t
-
-
