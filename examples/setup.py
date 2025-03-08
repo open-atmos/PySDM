@@ -20,7 +20,7 @@ def get_long_description():
 CI = "CI" in os.environ
 
 setup(
-    name="PySDM-examples",
+    name="pysdm-examples",
     description="PySDM usage examples reproducing results from literature "
     "and depicting how to use PySDM from Python Jupyter notebooks",
     install_requires=[
