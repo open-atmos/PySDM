@@ -1,5 +1,5 @@
-""" netCDF exporter implemented using
- [SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf)
+"""netCDF exporter implemented using
+[SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf)
 """
 
 import numpy as np

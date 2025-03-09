@@ -1,1 +1,1 @@
-""" particle attribute sampling logic """
+"""particle attribute sampling logic"""

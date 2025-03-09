@@ -81,7 +81,9 @@ class Kinematic2D(Moist):
             domain_volume = np.prod(np.array(self.mesh.size))
 
         attributes["multiplicity"] = n_per_kg * rhod[cell_id] * domain_volume
-        attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
+        attributes["water mass"] = (
+            self.formulae.particle_shape_and_density.radius_to_mass(r_wet)
+        )
 
         return attributes
 

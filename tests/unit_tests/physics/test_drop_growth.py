@@ -1,4 +1,4 @@
-""" tests for drop growth formulae """
+"""tests for drop growth formulae"""
 
 import pytest
 from matplotlib import pyplot

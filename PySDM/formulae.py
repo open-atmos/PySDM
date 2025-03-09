@@ -41,7 +41,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         ventilation: str = "Neglect",
         state_variable_triplet: str = "LibcloudphPlusPlus",
         particle_advection: str = "ImplicitInSpace",
-        hydrostatics: str = "Default",
+        hydrostatics: str = "ConstantGVapourMixingRatioAndThetaStd",
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
@@ -269,11 +269,19 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     post = r"([ )/*\-+,]|$)"
     real_fmt = ".32g"
     source = ""
+    in_docstring = False
     for line in inspect.getsourcelines(fun)[0]:
         stripped = line.strip()
+        if in_docstring:
+            if stripped.endswith('"""'):
+                in_docstring = False
+            continue
         if stripped.startswith("@"):
             continue
         if stripped.startswith("//"):
+            continue
+        if stripped.startswith('"""'):
+            in_docstring = True
             continue
         if stripped.startswith("def "):
             continue

@@ -319,6 +319,19 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def exp(output):
             Impl.__exp_body.launch_n(output.shape[0], Impl.thrust((output,)))
 
+        __abs_body = trtc.For(
+            ("output",),
+            "i",
+            """
+                output[i] = abs(output[i]);
+            """,
+        )
+
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def abs(output):
+            Impl.__abs_body.launch_n(output.shape[0], Impl.thrust((output,)))
+
     class Storage(StorageBase):
         FLOAT = BACKEND._get_np_dtype()
         INT = np.int64
@@ -552,6 +565,10 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
 
         def exp(self):
             Impl.exp(self)
+            return self
+
+        def abs(self):
+            Impl.abs(self)
             return self
 
     return Storage

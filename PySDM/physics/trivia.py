@@ -76,12 +76,12 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(water_mass, relative_humidity):
-        return water_mass > 0 and relative_humidity > 1
+    def unfrozen_and_saturated(signed_water_mass, relative_humidity):
+        return signed_water_mass > 0 and relative_humidity > 1
 
     @staticmethod
-    def frozen_and_above_freezing_point(const, water_mass, temperature):
-        return water_mass < 0 and temperature > const.T0
+    def frozen_and_above_freezing_point(const, signed_water_mass, temperature):
+        return signed_water_mass < 0 and temperature > const.T0
 
     @staticmethod
     def erfinv_approx(const, c):
@@ -145,3 +145,11 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def C2K(const, TC):
         return TC + const.T0
+
+    def poissonian_avoidance_function(r, dt):
+        """cumulative probability of zero events occurring within time `dt`
+        (or void probability, or avoidance function) in a Poisson counting
+        process with a constant rate `r`
+        """
+        return np.exp(-r * dt)
+

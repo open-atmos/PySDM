@@ -1,4 +1,4 @@
-""" checking values in Fig. 3 in [Picciotto et al. 1960](https://doi.org/10.1038/187857a0) """
+"""checking values in Fig. 3 in [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)"""
 
 import numpy as np
 from matplotlib import pyplot

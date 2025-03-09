@@ -602,6 +602,9 @@ c_pw = 4218 * si.joule / si.kilogram / si.kelvin
 g_std = sci.g * si.metre / si.second**2
 """ standard gravitational acceleration (value from SciPy) """
 
+celestial_body_radius = np.nan
+""" radius of the considered celestial body (Earth, Titan, ...) """
+
 bulk_phase_partitioning_T_cold = 235 * si.K
 """ [Kaul et al. 2015](https://doi.org/10.1175/MWR-D-14-00319.1) """
 bulk_phase_partitioning_T_warm = 273 * si.K
