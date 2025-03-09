@@ -1,7 +1,7 @@
 """ eq. 28 in [Miyake et al. 1968](https://doi.org/10.2467/mripapers1950.19.2_243) """
 
 
-class MiyakeEtAl1968:  # pylint: disable=too-few-public-methods
+class MiyakeEtAl1968:
     def __init__(self, _):
         pass
 
