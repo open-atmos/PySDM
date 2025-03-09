@@ -18,7 +18,7 @@ class Brutsaert1982:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def isotope_ventilation_ratio(const, ventilation_coefficient, diffusivity_ratio):
+    def isotope_ventilation_ratio(ventilation_coefficient, diffusivity_ratio):
         """heavy to light isotope ventilation ratio"""
         D_ratio_cbrt = diffusivity_ratio ** (1 / 3)
         return (1 - D_ratio_cbrt) / ventilation_coefficient + D_ratio_cbrt
