@@ -58,7 +58,7 @@ TEST_SUITES = {
         "_HOWTOs",
     ],
     "multi-process_b": [
-        "Arabas_et_al_2023",
+        "Arabas_et_al_2025",
     ],
     "multi-process_c": [
         "Bartman_2020_MasterThesis",
