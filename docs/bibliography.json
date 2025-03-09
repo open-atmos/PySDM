@@ -126,7 +126,7 @@
   },
   "https://doi.org/10.5194/acp-11-12945-2011": {
     "usages": [
-      "examples/PySDM_examples/Arabas_et_al_2023/aida.ipynb"
+      "examples/PySDM_examples/Arabas_et_al_2025/aida.ipynb"
     ],
     "label": "Steinke et al. 2011 (Atmos. Chem. Phys. 11)",
     "title": "Ice nucleation properties of fine ash particles from the Eyjafjallajökull eruption in April 2010 "
@@ -689,9 +689,16 @@
     "label": "Hoyle et al. 2016 (Atmos. Chem. Phys. 16)",
     "title": "Aqueous phase oxidation of sulphur dioxide by ozone in cloud droplets"
   },
-  "https://doi.org/10.48550/arXiv.2308.05015": {
-    "usages": ["examples/PySDM_examples/Arabas_et_al_2023/__init__.py"],
-    "label": "Arabas et al. 2023 (arXiv:2308.05015)",
+  "https://doi.org/10.1029/2024MS004770": {
+    "usages": [
+      "examples/PySDM_examples/Arabas_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Arabas_et_al_2025/fig_2.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/fig_A2.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/figs_10_and_11_and_animations.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/figs_3_and_7_and_8.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/figs_5_and_6.ipynb"
+    ],
+    "label": "Arabas et al. 2025 (JAMES)",
     "title": "Immersion freezing in particle-based aerosol-cloud microphysics: a probabilistic perspective on singular and time-dependent models"
   },
   "https://archive.org/details/physicsofclouds0000maso": {
