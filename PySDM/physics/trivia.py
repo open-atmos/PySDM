@@ -146,10 +146,10 @@ class Trivia:  # pylint: disable=too-many-public-methods
     def C2K(const, TC):
         return TC + const.T0
 
+    @staticmethod
     def poissonian_avoidance_function(r, dt):
         """cumulative probability of zero events occurring within time `dt`
         (or void probability, or avoidance function) in a Poisson counting
         process with a constant rate `r`
         """
         return np.exp(-r * dt)
-
