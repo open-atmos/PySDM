@@ -772,5 +772,12 @@
     ],
     "title": "Environmental isotopes in lake stadies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
+  },
+  "https://doi.org/10.1007/978-94-017-1497-6": {
+    "usages": [
+      "PySDM/physics/isotope_ventilation_ratio/brutsaert_1982.py"
+    ],
+    "title": "Evaporation into the Atmosphere: Theory, History, and Applications",
+    "label": "Brutsaert 1982 (Springer Netherlands)"
   }
 }
