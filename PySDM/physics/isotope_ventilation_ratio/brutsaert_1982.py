@@ -4,7 +4,7 @@ statement about ventilation coefficient for heavy isotopes on pp. 92-93.
 """
 
 
-class Brutsaert1982:
+class Brutsaert1982:  # pylint disable=too-few-public-methods
     def __init__(self, _):
         pass
 
