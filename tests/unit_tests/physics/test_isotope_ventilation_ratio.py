@@ -7,7 +7,7 @@ from PySDM.physics import isotope_ventilation_ratio, constants_defaults
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
-class TestIsotopeVentilationRatio:  # pylint disable=too-few-public-methods
+class TestIsotopeVentilationRatio:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("variant", _choices(isotope_ventilation_ratio))
     def test_dimensionality(variant):
