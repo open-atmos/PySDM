@@ -1,35 +1,32 @@
-"""isotope relaxation timescale"""
+"""isotope e-fold timescale based on Fick's first law and Fourier's law"""
 
 
 class ZabaAndArabas2025:
     @staticmethod
     def tau(  # pylint: disable=too-many-arguments
         radius,
-        alpha,
+        alpha_env,
         D_iso,
         vent_coeff_iso,
         k_coeff_iso,
-        e_s_env,
+        e_env,
+        e_iso_env,
         rho_liq,
-        T_env,
-        Rv,
         saturation,
         R_vap_env,
-        R_vap_eq,
     ):
-        """alpha calcualted in the temperature of a droplet"""
+        """e-fold timescale with alpha and water vapour pressures heavy and light water
+        calculated in the temperature of environment"""
         return (
             radius**2
-            * alpha
+            * alpha_env
             * rho_liq
             / 3
             / vent_coeff_iso
             / k_coeff_iso
             / D_iso
-            * Rv
-            * T_env
-            / e_s_env
-            / (saturation * R_vap_env / R_vap_eq - 1)
+            * R_vap_env
+            / (e_iso_env / e_env * saturation / R_vap_env - 1)
         )
 
     @staticmethod
