@@ -1,4 +1,5 @@
 from PySDM import Formulae
+from PySDM_examples.Szumowski_et_al_1998.sounding import temperature
 
 
 class IsotopeTimescale:
@@ -9,17 +10,14 @@ class IsotopeTimescale:
         self.pressure = self.formulae.constants.p_STP
         self.v_term = self.formulae.terminal_velocity.v_term(radii)
         self.D = self.formulae.diffusion_thermics.D(T=self.temperature, p=self.pressure)
-        self.D_rat = self.formulae.isotope_diffusivity_ratios.ratio_3H(self.temperature)
-        self.K = 44.0  # any non-zero value
+        self.K = self.formulae.diffusion_thermics.K(T=self.temperature, p=self.pressure)
+        # self.K = 44.0  # any non-zero value
         self.pvs_water = self.formulae.saturation_vapour_pressure.pvs_water(
             self.temperature
         )
         self.alpha = self.formulae.isotope_equilibrium_fractionation_factors.alpha_l_3H(
             self.temperature
         )  # check i/l
-        self.M_iso = self.formulae.constants.M_3H
-        self.f = self.vent_coeff_fun()
-        self.f_iso = self.vent_coeff_fun()
 
     def vent_coeff_fun(self):
         eta_air = self.formulae.air_dynamic_viscosity.eta_air(self.temperature)
@@ -57,12 +55,26 @@ class IsotopeTimescale:
             lv=lv,
         )
 
-    def c1(self, R_liq, R_vap, RH, pv_iso, pv_water):
+    def k(self, lv, J, rho_s, R_v):
+        return 1 / (
+            1 / rho_s(self.temperature)
+            + self.f * self.D * J * lv**2 / R_v / self.temperature**2 / self.K
+        )
+
+    # def M_rat(self, isotope):
+    #    if (getattr(self.formulae.constants, f"M_{isotope}"))
+    def c1(self, isotope, R_vap, RH, pv_iso, pv_water, alpha):
         return (
-            self.f_iso
-            * self.D_rat
-            / self.f
-            / R_liq
-            * (pv_iso / pv_water * RH - R_vap)
-            / (RH - 1)
+            -self.vent_coeff_fun()  # TODO f_iso!
+            / getattr(self.formulae.isotope_diffusivity_ratios, f"ratio_{isotope}")(
+                self.temperature
+            )
+            # * self.k_iso
+            # / self.k
+            / self.vent_coeff_fun()
+            / (getattr(self.formulae.constants, f"M_{isotope}"))
+            * (pv_iso / pv_water * RH / R_vap - 1)
+            / alpha
+            * (RH - 1)
+            * R_vap
         )
