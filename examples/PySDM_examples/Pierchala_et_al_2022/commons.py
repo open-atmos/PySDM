@@ -1,5 +1,5 @@
-""" common data for use in the
-  [Pierchala et al. 2022](https://10.1016/j.gca.2022.01.020) example
+"""common data for use in the
+[Pierchala et al. 2022](https://doi.org/10.1016/j.gca.2022.01.020) example
 """
 
 from PySDM.physics import constants_defaults as const

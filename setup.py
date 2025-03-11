@@ -21,7 +21,7 @@ CI = "CI" in os.environ
 _32bit = platform.architecture()[0] == "32bit"
 
 setup(
-    name="PySDM",
+    name="pysdm",
     description="Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry"
     " cloud microphysics package with box, parcel & 1D/2D prescribed-flow"
     " examples in Python, Julia and Matlab",
@@ -76,6 +76,8 @@ setup(
             "matplotlib",
             "pytest",
             "pytest-timeout",
+            "PySDM-examples",
+            "open-atmos-jupyter-utils>=v1.2.0",
         ]
         + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
         + (

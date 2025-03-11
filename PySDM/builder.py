@@ -109,11 +109,18 @@ class Builder:
             ), "implied volume-to-mass conversion is only supported for spherical particles"
             attributes["water mass"] = (
                 self.particulator.formulae.particle_shape_and_density.volume_to_mass(
-                    attributes["volume"]
+                    attributes.pop("volume")
                 )
             )
-            del attributes["volume"]
             self.request_attribute("volume")
+
+        if (
+            "water mass" in attributes
+            and "signed water mass" not in attributes
+            and not self.particulator.formulae.particle_shape_and_density.supports_mixed_phase()
+        ):
+            attributes["signed water mass"] = attributes.pop("water mass")
+            self.request_attribute("water mass")
 
         self.req_attr = {}
         for attr_name in self.req_attr_names:

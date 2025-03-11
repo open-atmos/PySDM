@@ -1,1 +1,1 @@
-""" the guts of the CPU backend """
+"""the guts of the CPU backend"""

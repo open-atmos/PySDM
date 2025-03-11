@@ -1,4 +1,4 @@
-""" checks for impl subpackage contents """
+"""checks for impl subpackage contents"""
 
 import pytest
 

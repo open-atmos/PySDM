@@ -10,7 +10,7 @@ from PySDM.physics import si
 from PySDM.products import IceWaterContent
 
 
-class TestFreezingMethods:
+class TestImmersionFreezing:
     # TODO #599
     def test_record_freezing_temperature_on_time_dependent_freeze(self):
         pass
@@ -35,7 +35,7 @@ class TestFreezingMethods:
             products=(IceWaterContent(),),
             attributes={
                 "multiplicity": np.ones(builder.particulator.n_sd),
-                "volume": -1 * np.ones(builder.particulator.n_sd) * si.um**3,
+                "signed water mass": -1 * np.ones(builder.particulator.n_sd) * si.ug,
                 **(
                     {"freezing temperature": np.full(builder.particulator.n_sd, -1)}
                     if singular
@@ -80,7 +80,7 @@ class TestFreezingMethods:
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
             "freezing temperature": np.full(n_sd, T_fz),
-            "water mass": np.full(n_sd, water_mass),
+            "signed water mass": np.full(n_sd, water_mass),
         }
         products = (IceWaterContent(name="qi"),)
         particulator = builder.build(attributes=attributes, products=products)
@@ -166,7 +166,7 @@ class TestFreezingMethods:
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
-                "water mass": np.full(n_sd, initial_water_mass),
+                "signed water mass": np.full(n_sd, initial_water_mass),
             }
             particulator = builder.build(attributes=attributes, products=products)
             particulator.environment["RH"] = 1.0001

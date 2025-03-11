@@ -1,7 +1,7 @@
-""" logic around `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` - PySDM mock of Pint's
- [UnitRegistry](https://pint.readthedocs.io/en/stable/developers_reference.html#pint.UnitRegistry),
- with the genuine Pint class used only within unit tests through the
- `PySDM.physics.dimensional_analysis.DimensionalAnalysis` context manager
+"""logic around `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` - PySDM mock of Pint's
+[UnitRegistry](https://pint.readthedocs.io/en/stable/developers_reference.html#pint.UnitRegistry),
+with the genuine Pint class used only within unit tests through the
+`PySDM.physics.dimensional_analysis.DimensionalAnalysis` context manager
 """
 
 
@@ -16,6 +16,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
             for unit in (
                 "bar",
                 "metre",
+                "meter",
                 "gram",
                 "hertz",
                 "mole",
@@ -25,6 +26,7 @@ class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
                 "minute",
                 "pascal",
                 "litre",
+                "liter",
                 "hour",
                 "newton",
                 "watt",
