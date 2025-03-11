@@ -2,6 +2,9 @@
 
 
 class ZabaAndArabas2025:
+    def __init__(self, _):
+        pass
+
     @staticmethod
     def tau(  # pylint: disable=too-many-arguments
         radius,
