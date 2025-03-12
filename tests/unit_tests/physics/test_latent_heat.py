@@ -12,7 +12,6 @@ def test_latent_heats(plot=False):
     formulae = {k: Formulae(latent_heat=k) for k in ("Kirchhoff", "Lowe2019")}
     const = Formulae().constants
     temperature = np.linspace(-20, 20) + const.T_tri
-
     # Plot
     pyplot.axhline(const.l_tri, label="triple point", color="red")
     pyplot.axvline(const.T_tri, color="red")
