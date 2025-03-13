@@ -1,11 +1,11 @@
-""" regression tests asserting on values from the plots """
+"""regression tests asserting on values from the plots"""
 
 from pathlib import Path
 
 import pytest
 import numpy as np
 
-from PySDM_examples.utils import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import deJong_Azimi
 
 from PySDM.physics import si, in_unit

@@ -2,7 +2,8 @@
 profile = "black"
 
 [tool.setuptools_scm]
+local_scheme = "no-local-version"
+version_scheme = "post-release"
 
-# TODO #1200
 [build-system]
-requires = ['setuptools==56.0.0', 'setuptools-scm==6.0.1']
+requires = ['setuptools==75.3.0', 'setuptools-scm==8.1.0']

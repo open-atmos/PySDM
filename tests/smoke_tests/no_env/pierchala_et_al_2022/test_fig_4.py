@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from PySDM_examples.utils.notebook_vars import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Pierchala_et_al_2022
 
 from PySDM.physics.constants import PER_MEG, PER_MILLE
@@ -38,7 +38,7 @@ class TestFig4:
     def test_top_panel(notebook_local_variables, RH, delta_18O, delta_2H):
         deltas_per_rh = notebook_local_variables["deltas_per_rh"]
         eps = 0.5 * PER_MILLE
-        index = np.where(abs(deltas_per_rh[RH]["18O"] - delta_18O) < eps)
+        ((index,),) = np.where(abs(deltas_per_rh[RH]["18O"] - delta_18O) < eps)
         np.testing.assert_approx_equal(
             actual=delta_2H, desired=deltas_per_rh[RH]["2H"][index], significant=3
         )
@@ -58,11 +58,11 @@ class TestFig4:
     def test_bottom_panel(notebook_local_variables, RH, delta_18O, excess_17O):
         deltas_per_rh = notebook_local_variables["deltas_per_rh"]
         eps = 0.5 * PER_MILLE
-        index = np.where(abs(deltas_per_rh[RH]["18O"] - delta_18O) < eps)
+        ((index,),) = np.where(abs(deltas_per_rh[RH]["18O"] - delta_18O) < eps)
         np.testing.assert_approx_equal(
             actual=notebook_local_variables[
                 "formulae"
-            ].isotope_meteoric_water_line_excess.excess_17O(
+            ].isotope_meteoric_water_line.excess_17O(
                 deltas_per_rh[RH]["17O"][index], deltas_per_rh[RH]["18O"][index]
             ),
             desired=excess_17O,

@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from PySDM_examples.utils.notebook_vars import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Pierchala_et_al_2022
 
 from PySDM.physics.constants import PER_MEG, PER_MILLE
@@ -36,7 +36,7 @@ class TestFig3:
         ),
     )
     def test_top_left_panel(notebook_local_variables, isotope, F, enrichment):
-        index = np.where(notebook_local_variables["F"] == F)
+        ((index,),) = np.where(notebook_local_variables["F"] == F)
         np.testing.assert_approx_equal(
             actual=notebook_local_variables["enrichments"][isotope][index],
             desired=enrichment,
@@ -54,7 +54,7 @@ class TestFig3:
         ),
     )
     def test_bottom_left_panel(notebook_local_variables, label, F, excess):
-        index = np.where(notebook_local_variables["F"] == F)
+        ((index,),) = np.where(notebook_local_variables["F"] == F)
         excesses = notebook_local_variables["excess"]
         deltas = notebook_local_variables["deltas"]
         np.testing.assert_approx_equal(
@@ -73,7 +73,7 @@ class TestFig3:
     )
     def test_top_right_panel(notebook_local_variables, delta_18O, delta_2H):
         eps = 0.01 * PER_MILLE
-        index = np.where(
+        ((index,),) = np.where(
             abs(notebook_local_variables["deltas"]["18O"] - delta_18O) < eps
         )
         np.testing.assert_approx_equal(
@@ -92,7 +92,7 @@ class TestFig3:
         eps = 0.1 * PER_MILLE
         x = np.linspace(-10 * PER_MILLE, 10 * PER_MILLE, 100)
         y = x * cd.CRAIG_1961_SLOPE_COEFF + cd.CRAIG_1961_INTERCEPT_COEFF
-        index = np.where(abs(x - delta_18O) < eps)
+        ((index,),) = np.where(abs(x - delta_18O) < eps)
         np.testing.assert_approx_equal(actual=y[index], desired=delta_2H, significant=3)
 
     @staticmethod
@@ -108,7 +108,7 @@ class TestFig3:
     def test_bottom_right_panel(notebook_local_variables, label, delta_18O, excess):
         eps = 0.1 * PER_MILLE
         deltas = notebook_local_variables["deltas"]
-        index = np.where(abs(deltas["18O"] - delta_18O) < eps)
+        ((index,),) = np.where(abs(deltas["18O"] - delta_18O) < eps)
         excesses = notebook_local_variables["excess"]
         np.testing.assert_approx_equal(
             actual={

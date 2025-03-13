@@ -1,4 +1,4 @@
-""" Seeding dynamic tests """
+"""Seeding dynamic tests"""
 
 from collections import namedtuple
 
@@ -64,7 +64,10 @@ class TestSeeding:
                 if step != 0:
                     particulator.run(steps=1)
                 for key, val in products.items():
-                    val.append(float(particulator.products[key].get()))
+                    value = particulator.products[key].get()
+                    if not isinstance(value, float):
+                        (value,) = value
+                    val.append(float(value))
             for key in products:
                 products[key] = np.array(products[key])
             return products
@@ -73,7 +76,7 @@ class TestSeeding:
         common_seeding_ctor_args = {
             "seeded_particle_multiplicity": [1],
             "seeded_particle_extensive_attributes": {
-                "water mass": [0.001 * si.ng],
+                "signed water mass": [0.001 * si.ng],
             },
         }
         output = {

@@ -1,7 +1,7 @@
 """
-    test for supplementary figure 2 in Lowe et al 2019 paper.
-    checks that values from panels d)-f) are in a reasonable range
-    and decrease/increase monotonically with updraft velocity
+test for supplementary figure 2 in Lowe et al 2019 paper.
+checks that values from panels d)-f) are in a reasonable range
+and decrease/increase monotonically with updraft velocity
 """
 
 import os
@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from PySDM_examples import Lowe_et_al_2019
-from PySDM_examples.utils import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 
 from PySDM.physics import si
 
