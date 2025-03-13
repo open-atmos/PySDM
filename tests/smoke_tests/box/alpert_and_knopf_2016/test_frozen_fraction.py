@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM_examples.Arabas_et_al_2023.frozen_fraction import FrozenFraction
+from PySDM_examples.Arabas_et_al_2025.frozen_fraction import FrozenFraction
 
 from PySDM.physics import constants_defaults as const
 

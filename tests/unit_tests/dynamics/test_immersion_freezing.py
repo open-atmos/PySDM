@@ -10,7 +10,7 @@ from PySDM.physics import si
 from PySDM.products import IceWaterContent
 
 
-class TestFreezingMethods:
+class TestImmersionFreezing:
     # TODO #599
     def test_record_freezing_temperature_on_time_dependent_freeze(self):
         pass
