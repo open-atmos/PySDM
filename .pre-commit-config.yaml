@@ -1,6 +1,6 @@
 files: '.py'
 exclude: '.git'
-default_stages: [commit]
+default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/psf/black

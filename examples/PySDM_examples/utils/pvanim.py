@@ -1,8 +1,9 @@
 import argparse
 from collections import namedtuple
-from paraview import simple as pvs # pylint: disable=import-error
+from paraview import simple as pvs  # pylint: disable=import-error
 
 pvs._DisableFirstRenderCameraReset()
+
 
 def cli_using_argparse(argp):
     argp.add_argument("product_path", help="path to pvd products file")
@@ -50,6 +51,7 @@ def cli_using_argparse(argp):
         help="Opacity for sd_attributes",
     )
 
+
 ap = argparse.ArgumentParser()
 cli_using_argparse(ap)
 
@@ -61,10 +63,12 @@ sd_attributespvd = pvs.OpenDataFile(args.attributes_path)
 setup = {
     "renderView1": pvs.GetActiveViewOrCreate("RenderView"),
     "sd_attributespvdDisplay": pvs.GetDisplayProperties(
-        sd_attributespvd, view = pvs.GetActiveViewOrCreate("RenderView")),
+        sd_attributespvd, view=pvs.GetActiveViewOrCreate("RenderView")
+    ),
     "effectiveradiusLUT": pvs.GetColorTransferFunction("effectiveradius"),
     "sd_productspvdDisplay": pvs.GetDisplayProperties(
-        sd_productspvd, view=pvs.GetActiveViewOrCreate("RenderView"))
+        sd_productspvd, view=pvs.GetActiveViewOrCreate("RenderView")
+    ),
 }
 
 setup = namedtuple("Setup", setup.keys())(**setup)
@@ -112,9 +116,7 @@ def scalar_bar(name, *, y, erLUT):
 def create_glyph(
     registration_name, put, scale_array1, scale_array2, color_by=False, *, y
 ):
-    glyph = pvs.Glyph(
-        registrationName=registration_name, Input=put, GlyphType="Arrow"
-    )
+    glyph = pvs.Glyph(registrationName=registration_name, Input=put, GlyphType="Arrow")
     glyphDisplay = pvs.Show(glyph, y.renderView1, "GeometryRepresentation")
     glyphDisplay.Representation = "Surface"
     glyph.ScaleArray = [scale_array1, scale_array2]
@@ -196,10 +198,10 @@ def axes_settings(*, view):
     axesGrid.YTitleFontSize = 30
     axesGrid.YLabelFontSize = 30
 
-    axesGrid.XTitleColor = [0, 0, 0]
-    axesGrid.XLabelColor = [0, 0, 0]
-    axesGrid.YTitleColor = [0, 0, 0]
-    axesGrid.YLabelColor = [0, 0, 0]
+    axesGrid.XTitleColor = [1.0, 1.0, 1.0]
+    axesGrid.XLabelColor = [1.0, 1.0, 1.0]
+    axesGrid.YTitleColor = [1.0, 1.0, 1.0]
+    axesGrid.YLabelColor = [1.0, 1.0, 1.0]
     axesGrid.GridColor = [0.1, 0.1, 0.1]
     view.CenterAxesVisibility = False
     view.Update()
@@ -232,7 +234,7 @@ calculator1 = create_new_calculator(
     y=setup,
     registrationame="Calculator1",
 )
-scalar_bar("effective radius [um]", y=setup, erLUT = setup)
+scalar_bar("effective radius [um]", y=setup, erLUT=setup)
 create_glyph("Glyph1", calculator1, "POINTS", "relative fall velocity", y=setup)
 calculator2 = create_new_calculator(
     sd_productspvd,
@@ -247,7 +249,8 @@ calculator2 = create_new_calculator(
     registrationame="Calculator2",
 )
 apply_presets_logscale_opacity_and_update(
-    y=setup, attdisplay = setup, erLUT = setup, proddisplay = setup)
+    y=setup, attdisplay=setup, erLUT=setup, proddisplay=setup
+)
 create_glyph("Glyph2", calculator2, "CELLS", "Result", True, y=setup)
 get_layout(y=setup)
 set_current_camera_placement(y=setup)
