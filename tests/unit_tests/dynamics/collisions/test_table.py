@@ -1,4 +1,8 @@
-from hall import Hall
+"""
+Test the table function in the Hall class.
+"""
+
+from PySDM.dynamics.collisions.collision_kernels.hall import Hall
 
 
 def test_table():

@@ -1,32 +1,16 @@
+"""
+collision kernel from Hall et. al. 1980.
+"""
+
 import numpy as np
+import numba as nb
 from scipy.interpolate import RegularGridInterpolator
 from PySDM.dynamics.collisions.collision_kernels.geometric import Geometric
-import numba as nb
 
 
 class Hall(Geometric):
 
     def table(self, collector_radius_m, collected_radius_m):
-        """
-        Returns the interpolated value from Table 1 (as shown in your screenshot),
-        given:
-        - collector_radius_m: the collector drop radius (meters)
-        - collected_radius_m: the collected drop radius (meters)
-        by doing a 2D interpolation over:
-        (1) the collector radius, and
-        (2) the dimensionless ratio r/R.
-        """
-
-        # -------------------------------------------------------------------------
-        # 1. Define the grid axes (in ascending order):
-        #    a) Collector radii in micrometers (µm)
-        #    b) The ratio (r/R)
-        #
-        #    NOTE: In your screenshot, the leftmost column lists collector radii
-        #    in micrometers: 300, 200, 150, 100, 80, 70, 60, 50, 40, 30, 20, 10.
-        #    The top row lists r/R from 0.05 up to 1.0 in increments like 0.05, 0.10,
-        #    0.15, 0.25, etc. Adjust these arrays to match *exactly* your data.
-        # -------------------------------------------------------------------------
 
         collector_radii_um = np.array(
             [300, 200, 150, 100, 70, 60, 50, 40, 30, 20, 10], dtype=float
@@ -56,17 +40,6 @@ class Hall(Geometric):
             ],
             dtype=float,
         )
-
-        # -------------------------------------------------------------------------
-        # 2. Enter the table data as a 2D array, with shape
-        #    (len(collector_radii_um), len(ratio_values)).
-        #
-        #    The row i corresponds to collector_radii_um[i].
-        #    The column j corresponds to ratio_values[j].
-        #
-        #    Below is just a SMALL, FAKE EXAMPLE to show how to structure it.
-        #    You must fill in the real numbers from your table’s rows and columns.
-        # -------------------------------------------------------------------------
 
         table_data = np.array(
             [
@@ -327,41 +300,20 @@ class Hall(Geometric):
             dtype=float,
         )
 
-        # -------------------------------------------------------------------------
-        # 3. Build the 2D interpolator.
-        #
-        #    By default, RegularGridInterpolator expects each dimension in ascending
-        #    order. Notice in the table, collector radii are in descending order:
-        #      300, 200, 150, ...
-        #    We can either reverse them or keep them as is but tell the interpolator
-        #    how to interpret them. For simplicity, let's flip them so they go from
-        #    small to large. That means we also flip table_data accordingly.
-        # -------------------------------------------------------------------------
-
         # Sort collector radii ascending:
         idx_sorted = np.argsort(collector_radii_um)
         collector_radii_um_sorted = collector_radii_um[idx_sorted]
-        # Flip table_data to match ascending order of collector radius:
         table_data_sorted = table_data[idx_sorted, :]
 
-        # Now define the interpolator:
         interpolator = RegularGridInterpolator(
             (collector_radii_um_sorted, ratio_values),
             table_data_sorted,
-            bounds_error=False,  # If outside the table, return nearest
-            fill_value=None,  # or specify e.g. 0.0 if you prefer
+            bounds_error=False,
+            fill_value=None,
         )
 
-        # -------------------------------------------------------------------------
-        # 4. Convert input radii from meters to micrometers, compute ratio, then
-        #    evaluate the interpolation.
-        # -------------------------------------------------------------------------
         R_um = collector_radius_m * 1e6
         r_um = collected_radius_m * 1e6
-
-        # If R_um <= 0, avoid dividing by zero:
-        if R_um <= 0:
-            raise ValueError("Collector radius must be > 0.")
 
         ratio = r_um / R_um
 
@@ -369,13 +321,11 @@ class Hall(Geometric):
             ratio = 1 / ratio
             R_um, r_um = r_um, R_um
 
-        # Evaluate the table:
-        # The interpolator is built over the grid: (collector_radius_um, ratio).
-        # So we pass [R_um, ratio] as a point in that 2D space.
         result = interpolator([R_um, ratio])
 
         return float(result)
 
+    @nb.njit(parallel=True)
     def __call__(self, output, is_first_in_pair):
         output.sum(self.particulator.attributes["radius"], is_first_in_pair)
         output **= 2
