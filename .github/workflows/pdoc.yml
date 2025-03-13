@@ -28,7 +28,7 @@ jobs:
           python-version: "3.12"
 
       - name: exclude pvpython scripts
-        run: rm examples/PySDM_examples/utils/finalanimation.py
+        run: rm examples/PySDM_examples/utils/pvanim.py
 
       - run: |
           pip install pdoc nbformat gitpython
