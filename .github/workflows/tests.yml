@@ -4,6 +4,12 @@ defaults:
   run:
     shell: bash
 
+# arbitrarily selected runs
+env:
+  anim_platform: '3.12'
+  anim_python-version: 'ubuntu-24.04'
+  anim_test-suite: 'multi-process_a'
+        
 on:
   push:
     branches: [ main ]
@@ -272,3 +278,15 @@ jobs:
         run: |
           python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
           python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+      - if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        run:
+          mkdir -p /home/runner/work/_temp/_github_home/figures
+          rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_Pycurrent
+          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_*/output/anim2.ogv /home/runner/work/_temp/_github_home/figures
+      - name: artefacts
+        if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+              /github/home/figures/*.ogv
