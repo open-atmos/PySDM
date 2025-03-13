@@ -114,6 +114,7 @@
   },
   "https://doi.org/10.1002/qj.441": {
     "usages": [
+      "README.md",
       "docs/markdown/pysdm_landing.md",
       "examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb",
       "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
@@ -290,7 +291,10 @@
   },
   "https://doi.org/10.1029/1999JD901161": {
     "usages": [
-      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py"
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py",
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/figs1-5.ipynb",
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/fig_4_kinetic_limitations.ipynb"
+
     ],
     "label": "Abdul-Razzak & Ghan 2000 (J. Geophys. Res. Atmos. 105)",
     "title": "A parameterization of aerosol activation: 2. Multiple aerosol types"
