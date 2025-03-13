@@ -196,10 +196,10 @@ def axes_settings(*, view):
     axesGrid.YTitleFontSize = 30
     axesGrid.YLabelFontSize = 30
 
-    axesGrid.XTitleColor = [0, 0, 0]
-    axesGrid.XLabelColor = [0, 0, 0]
-    axesGrid.YTitleColor = [0, 0, 0]
-    axesGrid.YLabelColor = [0, 0, 0]
+    axesGrid.XTitleColor = [1.0, 1.0, 1.0]
+    axesGrid.XLabelColor = [1.0, 1.0, 1.0]
+    axesGrid.YTitleColor = [1.0, 1.0, 1.0]
+    axesGrid.YLabelColor = [1.0, 1.0, 1.0]
     axesGrid.GridColor = [0.1, 0.1, 0.1]
     view.CenterAxesVisibility = False
     view.Update()
