@@ -128,7 +128,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         sum_n_dm_dt = 0
         for i, x_i in enumerate(x):
             m = jit_formulae.condensation_coordinate__mass(x_i)
-            v = jit_formulae.particle_shape_and_density__mass_to_volume(x_i)
+            v = jit_formulae.particle_shape_and_density__mass_to_volume(m)
             r = jit_formulae.trivia__radius(v)
             Dr = jit_formulae.diffusion_kinetics__D(DTp, r, lambdaD)
             Kr = jit_formulae.diffusion_kinetics__K(KTp, r, lambdaK)
