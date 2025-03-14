@@ -12,21 +12,36 @@ class Trivia:  # pylint: disable=too-many-public-methods
         pass
 
     @staticmethod
-    def volume_of_density_mass(rho, m):
-        return m / rho
+    def volume_of_density_mass(rho, mass):
+        return mass / rho
 
+    @staticmethod
+    def mass_of_density_volume(rho, volume):
+        return volume * rho
+
+    # TODO: change name to sphere_volume_to_radius
     @staticmethod
     def radius(const, volume):
         return np.power(volume / const.PI_4_3, const.ONE_THIRD)
 
+    # TODO: change name to sphere_radius_to_area
     @staticmethod
     def area(const, radius):
         return const.PI * const.FOUR * np.power(radius, const.TWO)
 
     @staticmethod
-    def volume(const, radius):
+    def sphere_radius_to_volume(const, radius):
         return const.PI_4_3 * np.power(radius, const.THREE)
 
+    @staticmethod
+    def sphere_radius_to_mass(const, radius, density):
+        return const.PI_4_3 * np.power(radius, const.THREE) * density
+
+    @staticmethod
+    def sphere_mass_to_radius(const, mass, density):
+        return const.PI_4_3 * np.power(radius, const.THREE) * density
+
+    # TODO: remove this. There is already sphere_radius_to_area
     @staticmethod
     def sphere_surface(const, diameter):
         return const.PI * diameter**2
