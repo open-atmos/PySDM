@@ -10,7 +10,7 @@ class WaterMassLogarithm:
         pass
 
     @staticmethod
-    def dx_dt(const, x, dm_dt):
+    def dx_dt(x, dm_dt):
         # x = ln(m)
         # dx_dt = 1/m(x) dm_dt
         #       = exp(-x) * dm_dt
