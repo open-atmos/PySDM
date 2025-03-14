@@ -25,3 +25,14 @@ class TimeDependentAttributes(
     """groups attributes required in time-dependent regime"""
 
     __slots__ = ()
+
+
+class TimeDependentHomogeneousAttributes(
+    namedtuple(
+        typename="TimeDependentHomogeneousAttributes",
+        field_names=("volume", "signed_water_mass"),
+    )
+):
+    """groups attributes required in time-dependent regime for homogeneous freezing"""
+
+    __slots__ = ()
