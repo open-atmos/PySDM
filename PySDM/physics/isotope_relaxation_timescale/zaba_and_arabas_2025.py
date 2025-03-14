@@ -20,19 +20,19 @@ class ZabaAndArabas2025:
         M_iso,
     ):
         """e-fold timescale with alpha and water vapour pressures heavy and light water
-        calculated in the temperature of environment"""
+        calculated in the temperature of environment"""  # TODO add saturation multiplier
         return (
             -(radius**2)
             * alpha_env
             * const.rho_w
-            / e_s
             * const.R_str
             * temperature
+            * R_vap_env
+            / e_s
             / 3
             / vent_coeff_iso
             / k_coeff_iso
             / D_iso
-            * R_vap_env
             / (saturation - 1)
             / M_iso
         )
