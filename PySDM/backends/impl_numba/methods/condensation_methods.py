@@ -390,14 +390,16 @@ class CondensationMethods(BackendMethods):
             K,
             ventilation_factor,
         ):
-            volume = formulae.condensation_coordinate__volume(x_new)
+            mass_new = formulae.condensation_coordinate__mass(x_new)
+            volume_new = formulae.particle_shape_and_density__mass_to_volume(mass_new)
+
             RH_eq = formulae.hygroscopicity__RH_eq(
-                formulae.trivia__radius(volume),
+                formulae.trivia__radius(volume_new),
                 temperature,
                 kappa,
                 rd3,
                 formulae.surface_tension__sigma(
-                    temperature, volume, formulae.constants.PI_4_3 * rd3, f_org
+                    temperature, volume_new, formulae.constants.PI_4_3 * rd3, f_org
                 ),
             )
             r_dr_dt = formulae.drop_growth__r_dr_dt(
@@ -410,10 +412,13 @@ class CondensationMethods(BackendMethods):
                 K,
                 ventilation_factor,
             )
+            dm_dt = formulae.particle_shape_and_density__dm_dt(
+                mass=mass_new, r_dr_dt=r_dr_dt
+            )
             return (
                 x_old
                 - x_new
-                + timestep * formulae.condensation_coordinate__dx_dt(x_new, r_dr_dt)
+                + timestep * formulae.condensation_coordinate__dx_dt(x_new, dm_dt)
             )
 
         @numba.njit(**jit_flags)
@@ -492,8 +497,12 @@ class CondensationMethods(BackendMethods):
                         Kr,
                         ventilation_factor,
                     )
+                    mass_old = formulae.condensation_coordinate__mass(x_old)
+                    dm_dt_old = formulae.particle_shape_and_density__dm_dt(
+                        mass=mass_old, r_dr_dt=r_dr_dt_old
+                    )
                     dx_old = timestep * formulae.condensation_coordinate__dx_dt(
-                        x_old, r_dr_dt_old
+                        x_old, dm_dt_old
                     )
                 else:
                     dx_old = 0.0
@@ -561,9 +570,7 @@ class CondensationMethods(BackendMethods):
                     else:
                         x_new = x_old
 
-                mass_new = formulae.particle_shape_and_density__volume_to_mass(
-                    formulae.condensation_coordinate__volume(x_new)
-                )
+                mass_new = formulae.condensation_coordinate__mass(x_new)
                 mass_cr = formulae.particle_shape_and_density__volume_to_mass(
                     attributes.v_cr[drop]
                 )
