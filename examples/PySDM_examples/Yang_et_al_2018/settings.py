@@ -43,7 +43,7 @@ class Settings:
         )
 
         self.backend = CPU
-        self.coord = "VolumeLogarithm"
+        self.coord = "WaterMassLogarithm"
         self.adaptive = True
         self.rtol_x = condensation.DEFAULTS.rtol_x
         self.rtol_thd = condensation.DEFAULTS.rtol_thd

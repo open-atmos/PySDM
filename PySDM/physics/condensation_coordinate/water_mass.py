@@ -2,8 +2,6 @@
 particle water mass as condensation coordinate (i.e. no transformation)
 """
 
-import numpy as np
-
 
 class WaterMass:
     def __init__(self, _):
