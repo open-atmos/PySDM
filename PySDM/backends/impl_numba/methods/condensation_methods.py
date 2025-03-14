@@ -450,10 +450,12 @@ class CondensationMethods(BackendMethods):
                 )
                 if v_drop <= 0:
                     continue
-                x_old = formulae.condensation_coordinate__x(v_drop)
+                x_old = formulae.condensation_coordinate__x(attributes.water_mass[drop])
                 r_old = formulae.trivia__radius(v_drop)
                 x_insane = formulae.condensation_coordinate__x(
-                    attributes.vdry[drop] / 100
+                    formulae.particle_shape_and_density__volume_to_mass(
+                        attributes.vdry[drop] / 100
+                    )
                 )
                 rd3 = attributes.vdry[drop] / formulae.constants.PI_4_3
                 sgm = formulae.surface_tension__sigma(
