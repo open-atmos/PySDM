@@ -1,5 +1,7 @@
 """tests ensuring proper condensation solver operation in some parcel-model based cases"""
 
+import platform
+
 import numpy as np
 
 import pytest
@@ -32,8 +34,13 @@ class TestParcelSanityChecks:
         (
             CPU,
             pytest.param(
-                GPU, marks=pytest.mark.xfail(strict=True)
-            ),  # TODO #1117 (works with CUDA!)
+                GPU,
+                marks=pytest.mark.xfail(
+                    condition=platform.machine() != "arm64",
+                    strict=True,
+                    reason="TODO #1117 (works with CUDA!)",
+                ),
+            ),
         ),
     )
     def test_noisy_supersaturation_profiles(backend_class, plot=False):
