@@ -11,9 +11,11 @@ class WaterMassLogarithm:
 
     @staticmethod
     def dx_dt(x, dm_dt):
-        # x = ln(m)
-        # dx_dt = 1/m(x) dm_dt
-        #       = exp(-x) * dm_dt
+        """
+        x = ln(m)
+        dx_dt = 1/m(x) dm_dt
+              = exp(-x) * dm_dt
+        """
         return np.exp(-x) * dm_dt
 
     @staticmethod
