@@ -100,7 +100,7 @@ class CondensationMethods(
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
-                    if (x_new > {phys.condensation_coordinate.x_max()}) {{
+                    if (x_new > {phys.condensation_coordinate.x_max.c_inline()}) {{
                         return {args("x_old")} - x_new;
                     }}
                     auto m_new = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
