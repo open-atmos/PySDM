@@ -283,7 +283,8 @@ def _c_inline(fun, return_type=None, constants=None, **args):
         if stripped.startswith("//"):
             continue
         if stripped.startswith('"""'):
-            in_docstring = True
+            if not (stripped.endswith('"""') and len(stripped) >= 6):
+                in_docstring = True
             continue
         if stripped.startswith("def "):
             continue
