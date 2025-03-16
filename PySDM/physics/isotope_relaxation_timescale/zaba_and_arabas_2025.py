@@ -7,34 +7,34 @@ class ZabaAndArabas2025:
 
     @staticmethod
     def tau(  # pylint: disable=too-many-arguments
+        *,
         const,
         radius,
-        alpha_env,
-        D_iso,
-        vent_coeff_iso,
-        k_coeff_iso,
-        e_s,
-        saturation,
-        R_vap_env,
+        R_vap,
+        alpha,
         temperature,
-        M_iso,
+        D_isotope,
+        f_isotope,
+        k_isotope,
+        e_isotope,
+        pvs_water
     ):
         """e-fold timescale with alpha and water vapour pressures heavy and light water
-        calculated in the temperature of environment"""  # TODO add saturation multiplier
+        calculated in the temperature of environment:
+        - rho_w denotes density of a drop"""
         return (
             -(radius**2)
-            * alpha_env
             * const.rho_w
+            * R_vap
+            * alpha
             * const.R_str
             * temperature
-            * R_vap_env
-            / e_s
             / 3
-            / vent_coeff_iso
-            / k_coeff_iso
-            / D_iso
-            / (saturation - 1)
-            / M_iso
+            / const.Mv
+            / D_isotope
+            / f_isotope
+            / k_isotope
+            / (e_isotope - R_vap * pvs_water)
         )
 
     @staticmethod

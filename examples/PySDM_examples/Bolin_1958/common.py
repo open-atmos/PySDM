@@ -78,3 +78,6 @@ class IsotopeTimescale:
             * (RH - 1)
             * R_vap
         )
+
+    def tau_rh(self, rh):
+        return 3
