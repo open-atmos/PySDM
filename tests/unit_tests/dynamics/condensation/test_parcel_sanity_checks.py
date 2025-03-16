@@ -36,7 +36,6 @@ class TestParcelSanityChecks:
             pytest.param(
                 GPU,
                 marks=pytest.mark.xfail(
-                    condition=platform.machine() != "arm64",
                     strict=True,
                     reason="TODO #1117 (works with CUDA!)",
                 ),
