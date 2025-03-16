@@ -10,13 +10,12 @@ class WaterMassLogarithm:
         pass
 
     @staticmethod
-    def dx_dt(x, dm_dt):
+    def dx_dt(m, dm_dt):
         """
-        x = ln(m)
+        x = ln(m/m0)
         dx_dt = 1/m(x) dm_dt
-              = exp(-x) * dm_dt
         """
-        return np.exp(-x) * dm_dt
+        return dm_dt / m
 
     @staticmethod
     def mass(x):
@@ -25,3 +24,8 @@ class WaterMassLogarithm:
     @staticmethod
     def x(mass):
         return np.log(mass)
+
+    @staticmethod
+    def x_max(const):
+        """corresponds to 1 kg droplet!"""
+        return const.ZERO

@@ -100,6 +100,9 @@ class CondensationMethods(
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
+                    if (x_new > {phys.condensation_coordinate.x_max()}) {{
+                        return {args("x_old")} - x_new;
+                    }}
                     auto m_new = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
                     auto v_new = {phys.particle_shape_and_density.mass_to_volume.c_inline(mass="m_new")};
                     auto r_new = {phys.trivia.radius.c_inline(volume="v_new")};
@@ -127,10 +130,10 @@ class CondensationMethods(
                         ventilation_factor=args("ventilation_factor"),
                     )};
                     auto dm_dt = {phys.particle_shape_and_density.dm_dt.c_inline(
-                        mass="m_new", r_dr_dt="r_dr_dt"
+                        r="r_new", r_dr_dt="r_dr_dt"
                     )};
                     return {args("x_old")} - x_new + {args("dt")} * {
-                        phys.condensation_coordinate.dx_dt.c_inline(x="x_new", dm_dt="dm_dt")
+                        phys.condensation_coordinate.dx_dt.c_inline(m="m_new", dm_dt="dm_dt")
                     };
                 }}
             }};
@@ -190,9 +193,9 @@ class CondensationMethods(
                     RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs", D="Dr", K="Kr",
                     ventilation_factor="ventilation_factor",
                 )};
-                dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(mass="water_mass[i]", r_dr_dt="r_dr_dt_old")};
+                dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")};
                 dx_old = dt * {phys.condensation_coordinate.dx_dt.c_inline(
-                    x="x_old", dm_dt="dm_dt_old"
+                    m="water_mass[i]", dm_dt="dm_dt_old"
                 )};
             }}
             else {{

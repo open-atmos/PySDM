@@ -152,7 +152,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
                 ventilation_factor,
             )
             dm_dt = jit_formulae.particle_shape_and_density__dm_dt(m, r_dr_dt)
-            dy_dt[idx_x + i] = jit_formulae.condensation_coordinate__dx_dt(x_i, dm_dt)
+            dy_dt[idx_x + i] = jit_formulae.condensation_coordinate__dx_dt(m, dm_dt)
             sum_n_dm_dt += n[i] * dm_dt
         dy_dt[idx_thd] = dot_thd + jit_formulae.state_variable_triplet__dthd_dt(
             rhod, thd, T, dot_water_vapour_mixing_ratio - sum_n_dm_dt / m_d_mean, lv

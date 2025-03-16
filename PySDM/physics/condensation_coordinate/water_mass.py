@@ -8,7 +8,7 @@ class WaterMass:
         pass
 
     @staticmethod
-    def dx_dt(x, dm_dt):  # pylint: disable=unused-argument
+    def dx_dt(m, dm_dt):  # pylint: disable=unused-argument
         return dm_dt
 
     @staticmethod
@@ -18,3 +18,8 @@ class WaterMass:
     @staticmethod
     def x(mass):
         return mass
+
+    @staticmethod
+    def x_max(const):
+        """1 kg droplet!"""
+        return const.ONE

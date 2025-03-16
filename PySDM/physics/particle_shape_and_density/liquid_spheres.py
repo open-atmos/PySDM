@@ -31,17 +31,11 @@ class LiquidSpheres:
         return 2 * radius * velocity_wrt_air * density / dynamic_viscosity
 
     @staticmethod
-    def dm_dt(const, mass, r_dr_dt):
+    def dm_dt(const, r, r_dr_dt):
         """
         dm_dt = d(4/3 pi r^3 rho_w) / dt
               = 4 pi r^2 rho_w dr/dt
               = 4 pi rho_w r(mass) * r_dr_dt
               = 4 pi rho_w cbrt(mass/rho_w/pi/(4/3)) r_dr_dt
         """
-        return (
-            4
-            * const.PI
-            * const.rho_w
-            * np.power(mass / const.rho_w / const.PI_4_3, const.ONE_THIRD)
-            * r_dr_dt
-        )
+        return 4 * const.PI * const.rho_w * r * r_dr_dt
