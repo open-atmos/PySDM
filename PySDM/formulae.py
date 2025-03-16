@@ -203,9 +203,11 @@ def _formula(func, constants, dimensional_analysis, **kw):
     source = re.sub(r"\n\s+\):", "):", source)
     loc = {}
     for arg_name in special_params:
-        source = source.replace(
-            f"def {func.__name__}({arg_name},", f"def {func.__name__}("
-        )
+        for sep in ",", ")":
+            source = source.replace(
+                f"def {func.__name__}({arg_name}{sep}",
+                f"def {func.__name__}({')' if sep == ')' else ''}",
+            )
 
     extras = func.__extras if hasattr(func, "__extras") else {}
     exec(  # pylint:disable=exec-used
