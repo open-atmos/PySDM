@@ -1,7 +1,5 @@
 """tests ensuring proper condensation solver operation in some parcel-model based cases"""
 
-import platform
-
 import numpy as np
 
 import pytest
