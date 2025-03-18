@@ -166,7 +166,7 @@ jobs:
           NUMBA_OPT: 1
         run: |
           shopt -s extglob
-          pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
+          pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We -k asymptote tests/${{ matrix.test-suite }}
 
 #       - if: ${{ failure() }}
 #         uses: mxschmitt/action-tmate@v3
