@@ -229,6 +229,7 @@
     "usages": [
       "examples/PySDM_examples/Rozanski_and_Sonntag_1982/figs_4_5_6.ipynb",
       "examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py"
+      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/multibox.py"
     ],
     "label": "Rozanski & Sonntag 1982 (Tellus A 34)",
     "title": "Vertical distribution of deuterium in atmospheric water vapour"
