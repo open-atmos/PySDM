@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,no-member
 import numpy as np
-
+import pytest
 from .displacement_settings import DisplacementSettings
 
 
@@ -11,12 +11,15 @@ class ConstantTerminalVelocity:  # pylint: disable=too-few-public-methods
     def get(self):
         return self.values
 
-
+VOLUMES = (1., -1.)
 class TestSedimentation:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def test_boundary_condition(backend_class):
+    @pytest.mark.parametrize(
+        "volume", [np.asarray((v,)) for v in VOLUMES]
+    )
+    def test_boundary_condition(backend_class, volume):
         # Arrange
-        settings = DisplacementSettings()
+        settings = DisplacementSettings(n_sd=len(volume), volume=volume)
         settings.dt = 1
         settings.sedimentation = True
         sut, particulator = settings.get_displacement(
