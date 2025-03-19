@@ -46,7 +46,7 @@ class MultiBox(Parcel):
 
     def advance_parcel_vars(self):
         """explicit Euler integration of isotope-ratio time derivative"""
-        assert self.delta_liquid_water_mixing_ratio > 0
+        assert self.delta_liquid_water_mixing_ratio >= 0
         self._recalculate_temperature_pressure_relative_humidity(self._tmp)
 
         alpha_old = {}
