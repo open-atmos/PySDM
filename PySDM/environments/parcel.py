@@ -99,7 +99,6 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         return attributes
 
     def advance_parcel_vars(self):
-        print("advance_parcel_vars()")
         """compute new values of displacement, dry-air density and volume,
         and write them to self._tmp and self.mesh.dv"""
         dt = self.particulator.dt
@@ -141,21 +140,14 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         return self["water_vapour_mixing_ratio"]
 
     def sync_parcel_vars(self):
-        print("sync_parcel_vars()")
         self.delta_liquid_water_mixing_ratio = (
             self._tmp["water_vapour_mixing_ratio"][0]
             - self["water_vapour_mixing_ratio"][0]
-        )
-        print(
-            self._tmp["water_vapour_mixing_ratio"][0],
-            self["water_vapour_mixing_ratio"][0],
-            self.delta_liquid_water_mixing_ratio,
         )
         for var in self.variables:
             self._tmp[var][:] = self[var][:]
 
     def sync(self):
-        print("sync()")
         self.sync_parcel_vars()
         self.advance_parcel_vars()
         super().sync()
