@@ -13,121 +13,119 @@ on:
     - cron: '0 13 * * 4'
 
 jobs:
-#  precommit:
-#    runs-on: ubuntu-24.04
-#    steps:
-#      - uses: actions/checkout@v4.1.6
-#      - uses: actions/setup-python@v5.0.0
-#        with:
-#          python-version: 3.9
-#      - run: |
-#          pip install pre-commit
-#          pre-commit clean
-#          pre-commit autoupdate
-#          pre-commit run --all-files
-#      - if: ${{ failure() }}
-#        run: git diff
+  precommit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: 3.9
+      - run: |
+          pip install pre-commit
+          pre-commit clean
+          pre-commit autoupdate
+          pre-commit run --all-files
+      - if: ${{ failure() }}
+        run: git diff
 
-#  pylint:
-#    runs-on: ubuntu-24.04
-#    steps:
-#    - uses: actions/checkout@v4.1.6
-#      with:
-#        submodules: recursive
-#        fetch-depth: 0
-#    - name: Set up Python 3.9
-#      uses: actions/setup-python@v5.0.0
-#      with:
-#        python-version: 3.9
-#    - name: Install dependencies
-#      run: |
-#        python -m pip install --upgrade pip
-#        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
-#        pip install "pylint<3.0.0" nbqa
-#        pip install -r tests/devops_tests/requirements.txt
-#        pip install -e ./examples[tests]
-#        pip install -e .[tests]
-#    - run: |
-#        # TODO #682
-#        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
-#    - run: |
-#        # TODO #682
-#        pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
-#    - run: |
-#        # TODO #682
-#        nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
-#
-#  devops:
-#    runs-on: ubuntu-24.04
-#    steps:
-#      - uses: actions/checkout@v4.1.6
-#        with:
-#          submodules: recursive
-#          fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
-#      - run: pip install -r tests/devops_tests/requirements.txt
-#      - env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
+  pylint:
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4.1.6
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v5.0.0
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
+        pip install "pylint<3.0.0" nbqa
+        pip install -r tests/devops_tests/requirements.txt
+        pip install -e ./examples[tests]
+        pip install -e .[tests]
+    - run: |
+        # TODO #682
+        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
+    - run: |
+        # TODO #682
+        pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
+    - run: |
+        # TODO #682
+        nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-#  zenodo_json:
-#    runs-on: ubuntu-24.04
-#    steps:
-#      - uses: actions/checkout@v4.1.6
-#      - uses: notiz-dev/github-action-json-property@release
-#        with:
-#          path: '.zenodo.json'
-#          prop_path: 'creators'
+  devops:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
+      - run: pip install -r tests/devops_tests/requirements.txt
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
 
-#  nojit_and_codecov:
-#    needs: [precommit, pylint, devops, zenodo_json]
-#    runs-on: ubuntu-24.04
-#    env:
-#      NUMBA_DISABLE_JIT: 1
-#    steps:
-#    - uses: actions/checkout@v4.1.6
-#      with:
-#        submodules: recursive
-#        fetch-depth: 0
-#    - uses: actions/setup-python@v5.0.0
-#      with:
-#        python-version: 3.9
-#    - name: Generate coverage report
-#      run: |
-#        pip install -e .[tests]
-#        pip install -e ./examples
-#        pip install pytest-cov
-#        pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
-#    - uses: codecov/codecov-action@v4.5.0
-#      with:
-#        fail_ci_if_error: true
-#        verbose: true
-#        token: ${{ secrets.CODECOV_TOKEN }}
+  zenodo_json:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: notiz-dev/github-action-json-property@release
+        with:
+          path: '.zenodo.json'
+          prop_path: 'creators'
+
+  nojit_and_codecov:
+    needs: [precommit, pylint, devops, zenodo_json]
+    runs-on: ubuntu-24.04
+    env:
+      NUMBA_DISABLE_JIT: 1
+    steps:
+    - uses: actions/checkout@v4.1.6
+      with:
+        submodules: recursive
+        fetch-depth: 0
+    - uses: actions/setup-python@v5.0.0
+      with:
+        python-version: 3.9
+    - name: Generate coverage report
+      run: |
+        pip install -e .[tests]
+        pip install -e ./examples
+        pip install pytest-cov
+        pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
+    - uses: codecov/codecov-action@v4.5.0
+      with:
+        fail_ci_if_error: true
+        verbose: true
+        token: ${{ secrets.CODECOV_TOKEN }}
 
   tests:
-#    needs: [nojit_and_codecov]
+    needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [windows-latest, ubuntu-24.04]
-#        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
+        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-#        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
-        test-suite: ["smoke_tests/parcel_d"]
-#        exclude:
-#          - platform: "macos-14"
-#            python-version: "3.9"
-#          - test-suite: "devops_tests"
-#            python-version: "3.9"
-#          # TODO #1406
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/box"
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/parcel_a"
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/parcel_d"
-#          - platform: "macos-14"
-#            test-suite: "smoke_tests/kinematic_2d"
-#          - platform: "macos-14"
-#            test-suite: "unit_tests/!(dynamics)"
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        exclude:
+          - platform: "macos-14"
+            python-version: "3.9"
+          - test-suite: "devops_tests"
+            python-version: "3.9"
+          # TODO #1406
+          - platform: "macos-14"
+            test-suite: "smoke_tests/box"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_a"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_d"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/kinematic_2d"
+          - platform: "macos-14"
+            test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
@@ -166,7 +164,7 @@ jobs:
           NUMBA_OPT: 1
         run: |
           shopt -s extglob
-          pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We -s -k asymptote tests/${{ matrix.test-suite }}
+          pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
 
 #       - if: ${{ failure() }}
 #         uses: mxschmitt/action-tmate@v3
@@ -174,7 +172,7 @@ jobs:
 #           limit-access-to-actor: true
 
   examples-setup:
-    needs: [tests] # only for debug [nojit_and_codecov]
+    needs: [nojit_and_codecov]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-13, windows-latest]
