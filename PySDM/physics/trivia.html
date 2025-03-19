@@ -153,6 +153,12 @@
                                 <a class="function" href="#Trivia.sqrt_re_times_cbrt_sc">sqrt_re_times_cbrt_sc</a>
                         </li>
                         <li>
+                                <a class="function" href="#Trivia.K2C">K2C</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Trivia.C2K">C2K</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Trivia.poissonian_avoidance_function">poissonian_avoidance_function</a>
                         </li>
                 </ul>
@@ -324,12 +330,20 @@
 </span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a><span class="sd">        process with a constant rate `r`</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -477,12 +491,20 @@
 </span><span id="Trivia-140"><a href="#Trivia-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span><span id="Trivia-141"><a href="#Trivia-141"><span class="linenos">141</span></a>
 </span><span id="Trivia-142"><a href="#Trivia-142"><span class="linenos">142</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-143"><a href="#Trivia-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="Trivia-144"><a href="#Trivia-144"><span class="linenos">144</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
-</span><span id="Trivia-145"><a href="#Trivia-145"><span class="linenos">145</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
-</span><span id="Trivia-146"><a href="#Trivia-146"><span class="linenos">146</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="Trivia-147"><a href="#Trivia-147"><span class="linenos">147</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Trivia-148"><a href="#Trivia-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+</span><span id="Trivia-143"><a href="#Trivia-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
+</span><span id="Trivia-144"><a href="#Trivia-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-145"><a href="#Trivia-145"><span class="linenos">145</span></a>
+</span><span id="Trivia-146"><a href="#Trivia-146"><span class="linenos">146</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-147"><a href="#Trivia-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
+</span><span id="Trivia-148"><a href="#Trivia-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-149"><a href="#Trivia-149"><span class="linenos">149</span></a>
+</span><span id="Trivia-150"><a href="#Trivia-150"><span class="linenos">150</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-151"><a href="#Trivia-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+</span><span id="Trivia-152"><a href="#Trivia-152"><span class="linenos">152</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="Trivia-153"><a href="#Trivia-153"><span class="linenos">153</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
+</span><span id="Trivia-154"><a href="#Trivia-154"><span class="linenos">154</span></a><span class="sd">        process with a constant rate `r`</span>
+</span><span id="Trivia-155"><a href="#Trivia-155"><span class="linenos">155</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-156"><a href="#Trivia-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1086,6 +1108,48 @@ where:
     
 
                             </div>
+                            <div id="Trivia.K2C" class="classattr">
+                                        <input id="Trivia.K2C-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">K2C</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">TK</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.K2C-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.K2C"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.K2C-142"><a href="#Trivia.K2C-142"><span class="linenos">142</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.K2C-143"><a href="#Trivia.K2C-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
+</span><span id="Trivia.K2C-144"><a href="#Trivia.K2C-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Trivia.C2K" class="classattr">
+                                        <input id="Trivia.C2K-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">C2K</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">TC</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.C2K-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.C2K"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.C2K-146"><a href="#Trivia.C2K-146"><span class="linenos">146</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.C2K-147"><a href="#Trivia.C2K-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
+</span><span id="Trivia.C2K-148"><a href="#Trivia.C2K-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
                             <div id="Trivia.poissonian_avoidance_function" class="classattr">
                                         <input id="Trivia.poissonian_avoidance_function-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -1098,13 +1162,13 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.poissonian_avoidance_function"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.poissonian_avoidance_function-142"><a href="#Trivia.poissonian_avoidance_function-142"><span class="linenos">142</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.poissonian_avoidance_function-143"><a href="#Trivia.poissonian_avoidance_function-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="Trivia.poissonian_avoidance_function-144"><a href="#Trivia.poissonian_avoidance_function-144"><span class="linenos">144</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
-</span><span id="Trivia.poissonian_avoidance_function-145"><a href="#Trivia.poissonian_avoidance_function-145"><span class="linenos">145</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
-</span><span id="Trivia.poissonian_avoidance_function-146"><a href="#Trivia.poissonian_avoidance_function-146"><span class="linenos">146</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="Trivia.poissonian_avoidance_function-147"><a href="#Trivia.poissonian_avoidance_function-147"><span class="linenos">147</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Trivia.poissonian_avoidance_function-148"><a href="#Trivia.poissonian_avoidance_function-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.poissonian_avoidance_function-150"><a href="#Trivia.poissonian_avoidance_function-150"><span class="linenos">150</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.poissonian_avoidance_function-151"><a href="#Trivia.poissonian_avoidance_function-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+</span><span id="Trivia.poissonian_avoidance_function-152"><a href="#Trivia.poissonian_avoidance_function-152"><span class="linenos">152</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="Trivia.poissonian_avoidance_function-153"><a href="#Trivia.poissonian_avoidance_function-153"><span class="linenos">153</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
+</span><span id="Trivia.poissonian_avoidance_function-154"><a href="#Trivia.poissonian_avoidance_function-154"><span class="linenos">154</span></a><span class="sd">        process with a constant rate `r`</span>
+</span><span id="Trivia.poissonian_avoidance_function-155"><a href="#Trivia.poissonian_avoidance_function-155"><span class="linenos">155</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.poissonian_avoidance_function-156"><a href="#Trivia.poissonian_avoidance_function-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
 
