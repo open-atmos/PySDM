@@ -48,10 +48,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
     def run(self, steps):
         for _ in range(steps):
-            print(f"{_=}")
+            print(f"{self.n_steps=}")
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
                     dynamic()
+                if self.n_steps == 100:
+                    break  # DEBUG DEBUG DEBUG !!!
             self.n_steps += 1
             self._notify_observers()
 
