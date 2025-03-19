@@ -719,6 +719,11 @@
     "title": "Vapor Pressure Formulation for Water in Range 0 to 100 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
   },
+  "https://doi.org/10.1080/10789669.2008.10391032": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "A Twenty-First Century Molar Mass for Dry Air",
+    "label": "Gatley et al. 2008 (HVAC&R Res. 14)"
+  },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
     "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
     "title": "A short course in clouds physics",
