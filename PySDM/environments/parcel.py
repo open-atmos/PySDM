@@ -144,6 +144,11 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             self._tmp["water_vapour_mixing_ratio"][0]
             - self["water_vapour_mixing_ratio"][0]
         )
+        print(
+            self._tmp["water_vapour_mixing_ratio"][0],
+            self["water_vapour_mixing_ratio"][0],
+            self.delta_liquid_water_mixing_ratio,
+        )
         for var in self.variables:
             self._tmp[var][:] = self[var][:]
 
