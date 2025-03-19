@@ -6,4 +6,4 @@ local_scheme = "no-local-version"
 version_scheme = "post-release"
 
 [build-system]
-requires = ['setuptools==75.3.0', 'setuptools-scm==8.1.0']
+requires = ['setuptools==76.1.0', 'setuptools-scm==8.1.0']
