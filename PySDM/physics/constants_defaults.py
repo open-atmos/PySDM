@@ -548,7 +548,7 @@ ROGERS_YAU_TERM_VEL_LARGE_K = 2.01e3 * si.cm**0.5 / si.s
 ROGERS_YAU_TERM_VEL_SMALL_R_LIMIT = 35 * si.um
 """ 〃 """
 ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT = 600 * si.um
-
+""" 〃 """
 
 W76W_G0 = -2.9912729e3 * si.K**2
 """ [Wexler 1976](https://doi.org/10.6028/jres.080A.071) saturation vapour pressure """
@@ -653,23 +653,23 @@ def compute_derived_values(c: dict):
 
     c["Mv"] = (
         (
-            1.0
+            1
             - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
             - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         )
         * (c["M_1H"] * 2 + c["M_16O"])
-        + 2.0
+        + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
         * (c["M_2H"] + c["M_1H"] + c["M_16O"])
-        + 2.0
+        + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
         * (c["M_3H"] + c["M_1H"] + c["M_16O"])
-        + 1.0
+        + 1
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
         * (c["M_1H"] * 2 + c["M_17O"])
-        + 1.0
+        + 1
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         * (c["M_1H"] * 2 + c["M_18O"])
     )
@@ -684,4 +684,4 @@ def compute_derived_values(c: dict):
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
 
-    c["l_tri"] = c["L_tri"] / c["Mv"]  # 2.5e6 * si.joule / si.kilogram
+    c["l_tri"] = c["L_tri"] / c["Mv"]
