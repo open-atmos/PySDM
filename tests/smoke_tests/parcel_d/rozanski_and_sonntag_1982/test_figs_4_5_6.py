@@ -21,7 +21,7 @@ def variables_fixture():
     )
 
 
-@pytest.mark.xfail(platform.system() == "Windows", strict=True, reason="TODO #1207")
+@pytest.mark.xfail(platform.system() == "macos-13", strict=True, reason="TODO #1207")
 class TestFigs456:
     @staticmethod
     def test_fig_5_vapour_asymptote(variables):
