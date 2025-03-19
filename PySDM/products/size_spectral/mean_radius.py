@@ -27,10 +27,14 @@ class MeanRadius(MomentProduct):
             attr="volume",
             rank=1 / 3,
             filter_range=(
-                self.formulae.trivia.volume(self.radius_range[0]),
-                self.formulae.trivia.volume(self.radius_range[1]),
+                self.formulae.particle_shape_and_density.radius_to_mass(
+                    self.radius_range[0]
+                ),
+                self.formulae.particle_shape_and_density.radius_to_mass(
+                    self.radius_range[1]
+                ),
             ),
-            filter_attr="volume",
+            filter_attr="signed water mass",
         )
         self.buffer[:] /= self.formulae.constants.PI_4_3 ** (1 / 3)
         return self.buffer

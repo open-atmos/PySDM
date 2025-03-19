@@ -139,6 +139,14 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)
 
     @staticmethod
+    def K2C(const, TK):
+        return TK - const.T0
+
+    @staticmethod
+    def C2K(const, TC):
+        return TC + const.T0
+
+    @staticmethod
     def poissonian_avoidance_function(r, dt):
         """cumulative probability of zero events occurring within time `dt`
         (or void probability, or avoidance function) in a Poisson counting
