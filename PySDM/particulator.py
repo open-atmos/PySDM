@@ -48,6 +48,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
     def run(self, steps):
         for _ in range(steps):
+            print(f"{_=}")
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
                     dynamic()
