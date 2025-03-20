@@ -21,11 +21,6 @@ def variables_fixture():
     )
 
 
-@pytest.mark.xfail(
-    platform.system() == "Darwin" and platform.machine() == "x86_64",
-    strict=True,
-    reason="TODO #1207",
-)
 class TestFigs456:
     @staticmethod
     def test_fig_5_vapour_asymptote(variables):
