@@ -30,7 +30,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         constants: Optional[dict] = None,
         seed: int = None,
         fastmath: bool = True,
-        condensation_coordinate: str = "VolumeLogarithm",
+        condensation_coordinate: str = "WaterMassLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
         latent_heat: str = "Kirchhoff",
         hygroscopicity: str = "KappaKoehlerLeadingTerms",
@@ -203,9 +203,11 @@ def _formula(func, constants, dimensional_analysis, **kw):
     source = re.sub(r"\n\s+\):", "):", source)
     loc = {}
     for arg_name in special_params:
-        source = source.replace(
-            f"def {func.__name__}({arg_name},", f"def {func.__name__}("
-        )
+        for sep in ",", ")":
+            source = source.replace(
+                f"def {func.__name__}({arg_name}{sep}",
+                f"def {func.__name__}({')' if sep == ')' else ''}",
+            )
 
     extras = func.__extras if hasattr(func, "__extras") else {}
     exec(  # pylint:disable=exec-used
@@ -281,7 +283,8 @@ def _c_inline(fun, return_type=None, constants=None, **args):
         if stripped.startswith("//"):
             continue
         if stripped.startswith('"""'):
-            in_docstring = True
+            if not (stripped.endswith('"""') and len(stripped) >= 6):
+                in_docstring = True
             continue
         if stripped.startswith("def "):
             continue
