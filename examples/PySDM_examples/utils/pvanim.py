@@ -8,7 +8,9 @@ if "pv" not in sys.executable:
     sys.exit(0)
 
 # this has to be imported after pvpython check
-from paraview import simple as pvs # pylint: disable=import-error, disable=wrong-import-position
+from paraview import (  # pylint: disable=import-error, disable=wrong-import-position
+    simple as pvs,
+)
 
 pvs._DisableFirstRenderCameraReset()
 
