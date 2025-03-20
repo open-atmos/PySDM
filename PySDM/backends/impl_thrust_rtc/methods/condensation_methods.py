@@ -100,11 +100,15 @@ class CondensationMethods(
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
-                    auto vol = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
-                    auto r_new = {phys.trivia.radius.c_inline(volume="vol")};
+                    if (x_new > {phys.condensation_coordinate.x_max.c_inline()}) {{
+                        return {args("x_old")} - x_new;
+                    }}
+                    auto m_new = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
+                    auto v_new = {phys.particle_shape_and_density.mass_to_volume.c_inline(mass="m_new")};
+                    auto r_new = {phys.trivia.radius.c_inline(volume="v_new")};
                     auto sgm = {phys.surface_tension.sigma.c_inline(
                         T=args('_T'),
-                        v_wet="vol",
+                        v_wet="v_new",
                         v_dry=f"const.PI_4_3 * {args('rd3')}",
                         f_org=args("f_org")
                     )};
@@ -125,8 +129,11 @@ class CondensationMethods(
                         K=args("Kr"),
                         ventilation_factor=args("ventilation_factor"),
                     )};
+                    auto dm_dt = {phys.particle_shape_and_density.dm_dt.c_inline(
+                        r="r_new", r_dr_dt="r_dr_dt"
+                    )};
                     return {args("x_old")} - x_new + {args("dt")} * {
-                        phys.condensation_coordinate.dx_dt.c_inline(x="x_new", r_dr_dt="r_dr_dt")
+                        phys.condensation_coordinate.dx_dt.c_inline(m="m_new", dm_dt="dm_dt")
                     };
                 }}
             }};
@@ -145,9 +152,10 @@ class CondensationMethods(
             auto v_old = {phys.particle_shape_and_density.mass_to_volume.c_inline(
                 mass="water_mass[i]"
             )};
-            auto x_old = {phys.condensation_coordinate.x.c_inline(volume="v_old")};
+            auto x_old = {phys.condensation_coordinate.x.c_inline(mass="water_mass[i]")};
             auto r_old = {phys.trivia.radius.c_inline(volume="v_old")};
-            auto x_insane = {phys.condensation_coordinate.x.c_inline(volume="vdry[i]/100")};
+            auto m_insane = {phys.particle_shape_and_density.volume_to_mass.c_inline(volume="vdry[i] / 100")};
+            auto x_insane = {phys.condensation_coordinate.x.c_inline(mass="m_insane")};
             auto rd3 = vdry[i] / {const.PI_4_3};
             auto sgm = {phys.surface_tension.sigma.c_inline(
                 T="_T", v_wet="v", v_dry="vdry[i]", f_org="_f_org[i]"
@@ -161,6 +169,7 @@ class CondensationMethods(
             real_type qrt_re_times_cbrt_sc=0;
             real_type ventilation_factor=0;
             real_type r_dr_dt_old=0;
+            real_type dm_dt_old=0;
             real_type dx_old=0;
 
             real_type x_new = 0;
@@ -184,8 +193,9 @@ class CondensationMethods(
                     RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs", D="Dr", K="Kr",
                     ventilation_factor="ventilation_factor",
                 )};
+                dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")};
                 dx_old = dt * {phys.condensation_coordinate.dx_dt.c_inline(
-                    x="x_old", r_dr_dt="r_dr_dt_old"
+                    m="water_mass[i]", dm_dt="dm_dt_old"
                 )};
             }}
             else {{
@@ -239,10 +249,7 @@ class CondensationMethods(
                     x_new = x_old;
                 }}
             }}
-            auto v_new = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
-            water_mass[i] = {phys.particle_shape_and_density.volume_to_mass.c_inline(
-                volume="v_new"
-            )};
+            water_mass[i] = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
         """.replace(
                 "real_type", self._get_c_type()
             ),
