@@ -1,6 +1,14 @@
+# check if ran with pvpython
+import sys
 import argparse
 from collections import namedtuple
-from paraview import simple as pvs  # pylint: disable=import-error
+
+if "pv" not in sys.executable:
+    print("This script has to be ran with pvpython, exiting...")
+    sys.exit(0)
+
+# this has to be imported after pvpython check
+from paraview import simple as pvs # pylint: disable=import-error, disable=wrong-import-position
 
 pvs._DisableFirstRenderCameraReset()
 
