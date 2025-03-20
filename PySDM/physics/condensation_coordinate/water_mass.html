@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="pdoc 15.0.1"/>
-    <title>PySDM.physics.condensation_coordinate.volume_logarithm API documentation</title>
+    <title>PySDM.physics.condensation_coordinate.water_mass API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
     <style>/*! syntax-highlighting.css */pre{line-height:125%;}span.linenos{color:inherit; background-color:transparent; padding-left:5px; padding-right:20px;}.pdoc-code .hll{background-color:#49483e}.pdoc-code{background:#272822; color:#f8f8f2}.pdoc-code .c{color:#75715e}.pdoc-code .err{color:#960050; background-color:#1e0010}.pdoc-code .esc{color:#f8f8f2}.pdoc-code .g{color:#f8f8f2}.pdoc-code .k{color:#66d9ef}.pdoc-code .l{color:#ae81ff}.pdoc-code .n{color:#f8f8f2}.pdoc-code .o{color:#f92672}.pdoc-code .x{color:#f8f8f2}.pdoc-code .p{color:#f8f8f2}.pdoc-code .ch{color:#75715e}.pdoc-code .cm{color:#75715e}.pdoc-code .cp{color:#75715e}.pdoc-code .cpf{color:#75715e}.pdoc-code .c1{color:#75715e}.pdoc-code .cs{color:#75715e}.pdoc-code .gd{color:#f92672}.pdoc-code .ge{color:#f8f8f2; font-style:italic}.pdoc-code .gr{color:#f8f8f2}.pdoc-code .gh{color:#f8f8f2}.pdoc-code .gi{color:#a6e22e}.pdoc-code .go{color:#66d9ef}.pdoc-code .gp{color:#f92672; font-weight:bold}.pdoc-code .gs{color:#f8f8f2; font-weight:bold}.pdoc-code .gu{color:#75715e}.pdoc-code .gt{color:#f8f8f2}.pdoc-code .kc{color:#66d9ef}.pdoc-code .kd{color:#66d9ef}.pdoc-code .kn{color:#f92672}.pdoc-code .kp{color:#66d9ef}.pdoc-code .kr{color:#66d9ef}.pdoc-code .kt{color:#66d9ef}.pdoc-code .ld{color:#e6db74}.pdoc-code .m{color:#ae81ff}.pdoc-code .s{color:#e6db74}.pdoc-code .na{color:#a6e22e}.pdoc-code .nb{color:#f8f8f2}.pdoc-code .nc{color:#a6e22e}.pdoc-code .no{color:#66d9ef}.pdoc-code .nd{color:#a6e22e}.pdoc-code .ni{color:#f8f8f2}.pdoc-code .ne{color:#a6e22e}.pdoc-code .nf{color:#a6e22e}.pdoc-code .nl{color:#f8f8f2}.pdoc-code .nn{color:#f8f8f2}.pdoc-code .nx{color:#a6e22e}.pdoc-code .py{color:#f8f8f2}.pdoc-code .nt{color:#f92672}.pdoc-code .nv{color:#f8f8f2}.pdoc-code .ow{color:#f92672}.pdoc-code .w{color:#f8f8f2}.pdoc-code .mb{color:#ae81ff}.pdoc-code .mf{color:#ae81ff}.pdoc-code .mh{color:#ae81ff}.pdoc-code .mi{color:#ae81ff}.pdoc-code .mo{color:#ae81ff}.pdoc-code .sa{color:#e6db74}.pdoc-code .sb{color:#e6db74}.pdoc-code .sc{color:#e6db74}.pdoc-code .dl{color:#e6db74}.pdoc-code .sd{color:#e6db74}.pdoc-code .s2{color:#e6db74}.pdoc-code .se{color:#ae81ff}.pdoc-code .sh{color:#e6db74}.pdoc-code .si{color:#e6db74}.pdoc-code .sx{color:#e6db74}.pdoc-code .sr{color:#e6db74}.pdoc-code .s1{color:#e6db74}.pdoc-code .ss{color:#e6db74}.pdoc-code .bp{color:#f8f8f2}.pdoc-code .fm{color:#a6e22e}.pdoc-code .vc{color:#f8f8f2}.pdoc-code .vg{color:#f8f8f2}.pdoc-code .vi{color:#f8f8f2}.pdoc-code .vm{color:#f8f8f2}</style>
@@ -69,19 +69,22 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="class" href="#VolumeLogarithm">VolumeLogarithm</a>
+                    <a class="class" href="#WaterMass">WaterMass</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#VolumeLogarithm.__init__">VolumeLogarithm</a>
+                                <a class="function" href="#WaterMass.__init__">WaterMass</a>
                         </li>
                         <li>
-                                <a class="function" href="#VolumeLogarithm.dx_dt">dx_dt</a>
+                                <a class="function" href="#WaterMass.dx_dt">dx_dt</a>
                         </li>
                         <li>
-                                <a class="function" href="#VolumeLogarithm.volume">volume</a>
+                                <a class="function" href="#WaterMass.mass">mass</a>
                         </li>
                         <li>
-                                <a class="function" href="#VolumeLogarithm.x">x</a>
+                                <a class="function" href="#WaterMass.x">x</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#WaterMass.x_max">x_max</a>
                         </li>
                 </ul>
 
@@ -100,166 +103,183 @@
     <main class="pdoc">
             <section class="module-info">
                     <h1 class="modulename">
-<a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../physics.html">physics</a><wbr>.<a href="./../condensation_coordinate.html">condensation_coordinate</a><wbr>.volume_logarithm    </h1>
+<a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../physics.html">physics</a><wbr>.<a href="./../condensation_coordinate.html">condensation_coordinate</a><wbr>.water_mass    </h1>
 
-                        <div class="docstring"><p>logarithm of particle volume as coordinate (ensures non-negative values)</p>
+                        <div class="docstring"><p>particle water mass as condensation coordinate (i.e. no transformation)</p>
 </div>
 
-                        <input id="mod-volume_logarithm-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                        <input id="mod-water_mass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
-                        <label class="view-source-button" for="mod-volume_logarithm-view-source"><span>View Source</span></label>
+                        <label class="view-source-button" for="mod-water_mass-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">logarithm of particle volume as coordinate (ensures non-negative values)</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">particle water mass as condensation coordinate (i.e. no transformation)</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VolumeLogarithm</span><span class="p">:</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="o">*</span> <span class="n">r_dr_dt</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="mi">3</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WaterMass</span><span class="p">:</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="k">pass</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dm_dt</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="n">dm_dt</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mass</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">x</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">mass</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="n">mass</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x_max</span><span class="p">(</span><span class="n">const</span><span class="p">):</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;1 kg droplet!&quot;&quot;&quot;</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE</span>
 </span></pre></div>
 
 
             </section>
-                <section id="VolumeLogarithm">
-                            <input id="VolumeLogarithm-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="WaterMass">
+                            <input id="WaterMass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">VolumeLogarithm</span>:
+    <span class="name">WaterMass</span>:
 
-                <label class="view-source-button" for="VolumeLogarithm-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="WaterMass-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#VolumeLogarithm"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm-9"><a href="#VolumeLogarithm-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VolumeLogarithm</span><span class="p">:</span>
-</span><span id="VolumeLogarithm-10"><a href="#VolumeLogarithm-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="VolumeLogarithm-11"><a href="#VolumeLogarithm-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
-</span><span id="VolumeLogarithm-12"><a href="#VolumeLogarithm-12"><span class="linenos">12</span></a>
-</span><span id="VolumeLogarithm-13"><a href="#VolumeLogarithm-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm-14"><a href="#VolumeLogarithm-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
-</span><span id="VolumeLogarithm-15"><a href="#VolumeLogarithm-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="VolumeLogarithm-16"><a href="#VolumeLogarithm-16"><span class="linenos">16</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-</span><span id="VolumeLogarithm-17"><a href="#VolumeLogarithm-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="n">r_dr_dt</span>
-</span><span id="VolumeLogarithm-18"><a href="#VolumeLogarithm-18"><span class="linenos">18</span></a>            <span class="o">*</span> <span class="mi">3</span>
-</span><span id="VolumeLogarithm-19"><a href="#VolumeLogarithm-19"><span class="linenos">19</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span><span class="p">)</span>
-</span><span id="VolumeLogarithm-20"><a href="#VolumeLogarithm-20"><span class="linenos">20</span></a>        <span class="p">)</span>
-</span><span id="VolumeLogarithm-21"><a href="#VolumeLogarithm-21"><span class="linenos">21</span></a>
-</span><span id="VolumeLogarithm-22"><a href="#VolumeLogarithm-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm-23"><a href="#VolumeLogarithm-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-</span><span id="VolumeLogarithm-24"><a href="#VolumeLogarithm-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</span><span id="VolumeLogarithm-25"><a href="#VolumeLogarithm-25"><span class="linenos">25</span></a>
-</span><span id="VolumeLogarithm-26"><a href="#VolumeLogarithm-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm-27"><a href="#VolumeLogarithm-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
-</span><span id="VolumeLogarithm-28"><a href="#VolumeLogarithm-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+    <a class="headerlink" href="#WaterMass"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass-7"><a href="#WaterMass-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WaterMass</span><span class="p">:</span>
+</span><span id="WaterMass-8"><a href="#WaterMass-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="WaterMass-9"><a href="#WaterMass-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
+</span><span id="WaterMass-10"><a href="#WaterMass-10"><span class="linenos">10</span></a>
+</span><span id="WaterMass-11"><a href="#WaterMass-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass-12"><a href="#WaterMass-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dm_dt</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="WaterMass-13"><a href="#WaterMass-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">dm_dt</span>
+</span><span id="WaterMass-14"><a href="#WaterMass-14"><span class="linenos">14</span></a>
+</span><span id="WaterMass-15"><a href="#WaterMass-15"><span class="linenos">15</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass-16"><a href="#WaterMass-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mass</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="WaterMass-17"><a href="#WaterMass-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">x</span>
+</span><span id="WaterMass-18"><a href="#WaterMass-18"><span class="linenos">18</span></a>
+</span><span id="WaterMass-19"><a href="#WaterMass-19"><span class="linenos">19</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass-20"><a href="#WaterMass-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">mass</span><span class="p">):</span>
+</span><span id="WaterMass-21"><a href="#WaterMass-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">mass</span>
+</span><span id="WaterMass-22"><a href="#WaterMass-22"><span class="linenos">22</span></a>
+</span><span id="WaterMass-23"><a href="#WaterMass-23"><span class="linenos">23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass-24"><a href="#WaterMass-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x_max</span><span class="p">(</span><span class="n">const</span><span class="p">):</span>
+</span><span id="WaterMass-25"><a href="#WaterMass-25"><span class="linenos">25</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;1 kg droplet!&quot;&quot;&quot;</span>
+</span><span id="WaterMass-26"><a href="#WaterMass-26"><span class="linenos">26</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE</span>
 </span></pre></div>
 
 
     
 
-                            <div id="VolumeLogarithm.__init__" class="classattr">
-                                        <input id="VolumeLogarithm.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="WaterMass.__init__" class="classattr">
+                                        <input id="WaterMass.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">VolumeLogarithm</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">_</span></span>)</span>
+        <span class="name">WaterMass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">_</span></span>)</span>
 
-                <label class="view-source-button" for="VolumeLogarithm.__init__-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="WaterMass.__init__-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#VolumeLogarithm.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.__init__-10"><a href="#VolumeLogarithm.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="VolumeLogarithm.__init__-11"><a href="#VolumeLogarithm.__init__-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
+    <a class="headerlink" href="#WaterMass.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass.__init__-8"><a href="#WaterMass.__init__-8"><span class="linenos">8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="WaterMass.__init__-9"><a href="#WaterMass.__init__-9"><span class="linenos">9</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="VolumeLogarithm.dx_dt" class="classattr">
-                                        <input id="VolumeLogarithm.dx_dt-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="WaterMass.dx_dt" class="classattr">
+                                        <input id="WaterMass.dx_dt-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">dx_dt</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">x</span>, </span><span class="param"><span class="n">r_dr_dt</span></span><span class="return-annotation">):</span></span>
+        <span class="name">dx_dt</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">m</span>, </span><span class="param"><span class="n">dm_dt</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="VolumeLogarithm.dx_dt-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="WaterMass.dx_dt-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#VolumeLogarithm.dx_dt"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.dx_dt-13"><a href="#VolumeLogarithm.dx_dt-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm.dx_dt-14"><a href="#VolumeLogarithm.dx_dt-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
-</span><span id="VolumeLogarithm.dx_dt-15"><a href="#VolumeLogarithm.dx_dt-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="VolumeLogarithm.dx_dt-16"><a href="#VolumeLogarithm.dx_dt-16"><span class="linenos">16</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-</span><span id="VolumeLogarithm.dx_dt-17"><a href="#VolumeLogarithm.dx_dt-17"><span class="linenos">17</span></a>            <span class="o">*</span> <span class="n">r_dr_dt</span>
-</span><span id="VolumeLogarithm.dx_dt-18"><a href="#VolumeLogarithm.dx_dt-18"><span class="linenos">18</span></a>            <span class="o">*</span> <span class="mi">3</span>
-</span><span id="VolumeLogarithm.dx_dt-19"><a href="#VolumeLogarithm.dx_dt-19"><span class="linenos">19</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO_THIRDS</span><span class="p">)</span>
-</span><span id="VolumeLogarithm.dx_dt-20"><a href="#VolumeLogarithm.dx_dt-20"><span class="linenos">20</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#WaterMass.dx_dt"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass.dx_dt-11"><a href="#WaterMass.dx_dt-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass.dx_dt-12"><a href="#WaterMass.dx_dt-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dx_dt</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">dm_dt</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="WaterMass.dx_dt-13"><a href="#WaterMass.dx_dt-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">dm_dt</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="VolumeLogarithm.volume" class="classattr">
-                                        <input id="VolumeLogarithm.volume-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="WaterMass.mass" class="classattr">
+                                        <input id="WaterMass.mass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">volume</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">x</span></span><span class="return-annotation">):</span></span>
+        <span class="name">mass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">x</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="VolumeLogarithm.volume-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="WaterMass.mass-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#VolumeLogarithm.volume"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.volume-22"><a href="#VolumeLogarithm.volume-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm.volume-23"><a href="#VolumeLogarithm.volume-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">volume</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-</span><span id="VolumeLogarithm.volume-24"><a href="#VolumeLogarithm.volume-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <a class="headerlink" href="#WaterMass.mass"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass.mass-15"><a href="#WaterMass.mass-15"><span class="linenos">15</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass.mass-16"><a href="#WaterMass.mass-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mass</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="WaterMass.mass-17"><a href="#WaterMass.mass-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">x</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="VolumeLogarithm.x" class="classattr">
-                                        <input id="VolumeLogarithm.x-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="WaterMass.x" class="classattr">
+                                        <input id="WaterMass.x-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">x</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">volume</span></span><span class="return-annotation">):</span></span>
+        <span class="name">x</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">mass</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="VolumeLogarithm.x-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="WaterMass.x-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#VolumeLogarithm.x"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VolumeLogarithm.x-26"><a href="#VolumeLogarithm.x-26"><span class="linenos">26</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="VolumeLogarithm.x-27"><a href="#VolumeLogarithm.x-27"><span class="linenos">27</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">volume</span><span class="p">):</span>
-</span><span id="VolumeLogarithm.x-28"><a href="#VolumeLogarithm.x-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+    <a class="headerlink" href="#WaterMass.x"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass.x-19"><a href="#WaterMass.x-19"><span class="linenos">19</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass.x-20"><a href="#WaterMass.x-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">mass</span><span class="p">):</span>
+</span><span id="WaterMass.x-21"><a href="#WaterMass.x-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">mass</span>
 </span></pre></div>
 
 
     
+
+                            </div>
+                            <div id="WaterMass.x_max" class="classattr">
+                                        <input id="WaterMass.x_max-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">x_max</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="WaterMass.x_max-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#WaterMass.x_max"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WaterMass.x_max-23"><a href="#WaterMass.x_max-23"><span class="linenos">23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="WaterMass.x_max-24"><a href="#WaterMass.x_max-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">x_max</span><span class="p">(</span><span class="n">const</span><span class="p">):</span>
+</span><span id="WaterMass.x_max-25"><a href="#WaterMass.x_max-25"><span class="linenos">25</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;1 kg droplet!&quot;&quot;&quot;</span>
+</span><span id="WaterMass.x_max-26"><a href="#WaterMass.x_max-26"><span class="linenos">26</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>1 kg droplet!</p>
+</div>
+
 
                             </div>
                 </section>

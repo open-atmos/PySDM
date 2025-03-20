@@ -86,6 +86,9 @@
                         <li>
                                 <a class="function" href="#MixedPhaseSpheres.radius_to_mass">radius_to_mass</a>
                         </li>
+                        <li>
+                                <a class="function" href="#MixedPhaseSpheres.dm_dt">dm_dt</a>
+                        </li>
                 </ul>
 
             </li>
@@ -147,6 +150,13 @@
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZERO_VOLUME</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">*</span> <span class="n">radius</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZERO_VOLUME</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">*</span> <span class="n">radius</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_i</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>        <span class="p">)</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dm_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">        note: no ice phase support here yet! TODO #1389</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r_dr_dt</span>
 </span></pre></div>
 
 
@@ -190,6 +200,13 @@
 </span><span id="MixedPhaseSpheres-34"><a href="#MixedPhaseSpheres-34"><span class="linenos">34</span></a>            <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZERO_VOLUME</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">*</span> <span class="n">radius</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span>
 </span><span id="MixedPhaseSpheres-35"><a href="#MixedPhaseSpheres-35"><span class="linenos">35</span></a>            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ZERO_VOLUME</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">*</span> <span class="n">radius</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_i</span>
 </span><span id="MixedPhaseSpheres-36"><a href="#MixedPhaseSpheres-36"><span class="linenos">36</span></a>        <span class="p">)</span>
+</span><span id="MixedPhaseSpheres-37"><a href="#MixedPhaseSpheres-37"><span class="linenos">37</span></a>
+</span><span id="MixedPhaseSpheres-38"><a href="#MixedPhaseSpheres-38"><span class="linenos">38</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="MixedPhaseSpheres-39"><a href="#MixedPhaseSpheres-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dm_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
+</span><span id="MixedPhaseSpheres-40"><a href="#MixedPhaseSpheres-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MixedPhaseSpheres-41"><a href="#MixedPhaseSpheres-41"><span class="linenos">41</span></a><span class="sd">        note: no ice phase support here yet! TODO #1389</span>
+</span><span id="MixedPhaseSpheres-42"><a href="#MixedPhaseSpheres-42"><span class="linenos">42</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MixedPhaseSpheres-43"><a href="#MixedPhaseSpheres-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r_dr_dt</span>
 </span></pre></div>
 
 
@@ -304,6 +321,32 @@
 
 
     
+
+                            </div>
+                            <div id="MixedPhaseSpheres.dm_dt" class="classattr">
+                                        <input id="MixedPhaseSpheres.dm_dt-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">dm_dt</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">r</span>, </span><span class="param"><span class="n">r_dr_dt</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="MixedPhaseSpheres.dm_dt-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#MixedPhaseSpheres.dm_dt"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MixedPhaseSpheres.dm_dt-38"><a href="#MixedPhaseSpheres.dm_dt-38"><span class="linenos">38</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="MixedPhaseSpheres.dm_dt-39"><a href="#MixedPhaseSpheres.dm_dt-39"><span class="linenos">39</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dm_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
+</span><span id="MixedPhaseSpheres.dm_dt-40"><a href="#MixedPhaseSpheres.dm_dt-40"><span class="linenos">40</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MixedPhaseSpheres.dm_dt-41"><a href="#MixedPhaseSpheres.dm_dt-41"><span class="linenos">41</span></a><span class="sd">        note: no ice phase support here yet! TODO #1389</span>
+</span><span id="MixedPhaseSpheres.dm_dt-42"><a href="#MixedPhaseSpheres.dm_dt-42"><span class="linenos">42</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MixedPhaseSpheres.dm_dt-43"><a href="#MixedPhaseSpheres.dm_dt-43"><span class="linenos">43</span></a>        <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">PI</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r_dr_dt</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>note: no ice phase support here yet! TODO #1389</p>
+</div>
+
 
                             </div>
                 </section>
