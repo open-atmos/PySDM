@@ -218,7 +218,7 @@ class Simulation:
 
     def save_attributes(self):
         for k, v in self.output_attributes.items():
-            v.append(self.particulator.attributes[k].to_ndarray())
+            v.append(self.particulator.attributes[k].to_ndarray(raw=True))
 
     def save(self, step):
         self.save_scalar(step)
