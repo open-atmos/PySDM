@@ -18,7 +18,7 @@ Physical constants and formulae (mostly one-liners)
 
 from . import (
     diffusion_coordinate,
-    condensation_coordinate,
+    diffusion_coordinate,
     constants_defaults,
     diffusion_kinetics,
     diffusion_ice_kinetics,

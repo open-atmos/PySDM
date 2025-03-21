@@ -1,6 +1,6 @@
 """
-definitions of particle-size coordinates for the vapour diffusion solvers
+definitions of particle-size coordinates for the condensation solver
 """
 
-from .mass import Mass
-from .mass_logarithm import MassLogarithm
+from .water_mass import WaterMass
+from .water_mass_logarithm import WaterMassLogarithm
