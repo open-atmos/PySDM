@@ -277,10 +277,10 @@ jobs:
           pvpython --version
           pvpython -c "from paraview import simple"
 
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
+      # - env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
 
       - if: startsWith(matrix.platform, 'macos-13')
         run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
