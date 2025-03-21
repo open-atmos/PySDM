@@ -1,7 +1,7 @@
 #!/usr/bin/env pvpython
 import argparse
 from collections import namedtuple
-from paraview import simple as pvs   # pylint: disable=import-error
+from paraview import simple as pvs  # pylint: disable=import-error
 
 pvs._DisableFirstRenderCameraReset()
 
