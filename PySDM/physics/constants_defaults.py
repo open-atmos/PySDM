@@ -90,12 +90,28 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
+# mass and heat accommodation coefficients for condensation
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
 HAC = 1.0
-""" thermal accommodation coefficient of uniy as recommended in
+""" thermal accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
+
+# mass and heat accommodation coefficients for vapour deposition on ice
+MAC_ice = 0.5
+""" mass accommodation coefficient for vapour deposition  as recommended in
+[Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
+HAC_ice = 0.7
+""" thermal accommodation coefficient for vapour deposition as recommended in
+[Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
+
+p1000 = 1000 * si.hectopascals
+c_pd = 1005 * si.joule / si.kilogram / si.kelvin
+c_pv = 1850 * si.joule / si.kilogram / si.kelvin
+g_std = sci.g * si.metre / si.second**2
+
+c_pw = 4218 * si.joule / si.kilogram / si.kelvin
 
 ARM_C1 = 6.1094 * si.hectopascal
 """ [August](https://doi.org/10.1002/andp.18280890511) Roche Magnus formula coefficients
@@ -213,6 +229,10 @@ dv_pk05 = 0.0 * si.metres
 """ Delta v for diffusivity in [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0)
 eq. 13-14 """
 
+lmbd_w_0 = 6.6e-8 * si.metre
+""" Mean free path of water molecules in [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0)
+table 13.1 """
+
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
 """ [Seinfeld & Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
 eq. 15.65
@@ -258,6 +278,16 @@ MK05_LIQ_C11 = 9.44523 * si.dimensionless
 MK05_LIQ_C12 = 1 * si.K
 """ 〃 """
 MK05_LIQ_C13 = 0.014025 / si.K
+""" 〃 """
+MK05_SUB_C1 = 46782.5 * si.joule / si.mole
+""" 〃 """
+MK05_SUB_C2 = 35.8925 * si.joule / si.mole / si.kelvin
+""" 〃 """
+MK05_SUB_C3 = 0.07414 * si.joule / si.mole / si.kelvin**2
+""" 〃 """
+MK05_SUB_C4 = 541.5 * si.joule / si.mole
+""" 〃 """
+MK05_SUB_C5 = 123.75 * si.kelvin
 """ 〃 """
 
 T_STP = (sci.zero_Celsius + 15) * si.kelvin

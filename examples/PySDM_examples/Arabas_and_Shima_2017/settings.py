@@ -18,7 +18,7 @@ class Settings:
     ):
         self.formulae = Formulae(
             saturation_vapour_pressure="AugustRocheMagnus",
-            condensation_coordinate=coord,
+            diffusion_coordinate=coord,
         )
         const = self.formulae.constants
         self.p0 = 1000 * si.hectopascals

@@ -13,6 +13,7 @@ class WaterMassLogarithm:
     def dx_dt(m, dm_dt):
         """
         x = ln(m/m0)
+        m0 = 1 kg
         dx_dt = 1/m(x) dm_dt
         """
         return dm_dt / m

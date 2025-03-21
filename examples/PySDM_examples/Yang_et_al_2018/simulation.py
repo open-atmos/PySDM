@@ -17,7 +17,7 @@ class Simulation:
         while dt_output / self.n_substeps >= settings.dt_max:
             self.n_substeps += 1
         self.formulae = Formulae(
-            condensation_coordinate=settings.coord,
+            diffusion_coordinate=settings.coord,
             saturation_vapour_pressure="AugustRocheMagnus",
         )
         self.bins_edges = self.formulae.trivia.volume(settings.r_bins_edges)
