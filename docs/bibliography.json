@@ -789,5 +789,13 @@
     ],
     "title": "Environmental isotopes in lake stadies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
+  },
+  "https://doi.org/10.1029/JC080i009p01133": {
+    "usages": [
+      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb",
+      "examples/PySDM_examples/Stewart_1975/__init__.py"
+    ],
+    "title": "Stable Isotope FractionationDue to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
+    "label": "Stewart 1975 (J. Geophys. Res.)"
   }
 }
