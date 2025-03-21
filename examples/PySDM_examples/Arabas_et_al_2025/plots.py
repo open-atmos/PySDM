@@ -1,8 +1,8 @@
 import matplotlib
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Arabas_et_al_2023.curved_text import CurvedText
-from PySDM_examples.Arabas_et_al_2023.frozen_fraction import FrozenFraction
+from PySDM_examples.Arabas_et_al_2025.curved_text import CurvedText
+from PySDM_examples.Arabas_et_al_2025.frozen_fraction import FrozenFraction
 
 from PySDM.physics import si
 

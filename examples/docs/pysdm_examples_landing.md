@@ -47,7 +47,7 @@ Example notebooks:
 - `PySDM_examples.Arabas_et_al_2015`
   - in-notebook GUI for setting up, running and interactively visualising the 2D kinematic simulations (with an option to export raw data to <mark>VTK</mark> and <mark>netCDF</mark> files, as well as to save plots to SVG or PDF):
   - "hello world" notebook depicting how to automate using Python the process of loading data and creating animations in <mark>Paraview</mark>
-- `PySDM_examples.Arabas_et_al_2023`: adaptation of the 2D kinematic setup for studying <mark>glaciation</mark> of the cloud deck by <mark>immersion freezing</mark>
+- `PySDM_examples.Arabas_et_al_2025`: adaptation of the 2D kinematic setup for studying <mark>glaciation</mark> of the cloud deck by <mark>immersion freezing</mark>
 
 ## 1D kinematic environment (prescribed-flow, single-column)
 
@@ -106,7 +106,7 @@ Example notebooks include:
   - `PySDM_examples.deJong_Mackay_et_al_2023`: validation of the breakup scheme against analytical solutions from <a href="https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2">Srivastava 1982</a>
 - immersion freezing only:
   - `PySDM_examples.Alpert_and_Knopf_2016`: stochastic immersion freezing with monodisperse vs. lognormal immersed surface areas
-  - `PySDM_examples.Arabas_et_al_2023`: comparison of time-dependent and singular immersion freezing schemes
+  - `PySDM_examples.Arabas_et_al_2025`: comparison of time-dependent and singular immersion freezing schemes
 
 The box environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
 
@@ -119,8 +119,13 @@ The box environment is also featured in the <a href="https://open-atmos.github.i
   - `PySDM_examples.Graf_et_al_2019`
 - <mark>Rayleigh fractionation</mark>:
   - `PySDM_examples.Pierchala_et_al_2022`: reproducing model plots for a <mark>triple-isotope</mark> lab study, including <mark>kinetic fractionation</mark>
+  - `PySDM_examples.Gonfiantini_1986`: flat-surface evaporation at different humidities for D and <sup>18</sup>O
 - isotopic relaxation timescale:
   - `PySDM_examples.Miyake_et_al_1968`: incl. comparison of different <mark>ventilation</mark> parameterisations
   - `PySDM_examples.Bolin_1958`
 - below-cloud <mark>kinetic fractionation</mark>:
   - `PySDM_examples.Gedzelman_and_Arnold_1994`
+
+## examples depicting extraterrestrial clouds (formulae-only, no simulations yet)
+- Titan (methane clouds):
+  - `PySDM_examples.Toon_et_al_1980`

@@ -5,6 +5,10 @@ The very class exposing `PySDM.particulator.Particulator.run()` method for launc
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.backends.impl_common.freezing_attributes import (
+    SingularAttributes,
+    TimeDependentAttributes,
+)
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
@@ -313,7 +317,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name="water mass",
+        attr_name="signed water mass",
         attr_range=(-np.inf, np.inf),
         weighting_attribute="water mass",
         weighting_rank=0,
@@ -497,3 +501,38 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             schmidt_number=self.environment["Schmidt number"],
         )
         self.attributes.mark_updated("signed water mass")
+
+    def immersion_freezing_time_dependent(
+        self, *, thaw: bool, record_freezing_temperature: bool, rand: Storage
+    ):
+        self.backend.freeze_time_dependent(
+            rand=rand,
+            attributes=TimeDependentAttributes(
+                immersed_surface_area=self.attributes["immersed surface area"],
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            timestep=self.dt,
+            cell=self.attributes["cell id"],
+            a_w_ice=self.environment["a_w_ice"],
+            temperature=self.environment["T"],
+            relative_humidity=self.environment["RH"],
+            record_freezing_temperature=record_freezing_temperature,
+            freezing_temperature=(
+                self.attributes["freezing temperature"]
+                if record_freezing_temperature
+                else None
+            ),
+            thaw=thaw,
+        )
+
+    def immersion_freezing_singular(self, *, thaw: bool):
+        self.backend.freeze_singular(
+            attributes=SingularAttributes(
+                freezing_temperature=self.attributes["freezing temperature"],
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            temperature=self.environment["T"],
+            relative_humidity=self.environment["RH"],
+            cell=self.attributes["cell id"],
+            thaw=thaw,
+        )

@@ -21,7 +21,7 @@ CI = "CI" in os.environ
 _32bit = platform.architecture()[0] == "32bit"
 
 setup(
-    name="PySDM",
+    name="pysdm",
     description="Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry"
     " cloud microphysics package with box, parcel & 1D/2D prescribed-flow"
     " examples in Python, Julia and Matlab",

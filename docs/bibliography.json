@@ -114,6 +114,7 @@
   },
   "https://doi.org/10.1002/qj.441": {
     "usages": [
+      "README.md",
       "docs/markdown/pysdm_landing.md",
       "examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb",
       "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
@@ -126,7 +127,7 @@
   },
   "https://doi.org/10.5194/acp-11-12945-2011": {
     "usages": [
-      "examples/PySDM_examples/Arabas_et_al_2023/aida.ipynb"
+      "examples/PySDM_examples/Arabas_et_al_2025/aida.ipynb"
     ],
     "label": "Steinke et al. 2011 (Atmos. Chem. Phys. 11)",
     "title": "Ice nucleation properties of fine ash particles from the Eyjafjallajökull eruption in April 2010 "
@@ -227,7 +228,8 @@
   "https://doi.org/10.3402/tellusa.v34i2.10795": {
     "usages": [
       "examples/PySDM_examples/Rozanski_and_Sonntag_1982/figs_4_5_6.ipynb",
-      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py"
+      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py",
+      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/multibox.py"
     ],
     "label": "Rozanski & Sonntag 1982 (Tellus A 34)",
     "title": "Vertical distribution of deuterium in atmospheric water vapour"
@@ -290,7 +292,10 @@
   },
   "https://doi.org/10.1029/1999JD901161": {
     "usages": [
-      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py"
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py",
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/figs1-5.ipynb",
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/fig_4_kinetic_limitations.ipynb"
+
     ],
     "label": "Abdul-Razzak & Ghan 2000 (J. Geophys. Res. Atmos. 105)",
     "title": "A parameterization of aerosol activation: 2. Multiple aerosol types"
@@ -627,6 +632,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
+      "examples/PySDM_examples/Zaba_et_al_2025/global_meteoric_water_line.ipynb",
       "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
@@ -688,9 +694,16 @@
     "label": "Hoyle et al. 2016 (Atmos. Chem. Phys. 16)",
     "title": "Aqueous phase oxidation of sulphur dioxide by ozone in cloud droplets"
   },
-  "https://doi.org/10.48550/arXiv.2308.05015": {
-    "usages": ["examples/PySDM_examples/Arabas_et_al_2023/__init__.py"],
-    "label": "Arabas et al. 2023 (arXiv:2308.05015)",
+  "https://doi.org/10.1029/2024MS004770": {
+    "usages": [
+      "examples/PySDM_examples/Arabas_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Arabas_et_al_2025/fig_2.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/fig_A2.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/figs_10_and_11_and_animations.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/figs_3_and_7_and_8.ipynb",
+      "examples/PySDM_examples/Arabas_et_al_2025/figs_5_and_6.ipynb"
+    ],
+    "label": "Arabas et al. 2025 (JAMES)",
     "title": "Immersion freezing in particle-based aerosol-cloud microphysics: a probabilistic perspective on singular and time-dependent models"
   },
   "https://archive.org/details/physicsofclouds0000maso": {
@@ -705,6 +718,11 @@
     ],
     "title": "Vapor Pressure Formulation for Water in Range 0 to 100 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
+  },
+  "https://doi.org/10.1080/10789669.2008.10391032": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "A Twenty-First Century Molar Mass for Dry Air",
+    "label": "Gatley et al. 2008 (HVAC&R Res. 14)"
   },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
     "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
@@ -755,5 +773,21 @@
     ],
     "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
     "label": "Picciotto et al. 1960 (Nature 187)"
+  },
+  "https://doi.org/10.1016/0019-1035(80)90173-6": {
+    "usages": [
+      "examples/PySDM_examples/Toon_et_al_1980/fig_1.ipynb",
+      "PySDM/physics/hydrostatics/variable_g_isothermal.py"
+    ],
+    "title": "A physical model of Titan’s clouds",
+    "label": "Toon et al. 1980 (Icarus 43)"
+  },
+  "https://doi.org/10.1016/B978-0-444-42225-5.50008-5": {
+    "usages": [
+      "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb",
+      "examples/PySDM_examples/Gonfiantini_1986/__init__.py"
+    ],
+    "title": "Environmental isotopes in lake stadies",
+    "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
   }
 }
