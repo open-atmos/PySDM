@@ -1,4 +1,4 @@
-""" basic water vapor deposition on ice """
+"""basic water vapor deposition on ice"""
 
 from PySDM.dynamics.impl import register_dynamic
 

@@ -4,7 +4,7 @@ import numpy as np
 
 import pytest
 
-from PySDM.physics import si, diffusion_coordinate
+from PySDM.physics import si
 from PySDM.backends import CPU
 from PySDM import Builder
 from PySDM import Formulae
@@ -17,14 +17,13 @@ from PySDM.products import IceWaterContent
 @pytest.mark.parametrize("water_mass", (-si.ng, -si.ug, -si.mg, si.mg))
 @pytest.mark.parametrize("RHi", (1.1, 1.0, 0.9))
 @pytest.mark.parametrize("fastmath", (True, False))
-@pytest.mark.parametrize("diffusion_coordinate", ("Mass", "MassLogarithm"))
+@pytest.mark.parametrize("diffusion_coordinate", ("WaterMass", "WaterMassLogarithm"))
 def test_iwc_lower_after_timestep(
-    dt, water_mass, RHi, fastmath, diffusion_coordinate, dv=1 * si.m**3
+    *, dt, water_mass, RHi, fastmath, diffusion_coordinate, dv=1 * si.m**3
 ):
     # arrange
-    n_sd = 1
     builder = Builder(
-        n_sd=n_sd,
+        n_sd=1,
         environment=Box(dt=dt, dv=dv),
         backend=CPU(
             formulae=Formulae(
@@ -38,51 +37,51 @@ def test_iwc_lower_after_timestep(
     builder.add_dynamic(deposition)
     particulator = builder.build(
         attributes={
-            "multiplicity": np.full(shape=(n_sd,), fill_value=1),
-            "signed water mass": np.full(shape=(n_sd,), fill_value=water_mass),
+            "multiplicity": np.full(shape=(builder.particulator.n_sd,), fill_value=1),
+            "signed water mass": np.full(
+                shape=(builder.particulator.n_sd,), fill_value=water_mass
+            ),
         },
         products=(IceWaterContent(),),
     )
-    temperature = 250 * si.K
-    particulator.environment["T"] = temperature
-    pressure = 500 * si.hPa
-    particulator.environment["P"] = pressure
-    pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(temperature)
-    pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(temperature)
+    particulator.environment["T"] = 250 * si.K
+    particulator.environment["p"] = 500 * si.hPa
+    pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(
+        particulator.environment["T"][0]
+    )
+    pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(
+        particulator.environment["T"][0]
+    )
     vapour_pressure = RHi * pvs_ice
-    RH = vapour_pressure / pvs_water
-    particulator.environment["RH"] = RH
+    particulator.environment["RH"] = vapour_pressure / pvs_water
     particulator.environment["a_w_ice"] = pvs_ice / pvs_water
     particulator.environment["Schmidt number"] = 1
     rv0 = (
         particulator.formulae.constants.eps
         * vapour_pressure
-        / (pressure - vapour_pressure)
+        / (particulator.environment["p"][0] - vapour_pressure)
     )
     particulator.environment["water_vapour_mixing_ratio"] = rv0
-    particulator.environment["rhod"] = (pressure - vapour_pressure) / (
-        temperature * particulator.formulae.constants.Rd
-    )
+    particulator.environment["rhod"] = (
+        particulator.environment["p"][0] - vapour_pressure
+    ) / (particulator.environment["T"][0] * particulator.formulae.constants.Rd)
 
     # act
-    T0 = temperature
+    temperature = particulator.environment["T"][0]
     iwc_old = particulator.products["ice water content"].get().copy()
     particulator.run(steps=1)
-    T_new = particulator.environment["T"][0]
-    iwc_new = particulator.products["ice water content"].get().copy()
 
-    rv_new = particulator.environment["water_vapour_mixing_ratio"][0]
     # assert
     if water_mass < 0 and RHi != 1:
         if RHi > 1:
-            assert (iwc_new > iwc_old).all()
-            assert rv_new < rv0
-            assert T_new > T0
+            assert (particulator.products["ice water content"].get() > iwc_old).all()
+            assert particulator.environment["water_vapour_mixing_ratio"][0] < rv0
+            assert particulator.environment["T"][0] > temperature
         elif RHi < 1:
-            assert (iwc_new < iwc_old).all()
-            assert rv_new > rv0
-            assert T_new < T0
+            assert (particulator.products["ice water content"].get() < iwc_old).all()
+            assert particulator.environment["water_vapour_mixing_ratio"][0] > rv0
+            assert particulator.environment["T"][0] < temperature
     else:
-        assert (iwc_new == iwc_old).all()
-        assert rv_new == rv0
-        assert T_new == T0
+        assert (particulator.products["ice water content"].get() == iwc_old).all()
+        assert particulator.environment["water_vapour_mixing_ratio"][0] == rv0
+        assert particulator.environment["T"][0] == temperature

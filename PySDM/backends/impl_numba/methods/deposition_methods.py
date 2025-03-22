@@ -1,4 +1,4 @@
-""" basic water vapor deposition on ice for cpu backend """
+"""basic water vapor deposition on ice for cpu backend"""
 
 from functools import cached_property
 import numba
