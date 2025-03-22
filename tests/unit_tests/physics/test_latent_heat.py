@@ -12,7 +12,9 @@ class TestLatentHeat:
     @staticmethod
     def test_latent_vapourisation(plot=False):
         # Arrange
-        formulae = {k: Formulae(latent_heat=k) for k in ("Kirchhoff", "Lowe2019")}
+        formulae = {
+            k: Formulae(latent_heat_vapourisation=k) for k in ("Kirchhoff", "Lowe2019")
+        }
         const = Formulae().constants
         temperature = np.linspace(-20, 20) + const.T_tri
 
@@ -33,8 +35,12 @@ class TestLatentHeat:
         # Assert
         temperature = np.linspace(-20, 20, 100) + const.T_tri
         np.testing.assert_allclose(
-            Formulae(latent_heat="Kirchhoff").latent_heat.lv(temperature),
-            Formulae(latent_heat="Lowe2019").latent_heat.lv(temperature),
+            Formulae(
+                latent_heat_vapourisation="Kirchhoff"
+            ).latent_heat_vapourisation.lv(temperature),
+            Formulae(latent_heat_vapourisation="Lowe2019").latent_heat_vapourisation.lv(
+                temperature
+            ),
             rtol=1e-2,
         )
 

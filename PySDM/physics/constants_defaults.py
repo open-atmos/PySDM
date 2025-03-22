@@ -230,8 +230,8 @@ dv_pk05 = 0.0 * si.metres
 eq. 13-14 """
 
 lmbd_w_0 = 6.6e-8 * si.metre
-""" Mean free path of water molecules in [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0)
-table 13.1 """
+""" Mean free path of water molecules as in table 13.1 in
+[Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
 """ [Seinfeld & Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)

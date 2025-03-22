@@ -9,5 +9,5 @@ class Spherical:
         pass
 
     @staticmethod
-    def capacity(_, diameter, length=None):  # pylint: disable=unused-argument
-        return diameter / 2.0
+    def capacity(const, diameter):
+        return diameter / const.TWO

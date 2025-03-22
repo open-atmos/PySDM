@@ -72,8 +72,8 @@ class TestFormulae:
             si = constants_defaults.si
             T = 300 * si.kelvins
 
-            formulae = Formulae(latent_heat=opt)
-            sut = formulae.latent_heat.lv
+            formulae = Formulae(latent_heat_vapourisation=opt)
+            sut = formulae.latent_heat_vapourisation.lv
 
             # Act
             lv = sut(T)
