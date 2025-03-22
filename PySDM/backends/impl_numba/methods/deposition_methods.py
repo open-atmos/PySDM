@@ -15,7 +15,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         liquid = formulae.trivia__unfrozen
 
         @numba.jit(**self.default_jit_flags)
-        def body(
+        def body(  # pylint: disable=too-many-arguments
             multiplicity,
             signed_water_mass,
             ambient_temperature,
@@ -30,7 +30,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             reynolds_number,
             schmidt_number,
         ):
-            # pylint: disable=too-many-local-variables
+            # pylint: disable=too-many-locals
             n_sd = len(signed_water_mass)
             for i in range(n_sd):
                 if not liquid(signed_water_mass[i]):

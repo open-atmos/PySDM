@@ -3,7 +3,7 @@ capacity for approximation of ice crystals as spheres
 """
 
 
-class Spherical:  # pylint disable=too-few-public-methods
+class Spherical:  # pylint: disable=too-few-public-methods
 
     def __init__(self, _):
         pass
