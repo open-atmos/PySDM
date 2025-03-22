@@ -51,12 +51,11 @@ class Simulation(BasicSimulation):
             n_in_dv=n_in_dv, kappa=settings.kappa, r_dry=r_dry
         )
 
-        # <TODO>
+        # TODO #1389
         if settings.enable_immersion_freezing:
             attributes["freezing temperature"] = np.full(
                 shape=(settings.n_sd,), fill_value=250
             )
-        # </TODO>
 
         self.products = (
             WaterMixingRatio(name="water", radius_range=(0, np.inf)),

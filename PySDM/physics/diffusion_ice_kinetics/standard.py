@@ -28,7 +28,7 @@ class Standard:
         )
 
     @staticmethod
-    def K(const, K, r, lmbd, T, rho):  # pylint: disable=disable=too-many-arguments
+    def K(const, K, r, lmbd, T, rho):  # pylint: disable=too-many-arguments
         return K / (
             r / (r + lmbd)
             + 4.0

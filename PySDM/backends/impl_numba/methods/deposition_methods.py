@@ -30,8 +30,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             reynolds_number,
             schmidt_number,
         ):
+            # pylint: disable=too-many-local-variables
             n_sd = len(signed_water_mass)
-            ## for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
             for i in range(n_sd):
                 if not liquid(signed_water_mass[i]):
                     ice_mass = -signed_water_mass[i]
@@ -52,6 +52,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
                     capacity = formulae.diffusion_ice_capacity__capacity(diameter)
 
+                    # TODO #1389
+                    # pylint: disable=unused-variable
                     ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=reynolds_number[i],
