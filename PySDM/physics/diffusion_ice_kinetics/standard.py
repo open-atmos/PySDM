@@ -12,22 +12,22 @@ class Standard:
         pass
 
     @staticmethod
-    def lambdaD(_, T, p):  # pylint: disable=unused-argument
+    def lambdaD(const, T, p):  # pylint: disable=unused-argument
         return const.lmbd_w_0 * T / const.T_STP * const.p_STP / p
 
     @staticmethod
-    def lambdaK(_, T, p):  # pylint: disable=unused-argument
+    def lambdaK(const, T, p):  # pylint: disable=unused-argument
         return const.lmbd_w_0 * T / const.T_STP * const.p_STP / p
 
     @staticmethod
-    def D(_, D, r, lmbd, T):  # pylint: disable=unused-argument
+    def D(const, D, r, lmbd, T):  # pylint: disable=unused-argument
         return D / (
             r / (r + lmbd)
             + 4.0 * D / const.MAC_ice / np.sqrt(8.0 * const.Rv * T / const.PI) / r
         )
 
     @staticmethod
-    def K(_, K, r, lmbd, T, rho):  # pylint: disable=unused-argument
+    def K(const, K, r, lmbd, T, rho):  # pylint: disable=unused-argument
         return K / (
             r / (r + lmbd)
             + 4.0

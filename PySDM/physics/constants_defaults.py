@@ -202,12 +202,12 @@ p1000 = 1000 * si.hectopascals
 """ 1000 hPa reference pressure as in the definition of potential temperature"""
 
 p_tri = 611.657 * si.pascal
-""" water triple point characteristics as recommended in
-[Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94) """
+""" water triple point pressure ([Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94)) """
 T_tri = 273.16 * si.kelvin
-""" 〃 """
+""" water triple point temperature ([Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94)) """
 L_tri = 45051.0 * si.joule / si.mol
-""" 〃 """
+""" latent heat of vaporization of liquid at triple point
+([Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94)) """
 
 l_l19_a = 0.167 * si.dimensionless
 """ [Seinfeld and Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)

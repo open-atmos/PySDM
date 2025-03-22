@@ -6,7 +6,7 @@ from PySDM.physics import (
     constants_defaults,
     diffusion_kinetics,
     diffusion_thermics,
-    latent_heat,
+    latent_heat_vapourisation,
     saturation_vapour_pressure,
 )
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
@@ -65,7 +65,7 @@ class TestFormulae:
             assert r_cr.to_base_units().units == si.metres
 
     @staticmethod
-    @pytest.mark.parametrize("opt", _choices(latent_heat))
+    @pytest.mark.parametrize("opt", _choices(latent_heat_vapourisation))
     def test_lv(opt):
         with DimensionalAnalysis():
             # Arrange
