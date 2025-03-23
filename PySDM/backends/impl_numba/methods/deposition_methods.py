@@ -133,7 +133,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
         return body
 
-    def deposition(
+    def deposition(  # pylint: disable=too-many-locals
         self,
         *,
         multiplicity,
