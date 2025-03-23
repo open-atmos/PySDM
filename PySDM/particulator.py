@@ -488,19 +488,26 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.backend.deposition(
             multiplicity=self.attributes["multiplicity"],
             signed_water_mass=self.attributes["signed water mass"],
-            ambient_temperature=self.environment["T"],
-            ambient_total_pressure=self.environment["p"],
-            ambient_humidity=self.environment["RH"],
-            ambient_water_activity=self.environment["a_w_ice"],
-            ambient_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
-            ambient_dry_air_density=self.environment["rhod"],
+            current_temperature=self.environment["T"],
+            current_total_pressure=self.environment["p"],
+            current_relative_humidity=self.environment["RH"],
+            current_water_activity=self.environment["a_w_ice"],
+            current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
+            current_dry_air_density=self.environment["rhod"],
+            current_dry_potential_temperature=self.environment["thd"],
             cell_volume=self.environment.mesh.dv,
             time_step=self.dt,
             cell_id=self.attributes["cell id"],
             reynolds_number=self.attributes["Reynolds number"],
             schmidt_number=self.environment["Schmidt number"],
+            predicted_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
+            predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
         )
         self.attributes.mark_updated("signed water mass")
+        # TODO #1389 - should we update here?
+        # self.update_TpRH(only_if_not_last='VapourDepositionOnIce')
 
     def immersion_freezing_time_dependent(
         self, *, thaw: bool, record_freezing_temperature: bool, rand: Storage

@@ -12,28 +12,32 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         assert self.formulae.particle_shape_and_density.supports_mixed_phase()
 
         formulae = self.formulae_flattened
-        liquid = formulae.trivia__unfrozen
 
         @numba.jit(**self.default_jit_flags)
         def body(  # pylint: disable=too-many-arguments
+            *,
             multiplicity,
             signed_water_mass,
-            ambient_temperature,
-            ambient_total_pressure,
-            ambient_humidity,
-            ambient_water_activity,
-            ambient_vapour_mixing_ratio,
-            ambient_dry_air_density,
+            current_temperature,
+            current_total_pressure,
+            current_relative_humidity,
+            current_water_activity,
+            current_vapour_mixing_ratio,
+            current_dry_air_density,
+            current_dry_potential_temperature,
             cell_volume,
             time_step,
             cell_id,
             reynolds_number,
             schmidt_number,
+            # to be modified
+            predicted_vapour_mixing_ratio,
+            predicted_dry_potential_temperature,
         ):
             # pylint: disable=too-many-locals
             n_sd = len(signed_water_mass)
             for i in range(n_sd):
-                if not liquid(signed_water_mass[i]):
+                if not formulae.trivia__unfrozen(signed_water_mass[i]):
                     ice_mass = -signed_water_mass[i]
                     cid = cell_id[i]
 
@@ -43,9 +47,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
                     diameter = radius * 2.0
 
-                    temperature = ambient_temperature[cid]
-                    pressure = ambient_total_pressure[cid]
-                    rho = ambient_dry_air_density[cid]
+                    temperature = current_temperature[cid]
+                    pressure = current_total_pressure[cid]
+                    rho = current_dry_air_density[cid]
                     Rv = formulae.constants.Rv
                     pvs_ice = formulae.saturation_vapour_pressure__pvs_ice(temperature)
                     latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
@@ -87,8 +91,11 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     )
 
                     saturation_ratio_ice = (
-                        ambient_humidity[cid] / ambient_water_activity[cid]
+                        current_relative_humidity[cid] / current_water_activity[cid]
                     )
+
+                    if saturation_ratio_ice == 1:
+                        continue
 
                     rho_vs_ice = pvs_ice / Rv / temperature
 
@@ -101,21 +108,26 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         * (saturation_ratio_ice - 1)
                     ) * rho_vs_ice
 
-                    if dm_dt == 0:
-                        continue
-
                     delta_rv_i = (
                         -dm_dt * multiplicity[i] * time_step / (cell_volume * rho)
                     )
-                    if -delta_rv_i > ambient_vapour_mixing_ratio[cid]:
+                    if -delta_rv_i > current_vapour_mixing_ratio[cid]:
                         assert False
-                    ambient_vapour_mixing_ratio[cid] += delta_rv_i
+                    predicted_vapour_mixing_ratio[cid] += delta_rv_i
 
-                    delta_T = -delta_rv_i * latent_heat_sub / formulae.constants.c_pd
-                    ambient_temperature[cid] += delta_T
+                    predicted_dry_potential_temperature[cid] += (
+                        formulae.state_variable_triplet__dthd_dt(
+                            rhod=current_dry_air_density[cid],
+                            thd=current_dry_potential_temperature[cid],
+                            T=temperature,
+                            d_water_vapour_mixing_ratio__dt=delta_rv_i / time_step,
+                            lv=latent_heat_sub,
+                        )
+                        * time_step
+                    )
 
                     x_old = formulae.diffusion_coordinate__x(ice_mass)
-                    dx_dt_old = formulae.diffusion_coordinate__dx_dt(x_old, dm_dt)
+                    dx_dt_old = formulae.diffusion_coordinate__dx_dt(ice_mass, dm_dt)
                     x_new = formulae.trivia__explicit_euler(x_old, time_step, dx_dt_old)
                     signed_water_mass[i] = -formulae.diffusion_coordinate__mass(x_new)
 
@@ -126,30 +138,36 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         *,
         multiplicity,
         signed_water_mass,
-        ambient_temperature,
-        ambient_total_pressure,
-        ambient_humidity,
-        ambient_water_activity,
-        ambient_vapour_mixing_ratio,
-        ambient_dry_air_density,
+        current_temperature,
+        current_total_pressure,
+        current_relative_humidity,
+        current_water_activity,
+        current_vapour_mixing_ratio,
+        current_dry_air_density,
+        current_dry_potential_temperature,
         cell_volume,
         time_step,
         cell_id,
         reynolds_number,
         schmidt_number,
+        predicted_vapour_mixing_ratio,
+        predicted_dry_potential_temperature,
     ):
         self._deposition(
             multiplicity=multiplicity.data,
             signed_water_mass=signed_water_mass.data,
-            ambient_temperature=ambient_temperature.data,
-            ambient_total_pressure=ambient_total_pressure.data,
-            ambient_humidity=ambient_humidity.data,
-            ambient_water_activity=ambient_water_activity.data,
-            ambient_vapour_mixing_ratio=ambient_vapour_mixing_ratio.data,
-            ambient_dry_air_density=ambient_dry_air_density.data,
+            current_temperature=current_temperature.data,
+            current_total_pressure=current_total_pressure.data,
+            current_relative_humidity=current_relative_humidity.data,
+            current_water_activity=current_water_activity.data,
+            current_vapour_mixing_ratio=current_vapour_mixing_ratio.data,
+            current_dry_air_density=current_dry_air_density.data,
+            current_dry_potential_temperature=current_dry_potential_temperature.data,
             cell_volume=cell_volume,
             time_step=time_step,
             cell_id=cell_id.data,
             reynolds_number=reynolds_number.data,
             schmidt_number=schmidt_number.data,
+            predicted_vapour_mixing_ratio=predicted_vapour_mixing_ratio.data,
+            predicted_dry_potential_temperature=predicted_dry_potential_temperature.data,
         )
