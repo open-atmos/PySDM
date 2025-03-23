@@ -22,7 +22,7 @@ class TestLatentHeat:
         pyplot.axhline(const.l_tri, label="triple point", color="red")
         pyplot.axvline(const.T_tri, color="red")
         for key, val in formulae.items():
-            for name, func in inspect.getmembers(val.latent_heat):
+            for name, func in inspect.getmembers(val.latent_heat_vapourisation):
                 if name[:2] not in ("__", "a_"):
                     pyplot.plot(temperature, func(temperature), label=f"{key}::{name}")
         pyplot.grid()

@@ -323,7 +323,7 @@ class CondensationMethods(
             )};
             pv[i] = {phys.state_variable_triplet.pv.c_inline(
                 p='p[i]', water_vapour_mixing_ratio='predicted_water_vapour_mixing_ratio[i]')};
-            lv[i] = {phys.latent_heat.lv.c_inline(
+            lv[i] = {phys.latent_heat_vapourisation.lv.c_inline(
                 T='T[i]')};
             pvs[i] = {phys.saturation_vapour_pressure.pvs_water.c_inline(
                 T='T[i]')};
