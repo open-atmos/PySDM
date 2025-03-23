@@ -789,5 +789,12 @@
     ],
     "title": "Environmental isotopes in lake stadies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
+  },
+  "https://doi.org/10.1029/2001JD000470": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "title": "A parameterization of cirrus cloud formation: Homogeneous freezing of supercooled aerosols",
+    "label": "Kaercher & Lohmann 2002 (J. Geophys. Res. Atmos 107)"
   }
 }

@@ -100,7 +100,7 @@ HAC = 1.0
 
 # mass and heat accommodation coefficients for vapour deposition on ice
 MAC_ice = 0.5
-""" mass accommodation coefficient for vapour deposition  as recommended in
+""" mass accommodation coefficient for vapour deposition as recommended in
 [Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
 HAC_ice = 0.7
 """ thermal accommodation coefficient for vapour deposition as recommended in
