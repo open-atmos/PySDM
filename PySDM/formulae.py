@@ -178,7 +178,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
     @cached_property
     def flatten(self):
         """returns a "flattened" representation providing access to all formulae from within
-        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)"""
+        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat_vapourisation__lv(T)
+        """
         functions = {}
         for component in ["trivia"] + list(self._components):
             for item in dir(getattr(self, component)):

@@ -211,7 +211,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             air_dynamic_viscosity,
             rhod,
             pvs,
-            jit_formulae.latent_heat__lv(T),
+            jit_formulae.latent_heat_vapourisation__lv(T),
         )
         return dy_dt
 

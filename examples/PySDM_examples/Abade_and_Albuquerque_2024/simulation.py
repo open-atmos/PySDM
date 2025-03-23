@@ -50,6 +50,12 @@ class Simulation(BasicSimulation):
         attributes = builder.particulator.environment.init_attributes(
             n_in_dv=n_in_dv, kappa=settings.kappa, r_dry=r_dry
         )
+        attributes["signed water mass"] = (
+            builder.particulator.formulae.particle_shape_and_density.volume_to_mass(
+                attributes["volume"]
+            )
+        )
+        del attributes["volume"]
 
         # TODO #1389
         if settings.enable_immersion_freezing:

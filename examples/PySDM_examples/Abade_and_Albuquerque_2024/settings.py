@@ -27,7 +27,7 @@ class Settings:
             constants={"bulk_phase_partitioning_exponent": 0.1},
             bulk_phase_partitioning="KaulEtAl2015",
             particle_shape_and_density="MixedPhaseSpheres",
-            diffusion_coordinate="Mass",
+            diffusion_coordinate="WaterMassLogarithm",
         )
         self.initial_water_vapour_mixing_ratio = 1.5 * si.g / si.kg
         self.parcel_linear_extent = 100 * si.m
