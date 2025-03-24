@@ -1,6 +1,8 @@
 #!/usr/bin/env pvpython
 import argparse
 from collections import namedtuple
+import pathlib
+
 from paraview import simple as pvs  # pylint: disable=import-error
 
 pvs._DisableFirstRenderCameraReset()
@@ -9,6 +11,7 @@ pvs._DisableFirstRenderCameraReset()
 def cli_using_argparse(argp):
     argp.add_argument("product_path", help="path to pvd products file")
     argp.add_argument("attributes_path", help=" path to pvd attributes file")
+    argp.add_argument("output_path", help="path where to write output files")
     argp.add_argument(
         "--multiplicity_preset",
         default="Inferno (matplotlib)",
@@ -124,6 +127,7 @@ def create_glyph(
     glyph.ScaleFactor = 100
     glyphDisplay.SetScalarBarVisibility(y.renderView1, True)
     if color_by is True:
+        glyphDisplay.ColorArrayName = ['POINTS', '']
         pvs.ColorBy(glyphDisplay, None)
     y.renderView1.Update()
 
@@ -261,14 +265,14 @@ text("Arrows scale with Courant number C=u*Δt/Δx,", 0.7, view=setup.renderView
 text("reflecting the grid spacing Δx and Δy.", 0.65, view=setup.renderView1)
 
 # save animation to an Ogg Vorbis file
-pvs.SaveAnimation("output/anim2.ogv", setup.renderView1, FrameRate=5)
+pvs.SaveAnimation(str(pathlib.Path(args.output_path) / "anim2.ogv"), setup.renderView1, FrameRate=5)
 # save animation frame as pdfs
 for t in sd_productspvd.TimestepValues:
     setup.renderView1.ViewTime = t
     for reader in (sd_productspvd, sd_attributespvd):
         reader.UpdatePipeline(t)
         pvs.ExportView(
-            filename=f"output/anim_frame_{t}.pdf",
+            filename=str(pathlib.Path(args.output_path) / f"output/anim_frame_{t}.pdf"),
             view=setup.renderView1,
             Rasterize3Dgeometry=False,
             GL2PSdepthsortmethod="BSP sorting (slow, best)",
