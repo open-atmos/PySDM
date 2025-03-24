@@ -289,7 +289,7 @@ jobs:
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
         run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* -k "pvanim or hello" --suite ${{ matrix.test-suite }}
         
-      - if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+      - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run:
           mkdir -p /home/runner/work/_temp/_github_home/figures
           rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_Pycurrent
