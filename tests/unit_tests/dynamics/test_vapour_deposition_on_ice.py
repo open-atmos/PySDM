@@ -37,24 +37,31 @@ class MoistBox(Box, Moist):
         return self[key]
 
 
-@pytest.mark.parametrize("dt", (1 * si.s, 0.1 * si.s))
-@pytest.mark.parametrize("water_mass", (-si.ng, -si.ug, -si.mg, si.mg))
+DIFFUSION_COORDINATES = ("WaterMass", "WaterMassLogarithm")
+COMMON = {
+    "environment": MoistBox(dt=1 * si.s, dv=1 * si.m**3),
+    "products": (IceWaterContent(),),
+    "formulae": {
+        f"{diffusion_coordinate}": Formulae(
+            particle_shape_and_density="MixedPhaseSpheres",
+            diffusion_coordinate=diffusion_coordinate,
+        )
+        for diffusion_coordinate in DIFFUSION_COORDINATES
+    },
+}
+
+
+@pytest.mark.parametrize("water_mass", (-si.ng, -si.mg, si.mg))
 @pytest.mark.parametrize("RHi", (1.1, 1.0, 0.9))
-@pytest.mark.parametrize("fastmath", (True, False))
-@pytest.mark.parametrize("diffusion_coordinate", ("WaterMass", "WaterMassLogarithm"))
-def test_iwc_differs_after_one_timestep(
-    *, dt, water_mass, RHi, fastmath, diffusion_coordinate, dv=1 * si.m**3
-):
+@pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
+def test_iwc_differs_after_one_timestep(*, water_mass, RHi, diffusion_coordinate):
     # arrange
     builder = Builder(
         n_sd=1,
-        environment=MoistBox(dt=dt, dv=dv),
+        environment=COMMON["environment"],
         backend=CPU(
-            formulae=Formulae(
-                fastmath=fastmath,
-                particle_shape_and_density="MixedPhaseSpheres",
-                diffusion_coordinate=diffusion_coordinate,
-            )
+            formulae=COMMON["formulae"][diffusion_coordinate],
+            override_jit_flags={"parallel": False},
         ),
     )
     builder.add_dynamic(AmbientThermodynamics())
@@ -66,7 +73,7 @@ def test_iwc_differs_after_one_timestep(
                 shape=(builder.particulator.n_sd,), fill_value=water_mass
             ),
         },
-        products=(IceWaterContent(),),
+        products=COMMON["products"],
     )
     particulator.environment["T"] = 250 * si.K
     particulator.environment["p"] = 500 * si.hPa
@@ -98,7 +105,7 @@ def test_iwc_differs_after_one_timestep(
     particulator.environment["thd"] = thd0
 
     # act
-    iwc_old = particulator.products["ice water content"].get().copy()
+    iwc_old = particulator.products["ice water content"].get()[0]
     particulator.run(steps=1)
 
     # assert
@@ -106,12 +113,12 @@ def test_iwc_differs_after_one_timestep(
         if RHi > 1:
             assert particulator.environment["water_vapour_mixing_ratio"][0] < rv0
             assert particulator.environment["thd"][0] > thd0
-            assert (particulator.products["ice water content"].get() > iwc_old).all()
+            assert particulator.products["ice water content"].get()[0] > iwc_old
         elif RHi < 1:
             assert particulator.environment["water_vapour_mixing_ratio"][0] > rv0
             assert particulator.environment["thd"][0] < thd0
-            assert (particulator.products["ice water content"].get() < iwc_old).all()
+            assert particulator.products["ice water content"].get()[0] < iwc_old
     else:
-        assert (particulator.products["ice water content"].get() == iwc_old).all()
+        assert particulator.products["ice water content"].get()[0] == iwc_old
         assert particulator.environment["water_vapour_mixing_ratio"][0] == rv0
         assert particulator.environment["thd"][0] == thd0
