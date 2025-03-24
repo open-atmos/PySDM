@@ -300,3 +300,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
               /github/home/figures/*.ogv
+      - uses: mxschmitt/action-tmate@v3
