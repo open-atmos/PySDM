@@ -6,7 +6,6 @@ Unless, there is a very specific and sound reason, everything here should
 """
 
 import numpy as np
-from chempy import Substance
 from scipy import constants as sci
 
 from .constants import (  # pylint: disable=unused-import
@@ -29,14 +28,11 @@ from .constants import (  # pylint: disable=unused-import
 )
 from .trivia import Trivia
 
-# https://physics.nist.gov/cgi-bin/Star/compos.pl?matno=104
-# TODO #1507
-Md = (
-    0.755267 * Substance.from_formula("N2").mass * si.gram / si.mole
-    + 0.231781 * Substance.from_formula("O2").mass * si.gram / si.mole
-    + 0.012827 * Substance.from_formula("Ar").mass * si.gram / si.mole
-    + 0.000124 * Substance.from_formula("C").mass * si.gram / si.mole
-)
+Md = 28.966 * si.g / si.mole
+"""
+A "twenty-first century" value of dry-air molar mass recommended in
+[Gatley et al. 2008](https://doi.org/10.1080/10789669.2008.10391032)
+"""
 
 VSMOW_R_2H = 155.76 * PPM
 """
@@ -194,8 +190,8 @@ p_tri = 611.657 * si.pascal
 [Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94) """
 T_tri = 273.16 * si.kelvin
 """ 〃 """
-
-l_tri = 2.5e6 * si.joule / si.kilogram
+L_tri = 45051.0 * si.joule / si.mol
+""" 〃 """
 
 l_l19_a = 0.167 * si.dimensionless
 """ [Seinfeld and Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
@@ -687,3 +683,5 @@ def compute_derived_values(c: dict):
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
+
+    c["l_tri"] = c["L_tri"] / c["Mv"]
