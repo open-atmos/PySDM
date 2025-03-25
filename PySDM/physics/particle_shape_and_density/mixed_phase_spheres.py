@@ -33,3 +33,10 @@ class MixedPhaseSpheres:
             np.maximum(const.ZERO_VOLUME, const.PI_4_3 * radius**3) * const.rho_w
             + np.minimum(const.ZERO_VOLUME, const.PI_4_3 * radius**3) * const.rho_i
         )
+
+    @staticmethod
+    def dm_dt(const, r, r_dr_dt):
+        """
+        note: no ice phase support here yet! TODO #1389
+        """
+        return 4 * const.PI * const.rho_w * r * r_dr_dt
