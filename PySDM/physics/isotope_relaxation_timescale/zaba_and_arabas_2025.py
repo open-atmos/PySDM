@@ -10,14 +10,14 @@ class ZabaAndArabas2025:
         *,
         const,
         radius,
-        R_vap,
-        alpha,
+        Rv,
+        R_liq,
         temperature,
         D_isotope,
         f_isotope,
         k_isotope,
-        e_isotope,
-        pvs_water
+        Rv_env,
+        RH
     ):
         """e-fold timescale with alpha and water vapour pressures heavy and light water
         calculated in the temperature of environment:
@@ -25,16 +25,13 @@ class ZabaAndArabas2025:
         return (
             -(radius**2)
             * const.rho_w
-            * R_vap
-            * alpha
-            * const.R_str
-            * temperature
             / 3
-            / const.Mv
             / D_isotope
             / f_isotope
             / k_isotope
-            / (e_isotope - R_vap * pvs_water)
+            / (const.pvs_water / const.R_str / temperature * const.Mv)
+            * R_liq
+            / (Rv_env * RH - Rv)
         )
 
     @staticmethod
