@@ -799,9 +799,16 @@
   },
   "https://doi.org/10.5194/acp-9-685-2009": {
     "usages": [
-      "tests/unit_tests/test_vapour_deposition_on_ice.py"
+      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
     "label": "Spichtinger & Gierens 2009 (Atmos. Chem. Phys. 9)"
+  },
+  "https://doi.org/10.1175/1520-0469(1949)006%3C0134:TGOCDI%3E2.0.CO;2": {
+    "usages": [
+      "PySDM/backends/impl_numba/methods/deposition_methods.py"
+    ],
+    "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
+    "label": "Howell 1949 (J. Atmos. Sci.)"
   }
 }

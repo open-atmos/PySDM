@@ -84,6 +84,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     if saturation_ratio_ice == 1:
                         continue
 
+                    # [Howell 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0134:TGOCDI%3E2.0.CO;2)
                     howell_factor_x_diffcoef_x_rhovsice_x_icess = (
                         formulae.drop_growth__r_dr_dt(
                             RH_eq=1,
