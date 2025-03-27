@@ -202,3 +202,64 @@ class TestVapourDepositionOnIce:
 
         # assert
         # TODO: #1389
+
+    @staticmethod
+    @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
+    def test_relative_mass_rates(*, diffusion_coordinate):
+        # arrange
+        water_mass = -np.logspace(-16,-6,num=11) * si.kg
+        RHi = 1.1
+        builder = Builder(
+            n_sd=len(water_mass),
+            environment=COMMON["environment"],
+            backend=CPU(
+                formulae=COMMON["formulae"][diffusion_coordinate],
+                override_jit_flags={"parallel": False},
+            ),
+        )
+        builder.add_dynamic(AmbientThermodynamics())
+        builder.add_dynamic(VapourDepositionOnIce())
+        particulator = builder.build(
+            attributes={
+                "multiplicity": np.full(shape=(builder.particulator.n_sd,), fill_value=1e4),
+                "signed water mass": water_mass,
+            },
+        )
+        particulator.environment["T"] = 250 * si.K
+        particulator.environment["p"] = 500 * si.hPa
+        pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(
+            particulator.environment["T"][0]
+        )
+        pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(
+            particulator.environment["T"][0]
+        )
+        vapour_pressure = RHi * pvs_ice
+        particulator.environment["RH"] = vapour_pressure / pvs_water
+        particulator.environment["a_w_ice"] = pvs_ice / pvs_water
+        particulator.environment["Schmidt number"] = 1
+        rv0 = (
+            particulator.formulae.constants.eps
+            * vapour_pressure
+            / (particulator.environment["p"][0] - vapour_pressure)
+        )
+        particulator.environment["water_vapour_mixing_ratio"] = rv0
+        particulator.environment["rhod"] = (
+            particulator.environment["p"][0] - vapour_pressure
+        ) / (particulator.environment["T"][0] * particulator.formulae.constants.Rd)
+        thd0 = particulator.formulae.state_variable_triplet.th_dry(
+            th_std=particulator.formulae.trivia.th_std(
+                p=particulator.environment["p"][0], T=particulator.environment["T"][0]
+            ),
+            water_vapour_mixing_ratio=rv0,
+        )
+        particulator.environment["thd"] = thd0
+
+        # act
+        water_mass_old = -particulator.attributes["signed water mass"].data.copy()
+        particulator.run(steps=1)
+
+        # assert
+        water_mass_new = -particulator.attributes["signed water mass"].data
+        relative_growth = (water_mass_new-water_mass_old) / water_mass_old
+        assert all( relative_growth > 0. )
+        assert all( np.diff(relative_growth) < 0.)
