@@ -184,7 +184,7 @@ class TestVapourDepositionOnIce:
         pyplot.ylabel("mass rate (kg/s)")
         pyplot.xlim(initial_water_masses[0], initial_water_masses[-1])
         pyplot.xscale("log")
-        # pyplot.ylim(1e-16, 1e-11)
+        pyplot.ylim(1e-16, 1e-11)
         pyplot.yscale("log")
         pyplot.grid()
         pyplot.title(f"p={in_unit(particulator.environment['p'][0], si.hPa)} hPa")
@@ -201,7 +201,12 @@ class TestVapourDepositionOnIce:
             pyplot.clf()
 
         # assert
-        # TODO: #1389
+        assert (dm_dt[200 * si.K] < dm_dt[210 * si.K]).all()
+        assert (dm_dt[210 * si.K] < dm_dt[220 * si.K]).all()
+        assert (dm_dt[220 * si.K] < dm_dt[230 * si.K]).all()
+        for mass_rate in dm_dt.values():
+            assert (np.diff(mass_rate) > 0).all()
+        assert 0.2e-14 * si.kg / si.s < dm_dt[230 * si.K][0] < 0.3e-14 * si.kg / si.s
 
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
