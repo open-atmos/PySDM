@@ -80,18 +80,6 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     thermal_conductivity = formulae.diffusion_ice_kinetics__K(
                         Ka_const, radius, lambdaK, temperature, rho
                     )
-
-                    howell_factor = 1.0 / (
-                            (latent_heat_sub / Rv / temperature - 1.0)
-                            * latent_heat_sub
-                            * diffusion_coefficient
-                            * pvs_ice
-                            / temperature**2.
-                            / thermal_conductivity
-                            / Rv
-                            + 1.
-                    )
-
                     saturation_ratio_ice = (
                         current_relative_humidity[cid] / current_water_activity[cid]
                     )
@@ -99,17 +87,23 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     if saturation_ratio_ice == 1:
                         continue
 
-                    rho_vs_ice = pvs_ice / Rv / temperature
+                    howell_factor_times_diffusion_coef_times_rho_vs_ice_times_ice_supersat = formulae.constants.rho_w * formulae.drop_growth__r_dr_dt(
+                        RH_eq=1,
+                        T=temperature,
+                        RH=saturation_ratio_ice,
+                        lv=latent_heat_sub,
+                        pvs=pvs_ice,
+                        D=diffusion_coefficient,
+                        K=thermal_conductivity,
+                        ventilation_factor=1,
+                    )
 
-                    dm_dt = ((
+                    dm_dt = (
                         4
                         * np.pi
                         * capacity
-                        * diffusion_coefficient
-                        * howell_factor
-                        * (saturation_ratio_ice - 1)
-                             ) * rho_vs_ice
-                             )
+                        * howell_factor_times_diffusion_coef_times_rho_vs_ice_times_ice_supersat
+                    )
 
                     delta_rv_i = (
                         -dm_dt * multiplicity[i] * time_step / (cell_volume * rho)
