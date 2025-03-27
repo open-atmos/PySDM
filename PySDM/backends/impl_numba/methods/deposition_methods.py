@@ -50,14 +50,11 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     temperature = current_temperature[cid]
                     pressure = current_total_pressure[cid]
                     rho = current_dry_air_density[cid]
-                    Rv = formulae.constants.Rv
                     pvs_ice = formulae.saturation_vapour_pressure__pvs_ice(temperature)
                     latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
 
                     capacity = formulae.diffusion_ice_capacity__capacity(diameter)
 
-                    # TODO #1389
-                    # pylint: disable=unused-variable
                     ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=reynolds_number[i],
@@ -87,22 +84,25 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     if saturation_ratio_ice == 1:
                         continue
 
-                    howell_factor_times_diffusion_coef_times_rho_vs_ice_times_ice_supersat = formulae.constants.rho_w * formulae.drop_growth__r_dr_dt(
-                        RH_eq=1,
-                        T=temperature,
-                        RH=saturation_ratio_ice,
-                        lv=latent_heat_sub,
-                        pvs=pvs_ice,
-                        D=diffusion_coefficient,
-                        K=thermal_conductivity,
-                        ventilation_factor=1,
+                    howell_factor_x_diffcoef_x_rhovsice_x_icess = (
+                        formulae.drop_growth__r_dr_dt(
+                            RH_eq=1,
+                            T=temperature,
+                            RH=saturation_ratio_ice,
+                            lv=latent_heat_sub,
+                            pvs=pvs_ice,
+                            D=diffusion_coefficient,
+                            K=thermal_conductivity,
+                            ventilation_factor=ventilation_factor,
+                        )
+                        * formulae.constants.rho_w
                     )
 
                     dm_dt = (
                         4
                         * np.pi
                         * capacity
-                        * howell_factor_times_diffusion_coef_times_rho_vs_ice_times_ice_supersat
+                        * howell_factor_x_diffcoef_x_rhovsice_x_icess
                     )
 
                     delta_rv_i = (
