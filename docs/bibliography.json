@@ -796,5 +796,12 @@
     ],
     "title": "A parameterization of cirrus cloud formation: Homogeneous freezing of supercooled aerosols",
     "label": "Kaercher & Lohmann 2002 (J. Geophys. Res. Atmos 107)"
+  },
+  "https://doi.org/10.5194/acp-9-685-2009": {
+    "usages": [
+      "tests/unit_tests/test_vapour_deposition_on_ice.py"
+    ],
+    "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
+    "label": "Spichtinger & Gierens 2009 (Atmos. Chem. Phys. 9)"
   }
 }
