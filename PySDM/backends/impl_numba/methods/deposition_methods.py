@@ -82,12 +82,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     )
 
                     howell_factor = 1.0 / (
-                        (latent_heat_sub / Rv / temperature - 1.0)
-                        * latent_heat_sub
-                        * diffusion_coefficient
-                        / temperature
-                        / thermal_conductivity
-                        + Rv * temperature / pvs_ice
+                            (latent_heat_sub / Rv / temperature - 1.0)
+                            * latent_heat_sub
+                            * diffusion_coefficient
+                            * pvs_ice
+                            / temperature**2.
+                            / thermal_conductivity
+                            / Rv
+                            + 1.
                     )
 
                     saturation_ratio_ice = (
@@ -99,14 +101,15 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
                     rho_vs_ice = pvs_ice / Rv / temperature
 
-                    dm_dt = (
+                    dm_dt = ((
                         4
                         * np.pi
                         * capacity
                         * diffusion_coefficient
                         * howell_factor
                         * (saturation_ratio_ice - 1)
-                    ) * rho_vs_ice
+                             ) * rho_vs_ice
+                             )
 
                     delta_rv_i = (
                         -dm_dt * multiplicity[i] * time_step / (cell_volume * rho)
