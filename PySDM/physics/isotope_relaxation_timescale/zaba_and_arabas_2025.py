@@ -17,7 +17,8 @@ class ZabaAndArabas2025:
         f_isotope,
         k_isotope,
         Rv_env,
-        RH
+        RH,
+        pvs_water
     ):
         """e-fold timescale with alpha and water vapour pressures heavy and light water
         calculated in the temperature of environment:
@@ -29,7 +30,7 @@ class ZabaAndArabas2025:
             / D_isotope
             / f_isotope
             / k_isotope
-            / (const.pvs_water / const.R_str / temperature * const.Mv)
+            / (pvs_water / const.R_str / temperature * const.Mv)
             * R_liq
             / (Rv_env * RH - Rv)
         )
