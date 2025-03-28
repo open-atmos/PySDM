@@ -19,7 +19,7 @@ from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau, ColumnarIceCrystal
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
@@ -61,6 +61,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
+        terminal_velocity_ice: str = "ColumnarIceCrystal",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
         bulk_phase_partitioning: str = "Null",
         handle_all_breakups: bool = False,

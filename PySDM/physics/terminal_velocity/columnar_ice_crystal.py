@@ -8,7 +8,7 @@ Eq. (18) and (19) Assumed shape is columnar based on empirical parameterizations
 import numpy as np
 
 
-class columnar_ice_crystal:  # pylint: disable=too-few-public-methods
+class ColumnarIceCrystal:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
