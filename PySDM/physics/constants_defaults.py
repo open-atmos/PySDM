@@ -635,7 +635,14 @@ SPICHTINGER_TERM_GAMMA_COEFF2 = 329.8 * si.m / si.s / si.kg**SPICHTINGER_TERM_DE
 """ 〃 """
 SPICHTINGER_TERM_GAMMA_COEFF3 = 8.8 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF3
 """ 〃 """
-
+SPICHTINGER_CORRECTION_P0 = 300 * si.hectopascal
+""" 〃 """
+SPICHTINGER_CORRECTION_P_EXPO = -0.178
+""" 〃 """
+SPICHTINGER_CORRECTION_T0 = 233 * si.kelvin
+""" 〃 """
+SPICHTINGER_CORRECTION_T_EXPO = -0.394
+""" 〃 """
 
 W76W_G0 = -2.9912729e3 * si.K**2
 """ [Wexler 1976](https://doi.org/10.6028/jres.080A.071) saturation vapour pressure """
