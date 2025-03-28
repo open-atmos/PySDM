@@ -43,7 +43,7 @@ class MoistBox(Box, Moist):
 
 DIFFUSION_COORDINATES = ("WaterMass", "WaterMassLogarithm")
 COMMON = {
-    "environment": MoistBox(dt=1 * si.s, dv=1 * si.m**3),
+    "environment": MoistBox(dt=0.01 * si.s, dv=1 * si.m**3),
     "products": (IceWaterContent(),),
     "formulae": {
         f"{diffusion_coordinate}": Formulae(
@@ -207,6 +207,9 @@ class TestVapourDepositionOnIce:
         for mass_rate in dm_dt.values():
             assert (np.diff(mass_rate) > 0).all()
         assert 0.2e-14 * si.kg / si.s < dm_dt[230 * si.K][0] < 0.3e-14 * si.kg / si.s
+        assert 0.8e-16 * si.kg / si.s < dm_dt[200 * si.K][0] < 0.9e-16 * si.kg / si.s
+        assert 1.1e-12 * si.kg / si.s < dm_dt[230 * si.K][-1] < 1.2e-12 * si.kg / si.s
+        assert 4.8e-14 * si.kg / si.s < dm_dt[200 * si.K][-1] < 4.9e-14 * si.kg / si.s
 
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
