@@ -105,6 +105,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
+        self.terminal_velocity_ice = terminal_velocity_ice
         self.bulk_phase_partitioning = bulk_phase_partitioning
 
         self._components = tuple(
@@ -167,6 +168,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "TpDependent": TpDependent,
             "PowerSeries": PowerSeries,
         }[terminal_velocity]
+        self.terminal_velocity_ice_class = {
+            "ColumnarIceCrystal": ColumnarIceCrystal,
+        }[terminal_velocity_ice]
 
     def __str__(self):
         description = []
