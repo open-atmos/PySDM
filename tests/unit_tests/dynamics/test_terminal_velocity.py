@@ -73,7 +73,7 @@ def test_terminal_velocity_boundary_values(
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
         attributes={
-            "water mass": np.asarray([water_mass]),
+            "signed water mass": np.asarray([water_mass]),
             "multiplicity": np.asarray([-1]),
         }
     )
