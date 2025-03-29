@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from PySDM import Builder, Formulae
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau, ColumnarIceCrystal
 from PySDM.environments import Box
 from PySDM.physics import constants as const
 from PySDM.physics import si
@@ -113,3 +113,45 @@ def test_power_series(backend_class, prefactors, powers):
     u_term_true = particulator.backend.Storage.from_ndarray(u)
 
     np.testing.assert_array_almost_equal(u, u_term_true)
+
+
+
+def test_columnar_ice_crystal_terminal_velocity(backend_class, plot=False):
+    """Fig. 3 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
+    if backend_class.__name__ == "ThrustRTC":
+        pytest.skip()
+    # arrange
+    water_mass = (
+            np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
+    )
+    terminal_velocity_reference = [1.4e-04, 3.7e-04, 9.7e-04, 2.5e-03,
+                                   9.1e-03, 3.4e-02, 1.3e-01, 4.7e-01,
+                                   1.1e+00, 1.9e+00]
+
+
+    particulator = DummyParticulator(
+        backend_class, n_sd=len(water_mass), formulae=Formulae(terminal_velocity_ice="ColumnarIceCrystal")
+    )
+
+    terminal_velocity = particulator.backend.Storage.empty((len(water_mass),), float)
+    ColumnarIceCrystal(particulator=particulator)(terminal_velocity, -water_mass)
+
+    plt.xlabel("mass (kg)")
+    plt.ylabel("terminal velocity (m/s)")
+    plt.xlim(water_mass[0], water_mass[-1])
+    plt.xscale("log")
+    plt.ylim(1e-4, 1e1)
+    plt.yscale("log")
+    plt.grid()
+
+    plt.plot(water_mass, terminal_velocity_reference, color="black")
+    plt.plot(water_mass, terminal_velocity, color="red")
+
+    # plot
+    if plot:
+        plt.show()
+    else:
+        plt.clf()
+
+    # assert
+    np.testing.assert_almost_equal(terminal_velocity, terminal_velocity_reference, decimal=1)

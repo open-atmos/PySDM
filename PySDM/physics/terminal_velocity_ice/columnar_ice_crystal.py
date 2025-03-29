@@ -13,7 +13,7 @@ class ColumnarIceCrystal:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def v_term(const, mass):
+    def v_base_term(const, mass):
         return np.where(
             mass < const.SPICHTINGER_GIERENS_TERM_VEL_LIMIT_0,
             const.SPICHTINGER_TERM_GAMMA_COEFF0 * mass**const.SPICHTINGER_TERM_DELTA_COEFF0,

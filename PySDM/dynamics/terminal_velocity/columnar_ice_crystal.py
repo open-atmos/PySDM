@@ -9,8 +9,8 @@ class ColumnarIceCrystal:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator):
         self.particulator = particulator
 
-    def __call__(self, output, mass):
-        self.particulator.backend.terminal_velocity(
+    def __call__(self, output, signed_water_mass):
+        self.particulator.backend.terminal_velocity_columnar_ice_crystals(
             values=output.data,
-            mass=mass.data,
+            signed_water_mass=signed_water_mass.data,
         )

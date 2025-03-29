@@ -67,3 +67,21 @@ class TerminalVelocityMethods(BackendMethods):
             prefactors=prefactors,
             powers=powers,
         )
+
+
+    def terminal_velocity_columnar_ice_crystals(self, *, values, signed_water_mass):
+        self._terminal_velocity_columnar_ice_crystals_body( values=values,
+                                                            signed_water_mass=signed_water_mass,
+                                                            )
+
+    @cached_property
+    def _terminal_velocity_columnar_ice_crystals_body(self):
+        v_base_term = self.formulae.terminal_velocity_ice.v_base_term
+
+        # @numba.njit(**self.default_jit_flags)
+        def body(*, values, signed_water_mass):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if signed_water_mass[i] < 0:
+                    values[i] = v_base_term(-signed_water_mass[i])
+
+        return body
