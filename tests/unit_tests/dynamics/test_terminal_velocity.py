@@ -51,7 +51,9 @@ def test_approximation(backend_class, plot=False):
     (
         ("GunnKinzer1949", 0 * si.g, None, 0),
         ("GunnKinzer1949", 1e10 * si.kg, pytest.raises(ValueError, match="Radii"), -1),
+        ("GunnKinzer1949", -1 * si.g, None, np.nan),
         ("RogersYau", 0 * si.g, None, 0),
+        ("RogersYau", -1 * si.g, None, np.nan),
         ("TpDependent", 0 * si.g, None, 0),
     ),
 )
@@ -83,6 +85,7 @@ def test_terminal_velocity_boundary_values(
         (v_term,) = particulator.attributes["terminal velocity"].to_ndarray()
 
         # assert
+        print( v_term, expected_v_term)
         np.testing.assert_approx_equal(v_term, expected_v_term)
 
 
