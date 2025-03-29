@@ -25,4 +25,5 @@ class TerminalVelocity(DerivedAttribute):
         )
 
     def recalculate(self):
+        print( "recalculate terminal_velocity" )
         self.approximation_liquid(self.data, self.radius.get())
