@@ -679,7 +679,8 @@
     "usages": [
       "PySDM/physics/isotope_relaxation_timescale/bolin_1958.py",
       "PySDM/physics/constants_defaults.py",
-      "examples/PySDM_examples/Bolin_1958/table_1.ipynb"
+      "examples/PySDM_examples/Bolin_1958/table_1.ipynb",
+      "examples/PySDM_examples/Bolin_1958/__init__.py"
     ],
     "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
