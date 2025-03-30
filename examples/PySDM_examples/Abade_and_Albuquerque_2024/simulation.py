@@ -57,7 +57,7 @@ class Simulation(BasicSimulation):
         )
         del attributes["volume"]
 
-        # TODO #1389
+        # TODO #1524
         if settings.enable_immersion_freezing:
             attributes["freezing temperature"] = np.full(
                 shape=(settings.n_sd,), fill_value=250

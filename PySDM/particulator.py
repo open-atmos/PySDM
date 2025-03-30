@@ -506,7 +506,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
         )
         self.attributes.mark_updated("signed water mass")
-        # TODO #1389 - should we update here?
+        # TODO #1524 - should we update here?
         # self.update_TpRH(only_if_not_last='VapourDepositionOnIce')
 
     def immersion_freezing_time_dependent(

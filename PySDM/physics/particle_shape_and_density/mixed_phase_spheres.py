@@ -47,6 +47,6 @@ class MixedPhaseSpheres:
     @staticmethod
     def dm_dt(const, r, r_dr_dt):
         """
-        note: no ice phase support here yet! TODO #1389
+        note: no ice phase support here yet! TODO #1524
         """
         return 4 * const.PI * const.rho_w * r * r_dr_dt
