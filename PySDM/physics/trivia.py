@@ -76,6 +76,10 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
+    def unfrozen(signed_water_mass):
+        return signed_water_mass > 0
+
+    @staticmethod
     def unfrozen_and_saturated(signed_water_mass, relative_humidity):
         return signed_water_mass > 0 and relative_humidity > 1
 
