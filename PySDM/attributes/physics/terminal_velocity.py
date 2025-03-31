@@ -14,7 +14,8 @@ class TerminalVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.radius = builder.get_attribute("radius")
         self.signed_water_mass = builder.get_attribute("signed water mass")
-        dependencies = [self.radius,self.signed_water_mass]
+        self.cell_id = builder.get_attribute("cell id")
+        dependencies = [self.radius,self.signed_water_mass,self.cell_id]
         super().__init__(builder, name="terminal velocity", dependencies=dependencies)
 
         self.approximation_liquid = builder.formulae.terminal_velocity_class(
@@ -26,4 +27,12 @@ class TerminalVelocity(DerivedAttribute):
 
     def recalculate(self):
         self.approximation_liquid(self.data, self.radius.get())
-        self.approximation_ice(self.data, self.signed_water_mass.get())
+        if self.formulae.particle_shape_and_density.supports_mixed_phase():
+            self.approximation_ice(self.data,
+                                   self.signed_water_mass.get(),
+                                   self.cell_id.get(),
+                                   self.particulator.environment["T"],
+                                   self.particulator.environment["p"],
+                                   )
+
+
