@@ -27,6 +27,8 @@ class TerminalVelocity(DerivedAttribute):
 
     def recalculate(self):
         self.approximation_liquid(self.data, self.radius.get())
+        # TODO: fix issue that order of functions calls changes result. approximation_liquid will override
+        #  approximation_ice since r < 0 is not a suitable test for ice particles with mixed-phase spheres shape active
         if self.formulae.particle_shape_and_density.supports_mixed_phase():
             self.approximation_ice(self.data,
                                    self.signed_water_mass.get(),
