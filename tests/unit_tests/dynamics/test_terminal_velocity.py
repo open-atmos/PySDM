@@ -85,7 +85,6 @@ def test_terminal_velocity_boundary_values(
         (v_term,) = particulator.attributes["terminal velocity"].to_ndarray()
 
         # assert
-        print( v_term, expected_v_term)
         np.testing.assert_approx_equal(v_term, expected_v_term)
 
 
@@ -124,18 +123,37 @@ def test_columnar_ice_crystal_terminal_velocity(backend_class, plot=False):
     water_mass = (
             np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
     )
-    terminal_velocity_reference = [1.4e-04, 3.7e-04, 9.7e-04, 2.5e-03,
-                                   9.1e-03, 3.4e-02, 1.3e-01, 4.7e-01,
-                                   1.1e+00, 1.9e+00]
+    terminal_velocity_reference = (
+        np.array([1.4e-04, 3.7e-04, 9.7e-04, 2.5e-03,
+         9.1e-03, 3.4e-02, 1.3e-01, 4.7e-01,
+         1.1e+00, 1.9e+00]) * si.m / si.s
+    )
+    ambient_temperature = 233 * si.K
+    ambient_pressure    = 300 * si.hectopascal
 
-
-    particulator = DummyParticulator(
-        backend_class, n_sd=len(water_mass), formulae=Formulae(terminal_velocity_ice="ColumnarIceCrystal")
+    env = Box(dt=None, dv=None)
+    formulae_enabling_terminal_velocity_ice_calculation = Formulae(
+        particle_shape_and_density="MixedPhaseSpheres",
+        terminal_velocity_ice="ColumnarIceCrystal",
+    )
+    builder = Builder(
+        backend=backend_class(formulae_enabling_terminal_velocity_ice_calculation),
+        n_sd=len(water_mass),
+        environment=env,
     )
 
-    terminal_velocity = particulator.backend.Storage.empty((len(water_mass),), float)
-    ColumnarIceCrystal(particulator=particulator)(terminal_velocity, -water_mass)
+    builder.request_attribute("terminal velocity")
+    particulator = builder.build(
+        attributes={"signed water mass": -water_mass, "multiplicity": np.ones_like(water_mass)}
+    )
 
+    particulator.environment["T"] = ambient_temperature
+    particulator.environment["p"] = ambient_pressure
+
+    # act
+    terminal_velocity = particulator.attributes["terminal velocity"].to_ndarray()
+
+    # plot
     plt.xlabel("mass (kg)")
     plt.ylabel("terminal velocity (m/s)")
     plt.xlim(water_mass[0], water_mass[-1])
@@ -147,7 +165,6 @@ def test_columnar_ice_crystal_terminal_velocity(backend_class, plot=False):
     plt.plot(water_mass, terminal_velocity_reference, color="black")
     plt.plot(water_mass, terminal_velocity, color="red")
 
-    # plot
     if plot:
         plt.show()
     else:
