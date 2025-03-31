@@ -14,11 +14,11 @@ class Settings:
         N_STP: float,
         r_dry: float,
         mass_of_dry_air: float,
-        coord: str = "VolumeLogarithm",
+        coord: str = "WaterMassLogarithm",
     ):
         self.formulae = Formulae(
             saturation_vapour_pressure="AugustRocheMagnus",
-            condensation_coordinate=coord,
+            diffusion_coordinate=coord,
         )
         const = self.formulae.constants
         self.p0 = 1000 * si.hectopascals

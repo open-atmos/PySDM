@@ -23,7 +23,7 @@ def test_freezing(singular):
         Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             seed=44,
-            condensation_coordinate="VolumeLogarithm",
+            diffusion_coordinate="WaterMassLogarithm",
             fastmath=True,
             freezing_temperature_spectrum="Niemand_et_al_2012",
             heterogeneous_ice_nucleation_rate="ABIFM",

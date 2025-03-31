@@ -120,7 +120,7 @@ class Settings:
             p = self.formulae.state_variable_triplet.p(
                 rhod[0], T, water_vapour_mixing_ratio
             )
-            lv = self.formulae.latent_heat.lv(T)
+            lv = self.formulae.latent_heat_vapourisation.lv(T)
             return self.formulae.hydrostatics.drho_dz(
                 p, T, water_vapour_mixing_ratio, lv
             ) / (

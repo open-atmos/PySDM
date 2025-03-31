@@ -26,8 +26,9 @@ def variables_fixture():
 class TestFig2:
     @staticmethod
     @pytest.mark.parametrize("key", ("total", "water"))
-    def test_cloud_base(variables, key):
-        height = np.asarray(variables["output"]["height"])
+    @pytest.mark.parametrize("model", ("Bulk",))
+    def test_cloud_base(variables, key, model):
+        height = np.asarray(variables["output"][model]["height"])
         assert (
             variables["values"][key][height < 0.9 * si.km] < 0.01 * si.g / si.kg
         ).all()

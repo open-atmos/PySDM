@@ -117,7 +117,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
             p=p,
             T=T,
             water_vapour_mixing_ratio=water_vapour_mixing_ratio,
-            lv=formulae.latent_heat.lv(T),
+            lv=formulae.latent_heat_vapourisation.lv(T),
             d_liquid_water_mixing_ratio__dz=(
                 self.delta_liquid_water_mixing_ratio / dz_dt / dt
             ),

@@ -27,7 +27,7 @@ class Settings:
             constants=LOWE_CONSTS,
             diffusion_kinetics="LoweEtAl2019",
             diffusion_thermics="LoweEtAl2019",
-            latent_heat="Lowe2019",
+            latent_heat_vapourisation="Lowe2019",
             saturation_vapour_pressure="Lowe1977",
             optical_albedo="Bohren1987",
             optical_depth="Stephens1978",
