@@ -115,7 +115,54 @@ def test_power_series(backend_class, prefactors, powers):
 
 
 
-def test_columnar_ice_crystal_terminal_velocity(backend_class, plot=False):
+
+@pytest.mark.parametrize("ice_variant", ("ColumnarIceCrystal","IceSphere"))
+def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
+    if backend_class.__name__ == "ThrustRTC":
+        pytest.skip()
+
+    # arrange
+    water_mass = (
+            np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
+    )
+    env = Box(dt=None, dv=None)
+    formulae_enabling_terminal_velocity_ice_calculation = Formulae(
+        particle_shape_and_density="MixedPhaseSpheres",
+        terminal_velocity_ice=ice_variant,
+    )
+    builder = Builder(
+        backend=backend_class(formulae_enabling_terminal_velocity_ice_calculation),
+        n_sd=len(water_mass),
+        environment=env,
+    )
+    builder.request_attribute("terminal velocity")
+    particulator = builder.build(
+        attributes={"signed water mass": -water_mass, "multiplicity": np.ones_like(water_mass)}
+    )
+    atmospheric_settings = [
+        {"temperature": 233 * si.kelvin, "pressure": 300 * si.hectopascal},
+        {"temperature": 270 * si.kelvin, "pressure": 1000 * si.hectopascal},
+    ]
+    for setting in atmospheric_settings:
+
+        particulator.environment["T"] = setting["temperature"]
+        particulator.environment["p"] = setting["pressure"]
+
+        # act
+        particulator.run(steps=1)
+        terminal_velocity = particulator.attributes["terminal velocity"].to_ndarray()
+        # TODO: find a way to update terminal velocity attribute when environment variables change
+        print(terminal_velocity)
+
+        # assert
+        assert all(~np.isnan(terminal_velocity))
+        assert all(terminal_velocity > 0.0)
+        assert all(np.diff(terminal_velocity) > 0.0)
+
+
+
+
+def test_columnar_ice_crystal_terminal_velocity_against_spichtinger_and_gierens_2009_fig_3(backend_class, plot=False):
     """Fig. 3 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
     if backend_class.__name__ == "ThrustRTC":
         pytest.skip()
