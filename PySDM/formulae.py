@@ -19,7 +19,7 @@ from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau, ColumnarIceCrystal
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau, ColumnarIceCrystal, IceSphere
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
@@ -170,6 +170,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         }[terminal_velocity]
         self.terminal_velocity_ice_class = {
             "ColumnarIceCrystal": ColumnarIceCrystal,
+            "IceSphere": IceSphere,
         }[terminal_velocity_ice]
 
     def __str__(self):
