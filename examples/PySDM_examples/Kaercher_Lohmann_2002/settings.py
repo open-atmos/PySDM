@@ -6,8 +6,6 @@ from PySDM.physics.constants import si
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
 
-
-
 @strict
 class settings:
     def __init__(
@@ -21,7 +19,7 @@ class settings:
         sigma_solution_droplet: float,
         kappa: float=0.64,
         rate: str="Koop2000",
-        dt: float=1.,
+        dt: float=0.1,
     ):
 
         self.n_sd = n_sd
@@ -54,6 +52,6 @@ class settings:
         spectrum = Lognormal(norm_factor=N_dv_solution_droplet / dry_air_density,  m_mode=r_mean_solution_droplet, s_geom=sigma_solution_droplet)
         self.r_dry, self.specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 
-        self.t_duration = 5400 # total duration of simulation
+        self.t_duration = 3600 * 1.5 # total duration of simulation
         self.dt         = dt
         self.n_output = 10 # number of output steps
