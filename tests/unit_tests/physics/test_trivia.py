@@ -89,3 +89,27 @@ class TestTrivia:
 
             # Assert
             assert prob.check(si.dimensionless)
+
+    @staticmethod
+    def test_kelvin_to_celsius():
+        # arrange
+        formulae = Formulae()
+        temperature_in_kelvin = 44
+
+        # act
+        temperature_in_celsius = formulae.trivia.K2C(temperature_in_kelvin)
+
+        # assert
+        assert temperature_in_celsius == temperature_in_kelvin - 273.15
+
+    @staticmethod
+    def test_celsius_to_kelvin():
+        # arrange
+        formulae = Formulae()
+        temperature_in_celsius = 666
+
+        # act
+        temperature_in_kelvin = formulae.trivia.C2K(temperature_in_celsius)
+
+        # assert
+        assert temperature_in_kelvin == temperature_in_celsius + 273.15

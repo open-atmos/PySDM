@@ -318,7 +318,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name="water mass",
+        attr_name="signed water mass",
         attr_range=(-np.inf, np.inf),
         weighting_attribute="water mass",
         weighting_rank=0,
@@ -484,6 +484,31 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.attributes.mark_updated("multiplicity")
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
+
+    def deposition(self):
+        self.backend.deposition(
+            multiplicity=self.attributes["multiplicity"],
+            signed_water_mass=self.attributes["signed water mass"],
+            current_temperature=self.environment["T"],
+            current_total_pressure=self.environment["p"],
+            current_relative_humidity=self.environment["RH"],
+            current_water_activity=self.environment["a_w_ice"],
+            current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
+            current_dry_air_density=self.environment["rhod"],
+            current_dry_potential_temperature=self.environment["thd"],
+            cell_volume=self.environment.mesh.dv,
+            time_step=self.dt,
+            cell_id=self.attributes["cell id"],
+            reynolds_number=self.attributes["Reynolds number"],
+            schmidt_number=self.environment["Schmidt number"],
+            predicted_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
+            predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
+        )
+        self.attributes.mark_updated("signed water mass")
+        # TODO #1524 - should we update here?
+        # self.update_TpRH(only_if_not_last='VapourDepositionOnIce')
 
     def immersion_freezing_time_dependent(
         self, *, thaw: bool, record_freezing_temperature: bool, rand: Storage

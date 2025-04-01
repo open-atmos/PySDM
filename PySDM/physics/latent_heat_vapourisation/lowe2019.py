@@ -4,7 +4,9 @@ using equation form from Seinfeld and Pandis, with constant values from ICPM cod
 """
 
 from PySDM.physics import constants_defaults
-from PySDM.physics.latent_heat.seinfeld_and_pandis_2010 import SeinfeldPandis
+from PySDM.physics.latent_heat_vapourisation.seinfeld_and_pandis_2010 import (
+    SeinfeldPandis,
+)
 
 
 class Lowe2019(SeinfeldPandis):  # pylint: disable=too-few-public-methods

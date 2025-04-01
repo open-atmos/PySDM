@@ -6,7 +6,6 @@ Unless, there is a very specific and sound reason, everything here should
 """
 
 import numpy as np
-from chempy import Substance
 from scipy import constants as sci
 
 from .constants import (  # pylint: disable=unused-import
@@ -29,14 +28,11 @@ from .constants import (  # pylint: disable=unused-import
 )
 from .trivia import Trivia
 
-# https://physics.nist.gov/cgi-bin/Star/compos.pl?matno=104
-# TODO #1507
-Md = (
-    0.755267 * Substance.from_formula("N2").mass * si.gram / si.mole
-    + 0.231781 * Substance.from_formula("O2").mass * si.gram / si.mole
-    + 0.012827 * Substance.from_formula("Ar").mass * si.gram / si.mole
-    + 0.000124 * Substance.from_formula("C").mass * si.gram / si.mole
-)
+Md = 28.966 * si.g / si.mole
+"""
+A "twenty-first century" value of dry-air molar mass recommended in
+[Gatley et al. 2008](https://doi.org/10.1080/10789669.2008.10391032)
+"""
 
 VSMOW_R_2H = 155.76 * PPM
 """
@@ -94,18 +90,21 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
-D0 = 2.26e-5 * si.metre**2 / si.second
-D_exp = 1.81
-
-K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
-
-# mass and heat accommodation coefficients
+# mass and heat accommodation coefficients for condensation
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
 HAC = 1.0
-""" thermal accommodation coefficient of uniy as recommended in
+""" thermal accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
+
+# mass and heat accommodation coefficients for vapour deposition on ice
+MAC_ice = 0.5
+""" mass accommodation coefficient for vapour deposition as recommended in
+[Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
+HAC_ice = 0.7
+""" thermal accommodation coefficient for vapour deposition as recommended in
+[Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
@@ -198,18 +197,17 @@ rho_w = 1 * si.kilograms / si.litres
 
 pH_w = 7
 """ pH of pure water """
-""" pH of pure water """
 
 p1000 = 1000 * si.hectopascals
 """ 1000 hPa reference pressure as in the definition of potential temperature"""
 
 p_tri = 611.657 * si.pascal
-""" water triple point characteristics as recommended in
-[Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94) """
+""" water triple point pressure ([Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94)) """
 T_tri = 273.16 * si.kelvin
-""" 〃 """
-
-l_tri = 2.5e6 * si.joule / si.kilogram
+""" water triple point temperature ([Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94)) """
+L_tri = 45051.0 * si.joule / si.mol
+""" latent heat of vaporization of liquid at triple point
+([Murphy & Koop 2005](https://doi.org/10.1256/qj.04.94)) """
 
 l_l19_a = 0.167 * si.dimensionless
 """ [Seinfeld and Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
@@ -230,6 +228,10 @@ k_l19_c = 0.017 / si.kelvin
 dv_pk05 = 0.0 * si.metres
 """ Delta v for diffusivity in [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0)
 eq. 13-14 """
+
+lmbd_w_0 = 6.6e-8 * si.metre
+""" Mean free path of water molecules as in table 13.1 in
+[Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
 """ [Seinfeld & Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
@@ -276,6 +278,16 @@ MK05_LIQ_C11 = 9.44523 * si.dimensionless
 MK05_LIQ_C12 = 1 * si.K
 """ 〃 """
 MK05_LIQ_C13 = 0.014025 / si.K
+""" 〃 """
+MK05_SUB_C1 = 46782.5 * si.joule / si.mole
+""" 〃 """
+MK05_SUB_C2 = 35.8925 * si.joule / si.mole / si.kelvin
+""" 〃 """
+MK05_SUB_C3 = 0.07414 * si.joule / si.mole / si.kelvin**2
+""" 〃 """
+MK05_SUB_C4 = 541.5 * si.joule / si.mole
+""" 〃 """
+MK05_SUB_C5 = 123.75 * si.kelvin
 """ 〃 """
 
 T_STP = (sci.zero_Celsius + 15) * si.kelvin
@@ -720,3 +732,5 @@ def compute_derived_values(c: dict):
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
+
+    c["l_tri"] = c["L_tri"] / c["Mv"]
