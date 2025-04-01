@@ -83,12 +83,38 @@ class TerminalVelocityMethods(BackendMethods):
         atmospheric_correction_factor = self.formulae.terminal_velocity_ice.atmospheric_correction_factor
 
         @numba.njit(**self.default_jit_flags)
-        def body(*, values, signed_water_mass,cell_id,temperature,pressure):
+        def body(*, values, signed_water_mass, cell_id, temperature, pressure):
             for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
                 if signed_water_mass[i] < 0:
                     cid = cell_id[i]
                     correction = atmospheric_correction_factor(temperature[cid], pressure[cid])
                     values[i] = v_base_term(-signed_water_mass[i]) * correction
 
+        return body
+
+
+
+    def terminal_velocity_ice_spheres(self, *, values, signed_water_mass, cell_id, temperature, pressure):
+        self._terminal_velocity_ice_spheres_body(values=values,
+                                                 signed_water_mass=signed_water_mass,
+                                                 cell_id=cell_id,
+                                                 temperature=temperature,
+                                                 )
+
+    @cached_property
+    def _terminal_velocity_ice_spheres_body(self):
+        v_base_term = self.formulae.terminal_velocity_ice.v_base_term
+        stokes_prefactor = self.formulae.terminal_velocity_ice.stokes_regime
+        formulae = self.formulae_flattened
+
+        def body(*, values, signed_water_mass, cell_id, temperature):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if signed_water_mass[i] < 0:
+                    cid = cell_id[i]
+                    radius = formulae.particle_shape_and_density__mass_to_radius(signed_water_mass[i])
+                    dynamic_viscosity = formulae.air_dynamic_viscosity__eta_air(temperature[cid])
+                    prefactor = stokes_prefactor( radius, dynamic_viscosity)
+                    values[i] = v_base_term(prefactor, radius)
+                    print( dynamic_viscosity, signed_water_mass[i], radius, prefactor, values[i] )
 
         return body
