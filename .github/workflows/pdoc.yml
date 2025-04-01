@@ -32,6 +32,16 @@ jobs:
           pip install -e examples
 
           python -We docs/generate_html.py . .
+
+      - name: setting up pysdm -> PySDM redirect
+        run: |
+          mkdir html/pysdm
+          file=html/pysdm/index.html
+          echo '<!DOCTYPE html>' > $file
+          echo '<meta charset="utf-8">' >> $file 
+          echo '<title>redirecting ...</title>' >> $file 
+          echo '<meta http-equiv="refresh" content="0; URL=https://open-atmos.github.io/PySDM/">' >> $file
+          echo '<link rel="canonical" href="https://open-atmos.github.io/PySDM/">' >> $file
         
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
