@@ -30,13 +30,16 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         constants: Optional[dict] = None,
         seed: int = None,
         fastmath: bool = True,
-        condensation_coordinate: str = "WaterMassLogarithm",
+        diffusion_coordinate: str = "WaterMassLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
-        latent_heat: str = "Kirchhoff",
+        latent_heat_vapourisation: str = "Kirchhoff",
+        latent_heat_sublimation: str = "MurphyKoop2005",
         hygroscopicity: str = "KappaKoehlerLeadingTerms",
         drop_growth: str = "Mason1971",
         surface_tension: str = "Constant",
         diffusion_kinetics: str = "FuchsSutugin",
+        diffusion_ice_kinetics: str = "Standard",
+        diffusion_ice_capacity: str = "Spherical",
         diffusion_thermics: str = "Neglect",
         ventilation: str = "Neglect",
         state_variable_triplet: str = "LibcloudphPlusPlus",
@@ -63,13 +66,17 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         # in PyCharm and alike, all these fields are later overwritten within this ctor
         self.optical_albedo = optical_albedo
         self.optical_depth = optical_depth
-        self.condensation_coordinate = condensation_coordinate
+        self.diffusion_coordinate = diffusion_coordinate
+        self.diffusion_coordinate = diffusion_coordinate
         self.saturation_vapour_pressure = saturation_vapour_pressure
         self.hygroscopicity = hygroscopicity
         self.drop_growth = drop_growth
         self.surface_tension = surface_tension
         self.diffusion_kinetics = diffusion_kinetics
-        self.latent_heat = latent_heat
+        self.diffusion_ice_kinetics = diffusion_ice_kinetics
+        self.diffusion_ice_capacity = diffusion_ice_capacity
+        self.latent_heat_vapourisation = latent_heat_vapourisation
+        self.latent_heat_sublimation = latent_heat_sublimation
         self.diffusion_thermics = diffusion_thermics
         self.ventilation = ventilation
         self.state_variable_triplet = state_variable_triplet
@@ -171,7 +178,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
     @cached_property
     def flatten(self):
         """returns a "flattened" representation providing access to all formulae from within
-        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)"""
+        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat_vapourisation__lv(T)
+        """
         functions = {}
         for component in ["trivia"] + list(self._components):
             for item in dir(getattr(self, component)):

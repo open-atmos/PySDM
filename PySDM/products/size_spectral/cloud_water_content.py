@@ -1,10 +1,10 @@
 """
-cloud water content products, Specific means per mass of dry air
+cloud water content products
+if `specific=True`, reports values per mass of dry air, otherwise per volume
 
 CloudWaterContent is both liquid and ice
 LiquidWaterContent is just liquid
 IceWaterContent is just ice
-
 """
 
 import numpy as np
