@@ -294,12 +294,21 @@ jobs:
           mkdir -p /home/runner/work/_temp/_github_home/figures
           rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_Pycurrent
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_*/output/anim2.ogv /home/runner/work/_temp/_github_home/figures
-      - name: artefacts
+
+      - name: artifact upload
+        if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        uses: actions/upload-artifact@v4
+        with:
+          name: animations
+          path: /github/home/figures/*.ogv
+
+      - name: tip release upload
         if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
               /github/home/figures/*.ogv
+
       - if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3
