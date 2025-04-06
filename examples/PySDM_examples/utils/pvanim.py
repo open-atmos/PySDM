@@ -54,6 +54,15 @@ def cli_using_argparse(argp):
         default=0.77,
         help="Opacity for sd_attributes",
     )
+    argp.add_argument(
+        "--animationname",
+        type=str,
+        help="Name of the file with animation",
+        default="docs_intro_animation.ogv",
+    )
+    argp.add_argument(
+        "--framerate", type=int, help="Number of frame rates.", default=15
+    )
 
 
 ap = argparse.ArgumentParser()
@@ -127,7 +136,7 @@ def create_glyph(
     glyph.ScaleFactor = 100
     glyphDisplay.SetScalarBarVisibility(y.renderView1, True)
     if color_by is True:
-        glyphDisplay.ColorArrayName = ['POINTS', '']
+        glyphDisplay.ColorArrayName = ["POINTS", ""]
         pvs.ColorBy(glyphDisplay, None)
     y.renderView1.Update()
 
@@ -226,7 +235,23 @@ def text(text_in, position_y, *, view):
     textDisplay = pvs.Show(sentence, view)
     textDisplay.Color = [1.0, 1.0, 1.0]
     textDisplay.WindowLocation = "Any Location"
+    textDisplay.FontSize = 16
     textDisplay.Position = [0.01, position_y]
+
+
+def last_anim_frame():
+    time_steps = sd_productspvd.TimestepValues
+    last_time = time_steps[len(time_steps) - 1]
+    setup.renderView1.ViewTime = last_time
+    for reader in (sd_productspvd,):
+        reader.UpdatePipeline(last_time)
+        pvs.SaveScreenshot(
+            filename=str(pathlib.Path(args.output_path) / "last_anim_frame.png"),
+            view=setup.renderView1,
+            ImageResolution=[3840, 2160],
+            TransparentBackground=False,
+        )
+    pvs.RenderAllViews()
 
 
 calculator1 = create_new_calculator(
@@ -263,18 +288,14 @@ axes_settings(view=setup.renderView1)
 time_annotation(y=setup)
 text("Arrows scale with Courant number C=u*Δt/Δx,", 0.7, view=setup.renderView1)
 text("reflecting the grid spacing Δx and Δy.", 0.65, view=setup.renderView1)
-
+last_anim_frame()
+scene = pvs.GetAnimationScene()
+scene.UpdateAnimationUsingDataTimeSteps()
+pvs.Render(setup.renderView1)
 # save animation to an Ogg Vorbis file
-pvs.SaveAnimation(str(pathlib.Path(args.output_path) / "anim2.ogv"), setup.renderView1, FrameRate=5)
-# save animation frame as pdfs
-for t in sd_productspvd.TimestepValues:
-    setup.renderView1.ViewTime = t
-    for reader in (sd_productspvd, sd_attributespvd):
-        reader.UpdatePipeline(t)
-        pvs.ExportView(
-            filename=str(pathlib.Path(args.output_path) / f"output/anim_frame_{t}.pdf"),
-            view=setup.renderView1,
-            Rasterize3Dgeometry=False,
-            GL2PSdepthsortmethod="BSP sorting (slow, best)",
-        )
+pvs.SaveAnimation(
+    str(pathlib.Path(args.output_path) / args.animationname),
+    setup.renderView1,
+    FrameRate=args.framerate,
+)
 pvs.RenderAllViews()
