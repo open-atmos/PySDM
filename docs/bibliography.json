@@ -550,7 +550,8 @@
   "https://doi.org/10.1029/JC084iC08p05029": {
     "usages": [
       "PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py",
-      "tests/unit_tests/physics/test_isotope_ratio_evolution.py"
+      "tests/unit_tests/physics/test_isotope_ratio_evolution.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/merlivat_and_jouzel_1979.py"
     ],
     "label": "Merlivat & Jouzel 1979 (J. Geophys. Res. Oceans 84)",
     "title": "Global climatic interpretation of the deuterium-oxygen 18 relationship for precipitation"
