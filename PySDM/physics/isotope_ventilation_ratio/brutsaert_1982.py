@@ -9,15 +9,6 @@ class Brutsaert1982:
         pass
 
     @staticmethod
-    def isotope_ventilation_coefficient(
-        const, sqrt_re_times_cbrt_sc, diffusivity_ratio
-    ):
-        return (
-            const.FROESSLING_1938_A
-            + const.FROESSLING_1938_B * sqrt_re_times_cbrt_sc * diffusivity_ratio
-        )
-
-    @staticmethod
     def isotope_ventilation_ratio(ventilation_coefficient, diffusivity_ratio):
         """heavy to light isotope ventilation ratio"""
         D_ratio_cbrt = diffusivity_ratio ** (1 / 3)
