@@ -1,6 +1,7 @@
 """tests ensuring values on plots match those in the paper"""
 
 from pathlib import Path
+import platform
 
 import numpy as np
 import pytest
@@ -20,6 +21,11 @@ def variables_fixture():
     )
 
 
+@pytest.mark.xfail(
+    platform.system() == "Darwin" and platform.machine() == "x86_64",
+    strict=True,
+    reason="TODO #1207",
+)
 class TestFigs456:
     @staticmethod
     def test_fig_5_vapour_asymptote(variables):

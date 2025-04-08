@@ -17,9 +17,11 @@ Physical constants and formulae (mostly one-liners)
 """
 
 from . import (
-    condensation_coordinate,
+    diffusion_coordinate,
     constants_defaults,
     diffusion_kinetics,
+    diffusion_ice_kinetics,
+    diffusion_ice_capacity,
     diffusion_thermics,
     drop_growth,
     fragmentation_function,
@@ -35,7 +37,8 @@ from . import (
     isotope_relaxation_timescale,
     isotope_temperature_inference,
     isotope_ventilation_ratio,
-    latent_heat,
+    latent_heat_vapourisation,
+    latent_heat_sublimation,
     optical_albedo,
     optical_depth,
     particle_advection,
