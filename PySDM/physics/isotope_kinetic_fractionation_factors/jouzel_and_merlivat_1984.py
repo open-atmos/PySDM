@@ -13,13 +13,9 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
         alpha_equilibrium, relative_humidity, heavy_to_light_diffusivity_ratio
     ):
         """eq. (11) or eq. (14)"""
-        return (
+        return relative_humidity / (
             alpha_equilibrium
-            * relative_humidity
-            / (
-                alpha_equilibrium
-                / heavy_to_light_diffusivity_ratio
-                * (relative_humidity - 1)
-                + 1
-            )
+            / heavy_to_light_diffusivity_ratio
+            * (relative_humidity - 1)
+            + 1
         )
