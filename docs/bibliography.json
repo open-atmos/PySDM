@@ -198,7 +198,8 @@
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/__init__.py",
-      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py"
+      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/pierchala_et_al_2022.py"
     ],
     "label": "Pierchala et al. 2022 (Geochim. Cosmochim. Acta 322)",
     "title": "Quantification the diffusion-induced fractionation of <sup>1</sup>H<sub>2</sub><sup>17</sup>O isotopologue in air accompanying the process of water evaporation"
@@ -776,6 +777,13 @@
     "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
     "label": "Picciotto et al. 1960 (Nature 187)"
   },
+  "https://doi.org/10.1029/JC080i036p05015": {
+    "usages": [
+      "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py"
+    ],
+    "title": "Isotopic study of hail",
+    "label": "Jouzel et al. 1975 (J. Geophys. Res. Oceans 80)"
+  },
   "https://doi.org/10.1016/0019-1035(80)90173-6": {
     "usages": [
       "examples/PySDM_examples/Toon_et_al_1980/fig_1.ipynb",
@@ -812,5 +820,12 @@
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
+  },
+  "https://doi.org/10.1029/JD089iD07p11749": {
+    "usages": [
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py"
+    ],
+    "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
+    "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
   }
 }
