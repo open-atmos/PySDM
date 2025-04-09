@@ -4,7 +4,7 @@ from matplotlib import pyplot
 from PySDM import Formulae
 
 
-def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
+def test_fig_9_from_jouzel_and_merlivat_1984(plot=True):
     """[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)"""
     # arrange
     formulae = Formulae(
@@ -30,18 +30,19 @@ def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
         )
         for temperature in temperatures
     }
+    alpha_s_times_alpha_k = {
+        f"{formulae.trivia.K2C(temperature):.3g}C": alpha_k[temperature]
+        * alpha_s[temperature]
+        for temperature in temperatures
+    }
 
     # plot
     pyplot.xlim(saturation[0], saturation[-1])
     pyplot.ylim(1.003, 1.022)
     pyplot.xlabel("S")
-    pyplot.ylabel("alpha_k (in the paper multiplied by alpha_s, here not!!!)")
-    for temperature in temperatures:
-        pyplot.plot(
-            saturation,
-            alpha_k[temperature],
-            label=f"{formulae.trivia.K2C(temperature):.3g}C",
-        )
+    pyplot.ylabel("alpha_k * alpha_s")
+    for k, v in alpha_s_times_alpha_k.items():
+        pyplot.plot(saturation, v, label=k)
     pyplot.legend()
     if plot:
         pyplot.show()
@@ -49,27 +50,27 @@ def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
         pyplot.clf()
 
     # assert
-    assert (alpha_k[temperatures[0]] > alpha_k[temperatures[1]]).all()
-    assert (alpha_k[temperatures[1]] > alpha_k[temperatures[-1]]).all()
-    for temperature in temperatures:
-        assert (np.diff(alpha_k[temperature]) < 0).all()
+    assert (alpha_s_times_alpha_k["-30C"] > alpha_s_times_alpha_k["-20C"]).all()
+    assert (alpha_s_times_alpha_k["-20C"] > alpha_s_times_alpha_k["-10C"]).all()
+    for alpha_alpha in alpha_s_times_alpha_k.values():
+        assert (np.diff(alpha_alpha) < 0).all()
     np.testing.assert_approx_equal(
-        actual=alpha_k[temperatures[0]][0],
+        actual=alpha_s_times_alpha_k["-30C"][0],
         desired=1.021,
         significant=4,
     )
     np.testing.assert_approx_equal(
-        actual=alpha_k[temperatures[0]][-1],
+        actual=alpha_s_times_alpha_k["-30C"][-1],
         desired=1.0075,
         significant=4,
     )
     np.testing.assert_approx_equal(
-        actual=alpha_k[temperatures[-1]][1],
+        actual=alpha_s_times_alpha_k["-10C"][0],
         desired=1.0174,
         significant=4,
     )
     np.testing.assert_approx_equal(
-        actual=alpha_k[temperatures[-1]][-1],
+        actual=alpha_s_times_alpha_k["-10C"][-1],
         desired=1.004,
         significant=4,
     )
