@@ -1,2 +1,3 @@
 from PySDM.impl.null_physics_class import Null
-from .merlivat_and_jouzel_1979 import MerlivatAndJouzel1979
+from .jouzel_and_merlivat_1984 import JouzelAndMerlivat1984
+from .pierchala_et_al_2022 import PierchalaEtAl2022
