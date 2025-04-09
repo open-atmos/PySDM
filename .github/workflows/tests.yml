@@ -6,6 +6,7 @@ defaults:
 
 # arbitrarily selected runs
 env:
+  DAY_OF_WEEK: Monday
   anim_platform: 3.12
   anim_python-version: ubuntu-24.04
   anim_test-suite: multi-process_a
@@ -216,6 +217,17 @@ jobs:
           path: ${{ env.pip_user_site }}
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
+  greeting_job:
+    runs-on: ubuntu-latest
+    env:
+      Greeting: Hello
+    steps:
+      - name: "Say Hello Mona it's Monday"
+        if: ${{ env.DAY_OF_WEEK == 'Monday' }}
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+        env:
+          First_Name: Mona
+
   examples:
     needs: [examples-setup]
     strategy:
@@ -238,7 +250,7 @@ jobs:
         run: exit 1
       - if: ${{ matrix.platform == 'ubuntu-24.04' }}
         run: exit 1
-      - if: ${{ 'ubuntu-24.04' == env.anim_platform }}
+      - if: ${{ env.anim_platform == 'ubuntu-24.04' }}
         run: exit 1
       - if: ${{ matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite }}
         run: exit 1
