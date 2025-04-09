@@ -172,10 +172,10 @@ jobs:
           shopt -s extglob
           pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
 
-      - if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
+      # - if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     limit-access-to-actor: true
 
   examples-setup:
     needs: [nojit_and_codecov]
@@ -273,16 +273,14 @@ jobs:
           pvpython --version
           pvpython -c "from paraview import simple"
 
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-         python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
-
+      - run: |
+          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
+      # TODO #1207
       - if: startsWith(matrix.platform, 'macos-13')
         run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* -k "pvanim or hello" --suite ${{ matrix.test-suite }}
+        run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
         
       - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run:
@@ -304,6 +302,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
               /github/home/figures/*.mp4
-
-      - if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
