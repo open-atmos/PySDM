@@ -777,13 +777,6 @@
     "title": "Isotopic Composition and Temperature of Formation of Antarctic Snows",
     "label": "Picciotto et al. 1960 (Nature 187)"
   },
-  "https://doi.org/10.1029/JC080i036p05015": {
-    "usages": [
-      "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py"
-    ],
-    "title": "Isotopic study of hail",
-    "label": "Jouzel et al. 1975 (J. Geophys. Res. Oceans 80)"
-  },
   "https://doi.org/10.1016/0019-1035(80)90173-6": {
     "usages": [
       "examples/PySDM_examples/Toon_et_al_1980/fig_1.ipynb",
