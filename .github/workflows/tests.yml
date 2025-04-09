@@ -229,7 +229,15 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 35
     steps:
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo OK
+      - if: startsWith(env.anim_platform, 'ubuntu-')
+        run: echo OK
       - if: ${{ matrix.platform == env.anim_platform }}
+        run: exit 1
+      - if: ${{ matrix.platform == 'ubuntu-24.04' }}
+        run: exit 1
+      - if: ${{ 'ubuntu-24.04' == env.anim_platform }}
         run: exit 1
       - if: ${{ matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite }}
         run: exit 1
