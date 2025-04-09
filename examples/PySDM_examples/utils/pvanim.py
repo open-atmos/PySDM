@@ -230,8 +230,7 @@ def time_annotation(*, y):
         guiName="AnnotateTimeFilter1", Format="Time:{time:f}s"
     )
     pvs.Show(time, y.renderView1)
-    y.renderView1.Update()
-    
+    y.renderView1.Update()  
 
 
 def text(text_in, position_y, *, view):
