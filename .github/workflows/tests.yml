@@ -6,7 +6,7 @@ defaults:
 
 # arbitrarily selected runs
 env:
-  DAY_OF_WEEK: Monday
+  DAY_OF_WEEK: ubuntu-24.04
   anim_platform: 3.12
   anim_python-version: ubuntu-24.04
   anim_test-suite: multi-process_a
@@ -223,13 +223,13 @@ jobs:
       Greeting: Hello
     steps:
       - name: "Say Hello Mona it's Monday"
-        if: ${{ env.DAY_OF_WEEK == 'Monday' }}
+        if: ${{ env.DAY_OF_WEEK == 'ubuntu-24.04' }}
         run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
         env:
           First_Name: Mona
 
   examples:
-    needs: [examples-setup]
+    #needs: [examples-setup]
     strategy:
       matrix:
         platform: [ubuntu-24.04]
