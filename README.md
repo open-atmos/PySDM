@@ -33,7 +33,7 @@ Currently, the development is focused on atmospheric cloud physics
   to represent aerosol/cloud/rain microphysics.
 The package features a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
-  ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
+  ([Shima et al. 2009](https://doi.org/10.1002/qj.441)), hence the name. 
 
 PySDM documentation is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
 

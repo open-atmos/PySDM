@@ -1,5 +1,5 @@
-""" [Graham's law](https://en.wikipedia.org/wiki/Graham%27s_law)
-    see also eq. (21) in [Horita et al. 2008](https://doi.org/10.1080/10256010801887174)
+"""[Graham's law](https://en.wikipedia.org/wiki/Graham%27s_law)
+see also eq. (21) in [Horita et al. 2008](https://doi.org/10.1080/10256010801887174)
 """
 
 

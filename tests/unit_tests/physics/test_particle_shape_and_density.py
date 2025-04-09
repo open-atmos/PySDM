@@ -57,4 +57,4 @@ class TestParticleShapeAndDensity:
             )
 
             # Assert
-            assert re.check("[]")
+            assert re.check(si.dimensionless)

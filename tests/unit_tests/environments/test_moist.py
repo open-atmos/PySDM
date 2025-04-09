@@ -1,4 +1,4 @@
-""" check for ice-phase-related commons in environment codes """
+"""check for ice-phase-related commons in environment codes"""
 
 import pytest
 import numpy as np

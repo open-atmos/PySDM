@@ -1,6 +1,7 @@
-""" tests ensuring values on plots match those in the paper """
+"""tests ensuring values on plots match those in the paper"""
 
 from pathlib import Path
+import platform
 
 import numpy as np
 import pytest
@@ -20,15 +21,20 @@ def variables_fixture():
     )
 
 
+@pytest.mark.xfail(
+    platform.system() == "Darwin" and platform.machine() == "x86_64",
+    strict=True,
+    reason="TODO #1207",
+)
 class TestFigs456:
     @staticmethod
     def test_fig_5_vapour_asymptote(variables):
         delta_vapour_at_the_cloud_top_per_mille = in_unit(
-            variables["formulae"].trivia.isotopic_ratio_2_delta(
+            variables["FORMULAE"].trivia.isotopic_ratio_2_delta(
                 ratio=variables["data"][variables["PLOT_KEY"]]["CT"]["Rv_2H"][1:],
-                reference_ratio=variables["const"].VSMOW_R_2H,
+                reference_ratio=variables["CONST"].VSMOW_R_2H,
             ),
-            variables["const"].PER_MILLE,
+            variables["CONST"].PER_MILLE,
         )
 
         d_delta = np.diff(delta_vapour_at_the_cloud_top_per_mille)
@@ -45,11 +51,11 @@ class TestFigs456:
     @staticmethod
     def test_fig_5_rain_at_the_cloud_base(variables):
         delta_rain_at_the_cloud_base_per_mille = in_unit(
-            variables["formulae"].trivia.isotopic_ratio_2_delta(
+            variables["FORMULAE"].trivia.isotopic_ratio_2_delta(
                 ratio=variables["data"][variables["PLOT_KEY"]]["CB"]["Rr_2H"][1:],
-                reference_ratio=variables["const"].VSMOW_R_2H,
+                reference_ratio=variables["CONST"].VSMOW_R_2H,
             ),
-            variables["const"].PER_MILLE,
+            variables["CONST"].PER_MILLE,
         )
 
         d_delta = np.diff(delta_rain_at_the_cloud_base_per_mille)

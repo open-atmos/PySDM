@@ -1,4 +1,4 @@
-""" Fractional distillation assuming continuous removal under equilibrium """
+"""Fractional distillation assuming continuous removal under equilibrium"""
 
 
 class RayleighDistillation:  # pylint:disable=too-few-public-methods

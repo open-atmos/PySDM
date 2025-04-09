@@ -25,7 +25,7 @@ class TestVentilationCoefficient:
             re = sut(sqrt_re_times_cbrt_sc=1 * si.dimensionless)
 
             # Assert
-            assert re.check("[]")
+            assert re.check(si.dimensionless)
 
     @staticmethod
     @pytest.mark.parametrize(
