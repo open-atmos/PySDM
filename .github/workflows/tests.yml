@@ -6,8 +6,8 @@ defaults:
 
 # arbitrarily selected runs
 env:
-  anim_platform: '3.12'
-  anim_python-version: 'ubuntu-24.04'
+  anim_platform: 'ubuntu-24.04'
+  anim_python-version: '3.12'
   anim_test-suite: 'multi-process_a'
         
 on:
@@ -224,14 +224,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 35
     steps:
-
-      - if: matrix.platform == env.anim_platform 
-        run: exit 1 
-      - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite
-        run: exit 1 
-      - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
-        run: exit 1 
-
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
@@ -296,22 +288,14 @@ jobs:
         run:
           mkdir -p /home/runner/work/_temp/_github_home/figures
           rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_Pycurrent
-          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_*/output/anim2.ogv /home/runner/work/_temp/_github_home/figures
-
+          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_*/output/docs_intro_animation.mp4 /home/runner/work/_temp/_github_home/figures
+          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_*/output/last_animation_frame.pdf /home/runner/work/_temp/_github_home/figures
       - name: artifact upload
-        if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: ${{ matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version }}
         uses: actions/upload-artifact@v4
         with:
           name: animations
-          path: /github/home/figures/*.ogv
-
-#TO DO 2nd artifact
-      - name: artifact upload
-        if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
-        uses: actions/upload-artifact@v4
-        with:
-          name: animations
-          path: /github/home/figures/*.png
+          path: /github/home/figures/*.{mp4,pdf}
 
       - name: tip release upload
         if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
@@ -319,7 +303,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-              /github/home/figures/*.ogv
+              /github/home/figures/*.mp4
 
       - if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3

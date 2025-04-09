@@ -55,10 +55,14 @@ def cli_using_argparse(argp):
         help="Opacity for sd_attributes",
     )
     argp.add_argument(
+        "--animationframename",
+        type=str,
+        help="Name of the file with animation last frame",
+    )
+    argp.add_argument(
         "--animationname",
         type=str,
         help="Name of the file with animation",
-        default="docs_intro_animation.ogv",
     )
     argp.add_argument(
         "--framerate", type=int, help="Number of frame rates.", default=15
@@ -227,6 +231,7 @@ def time_annotation(*, y):
     )
     pvs.Show(time, y.renderView1)
     y.renderView1.Update()
+    
 
 
 def text(text_in, position_y, *, view):
@@ -239,17 +244,17 @@ def text(text_in, position_y, *, view):
     textDisplay.Position = [0.01, position_y]
 
 
-def last_anim_frame():
+def last_anim_frame(animation_frame_name):
     time_steps = sd_productspvd.TimestepValues
     last_time = time_steps[len(time_steps) - 1]
     setup.renderView1.ViewTime = last_time
     for reader in (sd_productspvd,):
         reader.UpdatePipeline(last_time)
-        pvs.SaveScreenshot(
-            filename=str(pathlib.Path(args.output_path) / "last_anim_frame.png"),
+        pvs.ExportView(
+            filename=str(pathlib.Path(args.output_path) / animation_frame_name),
             view=setup.renderView1,
-            ImageResolution=[3840, 2160],
-            TransparentBackground=False,
+            Rasterize3Dgeometry=False,
+            GL2PSdepthsortmethod="BSP sorting (slow, best)",
         )
     pvs.RenderAllViews()
 
@@ -288,11 +293,10 @@ axes_settings(view=setup.renderView1)
 time_annotation(y=setup)
 text("Arrows scale with Courant number C=u*Δt/Δx,", 0.7, view=setup.renderView1)
 text("reflecting the grid spacing Δx and Δy.", 0.65, view=setup.renderView1)
-last_anim_frame()
+last_anim_frame(animation_frame_name = args.animationframename)
 scene = pvs.GetAnimationScene()
 scene.UpdateAnimationUsingDataTimeSteps()
 pvs.Render(setup.renderView1)
-# save animation to an Ogg Vorbis file
 pvs.SaveAnimation(
     str(pathlib.Path(args.output_path) / args.animationname),
     setup.renderView1,
