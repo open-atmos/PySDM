@@ -229,6 +229,13 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 35
     steps:
+      - if: matrix.platform == env.anim_platform
+        run: exit 1
+      - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite
+        run: exit 1
+      - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        run: exit 1
+
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
