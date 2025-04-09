@@ -5,9 +5,17 @@ kinetic fractionation factor from [Jouzel & Merlivat 1984](https://doi.org/10.10
 
 class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def alpha_kinetic(alpha_equilibrium, relative_humidity, D_heavy2D_light):
+    def alpha_kinetic(
+        alpha_equilibrium, relative_humidity, heavy_to_light_diffusivity_ratio
+    ):
+        """eq. (11) or eq. (14)"""
         return (
             alpha_equilibrium
             * relative_humidity
-            / (alpha_equilibrium / D_heavy2D_light * (relative_humidity - 1) + 1)
+            / (
+                alpha_equilibrium
+                / heavy_to_light_diffusivity_ratio
+                * (relative_humidity - 1)
+                + 1
+            )
         )
