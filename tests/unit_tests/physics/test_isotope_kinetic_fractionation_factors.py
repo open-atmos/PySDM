@@ -42,7 +42,7 @@ class TestIsotopeKineticFractionationFactors:
             assert result.check("[]")
 
     @staticmethod
-    def test_fig_9_from_jouzel_and_merlivat_1984(plot=True):
+    def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
         """[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)"""
         # arrange
         formulae = Formulae(
