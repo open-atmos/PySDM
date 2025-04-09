@@ -6,9 +6,9 @@ defaults:
 
 # arbitrarily selected runs
 env:
-  anim_platform: '3.12'
-  anim_python-version: 'ubuntu-24.04'
-  anim_test-suite: 'multi-process_a'
+  anim_platform: 3.12
+  anim_python-version: ubuntu-24.04
+  anim_test-suite: multi-process_a
         
 on:
   push:
