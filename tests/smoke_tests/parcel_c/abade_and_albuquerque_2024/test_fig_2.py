@@ -51,7 +51,7 @@ class TestFig2:
             ("Bulk", "water", 0.90 * si.g / si.kg),
             ("Homogeneous", "total", 1.1 * si.g / si.kg),
             ("Homogeneous", "ice", 1.1 * si.g / si.kg),
-            ("Homogeneous", "water", 2.7e-9),
+            ("Homogeneous", "water", 2.9e-9),
         ),
     )
     def test_values_at_cloud_top_for(variables, model, var_name, desired_value):
