@@ -57,10 +57,24 @@ class Simulation(BasicSimulation):
         )
         del attributes["volume"]
 
-        # TODO #1524
         if settings.enable_immersion_freezing:
-            attributes["freezing temperature"] = np.full(
-                shape=(settings.n_sd,), fill_value=250
+            trivia = builder.particulator.formulae.trivia
+            n_inp = int(settings.n_sd * settings.freezing_inp_frac)
+
+            rng = np.random.default_rng(seed=builder.particulator.formulae.seed)
+
+            attributes["freezing temperature"] = rng.permutation(
+                np.pad(
+                    builder.particulator.formulae.freezing_temperature_spectrum.invcdf(
+                        cdf=rng.uniform(low=0, high=1, size=n_inp),
+                        A_insol=trivia.sphere_surface(
+                            diameter=2 * settings.freezing_inp_dry_radius
+                        ),
+                    ),
+                    (0, settings.n_sd - n_inp),
+                    mode="constant",
+                    constant_values=(trivia.C2K(-38)),
+                )
             )
 
         self.products = (
