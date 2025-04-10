@@ -525,7 +525,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             relative_humidity=self.environment["RH"],
             record_freezing_temperature=record_freezing_temperature,
             freezing_temperature=(
-                self.attributes["freezing temperature"]
+                self.attributes["temperature of last freezing"]
                 if record_freezing_temperature
                 else None
             ),

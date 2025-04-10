@@ -11,9 +11,33 @@ from PySDM.products import IceWaterContent
 
 
 class TestImmersionFreezing:
-    # TODO #599
-    def test_record_freezing_temperature_on_time_dependent_freeze(self):
-        pass
+    @staticmethod
+    @pytest.mark.parametrize(
+        "record_freezing_temperature",
+        (pytest.param(False, marks=pytest.mark.xfail(strict=True)), True),
+    )
+    def test_record_freezing_temperature_on_time_dependent_freeze(
+        backend_class, record_freezing_temperature
+    ):
+        # arrange
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
+        env = Box(dt=1 * si.s, dv=1 * si.m**3)
+        builder = Builder(
+            n_sd=1, backend=backend_class(formulae=formulae), environment=env
+        )
+        builder.add_dynamic(Freezing(singular=False, record_freezing_temperature=True))
+        particulator = builder.build(
+            attributes={
+                "multiplicity": np.asarray([1]),
+                "signed water mass": np.asarray([1 * si.ug]),
+                "immersed surface area": np.asarray([1 * si.um**2]),
+            }
+        )
+
+        # act
+
+        # assert
+        assert particulator.attributes["temperature of last freezing"].to_ndarra()
 
     # TODO #599
     def test_no_subsaturated_freezing(self):

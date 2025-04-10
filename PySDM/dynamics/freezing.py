@@ -26,8 +26,12 @@ class Freezing:
         )
 
         builder.request_attribute("signed water mass")
-        if self.singular or self.record_freezing_temperature:
+        if self.singular:
+            assert not self.record_freezing_temperature
             builder.request_attribute("freezing temperature")
+
+        if self.record_freezing_temperature:
+            builder.request_attribute("temperature of last freezing")
 
         if not self.singular:
             assert not isinstance(
@@ -63,4 +67,4 @@ class Freezing:
 
         self.particulator.attributes.mark_updated("signed water mass")
         if self.record_freezing_temperature:
-            self.particulator.attributes.mark_updated("freezing temperature")
+            self.particulator.attributes.mark_updated("temperature of last freezing")
