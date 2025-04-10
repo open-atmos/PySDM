@@ -60,10 +60,13 @@ class Simulation(BasicSimulation):
         if settings.enable_immersion_freezing:
             trivia = builder.particulator.formulae.trivia
             n_inp = int(settings.n_sd * settings.freezing_inp_frac)
-            attributes["freezing temperature"] = np.random.permutation(
+
+            rng = np.random.default_rng(seed=builder.particulator.formulae.seed)
+
+            attributes["freezing temperature"] = rng.permutation(
                 np.pad(
                     builder.particulator.formulae.freezing_temperature_spectrum.invcdf(
-                        cdf=np.random.random(n_inp),  # TODO #599: seed,
+                        cdf=rng.uniform(low=0, high=1, size=n_inp),
                         A_insol=trivia.sphere_surface(
                             diameter=2 * settings.freezing_inp_dry_radius
                         ),

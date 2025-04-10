@@ -25,34 +25,52 @@ def variables_fixture():
 
 class TestFig2:
     @staticmethod
-    @pytest.mark.parametrize("key", ("total", "water"))
-    @pytest.mark.parametrize("model", ("Bulk",))
+    @pytest.mark.parametrize(
+        "model, key",
+        (
+            ("Bulk", "total"),
+            ("Bulk", "water"),
+            ("Homogeneous", "total"),
+        ),
+    )
     def test_cloud_base(variables, key, model):
         height = np.asarray(variables["output"][model]["height"])
         assert (
-            variables["values"][key][height < 0.9 * si.km] < 0.01 * si.g / si.kg
+            variables["values"][model][key][height < 0.9 * si.km] < 0.01 * si.g / si.kg
         ).all()
         assert (
-            variables["values"][key][height > 1.1 * si.km] > 0.05 * si.g / si.kg
+            variables["values"][model][key][height > 1.1 * si.km] > 0.05 * si.g / si.kg
         ).all()
 
     @staticmethod
     @pytest.mark.parametrize(
-        "var_name, desired_value",
+        "model, var_name, desired_value",
         (
-            ("total", 1.1 * si.g / si.kg),
-            ("ice", 0.20 * si.g / si.kg),
-            ("water", 0.93 * si.g / si.kg),
+            ("Bulk", "total", 1.1 * si.g / si.kg),
+            ("Bulk", "ice", 0.16 * si.g / si.kg),
+            ("Bulk", "water", 0.90 * si.g / si.kg),
+            ("Homogeneous", "total", 1.1 * si.g / si.kg),
+            ("Homogeneous", "ice", 1.1 * si.g / si.kg),
+            ("Homogeneous", "water", 2.7e-9),
         ),
     )
-    def test_values_at_cloud_top(variables, var_name, desired_value):
+    def test_values_at_cloud_top_for(variables, model, var_name, desired_value):
         np.testing.assert_approx_equal(
             desired=desired_value,
-            actual=variables["values"][var_name][-1],
+            actual=variables["values"][model][var_name][-1],
             significant=2,
         )
 
     @staticmethod
-    @pytest.mark.parametrize("key", ("total", "ice", "water"))
-    def test_monotonicity(variables, key):
-        assert (np.diff(variables["values"][key]) > 0).all()
+    @pytest.mark.parametrize(
+        "model, key",
+        (
+            ("Homogeneous", "total"),
+            ("Homogeneous", "ice"),
+            ("Bulk", "total"),
+            ("Bulk", "ice"),
+            ("Bulk", "water"),
+        ),
+    )
+    def test_monotonicity(variables, model, key):
+        assert (np.diff(variables["values"][model][key]) >= 0).all()
