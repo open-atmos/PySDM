@@ -77,7 +77,7 @@ class TestFallVelocity:
         assert np.allclose(
             particulator.attributes["relative fall velocity"].to_ndarray(),
             particulator.attributes["relative fall momentum"].to_ndarray()
-            / (particulator.attributes["water mass"].to_ndarray()),
+            / (particulator.attributes["signed water mass"].to_ndarray()),
         )
 
     @staticmethod
@@ -151,7 +151,7 @@ class TestFallVelocity:
         _ = builder.build(
             attributes={
                 "multiplicity": np.ones(1),
-                "water mass": np.zeros(1),
+                "signed water mass": np.zeros(1),
                 "relative fall momentum": np.zeros(1),
             },
             products=(),
@@ -170,7 +170,7 @@ class TestFallVelocity:
             _ = builder.build(
                 attributes={
                     "multiplicity": np.ones(1),
-                    "water mass": np.zeros(1),
+                    "signed water mass": np.zeros(1),
                 },
                 products=(),
             )
