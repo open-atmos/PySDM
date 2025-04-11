@@ -118,8 +118,6 @@ class FreezingMethods(ThrustRTCBackendMethods):
         a_w_ice,
         temperature,
         relative_humidity,
-        record_freezing_temperature,
-        freezing_temperature,
         thaw,
     ):
         n_sd = len(attributes.immersed_surface_area)

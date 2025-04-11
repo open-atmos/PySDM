@@ -2,16 +2,13 @@
 immersion freezing using either singular or time-dependent formulation
 """
 
-from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
 from PySDM.dynamics.impl import register_dynamic
 
 
 @register_dynamic()
 class Freezing:
-    def __init__(self, *, singular=True, record_freezing_temperature=False, thaw=False):
-        assert not (record_freezing_temperature and singular)
+    def __init__(self, *, singular=True, thaw=False):
         self.singular = singular
-        self.record_freezing_temperature = record_freezing_temperature
         self.thaw = thaw
         self.enable = True
         self.rand = None
@@ -26,12 +23,13 @@ class Freezing:
         )
 
         builder.request_attribute("signed water mass")
-        if self.singular or self.record_freezing_temperature:
+        if self.singular:
             builder.request_attribute("freezing temperature")
 
         if not self.singular:
-            assert not isinstance(
-                self.particulator.formulae.heterogeneous_ice_nucleation_rate, Null
+            assert (
+                self.particulator.formulae.heterogeneous_ice_nucleation_rate.__name__
+                != "Null"
             )
             builder.request_attribute("immersed surface area")
             self.rand = self.particulator.Storage.empty(
@@ -57,10 +55,5 @@ class Freezing:
             self.rand.urand(self.rng)
             self.particulator.immersion_freezing_time_dependent(
                 rand=self.rand,
-                record_freezing_temperature=self.record_freezing_temperature,
                 thaw=self.thaw,
             )
-
-        self.particulator.attributes.mark_updated("signed water mass")
-        if self.record_freezing_temperature:
-            self.particulator.attributes.mark_updated("freezing temperature")
