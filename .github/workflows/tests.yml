@@ -293,9 +293,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: animations
-          path: 
-            - /github/home/figures/*.pdf
-            - /github/home/figures/*.mp4
+          path: |
+            /github/home/figures/*.mp4
+            /github/home/figures/*.pdf
+
       - name: tip release upload
         if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
