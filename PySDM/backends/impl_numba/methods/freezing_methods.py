@@ -2,6 +2,8 @@
 CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 """
 
+from functools import cached_property
+
 import numba
 import numpy as np
 
@@ -11,8 +13,6 @@ from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
 )
-
-from functools import cached_property
 
 
 class FreezingMethods(BackendMethods):
@@ -138,7 +138,7 @@ class FreezingMethods(BackendMethods):
 
         @numba.njit(**{**self.default_jit_flags, "fastmath": False})
         def body(data, cell_id, temperature, signed_water_mass):
-            for drop_id in numba.prange(len(data)):
+            for drop_id in numba.prange(len(data)):  # pylint: disable=not-an-iterable
                 if ff.trivia__unfrozen(signed_water_mass[drop_id]):
                     if data[drop_id] > 0:
                         data[drop_id] = np.nan
