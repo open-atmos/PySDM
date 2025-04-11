@@ -91,7 +91,17 @@ class TestImmersionFreezing:
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
-        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
+        formulae = Formulae(
+            particle_shape_and_density="MixedPhaseSpheres",
+            **(
+                {}
+                if singular
+                else {
+                    "heterogeneous_ice_nucleation_rate": "Constant",
+                    "constants": {"J_HET": 0},
+                }
+            ),
+        )
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder = Builder(
             n_sd=1, backend=backend_class(formulae=formulae), environment=env
