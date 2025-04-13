@@ -114,6 +114,7 @@
   },
   "https://doi.org/10.1002/qj.441": {
     "usages": [
+      "README.md",
       "docs/markdown/pysdm_landing.md",
       "examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb",
       "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
@@ -197,7 +198,8 @@
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/__init__.py",
-      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py"
+      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/craig_gordon.py"
     ],
     "label": "Pierchala et al. 2022 (Geochim. Cosmochim. Acta 322)",
     "title": "Quantification the diffusion-induced fractionation of <sup>1</sup>H<sub>2</sub><sup>17</sup>O isotopologue in air accompanying the process of water evaporation"
@@ -227,7 +229,8 @@
   "https://doi.org/10.3402/tellusa.v34i2.10795": {
     "usages": [
       "examples/PySDM_examples/Rozanski_and_Sonntag_1982/figs_4_5_6.ipynb",
-      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py"
+      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/__init__.py",
+      "examples/PySDM_examples/Rozanski_and_Sonntag_1982/multibox.py"
     ],
     "label": "Rozanski & Sonntag 1982 (Tellus A 34)",
     "title": "Vertical distribution of deuterium in atmospheric water vapour"
@@ -290,7 +293,10 @@
   },
   "https://doi.org/10.1029/1999JD901161": {
     "usages": [
-      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py"
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/__init__.py",
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/figs1-5.ipynb",
+      "examples/PySDM_examples/Abdul_Razzak_Ghan_2000/fig_4_kinetic_limitations.ipynb"
+
     ],
     "label": "Abdul-Razzak & Ghan 2000 (J. Geophys. Res. Atmos. 105)",
     "title": "A parameterization of aerosol activation: 2. Multiple aerosol types"
@@ -567,7 +573,8 @@
   },
   "https://doi.org/10.1029/JC080i009p01133": {
     "usages": [
-      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py"
+      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py"
     ],
     "label": "Stewart 1975 (J. Geophys. Res. Oceans 80)",
     "title": "Stable isotope fractionation due to evaporation and isotopic exchange of falling waterdrops: Applications to atmospheric processes and evaporation of lakes"
@@ -674,7 +681,8 @@
     "usages": [
       "PySDM/physics/isotope_relaxation_timescale/bolin_1958.py",
       "PySDM/physics/constants_defaults.py",
-      "examples/PySDM_examples/Bolin_1958/table_1.ipynb"
+      "examples/PySDM_examples/Bolin_1958/table_1.ipynb",
+      "examples/PySDM_examples/Bolin_1958/__init__.py"
     ],
     "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
@@ -713,6 +721,11 @@
     ],
     "title": "Vapor Pressure Formulation for Water in Range 0 to 100 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
+  },
+  "https://doi.org/10.1080/10789669.2008.10391032": {
+    "usages": ["PySDM/physics/constants_defaults.py"],
+    "title": "A Twenty-First Century Molar Mass for Dry Air",
+    "label": "Gatley et al. 2008 (HVAC&R Res. 14)"
   },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
     "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
@@ -779,5 +792,48 @@
     ],
     "title": "Environmental isotopes in lake stadies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
+  },
+  "https://doi.org/10.1029/2001JD000470": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "title": "A parameterization of cirrus cloud formation: Homogeneous freezing of supercooled aerosols",
+    "label": "Kaercher & Lohmann 2002 (J. Geophys. Res. Atmos 107)"
+  },
+  "https://doi.org/10.5194/acp-9-685-2009": {
+    "usages": [
+      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
+    ],
+    "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
+    "label": "Spichtinger & Gierens 2009 (Atmos. Chem. Phys. 9)"
+  },
+  "https://doi.org/10.1175/1520-0469(1949)006%3C0134:TGOCDI%3E2.0.CO;2": {
+    "usages": [
+      "PySDM/backends/impl_numba/methods/deposition_methods.py"
+    ],
+    "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
+    "label": "Howell 1949 (J. Atmos. Sci.)"
+  },
+  "https://doi.org/10.1029/JD089iD07p11749": {
+    "usages": [
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py"
+    ],
+    "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
+    "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
+  },
+  "https://web.archive.org/web/20160322221332/https://hydrology.nl/images/docs/ihp/Mook_III.pdf": {
+    "usages": [
+      "PySDM/physics/isotope_kinetic_fractionation_factors/craig_gordon.py"
+    ],
+    "title": "Environmental isotopes in the hydrological cycle - Principles and applications: Vol III Surface water",
+    "label": "Rozanski_et_al_2001 (UNESCO, ed. Mook)"
+  },
+  "https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "title": "IAEA Reference Sheet for International Measurement Standards: VSMOW & SLAP",
+    "label": "IAEA 2006"
   }
 }

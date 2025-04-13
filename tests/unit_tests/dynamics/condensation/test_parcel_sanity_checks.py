@@ -32,8 +32,12 @@ class TestParcelSanityChecks:
         (
             CPU,
             pytest.param(
-                GPU, marks=pytest.mark.xfail(strict=True)
-            ),  # TODO #1117 (works with CUDA!)
+                GPU,
+                marks=pytest.mark.xfail(
+                    strict=True,
+                    reason="TODO #1117 (works with CUDA!)",
+                ),
+            ),
         ),
     )
     def test_noisy_supersaturation_profiles(backend_class, plot=False):
