@@ -98,6 +98,8 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.breakup_rate = None
         self.breakup_rate_deficit = None
 
+        self.flag_coalescence = None
+
     def register(self, builder):
         self.particulator = builder.particulator
         rnd_args = {
@@ -147,6 +149,10 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             *counter_args
         )
         self.coalescence_rate = self.particulator.Storage.from_ndarray(*counter_args)
+
+        self.flag_coalescence = self.particulator.Storage.from_ndarray(
+            np.full(self.particulator.n_sd, fill_value=False, dtype=bool),
+        )
 
         if self.enable_breakup:
             self.n_fragment = self.particulator.PairwiseStorage.empty(
@@ -231,6 +237,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             is_first_in_pair=self.is_first_in_pair,
             warn_overflows=self.warn_overflows,
             max_multiplicity=self.max_multiplicity,
+            flag_coalescence=self.flag_coalescence,
         )
 
     def toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
