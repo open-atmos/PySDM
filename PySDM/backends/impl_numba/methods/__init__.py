@@ -13,3 +13,4 @@ from .pair_methods import PairMethods
 from .physics_methods import PhysicsMethods
 from .terminal_velocity_methods import TerminalVelocityMethods
 from .seeding_methods import SeedingMethods
+from .deposition_methods import DepositionMethods

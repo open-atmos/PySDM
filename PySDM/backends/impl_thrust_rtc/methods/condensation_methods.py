@@ -100,10 +100,10 @@ class CondensationMethods(
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
-                    if (x_new > {phys.condensation_coordinate.x_max.c_inline()}) {{
+                    if (x_new > {phys.diffusion_coordinate.x_max.c_inline()}) {{
                         return {args("x_old")} - x_new;
                     }}
-                    auto m_new = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
+                    auto m_new = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
                     auto v_new = {phys.particle_shape_and_density.mass_to_volume.c_inline(mass="m_new")};
                     auto r_new = {phys.trivia.radius.c_inline(volume="v_new")};
                     auto sgm = {phys.surface_tension.sigma.c_inline(
@@ -133,7 +133,7 @@ class CondensationMethods(
                         r="r_new", r_dr_dt="r_dr_dt"
                     )};
                     return {args("x_old")} - x_new + {args("dt")} * {
-                        phys.condensation_coordinate.dx_dt.c_inline(m="m_new", dm_dt="dm_dt")
+                        phys.diffusion_coordinate.dx_dt.c_inline(m="m_new", dm_dt="dm_dt")
                     };
                 }}
             }};
@@ -152,10 +152,10 @@ class CondensationMethods(
             auto v_old = {phys.particle_shape_and_density.mass_to_volume.c_inline(
                 mass="water_mass[i]"
             )};
-            auto x_old = {phys.condensation_coordinate.x.c_inline(mass="water_mass[i]")};
+            auto x_old = {phys.diffusion_coordinate.x.c_inline(mass="water_mass[i]")};
             auto r_old = {phys.trivia.radius.c_inline(volume="v_old")};
             auto m_insane = {phys.particle_shape_and_density.volume_to_mass.c_inline(volume="vdry[i] / 100")};
-            auto x_insane = {phys.condensation_coordinate.x.c_inline(mass="m_insane")};
+            auto x_insane = {phys.diffusion_coordinate.x.c_inline(mass="m_insane")};
             auto rd3 = vdry[i] / {const.PI_4_3};
             auto sgm = {phys.surface_tension.sigma.c_inline(
                 T="_T", v_wet="v", v_dry="vdry[i]", f_org="_f_org[i]"
@@ -194,7 +194,7 @@ class CondensationMethods(
                     ventilation_factor="ventilation_factor",
                 )};
                 dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")};
-                dx_old = dt * {phys.condensation_coordinate.dx_dt.c_inline(
+                dx_old = dt * {phys.diffusion_coordinate.dx_dt.c_inline(
                     m="water_mass[i]", dm_dt="dm_dt_old"
                 )};
             }}
@@ -249,7 +249,7 @@ class CondensationMethods(
                     x_new = x_old;
                 }}
             }}
-            water_mass[i] = {phys.condensation_coordinate.mass.c_inline(x="x_new")};
+            water_mass[i] = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -323,7 +323,7 @@ class CondensationMethods(
             )};
             pv[i] = {phys.state_variable_triplet.pv.c_inline(
                 p='p[i]', water_vapour_mixing_ratio='predicted_water_vapour_mixing_ratio[i]')};
-            lv[i] = {phys.latent_heat.lv.c_inline(
+            lv[i] = {phys.latent_heat_vapourisation.lv.c_inline(
                 T='T[i]')};
             pvs[i] = {phys.saturation_vapour_pressure.pvs_water.c_inline(
                 T='T[i]')};

@@ -48,7 +48,7 @@ class Cumulus(Common):
 
     def __rhod_of_z(self, T_of_z, p_of_z, q_of_z, z_of_p, z_points):
         def drhod_dz(z, _):
-            lv = self.formulae.latent_heat.lv(T_of_z(z))
+            lv = self.formulae.latent_heat_vapourisation.lv(T_of_z(z))
             return self.formulae.hydrostatics.drho_dz(
                 p_of_z(z), T_of_z(z), q_of_z(z), lv
             )

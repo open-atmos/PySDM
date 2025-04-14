@@ -116,7 +116,9 @@ class TestFormulae:
 
         # assert
         temp = 300 * si.K
-        assert sut.latent_heat__lv(temp) == f.latent_heat.lv(temp)
+        assert sut.latent_heat_vapourisation__lv(
+            temp
+        ) == f.latent_heat_vapourisation.lv(temp)
 
     @staticmethod
     def test_get_constant():
