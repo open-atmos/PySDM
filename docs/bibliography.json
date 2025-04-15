@@ -801,7 +801,7 @@
     "title": "Stable Isotope FractionationDue to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
     "label": "Stewart 1975 (J. Geophys. Res.)"
   },
-  "https://doi.org/10.1175/1520-0469(1951)008<0071:TETATR>2.0.CO;2": {
+  "https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2": {
     "usages": [
       "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py",
       "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py",
