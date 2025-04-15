@@ -797,8 +797,10 @@
   },
   "https://doi.org/10.1029/JC080i009p01133": {
     "usages": [
-      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb",
-      "examples/PySDM_examples/Stewart_1975/__init__.py"
+      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "examples/PySDM_examples/Stewart_1975/__init__.py",
+      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
     ],
     "title": "Stable Isotope FractionationDue to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
     "label": "Stewart 1975 (J. Geophys. Res.)"
