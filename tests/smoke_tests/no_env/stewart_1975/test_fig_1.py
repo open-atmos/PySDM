@@ -5,6 +5,8 @@ test checking values
 from pathlib import Path
 import pytest
 import numpy as np
+
+from PySDM.physics import si, in_unit
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Stewart_1975
 
@@ -19,35 +21,36 @@ def notebook_variables_fixture():
     )
 
 
-# @pytest.mark.parametrize(
-#     "x, y, paper",
-#     (
-#         (1.0e-04, 0),
-#         (3.0e-04, 0),
-#         (5.0e-04, 0),
-#         (9.0e-04, 0),
-#         (1.3e-03, 0),
-#         (1.7e-03, 0)
-#     )
-# )
-# def test_fig_1(
-#         notebook_variables, x, y, paper
-# ):
-#     np.testing.assert_allclose(
-#         actual=notebook_variables,
-#         desired=1,
-#         rtol=1,
-#     )
-
-
 def test_fig_ventilation_coefficient(notebook_variables):
     """ventilation coefficients should have same  the same line scope"""
-    #
-    ventilation_coefficient_K_G = notebook_variables["plot_K_G_coeff"][0].get_data()[1]
-    ventilation_coefficient_B_P = notebook_variables["plot_B_P_coeff"][0].get_data()[1]
+    # Arrange
+    vent_coeff_K_G = notebook_variables["plot_K_G_coeff"][0].get_data()[1]
+    vent_coeff_B_P = notebook_variables["plot_B_P_coeff"][0].get_data()[1]
 
-    # act
-    eps = ventilation_coefficient_K_G / ventilation_coefficient_B_P
+    # Act
+    eps = vent_coeff_K_G / vent_coeff_B_P
 
-    # assert
+    # Assert
     np.testing.assert_allclose(actual=eps, desired=1, atol=0.4)
+
+
+@pytest.mark.parametrize("paper", ("Kinzer & Gunn", "Beard & Pruppacher"))
+def test_fig_1(notebook_variables, paper):
+    # Arrange
+    print(notebook_variables["plot_factor"][paper][0].get_data())
+    radii_mm, ventilation_factor = notebook_variables["plot_factor"][paper][
+        0
+    ].get_data()
+    idx_to_check = radii_mm >= 0.25
+    ventilation_factor_to_check = ventilation_factor[idx_to_check]
+    vent_factor_high = 1.4
+    vent_factor_low = 0.8
+
+    # Act
+    eps = (vent_factor_high - vent_factor_low) / 2
+    avg_value = vent_factor_high - eps
+
+    # Assert
+    np.testing.assert_allclose(
+        actual=ventilation_factor_to_check, desired=avg_value, atol=eps
+    )
