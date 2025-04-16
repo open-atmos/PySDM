@@ -35,6 +35,8 @@ TEST_SUITES = {
         "Miyake_et_al_1968",
         "Rozanski_and_Sonntag_1982",
         "Bolin_1958",
+        "Stewart_1975",
+        "Kinzer_And_Gunn_1951",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
