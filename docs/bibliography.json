@@ -792,7 +792,7 @@
       "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb",
       "examples/PySDM_examples/Gonfiantini_1986/__init__.py"
     ],
-    "title": "Environmental isotopes in lake stadies",
+    "title": "Environmental isotopes in lake studies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
   },
   "https://doi.org/10.1029/JC080i009p01133": {
@@ -802,14 +802,14 @@
       "examples/PySDM_examples/Stewart_1975/__init__.py",
       "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
     ],
-    "title": "Stable Isotope FractionationDue to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
+    "title": "Stable Isotope Fractionation Due to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
     "label": "Stewart 1975 (J. Geophys. Res.)"
   },
   "https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2": {
     "usages": [
       "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py"
     ],
-    "title": "THE EVAPORATION, TEMPERATURE AND THERMAL RELAXATION-TIME OF FREELY FALLING WATERDROPS",
+    "title": "The Evaporation, Temperature and Thermal Relaxation-Time of Freely Falling Waterdrops",
     "label": "Kinzer & Gunn 1951 (J. Meteor.)"
   },
   "https://doi.org/10.1029/2001JD000470": {
