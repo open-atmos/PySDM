@@ -198,7 +198,8 @@
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/__init__.py",
-      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py"
+      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/craig_gordon.py"
     ],
     "label": "Pierchala et al. 2022 (Geochim. Cosmochim. Acta 322)",
     "title": "Quantification the diffusion-induced fractionation of <sup>1</sup>H<sub>2</sub><sup>17</sup>O isotopologue in air accompanying the process of water evaporation"
@@ -572,7 +573,8 @@
   },
   "https://doi.org/10.1029/JC080i009p01133": {
     "usages": [
-      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py"
+      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py"
     ],
     "label": "Stewart 1975 (J. Geophys. Res. Oceans 80)",
     "title": "Stable isotope fractionation due to evaporation and isotopic exchange of falling waterdrops: Applications to atmospheric processes and evaporation of lakes"
@@ -818,5 +820,27 @@
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
+  },
+  "https://doi.org/10.1029/JD089iD07p11749": {
+    "usages": [
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py"
+    ],
+    "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
+    "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
+  },
+  "https://web.archive.org/web/20160322221332/https://hydrology.nl/images/docs/ihp/Mook_III.pdf": {
+    "usages": [
+      "PySDM/physics/isotope_kinetic_fractionation_factors/craig_gordon.py"
+    ],
+    "title": "Environmental isotopes in the hydrological cycle - Principles and applications: Vol III Surface water",
+    "label": "Rozanski_et_al_2001 (UNESCO, ed. Mook)"
+  },
+  "https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "title": "IAEA Reference Sheet for International Measurement Standards: VSMOW & SLAP",
+    "label": "IAEA 2006"
   }
 }

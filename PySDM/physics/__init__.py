@@ -31,6 +31,7 @@ from . import (
     hygroscopicity,
     impl,
     isotope_equilibrium_fractionation_factors,
+    isotope_kinetic_fractionation_factors,
     isotope_meteoric_water_line,
     isotope_ratio_evolution,
     isotope_diffusivity_ratios,
