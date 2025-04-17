@@ -1,5 +1,5 @@
 """
-test checking values
+test checking values on Fig 1
 """
 
 from pathlib import Path
@@ -21,7 +21,7 @@ def notebook_variables_fixture():
 
 
 def test_fig_ventilation_coefficient(notebook_variables):
-    """ventilation coefficients should have same  the same line scope"""
+    """test if ventilation coefficients (f) have the same line slope"""
     # Arrange
     vent_coeff_K_G = notebook_variables["plot_K_G_coeff"][0].get_data()[1]
     vent_coeff_B_P = notebook_variables["plot_B_P_coeff"][0].get_data()[1]
@@ -35,8 +35,8 @@ def test_fig_ventilation_coefficient(notebook_variables):
 
 @pytest.mark.parametrize("paper", ("Kinzer & Gunn", "Beard & Pruppacher"))
 def test_fig_1(notebook_variables, paper):
+    """test coefficient factors (F) from Kinzer & Gunn and Beard & Pruppacher"""
     # Arrange
-    print(notebook_variables["plot_factor"][paper][0].get_data())
     radii_mm, ventilation_factor = notebook_variables["plot_factor"][paper][
         0
     ].get_data()
