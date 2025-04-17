@@ -1,9 +1,87 @@
 [tool.isort]
 profile = "black"
 
+[tool.setuptools]
+py-modules = []
+
 [tool.setuptools_scm]
-local_scheme = "no-local-version"
-version_scheme = "post-release"
 
 [build-system]
 requires = ['setuptools==75.3.0', 'setuptools-scm==8.1.0']
+build-backedn = "setuptools.build_meta"
+
+[project]
+name = "PySDM"
+description = "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab"
+readme = "README.md"
+keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
+    "atmospheric-modelling", "particle-system", "numba", "thrust",
+    "nvrtc", "pint", "atmospheric-physics".
+    ]
+license = {text = "GPL-3.0"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries",
+]
+requires_python = ">= 3.8"
+dependencies = [
+    "ThrustRTC==0.3.20",
+    "CURandRTC==0.1.6 ; 'CI' in os.environ",
+    "CURandRTC>=0.1.2 ; 'CI' not in os.environ",
+    "numba==0.58.1 ; python_version == '3.8' and 'CI' in os.environ",
+    "numba==0.60.0 ; python_version >= '3.9' and 'CI' in os.environ and not platform.architecture()[0] == '32bit'",
+    "numba>=0.51.2 ; 'CI' not in os.environ",
+    "numpy==1.24.4 ; python_version < '3.12' and 'CI' in os.environ",
+    "numpy==1.26.4 ; python_version >= '3.12' and 'CI' in os.environ",
+    "numpy<2.0.0 ; 'CI' not in os.environ",
+    "Pint==0.21.1 ; 'CI' in os.environ",
+    "Pint ; 'CI' not in os.environ",
+    "chempy==0.8.3 ; 'CI' in os.environ",
+    "chempy ; 'CI' not in os.environ",
+    "scipy==1.10.1 ; python_version < '3.12' and 'CI' in os.environ and not platform.architecture()[0] != '32bit'",
+    "scipy ; 'CI' not in os.environ",
+    "pyevtk==1.2.0 ; 'CI' in os.environ",
+    "pyevtk ; 'CI' not in os.environ",
+]
+dynamic = ["version"]
+[project.optional-dependencies]
+tests = [
+    "matplotlib",
+    "pytest",
+    "pytest-timeout",
+    "PySDM-examples",
+    "open-atmos-jupyter-utils>=1.2.0",
+    "PyPartMC==1.3.6 ; python_version < '3.12'",
+    "pywinpty==0.5.7 ; 'CI' in os.environ and platform.architecture()[0] == '32bit'",
+    "pywinpty ; platform.architecture()[0] == '32bit'",
+    "terminado==0.5.7 ; 'CI' in os.environ and platform.architecture()[0] == '32bit'",
+    "terminado ; platform.architecture()[0] == '32bit'",
+    "jupyter-client==7.4.9 ; 'CI' in os.environ and platform.architecture()[0] == '32bit'",
+    "jupyter-client ; platform.architecture()[0] == '32bit'",
+    "jupyter-core==4.12.0 ; 'CI' in os.environ and platform.architecture()[0] == '32bit'",
+    "jupyter-core ; platform.architecture()[0] == '32bit'",
+    "jupyter-server==1.24.0 ; 'CI' in os.environ and platform.architecture()[0] == '32bit'",
+    "jupyter-server ; platform.architecture()[0] == '32bit'",
+    "notebook==6.5.6 ; 'CI' in os.environ and platform.architecture()[0] == '32bit'",
+    "notebook ; platform.architecture()[0] == '32bit'",
+    "pyrcel ; platform.architecture()[0] != '32bit'",
+    "jupyter-core < 5.0.0 ; platform.architecture()[0] != '32bit'",
+    "ipywidgets!=8.0.3 ; platform.architecture()[0] != '32bit'",
+]
+
+[project.urls]
+Tracker = "https://github.com/open-atmos/PySDM/issues"
+Documentation = "https://open-atmos.github.io/PySDM"
+Source = "https://github.com/open-atmos/PySDM"
+
+[project.authors]
+name = "https://github.com/open-atmos/PySDM/graphs/contributors"
+email = "sylwester.arabas@agh.edu.pl"
