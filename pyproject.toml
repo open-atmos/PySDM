@@ -16,7 +16,7 @@ description = "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemist
 readme = "README.md"
 keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
     "atmospheric-modelling", "particle-system", "numba", "thrust",
-    "nvrtc", "pint", "atmospheric-physics".
+    "nvrtc", "pint", "atmospheric-physics",
     ]
 license = {text = "GPL-3.0"}
 classifiers = [
