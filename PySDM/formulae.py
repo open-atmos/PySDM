@@ -46,16 +46,18 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
-        isotope_meteoric_water_line_excess: str = "Null",
+        isotope_meteoric_water_line: str = "Null",
         isotope_ratio_evolution: str = "Null",
         isotope_diffusivity_ratios: str = "Null",
         isotope_relaxation_timescale: str = "Null",
+        isotope_temperature_inference: str = "Null",
         optical_albedo: str = "Null",
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
         bulk_phase_partitioning: str = "Null",
+        ccn_activation_spectrum: str = "Null",
         handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
@@ -80,15 +82,17 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_equilibrium_fractionation_factors = (
             isotope_equilibrium_fractionation_factors
         )
-        self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
+        self.isotope_meteoric_water_line = isotope_meteoric_water_line
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
         self.isotope_relaxation_timescale = isotope_relaxation_timescale
+        self.isotope_temperature_inference = isotope_temperature_inference
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
         self.bulk_phase_partitioning = bulk_phase_partitioning
-
+        self.ccn_activation_spectrum = ccn_activation_spectrum
+        
         self._components = tuple(
             i
             for i in dir(self)

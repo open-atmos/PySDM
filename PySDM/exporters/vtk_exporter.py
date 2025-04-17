@@ -134,7 +134,7 @@ class VTKExporter:
 
                 if isinstance(v, np.ndarray):
                     if v.shape == particulator.mesh.grid:
-                        payload[k] = v[:, :, np.newaxis]
+                        payload[k] = v[:, :, np.newaxis].copy()
                     else:
                         if self.verbose:
                             print(

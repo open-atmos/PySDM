@@ -29,10 +29,11 @@ from . import (
     hygroscopicity,
     impl,
     isotope_equilibrium_fractionation_factors,
-    isotope_meteoric_water_line_excess,
+    isotope_meteoric_water_line,
     isotope_ratio_evolution,
     isotope_diffusivity_ratios,
     isotope_relaxation_timescale,
+    isotope_temperature_inference,
     latent_heat,
     optical_albedo,
     optical_depth,
@@ -46,5 +47,6 @@ from . import (
     air_dynamic_viscosity,
     terminal_velocity,
     bulk_phase_partitioning,
+    ccn_activation_spectrum,
 )
 from .constants import convert_to, in_unit, si

@@ -234,8 +234,8 @@ class ChemistryMethods(BackendMethods):
             SO2aq = moles_S_IV[i] / droplet_volume[i] / dissociation_factor_SO2[i]
 
             # NB: This might not be entirely correct
-            # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
-            # https://www.atmos-chem-phys.net/16/1693/2016/acp-16-1693-2016.pdf
+            # https://doi.org/10.1029/JD092iD04p04171
+            # https://doi.org/10.5194/acp-16-1693-2016
 
             ozone = (
                 (
