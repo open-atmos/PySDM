@@ -599,8 +599,8 @@
     "usages": [
       "PySDM/physics/freezing_temperature_spectrum/niemand_et_al_2012.py"
     ],
-    "label": "Niedermeier et al. 2014 (J. Atmos. Sci. 69)",
-    "title": "A computationally efficient description of heterogeneous freezing: A simplified version of the Soccer ball model"
+    "label": "Niemand et al. 2012 (J. Atmos. Sci. 69)",
+    "title": "A Particle-Surface-Area-Based Parameterization of Immersion Freezing on Desert Dust Particles"
   },
   "https://doi.org/10.1002/2013GL058684": {
     "usages": [
