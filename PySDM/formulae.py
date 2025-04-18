@@ -49,6 +49,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
+        isotope_kinetic_fractionation_factors: str = "Null",
         isotope_meteoric_water_line: str = "Null",
         isotope_ratio_evolution: str = "Null",
         isotope_diffusivity_ratios: str = "Null",
@@ -87,6 +88,9 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.fragmentation_function = fragmentation_function
         self.isotope_equilibrium_fractionation_factors = (
             isotope_equilibrium_fractionation_factors
+        )
+        self.isotope_kinetic_fractionation_factors = (
+            isotope_kinetic_fractionation_factors
         )
         self.isotope_meteoric_water_line = isotope_meteoric_water_line
         self.isotope_ratio_evolution = isotope_ratio_evolution
