@@ -16,13 +16,15 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "chemistry_freezing_extraterrestrial": [
+    "chemistry_extraterrestrial": [
         "Jaruga_and_Pawlowska_2018",
         "Kreidenweis_et_al_2003",
+        "Toon_et_al_1980",
+    ],
+    "freezing": [
         "Alpert_and_Knopf_2016",
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
-        "Toon_et_al_1980",
     ],
     "isotopes": [
         "Bolot_et_al_2013",
