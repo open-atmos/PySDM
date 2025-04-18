@@ -50,6 +50,7 @@ class Simulation:
         builder.add_dynamic(VapourDepositionOnIce())
         builder.add_dynamic(Freezing(singular=False, homogeneous_freezing=True, immersion_freezing=False))
 
+        self.n_sd = settings.n_sd
         self.multiplicities = discretise_multiplicities(settings.specific_concentration * env.mass_of_dry_air)
         self.r_dry = settings.r_dry
         v_dry = settings.formulae.trivia.volume(radius=self.r_dry)
@@ -98,9 +99,6 @@ class Simulation:
         self.n_output = settings.n_output
         self.n_substeps = int(settings.t_duration / dt / self.n_output)
 
-        print(settings.t_duration, dt, self.n_output, self.n_substeps)
-
-        print(self.particulator.n_sd)
 
     def save(self, output):
         cell_id = 0
@@ -119,7 +117,7 @@ class Simulation:
         output["ni"].append(self.particulator.products["n_i"].get()[cell_id])
         output["rs"].append(self.particulator.products["r_s"].get()[cell_id])
         output["ri"].append(self.particulator.products["r_i"].get()[cell_id])
-
+        output["water_mass"].append(self.particulator.attributes["signed water mass"].data.tolist())
     def run(self):
         output = {
             "t": [],
@@ -136,9 +134,19 @@ class Simulation:
             "ni": [],
             "rs": [],
             "ri": [],
+            "frozen":[],
+            "multiplicity": [],
+            "r_dry":[],
+            "r_wet": [],
+            "water_mass":[]
         }
 
         self.save(output)
+        output["n_sd"] =  [ self.n_sd ]
+        output["r_dry"].append( self.r_dry.tolist() )
+        output["r_wet"].append(self.r_wet.tolist())
+
+        RHi_old = self.particulator.products["RH_ice"].get()[0].copy()
         for _ in range(self.n_output):
             # print(self.particulator.__dict__)
             # print(self.particulator.attributes.__dict__)
@@ -146,7 +154,23 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             # print(self.particulator.products["t"].get())
             # print(self.particulator.products["p"].get())
-            # print(self.particulator.attributes["signed water mass"].data)
+            #
             self.save(output)
+
+
+            RHi = self.particulator.products["RH_ice"].get()[0].copy()
+            dRHi = (RHi_old - RHi) / RHi_old
+            if (dRHi > 0. and RHi < 130.):
+                print("break")
+                break
+            else:
+                RHi_old = RHi
+
+        frozen = np.where(self.particulator.attributes["signed water mass"].data < 0., 1, 0)
+        output["frozen"].append(frozen.tolist())
+        output["multiplicity"].append(
+            self.particulator.attributes["multiplicity"].data.tolist()
+        )
+
 
         return output

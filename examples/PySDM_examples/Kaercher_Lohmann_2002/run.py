@@ -1,172 +1,144 @@
-import matplotlib.pyplot as plt
-from matplotlib import pyplot
+
 from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
+import pickle
+import json
 
-from settings import settings
-from simulation import Simulation
-from reference import critical_supersaturation
 from PySDM.physics.constants import si
 
-kg_to_µg = 1.e9
-m_to_µm = 1.e6
+from settings import settings as simulation_settings
+from simulation import Simulation
+# from plot import plot_size_distribution, plot_evolution, plot_ensemble
 
-
-def plot_size_distribution(r_wet, r_dry, N, setting, pp):
-    r_wet, r_dry = r_wet * m_to_µm, r_dry * m_to_µm
-
-    title = f"N0: {setting.N_dv_solution_droplet * 1e-6:.2E} cm-3 \
-    R0: {setting.r_mean_solution_droplet * m_to_µm:.2E} µm \
-    $\sigma$: {setting.sigma_solution_droplet:.2f} \
-    Nsd: {setting.n_sd:d}  $\kappa$: {setting.kappa:.2f}"
-
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-
-    ax.scatter(r_dry, N, color="red", label="dry")
-    ax.scatter(r_wet, N, color="blue", label="wet")
-    ax.set_title(title)
-    ax.legend()
-    ax.set_xscale('log')
-    ax.set_xlim(5.e-3, 5.e0)
-    ax.set_yscale('log')
-    ax.set_xlabel(r"radius [µm]")
-    ax.set_ylabel("multiplicty")
-
-    pp.savefig()
-
-
-def plot(output, setting, pp):
-    time = output["t"]
-    temperature = np.asarray(output["T"])
-    z = output["z"]
-
-    rh = output["RH"]
-    rhi = output["RHi"]
-    rhi_crit = critical_supersaturation(temperature) * 100.
-
-    print(f"{rh=},{rhi=},{rhi_crit=}")
-
-    lwc = np.asarray(output["LWC"]) * kg_to_µg
-    iwc = abs(np.asarray(output["IWC"])) * kg_to_µg
-    twc = lwc + iwc
-    qv = np.asarray(output["qv"]) * kg_to_µg
-
-    print(f"{lwc=},{iwc=},{twc=},{qv=}")
-
-    ns = output["ns"]
-    ni = output["ni"]
-    rs = output["rs"]
-    ri = output["ri"]
-    print(f"{ns=},{ni=},{rs=},{ri=},")
-
-    fig, axs = pyplot.subplots(3, 2, figsize=(10, 10), sharex=True)
-
-    title = f"w: {setting.w_updraft:.2f} m s-1 T0: {setting.initial_temperature:.2f} K Nsd: {setting.n_sd:d} \
-    rate: " + setting.rate
-
-    fig.suptitle(title)
-
-    axTz = axs[0, 0]
-
-    axTz.plot(
-        time, z, color="black", linestyle="-", label="dz", linewidth=5
-    )
-    axTz.set_ylabel("vertical displacemet [m]")
-    axTz.set_ylim(-5, 1000)
-    twin = axTz.twinx()
-    twin.plot(
-        time, temperature, color="red", linestyle="-", label="T", linewidth=5
-    )
-    twin.set_ylim(190, 250)
-    twin.legend(loc='upper right')
-    twin.set_ylabel("temperature [K]")
-    axTz.legend(loc='upper left')
-    axTz.set_xlabel("time [s]")
-
-    axRH = axs[0, 1]
-
-    axRH.plot(
-        time, rh, color="blue", linestyle="-", label="water", linewidth=5
-    )
-    axRH.plot(
-        time, rhi, color="red", linestyle="-", label="ice", linewidth=5
-    )
-    axRH.plot(
-        time, rhi_crit, color="black", linestyle="-", label="crit", linewidth=5
-    )
-    axRH.legend()
-    axRH.set_xlabel("time [s]")
-    axRH.set_ylabel("relative humidity [%]")
-    axRH.set_ylim(50, 200)
-
-    axWC = axs[1, 0]
-
-    axWC.plot(
-        time, twc, color="black", linestyle="--", label="total", linewidth=5
-    )
-    axWC.plot(
-        time, lwc, color="blue", linestyle="-", label="water", linewidth=5
-    )
-    axWC.plot(
-        time, iwc, color="red", linestyle="-", label="ice", linewidth=5
-    )
-    axWC.set_yscale('log')
-    axWC.legend()
-    axWC.set_ylim(1.e1, 1.e5)
-    axWC.set_xlabel("time [s]")
-    axWC.set_ylabel(r"mass content [$\mathrm{\mu g \, kg^{-1}}$]")
-
-    axN = axs[1, 1]
-
-    axN.plot(
-        time, ns, color="blue", linestyle="-", label="droplet", linewidth=5)
-    axN.plot(
-        time, ni, color="red", linestyle="-", label="ice", linewidth=5)
-
-    axN.set_yscale('log')
-    axN.legend()
-    axN.set_ylim(1.e-3, 1.e4)
-    axN.set_xlabel("time [s]")
-    axN.set_ylabel(r"number concentration [$\mathrm{cm^{-3}}$]")
-
-    axR = axs[2, 0]
-
-    axR.plot(
-        time, rs, color="blue", linestyle="-", label="droplet", linewidth=5)
-    axR.plot(
-        time, ri, color="red", linestyle="-", label="ice", linewidth=5)
-
-    axR.legend()
-    axR.set_yscale('log')
-    axR.set_ylim(5.e-2, 1.e2)
-    axR.set_xlabel("time [s]")
-    axR.set_ylabel(r"mean radius [µm]")
-
-    fig.tight_layout()
-    pp.savefig()
-
-
-general_settings = {"n_sd": 1000, "T0": 220 * si.kelvin, "w_updraft": 10 * si.centimetre / si.second}
-distributions = ({"N_dv_solution_droplet": 2500 / si.centimetre ** 3, \
-                  "r_mean_solution_droplet": 0.055 * si.micrometre, \
+general_settings = {"n_sd": 10, "T0": 220 * si.kelvin,
+                    "w_updraft": 10 * si.centimetre / si.second}
+distributions = ({"N_dv_solution_droplet": 2500 / si.centimetre ** 3,
+                  "r_mean_solution_droplet": 0.055 * si.micrometre,
                   "sigma_solution_droplet": 1.6},
-                 {"N_dv_solution_droplet": 8600 / si.centimetre**3, \
-                  "r_mean_solution_droplet": 0.0275 * si.micrometre, \
+                 {"N_dv_solution_droplet": 8600 / si.centimetre**3,
+                  "r_mean_solution_droplet": 0.0275 * si.micrometre,
                   "sigma_solution_droplet": 1.3},
-                 {"N_dv_solution_droplet": 2000 / si.centimetre**3, \
-                  "r_mean_solution_droplet": 0.11 * si.micrometre, \
+                 {"N_dv_solution_droplet": 2000 / si.centimetre**3,
+                  "r_mean_solution_droplet": 0.11 * si.micrometre,
                   "sigma_solution_droplet": 2.},
                  )
 
-pp = PdfPages("hom_freezing_for_size_distributions.pdf")
+# pp = PdfPages("hom_freezing_for_size_distributions.pdf")
+#
+# for distribution in distributions:
+#     setting = settings(**{**general_settings, **distribution})
+#     model = Simulation(setting)
+#     output = model.run()
+#
+#     plot_size_distribution(model.r_wet, model.r_dry, model.multiplicities, setting, pp)
+#     plot(output, setting, model, pp)
 
-for distribution in distributions:
-    setting = settings(**{**general_settings, **distribution})
-    model = Simulation(setting)
-    output = model.run()
 
-    plot_size_distribution(model.r_wet, model.r_dry, model.multiplicities, setting, pp)
-    plot(output, setting, pp)
 
-pp.close()
+# calculate super particle ensemble
+def ensemble_simulation(number_of_ensemble_runs=1,
+                        dsd=0,
+                        T0=220.* si.kelvin,
+                        w_updraft=None,
+                        linear_sampling=False,
+                        nsd_single = None,
+                        lower_limit = None,
+                        add_label = "",
+                        RHi_0 = None,
+                        ):
+
+    file_name = ("ensemble_"+str(number_of_ensemble_runs)+"_dsd_"+str(dsd)
+                 + f"_T0_{T0:.0f}")
+
+
+    if nsd_single is None:
+        number_of_super_particles = (50, 100, 500, 1000, 5000, 10000, 50000, 100000)
+    else:
+        number_of_super_particles  = (nsd_single,)
+        file_name += "_nsd_"+str(nsd_single)
+
+    if linear_sampling:
+        file_name += "_lin"
+
+    if lower_limit is not None:
+        file_name += "_limit"
+    file_name += add_label
+
+
+    outputs = []
+
+    aerosol_distribution = distributions[dsd]
+    setting = {**general_settings,
+               **aerosol_distribution,
+               "linear_sampling": linear_sampling,
+               "lower_limit": lower_limit}
+
+    if T0 is not None:
+        setting["T0"] = T0
+    if RHi_0 is not None:
+        setting["RHi_0"] = RHi_0
+    if w_updraft is not None:
+        setting["w_updraft"] = w_updraft
+
+    for nsd in number_of_super_particles:
+        setting["n_sd"] = nsd
+
+        print(setting)
+
+        for _ in range(number_of_ensemble_runs):
+            simulation_setting = simulation_settings(**setting)
+            model = Simulation(simulation_setting)
+            output = model.run()
+            outputs.append(output)
+            del model, simulation_setting
+
+    data_file = { "outputs":outputs,
+                  "number_of_ensemble_runs": number_of_ensemble_runs,
+                  "initial_temperature": setting["T0"],
+                  "aerosol_distribution": aerosol_distribution,
+                  "w_updraft": setting["w_updraft"],
+                  }
+    print("Writing "+file_name+".json")
+    with open(file_name+".json", 'w') as file:
+        json.dump(data_file, file)
+
+
+# ensemble_simulation(1)
+# setting = {**general_settings, **distributions[0]  }
+# simulation_setting = simulation_settings(**setting)
+#
+# setting = {**general_settings, **distributions[0], "linear_sampling": True  }
+# simulation_setting = simulation_settings(**setting)
+
+
+# for DSD plots
+# ensemble_simulation(nsd_single = 50, dsd=0)
+# ensemble_simulation(nsd_single = 50, dsd=0, T0=220* si.kelvin,
+#                     RHi_0=1.6,
+#                     add_label="_RH16")
+# ensemble_simulation(nsd_single = 50, dsd=0, T0=220* si.kelvin,
+#                     RHi_0=1.0,
+#                     add_label="_RH10")
+# ensemble_simulation(nsd_single = 50, dsd=0, T0=220* si.kelvin,
+#                     RHi_0=1.4,
+#                     add_label="_RH14")
+# ensemble_simulation(nsd_single = 50, dsd=0, T0=220* si.kelvin,
+#                     RHi_0=1.4,)
+# ensemble_simulation(nsd_single = 50, dsd=0, T0=200* si.kelvin,
+#                     RHi_0=1.4,)
+# ensemble_simulation(nsd_single = 50, dsd=0, T0=190* si.kelvin,
+#                     RHi_0=1.4,)
+# ensemble_simulation(nsd_single = 50, dsd=1)
+# ensemble_simulation(nsd_single = 50, dsd=2)
+# ensemble_simulation(nsd_single = 50, dsd=0, lower_limit=5.5e-8)
+# ensemble_simulation(nsd_single = 50, dsd=0, linear_sampling=True)
+
+# ensemble_simulation(nsd_single = 50000, dsd=1,
+#                     RHi_0=1.0, w_updraft=1.*si.meter / si.second,
+#                     add_label="highoutput")
+
+# ensemble_simulation( linear_sampling=True, number_of_ensemble_runs=25)
+#
+# lower_limit_bound = (  5.5e-8, )
+# for lower_limit in lower_limit_bound:
+#     ensemble_simulation( lower_limit=lower_limit, number_of_ensemble_runs=25)
