@@ -4,6 +4,9 @@ PySDM_examples/utils/temporary_files/*
 *.pkl
 *.vtu
 *.vts
+*.svg
+*.gif
+*.ipynb.badges.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
