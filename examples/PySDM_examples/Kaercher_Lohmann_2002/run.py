@@ -10,7 +10,7 @@ from settings import settings as simulation_settings
 from simulation import Simulation
 # from plot import plot_size_distribution, plot_evolution, plot_ensemble
 
-general_settings = {"n_sd": 10, "T0": 220 * si.kelvin,
+general_settings = {"n_sd": 10, "T0": 216 * si.kelvin,
                     "w_updraft": 10 * si.centimetre / si.second}
 distributions = ({"N_dv_solution_droplet": 2500 / si.centimetre ** 3,
                   "r_mean_solution_droplet": 0.055 * si.micrometre,
@@ -38,7 +38,7 @@ distributions = ({"N_dv_solution_droplet": 2500 / si.centimetre ** 3,
 # calculate super particle ensemble
 def ensemble_simulation(number_of_ensemble_runs=1,
                         dsd=0,
-                        T0=220.* si.kelvin,
+                        T0=216.* si.kelvin,
                         w_updraft=None,
                         linear_sampling=False,
                         nsd_single = None,
@@ -48,7 +48,7 @@ def ensemble_simulation(number_of_ensemble_runs=1,
                         ):
 
     file_name = ("ensemble_"+str(number_of_ensemble_runs)+"_dsd_"+str(dsd)
-                 + f"_T0_{T0:.0f}")
+                 + f"_T0_{T0:.0f}" +  f"_W_{w_updraft:.2f}")
 
 
     if nsd_single is None:
@@ -112,7 +112,7 @@ def ensemble_simulation(number_of_ensemble_runs=1,
 
 
 # for DSD plots
-# ensemble_simulation(nsd_single = 50, dsd=0)
+# ensemble_simulation(nsd_single = 50000, dsd=0, add_label="koop_corr", w_updraft=1., number_of_ensemble_runs=25)
 # ensemble_simulation(nsd_single = 50, dsd=0, T0=220* si.kelvin,
 #                     RHi_0=1.6,
 #                     add_label="_RH16")
@@ -137,8 +137,25 @@ def ensemble_simulation(number_of_ensemble_runs=1,
 #                     RHi_0=1.0, w_updraft=1.*si.meter / si.second,
 #                     add_label="highoutput")
 
-# ensemble_simulation( linear_sampling=True, number_of_ensemble_runs=25)
+
+# ensemble_simulation(number_of_ensemble_runs=25, w_updraft=1.)
+# ensemble_simulation( linear_sampling=True, number_of_ensemble_runs=25, w_updraft=1.)
 #
 # lower_limit_bound = (  5.5e-8, )
 # for lower_limit in lower_limit_bound:
-#     ensemble_simulation( lower_limit=lower_limit, number_of_ensemble_runs=25)
+#     ensemble_simulation( lower_limit=lower_limit, number_of_ensemble_runs=25, w_updraft=1.)
+
+initial_temperatures = [196.,216.,236.]
+updrafts = [0.05, 0.1, 0.5, 1., 5., 10.]
+number_of_ensemble_runs=1
+dsd=0
+
+for T in reversed(initial_temperatures):
+    for w in reversed(updrafts):
+        ensemble_simulation(number_of_ensemble_runs=number_of_ensemble_runs,
+                            w_updraft=w,
+                            T0=T,
+                            dsd=dsd,
+                            linear_sampling=False,
+                            nsd_single = 10,
+                            )

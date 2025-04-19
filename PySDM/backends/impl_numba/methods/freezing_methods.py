@@ -123,20 +123,17 @@ class FreezingMethods(BackendMethods):
                     attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
                 ):
                     d_a_w_ice = (relative_humidity_ice[cell_id] - 1.) * a_w_ice[cell_id]
-                    rate_assuming_constant_temperature_within_dt = (
-                            j_hom(temperature[cell_id], d_a_w_ice) * attributes.volume[i]
-                    )
-                    rate = j_hom(temperature[cell_id], d_a_w_ice)
-                    prob = 1 - prob_zero_events(
-                        r=rate_assuming_constant_temperature_within_dt, dt=timestep
-                    )
-                    randi = rand[i]
-                    if rand[i] < prob:
-                        # print(f"{d_a_w_ice=},{rate=},{prob=},{randi=}")
-                        _freeze(attributes.signed_water_mass, i)
-                        # if record_freezing_temperature:
-                        #     freezing_temperature[i] = temperature[cell_id]
-           # print( attributes.signed_water_mass )
+                    if d_a_w_ice > 0.23 and d_a_w_ice < 0.34:
+                        rate_assuming_constant_temperature_within_dt = (
+                                j_hom(temperature[cell_id], d_a_w_ice) * attributes.volume[i]
+                        )
+                        prob = 1 - prob_zero_events(
+                            r=rate_assuming_constant_temperature_within_dt, dt=timestep
+                        )
+                        if rand[i] < prob:
+                            _freeze(attributes.signed_water_mass, i)
+                            # if record_freezing_temperature:
+                            #     freezing_temperature[i] = temperature[cell_id]
         
         self.freeze_time_dependent_homogeneous_body = freeze_time_dependent_homogeneous_body
             

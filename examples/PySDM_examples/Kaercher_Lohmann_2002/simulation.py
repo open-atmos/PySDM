@@ -171,6 +171,6 @@ class Simulation:
         output["multiplicity"].append(
             self.particulator.attributes["multiplicity"].data.tolist()
         )
-
+        print("Done. Last ni:", output["ni"][-1] )
 
         return output

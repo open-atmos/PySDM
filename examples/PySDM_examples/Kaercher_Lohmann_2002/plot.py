@@ -43,7 +43,7 @@ def plot_size_distribution(r_wet, r_dry, N, setting, pp):
 def plot_evolution( pp, output ):
     ln = 2.5
 
-    extra_panel = False
+    extra_panel = True
 
     time = output["t"]
     temperature = np.asarray(output["T"])
@@ -64,13 +64,13 @@ def plot_evolution( pp, output ):
     ri = output["ri"]
 
     frozen = output["frozen"]
-    r_wet_init = output["r_wet"]
+    r_wet_init = np.asarray(output["r_wet"]) * m_to_µm
     multiplicities = output["multiplicity"]
     multiplicities_unfrozen = np.ma.masked_array(multiplicities, mask=frozen)
     multiplicities_frozen = np.ma.masked_array(multiplicities, mask=np.logical_not(frozen))
 
     if extra_panel:
-        fig, axs = pyplot.subplots(3, 2, figsize=(10, 10), sharex=False)
+        fig, axs = pyplot.subplots(3, 2, figsize=(10, 15), sharex=False)
     else:
         fig, axs = pyplot.subplots(2, 2, figsize=(10, 10), sharex=False)
 
@@ -170,32 +170,38 @@ def plot_evolution( pp, output ):
         axWC.plot(
             time, iwc, color="red", linestyle="-", label="ice", linewidth=ln
         )
+        axWC.set_title("(e) mass content", fontsize=title_fsize)
         axWC.set_yscale('log')
-        axWC.legend()
-        axWC.set_ylim(1.e1, 1.e5)
+        axWC.legend(fontsize=ax_lab_fsize)
+        axWC.tick_params(labelsize=tick_fsize)
+        axWC.set_xlim(x_limit)
+        axWC.set_ylim(1.e0, 5.e4)
         axWC.set_xlabel("time [s]", fontsize=ax_lab_fsize)
         axWC.set_ylabel(r"mass content [$\mathrm{\mu g \, kg^{-1}}$]"
                         , fontsize=ax_lab_fsize)
+        axWC.grid(True)
 
         axFrz = axs[2, 1]
 
         axFrz.scatter(r_wet_init, multiplicities_unfrozen, color="black", alpha=0.5, label="unfrozen")
         axFrz.scatter(r_wet_init, multiplicities_frozen, color="blue", label="frozen")
-        axFrz.legend()
+        axFrz.set_title("(f) frozen super particles", fontsize=title_fsize)
+        axFrz.legend(fontsize=ax_lab_fsize)
+        axFrz.tick_params(labelsize=tick_fsize)
         axFrz.set_xscale('log')
-        axFrz.set_xlim(5.e-3, 5.e0)
+        axFrz.set_xlim(5.e-3, 5.e-1)
         axFrz.set_yscale('log')
-        axFrz.set_xlabel(r"initial wet radius [µm]", fontsize=ax_lab_fsize)
+        axFrz.set_xlabel(r"initial radius [µm]", fontsize=ax_lab_fsize)
         axFrz.set_ylabel("multiplicty", fontsize=ax_lab_fsize)
+        # axFrz.grid(True)
 
     fig.tight_layout()
     pp.savefig()
 
 
-def plot_ensemble(pp, outputs, T0, ens_member):
+def plot_ensemble(pp, outputs, T0, ens_member, only_ni = False, title = None):
 
-    title = ("Ensemble simulation with " + str(ens_member)
-             + f" members for T0: {T0:.2f}K ")
+
 
     x_label = "number of super particles"
 
@@ -234,49 +240,64 @@ def plot_ensemble(pp, outputs, T0, ens_member):
         )
         jdx += 1
 
-    fig, axs = pyplot.subplots(2, 2, figsize=(10, 10), sharex=False)
+    if only_ni:
+        fig, ax = pyplot.subplots(1, 1, figsize=(5, 5))
+    else:
+        fig, axs = pyplot.subplots(2, 2, figsize=(10, 10), sharex=False)
     # fig.suptitle(title)
 
-    axN = axs[0, 0]
-    axN.set_title("(a) nucleated number concentration", fontsize=title_fsize)
-    axN.boxplot(ni_arr,tick_labels=x_string_array)
-    axN.set_yscale('log')
-    axN.set_ylim(1.e-2, 1.e2)
-    axN.axhline(ni_bulk_ref, c="r")
-    axN.set_ylabel(r"ice number concentration [$\mathrm{cm^{-3}}$]"
-                   , fontsize=ax_lab_fsize)
-    axN.set_xlabel(x_label, fontsize=ax_lab_fsize)
-    axN.tick_params(axis='y', labelsize=tick_fsize)
+    if only_ni:
+        if title is not None:
+            ax.set_title(title, fontsize=title_fsize)
+        ax.boxplot(ni_arr, tick_labels=x_string_array)
+        ax.set_yscale('log')
+        ax.set_ylim(1.e-2, 1.e2)
+        ax.axhline(ni_bulk_ref, c="r")
+        ax.set_ylabel(r"ice number concentration [$\mathrm{cm^{-3}}$]"
+                       , fontsize=ax_lab_fsize)
+        ax.set_xlabel(x_label, fontsize=ax_lab_fsize)
+        ax.tick_params(axis='y', labelsize=tick_fsize)
+    else:
+        axN = axs[0, 0]
+        axN.set_title("(a) nucleated number concentration", fontsize=title_fsize)
+        axN.boxplot(ni_arr,tick_labels=x_string_array)
+        axN.set_yscale('log')
+        axN.set_ylim(1.e-2, 1.e2)
+        axN.axhline(ni_bulk_ref, c="r")
+        axN.set_ylabel(r"ice number concentration [$\mathrm{cm^{-3}}$]"
+                       , fontsize=ax_lab_fsize)
+        axN.set_xlabel(x_label, fontsize=ax_lab_fsize)
+        axN.tick_params(axis='y', labelsize=tick_fsize)
 
-    axR = axs[0, 1]
-    axR.set_title("(b) mean radius", fontsize=title_fsize)
-    axR.boxplot(ri_arr,tick_labels=x_string_array)
-    axR.set_xlabel(x_label)
-    axR.set_yscale('log')
-    axR.set_ylim(5.e-2, 1.e2)
-    axR.set_ylabel(r"ice mean radius[µm]"
-                   , fontsize=ax_lab_fsize)
-    axR.tick_params(axis='y', labelsize=tick_fsize)
+        axR = axs[0, 1]
+        axR.set_title("(b) mean radius", fontsize=title_fsize)
+        axR.boxplot(ri_arr,tick_labels=x_string_array)
+        axR.set_xlabel(x_label)
+        axR.set_yscale('log')
+        axR.set_ylim(5.e-2, 1.e2)
+        axR.set_ylabel(r"ice mean radius[µm]"
+                       , fontsize=ax_lab_fsize)
+        axR.tick_params(axis='y', labelsize=tick_fsize)
 
-    axF = axs[1, 0]
-    axF.set_title("(c) frozen fraction", fontsize=title_fsize)
-    axF.boxplot(frozen_fraction_arr,tick_labels=x_string_array)
-    axF.set_xlabel(x_label, fontsize=ax_lab_fsize)
-    axF.set_yscale('log')
-    axF.set_ylim(1.e-5, 1)
-    axF.set_ylabel(r"fraction of frozen super particles"
-                   , fontsize=ax_lab_fsize)
-    axF.tick_params(axis='y', labelsize=tick_fsize)
+        axF = axs[1, 0]
+        axF.set_title("(c) frozen fraction", fontsize=title_fsize)
+        axF.boxplot(frozen_fraction_arr,tick_labels=x_string_array)
+        axF.set_xlabel(x_label, fontsize=ax_lab_fsize)
+        axF.set_yscale('log')
+        axF.set_ylim(1.e-5, 1)
+        axF.set_ylabel(r"fraction of frozen super particles"
+                       , fontsize=ax_lab_fsize)
+        axF.tick_params(axis='y', labelsize=tick_fsize)
 
-    axM = axs[1, 1]
-    axM.set_title("(d) radius of smallest frozen droplet", fontsize=title_fsize)
-    axM.boxplot(min_frozen_r_arr,tick_labels=x_string_array)
-    axM.set_xlabel(x_label, fontsize=ax_lab_fsize)
-    axM.set_yscale('log')
-    axM.set_ylim(5.e-3, 5.e0)
-    axM.set_ylabel(r"minimum radius of frozen droplets [µm]"
-                   , fontsize=ax_lab_fsize)
-    axM.tick_params(axis='y', labelsize=tick_fsize)
+        axM = axs[1, 1]
+        axM.set_title("(d) radius of smallest frozen droplet", fontsize=title_fsize)
+        axM.boxplot(min_frozen_r_arr,tick_labels=x_string_array)
+        axM.set_xlabel(x_label, fontsize=ax_lab_fsize)
+        axM.set_yscale('log')
+        axM.set_ylim(5.e-3, 5.e0)
+        axM.set_ylabel(r"minimum radius of frozen droplets [µm]"
+                       , fontsize=ax_lab_fsize)
+        axM.tick_params(axis='y', labelsize=tick_fsize)
 
     fig.tight_layout()
     pp.savefig()
@@ -284,7 +305,7 @@ def plot_ensemble(pp, outputs, T0, ens_member):
 
 
 # plot super particle ensemble
-def plot_ensemble_simulation(file_name):
+def plot_ensemble_simulation(file_name, only_ni=False, title=None):
 
     plot_name = file_name.replace("json","pdf")
 
@@ -295,15 +316,15 @@ def plot_ensemble_simulation(file_name):
     T0 = data["initial_temperature"]
 
     pp = PdfPages(plot_name)
-    plot_ensemble(pp, outputs, T0, number_of_ensemble_runs)
+    plot_ensemble(pp, outputs, T0, number_of_ensemble_runs, only_ni=only_ni, title = title)
     pp.close()
 
-filename= "ensemble_nsd_25_dsd_0_T0_220.json"
-plot_ensemble_simulation(filename)
+# filename= "ensemble_nsd_25_dsd_0_T0_220.json"
+# plot_ensemble_simulation(filename)
 filename= "ensemble_nsd_25_dsd_0_T0_220_lin.json"
-plot_ensemble_simulation(filename)
-filename= "ensemble_nsd_2_dsd_0_T0_220_limit.json"
-plot_ensemble_simulation(filename)
+plot_ensemble_simulation(filename, only_ni=True, title="linear sampling")
+filename= "ensemble_nsd_25_dsd_0_T0_220_limit.json"
+plot_ensemble_simulation(filename, only_ni=True, title="limited sampling")
 
 
 
@@ -435,6 +456,66 @@ def plot_size_distribution_discretisation():
 
 
 
+def plot_ni_as_function_of_w():
+
+    dsd_list = np.array([0])
+    initial_temperatures = np.array([196., 216., 236.])
+    updrafts = np.array([0.05, 0.1, 0.5, 1., 5., 10.])
+
+    dim_size = ( np.shape(dsd_list)[0], np.shape(initial_temperatures)[0], np.shape(updrafts)[0] )
+    ni_sdm = np.zeros(dim_size)
+
+
+
+    for i in range(dim_size[0]):
+        for j in range(dim_size[1]):
+            T0 = initial_temperatures[j]
+            for k in range(dim_size[2]):
+                w = updrafts[k]
+                filename = "ensemble_1_dsd_"+str(i)+f"_T0_{T0:.0f}"+f"_W_{w:.2f}"+"_nsd_10.json"
+                # print(filename)
+
+                with open(filename, 'r') as f:
+                    data = json.load(f)
+
+                T0_sim = data['initial_temperature']
+                w_sim   = data['w_updraft']
+                if T0 == T0_sim and w == w_sim:
+                    output = data['outputs'][0]
+                    ni_last = output["ni"][-1]
+                    print( w, T0, ni_last )
+                    ni_sdm[i,j,k] = ni_last
+
+    print(ni_sdm)
+
+    fig, axs = pyplot.subplots(1, 3, figsize=(15, 5), sharex=False)
+
+    for i in range(1):
+        ax = axs[i]
+
+        if i == 0:
+            ax.set_title("(a) hom. nucleation for DSD 1",fontsize=title_fsize)
+        if i == 1:
+            ax.set_title("(b) hom. nucleation for DSD 2", fontsize=title_fsize)
+        if i == 2:
+            ax.set_title("(c) hom. nucleation for DSD 3", fontsize=title_fsize)
+
+        for j in range(dim_size[1]):
+         ax.scatter(updrafts, ni_sdm[i,j,:],label=f"T0={initial_temperatures[j]:.0f}K")
+
+        ax.tick_params(labelsize=tick_fsize)
+        ax.set_xscale('log')
+        ax.set_xlabel(r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
+                       , fontsize=ax_lab_fsize)
+        ax.set_yscale('log')
+        ax.set_ylim(1.e-1, 8.e3)
+        ax.set_ylabel(r"ice number concentration [$\mathrm{cm^{-3}}$]"
+                       , fontsize=ax_lab_fsize)
+        ax.legend(fontsize=ax_lab_fsize,loc="lower right")
+
+    plt.tight_layout
+    plt.savefig("w_ni_plot.pdf")
 # plot_size_distribution_discretisation()
 
 # print( critical_supersaturation(220.) )
+# plot_ni_as_function_of_w()

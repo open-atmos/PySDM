@@ -21,7 +21,7 @@ class settings:
         r_mean_solution_droplet: float,
         sigma_solution_droplet: float,
         kappa: float=0.64,
-        rate: str="Koop2000",
+        rate: str="Koop_Correction",
         dt: float=0.1,
         linear_sampling: bool=False,
         lower_limit: float=None,
@@ -35,7 +35,7 @@ class settings:
         self.rate = rate
 
         self.mass_of_dry_air = 1000 * si.kilogram
-        self.initial_pressure = 220 * si.hectopascals
+        self.initial_pressure = 200 * si.hectopascals
         self.initial_ice_supersaturation = RHi_0
         self.kappa = kappa
         self.initial_temperature  = T0
@@ -89,7 +89,7 @@ class settings:
                                                       error_threshold=0.95,
                                                       ).sample(n_sd))
 
-        self.t_duration = 3600 #3600 * 1.5 # total duration of simulation
+        self.t_duration = 7200 #3600 * 1.5 # total duration of simulation
         self.dt         = dt
-        self.n_output   = 3600 #100 # number of output steps
+        self.n_output   = int(self.t_duration / 100) #100 # number of output steps
 

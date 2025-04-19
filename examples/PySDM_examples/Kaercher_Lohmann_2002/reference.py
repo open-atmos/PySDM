@@ -21,6 +21,10 @@ def bulk_model_reference(initial_temperature, updraft=0.1):
         if updraft == 1.:
             n_hom_ice = 7268664.77542974
 
+    if initial_temperature == 216.:
+        if updraft == 1.:
+            n_hom_ice = 10475282.894692907
+
 
 
     return( n_hom_ice / si.metre ** 3  )
