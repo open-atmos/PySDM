@@ -285,17 +285,27 @@ jobs:
       - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run:
           mkdir -p /home/runner/work/_temp/_github_home/figures
+          ls /tmp/pytest-of-runner/pytest-current/
           rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_Pycurrent
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_*/output/docs_intro_animation.mp4 /home/runner/work/_temp/_github_home/figures
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_examples_*/output/last_animation_frame.pdf /home/runner/work/_temp/_github_home/figures
-      - name: artifact upload
-        if: ${{ matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version }}
+          ls /home/runner/work/_temp/_github_home/figures
+
+      - name: animation movie upload
+        if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
-          name: animations
-          path: |
-            /github/home/figures/*.mp4
-            /github/home/figures/*.pdf
+          name: animation-movie
+          if-no-files-found: error
+          path: /github/home/figures/*.mp4
+
+      - name: animation frame upload
+        if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        uses: actions/upload-artifact@v4
+        with:
+          name: animation-frame
+          if-no-files-found: error
+          path: /github/home/figures/*.pdf
 
       - name: tip release upload
         if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
