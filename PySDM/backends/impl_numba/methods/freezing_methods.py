@@ -116,11 +116,9 @@ class FreezingMethods(BackendMethods):
         a_w_ice,
         temperature,
         relative_humidity,
-        pyproject-update
         record_freezing_temperature,
         freezing_temperature,
         thaw: bool,
-        main,
     ):
         self.freeze_time_dependent_body(
             rand.data,
