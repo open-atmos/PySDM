@@ -15,7 +15,7 @@ class Settings:
         ccn_sampling_n: int = 11,
         in_sampling_n: int = 20,
         initial_temperature: float,
-        timestep: float
+        timestep: float,
     ):
         self.ccn_sampling_n = ccn_sampling_n
         self.in_sampling_n = in_sampling_n

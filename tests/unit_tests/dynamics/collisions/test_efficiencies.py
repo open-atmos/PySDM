@@ -109,7 +109,7 @@ class TestEfficiencies:
                 *np.meshgrid(drop_size_L_diam, drop_size_S_diam),
                 res.T,
                 levels=np.linspace(0.0, 1.0, 11),
-                cmap="jet"
+                cmap="jet",
             )
         )
 

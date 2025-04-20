@@ -250,7 +250,7 @@ class GUISettings:
     def formulae(self) -> Formulae:
         return Formulae(
             **{widget.description: widget.value for widget in self.ui_formulae_options},
-            constants={"NIEMAND_A": 0, "NIEMAND_B": 0, "ABIFM_M": 0, "ABIFM_C": 0}
+            constants={"NIEMAND_A": 0, "NIEMAND_B": 0, "ABIFM_M": 0, "ABIFM_C": 0},
         )
 
     @property

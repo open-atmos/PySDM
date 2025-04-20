@@ -1,10 +1,10 @@
 [tool.isort]
 profile = "black"
 
-[tool.setuptools]
-py-modules = []
-
 [tool.setuptools_scm]
+
+[tool.setuptools]
+packages = ["PySDM"]
 
 [build-system]
 requires = ['setuptools==75.3.0', 'setuptools-scm==8.1.0']
