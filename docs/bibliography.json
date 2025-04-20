@@ -574,7 +574,9 @@
   "https://doi.org/10.1029/JC080i009p01133": {
     "usages": [
       "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
-      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py"
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "examples/PySDM_examples/Stewart_1975/__init__.py",
+      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
     ],
     "label": "Stewart 1975 (J. Geophys. Res. Oceans 80)",
     "title": "Stable isotope fractionation due to evaporation and isotopic exchange of falling waterdrops: Applications to atmospheric processes and evaporation of lakes"
@@ -599,8 +601,8 @@
     "usages": [
       "PySDM/physics/freezing_temperature_spectrum/niemand_et_al_2012.py"
     ],
-    "label": "Niedermeier et al. 2014 (J. Atmos. Sci. 69)",
-    "title": "A computationally efficient description of heterogeneous freezing: A simplified version of the Soccer ball model"
+    "label": "Niemand et al. 2012 (J. Atmos. Sci. 69)",
+    "title": "A Particle-Surface-Area-Based Parameterization of Immersion Freezing on Desert Dust Particles"
   },
   "https://doi.org/10.1002/2013GL058684": {
     "usages": [
@@ -790,7 +792,7 @@
       "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb",
       "examples/PySDM_examples/Gonfiantini_1986/__init__.py"
     ],
-    "title": "Environmental isotopes in lake stadies",
+    "title": "Environmental isotopes in lake studies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
   },
   "https://doi.org/10.1007/978-94-017-1497-6": {
@@ -799,6 +801,24 @@
     ],
     "title": "Evaporation into the Atmosphere: Theory, History, and Applications",
     "label": "Brutsaert 1982 (Springer Netherlands)"
+  },
+  "https://doi.org/10.1029/JC080i009p01133": {
+    "usages": [
+      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "examples/PySDM_examples/Stewart_1975/__init__.py",
+      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
+    ],
+    "title": "Stable Isotope Fractionation Due to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
+    "label": "Stewart 1975 (J. Geophys. Res.)"
+  },
+  "https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2": {
+    "usages": [
+      "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py",
+      "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py"
+    ],
+    "title": "The Evaporation, Temperature and Thermal Relaxation-Time of Freely Falling Waterdrops",
+    "label": "Kinzer & Gunn 1951 (J. Meteor.)"
   },
   "https://doi.org/10.1029/2001JD000470": {
     "usages": [
