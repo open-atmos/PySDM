@@ -1,3 +1,4 @@
+# pylint:disable=missing-module-docstring
 import os
 import platform
 import sys
