@@ -172,11 +172,6 @@ jobs:
           shopt -s extglob
           pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
 
-      # - if: ${{ failure() }}
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     limit-access-to-actor: true
-
   examples-setup:
     needs: [nojit_and_codecov]
     strategy:
@@ -293,6 +288,11 @@ jobs:
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/docs_intro_animation.mp4 /home/runner/work/_temp/_github_home/figures
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/last_animation_frame.pdf /home/runner/work/_temp/_github_home/figures
           ls /home/runner/work/_temp/_github_home/figures
+
+      - if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - name: animation movie upload
         if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
