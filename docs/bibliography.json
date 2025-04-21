@@ -626,7 +626,7 @@
     "label": "Bartman et al. 2022 (J. Open Source Soft. 7)",
     "title": "PySDM v1: particle-based cloud modeling package for warm-rain microphysics and aqueous chemistry"
   },
-  "https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2": {
+  "https://doi.org/10.1175/1520-0469%281979%29036%3C1255:AWTIOT%3E2.0.CO;2": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py",
