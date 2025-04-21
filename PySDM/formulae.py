@@ -64,6 +64,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         bulk_phase_partitioning: str = "Null",
         handle_all_breakups: bool = False,
     ):
+        # pylint disable=too-many-statements
         # initialisation of the fields below is just to silence pylint and to enable code hints
         # in PyCharm and alike, all these fields are later overwritten within this ctor
         self.optical_albedo = optical_albedo
