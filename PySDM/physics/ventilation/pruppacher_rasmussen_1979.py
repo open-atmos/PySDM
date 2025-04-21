@@ -6,7 +6,7 @@ NB: this parameterization is only experimentally validated for Re < 2600
 but is hypothesized to be valid for spheres with Re < 8 × 10⁴
 based on theory (Pruppacher & Rasmussen, 1979).
 the parameterization also does not account for effects of air turbulence.
-"""  # pylint disable=line-too-long
+"""  # pylint: disable=line-too-long
 
 import numpy as np
 
