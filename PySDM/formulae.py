@@ -23,7 +23,7 @@ from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, Rogers
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
-class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
+class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes,too-many-statements
     def __init__(  # pylint: disable=too-many-locals
         self,
         *,
@@ -55,6 +55,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         isotope_diffusivity_ratios: str = "Null",
         isotope_relaxation_timescale: str = "Null",
         isotope_temperature_inference: str = "Null",
+        isotope_ventilation_ratio: str = "Null",
         optical_albedo: str = "Null",
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
@@ -97,6 +98,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
         self.isotope_relaxation_timescale = isotope_relaxation_timescale
         self.isotope_temperature_inference = isotope_temperature_inference
+        self.isotope_ventilation_ratio = isotope_ventilation_ratio
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
