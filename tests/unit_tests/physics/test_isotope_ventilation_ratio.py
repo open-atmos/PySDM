@@ -1,7 +1,7 @@
 """test isotope ventilation ratio"""
 
 from PySDM import Formulae
-from PySDM.physics import isotope_ventilation_ratio, constants_defaults
+from PySDM.physics import constants_defaults
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
