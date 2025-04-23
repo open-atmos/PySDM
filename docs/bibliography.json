@@ -630,7 +630,9 @@
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py",
-      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/fig_1.ipynb"
+      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/fig_1.ipynb",
+      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/__init__.py",
+      "tests/smoke_tests/no_env/pruppacher_and_rasmussen_1979/test_fig_1.py"
     ],
     "label": "Pruppacher & Rasmussen 1979 (J. Atmos. Sci. 36)",
     "title": "A Wind Tunnel Investigation of the Rate of Evaporation of Large Water Drops Falling at Terminal Velocity in Air"
