@@ -52,7 +52,7 @@ jobs:
       - run: pip install -e .
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
-      - uses: julia-actions/setup-julia@v1.9.6
+      - uses: julia-actions/setup-julia@v2
       - run: cat -n readme.jl
       - run: julia readme.jl
       - run: sed -i -e 's/CPU/GPU/g' readme.jl
