@@ -119,8 +119,8 @@
       "examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb",
       "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
       "PySDM/dynamics/collisions/collision.py",
-      "PySDM/dynamics/collisions/collision.py",
-      "tutorials/collisions/collisions_playground.ipynb"
+      "tutorials/collisions/collisions_playground.ipynb",
+      "tutorials/wikipedia/sdm.ipynb"
     ],
     "label": "Shima et al. 2009 (Q. J. R. Meteorol. Soc. 135)",
     "title": "The super-droplet method for the numerical simulation of clouds and precipitation: a particle-based and probabilistic microphysics model coupled with a non-hydrostatic model"
@@ -626,10 +626,13 @@
     "label": "Bartman et al. 2022 (J. Open Source Soft. 7)",
     "title": "PySDM v1: particle-based cloud modeling package for warm-rain microphysics and aqueous chemistry"
   },
-  "https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2": {
+  "https://doi.org/10.1175/1520-0469%281979%29036%3C1255:AWTIOT%3E2.0.CO;2": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py"
+      "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py",
+      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/fig_1.ipynb",
+      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/__init__.py",
+      "tests/smoke_tests/no_env/pruppacher_and_rasmussen_1979/test_fig_1.py"
     ],
     "label": "Pruppacher & Rasmussen 1979 (J. Atmos. Sci. 36)",
     "title": "A Wind Tunnel Investigation of the Rate of Evaporation of Large Water Drops Falling at Terminal Velocity in Air"
@@ -690,7 +693,11 @@
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
   },
   "http://mi.mathnet.ru/dan27630": {
-    "usages": ["PySDM/dynamics/collisions/collision_kernels/golovin.py"],
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/golovin.py",
+      "tutorials/README.md",
+      "tutorials/wikipedia/sdm.ipynb"
+    ],
     "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
     "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
   },
