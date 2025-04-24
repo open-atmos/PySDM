@@ -2,6 +2,8 @@
 profile = "black"
 
 [tool.setuptools_scm]
+local_scheme = "no-local-version"
+version_scheme = "post-release"
 
 [tool.setuptools.packages.find]
 include = ["PySDM", "PySDM*"]
