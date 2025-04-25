@@ -13,7 +13,7 @@ requires = ['setuptools==75.3.0', 'setuptools-scm==8.1.0']
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "PySDM"
+name = "pysdm"
 description = "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab"
 readme = "README.md"
 keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
