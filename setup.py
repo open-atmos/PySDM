@@ -1,12 +1,10 @@
 # pylint:disable=missing-module-docstring
 import os
-import platform
 import sys
 
 from setuptools import setup
 
 CI = "CI" in os.environ
-_32bit = platform.architecture()[0] == "32bit"
 
 dependencies = [
     "ThrustRTC==0.3.20",
@@ -21,7 +19,7 @@ dependencies = [
             12: "==0.60.0",
             13: "==0.60.0",
         }[sys.version_info.minor]
-        if CI and not _32bit
+        if CI
         else ">=0.51.2"
     ),
     # TODO #1344: (numpy 2.0.0 incompatibility in https://github.com/bjodah/chempy/issues/234)
@@ -50,7 +48,7 @@ dependencies = [
             12: "==1.13.0",
             13: "==1.13.0",
         }[sys.version_info.minor]
-        if CI and not _32bit
+        if CI
         else ""
     ),
     "pyevtk" + ("==1.2.0" if CI else ""),
@@ -67,15 +65,6 @@ optional_dependencies = {
     + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
     + (
         [
-            "pywinpty" + ("==0.5.7" if CI else ""),
-            "terminado" + ("==0.9.5" if CI else ""),
-            "jupyter-client" + ("==7.4.9" if CI else ""),
-            "jupyter-core" + ("==4.12.0" if CI else ""),
-            "jupyter-server" + ("==1.24.0" if CI else ""),
-            "notebook" + ("==6.5.6" if CI else ""),
-        ]
-        if _32bit
-        else [
             "pyrcel",
             "jupyter-core<5.0.0",
             "ipywidgets!=8.0.3",
