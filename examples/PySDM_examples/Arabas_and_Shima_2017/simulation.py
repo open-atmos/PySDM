@@ -25,7 +25,7 @@ class Simulation:
                     {"override_jit_flags": {"parallel": False}}
                     if backend == CPU
                     else {}
-                )
+                ),
             ),
             n_sd=1,
             environment=Parcel(

@@ -25,7 +25,7 @@ def make_particulator(
     droplet_volume,
     total_particle_number,
     volume,
-    thaw=False
+    thaw=False,
 ):
     formulae_ctor_args = {
         "seed": seed,
