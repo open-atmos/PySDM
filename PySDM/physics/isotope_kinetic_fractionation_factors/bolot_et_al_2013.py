@@ -7,44 +7,21 @@ q_sat_inf in Bolot eq (A7) is substituted with equivalent form of (1/S * rho_v_i
 """
 
 
-class BolotEtAl2013:  # pylint: disable=too-few-public-methods
+class BolotEtAl2013:
     def __init__(self, _):
         pass
 
     @staticmethod
     def alpha_kinetic(
         alpha_equilibrium,
-        relative_humidity,
         heavy_to_light_diffusivity_ratio,
         heavy_to_light_ventilation_ratio,
-        lv,
-        cp,
-        fv,
-        fh,
-        Le,
-        R_v,
-        T_inf,
-        water_vapor_density,
-        condensed_water_density,
-    ):  # pylint: disable=too-many-positional-arguments too-many-arguments
+        effective_supersaturation,
+    ):
         """
         water_vapor_density - density of water vapor at ambient temperature
         condensed_water_density - density of liquid or ice at ambient temperature
         """
-        Ai = 1 / (
-            1
-            + lv
-            / cp
-            * fv
-            / fh
-            / Le
-            / T_inf
-            * (lv / R_v / T_inf - 1)
-            / relative_humidity
-            * water_vapor_density
-            / condensed_water_density
-        )
-        effective_supersaturation = 1 / (1 - Ai * (1 - 1 / relative_humidity))
         return effective_supersaturation / (
             alpha_equilibrium
             / heavy_to_light_diffusivity_ratio
@@ -52,3 +29,37 @@ class BolotEtAl2013:  # pylint: disable=too-few-public-methods
             * (effective_supersaturation - 1)
             + 1
         )
+
+    @staticmethod
+    def transfer_coefficient_liq_to_ice(
+        const,
+        lv,
+        ventilation_coefficient,
+        fh,
+        Lewis,
+        molar_mass,
+        temperature,
+        water_vapor_density,
+        condensed_water_density,
+        relative_humidity,
+    ):  # pylint: disable=too-many-arguments
+        """
+        temperature in 'infinity' T_inf
+        """
+        return 1 / (
+            1
+            + lv
+            / const.c_pv
+            * ventilation_coefficient
+            / fh
+            / Lewis
+            / temperature
+            * (lv / const.R_str / molar_mass / temperature - 1)
+            / relative_humidity
+            * water_vapor_density
+            / condensed_water_density
+        )
+
+    @staticmethod
+    def effective_supersaturation(transfer_coefficient_liq_to_ice, relative_humidity):
+        return 1 / (1 - transfer_coefficient_liq_to_ice * (1 - 1 / relative_humidity))
