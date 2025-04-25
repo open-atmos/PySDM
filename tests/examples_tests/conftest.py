@@ -39,6 +39,7 @@ TEST_SUITES = {
         "Bolin_1958",
         "Stewart_1975",
         "Kinzer_And_Gunn_1951",
+        "Pruppacher_and_Rasmussen_1979",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",

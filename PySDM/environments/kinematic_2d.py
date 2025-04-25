@@ -44,7 +44,7 @@ class Kinematic2D(Moist):
         dry_radius_spectrum,
         rtol=default_rtol,
         n_sd=None,
-        spectral_sampling=ConstantMultiplicity
+        spectral_sampling=ConstantMultiplicity,
     ):
         super().sync()
         self.notify()
