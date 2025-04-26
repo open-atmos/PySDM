@@ -28,7 +28,7 @@ COMMON_PARAMS = {
                 srivastava_beta=1e-15 / si.s,
                 frag_mass=-1 * si.g,
                 n_sds=(8, 128),
-                **COMMON_PARAMS
+                **COMMON_PARAMS,
             ),
         ),
         (
@@ -38,7 +38,7 @@ COMMON_PARAMS = {
                 srivastava_beta=1e-9 / si.s,
                 frag_mass=0.25 * si.g,
                 n_sds=(64, 256),
-                **COMMON_PARAMS
+                **COMMON_PARAMS,
             ),
         ),
         (
@@ -48,7 +48,7 @@ COMMON_PARAMS = {
                 srivastava_beta=1e-9 / si.s,
                 frag_mass=0.25 * si.g,
                 n_sds=(2**10, 2**12),
-                **COMMON_PARAMS
+                **COMMON_PARAMS,
             ),
         ),
     ),

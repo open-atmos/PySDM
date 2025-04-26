@@ -17,7 +17,7 @@ class Acidity(MomentProduct):
         weighting="volume",
         attr="conc_H",
         unit="dimensionless",
-        name=None
+        name=None,
     ):
         assert attr in ("pH", "moles_H", "conc_H")
         self.attr = attr
