@@ -9,7 +9,7 @@ version_scheme = "post-release"
 include = ["PySDM", "PySDM*"]
 
 [build-system]
-requires = ['setuptools==75.3.0', 'setuptools-scm==8.1.0']
+requires = ['setuptools==75.3.0', 'setuptools-scm==8.3.1']
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -42,5 +42,3 @@ dynamic = ["version", "dependencies", "optional-dependencies"]
 Tracker = "https://github.com/open-atmos/PySDM/issues"
 Documentation = "https://open-atmos.github.io/PySDM"
 Source = "https://github.com/open-atmos/PySDM"
-
-
