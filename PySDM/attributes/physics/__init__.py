@@ -18,3 +18,4 @@ from .temperature import Temperature
 from .terminal_velocity import TerminalVelocity
 from .volume import Volume
 from .reynolds_number import ReynoldsNumber
+from .flags import FlagCoalescence
