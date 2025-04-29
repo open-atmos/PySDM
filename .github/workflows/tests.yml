@@ -280,12 +280,13 @@ jobs:
       - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
           set -x
+          sudo apt-get install ffmpeg
           mkdir -p /home/runner/work/_temp/_github_home/figures
           ls /tmp/pytest-of-runner/pytest-current/
           rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runnecurrent
           ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/
           ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/
-          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/docs_intro_animation.mp4 /home/runner/work/_temp/_github_home/figures
+          ffmpeg -i /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/docs_intro_animation.ogv /home/runner/work/_temp/_github_home/figures/docs_intro_animation.mp4
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/last_animation_frame.pdf /home/runner/work/_temp/_github_home/figures
           ls /home/runner/work/_temp/_github_home/figures
 
