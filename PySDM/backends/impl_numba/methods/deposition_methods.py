@@ -57,12 +57,13 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
                     capacity = formulae.diffusion_ice_capacity__capacity(diameter)
 
-                    ventilation_factor = formulae.ventilation__ventilation_coefficient(
+                    mass_ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=reynolds_number[i],
                             Sc=schmidt_number[cid],
                         )
                     )
+                    heat_ventilation_factor = mass_ventilation_factor  # TODO #????
 
                     Dv_const = formulae.diffusion_thermics__D(temperature, pressure)
                     lambdaD = formulae.diffusion_ice_kinetics__lambdaD(
@@ -93,9 +94,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                             RH=saturation_ratio_ice,
                             lv=latent_heat_sub,
                             pvs=pvs_ice,
-                            D=diffusion_coefficient,
-                            K=thermal_conductivity,
-                            ventilation_factor=ventilation_factor,
+                            D=mass_ventilation_factor * diffusion_coefficient,
+                            K=heat_ventilation_factor * thermal_conductivity,
                         )
                         * formulae.constants.rho_w
                     )
