@@ -301,7 +301,7 @@ jobs:
         with:
           name: animation-movie
           if-no-files-found: error
-          path: /github/home/figures/*.mp4
+          path: /home/runner/work/_temp/_github_home/figures/*.mp4
 
       - name: animation frame upload
         if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
@@ -309,7 +309,7 @@ jobs:
         with:
           name: animation-frame
           if-no-files-found: error
-          path: /github/home/figures/*.pdf
+          path: /home/runner/work/_temp/_github_home/figures/*.pdf
 
       - name: tip release upload
         if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
@@ -317,4 +317,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-              /github/home/figures/*.mp4
+              /home/runner/work/_temp/_github_home/figures/*.mp4
