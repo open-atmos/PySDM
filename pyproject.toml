@@ -20,7 +20,7 @@ keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
     "atmospheric-modelling", "particle-system", "numba", "thrust",
     "nvrtc", "pint", "atmospheric-physics",
     ]
-license = {text = "GPL-3.0"}
+license = "GPL-3.0-only"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
