@@ -119,8 +119,8 @@
       "examples/PySDM_examples/Shima_et_al_2009/fig_2.ipynb",
       "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
       "PySDM/dynamics/collisions/collision.py",
-      "PySDM/dynamics/collisions/collision.py",
-      "tutorials/collisions/collisions_playground.ipynb"
+      "tutorials/collisions/collisions_playground.ipynb",
+      "tutorials/wikipedia/sdm.ipynb"
     ],
     "label": "Shima et al. 2009 (Q. J. R. Meteorol. Soc. 135)",
     "title": "The super-droplet method for the numerical simulation of clouds and precipitation: a particle-based and probabilistic microphysics model coupled with a non-hydrostatic model"
@@ -198,7 +198,8 @@
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_3.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/fig_4.ipynb",
       "examples/PySDM_examples/Pierchala_et_al_2022/__init__.py",
-      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py"
+      "examples/PySDM_examples/Pierchala_et_al_2022/commons.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/craig_gordon.py"
     ],
     "label": "Pierchala et al. 2022 (Geochim. Cosmochim. Acta 322)",
     "title": "Quantification the diffusion-induced fractionation of <sup>1</sup>H<sub>2</sub><sup>17</sup>O isotopologue in air accompanying the process of water evaporation"
@@ -572,7 +573,10 @@
   },
   "https://doi.org/10.1029/JC080i009p01133": {
     "usages": [
-      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py"
+      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "examples/PySDM_examples/Stewart_1975/__init__.py",
+      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
     ],
     "label": "Stewart 1975 (J. Geophys. Res. Oceans 80)",
     "title": "Stable isotope fractionation due to evaporation and isotopic exchange of falling waterdrops: Applications to atmospheric processes and evaporation of lakes"
@@ -597,8 +601,8 @@
     "usages": [
       "PySDM/physics/freezing_temperature_spectrum/niemand_et_al_2012.py"
     ],
-    "label": "Niedermeier et al. 2014 (J. Atmos. Sci. 69)",
-    "title": "A computationally efficient description of heterogeneous freezing: A simplified version of the Soccer ball model"
+    "label": "Niemand et al. 2012 (J. Atmos. Sci. 69)",
+    "title": "A Particle-Surface-Area-Based Parameterization of Immersion Freezing on Desert Dust Particles"
   },
   "https://doi.org/10.1002/2013GL058684": {
     "usages": [
@@ -622,10 +626,13 @@
     "label": "Bartman et al. 2022 (J. Open Source Soft. 7)",
     "title": "PySDM v1: particle-based cloud modeling package for warm-rain microphysics and aqueous chemistry"
   },
-  "https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2": {
+  "https://doi.org/10.1175/1520-0469%281979%29036%3C1255:AWTIOT%3E2.0.CO;2": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py"
+      "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py",
+      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/fig_1.ipynb",
+      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/__init__.py",
+      "tests/smoke_tests/no_env/pruppacher_and_rasmussen_1979/test_fig_1.py"
     ],
     "label": "Pruppacher & Rasmussen 1979 (J. Atmos. Sci. 36)",
     "title": "A Wind Tunnel Investigation of the Rate of Evaporation of Large Water Drops Falling at Terminal Velocity in Air"
@@ -686,7 +693,11 @@
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
   },
   "http://mi.mathnet.ru/dan27630": {
-    "usages": ["PySDM/dynamics/collisions/collision_kernels/golovin.py"],
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/golovin.py",
+      "tutorials/README.md",
+      "tutorials/wikipedia/sdm.ipynb"
+    ],
     "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
     "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
   },
@@ -788,8 +799,26 @@
       "examples/PySDM_examples/Gonfiantini_1986/fig_3_1.ipynb",
       "examples/PySDM_examples/Gonfiantini_1986/__init__.py"
     ],
-    "title": "Environmental isotopes in lake stadies",
+    "title": "Environmental isotopes in lake studies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
+  },
+  "https://doi.org/10.1029/JC080i009p01133": {
+    "usages": [
+      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "examples/PySDM_examples/Stewart_1975/__init__.py",
+      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
+    ],
+    "title": "Stable Isotope Fractionation Due to Evaporation and Isotopic Exchange of Falling Waterdrops: Applications to Atmospheric Processes and Evaporation of Lakes",
+    "label": "Stewart 1975 (J. Geophys. Res.)"
+  },
+  "https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2": {
+    "usages": [
+      "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py",
+      "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py"
+    ],
+    "title": "The Evaporation, Temperature and Thermal Relaxation-Time of Freely Falling Waterdrops",
+    "label": "Kinzer & Gunn 1951 (J. Meteor.)"
   },
   "https://doi.org/10.1029/2001JD000470": {
     "usages": [
@@ -811,5 +840,27 @@
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
+  },
+  "https://doi.org/10.1029/JD089iD07p11749": {
+    "usages": [
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py"
+    ],
+    "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
+    "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
+  },
+  "https://web.archive.org/web/20160322221332/https://hydrology.nl/images/docs/ihp/Mook_III.pdf": {
+    "usages": [
+      "PySDM/physics/isotope_kinetic_fractionation_factors/craig_gordon.py"
+    ],
+    "title": "Environmental isotopes in the hydrological cycle - Principles and applications: Vol III Surface water",
+    "label": "Rozanski_et_al_2001 (UNESCO, ed. Mook)"
+  },
+  "https://web.archive.org/web/20200729203147/https://nucleus.iaea.org/rpst/documents/VSMOW_SLAP.pdf": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "title": "IAEA Reference Sheet for International Measurement Standards: VSMOW & SLAP",
+    "label": "IAEA 2006"
   }
 }

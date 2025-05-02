@@ -510,9 +510,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         # TODO #1524 - should we update here?
         # self.update_TpRH(only_if_not_last='VapourDepositionOnIce')
 
-    def immersion_freezing_time_dependent(
-        self, *, thaw: bool, record_freezing_temperature: bool, rand: Storage
-    ):
+    def immersion_freezing_time_dependent(self, *, thaw: bool, rand: Storage):
         self.backend.freeze_time_dependent(
             rand=rand,
             attributes=TimeDependentAttributes(
@@ -524,14 +522,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             a_w_ice=self.environment["a_w_ice"],
             temperature=self.environment["T"],
             relative_humidity=self.environment["RH"],
-            record_freezing_temperature=record_freezing_temperature,
-            freezing_temperature=(
-                self.attributes["freezing temperature"]
-                if record_freezing_temperature
-                else None
-            ),
             thaw=thaw,
         )
+        self.attributes.mark_updated("signed water mass")
 
     def immersion_freezing_singular(self, *, thaw: bool):
         self.backend.freeze_singular(
@@ -544,9 +537,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             cell=self.attributes["cell id"],
             thaw=thaw,
         )
+        self.attributes.mark_updated("signed water mass")
 
     def homogeneous_freezing_time_dependent(
-        self, *, thaw: bool, record_freezing_temperature: bool, rand: Storage
+        self, *, thaw: bool, rand: Storage
     ):
         self.backend.freeze_time_dependent_homogeneous(
             rand=rand,
@@ -559,11 +553,5 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             a_w_ice=self.environment["a_w_ice"],
             temperature=self.environment["T"],
             relative_humidity_ice=self.environment["RH_ice"],
-            record_freezing_temperature=record_freezing_temperature,
-            freezing_temperature=(
-                self.attributes["freezing temperature"]
-                if record_freezing_temperature
-                else None
-            ),
             thaw=thaw,
         )

@@ -2,7 +2,10 @@
 CPU implementation of backend methods for homogeneous freezing and heterogeneous freezing (singular and time-dependent immersion freezing)
 """
 
+from functools import cached_property
+
 import numba
+import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
@@ -58,7 +61,7 @@ class FreezingMethods(BackendMethods):
         prob_zero_events = self.formulae.trivia.poissonian_avoidance_function
 
         @numba.njit(**self.default_jit_flags)
-        def freeze_time_dependent_body(  # pylint: disable=unused-argument,too-many-arguments
+        def freeze_time_dependent_body(  # pylint: disable=too-many-arguments
             rand,
             attributes,
             timestep,
@@ -66,8 +69,6 @@ class FreezingMethods(BackendMethods):
             a_w_ice,
             temperature,
             relative_humidity,
-            record_freezing_temperature,
-            freezing_temperature,
             thaw,
         ):
             n_sd = len(attributes.signed_water_mass)
@@ -90,8 +91,6 @@ class FreezingMethods(BackendMethods):
                     )
                     if rand[i] < prob:
                         _freeze(attributes.signed_water_mass, i)
-                        # if record_freezing_temperature:
-                        #     freezing_temperature[i] = temperature[cell_id]
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
@@ -107,11 +106,9 @@ class FreezingMethods(BackendMethods):
             a_w_ice,
             temperature,
             relative_humidity_ice,
-            record_freezing_temperature,
-            freezing_temperature,
             thaw,
         ):
-            
+
             n_sd = len(attributes.signed_water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 cell_id = cell[i]
@@ -134,9 +131,9 @@ class FreezingMethods(BackendMethods):
                             _freeze(attributes.signed_water_mass, i)
                             # if record_freezing_temperature:
                             #     freezing_temperature[i] = temperature[cell_id]
-        
+
         self.freeze_time_dependent_homogeneous_body = freeze_time_dependent_homogeneous_body
-            
+
     def freeze_singular(
         self, *, attributes, temperature, relative_humidity, cell, thaw: bool
     ):
@@ -151,8 +148,6 @@ class FreezingMethods(BackendMethods):
             thaw=thaw,
         )
 
-        
-
     def freeze_time_dependent(
         self,
         *,
@@ -163,9 +158,7 @@ class FreezingMethods(BackendMethods):
         a_w_ice,
         temperature,
         relative_humidity,
-        record_freezing_temperature,
-        freezing_temperature,
-        thaw: bool
+        thaw: bool,
     ):
         self.freeze_time_dependent_body(
             rand.data,
@@ -178,28 +171,20 @@ class FreezingMethods(BackendMethods):
             a_w_ice.data,
             temperature.data,
             relative_humidity.data,
-            record_freezing_temperature=record_freezing_temperature,
-            freezing_temperature=(
-                freezing_temperature.data if record_freezing_temperature else None
-            ),
             thaw=thaw,
         )
 
-
-
     def freeze_time_dependent_homogeneous(
-        self,
-        *,
-        rand,
-        attributes,
-        timestep,
-        cell,
-        a_w_ice,
-        temperature,
-        relative_humidity_ice,
-        record_freezing_temperature,
-        freezing_temperature,
-        thaw: bool
+            self,
+            *,
+            rand,
+            attributes,
+            timestep,
+            cell,
+            a_w_ice,
+            temperature,
+            relative_humidity_ice,
+            thaw: bool
     ):
         self.freeze_time_dependent_homogeneous_body(
             rand.data,
@@ -212,10 +197,31 @@ class FreezingMethods(BackendMethods):
             a_w_ice.data,
             temperature.data,
             relative_humidity_ice.data,
-            record_freezing_temperature=record_freezing_temperature,
-            freezing_temperature=(
-                freezing_temperature.data if record_freezing_temperature else None
-            ),
             thaw=thaw,
         )
 
+    @cached_property
+    def _record_freezing_temperatures_body(self):
+        ff = self.formulae_flattened
+
+        @numba.njit(**{**self.default_jit_flags, "fastmath": False})
+        def body(data, cell_id, temperature, signed_water_mass):
+            for drop_id in numba.prange(len(data)):  # pylint: disable=not-an-iterable
+                if ff.trivia__unfrozen(signed_water_mass[drop_id]):
+                    if data[drop_id] > 0:
+                        data[drop_id] = np.nan
+                else:
+                    if np.isnan(data[drop_id]):
+                        data[drop_id] = temperature[cell_id[drop_id]]
+
+        return body
+
+    def record_freezing_temperatures(
+        self, *, data, cell_id, temperature, signed_water_mass
+    ):
+        self._record_freezing_temperatures_body(
+            data=data.data,
+            cell_id=cell_id.data,
+            temperature=temperature.data,
+            signed_water_mass=signed_water_mass.data,
+        )

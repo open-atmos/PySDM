@@ -8,29 +8,122 @@ from PySDM.dynamics import Freezing
 from PySDM.environments import Box
 from PySDM.physics import si
 from PySDM.products import IceWaterContent
+from PySDM.backends import GPU
+
+VERY_BIG_J_HET = 1e20
+EPSILON_RH = 1e-3
 
 
 class TestImmersionFreezing:
-    # TODO #599
-    def test_record_freezing_temperature_on_time_dependent_freeze(self):
-        pass
+    @staticmethod
+    @pytest.mark.parametrize(
+        "record_freezing_temperature",
+        (pytest.param(True, id="recording"), pytest.param(False, id="not recording")),
+    )
+    def test_record_freezing_temperature_on_time_dependent_freeze(
+        backend_class, record_freezing_temperature
+    ):
+        if backend_class is GPU and record_freezing_temperature:
+            pytest.skip("TODO #1495")
+
+        # arrange
+        formulae = Formulae(
+            particle_shape_and_density="MixedPhaseSpheres",
+            heterogeneous_ice_nucleation_rate="Constant",
+            constants={"J_HET": VERY_BIG_J_HET},
+        )
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(formulae=formulae),
+            environment=Box(dt=1 * si.s, dv=1 * si.m**3),
+        )
+        builder.add_dynamic(Freezing(singular=False, thaw=True))
+        if record_freezing_temperature:
+            builder.request_attribute("temperature of last freezing")
+        particulator = builder.build(
+            attributes={
+                "multiplicity": np.asarray([1]),
+                "signed water mass": np.asarray([1 * si.ug]),
+                "immersed surface area": np.asarray([1 * si.um**2]),
+            }
+        )
+
+        temp_1 = 200 * si.K
+        temp_2 = 250 * si.K
+        particulator.environment["a_w_ice"] = np.nan
+        particulator.environment["T"] = temp_1
+
+        # act & assert
+        attr_name = "temperature of last freezing"
+        if not record_freezing_temperature:
+            assert attr_name not in particulator.attributes
+        else:
+            # never frozen yet
+            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+
+            # still not frozen since RH not greater than 100%
+            particulator.environment["RH"] = 1.0
+            particulator.run(steps=1)
+            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+
+            # should freeze and record T1
+            particulator.environment["RH"] += EPSILON_RH
+            particulator.run(steps=1)
+            assert all(particulator.attributes[attr_name].to_ndarray() == temp_1)
+
+            # should thaw
+            particulator.environment["T"] = 300 * si.K
+            particulator.run(steps=1)
+            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+
+            # should re-freeze and record T2
+            particulator.environment["T"] = temp_2
+            particulator.run(steps=1)
+            assert all(particulator.attributes[attr_name].to_ndarray() == temp_2)
 
     # TODO #599
     def test_no_subsaturated_freezing(self):
         pass
 
     @staticmethod
-    @pytest.mark.parametrize("singular", (True, False))
+    @pytest.mark.parametrize("freezing_type", ("het_singular", "het_time_dependent", "hom_time_dependent"))
     @pytest.mark.parametrize("thaw", (True, False))
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
-    def test_thaw(backend_class, singular, thaw, epsilon):
+    def test_thaw(backend_class, freezing_type, thaw, epsilon):
         # arrange
-        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
+        singular = False
+        immersion_freezing = True
+        homogeneous_freezing = False
+        if freezing_type is "het_singular":
+            freezing_parameter = {}
+            singular = True
+        elif freezing_type is "het_time_dependent":
+            freezing_parameter = {
+                "heterogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HET": 0},
+            }
+        elif freezing_type is "hom_time_dependent":
+            freezing_parameter = {
+                "homogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HOM": 0},
+            }
+            immersion_freezing = False
+            homogeneous_freezing = True
+            if backend_class.__name__ == "ThrustRTC":
+                pytest.skip()
+        formulae = Formulae(
+            particle_shape_and_density="MixedPhaseSpheres",
+            **(freezing_parameter),
+        )
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder = Builder(
             n_sd=1, backend=backend_class(formulae=formulae), environment=env
         )
-        builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
+        builder.add_dynamic(Freezing(singular=singular,
+                                     homogeneous_freezing=homogeneous_freezing,
+                                     immersion_freezing=immersion_freezing,
+                                     thaw=thaw)
+                            )
         particulator = builder.build(
             products=(IceWaterContent(),),
             attributes={
@@ -47,6 +140,7 @@ class TestImmersionFreezing:
         )
         particulator.environment["T"] = formulae.constants.T0 + epsilon
         particulator.environment["RH"] = np.nan
+        particulator.environment["RH_ice"] = np.nan
         if not singular:
             particulator.environment["a_w_ice"] = np.nan
         assert particulator.products["ice water content"].get() > 0
@@ -217,7 +311,7 @@ class TestImmersionFreezing:
         if backend_class.__name__ == "ThrustRTC":
             pytest.skip()
 
-            
+
 
         # Arrange
         seed = 44
@@ -286,7 +380,7 @@ class TestImmersionFreezing:
                 "multiplicity": np.full(n_sd, int(case["N"])),
                 "signed water mass": np.full(n_sd, initial_water_mass),
             }
-            particulator = builder.build(attributes=attributes, products=products)  
+            particulator = builder.build(attributes=attributes, products=products)
             pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(T)
             pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(T)
             particulator.environment["RH_ice"] = RHi
@@ -328,8 +422,8 @@ class TestImmersionFreezing:
             np.testing.assert_array_less(data, hgh(arg))
             np.testing.assert_array_less(low(arg), data)
 
-    
-            
+
+
 def _plot_fit(fit_x, fit_y, low, hgh, total_time):
     pyplot.plot(
         fit_x, fit_y, color="black", linestyle="--", label="theory", linewidth=5

@@ -26,13 +26,11 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: "3.12"
-      - run: |
-          pip install pdoc nbformat gitpython
-          pip install -e .
-          pip install -e examples
+      - run: pip install pdoc nbformat gitpython
+      - run: pip install -e .
+      - run: pip install -e examples
+      - run: python -We docs/generate_html.py . .
 
-          python -We docs/generate_html.py . .
-        
       - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
