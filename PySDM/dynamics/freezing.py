@@ -1,5 +1,6 @@
 """
-immersion freezing using either singular or time-dependent formulation
+droplet freezing using either singular or time-dependent formulation for immersion freezing
+and homogeneous freezing and thaw
 """
 
 from PySDM.dynamics.impl import register_dynamic

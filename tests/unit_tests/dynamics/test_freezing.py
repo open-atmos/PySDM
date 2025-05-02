@@ -14,7 +14,7 @@ VERY_BIG_J_HET = 1e20
 EPSILON_RH = 1e-3
 
 
-class TestImmersionFreezing:
+class TestDropletFreezing:
     @staticmethod
     @pytest.mark.parametrize(
         "record_freezing_temperature",
@@ -155,7 +155,7 @@ class TestImmersionFreezing:
             assert particulator.products["ice water content"].get() > 0
 
     @staticmethod
-    def test_freeze_singular(backend_class):
+    def test_immersion_freezing_singular(backend_class):
         # arrange
         n_sd = 44
         dt = 1 * si.s
@@ -195,7 +195,7 @@ class TestImmersionFreezing:
     @staticmethod
     @pytest.mark.parametrize("double_precision", (True, False))
     # pylint: disable=too-many-locals
-    def test_freeze_time_dependent(backend_class, double_precision, plot=False):
+    def test_immersion_freezing_time_dependent(backend_class, double_precision, plot=False):
         if backend_class.__name__ == "Numba" and not double_precision:
             pytest.skip()
 
@@ -305,7 +305,7 @@ class TestImmersionFreezing:
     @staticmethod
     @pytest.mark.parametrize("double_precision", (True,False))
     # pylint: disable=too-many-locals
-    def test_homogeneous_freeze_time_dependent(backend_class, double_precision, plot=False):
+    def test_homogeneous_freezing_time_dependent(backend_class, double_precision, plot=False):
         if backend_class.__name__ == "Numba" and not double_precision:
             pytest.skip()
         if backend_class.__name__ == "ThrustRTC":
