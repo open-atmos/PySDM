@@ -388,7 +388,8 @@ class CondensationMethods(BackendMethods):
             pvs,
             D,
             K,
-            ventilation_factor,
+            mass_ventilation_factor,
+            heat_ventilation_factor,
         ):
             if x_new > formulae.diffusion_coordinate__x_max():
                 return x_old - x_new
@@ -468,12 +469,13 @@ class CondensationMethods(BackendMethods):
                 ):
                     Dr = formulae.diffusion_kinetics__D(DTp, r_old, lambdaD)
                     Kr = formulae.diffusion_kinetics__K(KTp, r_old, lambdaK)
-                    ventilation_factor = formulae.ventilation__ventilation_coefficient(
+                    mass_ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=attributes.reynolds_number[drop],
                             Sc=Sc,
                         )
                     )
+                    heat_ventilation_factor = mass_ventilation_factor  # TODO
                     args = (
                         x_old,
                         timestep,
@@ -486,7 +488,8 @@ class CondensationMethods(BackendMethods):
                         pvs,
                         Dr,
                         Kr,
-                        ventilation_factor,
+                        mass_ventilation_factor,
+                        heat_ventilation_factor,
                     )
                     r_dr_dt_old = formulae.drop_growth__r_dr_dt(
                         RH_eq,
@@ -494,9 +497,8 @@ class CondensationMethods(BackendMethods):
                         RH,
                         lv,
                         pvs,
-                        Dr,
-                        Kr,
-                        ventilation_factor,
+                        mass_ventilation_factor * Dr,
+                        heat_ventilation_factor * Kr,
                     )
                     mass_old = formulae.diffusion_coordinate__mass(x_old)
                     dm_dt_old = formulae.particle_shape_and_density__dm_dt(
