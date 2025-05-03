@@ -39,3 +39,7 @@ class LiquidSpheres:
               = 4 pi rho_w cbrt(mass/rho_w/pi/(4/3)) r_dr_dt
         """
         return 4 * const.PI * const.rho_w * r * r_dr_dt
+
+    @staticmethod
+    def over_m_dm_dt(r, r_dr_dt):
+        return 3 / r**2 * r_dr_dt
