@@ -6,7 +6,7 @@ In the paper, alpha_kinetic is probably actually alpha_effective
 q_sat_inf in Bolot eq (A7) is substituted with equivalent form of (1/S * rho_v_inf/rho_[l,i]_inf).
 """
 
-from PySDM.physics.isotope_kinetic_fractionation_factors import JouzelAndMerlivat1984
+from .jouzel_and_merlivat_1984 import JouzelAndMerlivat1984
 
 
 class BolotEtAl2013(JouzelAndMerlivat1984):
