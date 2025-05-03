@@ -126,7 +126,7 @@ class CondensationMethods(
                         lv=args("_lv"),
                         pvs=args("_pvs"),
                         D=f'{args("mass_ventilation_factor")}*{args("Dr")}',
-                        K=f'{args("mass_ventilation_factor")}*{args("Kr")}', # TODO ????
+                        K=f'{args("mass_ventilation_factor")}*{args("Kr")}', # TODO #1588
                     )};
                     auto dm_dt = {phys.particle_shape_and_density.dm_dt.c_inline(
                         r="r_new", r_dr_dt="r_dr_dt"
@@ -188,7 +188,7 @@ class CondensationMethods(
                 mass_ventilation_factor = {phys.ventilation.ventilation_coefficient.c_inline(
                     sqrt_re_times_cbrt_sc="qrt_re_times_cbrt_sc"
                 )};
-                auto heat_ventilation_factor = mass_ventilation_factor; # TODO ????
+                auto heat_ventilation_factor = mass_ventilation_factor; # TODO #1588
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
                     RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs",
                     D="mass_ventilation_factor*Dr", K="heat_ventilation_factor*Kr",

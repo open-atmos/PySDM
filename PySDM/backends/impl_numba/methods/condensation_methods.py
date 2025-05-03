@@ -475,7 +475,7 @@ class CondensationMethods(BackendMethods):
                             Sc=Sc,
                         )
                     )
-                    heat_ventilation_factor = mass_ventilation_factor  # TODO
+                    heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
                     args = (
                         x_old,
                         timestep,
