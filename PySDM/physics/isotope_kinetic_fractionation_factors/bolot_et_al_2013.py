@@ -20,6 +20,7 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
         condensed_water_density,
         # mass_ventilation_coefficient,
         # heat_ventilation_coefficient,
+        pvs,
         molar_mass,
         temperature,
         relative_humidity,
@@ -37,7 +38,7 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
             * condensed_water_density
             / relative_humidity
             / diffusion_ventilation_coefficient
-            * (const.R_str * temperature / molar_mass / const.pvs)
+            * (const.R_str * temperature / molar_mass / pvs)
         )
 
     @staticmethod
