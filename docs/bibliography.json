@@ -559,7 +559,7 @@
   },
   "https://doi.org/10.1088/0370-1301/64/9/307": {
     "usages": [
-      "PySDM/physics/drop_growth/mason_1951.py"
+      "PySDM/physics/drop_growth/howell_1949.py"
     ],
     "label": "Mason 1951 (Proc. Phys. Soc. B 64)",
     "title": "Spontaneous Condensation of Water Vapour in Expansion Chamber Experiments"
@@ -837,7 +837,8 @@
   },
   "https://doi.org/10.1175/1520-0469(1949)006%3C0134:TGOCDI%3E2.0.CO;2": {
     "usages": [
-      "PySDM/backends/impl_numba/methods/deposition_methods.py"
+      "PySDM/backends/impl_numba/methods/deposition_methods.py",
+      "PySDM/physics/drop_growth/howell_1949.py"
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"

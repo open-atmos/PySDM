@@ -1,6 +1,6 @@
 """
 single-equation approximation of the vapour and heat diffusion problem
-as proposed in [Howell 1949]()
+as proposed in [Howell 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0134:TGOCDI%3E2.0.CO;2)
 same as in [Mason 1951](https://doi.org/10.1088/0370-1301/64/9/307)
 """
 
