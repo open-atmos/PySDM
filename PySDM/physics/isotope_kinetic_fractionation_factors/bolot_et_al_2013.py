@@ -1,5 +1,5 @@
 """
-kinetic fractionation factor from [Bolot et. al. 2013](https://doi.org/10.5194/acp-13-7903-2013)
+kinetic fractionation factor from [Bolot et al. 2013](https://doi.org/10.5194/acp-13-7903-2013)
 eq. (1) with subsequent variable definitions on pages 7906 and 7907 and in Appendix (A6, A6).
 In the paper, alpha_kinetic is probably actually alpha_effective
 (contains alpha_equilibrium in numerator).
