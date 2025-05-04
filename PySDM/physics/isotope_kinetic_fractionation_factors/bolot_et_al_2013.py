@@ -16,31 +16,27 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
     @staticmethod
     def transfer_coefficient_liq_to_ice(
         const,
-        lv,
-        mass_ventilation_coefficient,
-        heat_ventilation_coefficient,
-        Lewis,
+        D,
+        condensed_water_density,
+        # mass_ventilation_coefficient,
+        # heat_ventilation_coefficient,
         molar_mass,
         temperature,
-        water_vapor_density,
-        condensed_water_density,
-        r_dr_dt_assumid_bla,
+        r_dr_dt_assuming_RHeq0_and_K_with_ventilation_coefficients,
     ):  # pylint: disable=too-many-arguments
         """
-        temperature in 'infinity' T_inf
+        Temperature is in 'infinity' T_inf;
+        For exact formula from Bolot et al. 2013 use `r_dr_dt` from Mason 1971
+            assuming `RH_eq` equal to zero and putting
+            `K * heat_ventilation_coefficient / mass_ventilation_coefficient`
+            instead of `K`.
         """
-        return 1 / (
-            1
-            + lv
-            / const.c_pv
-            * mass_ventilation_coefficient
-            / heat_ventilation_coefficient
-            / Lewis
-            / temperature
-            # * (lv / const.R_str / molar_mass / temperature - 1)
-            # / relative_humidity
-            # * water_vapor_density
-            # / condensed_water_density
+        return (
+            r_dr_dt_assuming_RHeq0_and_K_with_ventilation_coefficients
+            * condensed_water_density
+            / relative_humidity
+            / D
+            * (const.R_str * temperature / molar_mass / const.pvs)
         )
 
     @staticmethod
