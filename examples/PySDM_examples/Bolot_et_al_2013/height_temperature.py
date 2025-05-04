@@ -1,5 +1,7 @@
 """
-Data from https://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR=2025&MONTH=03&FROM=2812&TO=2812&STNM=72451
+Data from
+https://weather.uwyo.edu/cgi-bin/sounding?region=naconf&TYPE=TEXT%3ALIST&YEAR=2025&MONTH=03&\\
+FROM=2812&TO=2812&STNM=72451
 72451 DDC Dodge City(Awos) Observations at 12Z 28 Mar 2025
 """
 
