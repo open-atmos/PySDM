@@ -9,5 +9,5 @@ class Fick:  # pylint: disable=too-few-public-methods
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K):
+    def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K):  # pylint: disable=unused-argument
         return (RH - RH_eq) / const.rho_w / (const.Rv * T / D / pvs)

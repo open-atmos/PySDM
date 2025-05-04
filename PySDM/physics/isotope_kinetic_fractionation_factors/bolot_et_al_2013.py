@@ -22,6 +22,7 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
         # heat_ventilation_coefficient,
         molar_mass,
         temperature,
+        relative_humidity,
         r_dr_dt_assuming_RHeq0_and_K_with_ventilation_coefficients,
     ):  # pylint: disable=too-many-arguments
         """
