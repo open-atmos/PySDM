@@ -16,14 +16,14 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
     @staticmethod
     def transfer_coefficient_liq_to_ice(
         const,
-        D,
+        diffusion_ventilation_coefficient,
         condensed_water_density,
         # mass_ventilation_coefficient,
         # heat_ventilation_coefficient,
         molar_mass,
         temperature,
         relative_humidity,
-        r_dr_dt_assuming_RHeq0_and_K_with_ventilation_coefficients,
+        r_dr_dt_assuming_RHeq0,
     ):  # pylint: disable=too-many-arguments
         """
         Temperature is in 'infinity' T_inf;
@@ -33,10 +33,10 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
             instead of `K`.
         """
         return (
-            r_dr_dt_assuming_RHeq0_and_K_with_ventilation_coefficients
+            r_dr_dt_assuming_RHeq0
             * condensed_water_density
             / relative_humidity
-            / D
+            / diffusion_ventilation_coefficient
             * (const.R_str * temperature / molar_mass / const.pvs)
         )
 
