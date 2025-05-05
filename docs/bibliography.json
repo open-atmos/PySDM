@@ -865,7 +865,7 @@
     "title": "IAEA Reference Sheet for International Measurement Standards: VSMOW & SLAP",
     "label": "IAEA 2006"
   },
-  "https://doi.org/10.1034/j.1600-0889.1991.t01-4-00006.x": {
+  "https://doi.org/10.3402/tellusb.v43i5.15414": {
     "usages": [
       "examples/PySDM_examples/Fisher_1991/fig_2.ipynb"
     ],
