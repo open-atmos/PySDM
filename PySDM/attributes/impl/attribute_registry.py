@@ -1,4 +1,4 @@
-""" definition of decorator used to register PySDM attribute classes """
+"""definition of decorator used to register PySDM attribute classes"""
 
 import warnings
 

@@ -14,7 +14,7 @@ from PySDM.physics.trivia import Trivia
 
 def dummy_attrs(length):
     return {
-        "water mass": np.asarray([0.666 * si.g] * length),
+        "signed water mass": np.asarray([0.666 * si.g] * length),
         "multiplicity": np.asarray([-1] * length, dtype=int),
     }
 
@@ -78,7 +78,7 @@ class TestIsotopes:
         attributes[f"moles_{isotope}"] = np.asarray(
             [
                 heavier_water_specific_content
-                * attributes["water mass"]
+                * attributes["signed water mass"]
                 / heavier_water_molar_mass
             ]
         )
@@ -91,7 +91,7 @@ class TestIsotopes:
         ((n_heavy_isotope,),) = attributes[f"moles_{isotope}"]
         (n_light_water,) = (
             (1 - heavier_water_specific_content)
-            * attributes["water mass"]
+            * attributes["signed water mass"]
             / (constants_defaults.M_1H * 2 + constants_defaults.M_16O)
         )
         print(delta, n_heavy_isotope, n_light_water)

@@ -1,5 +1,5 @@
-""" based on [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)
- where delta(T)=-(a*T + b) formulae given, here cast as T(delta)=(-delta-b)/a """
+"""based on [Picciotto et al. 1960](https://doi.org/10.1038/187857a0)
+where delta(T)=-(a*T + b) formulae given, here cast as T(delta)=(-delta-b)/a"""
 
 
 class PicciottoEtAl1960:  # pylint: disable=too-few-public-methods

@@ -17,7 +17,7 @@ class FrozenParticleConcentration(ConcentrationProduct):
         unit="m^-3",
         name=None,
         specific=False,
-        stp=False
+        stp=False,
     ):
         super().__init__(specific=specific, stp=stp, unit=unit, name=name)
         self.__filter_range = [-np.inf, 0]

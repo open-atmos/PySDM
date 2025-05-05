@@ -10,7 +10,7 @@ from .dry_volume import DryVolume
 from .equilibrium_supersaturation import EquilibriumSupersaturation
 from .heat import Heat
 from .hygroscopicity import Kappa, KappaTimesDryVolume
-from .water_mass import WaterMass
+from .water_mass import SignedWaterMass
 from .multiplicity import Multiplicity
 from .radius import Radius, SquareRootOfRadius
 from .relative_fall_velocity import RelativeFallMomentum, RelativeFallVelocity

@@ -1,4 +1,4 @@
-""" tests the liquid-water-path computing product for Parcel env """
+"""tests the liquid-water-path computing product for Parcel env"""
 
 import numpy as np
 from matplotlib import pyplot

@@ -17,7 +17,7 @@ class Simulation:
         while dt_output / self.n_substeps >= settings.dt_max:
             self.n_substeps += 1
         self.formulae = Formulae(
-            condensation_coordinate=settings.coord,
+            diffusion_coordinate=settings.coord,
             saturation_vapour_pressure="AugustRocheMagnus",
         )
         self.bins_edges = self.formulae.trivia.volume(settings.r_bins_edges)
@@ -69,6 +69,7 @@ class Simulation:
             PySDM_products.ActivatedMeanRadius(
                 name="r_act", count_activated=True, count_unactivated=False
             ),
+            PySDM_products.Time(name="t"),
         ]
 
         attributes = environment.init_attributes(
@@ -88,7 +89,8 @@ class Simulation:
         volume = _sp.attributes["volume"].to_ndarray()
         output["r"].append(self.formulae.trivia.radius(volume=volume))
         output["S"].append(_sp.environment["RH"][cell_id] - 1)
-        for key in ("water_vapour_mixing_ratio", "T", "z", "t"):
+        output["t"].append(_sp.products["t"].get())
+        for key in ("water_vapour_mixing_ratio", "T", "z"):
             output[key].append(_sp.environment[key][cell_id])
         for key in (
             "dt_cond_max",

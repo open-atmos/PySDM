@@ -1,4 +1,4 @@
-""" test ensuring that all needed __init__.py entries are in place """
+"""test ensuring that all needed __init__.py entries are in place"""
 
 import pytest
 
