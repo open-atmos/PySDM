@@ -33,7 +33,7 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
             `K * heat_ventilation_coefficient / mass_ventilation_coefficient`
             instead of `K`.
         """
-        return (
+        return 1 / (
             r_dr_dt_assuming_RHeq0
             * condensed_water_density
             / relative_humidity
