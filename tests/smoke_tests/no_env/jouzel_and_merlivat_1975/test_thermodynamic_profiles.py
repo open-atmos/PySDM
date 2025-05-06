@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib import pyplot
 from matplotlib.pyplot import ylabel
 
-from PySDM_examples.Jouzel_and_Merlivat_1975 import thermodynamic_profiles
+from PySDM_examples.Jouzel_and_Merlivat_1984 import thermodynamic_profiles
 from PySDM import Formulae
 
 
