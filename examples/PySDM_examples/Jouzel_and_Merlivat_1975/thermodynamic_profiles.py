@@ -10,8 +10,8 @@ pressure = make_interp_spline(
     x=np.asarray([-10, -20, -30, -40, -50])[::-1] + T0,
     y=np.asarray([925, 780, 690, 630, 600])[::-1] * si.mbar,
 )
+pressure.extrapolate = False
 """ Table 1 """
-# TODO: np.nans on the edges
 
 
 def ice_saturation_curve_4(T):
