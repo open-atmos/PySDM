@@ -194,8 +194,9 @@ class TestDropletFreezing:
 
     @staticmethod
     @pytest.mark.parametrize("double_precision", (True, False))
+    @pytest.mark.parametrize("freezing_type", ("het_time_dependent", "hom_time_dependent"))
     # pylint: disable=too-many-locals
-    def test_immersion_freezing_time_dependent(backend_class, double_precision, plot=False):
+    def test_freezing_time_dependent(backend_class, freezing_type, double_precision, plot=False):
         if backend_class.__name__ == "Numba" and not double_precision:
             pytest.skip()
 
@@ -211,6 +212,7 @@ class TestDropletFreezing:
         )
         rate = 1e-9
         immersed_surface_area = 1
+        droplet_volume = 1
 
         number_of_real_droplets = 1024
         total_time = (
@@ -219,7 +221,7 @@ class TestDropletFreezing:
 
         # dummy (but must-be-set) values
         initial_water_mass = (
-            44  # for sign flip (ice water has negative volumes), value does not matter
+            1000  # for sign flip (ice water has negative volumes)
         )
         d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
 
@@ -229,15 +231,32 @@ class TestDropletFreezing:
         def low(t):
             return np.exp(-1.25 * rate * (t + total_time / 4))
 
+        immersion_freezing = True
+        homogeneous_freezing = False
+        if freezing_type is "het_time_dependent":
+            freezing_parameter = {
+                "heterogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HET": rate / immersed_surface_area},
+            }
+        elif freezing_type is "hom_time_dependent":
+            freezing_parameter = {
+                "homogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HOM": rate / droplet_volume},
+            }
+            immersion_freezing = False
+            homogeneous_freezing = True
+            if backend_class.__name__ == "ThrustRTC":
+                pytest.skip()
+
         # Act
         output = {}
 
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
-            heterogeneous_ice_nucleation_rate="Constant",
-            constants={"J_HET": rate / immersed_surface_area},
+            **(freezing_parameter),
             seed=seed,
         )
+
         products = (IceWaterContent(name="qi"),)
 
         for case in cases:
@@ -256,7 +275,11 @@ class TestDropletFreezing:
                 ),
                 environment=env,
             )
-            builder.add_dynamic(Freezing(singular=False))
+            builder.add_dynamic(Freezing(singular=False,
+                                         immersion_freezing=immersion_freezing,
+                                         homogeneous_freezing=homogeneous_freezing,
+                                         )
+                                )
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
@@ -264,7 +287,8 @@ class TestDropletFreezing:
             }
             particulator = builder.build(attributes=attributes, products=products)
             particulator.environment["RH"] = 1.0001
-            particulator.environment["a_w_ice"] = np.nan
+            particulator.environment["RH_ice"] = 1.5
+            particulator.environment["a_w_ice"] = 0.6
             particulator.environment["T"] = np.nan
 
             cell_id = 0
@@ -300,128 +324,6 @@ class TestDropletFreezing:
             arg = out["dt"] * np.arange(len(data))
             np.testing.assert_array_less(data, hgh(arg))
             np.testing.assert_array_less(low(arg), data)
-
-
-    @staticmethod
-    @pytest.mark.parametrize("double_precision", (True,False))
-    # pylint: disable=too-many-locals
-    def test_homogeneous_freezing_time_dependent(backend_class, double_precision, plot=False):
-        if backend_class.__name__ == "Numba" and not double_precision:
-            pytest.skip()
-        if backend_class.__name__ == "ThrustRTC":
-            pytest.skip()
-
-
-
-        # Arrange
-        seed = 44
-        cases = (
-            {"dt": 5e5, "N": 1},
-            {"dt": 1e6, "N": 1},
-            {"dt": 5e5, "N": 8},
-            {"dt": 1e6, "N": 8},
-            {"dt": 5e5, "N": 16},
-            {"dt": 1e6, "N": 16},
-        )
-        rate = 1e-9
-
-        number_of_real_droplets = 1024
-        total_time = (
-            0.25e9   # effectively interpreted here as seconds, i.e. cycle = 1 * si.s
-        )
-
-        # dummy (but must-be-set) values
-        initial_water_mass = (
-            1000  # for sign flip (ice water has negative volumes)
-        )
-        d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
-
-        droplet_volume =  initial_water_mass / 1000.
-
-        def hgh(t):
-            return np.exp(-0.75 * rate * (t - total_time / 4))
-
-        def low(t):
-            return np.exp(-1.25 * rate * (t + total_time / 4))
-
-
-        RHi = 1.5
-        T   = 230
-
-        # Act
-        output = {}
-
-        formulae = Formulae(
-            particle_shape_and_density="MixedPhaseSpheres",
-            homogeneous_ice_nucleation_rate="Constant",
-            constants={"J_HOM": rate / droplet_volume},
-            seed=seed,
-        )
-        products = (IceWaterContent(name="qi"),)
-
-        for case in cases:
-            n_sd = int(number_of_real_droplets // case["N"])
-            assert n_sd == number_of_real_droplets / case["N"]
-            assert total_time // case["dt"] == total_time / case["dt"]
-
-            key = f"{case['dt']}:{case['N']}"
-            output[key] = {"unfrozen_fraction": [], "dt": case["dt"], "N": case["N"]}
-
-            env = Box(dt=case["dt"], dv=d_v)
-            builder = Builder(
-                n_sd=n_sd,
-                backend=backend_class(
-                    formulae=formulae, double_precision=double_precision
-                ),
-                environment=env,
-            )
-            builder.add_dynamic(Freezing(singular=False,homogeneous_freezing=True,immersion_freezing=False))
-            attributes = {
-                "multiplicity": np.full(n_sd, int(case["N"])),
-                "signed water mass": np.full(n_sd, initial_water_mass),
-            }
-            particulator = builder.build(attributes=attributes, products=products)
-            pvs_ice = particulator.formulae.saturation_vapour_pressure.pvs_ice(T)
-            pvs_water = particulator.formulae.saturation_vapour_pressure.pvs_water(T)
-            particulator.environment["RH_ice"] = RHi
-            particulator.environment["a_w_ice"] = pvs_ice / pvs_water
-            particulator.environment["T"] = T
-
-            cell_id = 0
-            for i in range(int(total_time / case["dt"]) + 1):
-                particulator.run(0 if i == 0 else 1)
-
-                ice_mass_per_volume = particulator.products["qi"].get()[cell_id]
-                ice_mass = ice_mass_per_volume * d_v
-                ice_number = ice_mass / initial_water_mass
-                unfrozen_fraction = 1 - ice_number / number_of_real_droplets
-                output[key]["unfrozen_fraction"].append(unfrozen_fraction)
-
-
-        # Plot
-        fit_x = np.linspace(0, total_time, num=100)
-        fit_y = np.exp(-rate * fit_x)
-
-        for out in output.values():
-            pyplot.step(
-                out["dt"] * np.arange(len(out["unfrozen_fraction"])),
-                out["unfrozen_fraction"],
-                label=f"dt={out['dt']:.2g} / N={out['N']}",
-                marker=".",
-                linewidth=1 + out["N"] // 8,
-            )
-
-        _plot_fit(fit_x, fit_y, low, hgh, total_time)
-        if plot:
-            pyplot.show()
-
-        # Assert
-        for out in output.values():
-            data = np.asarray(out["unfrozen_fraction"])
-            arg = out["dt"] * np.arange(len(data))
-            np.testing.assert_array_less(data, hgh(arg))
-            np.testing.assert_array_less(low(arg), data)
-
 
 
 def _plot_fit(fit_x, fit_y, low, hgh, total_time):

@@ -129,8 +129,6 @@ class FreezingMethods(BackendMethods):
                         )
                         if rand[i] < prob:
                             _freeze(attributes.signed_water_mass, i)
-                            # if record_freezing_temperature:
-                            #     freezing_temperature[i] = temperature[cell_id]
 
         self.freeze_time_dependent_homogeneous_body = freeze_time_dependent_homogeneous_body
 
