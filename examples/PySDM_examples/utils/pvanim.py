@@ -69,7 +69,7 @@ def cli_using_argparse(argp):
     )
 
 
-ap = argparse.ArgumentParser()
+ap = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 cli_using_argparse(ap)
 
 args = ap.parse_args()
