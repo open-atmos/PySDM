@@ -6,7 +6,7 @@ defaults:
 
 # arbitrarily selected runs for generating animation
 env:
-  anim_platform: 'macos-14'
+  anim_platform: 'macos-13'
   anim_python-version: '3.12'
   anim_test-suite: 'multi-process_a'
         
