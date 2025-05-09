@@ -669,6 +669,11 @@ PICCIOTTO_18O_TO_2H_SLOPE_COEFF = 0.8 * PER_CENT / PER_MILLE
 PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF = -1.8 * PER_CENT
 """〃"""
 
+JOUZEL_MERLIVAT_CURVE_4_INTERCEPT_COEFF = 0.99
+"""[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749) eq. (15) curve 4 coefficients"""
+JOUZEL_MERLIVAT_CURVE_4_SLOPE_COEFF = -0.006 / si.K
+"""〃"""
+
 
 def compute_derived_values(c: dict):
     """
@@ -681,6 +686,12 @@ def compute_derived_values(c: dict):
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
     """
 
+    c["M_1H2_16O"] = c["M_1H"] * 2 + c["M_16O"]
+    c["M_2H_1H_16O"] = c["M_2H"] + c["M_1H"] + c["M_16O"]
+    c["M_3H_1H_16O"] = c["M_3H"] + c["M_1H"] + c["M_16O"]
+    c["M_1H2_17O"] = c["M_1H"] * 2 + c["M_17O"]
+    c["M_1H2_18O"] = c["M_1H"] * 2 + c["M_18O"]
+
     c["Mv"] = (
         (
             1
@@ -689,19 +700,15 @@ def compute_derived_values(c: dict):
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         )
-        * (c["M_1H"] * 2 + c["M_16O"])
+        * c["M_1H2_16O"]
         + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-        * (c["M_2H"] + c["M_1H"] + c["M_16O"])
+        * c["M_2H_1H_16O"]
         + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-        * (c["M_3H"] + c["M_1H"] + c["M_16O"])
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-        * (c["M_1H"] * 2 + c["M_17O"])
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
-        * (c["M_1H"] * 2 + c["M_18O"])
+        * c["M_3H_1H_16O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
     )
 
     c["eps"] = c["Mv"] / c["Md"]
