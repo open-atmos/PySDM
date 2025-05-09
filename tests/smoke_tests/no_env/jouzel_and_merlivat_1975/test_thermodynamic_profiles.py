@@ -14,7 +14,9 @@ from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 PLOT = False
 
-C2K = Formulae().trivia.C2K
+formulae = Formulae()
+const = formulae.constants
+C2K = formulae.trivia.C2K
 
 
 class TestThermodynamicProfiles:
@@ -25,7 +27,7 @@ class TestThermodynamicProfiles:
     )
     def test_pressure_against_values_in_paper(temperature_C, pressure):
         # arrange
-        temperature = formulae.trivia.C2K(temperature_C)
+        temperature = C2K(temperature_C)
         pressure_function = thermodynamic_profiles.pressure(temperature)
 
         # act
@@ -34,6 +36,7 @@ class TestThermodynamicProfiles:
         # assert
         np.testing.assert_equal(desired=pressure, actual=pressure_mbar)
 
+    @staticmethod
     def test_pressure_interpolation_plot(plot=PLOT):
         # arrange
         T = C2K(np.linspace(0, -60))
@@ -66,12 +69,13 @@ class TestThermodynamicProfiles:
         T = C2K(temperature_C)
 
         # Act
-        sut = thermodynamic_profiles.ice_saturation_curve_4(T)
+        sut = thermodynamic_profiles.ice_saturation_curve_4(const, T)
 
         # Assert
         np.testing.assert_allclose(desired=ice_saturation_4, actual=sut, atol=0.01)
 
-    def test_vapour_mixing_ratio(self):
+    @staticmethod
+    def test_vapour_mixing_ratio():
         with DimensionalAnalysis():
             # Arrange
             formulae = Formulae()

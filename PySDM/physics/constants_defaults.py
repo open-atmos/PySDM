@@ -670,7 +670,8 @@ PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF = -1.8 * PER_CENT
 """〃"""
 
 JOUZEL_MERLIVAT_CURVE_4_INTERCEPT_COEFF = 0.99
-"""[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749) eq. (15) curve 4 coefficients"""
+""" [Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)
+eq. (15) curve 4 coefficients """
 JOUZEL_MERLIVAT_CURVE_4_SLOPE_COEFF = -0.006 / si.K
 """〃"""
 
