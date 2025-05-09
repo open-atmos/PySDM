@@ -4,7 +4,7 @@ defaults:
   run:
     shell: bash
 
-# arbitrarily selected runs
+# arbitrarily selected runs for generating animation
 env:
   anim_platform: 'macos-14'
   anim_python-version: '3.12'
