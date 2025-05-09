@@ -1,12 +1,13 @@
 """
-From [Jouzel and Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749).
+From [Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749).
 """
 
 import numpy as np
 from scipy.interpolate import make_interp_spline
 
-from PySDM.physics.constants_defaults import T0
+from PySDM.physics.constants import T0
 from PySDM.physics import si
+from PySDM import Formulae
 
 
 pressure = make_interp_spline(
@@ -17,16 +18,19 @@ pressure = make_interp_spline(
 pressure.extrapolate = False
 
 
-def ice_saturation_curve_4(T):
+def ice_saturation_curve_4(const, T):
     """eq. (15)"""
-    return 0.99 - 0.006 * (T - T0)
+    return (
+        const.JOUZEL_MERLIVAT_CURVE_4_INTERCEPT_COEFF
+        + const.JOUZEL_MERLIVAT_CURVE_4_SLOPE_COEFF * (T - const.T0)
+    )
 
 
 def vapour_mixing_ratio(formulae, T):
     """mixing ratio with saturation wrt ice calculated with curve 4 equation"""
     const = formulae.constants
     svp = formulae.saturation_vapour_pressure
-    p_v = ice_saturation_curve_4(T) * svp.pvs_ice(T)
+    p_v = ice_saturation_curve_4(const, T) * svp.pvs_ice(T)
     rho_v = p_v / const.Rv / T
     p_d = pressure(T) - p_v
     rho_d = p_d / const.Rd / T

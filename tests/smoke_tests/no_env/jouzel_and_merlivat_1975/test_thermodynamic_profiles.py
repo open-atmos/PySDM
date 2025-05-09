@@ -1,32 +1,84 @@
+"""
+test for interpolated values of the pressure against Table 1,
+test eq. 3 values
+"""
+
 import numpy as np
 from matplotlib import pyplot
-from matplotlib.pyplot import ylabel
+import pytest
 
 from PySDM_examples.Jouzel_and_Merlivat_1984 import thermodynamic_profiles
 from PySDM import Formulae
+from PySDM.physics import si, in_unit, constants_defaults
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+
+PLOT = False
+
+C2K = Formulae().trivia.C2K
 
 
 class TestThermodynamicProfiles:
     @staticmethod
-    def test_pressure(plot=True):
+    @pytest.mark.parametrize(
+        ("temperature_C", "pressure"),
+        ((-10, 925), (-20, 780), (-30, 690), (-40, 630), (-50, 600)),
+    )
+    def test_pressure_against_values_in_paper(temperature_C, pressure):
         # arrange
-        formulae = Formulae()
-        T = formulae.trivia.C2K(np.linspace(0, -60))
-        p = thermodynamic_profiles.pressure(T)
+        temperature = formulae.trivia.C2K(temperature_C)
+        pressure_function = thermodynamic_profiles.pressure(temperature)
 
         # act
+        pressure_mbar = in_unit(pressure_function, si.mbar)
+
+        # assert
+        np.testing.assert_equal(desired=pressure, actual=pressure_mbar)
+
+    def test_pressure_interpolation_plot(plot=PLOT):
+        # arrange
+        T = C2K(np.linspace(0, -60))
+        p = thermodynamic_profiles.pressure(T)
+        p_not_nan = p[~np.isnan(p)]
+        # act
+        sut = (p_not_nan[1:] - p_not_nan[:-1]) <= 0
 
         # plot
+        pyplot.plot(T, p)
         pyplot.gca().set(
             ylabel="Pressure [Pa]",
             xlabel="Temperature [K]",
         )
-        pyplot.plot(T, p)
-
         if plot:
             pyplot.show()
         else:
             pyplot.clf()
 
         # assert
-        # TODO
+        np.testing.assert_equal(desired=1, actual=sut)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        ("temperature_C", "ice_saturation_4"),
+        ((-10, 1.05), (-20, 1.11), (-30, 1.17), (-40, 1.23), (-50, 1.30)),
+    )
+    def test_ice_saturation_curve_4_against_table_2(temperature_C, ice_saturation_4):
+        # Arrange
+        T = C2K(temperature_C)
+
+        # Act
+        sut = thermodynamic_profiles.ice_saturation_curve_4(T)
+
+        # Assert
+        np.testing.assert_allclose(desired=ice_saturation_4, actual=sut, atol=0.01)
+
+    def test_vapour_mixing_ratio(self):
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae()
+            T = 1 * constants_defaults.si.K
+
+            # Act
+            mr = thermodynamic_profiles.vapour_mixing_ratio(formulae, T)
+
+            # Assert
+            assert mr.check(si.dimensionless)
