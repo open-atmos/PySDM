@@ -246,7 +246,7 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           sudo apt-get update
-          sudo apt-get install libegl1 libopengl0 ghostscript
+          sudo apt-get install libegl1 libopengl0 ghostscript ffmpeg
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `pwd`/`dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
@@ -255,7 +255,7 @@ jobs:
         run: |
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
-          brew install ghostscript
+          brew install ghostscript ffmpeg
 
       - if: startsWith(matrix.platform, 'windows-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
@@ -280,7 +280,6 @@ jobs:
       - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
           set -x
-          sudo apt-get install ffmpeg
           mkdir -p /home/runner/work/_temp/_github_home/figures
           ls /tmp/pytest-of-runner/pytest-current/
           rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runnecurrent
@@ -290,10 +289,10 @@ jobs:
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/last_animation_frame.pdf /home/runner/work/_temp/_github_home/figures
           ls /home/runner/work/_temp/_github_home/figures
 
-      - if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
+      # - if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3
+      #   with:
+      #     limit-access-to-actor: true
 
       - name: animation movie upload
         if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
