@@ -9,9 +9,10 @@ from PySDM.physics.constants import T0
 from PySDM.physics import si
 from PySDM import Formulae
 
+const = Formulae().constants
 
 pressure = make_interp_spline(
-    x=np.asarray([-10, -20, -30, -40, -50])[::-1] + T0,
+    x=np.asarray([-10, -20, -30, -40, -50])[::-1] + const.T0,
     y=np.asarray([925, 780, 690, 630, 600])[::-1] * si.mbar,
 )
 """ Table 1, first two columns: temperature and pressure"""
