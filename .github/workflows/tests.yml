@@ -280,14 +280,14 @@ jobs:
       - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
           set -x
-          mkdir -p /home/runner/work/_temp/_github_home/figures
+          mkdir -p $HOME/work/_temp/_github_home/figures
           ls /tmp/pytest-of-runner/pytest-current/
-          rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runnecurrent
-          ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/
-          ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/
-          ffmpeg -i /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/docs_intro_animation.ogv /home/runner/work/_temp/_github_home/figures/docs_intro_animation.mp4
-          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks__home_runne*/output/last_animation_frame.pdf /home/runner/work/_temp/_github_home/figures
-          ls /home/runner/work/_temp/_github_home/figures
+          rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*current
+          ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/
+          ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/output/
+          ffmpeg -i /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation.mp4
+          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures
+          ls $HOME/work/_temp/_github_home/figures
 
       # - if: ${{ failure() }}
       #   uses: mxschmitt/action-tmate@v3
@@ -300,7 +300,7 @@ jobs:
         with:
           name: animation-movie
           if-no-files-found: error
-          path: /home/runner/work/_temp/_github_home/figures/*.mp4
+          path: /*/runner/work/_temp/_github_home/figures/*.mp4
 
       - name: animation frame upload
         if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
@@ -308,12 +308,11 @@ jobs:
         with:
           name: animation-frame
           if-no-files-found: error
-          path: /home/runner/work/_temp/_github_home/figures/*.pdf
+          path: /*/runner/work/_temp/_github_home/figures/*.pdf
 
       - name: tip release upload
         if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-              /home/runner/work/_temp/_github_home/figures/*.mp4
+          files: /*/runner/work/_temp/_github_home/figures/*.mp4
