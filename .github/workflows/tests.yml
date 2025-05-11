@@ -10,7 +10,7 @@ env:
   anim_python-version: '3.12'
   anim_test-suite: 'multi-process_a'
   # common options for pytest
-  pytest_options: "--durations=10 -v -s -We -p no:unraisableexception --timeout=900 --timeout_method=thread"
+  pytest_options: "--durations=10 -v -s -We -p no:unraisableexception"
         
 on:
   push:
@@ -172,7 +172,7 @@ jobs:
           NUMBA_OPT: 1
         run: |
           shopt -s extglob
-          pytest ${{ env.pytest_options }} tests/${{ matrix.test-suite }}
+          pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
     needs: [nojit_and_codecov]
