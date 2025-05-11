@@ -280,21 +280,21 @@ jobs:
 
       # TODO #1207
       - if: startsWith(matrix.platform, 'macos-13')
-        run: python -m pytest --basetemp=/tmp ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
+        run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
         
       - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
           set -x
           mkdir -p $HOME/work/_temp/_github_home/figures
-          ls /tmp/pytest-of-runner/pytest-current/
-          rm /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*current
-          ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/
-          ls /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/output/
-          ffmpeg -i /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation.mp4
-          mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures
+          ls /tmp/pytest/pytest-of-runner/pytest-current/
+          rm /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*current
+          ls /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/
+          ls /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/output/
+          ffmpeg -i /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation.mp4
+          mv /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures
           ls $HOME/work/_temp/_github_home/figures
 
       - if: ${{ failure() }}
