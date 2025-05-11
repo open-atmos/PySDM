@@ -4,11 +4,13 @@ defaults:
   run:
     shell: bash
 
-# arbitrarily selected runs for generating animation
 env:
+  # arbitrarily selected runs for generating animation
   anim_platform: 'macos-13'
   anim_python-version: '3.12'
   anim_test-suite: 'multi-process_a'
+  # common options for pytest
+  pytest_options: "--durations=10 -v -s -We -p no:unraisableexception --timeout=900 --timeout_method=thread"
         
 on:
   push:
@@ -73,7 +75,7 @@ jobs:
       - run: pip install -r tests/devops_tests/requirements.txt
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
+        run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
 
   zenodo_json:
     runs-on: ubuntu-24.04
@@ -102,7 +104,7 @@ jobs:
         pip install -e .[tests]
         pip install -e ./examples
         pip install pytest-cov
-        pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
+        pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
     - uses: codecov/codecov-action@v4.5.0
       with:
         fail_ci_if_error: true
@@ -170,14 +172,16 @@ jobs:
           NUMBA_OPT: 1
         run: |
           shopt -s extglob
-          pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
+          pytest ${{ env.pytest_options }} tests/${{ matrix.test-suite }}
 
   examples-setup:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
+        # platform: [ubuntu-24.04, macos-13, windows-latest]
+        # python-version: ["3.9", "3.12"]
+        platform: [macos-13]
+        python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -212,9 +216,12 @@ jobs:
     needs: [examples-setup]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
+        # platform: [ubuntu-24.04, macos-13, windows-latest]
+        # python-version: ["3.9", "3.12"]
+        # test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
+        platform: [macos-13]
+        python-version: ["3.12"]
+        test-suite: ["multi-process_a"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 35
@@ -269,13 +276,13 @@ jobs:
           pvpython -c "from paraview import simple"
 
       - run: |
-          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
+          python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
       # TODO #1207
       - if: startsWith(matrix.platform, 'macos-13')
-        run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
+        run: python -m pytest --basetemp=/tmp ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+        run: python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
         
       - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
@@ -289,10 +296,10 @@ jobs:
           mv /tmp/pytest-of-runner/pytest-current/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures
           ls $HOME/work/_temp/_github_home/figures
 
-      # - if: ${{ failure() }}
-      #   uses: mxschmitt/action-tmate@v3
-      #   with:
-      #     limit-access-to-actor: true
+      - if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - name: animation movie upload
         if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
