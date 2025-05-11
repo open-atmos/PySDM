@@ -289,12 +289,11 @@ jobs:
         run: |
           set -x
           mkdir -p $HOME/work/_temp/_github_home/figures
-          ls /tmp/pytest/pytest-of-runner/pytest-current/
-          rm /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*current
-          ls /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/
-          ls /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/output/
-          ffmpeg -i /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation.mp4
-          mv /tmp/pytest/pytest-of-runner/pytest-current/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures
+          rm /tmp/pytest/test_run_notebooks_*current
+          ls /tmp/pytest/test_run_notebooks_*/
+          ls /tmp/pytest/test_run_notebooks_*/output/
+          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation.mp4
+          mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures
           ls $HOME/work/_temp/_github_home/figures
 
       - if: ${{ failure() }}
