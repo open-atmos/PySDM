@@ -1,0 +1,195 @@
+{% extends "default/index.html.jinja2" %}
+
+{% block title %}PySDM documentation{% endblock %}
+
+{% block nav %}
+    <style>
+    nav {
+        display: none;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <style>
+    .pdoc {
+        margin: 0 auto;
+        padding: 1em;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    </style>
+    <main class="pdoc">
+        <div style="display: flex; align-items: center;">
+            <a href="https://open-atmos.github.io/PySDM/index.html">
+                <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" style="height:10em" alt="PySDM logo">
+            </a>
+            <h1 style="padding-left: 0.5em; color: #13A4DE; font-weight: normal ">Documentation</h1>
+    </div>
+    <div style="padding-top: 2em">
+        <h2>What is PySDM?</h2>
+        <p>
+            <video controls style="float:right; width:40%">
+                <source src="https://github.com/open-atmos/PySDM/wiki/files/animation_save.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            PySDM is a package for simulating the <mark>dynamics of population of particles undergoing diffusional and collisional growth (and breakage)</mark>.
+            The package features a Pythonic high-performance (multi-threaded CPU &amp; CUDA GPU) implementation of the <mark>Super-Droplet Method (SDM) Monte-Carlo algorithm</mark> 
+              for representing collisional growth (<a href="https://doi.org/10.1002/qj.441">Shima et al. 2009</a>), hence the name.
+            It is intended to serve as a building block for simulation systems modelling <mark>fluid flows involving a dispersed phase</mark>,
+               with PySDM being responsible for representation of the dispersed phase.
+            Currently, the development is focused on atmospheric <mark>cloud physics applications</mark>, in particular on modelling the dynamics of 
+              particles immersed in moist air using the particle-based (a.k.a. super-droplet) approach to represent aerosol/cloud/rain microphysics.
+            The key goal of PySDM is to enable rapid development and independent reproducibility of simulations in cloud microphysics
+              while being free from the two-language barrier commonly separating prototype and high-performance research code.
+            PySDM ships with a set of examples reproducing results from literature and serving as tutorials. 
+            The animation shown here depicts a flow-coupled simulation in which the flow is resolved using PySDM's sibling project: <a href="https://open-atmos.github.io/PyMPDATA/">PyMPDATA</a>.
+            The examples include also single-column setups (with PyMPDATA used for advection) as well as adiabatic cloud parcel model setups
+              (with <mark>PySDM alone sufficient to constitute a microphysics-resolving cloud parcel model in Python</mark>).
+        </p>
+    </div>
+    <div style="padding-top: 0.5em">
+        <h2>What is the difference between PySDM and PySDM-examples?</h2>
+        <p>
+            PySDM is a Python package that provides the implementation of SDM that can be used in your own projects.
+        </p>
+        <p>
+            PySDM-examples is a Python package that provides examples of how to use PySDM.
+            The package contains common code used in PySDM examples Jupyter notebooks, as well as in PySDM test suite.
+        </p>
+        <p>The two projects exist separately on PyPI, but their development and issue tracking is hosted at the same GitHub repository.</p>
+    </div>
+    <div style="padding-top: 0.5em">
+        <h2><b style="font-weight: 600">Important links</b></h2>
+        <table style="width:100%">
+            <tr>
+                <th width="33%">PySDM</th>
+                <th width="33%">PySDM-examples</th>
+            <tr>
+            <tr>
+            <td>
+              <ul>
+                <li><a href="https://open-atmos.github.io/PySDM/PySDM.html">docs (<b>incl. tutorials</b>)</a></li>
+                <li><a href="https://pypi.org/p/PySDM"><img src="https://img.shields.io/pypi/v/pysdm?logo=pypi&logoColor=white"></a></li>
+              </ul>
+            </td>
+            <td>
+              <ul>
+                <li><a href="https://open-atmos.github.io/PySDM/PySDM_examples.html">docs (<b>incl. example gallery</b>)</a></li>
+                <li><a href="https://pypi.org/p/PySDM-examples"><img src="https://img.shields.io/pypi/v/pysdm-examples?logo=pypi&logoColor=white"></a></li>
+              </ul>
+            </td>
+            </tr>
+            <tr>
+            <td colspan="2">
+                <ul>
+                    <li><a href="https://github.com/open-atmos/PySDM"><img src="https://img.shields.io/static/v1?label=PySDM&logo=github&color=gold&message=code+repository"></a></li>
+                    <li><a href="https://github.com/open-atmos/PySDM/issues"><img src="https://img.shields.io/github/issues/open-atmos/pysdm?label=PySDM%20issues&logo=github&logoColor=white"></a></li>
+                </ul>
+            </td>
+            </tr>
+        </table>
+        </div>
+    <div style="padding-top: 0.5em">
+        <h2>Installation</h2>
+        <p>
+            PySDM is available on PyPI and can be installed using pip:
+        </p>
+        <pre><code>pip install PySDM</code></pre>
+        <p>Note: the way above <b>will not</b> install test-time dependencies, to install them and run the tests, likely the most convenient way is:</p>
+        <pre><code>git clone https://github.com/open-atmos/PySDM.git
+pip install -e PySDM[tests] -e PySDM/examples[tests]
+pytest PySDM</code></pre>
+        <p>(the above should be a viable way to set up development environment for PySDM, see also our <a href="https://github.com/open-atmos/python-dev-hints/wiki">Python dev hints Wiki</a> 
+          and <a href="https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOS">PySDM HOWTOs</a> for further information)</p>
+        <p>
+            PySDM-examples is also available on PyPI and can be installed using pip:
+        </p>
+        <pre><code>pip install PySDM-examples</code></pre>
+        <p>Note: this will also install PySDM if needed, but the examples package wheels do not include the Jupyter notebooks - only common code used from the notebooks. 
+          All PySDM example notebooks can be viewed on GitHub and feature header cells with badges enabling single-click execution on either 
+          <a href="https://colab.research.google.com">Google Colab</a> or <a href="https://mybinder.org">mybinder.org</a> platforms. 
+          To try the notebooks out locally, use:
+        </p>
+        <pre><code>git clone https://github.com/open-atmos/PySDM.git
+pip install -e PySDM -e PySDM/examples
+jupyter-notebook PySDM/examples</code></pre>
+    </div>
+        <div style="padding-top: 0.5em">
+        <h2>Dependencies</h2>
+        <p>
+            PySDM depends on <a href="https://numpy.org/">NumPy</a>, <a href="https://numba.pydata.org/">Numba</a>,
+            <a href="https://pypi.org/project/ThrustRTC/">ThrustRTC</a>, <a href="https://scipy.org/">SciPy</a>, <a href="https://pint.readthedocs.io/">Pint</a>,
+            <a href="https://pypi.org/project/chempy/">chempy</a>, <a href="https://pypi.org/project/pyevtk/">pyevtk</a> and <a href="https://github.com/fynv/CURandRTC">CURandRTC</a>
+        </p>
+        <p>
+            PySDM-examples requires additional packages listed in <code>install_requires</code> in
+            <a href="https://github.com/open-atmos/PySDM/blob/main/examples/setup.py">setup.py</a>.
+            Amongst them is PySDM.
+        </p>
+    </div>
+    <div style="padding-top: 0.5em">
+        <h2>Contributing, reporting issues, seeking support</h2>
+        <p>
+            Submitting new code to both packages is done through the same GitHub repository via
+            <a href="https://github.com/open-atmos/PySDM/pulls">Pull requests</a>.
+        </p>
+        <p>
+            Issues regarding any incorrect, unintuitive or undocumented behaviour of PySDM or PySDM-examples
+            are best to be reported on the
+            <a href="https://github.com/open-atmos/PySDM/issues/new">GitHub issue tracker</a>.
+        </p>
+        <p>
+            We encourage to use the <a href="https://github.com/open-atmos/PySDM/discussions">GitHub Discussions</a>
+            feature (rather than the issue tracker) for seeking support in understanding,
+            using and extending PySDM code.
+        </p>
+    </div>
+    <div style="padding-top: 0.5em">
+        <h2>Licensing, credits, acknowledgements</h2>
+        <p>
+          PySDM and PySDM-examples are free/libre open-source software packages released under the
+            <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU GPL v3 license</a>.
+        <p>
+          Development of PySDM was started by <a href="https://github.com/piotrbartman">Piotr Bartman[-Szwarc]</a>, 
+            <a href="https://github.com/slayoo">Sylwester Arabas</a> and collaborators
+            at the <a href="https://en.uj.edu.pl/en">Jagiellonian University in Kraków</a> and at
+            the <a href="https://clima.caltech.edu/">CliMA team at Caltech</a>.
+          For an overview of features of the initial release, see the
+            <a href="https://doi.org/10.21105/joss.03219">2022 PySDM v1 JOSS paper</a>.
+        </p>        
+        <p>
+          The v2 release of PySDM is summarised in the <a href="https://doi.org/10.21105/joss.04968">2023 de Jong, 
+            Singer, et al. JOSS paper</a>.
+          Current development (towards v3) and maintenance is led by the  
+            <a href="https://zfs.agh.edu.pl/en">Environmental Physics Group at the AGH University of Krakow</a>.
+          See <a href="https://github.com/open-atmos/PySDM/graphs/contributors">list of code committers</a>
+            for a complete list of contributors.
+        </p>
+        <p>
+          Development of PySDM was supported by:
+        </p>
+        <ul style="list-style:square;">
+            <li><a href="https://www.fnp.org.pl/en/">Foundation for Polish Science</a> (grant no. POIR.04.04.00-00-5E1C/18 co-financed by the European Union under the European Regional Development Fund)</li>
+            <li><a href="https://ncn.gov.pl/en">Polish National Science Centre</a> (grant no. 2020/39/D/ST10/01220)</li>
+            <li><a href="https://science.energy.gov">US Department of Energy</a> via the <a href="https://www.krellinst.org/csgf/">Computational Science Graduate Fellowship</a> and via the <a href="https://asr.science.energy.gov/">Atmospheric System Research Program</a> (grant no. DE-SC0021034)</li>
+            <li><a href="https://www.schmidtfutures.org/our-people/#eric-schmidt">Eric</a> and <a href="https://www.schmidtfutures.org/our-people/#wendy-schmidt">Wendy Schmidt</a> (by recommendation of <a href="https://www.schmidtfutures.org/">Schmidt Futures</a>)</li>
+            <li><a href="https://www.hsfoundation.org/">Heising-Simons Foundation</a></li>
+            <li><a href="https://www.nsf.gov/">National Science Foundation</a> (grant AGS-1835860)</li>
+        </ul>
+    </div>
+        <div>
+            <h2>Bibliography with code cross-references</h2>
+            <p>
+                The list below summarises all literature references included in PySDM codebase and includes links to both the referenced papers, as well as to the referring PySDM source files.
+            </p>
+            {% include "bibliography.html" %}
+            <h2>EOF</h2>
+        </div>
+    </main>
+
+{#    {% include "search.html.jinja2" %}#}
+{% endblock %}
+

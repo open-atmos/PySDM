@@ -5,6 +5,10 @@ The very class exposing `PySDM.particulator.Particulator.run()` method for launc
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.backends.impl_common.freezing_attributes import (
+    SingularAttributes,
+    TimeDependentAttributes,
+)
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
@@ -122,7 +126,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            water_mass=self.attributes["water mass"],
+            water_mass=self.attributes["signed water mass"],
             multiplicity=self.attributes["multiplicity"],
             vdry=self.attributes["dry volume"],
             idx=self.attributes._ParticleAttributes__idx,
@@ -150,7 +154,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             air_density=self.environment["air density"],
             air_dynamic_viscosity=self.environment["air dynamic viscosity"],
         )
-        self.attributes.mark_updated("water mass")
+        self.attributes.mark_updated("signed water mass")
 
     def collision_coalescence_breakup(
         self,
@@ -316,7 +320,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name="water mass",
+        attr_name="signed water mass",
         attr_range=(-np.inf, np.inf),
         weighting_attribute="water mass",
         weighting_rank=0,
@@ -399,10 +403,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def remove_precipitated(
         self, *, displacement, precipitation_counting_level_index
     ) -> float:
-        res = self.backend.flag_precipitated(
+        rainfall_mass = self.backend.flag_precipitated(
             cell_origin=self.attributes["cell origin"],
             position_in_cell=self.attributes["position in cell"],
-            volume=self.attributes["volume"],
+            water_mass=self.attributes["water mass"],
             multiplicity=self.attributes["multiplicity"],
             idx=self.attributes._ParticleAttributes__idx,
             length=self.attributes.super_droplet_count,
@@ -411,7 +415,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             displacement=displacement,
         )
         self.attributes.sanitize()
-        return res
+        return rainfall_mass
 
     def flag_out_of_column(self):
         self.backend.flag_out_of_column(
@@ -447,12 +451,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         *,
         seeded_particle_index,
         seeded_particle_multiplicity,
-        seeded_particle_cell_id,
-        seeded_particle_cell_origin,
-        seeded_particle_pos_cell,
-        seeded_particle_volume,
         seeded_particle_extensive_attributes,
         number_of_super_particles_to_inject,
+        seeded_particle_cell_id=None,
+        seeded_particle_cell_origin=None,
+        seeded_particle_pos_cell=None,
+        seeded_particle_volume=None,
     ):
         n_null = self.n_sd - self.attributes.super_droplet_count
         if n_null == 0:
@@ -471,26 +475,101 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 Instead increase multiplicity of injected particles."
             )
 
-        self.backend.seeding(
-            idx=self.attributes._ParticleAttributes__idx,
-            multiplicity=self.attributes["multiplicity"],
-            cell_id=self.attributes["cell id"],
-            cell_origin=self.attributes["cell origin"],
-            pos_cell=self.attributes["position in cell"],
-            volume=self.attributes["volume"],
-            extensive_attributes=self.attributes.get_extensive_attribute_storage(),
-            seeded_particle_index=seeded_particle_index,
-            seeded_particle_multiplicity=seeded_particle_multiplicity,
-            seeded_particle_cell_id=seeded_particle_cell_id,
-            seeded_particle_cell_origin=seeded_particle_cell_origin,
-            seeded_particle_pos_cell=seeded_particle_pos_cell,
-            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
-            seeded_particle_volume=seeded_particle_volume,
-            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
-        )
+        if self.environment.mesh.n_dims == 0:
+            self.backend.seeding(
+                idx=self.attributes._ParticleAttributes__idx,
+                multiplicity=self.attributes["multiplicity"],
+                extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+                seeded_particle_index=seeded_particle_index,
+                seeded_particle_multiplicity=seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+                seeded_particle_cell_id=seeded_particle_cell_id,
+                seeded_particle_cell_origin=seeded_particle_cell_origin,
+                seeded_particle_pos_cell=seeded_particle_pos_cell,
+                seeded_particle_volume=seeded_particle_volume,
+                cell_id=None,
+                cell_origin=None,
+                pos_cell=None,
+                volume=None,
+            )
+
+        else:
+            self.backend.seeding(
+                idx=self.attributes._ParticleAttributes__idx,
+                multiplicity=self.attributes["multiplicity"],
+                extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+                seeded_particle_index=seeded_particle_index,
+                seeded_particle_multiplicity=seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+                seeded_particle_cell_id=seeded_particle_cell_id.data,
+                seeded_particle_cell_origin=seeded_particle_cell_origin.data,
+                seeded_particle_pos_cell=seeded_particle_pos_cell.data,
+                seeded_particle_volume=seeded_particle_volume.data,
+                cell_id=self.attributes["cell id"].data,
+                cell_origin=self.attributes["cell origin"].data,
+                pos_cell=self.attributes["position in cell"].data,
+                volume=self.attributes["volume"].data,
+            )
+
         self.attributes.reset_idx()
         self.attributes.sanitize()
 
         self.attributes.mark_updated("multiplicity")
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
+
+    def deposition(self):
+        self.backend.deposition(
+            multiplicity=self.attributes["multiplicity"],
+            signed_water_mass=self.attributes["signed water mass"],
+            current_temperature=self.environment["T"],
+            current_total_pressure=self.environment["p"],
+            current_relative_humidity=self.environment["RH"],
+            current_water_activity=self.environment["a_w_ice"],
+            current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
+            current_dry_air_density=self.environment["rhod"],
+            current_dry_potential_temperature=self.environment["thd"],
+            cell_volume=self.environment.mesh.dv,
+            time_step=self.dt,
+            cell_id=self.attributes["cell id"],
+            reynolds_number=self.attributes["Reynolds number"],
+            schmidt_number=self.environment["Schmidt number"],
+            predicted_vapour_mixing_ratio=self.environment.get_predicted(
+                "water_vapour_mixing_ratio"
+            ),
+            predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
+        )
+        self.attributes.mark_updated("signed water mass")
+        # TODO #1524 - should we update here?
+        # self.update_TpRH(only_if_not_last='VapourDepositionOnIce')
+
+    def immersion_freezing_time_dependent(self, *, thaw: bool, rand: Storage):
+        self.backend.freeze_time_dependent(
+            rand=rand,
+            attributes=TimeDependentAttributes(
+                immersed_surface_area=self.attributes["immersed surface area"],
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            timestep=self.dt,
+            cell=self.attributes["cell id"],
+            a_w_ice=self.environment["a_w_ice"],
+            temperature=self.environment["T"],
+            relative_humidity=self.environment["RH"],
+            thaw=thaw,
+        )
+        self.attributes.mark_updated("signed water mass")
+
+    def immersion_freezing_singular(self, *, thaw: bool):
+        self.backend.freeze_singular(
+            attributes=SingularAttributes(
+                freezing_temperature=self.attributes["freezing temperature"],
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            temperature=self.environment["T"],
+            relative_humidity=self.environment["RH"],
+            cell=self.attributes["cell id"],
+            thaw=thaw,
+        )
+        self.attributes.mark_updated("signed water mass")

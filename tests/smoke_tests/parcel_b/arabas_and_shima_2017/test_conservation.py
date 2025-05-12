@@ -19,7 +19,7 @@ def liquid_water_mixing_ratio(simulation: Simulation):
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
 @pytest.mark.parametrize("mass_of_dry_air", (1, 10000))
 @pytest.mark.parametrize("scheme", ("SciPy", "CPU", "GPU"))
-@pytest.mark.parametrize("coord", ("VolumeLogarithm", "Volume"))
+@pytest.mark.parametrize("coord", ("WaterMassLogarithm", "WaterMass"))
 def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     # Arrange
     assert scheme in ("SciPy", "CPU", "GPU")
@@ -47,7 +47,7 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     output = simulation.run()
 
     # Assert
-    total_water_mixing_ratio = simulation.particulator.environment[
+    (total_water_mixing_ratio,) = simulation.particulator.environment[
         "water_vapour_mixing_ratio"
     ].to_ndarray() + liquid_water_mixing_ratio(simulation)
     np.testing.assert_approx_equal(
@@ -59,7 +59,7 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
 @pytest.mark.parametrize("mass_of_dry_air", [1, 10000])
-@pytest.mark.parametrize("coord", ("VolumeLogarithm", "Volume"))
+@pytest.mark.parametrize("coord", ("WaterMassLogarithm", "WaterMass"))
 def test_energy_conservation(settings_idx, mass_of_dry_air, coord):
     # Arrange
     settings = Settings(
@@ -77,4 +77,4 @@ def test_energy_conservation(settings_idx, mass_of_dry_air, coord):
     simulation.run()
 
     # Assert
-    np.testing.assert_approx_equal(thd0.to_ndarray(), env["thd"].to_ndarray())
+    np.testing.assert_array_almost_equal(thd0.to_ndarray(), env["thd"].to_ndarray())

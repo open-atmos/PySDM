@@ -1,5 +1,7 @@
 [tool.setuptools_scm]
+root = ".."
+local_scheme = "no-local-version"
+version_scheme = "post-release"
 
-# TODO #1200
 [build-system]
-requires = ['setuptools==56.0.0', 'setuptools-scm==6.0.1']
+requires = ['setuptools==78.1.0', 'setuptools-scm==8.3.1']

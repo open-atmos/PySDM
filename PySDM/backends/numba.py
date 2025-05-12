@@ -29,6 +29,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     methods.TerminalVelocityMethods,
     methods.IsotopeMethods,
     methods.SeedingMethods,
+    methods.DepositionMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -43,9 +44,10 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
         parallel_default = True
         if platform.machine() == "arm64":
-            warnings.warn(
-                "Disabling Numba threading due to ARM64 CPU (atomics do not work yet)"
-            )
+            if "CI" not in os.environ:
+                warnings.warn(
+                    "Disabling Numba threading due to ARM64 CPU (atomics do not work yet)"
+                )
             parallel_default = False  # TODO #1183 - atomics don't work on ARM64!
 
         try:
@@ -77,3 +79,4 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         methods.TerminalVelocityMethods.__init__(self)
         methods.IsotopeMethods.__init__(self)
         methods.SeedingMethods.__init__(self)
+        methods.DepositionMethods.__init__(self)

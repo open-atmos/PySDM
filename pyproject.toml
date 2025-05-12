@@ -2,7 +2,42 @@
 profile = "black"
 
 [tool.setuptools_scm]
+local_scheme = "no-local-version"
+version_scheme = "post-release"
 
-# TODO #1200
+[tool.setuptools.packages.find]
+include = ["PySDM", "PySDM*"]
+
 [build-system]
-requires = ['setuptools==56.0.0', 'setuptools-scm==6.0.1']
+requires = ['setuptools==78.1.0', 'setuptools-scm==8.3.1']
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pysdm"
+description = "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab"
+readme = "README.md"
+keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
+    "atmospheric-modelling", "particle-system", "numba", "thrust",
+    "nvrtc", "pint", "atmospheric-physics",
+    ]
+license = "GPL-3.0-only"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Libraries",
+]
+requires-python = ">= 3.8"
+authors = [
+    {name = "https://github.com/open-atmos/PySDM/graphs/contributors", email = "sylwester.arabas@agh.edu.pl"}
+]     
+dynamic = ["version", "dependencies", "optional-dependencies"]
+[project.urls]
+Tracker = "https://github.com/open-atmos/PySDM/issues"
+Documentation = "https://open-atmos.github.io/PySDM"
+Source = "https://github.com/open-atmos/PySDM"

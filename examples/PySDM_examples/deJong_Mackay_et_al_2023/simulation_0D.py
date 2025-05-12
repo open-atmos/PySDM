@@ -79,11 +79,11 @@ def run_box_breakup(
         core.run(step - core.n_steps)
         y[i] = core.products["dv/dlnr"].get()[0]
         if return_nv:
-            y2[i] = core.products["N(v)"].get()[0]
-        rates[i, 0] = core.products["cr"].get()
-        rates[i, 1] = core.products["crd"].get()
-        rates[i, 2] = core.products["cor"].get()
-        rates[i, 3] = core.products["br"].get()
+            (y2[i],) = core.products["N(v)"].get()
+        (rates[i, 0],) = core.products["cr"].get()
+        (rates[i, 1],) = core.products["crd"].get()
+        (rates[i, 2],) = core.products["cor"].get()
+        (rates[i, 3],) = core.products["br"].get()
 
     x = (settings.radius_bins_edges[:-1] / si.micrometres,)[0]
 
@@ -124,10 +124,10 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     # run
     for i, step in enumerate(steps):
         core.run(step - core.n_steps)
-        y[i] = core.products["dv/dlnr"].get()[0]
-        rates[i, 0] = core.products["cr"].get()
-        rates[i, 1] = core.products["crd"].get()
-        rates[i, 2] = core.products["cor"].get()
+        (y[i],) = core.products["dv/dlnr"].get()
+        (rates[i, 0],) = core.products["cr"].get()
+        (rates[i, 1],) = core.products["crd"].get()
+        (rates[i, 2],) = core.products["cor"].get()
 
     x = (settings.radius_bins_edges[:-1] / si.micrometres,)[0]
 

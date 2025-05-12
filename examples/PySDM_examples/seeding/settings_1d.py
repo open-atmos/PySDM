@@ -5,7 +5,6 @@ import numpy as np
 from numdifftools import Derivative
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
-
 from PySDM import Formulae
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
@@ -58,7 +57,7 @@ class Settings:
         enable_condensation: bool = True,
         formulae: Formulae = None,
         save_spec_and_attr_times=(),
-        collision_kernel=None
+        collision_kernel=None,
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
@@ -113,7 +112,6 @@ class Settings:
             )
         )
 
-        g = self.formulae.constants.g_std
         self.rhod0 = self.formulae.state_variable_triplet.rho_d(
             p=p0,
             water_vapour_mixing_ratio=self.water_vapour_mixing_ratio(0 * si.m),
@@ -135,9 +133,9 @@ class Settings:
             p = self.formulae.state_variable_triplet.p(
                 rhod[0], T, water_vapour_mixing_ratio
             )
-            lv = self.formulae.latent_heat.lv(T)
+            lv = self.formulae.latent_heat_vapourisation.lv(T)
             return self.formulae.hydrostatics.drho_dz(
-                g, p, T, water_vapour_mixing_ratio, lv
+                p, T, water_vapour_mixing_ratio, lv
             ) / (
                 1 + water_vapour_mixing_ratio
             ) - rhod * d_water_vapour_mixing_ratio__dz / (

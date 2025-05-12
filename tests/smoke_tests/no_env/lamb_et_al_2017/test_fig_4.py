@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from PySDM_examples.utils.notebook_vars import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Lamb_et_al_2017
 
 PLOT = False
@@ -40,7 +40,7 @@ class TestFig4:
         plot_x = notebook_local_variables["T"]
         plot_y = notebook_local_variables["alphas"][paper]
         eps = 5e-1
-        index = np.where(abs(plot_x - T) < eps)
+        ((index,),) = np.where(abs(plot_x - T) < eps)
         np.testing.assert_approx_equal(
             actual=plot_y[index], desired=alpha_i_2H, significant=3
         )

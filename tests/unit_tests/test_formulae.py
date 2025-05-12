@@ -1,14 +1,20 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from collections import namedtuple
+
 import numpy as np
 import pytest
 
 from PySDM import formulae, Formulae
 from PySDM.physics import si
 
+DUMMY_CONSTANTS = namedtuple(typename="constants", field_names=("PI", "ZERO"))(
+    PI=3.14, ZERO=0
+)
+
 
 class TestFormulae:
     @staticmethod
-    def test_c_inline():
+    def test_c_inline_hello_world():
         # arrange
         def fun(_, xxx):
             return min(
@@ -18,11 +24,44 @@ class TestFormulae:
 
         # act
         c_code = formulae._c_inline(
-            fun, constants={"pi": 3.14}, xxx=0
+            fun, constants=DUMMY_CONSTANTS, xxx=0
         )  # pylint: disable=protected-access
 
         # assert
         assert ", )" not in c_code
+
+    @staticmethod
+    def test_c_inline_single_line_docstring():
+        # arrange
+        def zero(const):
+            """docstring"""
+            return const.ZERO
+
+        # act
+        c_code = formulae._c_inline(
+            zero, constants=DUMMY_CONSTANTS
+        )  # pylint: disable=protected-access
+
+        # assert
+        assert c_code == "(real_type)((real_type)(0))"
+
+    @staticmethod
+    def test_c_inline_multi_line_docstring():
+        # arrange
+        def zero(const):
+            """
+            line 1
+            line 2
+            """
+            return const.ZERO
+
+        # act
+        c_code = formulae._c_inline(
+            zero, constants=DUMMY_CONSTANTS
+        )  # pylint: disable=protected-access
+
+        # assert
+        assert c_code == "(real_type)((real_type)(0))"
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -77,7 +116,9 @@ class TestFormulae:
 
         # assert
         temp = 300 * si.K
-        assert sut.latent_heat__lv(temp) == f.latent_heat.lv(temp)
+        assert sut.latent_heat_vapourisation__lv(
+            temp
+        ) == f.latent_heat_vapourisation.lv(temp)
 
     @staticmethod
     def test_get_constant():
@@ -94,10 +135,10 @@ class TestFormulae:
     @pytest.mark.parametrize("arg", ("Dansgaard1964+BarkanAndLuz2007", "Dansgaard1964"))
     def test_plus_separated_ctor_arg(arg):
         # arrange
-        sut = formulae.Formulae(isotope_meteoric_water_line_excess=arg)
+        sut = formulae.Formulae(isotope_meteoric_water_line=arg)
 
         # act
-        class_name = sut.isotope_meteoric_water_line_excess.__name__
+        class_name = sut.isotope_meteoric_water_line.__name__
 
         # assert
         assert class_name == arg

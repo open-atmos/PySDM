@@ -14,7 +14,7 @@ from PySDM.physics.trivia import Trivia
 
 def dummy_attrs(length):
     return {
-        "water mass": np.asarray([0.666 * si.g] * length),
+        "signed water mass": np.asarray([0.666 * si.g] * length),
         "multiplicity": np.asarray([-1] * length, dtype=int),
     }
 
@@ -78,22 +78,23 @@ class TestIsotopes:
         attributes[f"moles_{isotope}"] = np.asarray(
             [
                 heavier_water_specific_content
-                * attributes["water mass"]
+                * attributes["signed water mass"]
                 / heavier_water_molar_mass
             ]
         )
         particulator = builder.build(attributes=attributes)
 
         # act
-        delta = particulator.attributes[f"delta_{isotope}"].to_ndarray()
+        (delta,) = particulator.attributes[f"delta_{isotope}"].to_ndarray()
 
         # assert
-        n_heavy_isotope = attributes[f"moles_{isotope}"][0]
-        n_light_water = (
+        ((n_heavy_isotope,),) = attributes[f"moles_{isotope}"]
+        (n_light_water,) = (
             (1 - heavier_water_specific_content)
-            * attributes["water mass"]
+            * attributes["signed water mass"]
             / (constants_defaults.M_1H * 2 + constants_defaults.M_16O)
         )
+        print(delta, n_heavy_isotope, n_light_water)
         if isotope[-1] == "O":
             n_light_isotope = n_light_water
         elif isotope[-1] == "H":

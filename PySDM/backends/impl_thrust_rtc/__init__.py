@@ -1,1 +1,1 @@
-""" the guts of the GPU backend """
+"""the guts of the GPU backend"""

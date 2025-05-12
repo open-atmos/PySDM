@@ -70,7 +70,7 @@ class Simulation:
                     if step != 0:
                         particulator.run(steps=1)
                     for prod in self.settings.prods:
-                        self.simulation_res[n_sd][prod][seed][step] = (
+                        (self.simulation_res[n_sd][prod][seed][step],) = (
                             particulator.products[prod].get()
                         )
 

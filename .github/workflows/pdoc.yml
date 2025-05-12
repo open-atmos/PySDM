@@ -1,0 +1,39 @@
+name: pdoc
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 13 * * 4'
+
+jobs:
+  pdoc:
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, macos-13, windows-latest ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: "3.12"
+      - run: pip install pdoc nbformat gitpython
+      - run: pip install -e .
+      - run: pip install -e examples
+      - run: python -We docs/generate_html.py . .
+
+      - if: ${{ github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest' }}
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: pdoc
+          folder: html
+          clean: true

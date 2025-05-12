@@ -101,7 +101,7 @@ class TestEfficiencies:
                     )
                     particulator.attributes.mark_updated("water mass")
                     sut(eff, is_first_in_pair)
-                    res[i, j] = eff.data
+                    (res[i, j],) = eff.data
 
         # plot
         pyplot.colorbar(
@@ -109,7 +109,7 @@ class TestEfficiencies:
                 *np.meshgrid(drop_size_L_diam, drop_size_S_diam),
                 res.T,
                 levels=np.linspace(0.0, 1.0, 11),
-                cmap="jet"
+                cmap="jet",
             )
         )
 

@@ -16,12 +16,17 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "chemistry_freezing_isotopes": [
+    "chemistry_extraterrestrial": [
         "Jaruga_and_Pawlowska_2018",
         "Kreidenweis_et_al_2003",
+        "Toon_et_al_1980",
+    ],
+    "freezing": [
         "Alpert_and_Knopf_2016",
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
+    ],
+    "isotopes": [
         "Bolot_et_al_2013",
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
@@ -31,36 +36,51 @@ TEST_SUITES = {
         "Lamb_et_al_2017",
         "Miyake_et_al_1968",
         "Rozanski_and_Sonntag_1982",
-        "Abade_and_Albuquerque_2024",
+        "Bolin_1958",
+        "Stewart_1975",
+        "Kinzer_And_Gunn_1951",
+        "Pruppacher_and_Rasmussen_1979",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
-        "Abdul_Razzak_Ghan_2000",
+        "Singer_Ward",
     ],
     "condensation_b": [
+        "Abdul_Razzak_Ghan_2000",
         "Arabas_and_Shima_2017",
         "Pyrcel",
         "Yang_et_al_2018",
-        "Singer_Ward",
+    ],
+    "condensation_c": [
         "Grabowski_and_Pawlowska_2023",
         "Jensen_and_Nugent_2017",
+        "Abade_and_Albuquerque_2024",
     ],
     "coagulation": ["Berry_1967", "Shima_et_al_2009"],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
     "multi-process_a": [
         "Arabas_et_al_2015",
-        "Arabas_et_al_2023",
-        "deJong_Azimi",
-        "Bulenok_2023_MasterThesis",
-        "Shipway_and_Hill_2012",
-        "seeding",
+        "_HOWTOs",
     ],
     "multi-process_b": [
+        "Arabas_et_al_2025",
+    ],
+    "multi-process_c": [
         "Bartman_2020_MasterThesis",
+    ],
+    "multi-process_d": [
         "Bartman_et_al_2021",
-        "Morrison_and_Grabowski_2007",
+    ],
+    "multi-process_e": [
+        "deJong_Azimi",
         "Szumowski_et_al_1998",
+        "Bulenok_2023_MasterThesis",
+        "Morrison_and_Grabowski_2007",
+        "Shipway_and_Hill_2012",
+        "seeding",
         "utils",
+        "Zaba_et_al_2025",
+        "Gonfiantini_1986",
     ],
 }
 

@@ -90,7 +90,10 @@ class Simulation:
                 data[data == 0] = np.nan
                 attr.append(data)
             for key, prod in output["products"].items():
-                prod.append(float(self.particulator.products[key].get()))
+                value = self.particulator.products[key].get()
+                if not isinstance(value, float):
+                    (value,) = value
+                prod.append(float(value))
         for out in ("attributes", "products"):
             for key, val in output[out].items():
                 output[out][key] = np.array(val)

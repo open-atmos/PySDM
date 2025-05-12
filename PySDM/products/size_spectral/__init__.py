@@ -1,4 +1,4 @@
-""" products expressing particle size-spectral quantities """
+"""products expressing particle size-spectral quantities"""
 
 from .arbitrary_moment import (
     RadiusFirstMoment,
