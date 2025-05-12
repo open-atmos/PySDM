@@ -7,16 +7,12 @@ import numpy as np
 from matplotlib import pyplot
 import pytest
 
-from PySDM_examples.Jouzel_and_Merlivat_1984 import thermodynamic_profiles
 from PySDM import Formulae
+from PySDM_examples.Jouzel_and_Merlivat_1984 import thermodynamic_profiles
 from PySDM.physics import si, in_unit, constants_defaults
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 PLOT = False
-
-formulae = Formulae()
-const = formulae.constants
-C2K = formulae.trivia.C2K
 
 
 class TestThermodynamicProfiles:
@@ -39,7 +35,7 @@ class TestThermodynamicProfiles:
     @staticmethod
     def test_pressure_interpolation_plot(plot=PLOT):
         # arrange
-        T = C2K(np.linspace(0, -60))
+        T = np.linspace(0, -60) + constants_defaults.T0
         p = thermodynamic_profiles.pressure(T)
         p_not_nan = p[~np.isnan(p)]
         # act
@@ -66,7 +62,9 @@ class TestThermodynamicProfiles:
     )
     def test_ice_saturation_curve_4_against_table_2(temperature_C, ice_saturation_4):
         # Arrange
-        T = C2K(temperature_C)
+        formulae = Formulae()
+        const = formulae.constants
+        T = temperature_C + const.T0
 
         # Act
         sut = thermodynamic_profiles.ice_saturation_curve_4(const, T)
