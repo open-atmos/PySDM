@@ -6,7 +6,6 @@ defaults:
 
 env:
   # arbitrarily selected runs for generating animation
-  anim_platform: 'macos-13'
   anim_python-version: '3.12'
   anim_test-suite: 'multi-process_a'
   # common options for pytest
@@ -285,15 +284,15 @@ jobs:
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
         run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
         
-      - if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+      - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
           set -x
           mkdir -p $HOME/work/_temp/_github_home/figures
           rm /tmp/pytest/test_run_notebooks_*current
           ls /tmp/pytest/test_run_notebooks_*/
           ls /tmp/pytest/test_run_notebooks_*/output/
-          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation.mp4
-          mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures
+          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation_${{ matrix.platform }}.mp4
+          mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
           ls $HOME/work/_temp/_github_home/figures
 
       - if: ${{ failure() }}
@@ -302,7 +301,7 @@ jobs:
           limit-access-to-actor: true
 
       - name: animation movie upload
-        if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
           name: animation-movie
@@ -310,7 +309,7 @@ jobs:
           path: /*/runner/work/_temp/_github_home/figures/*.mp4
 
       - name: animation frame upload
-        if: matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
           name: animation-frame
@@ -318,7 +317,7 @@ jobs:
           path: /*/runner/work/_temp/_github_home/figures/*.pdf
 
       - name: tip release upload
-        if: github.ref == 'refs/heads/main' && matrix.platform == env.anim_platform && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: github.ref == 'refs/heads/main' && ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
