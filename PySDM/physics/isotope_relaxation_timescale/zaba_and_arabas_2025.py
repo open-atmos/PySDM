@@ -40,3 +40,13 @@ class ZabaAndArabas2025:
         return 1 + vent_coeff * (RH - RH_eq) / (
             const.K * Rv * T / const.lv / D / pvs + (const.lv / T / Rv - 1) / T
         )
+
+    @staticmethod
+    def b_heavy(b_light, D_ratio, K_ratio, rho_s_iso, rho_s, T, lv):
+        return (
+            b_light
+            * D_ratio
+            / K_ratio
+            * rho_s_iso
+            / rho_s(1 + lv * (M_heavy - M_light) / lv * M_light - const.R_str * T)
+        )
