@@ -41,7 +41,7 @@ The 2D prescribed-flow framework used here can be traced back to the work of
     implementation of the <a href="https://doi.org/10.1002/fld.1071">MPDATA numerical scheme of Smolarkiewicz (e.g., 2006)</a>.
   An animation depicting PySDM simulation capturing <mark>aerosol collisional processing</mark> by warm rain is shown below:
 
-![animation](https://github.com/open-atmos/PySDM/wiki/files/kinematic_2D_example.gif)
+<source src="https://github.com/open-atmos/PySDM/releases/download/tip/docs_intro_animation_ubuntu-24.04.mp4" type="video/mp4">
 
 Example notebooks:
 - `PySDM_examples.Arabas_et_al_2015`
