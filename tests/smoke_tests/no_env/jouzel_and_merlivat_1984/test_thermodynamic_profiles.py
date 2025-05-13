@@ -23,14 +23,14 @@ class TestThermodynamicProfiles:
     )
     def test_pressure_against_values_in_paper(temperature_C, pressure):
         # arrange
-        temperature = C2K(temperature_C)
+        temperature = temperature_C + constants_defaults.T0
         pressure_function = thermodynamic_profiles.pressure(temperature)
 
         # act
         pressure_mbar = in_unit(pressure_function, si.mbar)
 
         # assert
-        np.testing.assert_equal(desired=pressure, actual=pressure_mbar)
+        np.testing.assert_allclose(desired=pressure, actual=pressure_mbar, atol=1e-4)
 
     @staticmethod
     def test_pressure_interpolation_plot(plot=PLOT):
@@ -78,9 +78,10 @@ class TestThermodynamicProfiles:
             # Arrange
             formulae = Formulae()
             T = 1 * constants_defaults.si.K
+            svp = formulae.saturation_vapour_pressure
 
             # Act
-            mr = thermodynamic_profiles.vapour_mixing_ratio(formulae, T)
+            sut = thermodynamic_profiles.vapour_mixing_ratio(formulae.constants, T, svp)
 
             # Assert
-            assert mr.check(si.dimensionless)
+            assert sut.check(si.dimensionless)

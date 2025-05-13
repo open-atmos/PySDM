@@ -22,7 +22,7 @@ def ice_saturation_curve_4(const, T):
     """eq. (15)"""
     return (
         const.JOUZEL_MERLIVAT_CURVE_4_INTERCEPT_COEFF
-        + const.JOUZEL_MERLIVAT_CURVE_4_SLOPE_COEFF * (T - const.T0)
+        - const.JOUZEL_MERLIVAT_CURVE_4_SLOPE_COEFF * (T - const.T0)
     )
 
 
@@ -31,5 +31,5 @@ def vapour_mixing_ratio(const, T, svp):
     p_v = ice_saturation_curve_4(const, T) * svp.pvs_ice(T)
     rho_v = p_v / const.Rv / T
     p_d = pressure(T) - p_v
-    rho_d = p_d / const.Rd / T  # TODO differences in values 1.36
+    rho_d = p_d / const.Rd / T
     return rho_v / rho_d
