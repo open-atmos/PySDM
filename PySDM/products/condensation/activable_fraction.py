@@ -3,6 +3,7 @@ fraction of particles with critical supersaturation lower than a given supersatu
  (passed as keyword argument while calling `get()`)
 """
 
+import numpy as np
 from PySDM.products.impl import MomentProduct, register_product
 
 
