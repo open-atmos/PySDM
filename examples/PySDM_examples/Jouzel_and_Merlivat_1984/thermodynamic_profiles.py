@@ -31,5 +31,6 @@ def vapour_mixing_ratio(const, T, svp):
     p_v = ice_saturation_curve_4(const, T) * svp.pvs_ice(T)
     rho_v = p_v / const.Rv / T
     p_d = pressure(T) - p_v
-    rho_d = p_d / const.Rd / T
+    r = p_d / const.Rd / T
+    rho_d = const.rho_STP  # p_d / const.Rd / T
     return rho_v / rho_d
