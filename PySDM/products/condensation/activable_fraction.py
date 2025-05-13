@@ -21,7 +21,7 @@ class ActivableFraction(MomentProduct):
             s_max = kwargs["S_max"]
             filter_range = (0, 1 + s_max / 100) 
         elif self.filter_attr == "wet to critical volume ratio":
-            filter_range = (1, np.inf):
+            filter_range = (1, np.inf)
         else:
             assert False
         self._download_moment_to_buffer(
