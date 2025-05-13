@@ -321,4 +321,4 @@ jobs:
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: /*/runner/work/_temp/_github_home/figures/*.mp4
+          files: /*(home|Users)/runner/work/_temp/_github_home/figures/*.mp4
