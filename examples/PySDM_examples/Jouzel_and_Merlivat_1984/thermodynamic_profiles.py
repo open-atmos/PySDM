@@ -7,12 +7,11 @@ from scipy.interpolate import make_interp_spline
 
 from PySDM.physics.constants_defaults import T0
 from PySDM.physics import si
-from PySDM import Formulae
 
 
 pressure = make_interp_spline(
     x=np.asarray([-10, -20, -30, -40, -50])[::-1] + T0,
-    y=np.asarray([925, 780, 690, 630, 600])[::-1] * si.mbar,
+    y=np.asarray([785, 670, 620, 570, 500])[::-1] * si.mbar,
 )
 """ Table 1, first two columns: temperature and pressure"""
 pressure.extrapolate = False
@@ -30,7 +29,5 @@ def vapour_mixing_ratio(const, T, svp):
     """mixing ratio with saturation wrt ice calculated with curve 4 equation"""
     p_v = ice_saturation_curve_4(const, T) * svp.pvs_ice(T)
     rho_v = p_v / const.Rv / T
-    p_d = pressure(T) - p_v
-    r = p_d / const.Rd / T
-    rho_d = const.rho_STP  # p_d / const.Rd / T
+    rho_d = const.rho_STP
     return rho_v / rho_d

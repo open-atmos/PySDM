@@ -19,7 +19,7 @@ class TestThermodynamicProfiles:
     @staticmethod
     @pytest.mark.parametrize(
         ("temperature_C", "pressure"),
-        ((-10, 925), (-20, 780), (-30, 690), (-40, 630), (-50, 600)),
+        ((-10, 785), (-20, 670), (-30, 620), (-40, 570), (-50, 500)),
     )
     def test_pressure_against_values_in_paper(temperature_C, pressure):
         # arrange
