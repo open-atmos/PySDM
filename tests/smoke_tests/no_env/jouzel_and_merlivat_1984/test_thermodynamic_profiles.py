@@ -7,8 +7,8 @@ import numpy as np
 from matplotlib import pyplot
 import pytest
 
-from PySDM import Formulae
 from PySDM_examples.Jouzel_and_Merlivat_1984 import thermodynamic_profiles
+from PySDM import Formulae
 from PySDM.physics import si, in_unit, constants_defaults
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
