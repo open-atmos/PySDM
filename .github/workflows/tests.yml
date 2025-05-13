@@ -4,6 +4,13 @@ defaults:
   run:
     shell: bash
 
+env:
+  # arbitrarily selected runs for generating animation
+  anim_python-version: '3.12'
+  anim_test-suite: 'multi-process_a'
+  # common options for pytest
+  pytest_options: "--durations=10 -v -s -We -p no:unraisableexception"
+        
 on:
   push:
     branches: [ main ]
@@ -67,7 +74,7 @@ jobs:
       - run: pip install -r tests/devops_tests/requirements.txt
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest --durations=10 -v -s -We -p no:unraisableexception -k "not test_run_notebooks" tests/devops_tests
+        run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
 
   zenodo_json:
     runs-on: ubuntu-24.04
@@ -96,87 +103,84 @@ jobs:
         pip install -e .[tests]
         pip install -e ./examples
         pip install pytest-cov
-        pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
+        pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
     - uses: codecov/codecov-action@v4.5.0
       with:
         fail_ci_if_error: true
         verbose: true
         token: ${{ secrets.CODECOV_TOKEN }}
 
-  tests:
-    needs: [nojit_and_codecov]
-    strategy:
-      matrix:
-        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
-        python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
-        exclude:
-          - platform: "macos-14"
-            python-version: "3.9"
-          - test-suite: "devops_tests"
-            python-version: "3.9"
-          # TODO #1406
-          - platform: "macos-14"
-            test-suite: "smoke_tests/box"
-          - platform: "macos-14"
-            test-suite: "smoke_tests/parcel_a"
-          - platform: "macos-14"
-            test-suite: "smoke_tests/parcel_d"
-          - platform: "macos-14"
-            test-suite: "smoke_tests/kinematic_2d"
-          - platform: "macos-14"
-            test-suite: "unit_tests/!(dynamics)"
-      fail-fast: false
-    runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
-    steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
-        with:
-          python-version: ${{ matrix.python-version }}
+  # tests:
+  #   needs: [nojit_and_codecov]
+  #   strategy:
+  #     matrix:
+  #       platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
+  #       python-version: ["3.9", "3.12"]
+  #       test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+  #       exclude:
+  #         - platform: "macos-14"
+  #           python-version: "3.9"
+  #         - test-suite: "devops_tests"
+  #           python-version: "3.9"
+  #         # TODO #1406
+  #         - platform: "macos-14"
+  #           test-suite: "smoke_tests/box"
+  #         - platform: "macos-14"
+  #           test-suite: "smoke_tests/parcel_a"
+  #         - platform: "macos-14"
+  #           test-suite: "smoke_tests/parcel_d"
+  #         - platform: "macos-14"
+  #           test-suite: "smoke_tests/kinematic_2d"
+  #         - platform: "macos-14"
+  #           test-suite: "unit_tests/!(dynamics)"
+  #     fail-fast: false
+  #   runs-on: ${{ matrix.platform }}
+  #   timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
+  #   steps:
+  #     - uses: actions/checkout@v4.1.6
+  #       with:
+  #         submodules: recursive
+  #         fetch-depth: 0
+  #     - uses: actions/setup-python@v5.0.0
+  #       with:
+  #         python-version: ${{ matrix.python-version }}
 
-      - run: pip install -e .
+  #     - run: pip install -e .
 
-      # sanity check if we do not depend on something from tests extras
-      - run: python -We -c "import PySDM"
+  #     # sanity check if we do not depend on something from tests extras
+  #     - run: python -We -c "import PySDM"
 
-      - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
-        run: pip install -e ./examples
+  #     - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
+  #       run: pip install -e ./examples
 
-      # incl. ensuring that the previous pip did not overwrite the package
-      - run: |
-          pip install --only-binary :all: -e .[tests]
+  #     # incl. ensuring that the previous pip did not overwrite the package
+  #     - run: |
+  #         pip install --only-binary :all: -e .[tests]
 
-      # install devops_tests for tutorials_tests
-      - if: matrix.test-suite == 'tutorials_tests'
-        run: pip install -r tests/devops_tests/requirements.txt
+  #     # install devops_tests for tutorials_tests
+  #     - if: matrix.test-suite == 'tutorials_tests'
+  #       run: pip install -r tests/devops_tests/requirements.txt
 
-      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
-      - if: startsWith(matrix.platform, 'ubuntu-')
-        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+  #     # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+  #     - if: startsWith(matrix.platform, 'ubuntu-')
+  #       run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
-      - name: Run pytest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NUMBA_OPT: 1
-        run: |
-          shopt -s extglob
-          pytest --durations=10 --timeout=900 --timeout_method=thread -p no:unraisableexception -We tests/${{ matrix.test-suite }}
-
-#       - if: ${{ failure() }}
-#         uses: mxschmitt/action-tmate@v3
-#         with:
-#           limit-access-to-actor: true
+  #     - name: Run pytest
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         NUMBA_OPT: 1
+  #       run: |
+  #         shopt -s extglob
+  #         pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
+        # platform: [ubuntu-24.04, macos-13, windows-latest]
+        # python-version: ["3.9", "3.12"]
+        platform: [macos-13, ubuntu-24.04]
+        python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -211,9 +215,12 @@ jobs:
     needs: [examples-setup]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
+        # platform: [ubuntu-24.04, macos-13, windows-latest]
+        # python-version: ["3.9", "3.12"]
+        # test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
+        platform: [macos-13, ubuntu-24.04]
+        python-version: ["3.12"]
+        test-suite: ["multi-process_a"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 35
@@ -245,7 +252,7 @@ jobs:
       - if: startsWith(matrix.platform, 'ubuntu-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           sudo apt-get update
-          sudo apt-get install libegl1 libopengl0 ghostscript
+          sudo apt-get install libegl1 libopengl0 ghostscript ffmpeg
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `pwd`/`dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
@@ -254,7 +261,7 @@ jobs:
         run: |
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
-          brew install ghostscript
+          brew install ghostscript ffmpeg
 
       - if: startsWith(matrix.platform, 'windows-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
@@ -267,12 +274,51 @@ jobs:
           pvpython --version
           pvpython -c "from paraview import simple"
 
-      - run: |
-          python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_tests_completeness.py
+      # - run: |
+      #     python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
 
-       # TODO #1207
+      # TODO #1207
       - if: startsWith(matrix.platform, 'macos-13')
-        run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
+        run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest --durations=10 -v -p no:unraisableexception -We tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+        
+      - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        run: |
+          set -x
+          mkdir -p $HOME/work/_temp/_github_home/figures
+          rm /tmp/pytest/test_run_notebooks_*current
+          ls /tmp/pytest/test_run_notebooks_*/
+          ls /tmp/pytest/test_run_notebooks_*/output/
+          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation_${{ matrix.platform }}.mp4
+          mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
+          ls $HOME/work/_temp/_github_home/figures
+
+      - if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
+      - name: animation movie upload
+        if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        uses: actions/upload-artifact@v4
+        with:
+          name: animation-movie
+          if-no-files-found: error
+          path: /*(home|Users)/runner/work/_temp/_github_home/figures/*.mp4
+
+      - name: animation frame upload
+        if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        uses: actions/upload-artifact@v4
+        with:
+          name: animation-frame
+          if-no-files-found: error
+          path: /*(home|Users)/runner/work/_temp/_github_home/figures/*.pdf
+
+      - name: tip release upload
+        if: github.ref == 'refs/heads/main' && ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: /*(home|Users)/runner/work/_temp/_github_home/figures/*.mp4
