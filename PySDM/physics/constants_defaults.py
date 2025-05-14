@@ -106,13 +106,6 @@ HAC_ice = 0.7
 """ thermal accommodation coefficient for vapour deposition as recommended in
 [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
-p1000 = 1000 * si.hectopascals
-c_pd = 1005 * si.joule / si.kilogram / si.kelvin
-c_pv = 1850 * si.joule / si.kilogram / si.kelvin
-g_std = sci.g * si.metre / si.second**2
-
-c_pw = 4218 * si.joule / si.kilogram / si.kelvin
-
 ARM_C1 = 6.1094 * si.hectopascal
 """ [August](https://doi.org/10.1002/andp.18280890511) Roche Magnus formula coefficients
 (values from [Alduchov & Eskridge 1996](https://doi.org/10.1175%2F1520-0450%281996%29035%3C0601%3AIMFAOS%3E2.0.CO%3B2))
