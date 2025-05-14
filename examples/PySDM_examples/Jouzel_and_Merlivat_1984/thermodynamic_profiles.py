@@ -16,6 +16,12 @@ pressure = make_interp_spline(
 """ Table 1, first two columns: temperature and pressure"""
 pressure.extrapolate = False
 
+A_coefficient = make_interp_spline(
+    x=np.asarray([-10, -20, -30, -40, -50])[::-1] + T0,
+    y=np.asarray([1.5, 1.25, 1.11, 1.05, 1.02])[::-1],
+)
+""" Table 1, first two columns: temperature and the Thermodynamic Coefficient A"""
+
 
 def ice_saturation_curve_4(const, T):
     """eq. (15)"""
