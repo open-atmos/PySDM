@@ -10,7 +10,6 @@ from PySDM import Formulae
 from PySDM import physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics.isotope_kinetic_fractionation_factors import JouzelAndMerlivat1984
-from tests.unit_tests.initialisation.test_spectro_glacial_discretisation import formulae
 
 
 class TestIsotopeKineticFractionationFactors:
