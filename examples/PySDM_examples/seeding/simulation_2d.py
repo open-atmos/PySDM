@@ -15,6 +15,7 @@ from PySDM.dynamics import (
     Displacement,
     EulerianAdvection,
     Freezing,
+    Seeding,
 )
 from PySDM.environments import Kinematic2D
 from PySDM.initialisation.sampling import spatial_sampling

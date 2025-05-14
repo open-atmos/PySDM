@@ -16,7 +16,14 @@ from PySDM.physics import si
 
 
 class Common:
-    def __init__(self, formulae: Formulae):
+    def __init__(
+        self,
+        formulae: Formulae,
+        particles_per_volume_STP: int = 50 / si.cm**3,
+        n_sd_per_gridbox: int = 32,
+        radius: float = 0.04 * si.micrometre,
+        kappa: float = 0.3,
+    ):
         self.formulae = formulae
         const = formulae.constants
 
@@ -44,7 +51,9 @@ class Common:
         self.displacement_rtol = displacement.DEFAULTS.rtol
         self.freezing_inp_frac = 1
 
-        self.n_sd_per_gridbox = 20
+        self.n_sd_per_gridbox = n_sd_per_gridbox
+        self.radius = radius
+        self.kappa = kappa  # TODO #441!
 
         self.aerosol_radius_threshold = 0.5 * si.micrometre
         self.drizzle_radius_threshold = 25 * si.micrometre
@@ -72,18 +81,12 @@ class Common:
         self.output_interval = 1 * si.minute
         self.spin_up_time = 0
 
-        self.mode_1 = spectra.Lognormal(
-            norm_factor=60 / si.centimetre**3 / const.rho_STP,
-            m_mode=0.04 * si.micrometre,
+        self.particles_per_volume_STP = particles_per_volume_STP
+        self.spectrum_per_mass_of_dry_air = spectra.Lognormal(
+            norm_factor=self.particles_per_volume_STP / const.rho_STP,
+            m_mode=self.radius,
             s_geom=1.4,
         )
-        self.mode_2 = spectra.Lognormal(
-            norm_factor=40 / si.centimetre**3 / const.rho_STP,
-            m_mode=0.15 * si.micrometre,
-            s_geom=1.6,
-        )
-        self.spectrum_per_mass_of_dry_air = spectra.Sum((self.mode_1, self.mode_2))
-        self.kappa = 1  # TODO #441!
 
         self.processes = {
             "particle advection": True,
@@ -93,6 +96,7 @@ class Common:
             "sedimentation": True,
             "breakup": False,
             "freezing": False,
+            "seeding": False,
         }
 
         self.mpdata_iters = 2

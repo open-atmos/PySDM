@@ -1,12 +1,23 @@
+from typing import Optional
 import numpy as np
-from PySDM_examples.Morrison_and_Grabowski_2007.common import Common
+from .common_seeding import Common
 
 from PySDM.physics import si
 
 
 class StratoCumulus(Common):
-    def __init__(self, formulae, rhod_w_max: float):
-        super().__init__(formulae)
+    def __init__(
+        self,
+        formulae,
+        rhod_w_max: float,
+        particles_per_volume_STP: int = 50 / si.cm**3,
+        n_sd_per_gridbox: int = 32,
+        radius: float = 0.04 * si.micrometre,
+        kappa: float = 0.3,
+    ):
+        super().__init__(
+            formulae, particles_per_volume_STP, n_sd_per_gridbox, radius, kappa
+        )
         self.th_std0 = 289 * si.kelvins
         self.initial_water_vapour_mixing_ratio = 7.5 * si.grams / si.kilogram
         self.p0 = 1015 * si.hectopascals
