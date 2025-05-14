@@ -316,22 +316,36 @@ ABIFM_C = np.inf
 """ 〃 """
 
 KOOP_2000_C1 = -906.7
+""" homogeneous ice nucleation rate
+([Koop et al. 2000](https://doi.org/10.1038/35020537)) """
 KOOP_2000_C2 = 8502
+""" 〃 """
 KOOP_2000_C3 = -26924
+""" 〃 """
 KOOP_2000_C4 = 29180
+""" 〃 """
 KOOP_UNIT = 1 / si.cm**3 / si.s
+""" 〃 """
 
 KOOP_CORR = -1.522
+""" homogeneous ice nucleation rate correction factor
+([Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)) """
 
 KOOP_MURRAY_C0 = -3020.684
+""" homogeneous ice nucleation rate for pure water droplets 
+([Koop & Murray 20016](https://doi.org/10.1063/1.4962355)) """
 KOOP_MURRAY_C1 = -425.921
+""" 〃 """
 KOOP_MURRAY_C2 = -25.9779
+""" 〃 """
 KOOP_MURRAY_C3 = -0.868451
+""" 〃 """
 KOOP_MURRAY_C4 = -1.66203e-2
+""" 〃 """
 KOOP_MURRAY_C5 = -1.71736e-4
+""" 〃 """
 KOOP_MURRAY_C6 = -7.46953e-7
-
-T_hom_freeze = 235. * si.kelvin
+""" 〃 """
 
 J_HET = np.nan
 J_HOM = np.nan
