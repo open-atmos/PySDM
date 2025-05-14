@@ -1,6 +1,6 @@
 import json
 from examples.PySDM_examples.Spichtinger_et_al_2023 import Simulation, Settings
-from examples.PySDM_examples.Spichtinger_et_al_2023.data import simulation_data
+from examples.PySDM_examples.Spichtinger_et_al_2023.data import simulation_data, reference_bulk
 import numpy as np
 from matplotlib import pyplot
 
@@ -63,11 +63,15 @@ if plot:
             T, w, ni_ens_mean = simulation_data.saved_simulation_ensemble_mean()
 
 
+    # bulk reference
+    T_bulk_ref, w_bulk_ref, ni_bulk_ref = reference_bulk.bulk_model_reference_array()
+
     # plot
     fig, ax = pyplot.subplots(1, 1, figsize=(5, 5))
 
     for j in range(len(T)):
         ax.scatter(w, ni_ens_mean[:, j], label=f"T0={T[j]:.0f}K")
+        ax.plot(w_bulk_ref, ni_bulk_ref[j, :], linestyle='dashed')
 
     ax.set_xscale('log')
     ax.set_xlim(0.08, 10.)
