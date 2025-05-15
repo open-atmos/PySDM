@@ -8,7 +8,14 @@ from PySDM.dynamics.impl import register_dynamic
 
 @register_dynamic()
 class Freezing:
-    def __init__(self, *, singular=True, homogeneous_freezing=False, immersion_freezing=True, thaw=False):
+    def __init__(
+        self,
+        *,
+        singular=True,
+        homogeneous_freezing=False,
+        immersion_freezing=True,
+        thaw=False,
+    ):
         self.singular = singular
         self.homogeneous_freezing = homogeneous_freezing
         self.immersion_freezing = immersion_freezing
@@ -39,12 +46,10 @@ class Freezing:
 
         if self.homogeneous_freezing:
             assert (
-                    self.particulator.formulae.homogeneous_ice_nucleation_rate.__name__
-                    != "Null"
+                self.particulator.formulae.homogeneous_ice_nucleation_rate.__name__
+                != "Null"
             )
             builder.request_attribute("volume")
-
-
 
         if self.homogeneous_freezing or not self.singular:
             self.rand = self.particulator.Storage.empty(
@@ -73,7 +78,6 @@ class Freezing:
                     rand=self.rand,
                     thaw=self.thaw,
                 )
-
 
         if self.homogeneous_freezing:
             self.rand.urand(self.rng)

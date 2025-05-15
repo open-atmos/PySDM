@@ -9,5 +9,5 @@ class Null:  # pylint: disable=too-few-public-methods,unused-argument
         pass
 
     @staticmethod
-    def j_hom(const, T, d_a_w_ice): # pylint: disable=unused-argument
+    def j_hom(const, T, d_a_w_ice):  # pylint: disable=unused-argument
         return 0

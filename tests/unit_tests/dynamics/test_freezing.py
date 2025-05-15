@@ -86,7 +86,9 @@ class TestDropletFreezing:
         pass
 
     @staticmethod
-    @pytest.mark.parametrize("freezing_type", ("het_singular", "het_time_dependent", "hom_time_dependent"))
+    @pytest.mark.parametrize(
+        "freezing_type", ("het_singular", "het_time_dependent", "hom_time_dependent")
+    )
     @pytest.mark.parametrize("thaw", (True, False))
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
     def test_thaw(backend_class, freezing_type, thaw, epsilon):
@@ -119,11 +121,14 @@ class TestDropletFreezing:
         builder = Builder(
             n_sd=1, backend=backend_class(formulae=formulae), environment=env
         )
-        builder.add_dynamic(Freezing(singular=singular,
-                                     homogeneous_freezing=homogeneous_freezing,
-                                     immersion_freezing=immersion_freezing,
-                                     thaw=thaw)
-                            )
+        builder.add_dynamic(
+            Freezing(
+                singular=singular,
+                homogeneous_freezing=homogeneous_freezing,
+                immersion_freezing=immersion_freezing,
+                thaw=thaw,
+            )
+        )
         particulator = builder.build(
             products=(IceWaterContent(),),
             attributes={
@@ -194,9 +199,13 @@ class TestDropletFreezing:
 
     @staticmethod
     @pytest.mark.parametrize("double_precision", (True, False))
-    @pytest.mark.parametrize("freezing_type", ("het_time_dependent", "hom_time_dependent"))
+    @pytest.mark.parametrize(
+        "freezing_type", ("het_time_dependent", "hom_time_dependent")
+    )
     # pylint: disable=too-many-locals
-    def test_freezing_time_dependent(backend_class, freezing_type, double_precision, plot=False):
+    def test_freezing_time_dependent(
+        backend_class, freezing_type, double_precision, plot=False
+    ):
         if backend_class.__name__ == "Numba" and not double_precision:
             pytest.skip()
 
@@ -220,9 +229,7 @@ class TestDropletFreezing:
         )
 
         # dummy (but must-be-set) values
-        initial_water_mass = (
-            1000  # for sign flip (ice water has negative volumes)
-        )
+        initial_water_mass = 1000  # for sign flip (ice water has negative volumes)
         d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
 
         def hgh(t):
@@ -275,11 +282,13 @@ class TestDropletFreezing:
                 ),
                 environment=env,
             )
-            builder.add_dynamic(Freezing(singular=False,
-                                         immersion_freezing=immersion_freezing,
-                                         homogeneous_freezing=homogeneous_freezing,
-                                         )
-                                )
+            builder.add_dynamic(
+                Freezing(
+                    singular=False,
+                    immersion_freezing=immersion_freezing,
+                    homogeneous_freezing=homogeneous_freezing,
+                )
+            )
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),

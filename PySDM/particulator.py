@@ -539,9 +539,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
         self.attributes.mark_updated("signed water mass")
 
-    def homogeneous_freezing_time_dependent(
-        self, *, thaw: bool, rand: Storage
-    ):
+    def homogeneous_freezing_time_dependent(self, *, thaw: bool, rand: Storage):
         self.backend.freeze_time_dependent_homogeneous(
             rand=rand,
             attributes=TimeDependentHomogeneousAttributes(

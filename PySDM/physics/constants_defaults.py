@@ -332,7 +332,7 @@ KOOP_CORR = -1.522
 ([Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)) """
 
 KOOP_MURRAY_C0 = -3020.684
-""" homogeneous ice nucleation rate for pure water droplets 
+""" homogeneous ice nucleation rate for pure water droplets
 ([Koop & Murray 20016](https://doi.org/10.1063/1.4962355)) """
 KOOP_MURRAY_C1 = -425.921
 """ 〃 """

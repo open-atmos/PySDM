@@ -94,7 +94,6 @@ class FreezingMethods(BackendMethods):
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
-
         j_hom = self.formulae.homogeneous_ice_nucleation_rate.j_hom
 
         @numba.njit(**self.default_jit_flags)
@@ -119,10 +118,13 @@ class FreezingMethods(BackendMethods):
                 elif unfrozen_and_ice_saturated(
                     attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
                 ):
-                    d_a_w_ice = (relative_humidity_ice[cell_id] - 1.) * a_w_ice[cell_id]
+                    d_a_w_ice = (relative_humidity_ice[cell_id] - 1.0) * a_w_ice[
+                        cell_id
+                    ]
                     if d_a_w_ice > 0.23 and d_a_w_ice < 0.34:
                         rate_assuming_constant_temperature_within_dt = (
-                                j_hom(temperature[cell_id], d_a_w_ice) * attributes.volume[i]
+                            j_hom(temperature[cell_id], d_a_w_ice)
+                            * attributes.volume[i]
                         )
                         prob = 1 - prob_zero_events(
                             r=rate_assuming_constant_temperature_within_dt, dt=timestep
@@ -130,7 +132,9 @@ class FreezingMethods(BackendMethods):
                         if rand[i] < prob:
                             _freeze(attributes.signed_water_mass, i)
 
-        self.freeze_time_dependent_homogeneous_body = freeze_time_dependent_homogeneous_body
+        self.freeze_time_dependent_homogeneous_body = (
+            freeze_time_dependent_homogeneous_body
+        )
 
     def freeze_singular(
         self, *, attributes, temperature, relative_humidity, cell, thaw: bool
@@ -173,16 +177,16 @@ class FreezingMethods(BackendMethods):
         )
 
     def freeze_time_dependent_homogeneous(
-            self,
-            *,
-            rand,
-            attributes,
-            timestep,
-            cell,
-            a_w_ice,
-            temperature,
-            relative_humidity_ice,
-            thaw: bool
+        self,
+        *,
+        rand,
+        attributes,
+        timestep,
+        cell,
+        a_w_ice,
+        temperature,
+        relative_humidity_ice,
+        thaw: bool,
     ):
         self.freeze_time_dependent_homogeneous_body(
             rand.data,
