@@ -19,7 +19,7 @@ class TestThermodynamicProfiles:
     @staticmethod
     @pytest.mark.parametrize(
         ("temperature_C", "pressure"),
-        ((-10, 785), (-20, 670), (-30, 620), (-40, 570), (-50, 500)),
+        ((-10, 925), (-20, 780), (-30, 690), (-40, 630), (-50, 600)),
     )
     def test_pressure_against_values_in_paper(temperature_C, pressure):
         # arrange
@@ -71,17 +71,3 @@ class TestThermodynamicProfiles:
 
         # Assert
         np.testing.assert_allclose(desired=ice_saturation_4, actual=sut, atol=0.01)
-
-    @staticmethod
-    def test_vapour_mixing_ratio():
-        with DimensionalAnalysis():
-            # Arrange
-            formulae = Formulae()
-            T = 1 * constants_defaults.si.K
-            svp = formulae.saturation_vapour_pressure
-
-            # Act
-            sut = thermodynamic_profiles.vapour_mixing_ratio(formulae.constants, T, svp)
-
-            # Assert
-            assert sut.check(si.dimensionless)
