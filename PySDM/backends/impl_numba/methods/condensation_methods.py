@@ -411,8 +411,9 @@ class CondensationMethods(BackendMethods):
                 RH,
                 lv,
                 pvs,
-                mass_ventilation_factor * D,
-                heat_ventilation_factor * K,
+                D,
+                K,
+                ventilation_factor,
             )
             dm_dt = formulae.particle_shape_and_density__dm_dt(r=r_new, r_dr_dt=r_dr_dt)
             return (
