@@ -25,7 +25,7 @@ ARGS_VARS = (
     "_pvs",
     "Dr",
     "Kr",
-    "ventilation_factor",
+    "mass_ventilation_factor",
 )
 
 
@@ -125,10 +125,9 @@ class CondensationMethods(
                         RH=args("_RH"),
                         lv=args("_lv"),
                         pvs=args("_pvs"),
-                        D=args("Dr"),
-                        K=args("Kr"),
-                        ventilation_factor=args("ventilation_factor"),
-                    )};
+                        D=f'{args("mass_ventilation_factor")}*{args("Dr")}',
+                        K=f'{args("mass_ventilation_factor")}*{args("Kr")}',
+                    )}; // TODO #1588
                     auto dm_dt = {phys.particle_shape_and_density.dm_dt.c_inline(
                         r="r_new", r_dr_dt="r_dr_dt"
                     )};
@@ -167,7 +166,7 @@ class CondensationMethods(
             real_type Dr=0;
             real_type Kr=0;
             real_type qrt_re_times_cbrt_sc=0;
-            real_type ventilation_factor=0;
+            real_type mass_ventilation_factor=0;
             real_type r_dr_dt_old=0;
             real_type dm_dt_old=0;
             real_type dx_old=0;
@@ -186,12 +185,13 @@ class CondensationMethods(
                     Re="reynolds_number[i]",
                     Sc="_schmidt_number",
                 )};
-                ventilation_factor = {phys.ventilation.ventilation_coefficient.c_inline(
+                mass_ventilation_factor = {phys.ventilation.ventilation_coefficient.c_inline(
                     sqrt_re_times_cbrt_sc="qrt_re_times_cbrt_sc"
                 )};
+                auto heat_ventilation_factor = mass_ventilation_factor; // TODO #1588
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
-                    RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs", D="Dr", K="Kr",
-                    ventilation_factor="ventilation_factor",
+                    RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs",
+                    D="mass_ventilation_factor*Dr", K="heat_ventilation_factor*Kr",
                 )};
                 dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")};
                 dx_old = dt * {phys.diffusion_coordinate.dx_dt.c_inline(

@@ -29,7 +29,6 @@ class TestDropGrowth:
                 pvs=const.p_tri,
                 D=const.D0,
                 K=const.K0,
-                ventilation_factor=1,
             )
 
             # assert
@@ -41,7 +40,7 @@ class TestDropGrowth:
         for a range of temperatures"""
         # arrange
         temperatures = Formulae().trivia.C2K(np.linspace(-10, 40) * si.K)
-        papers = ("Mason1951", "Mason1971")
+        papers = ("Howell1949", "Mason1971")
 
         # act
         formulae = {paper: Formulae(drop_growth=paper) for paper in papers}
@@ -54,17 +53,16 @@ class TestDropGrowth:
                 pvs=formulae[paper].constants.p_tri,
                 D=formulae[paper].constants.D0,
                 K=formulae[paper].constants.K0,
-                ventilation_factor=1,
             )
             for paper in papers
         }
-        relative_error = r_dr_dt["Mason1971"] / r_dr_dt["Mason1951"] - 1
+        relative_error = r_dr_dt["Mason1971"] / r_dr_dt["Howell1949"] - 1
 
         # plot
         pyplot.plot(temperatures, in_unit(relative_error, PER_CENT))
         pyplot.title("")
         pyplot.xlabel("temperature [K]")
-        pyplot.ylabel("r dr/dt relative difference (1971 vs. 1951) [%]")
+        pyplot.ylabel("r dr/dt relative difference (1971 vs. 1949) [%]")
         pyplot.grid()
         if plot:
             pyplot.show()
