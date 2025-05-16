@@ -1,5 +1,6 @@
 """
-CPU implementation of backend methods for homogeneous freezing and heterogeneous freezing (singular and time-dependent immersion freezing)
+CPU implementation of backend methods for homogeneous freezing and
+heterogeneous freezing (singular and time-dependent immersion freezing)
 """
 
 from functools import cached_property
@@ -121,7 +122,7 @@ class FreezingMethods(BackendMethods):
                     d_a_w_ice = (relative_humidity_ice[cell_id] - 1.0) * a_w_ice[
                         cell_id
                     ]
-                    if d_a_w_ice > 0.23 and d_a_w_ice < 0.34:
+                    if 0.23 < d_a_w_ice < 0.34:
                         rate_assuming_constant_temperature_within_dt = (
                             j_hom(temperature[cell_id], d_a_w_ice)
                             * attributes.volume[i]

@@ -23,7 +23,7 @@ from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, Rogers
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
-class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
+class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes,too-many-statements
     def __init__(  # pylint: disable=too-many-locals
         self,
         *,

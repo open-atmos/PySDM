@@ -1,5 +1,6 @@
 """
-droplet freezing using either singular or time-dependent formulation for immersion freezing
+droplet freezing using either singular or
+time-dependent formulation for immersion freezing
 and homogeneous freezing and thaw
 """
 
@@ -7,7 +8,7 @@ from PySDM.dynamics.impl import register_dynamic
 
 
 @register_dynamic()
-class Freezing:
+class Freezing: # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
@@ -19,7 +20,6 @@ class Freezing:
         self.singular = singular
         self.homogeneous_freezing = homogeneous_freezing
         self.immersion_freezing = immersion_freezing
-        # self.record_freezing_temperature = record_freezing_temperature
         self.thaw = thaw
         self.enable = True
         self.rand = None

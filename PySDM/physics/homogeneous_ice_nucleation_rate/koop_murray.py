@@ -10,7 +10,7 @@ class KoopMurray2016:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def j_hom(const, T, da_w_ice):
+    def j_hom(const, T, da_w_ice): # pylint: disable=unused-argument
         T_diff = T - const.T_tri
         return (
             10

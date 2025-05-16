@@ -4,7 +4,7 @@ test for homogeneous nucleation rate parametrisations
 
 import pytest
 import numpy as np
-from PySDM.formulae import _choices, Formulae
+from PySDM.formulae import Formulae
 
 
 class TestHomogeneousIceNucleationRate:  # pylint: disable=too-few-public-methods
