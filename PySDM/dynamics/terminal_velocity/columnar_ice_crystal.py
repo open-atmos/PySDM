@@ -5,6 +5,7 @@ Eq. (18) .Assumed shape is columnar based on empirical parameterizations of
 [Barthazy & Schefold (2006)](https://doi.org/10.1016/j.atmosres.2005.12.009)
 """
 
+
 class ColumnarIceCrystal:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator):
         self.particulator = particulator

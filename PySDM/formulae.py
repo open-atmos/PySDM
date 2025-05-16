@@ -19,7 +19,13 @@ from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau, ColumnarIceCrystal, IceSphere
+from PySDM.dynamics.terminal_velocity import (
+    GunnKinzer1949,
+    PowerSeries,
+    RogersYau,
+    ColumnarIceCrystal,
+    IceSphere,
+)
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 

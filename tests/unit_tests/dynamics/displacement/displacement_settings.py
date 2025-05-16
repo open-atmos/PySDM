@@ -9,7 +9,9 @@ from ...dummy_particulator import DummyParticulator
 
 
 class DisplacementSettings:  # pylint: disable=too-few-public-methods
-    def __init__(self, n_sd=1, volume=None, grid=None, positions=None, courant_field_data=None):
+    def __init__(
+        self, n_sd=1, volume=None, grid=None, positions=None, courant_field_data=None
+    ):
         self.n = np.ones(n_sd, dtype=np.int64)
         self.volume = volume or np.ones(n_sd, dtype=np.float64)
         self.grid = grid or (1, 1)

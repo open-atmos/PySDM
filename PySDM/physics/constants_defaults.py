@@ -612,7 +612,7 @@ ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT = 600 * si.um
 """ 〃 """
 
 SPICHTINGER_GIERENS_TERM_VEL_LIMIT_0 = 2.146e-13 * si.kg
-""" empirical terminal velocity formulation  
+""" empirical terminal velocity formulation
 for columnar ice crystals from Table 2. in
 [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
 SPICHTINGER_GIERENS_TERM_VEL_LIMIT_1 = 2.166e-9 * si.kg
@@ -627,11 +627,17 @@ SPICHTINGER_TERM_DELTA_COEFF2 = 0.31
 """ 〃 """
 SPICHTINGER_TERM_DELTA_COEFF3 = 0.096
 """ 〃 """
-SPICHTINGER_TERM_GAMMA_COEFF0 = 735.4 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF0
+SPICHTINGER_TERM_GAMMA_COEFF0 = (
+    735.4 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF0
+)
 """ 〃 """
-SPICHTINGER_TERM_GAMMA_COEFF1 = 63292.4 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF1
+SPICHTINGER_TERM_GAMMA_COEFF1 = (
+    63292.4 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF1
+)
 """ 〃 """
-SPICHTINGER_TERM_GAMMA_COEFF2 = 329.8 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF2
+SPICHTINGER_TERM_GAMMA_COEFF2 = (
+    329.8 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF2
+)
 """ 〃 """
 SPICHTINGER_TERM_GAMMA_COEFF3 = 8.8 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF3
 """ 〃 """

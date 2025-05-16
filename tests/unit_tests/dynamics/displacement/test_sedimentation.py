@@ -11,12 +11,13 @@ class ConstantTerminalVelocity:  # pylint: disable=too-few-public-methods
     def get(self):
         return self.values
 
-VOLUMES = (1., -1.)
+
+VOLUMES = (1.0, -1.0)
+
+
 class TestSedimentation:  # pylint: disable=too-few-public-methods
     @staticmethod
-    @pytest.mark.parametrize(
-        "volume", [np.asarray((v,)) for v in VOLUMES]
-    )
+    @pytest.mark.parametrize("volume", [np.asarray((v,)) for v in VOLUMES])
     def test_boundary_condition(backend_class, volume):
         # Arrange
         settings = DisplacementSettings(n_sd=len(volume), volume=volume)

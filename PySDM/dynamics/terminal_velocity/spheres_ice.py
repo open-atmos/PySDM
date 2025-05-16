@@ -1,6 +1,3 @@
-
-
-
 class IceSphere:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator):
         self.particulator = particulator
