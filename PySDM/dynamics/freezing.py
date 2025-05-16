@@ -8,7 +8,7 @@ from PySDM.dynamics.impl import register_dynamic
 
 
 @register_dynamic()
-class Freezing: # pylint: disable=too-many-instance-attributes
+class Freezing:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

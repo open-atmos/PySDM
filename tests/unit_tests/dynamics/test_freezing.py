@@ -99,12 +99,12 @@ class TestDropletFreezing:
         if freezing_type == "het_singular":
             freezing_parameter = {}
             singular = True
-        elif freezing_type =="het_time_dependent":
+        elif freezing_type == "het_time_dependent":
             freezing_parameter = {
                 "heterogeneous_ice_nucleation_rate": "Constant",
                 "constants": {"J_HET": 0},
             }
-        elif freezing_type =="hom_time_dependent":
+        elif freezing_type == "hom_time_dependent":
             freezing_parameter = {
                 "homogeneous_ice_nucleation_rate": "Constant",
                 "constants": {"J_HOM": 0},

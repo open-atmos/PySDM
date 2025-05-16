@@ -11,7 +11,7 @@ class Koop_Correction:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def j_hom(const, T, da_w_ice): # pylint: disable=unused-argument
+    def j_hom(const, T, da_w_ice):  # pylint: disable=unused-argument
         return (
             10
             ** (

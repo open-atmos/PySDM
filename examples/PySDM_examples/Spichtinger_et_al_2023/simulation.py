@@ -117,7 +117,6 @@ class Simulation(BasicSimulation):
             if dRHi > 0.0 and RHi < 130.0:
                 print("break")
                 break
-            else:
-                RHi_old = RHi
+            RHi_old = RHi
 
         return output["ni"][-1]
