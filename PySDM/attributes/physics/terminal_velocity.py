@@ -15,7 +15,7 @@ class TerminalVelocity(DerivedAttribute):
         self.radius = builder.get_attribute("radius")
         self.signed_water_mass = builder.get_attribute("signed water mass")
         self.cell_id = builder.get_attribute("cell id")
-        dependencies = [self.radius,self.signed_water_mass,self.cell_id]
+        dependencies = [self.radius, self.signed_water_mass, self.cell_id]
         super().__init__(builder, name="terminal velocity", dependencies=dependencies)
 
         self.approximation_liquid = builder.formulae.terminal_velocity_class(
@@ -27,14 +27,13 @@ class TerminalVelocity(DerivedAttribute):
 
     def recalculate(self):
         self.approximation_liquid(self.data, self.radius.get())
-        # TODO: fix issue that order of functions calls changes result. approximation_liquid will override
-        #  approximation_ice since r < 0 is not a suitable test for ice particles with mixed-phase spheres shape active
+        # TODO #1605 order of functions calls changes result. approximation_liquid will override
+        #  approximation_ice when mixed-phase spheres shape active
         if self.formulae.particle_shape_and_density.supports_mixed_phase():
-            self.approximation_ice(self.data,
-                                   self.signed_water_mass.get(),
-                                   self.cell_id.get(),
-                                   self.particulator.environment["T"],
-                                   self.particulator.environment["p"],
-                                   )
-
-
+            self.approximation_ice(
+                self.data,
+                self.signed_water_mass.get(),
+                self.cell_id.get(),
+                self.particulator.environment["T"],
+                self.particulator.environment["p"],
+            )

@@ -6,7 +6,12 @@ import numpy as np
 import pytest
 
 from PySDM import Builder, Formulae
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau, ColumnarIceCrystal
+from PySDM.dynamics.terminal_velocity import (
+    GunnKinzer1949,
+    PowerSeries,
+    RogersYau,
+    ColumnarIceCrystal,
+)
 from PySDM.environments import Box
 from PySDM.physics import constants as const
 from PySDM.physics import si
@@ -114,17 +119,13 @@ def test_power_series(backend_class, prefactors, powers):
     np.testing.assert_array_almost_equal(u, u_term_true)
 
 
-
-
-@pytest.mark.parametrize("ice_variant", ("ColumnarIceCrystal","IceSphere"))
+@pytest.mark.parametrize("ice_variant", ("ColumnarIceCrystal", "IceSphere"))
 def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
     if backend_class.__name__ == "ThrustRTC":
         pytest.skip()
 
     # arrange
-    water_mass = (
-            np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
-    )
+    water_mass = np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
     env = Box(dt=None, dv=None)
     formulae_enabling_terminal_velocity_ice_calculation = Formulae(
         particle_shape_and_density="MixedPhaseSpheres",
@@ -137,7 +138,10 @@ def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
     )
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
-        attributes={"signed water mass": -water_mass, "multiplicity": np.ones_like(water_mass)}
+        attributes={
+            "signed water mass": -water_mass,
+            "multiplicity": np.ones_like(water_mass),
+        }
     )
     atmospheric_settings = [
         {"temperature": 233 * si.kelvin, "pressure": 300 * si.hectopascal},
@@ -151,7 +155,7 @@ def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
         # act
         particulator.run(steps=1)
         terminal_velocity = particulator.attributes["terminal velocity"].to_ndarray()
-        # TODO: find a way to update terminal velocity attribute when environment variables change
+        # TODO #1606 update terminal velocity attribute when environment variables change
         print(terminal_velocity)
 
         # assert
@@ -160,23 +164,34 @@ def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
         assert all(np.diff(terminal_velocity) > 0.0)
 
 
-
-
-def test_columnar_ice_crystal_terminal_velocity_against_spichtinger_and_gierens_2009_fig_3(backend_class, plot=False):
+def test_columnar_ice_crystal_terminal_velocity_against_spichtinger_and_gierens_2009_fig_3(
+    backend_class, plot=False
+):
     """Fig. 3 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
     if backend_class.__name__ == "ThrustRTC":
         pytest.skip()
     # arrange
-    water_mass = (
-            np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
-    )
+    water_mass = np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
     terminal_velocity_reference = (
-        np.array([1.4e-04, 3.7e-04, 9.7e-04, 2.5e-03,
-         9.1e-03, 3.4e-02, 1.3e-01, 4.7e-01,
-         1.1e+00, 1.9e+00]) * si.m / si.s
+        np.array(
+            [
+                1.4e-04,
+                3.7e-04,
+                9.7e-04,
+                2.5e-03,
+                9.1e-03,
+                3.4e-02,
+                1.3e-01,
+                4.7e-01,
+                1.1e00,
+                1.9e00,
+            ]
+        )
+        * si.m
+        / si.s
     )
     ambient_temperature = 233 * si.K
-    ambient_pressure    = 300 * si.hectopascal
+    ambient_pressure = 300 * si.hectopascal
 
     env = Box(dt=None, dv=None)
     formulae_enabling_terminal_velocity_ice_calculation = Formulae(
@@ -191,7 +206,10 @@ def test_columnar_ice_crystal_terminal_velocity_against_spichtinger_and_gierens_
 
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
-        attributes={"signed water mass": -water_mass, "multiplicity": np.ones_like(water_mass)}
+        attributes={
+            "signed water mass": -water_mass,
+            "multiplicity": np.ones_like(water_mass),
+        }
     )
 
     particulator.environment["T"] = ambient_temperature
@@ -218,4 +236,6 @@ def test_columnar_ice_crystal_terminal_velocity_against_spichtinger_and_gierens_
         plt.clf()
 
     # assert
-    np.testing.assert_almost_equal(terminal_velocity, terminal_velocity_reference, decimal=1)
+    np.testing.assert_almost_equal(
+        terminal_velocity, terminal_velocity_reference, decimal=1
+    )
