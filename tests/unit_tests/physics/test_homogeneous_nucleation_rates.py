@@ -7,7 +7,7 @@ import numpy as np
 from PySDM.formulae import _choices, Formulae
 
 
-class TestHomogeneousIceNucleationRate:
+class TestHomogeneousIceNucleationRate:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "da_w_ice, expected_value",
