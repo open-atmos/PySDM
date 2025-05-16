@@ -1,5 +1,6 @@
 """
-CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
+CPU implementation of backend methods for homogeneous freezing and
+heterogeneous freezing (singular and time-dependent immersion freezing)
 """
 
 from functools import cached_property
@@ -12,6 +13,7 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
+    TimeDependentHomogeneousAttributes,
 )
 
 
@@ -19,18 +21,19 @@ class FreezingMethods(BackendMethods):
     def __init__(self):
         BackendMethods.__init__(self)
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
+        unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
         frozen_and_above_freezing_point = (
             self.formulae.trivia.frozen_and_above_freezing_point
         )
 
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        def _freeze(water_mass, i):
-            water_mass[i] = -1 * water_mass[i]
+        def _freeze(signed_water_mass, i):
+            signed_water_mass[i] = -1 * signed_water_mass[i]
             # TODO #599: change thd (latent heat)!
 
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        def _thaw(water_mass, i):
-            water_mass[i] = -1 * water_mass[i]
+        def _thaw(signed_water_mass, i):
+            signed_water_mass[i] = -1 * signed_water_mass[i]
             # TODO #599: change thd (latent heat)!
 
         @numba.njit(**self.default_jit_flags)
@@ -92,6 +95,48 @@ class FreezingMethods(BackendMethods):
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
+        j_hom = self.formulae.homogeneous_ice_nucleation_rate.j_hom
+
+        @numba.njit(**self.default_jit_flags)
+        def freeze_time_dependent_homogeneous_body(  # pylint: disable=unused-argument,too-many-arguments
+            rand,
+            attributes,
+            timestep,
+            cell,
+            a_w_ice,
+            temperature,
+            relative_humidity_ice,
+            thaw,
+        ):
+
+            n_sd = len(attributes.signed_water_mass)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+                cell_id = cell[i]
+                if thaw and frozen_and_above_freezing_point(
+                    attributes.signed_water_mass[i], temperature[cell_id]
+                ):
+                    _thaw(attributes.signed_water_mass, i)
+                elif unfrozen_and_ice_saturated(
+                    attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
+                ):
+                    d_a_w_ice = (relative_humidity_ice[cell_id] - 1.0) * a_w_ice[
+                        cell_id
+                    ]
+                    if 0.23 < d_a_w_ice < 0.34:
+                        rate_assuming_constant_temperature_within_dt = (
+                            j_hom(temperature[cell_id], d_a_w_ice)
+                            * attributes.volume[i]
+                        )
+                        prob = 1 - prob_zero_events(
+                            r=rate_assuming_constant_temperature_within_dt, dt=timestep
+                        )
+                        if rand[i] < prob:
+                            _freeze(attributes.signed_water_mass, i)
+
+        self.freeze_time_dependent_homogeneous_body = (
+            freeze_time_dependent_homogeneous_body
+        )
+
     def freeze_singular(
         self, *, attributes, temperature, relative_humidity, cell, thaw: bool
     ):
@@ -129,6 +174,32 @@ class FreezingMethods(BackendMethods):
             a_w_ice.data,
             temperature.data,
             relative_humidity.data,
+            thaw=thaw,
+        )
+
+    def freeze_time_dependent_homogeneous(
+        self,
+        *,
+        rand,
+        attributes,
+        timestep,
+        cell,
+        a_w_ice,
+        temperature,
+        relative_humidity_ice,
+        thaw: bool,
+    ):
+        self.freeze_time_dependent_homogeneous_body(
+            rand.data,
+            TimeDependentHomogeneousAttributes(
+                volume=attributes.volume.data,
+                signed_water_mass=attributes.signed_water_mass.data,
+            ),
+            timestep,
+            cell.data,
+            a_w_ice.data,
+            temperature.data,
+            relative_humidity_ice.data,
             thaw=thaw,
         )
 
