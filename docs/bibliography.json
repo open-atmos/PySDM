@@ -846,9 +846,11 @@
   "https://doi.org/10.1029/JD089iD07p11749": {
     "usages": [
       "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
+      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/__init__.py",
       "examples/PySDM_examples/Jouzel_and_Merlivat_1984/fig_8_9.ipynb",
       "examples/PySDM_examples/Jouzel_and_Merlivat_1984/thermodynamic_profiles.py",
-      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py"
+      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py",
+      "examples/PySDM_examples/Fisher_1991/__init__.py"
     ],
     "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
     "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
@@ -869,7 +871,8 @@
   },
   "https://doi.org/10.3402/tellusb.v43i5.15414": {
     "usages": [
-      "examples/PySDM_examples/Fisher_1991/fig_2.ipynb"
+      "examples/PySDM_examples/Fisher_1991/fig_2.ipynb",
+      "examples/PySDM_examples/Fisher_1991/__init__.py"
     ],
     "title": "Remarks on the deuterium excess in precipitation in cold regions",
     "label": "Fisher 1991 (Tellus B)"
