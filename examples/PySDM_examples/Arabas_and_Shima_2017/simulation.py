@@ -69,7 +69,6 @@ class Simulation:
                 unit="s^-1 mg^-1", name="deactivating_rate"
             ),
             PySDM_products.RipeningRate(unit="s^-1 mg^-1", name="ripening_rate"),
-            PySDM_products.PeakSupersaturation(unit="%", name="S_max"),
         ]
 
         self.particulator = builder.build(attributes, products)
