@@ -1,5 +1,5 @@
 """
-fraction of particles with critical supersaturation lower than a given supersaturation
+fraction of particles with critical saturation lower than a given saturation
  (passed as keyword argument while calling `get()`)
 """
 
@@ -9,7 +9,9 @@ from PySDM.products.impl import MomentProduct, register_product
 
 @register_product()
 class ActivableFraction(MomentProduct):
-    def __init__(self, unit="dimensionless", name=None, filter_attr="critical supersaturation"):
+    def __init__(
+        self, unit="dimensionless", name=None, filter_attr="critical saturation"
+    ):
         super().__init__(name=name, unit=unit)
         self.filter_attr = filter_attr
 
@@ -18,10 +20,11 @@ class ActivableFraction(MomentProduct):
         builder.request_attribute(self.filter_attr)
 
     def _impl(self, **kwargs):
-        if self.filter_attr == "critical supersaturation":
+        if self.filter_attr.startswith("critical saturation"):
             s_max = kwargs["S_max"]
-            filter_range = (0, 1 + s_max / 100) 
-        elif self.filter_attr == "wet to critical volume ratio":
+            assert not np.isfinite(s_max) or 0 < s_max < 1.1
+            filter_range = (0, s_max)
+        elif self.filter_attr.startswith("wet to critical volume ratio"):
             filter_range = (1, np.inf)
         else:
             assert False

@@ -40,7 +40,7 @@ class TestParcelSanityChecks:
             ),
         ),
     )
-    def test_noisy_supersaturation_profiles(backend_class, plot=False):
+    def test_noisy_saturation_profiles(backend_class, plot=False):
         """cases found using the README parcel snippet"""
         # arrange
         env = Parcel(
@@ -75,7 +75,7 @@ class TestParcelSanityChecks:
                 "volume": FORMULAE.trivia.volume(radius=r_wet),
             },
             products=(
-                products.PeakSupersaturation(name="S_max", unit="%"),
+                products.PeakSaturation(name="S_max_percent", unit="%"),
                 products.EffectiveRadius(
                     name="r_eff", unit="um", radius_range=CLOUD_RANGE
                 ),
@@ -117,8 +117,8 @@ class TestParcelSanityChecks:
             pyplot.clf()
 
         # assert
-        supersaturation_peaks, _ = signal.find_peaks(output["S_max"])
-        assert len(supersaturation_peaks) == 1
+        saturation_peaks, _ = signal.find_peaks(output["S_max"])
+        assert len(saturation_peaks) == 1
 
     @staticmethod
     @pytest.mark.parametrize("update_thd", (True, False))

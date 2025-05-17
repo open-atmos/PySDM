@@ -6,7 +6,7 @@ from PySDM import Builder
 from PySDM.physics import si
 from PySDM.backends import CPU
 from PySDM.products import (
-    PeakSupersaturation,
+    PeakSaturation,
     ParcelDisplacement,
     Time,
     ActivatedMeanRadius,
@@ -52,7 +52,7 @@ class Simulation(BasicSimulation):
             ),
         )
 
-        additional_derived_attributes = ("radius", "equilibrium supersaturation")
+        additional_derived_attributes = ("radius", "equilibrium saturation")
         for additional_derived_attribute in additional_derived_attributes:
             builder.request_attribute(additional_derived_attribute)
 
@@ -93,7 +93,7 @@ class Simulation(BasicSimulation):
             builder.build(
                 attributes=attributes,
                 products=(
-                    PeakSupersaturation(name="S_max"),
+                    PeakSaturation(name="S_max"),
                     ParcelDisplacement(name="z"),
                     Time(name="t"),
                     ActivatedMeanRadius(

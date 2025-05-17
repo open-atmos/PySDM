@@ -1,4 +1,4 @@
-"""checks how parcel equilibrium supersaturation depends on dz"""
+"""checks how parcel equilibrium saturation depends on dz"""
 
 import numpy as np
 from matplotlib import pyplot
