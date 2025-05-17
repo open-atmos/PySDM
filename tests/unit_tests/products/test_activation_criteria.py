@@ -4,7 +4,12 @@ import pytest
 import numpy as np
 from matplotlib import pyplot
 
-from PySDM.products import ActivableFraction, AmbientRelativeHumidity, PeakSaturation
+from PySDM.products import (
+    ActivableFraction,
+    AmbientRelativeHumidity,
+    PeakSaturation,
+    Time,
+)
 from PySDM.environments import Parcel
 from PySDM.dynamics import Condensation, AmbientThermodynamics
 from PySDM import Builder
@@ -23,30 +28,25 @@ from PySDM.initialisation.sampling import spectral_sampling
 )
 def test_activation_criteria(backend, plot=False):
     # arrange
-    n_sd = 1000
-    n_steps = 50
-    dz = 5 * si.m
-    dt = 2 * si.s
-
-    spectrum = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
-    r_dry, specific_concentration = spectral_sampling.ConstantMultiplicity(
-        spectrum
-    ).sample(n_sd)
-
     builder = Builder(
-        n_sd=n_sd,
+        n_sd=1000,
         backend=backend,
         environment=Parcel(
-            dt=dt,
+            dt=2 * si.s,
             mass_of_dry_air=100 * si.kg,
             p0=1000 * si.hPa,
             initial_water_vapour_mixing_ratio=22 * si.g / si.kg,
             T0=300 * si.K,
-            w=dz / dt,
+            w=2.5 * si.m / si.s,
         ),
     )
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
+
+    r_dry, specific_concentration = spectral_sampling.ConstantMultiplicity(
+        Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
+    ).sample(builder.particulator.n_sd)
+
     particulator = builder.build(
         attributes=builder.particulator.environment.init_attributes(
             n_in_dv=specific_concentration
@@ -55,6 +55,7 @@ def test_activation_criteria(backend, plot=False):
             r_dry=r_dry,
         ),
         products=(
+            Time(),
             PeakSaturation(name="S_max"),
             AmbientRelativeHumidity(name="RH"),
             ActivableFraction(
@@ -77,23 +78,22 @@ def test_activation_criteria(backend, plot=False):
 
     # act
     data = {product: [] for product in particulator.products}
-    S_max = np.nan
-    for i in range(n_steps):
+    s_max = np.nan
+    for i in range(50):
         particulator.run(steps=1)
         for key, product in particulator.products.items():
             if key == "S_max" and i > 0:
-                S_max = np.nanmax([data["S_max"][-1], S_max])
-            value = product.get(**({} if key.startswith("wet") else {"S_max": S_max}))
+                s_max = np.nanmax([data["S_max"][-1], s_max])
+            value = product.get(**({} if key.startswith("wet") else {"S_max": s_max}))
             if isinstance(value, np.ndarray):
                 value = value[0]
             data[key].append(value)
 
     # plot
     pyplot.title(backend.__class__.__name__)
-    t = np.arange(1, n_steps + 1) * dt
     for k, datum in data.items():
         if k.startswith("AF"):
-            pyplot.plot(t, datum, label=k, marker=k[2], markersize=10)
+            pyplot.plot(data["time"], datum, label=k, marker=k[2], markersize=10)
     pyplot.xlabel("time [s] (values at the end of each timestep)")
     pyplot.ylabel("activated fraction [1]")
     pyplot.ylim(0.4, 0.65)
@@ -101,7 +101,7 @@ def test_activation_criteria(backend, plot=False):
     pyplot.grid()
 
     twin = pyplot.gca().twinx()
-    twin.plot(t, np.asarray(data["RH"]) * 100 - 100, color="red", marker="o")
+    twin.plot(data["time"], np.asarray(data["RH"]) * 100 - 100, color="red", marker="o")
     twin.set_ylabel("supersaturation [%]", color="red")
     twin.set_ylim(-1.5, 0.5)
     twin.set_yticks(np.linspace(-1.5, 0.5, 5, endpoint=True))
