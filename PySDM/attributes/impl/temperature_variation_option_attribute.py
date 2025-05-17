@@ -6,8 +6,13 @@ class TemperatureVariationOptionAttribute:  # pylint: disable=too-few-public-met
     """base class"""
 
     def __init__(self, builder, neglect_temperature_variations: bool):
-        assert builder.particulator.environment.__class__.__name__ == "Parcel"
+        if neglect_temperature_variations:
+            assert builder.particulator.environment.mesh.dimension == 0
         self.neglect_temperature_variations = neglect_temperature_variations
-        self.initial_temperature = builder.particulator.Storage.from_ndarray(
-            builder.particulator.environment["T"].to_ndarray()
+        self.initial_temperature = (
+            builder.particulator.Storage.from_ndarray(
+                builder.particulator.environment["T"].to_ndarray()
+            )
+            if neglect_temperature_variations
+            else None
         )
