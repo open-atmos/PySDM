@@ -82,8 +82,12 @@ def test_activation_criteria(backend, plot=False):
     for i in range(50):
         particulator.run(steps=1)
         for key, product in particulator.products.items():
-            if key == "S_max" and i > 0:
-                s_max = np.nanmax([data["S_max"][-1], s_max])
+            if (
+                key == "S_max"
+                and i > 0
+                and (np.isnan(s_max) or data["S_max"][-1] > s_max)
+            ):
+                s_max = data["S_max"][-1]
             value = product.get(**({} if key.startswith("wet") else {"S_max": s_max}))
             if isinstance(value, np.ndarray):
                 value = value[0]

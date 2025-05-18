@@ -117,7 +117,7 @@ class TestParcelSanityChecks:
             pyplot.clf()
 
         # assert
-        saturation_peaks, _ = signal.find_peaks(output["S_max"])
+        saturation_peaks, _ = signal.find_peaks(output["S_max_percent"])
         assert len(saturation_peaks) == 1
 
     @staticmethod

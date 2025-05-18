@@ -12,7 +12,7 @@ def test_critical_saturation():
     # arrange
     T = 300 * si.K
     n_sd = 100
-    S_max = 1.01
+    S_max = 1.000101
     vdry = np.linspace(0.001, 1, n_sd) * si.um**3
 
     env = Box(dt=np.nan, dv=np.nan)
