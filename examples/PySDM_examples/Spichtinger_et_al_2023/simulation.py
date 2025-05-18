@@ -85,10 +85,9 @@ class Simulation(BasicSimulation):
             ),
         ]
 
-        self.particulator = builder.build(attributes, products)
-
         self.n_output = settings.n_output
         self.n_substeps = int(settings.t_duration / dt / self.n_output)
+        super().__init__(builder.build(attributes, products))
 
     def save(self, output):
         cell_id = 0
