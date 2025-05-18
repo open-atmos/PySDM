@@ -17,7 +17,7 @@ PLOT = False
 
 def find_cloud_base_index(products):
     for index, value in enumerate(products["S_max"]):
-        if value > 0:
+        if value > 1:
             cloud_base_index = index
             break
     return cloud_base_index
