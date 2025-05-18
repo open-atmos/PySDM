@@ -111,7 +111,7 @@ def test_single_saturation_peak(
         pyplot.xlabel("radius [um]")
         pyplot.ylabel("z [m]")
     twin = pyplot.twiny()
-    twin.plot(output["S max"] - 1, output["z"], label="S max (top axis)")
+    twin.plot(np.asarray(output["S max"]) - 1, output["z"], label="S max (top axis)")
     twin.plot(np.asarray(output["RH"]) - 1, output["z"], label="ambient RH (top axis)")
     twin.legend(loc="upper center")
     twin.set_xlim(-0.001, 0.0015)
