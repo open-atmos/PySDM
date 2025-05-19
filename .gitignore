@@ -7,7 +7,6 @@ PySDM_examples/utils/temporary_files/*
 *.svg
 *.gif
 *.ipynb.badges.md
-*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
