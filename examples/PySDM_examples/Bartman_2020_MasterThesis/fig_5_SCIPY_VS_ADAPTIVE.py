@@ -75,11 +75,11 @@ def plot(plot_data, rtols, schemes, setups_num, show_plot, path=None):
             ax = axs[settings_idx, rtol_idx]
             for scheme in schemes:
                 datum = plot_data[scheme][_rtol][settings_idx]
-                S = datum["S"]
+                S = datum["RH"]
                 z = datum["z"]
                 dt = datum["dt_cond_min"]
                 if scheme == "SciPy":
-                    ax.plot(S, z, label=scheme, color="grey")
+                    ax.plot(S - 1, z, label=scheme, color="grey")
                     SCIPY_S = np.array(S)
                 else:
                     add_color_line(fig, ax, S, z, dt)
