@@ -111,67 +111,67 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
   tests:
-     needs: [nojit_and_codecov]
-     strategy:
-       matrix:
-         platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
-         python-version: ["3.9", "3.12"]
-         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
-         exclude:
-           - platform: "macos-14"
-             python-version: "3.9"
-           - test-suite: "devops_tests"
-             python-version: "3.9"
-           # TODO #1406
-           - platform: "macos-14"
-             test-suite: "smoke_tests/box"
-           - platform: "macos-14"
-             test-suite: "smoke_tests/parcel_a"
-           - platform: "macos-14"
-             test-suite: "smoke_tests/parcel_d"
-           - platform: "macos-14"
-             test-suite: "smoke_tests/kinematic_2d"
-           - platform: "macos-14"
-             test-suite: "unit_tests/!(dynamics)"
-       fail-fast: false
-     runs-on: ${{ matrix.platform }}
-     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
-     steps:
-       - uses: actions/checkout@v4.1.6
-         with:
-           submodules: recursive
-           fetch-depth: 0
-       - uses: actions/setup-python@v5.0.0
-         with:
-           python-version: ${{ matrix.python-version }}
+    needs: [nojit_and_codecov]
+    strategy:
+      matrix:
+        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
+        python-version: ["3.9", "3.12"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        exclude:
+          - platform: "macos-14"
+            python-version: "3.9"
+          - test-suite: "devops_tests"
+            python-version: "3.9"
+          # TODO #1406
+          - platform: "macos-14"
+            test-suite: "smoke_tests/box"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_a"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_d"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/kinematic_2d"
+          - platform: "macos-14"
+            test-suite: "unit_tests/!(dynamics)"
+      fail-fast: false
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
 
-       - run: pip install -e .
+      - run: pip install -e .
 
-       # sanity check if we do not depend on something from tests extras
-       - run: python -We -c "import PySDM"
+      # sanity check if we do not depend on something from tests extras
+      - run: python -We -c "import PySDM"
 
-       - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
-         run: pip install -e ./examples
+      - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
+        run: pip install -e ./examples
 
-       # incl. ensuring that the previous pip did not overwrite the package
-       - run: |
-           pip install --only-binary :all: -e .[tests]
+      # incl. ensuring that the previous pip did not overwrite the package
+      - run: |
+          pip install --only-binary :all: -e .[tests]
 
-       # install devops_tests for tutorials_tests
-       - if: matrix.test-suite == 'tutorials_tests'
-         run: pip install -r tests/devops_tests/requirements.txt
+      # install devops_tests for tutorials_tests
+      - if: matrix.test-suite == 'tutorials_tests'
+        run: pip install -r tests/devops_tests/requirements.txt
 
-       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
-       - if: startsWith(matrix.platform, 'ubuntu-')
-         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
-       - name: Run pytest
-         env:
-           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-           NUMBA_OPT: 1
-         run: |
-           shopt -s extglob
-           pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
+      - name: Run pytest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBA_OPT: 1
+        run: |
+          shopt -s extglob
+          pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
     needs: [nojit_and_codecov]
