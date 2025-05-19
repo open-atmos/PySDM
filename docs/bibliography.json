@@ -558,7 +558,7 @@
   },
   "https://doi.org/10.1088/0370-1301/64/9/307": {
     "usages": [
-      "PySDM/physics/drop_growth/mason_1951.py"
+      "PySDM/physics/drop_growth/howell_1949.py"
     ],
     "label": "Mason 1951 (Proc. Phys. Soc. B 64)",
     "title": "Spontaneous Condensation of Water Vapour in Expansion Chamber Experiments"
@@ -836,7 +836,8 @@
   },
   "https://doi.org/10.1175/1520-0469(1949)006%3C0134:TGOCDI%3E2.0.CO;2": {
     "usages": [
-      "PySDM/backends/impl_numba/methods/deposition_methods.py"
+      "PySDM/backends/impl_numba/methods/deposition_methods.py",
+      "PySDM/physics/drop_growth/howell_1949.py"
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
@@ -844,7 +845,11 @@
   "https://doi.org/10.1029/JD089iD07p11749": {
     "usages": [
       "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
-      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py"
+      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/__init__.py",
+      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/fig_8_9.ipynb",
+      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/thermodynamic_profiles.py",
+      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py",
+      "examples/PySDM_examples/Fisher_1991/__init__.py"
     ],
     "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
     "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
@@ -862,5 +867,13 @@
     ],
     "title": "IAEA Reference Sheet for International Measurement Standards: VSMOW & SLAP",
     "label": "IAEA 2006"
+  },
+  "https://doi.org/10.3402/tellusb.v43i5.15414": {
+    "usages": [
+      "examples/PySDM_examples/Fisher_1991/fig_2.ipynb",
+      "examples/PySDM_examples/Fisher_1991/__init__.py"
+    ],
+    "title": "Remarks on the deuterium excess in precipitation in cold regions",
+    "label": "Fisher 1991 (Tellus B)"
   }
 }
