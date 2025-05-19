@@ -1,4 +1,7 @@
-class IceSphere:  # pylint: disable=too-few-public-methods
+"""
+terminal velocity of solid ice spheres
+"""
+class IceSphere:  # pylint: disable=too-few-public-methods,too-many-arguments
     def __init__(self, particulator):
         self.particulator = particulator
 

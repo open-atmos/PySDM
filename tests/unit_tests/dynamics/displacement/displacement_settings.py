@@ -8,7 +8,7 @@ from ...dummy_environment import DummyEnvironment
 from ...dummy_particulator import DummyParticulator
 
 
-class DisplacementSettings:  # pylint: disable=too-few-public-methods
+class DisplacementSettings:  # pylint: disable=too-few-public-methods,too-many-arguments
     def __init__(
         self, n_sd=1, volume=None, grid=None, positions=None, courant_field_data=None
     ):

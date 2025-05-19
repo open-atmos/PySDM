@@ -10,7 +10,6 @@ from PySDM.dynamics.terminal_velocity import (
     GunnKinzer1949,
     PowerSeries,
     RogersYau,
-    ColumnarIceCrystal,
 )
 from PySDM.environments import Box
 from PySDM.physics import constants as const

@@ -6,7 +6,7 @@ Eq. (18) .Assumed shape is columnar based on empirical parameterizations of
 """
 
 
-class ColumnarIceCrystal:  # pylint: disable=too-few-public-methods
+class ColumnarIceCrystal:  # pylint: disable=too-few-public-methods,too-many-arguments
     def __init__(self, particulator):
         self.particulator = particulator
 
