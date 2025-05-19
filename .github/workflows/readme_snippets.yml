@@ -70,7 +70,7 @@ jobs:
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - run: cat -n readme.m
-      - uses: matlab-actions/setup-matlab@v2.1.0
+      - uses: matlab-actions/setup-matlab@v2.5.0
         with:
           release: R2022a
       - uses: matlab-actions/run-command@v2.1.0
