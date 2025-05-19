@@ -44,7 +44,7 @@ class TestDropGrowth:
         ),
     )
     def test_fick_mason_1971_vs_1971_difference_vs_temperature(
-        paper_name, error_range, plot=True
+        paper_name, error_range, plot=False
     ):
         """checks the relative difference between Mason's 1951 and 1971 formulae
         for a range of temperatures"""
