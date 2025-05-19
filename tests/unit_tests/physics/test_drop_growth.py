@@ -35,13 +35,23 @@ class TestDropGrowth:
             assert r_dr_dt.check("[area]/[time]")
 
     @staticmethod
-    def test_mason_1971_vs_1951_difference_vs_temperature(plot=False):
+    @pytest.mark.parametrize(
+        ("paper_name", "error_range"),
+        (
+            ("Howell1949", (0.02, 0.03)),
+            ("Mason1971", (-0.01, 0.01)),
+            ("Fick", (0.5, 0.9)),
+        ),
+    )
+    def test_fick_mason_1971_vs_1971_difference_vs_temperature(
+        paper_name, error_range, plot=True
+    ):
         """checks the relative difference between Mason's 1951 and 1971 formulae
         for a range of temperatures"""
         # arrange
         temperatures = Formulae().trivia.C2K(np.linspace(-10, 40) * si.K)
-        papers = ("Howell1949", "Mason1971")
-
+        papers = ("Howell1949", "Mason1971", "Fick")
+        relative_error = {}
         # act
         formulae = {paper: Formulae(drop_growth=paper) for paper in papers}
         r_dr_dt = {
@@ -56,20 +66,25 @@ class TestDropGrowth:
             )
             for paper in papers
         }
-        relative_error = r_dr_dt["Mason1971"] / r_dr_dt["Howell1949"] - 1
+
+        for paper in papers:
+            relative_error[paper] = r_dr_dt[paper] / r_dr_dt["Mason1971"] - 1
 
         # plot
-        pyplot.plot(temperatures, in_unit(relative_error, PER_CENT))
+        for paper in papers:
+            pyplot.plot(
+                temperatures, in_unit(relative_error[paper], PER_CENT), label=paper
+            )
         pyplot.title("")
         pyplot.xlabel("temperature [K]")
-        pyplot.ylabel("r dr/dt relative difference (1971 vs. 1949) [%]")
+        pyplot.ylabel("r dr/dt relative difference (vs. 1971) [%]")
         pyplot.grid()
+        pyplot.legend()
         if plot:
             pyplot.show()
         else:
             pyplot.clf()
 
         # assert
-        (relative_error < 0.03).all()
-        (relative_error > 0.02).all()
-        (np.diff(relative_error) < 0).all()
+        assert (abs(relative_error[paper_name]) > error_range[0]).all()
+        assert (abs(relative_error[paper_name]) < error_range[1]).all()
