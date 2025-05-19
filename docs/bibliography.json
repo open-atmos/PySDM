@@ -526,8 +526,7 @@
   "https://doi.org/10.5194/acp-13-7903-2013": {
     "usages": [
       "examples/PySDM_examples/Bolot_et_al_2013/__init__.py",
-      "tests/unit_tests/physics/test_isotope_equilibrium_fractionation_factors.py",
-      "PySDM/physics/isotope_kinetic_fractionation_factors/bolot_et_al_2013.py"
+      "tests/unit_tests/physics/test_isotope_equilibrium_fractionation_factors.py"
     ],
     "label": "Bolot et al. 2013 (Atmos. Chem. Phys. 13)",
     "title": "Modelling and interpreting the isotopic composition of water vapour in convective updrafts "
