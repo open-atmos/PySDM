@@ -110,77 +110,75 @@ jobs:
         verbose: true
         token: ${{ secrets.CODECOV_TOKEN }}
 
-  # tests:
-  #   needs: [nojit_and_codecov]
-  #   strategy:
-  #     matrix:
-  #       platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
-  #       python-version: ["3.9", "3.12"]
-  #       test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
-  #       exclude:
-  #         - platform: "macos-14"
-  #           python-version: "3.9"
-  #         - test-suite: "devops_tests"
-  #           python-version: "3.9"
-  #         # TODO #1406
-  #         - platform: "macos-14"
-  #           test-suite: "smoke_tests/box"
-  #         - platform: "macos-14"
-  #           test-suite: "smoke_tests/parcel_a"
-  #         - platform: "macos-14"
-  #           test-suite: "smoke_tests/parcel_d"
-  #         - platform: "macos-14"
-  #           test-suite: "smoke_tests/kinematic_2d"
-  #         - platform: "macos-14"
-  #           test-suite: "unit_tests/!(dynamics)"
-  #     fail-fast: false
-  #   runs-on: ${{ matrix.platform }}
-  #   timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
-  #   steps:
-  #     - uses: actions/checkout@v4.1.6
-  #       with:
-  #         submodules: recursive
-  #         fetch-depth: 0
-  #     - uses: actions/setup-python@v5.0.0
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
+  tests:
+     needs: [nojit_and_codecov]
+     strategy:
+       matrix:
+         platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
+         python-version: ["3.9", "3.12"]
+         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+         exclude:
+           - platform: "macos-14"
+             python-version: "3.9"
+           - test-suite: "devops_tests"
+             python-version: "3.9"
+           # TODO #1406
+           - platform: "macos-14"
+             test-suite: "smoke_tests/box"
+           - platform: "macos-14"
+             test-suite: "smoke_tests/parcel_a"
+           - platform: "macos-14"
+             test-suite: "smoke_tests/parcel_d"
+           - platform: "macos-14"
+             test-suite: "smoke_tests/kinematic_2d"
+           - platform: "macos-14"
+             test-suite: "unit_tests/!(dynamics)"
+       fail-fast: false
+     runs-on: ${{ matrix.platform }}
+     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
+     steps:
+       - uses: actions/checkout@v4.1.6
+         with:
+           submodules: recursive
+           fetch-depth: 0
+       - uses: actions/setup-python@v5.0.0
+         with:
+           python-version: ${{ matrix.python-version }}
 
-  #     - run: pip install -e .
+       - run: pip install -e .
 
-  #     # sanity check if we do not depend on something from tests extras
-  #     - run: python -We -c "import PySDM"
+       # sanity check if we do not depend on something from tests extras
+       - run: python -We -c "import PySDM"
 
-  #     - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
-  #       run: pip install -e ./examples
+       - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
+         run: pip install -e ./examples
 
-  #     # incl. ensuring that the previous pip did not overwrite the package
-  #     - run: |
-  #         pip install --only-binary :all: -e .[tests]
+       # incl. ensuring that the previous pip did not overwrite the package
+       - run: |
+           pip install --only-binary :all: -e .[tests]
 
-  #     # install devops_tests for tutorials_tests
-  #     - if: matrix.test-suite == 'tutorials_tests'
-  #       run: pip install -r tests/devops_tests/requirements.txt
+       # install devops_tests for tutorials_tests
+       - if: matrix.test-suite == 'tutorials_tests'
+         run: pip install -r tests/devops_tests/requirements.txt
 
-  #     # https://github.com/numba/numba/issues/6350#issuecomment-728174860
-  #     - if: startsWith(matrix.platform, 'ubuntu-')
-  #       run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+       - if: startsWith(matrix.platform, 'ubuntu-')
+         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
-  #     - name: Run pytest
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         NUMBA_OPT: 1
-  #       run: |
-  #         shopt -s extglob
-  #         pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
+       - name: Run pytest
+         env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+           NUMBA_OPT: 1
+         run: |
+           shopt -s extglob
+           pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        # platform: [ubuntu-24.04, macos-13, windows-latest]
-        # python-version: ["3.9", "3.12"]
-        platform: [macos-13, ubuntu-24.04]
-        python-version: ["3.12"]
+        platform: [ubuntu-24.04, macos-13, windows-latest]
+        python-version: ["3.9", "3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -215,12 +213,9 @@ jobs:
     needs: [examples-setup]
     strategy:
       matrix:
-        # platform: [ubuntu-24.04, macos-13, windows-latest]
-        # python-version: ["3.9", "3.12"]
-        # test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
-        platform: [macos-13, ubuntu-24.04]
-        python-version: ["3.12"]
-        test-suite: ["multi-process_a"]
+         platform: [ubuntu-24.04, macos-13, windows-latest]
+         python-version: ["3.9", "3.12"]
+         test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: 35
@@ -274,8 +269,8 @@ jobs:
           pvpython --version
           pvpython -c "from paraview import simple"
 
-      # - run: |
-      #     python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
+      - run: |
+          python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
 
       # TODO #1207
       - if: startsWith(matrix.platform, 'macos-13')
@@ -294,11 +289,6 @@ jobs:
           ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation_${{ matrix.platform }}.mp4
           mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
           ls $HOME/work/_temp/_github_home/figures
-
-      - if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
 
       - name: animation movie upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
