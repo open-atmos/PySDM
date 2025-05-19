@@ -18,8 +18,6 @@ class Settings:
         dt: float,
     ):
 
-        print(f"{w_updraft:},{T0:},{seed:},{dt:}")
-
         self.n_sd = n_sd
         self.w_updraft = w_updraft
 
