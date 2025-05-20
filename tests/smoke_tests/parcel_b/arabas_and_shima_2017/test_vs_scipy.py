@@ -26,13 +26,13 @@ def split(arg1, arg2):
 @pytest.mark.parametrize("scheme", ("CPU",))  # 'GPU'))  # TODO #588
 def test_vs_scipy(settings_idx, data, rtol, leg, scheme):
     # Arrange
-    supersaturation = {}
+    saturation = {}
     for sch in schemes:
         sut = data[sch][rtol][settings_idx]
-        ascent, descent = split(sut["S"], sut["z"])
-        supersaturation[sch] = ascent if leg == "ascent" else descent
+        ascent, descent = split(sut["RH"], sut["z"])
+        saturation[sch] = ascent if leg == "ascent" else descent
 
     # Assert
-    desired = np.array(supersaturation["SciPy"])
-    actual = np.array(supersaturation[scheme])
+    desired = np.array(saturation["SciPy"])
+    actual = np.array(saturation[scheme])
     assert np.mean((desired - actual) ** 2) < rtol

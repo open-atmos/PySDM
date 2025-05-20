@@ -51,10 +51,10 @@ class TestFig5:
 
     @staticmethod
     @pytest.mark.xfail(strict=True, reason="TODO #1266")
-    def test_supersaturation_maximum(variables):
-        supersaturation = np.asarray(variables["output"]["products"]["S_max"])
-        assert signal.argrelextrema(supersaturation, np.greater)[0].shape[0] == 1
-        assert 1.2 * PER_CENT < np.nanmax(supersaturation) < 1.4 * PER_CENT
+    def test_saturation_maximum(variables):
+        saturation = np.asarray(variables["output"]["products"]["S_max"])
+        assert signal.argrelextrema(saturation, np.greater)[0].shape[0] == 1
+        assert 1.2 * PER_CENT < np.nanmax(saturation - 1) < 1.4 * PER_CENT
 
     @staticmethod
     @pytest.mark.parametrize("drop_id", range(int(0.8 * N_SD), N_SD))
