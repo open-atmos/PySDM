@@ -7,6 +7,6 @@ class Neglect:  # pylint disable=too-few-public-methods
 
     @staticmethod
     def isotope_ventilation_ratio_heavy_to_light(
-        ventilation_coefficient, diffusivity_ratio
+        ventilation_coefficient, diffusivity_ratio_heavy_to_light
     ):  # pylint: disable=unused-argument
         return 1

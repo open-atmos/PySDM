@@ -25,7 +25,7 @@ class TestIsotopeKineticFractionationFactors:
             # act
             sut = JouzelAndMerlivat1984.alpha_kinetic(
                 alpha_equilibrium=alpha_eq,
-                heavy_to_light_diffusivity_ratio=D_ratio,
+                diffusivity_ratio_heavy_to_light=D_ratio,
                 saturation_over_ice=saturation_over_ice,
             )
 
@@ -44,7 +44,7 @@ class TestIsotopeKineticFractionationFactors:
         temperatures = formulae.trivia.C2K(np.asarray([-30, -20, -10]))
         saturation = np.linspace(start=1, stop=1.35)
         alpha_s = formulae.isotope_equilibrium_fractionation_factors.alpha_i_18O
-        heavy_to_light_diffusivity_ratio = formulae.isotope_diffusivity_ratios.ratio_18O
+        diffusivity_ratio_heavy_to_light = formulae.isotope_diffusivity_ratios.ratio_18O
         sut = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic
 
         # act
@@ -53,7 +53,7 @@ class TestIsotopeKineticFractionationFactors:
             temperature: sut(
                 alpha_equilibrium=alpha_s[temperature],
                 saturation_over_ice=saturation,
-                heavy_to_light_diffusivity_ratio=heavy_to_light_diffusivity_ratio(
+                diffusivity_ratio_heavy_to_light=diffusivity_ratio_heavy_to_light(
                     temperature
                 ),
             )
@@ -101,7 +101,7 @@ class TestIsotopeKineticFractionationFactors:
         alpha_k = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
             alpha_equilibrium=alpha_s,
             saturation_over_ice=saturation,
-            heavy_to_light_diffusivity_ratio=formulae.isotope_diffusivity_ratios.ratio_18O(
+            diffusivity_ratio_heavy_to_light=formulae.isotope_diffusivity_ratios.ratio_18O(
                 T
             ),
         )
