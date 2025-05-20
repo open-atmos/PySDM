@@ -43,10 +43,7 @@ The 2D prescribed-flow framework used here can be traced back to the work of
   (<a href="https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/_HOWTOs/paraview_hello_world.ipynb">see
   the Paraview hello-world HOWTO Jupyter notbook for code generating the simulation and visualisation</a>):
 <center>
-<video controls style="width:80%">
-  <source src="https://github.com/open-atmos/PySDM/releases/download/tip/docs_intro_animation_ubuntu-24.04.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+  <img src="https://github.com/open-atmos/PySDM/releases/download/tip/docs_intro_animation_ubuntu-24.04.gif" style="width:80%" />
 </center>
 
 Example notebooks:
