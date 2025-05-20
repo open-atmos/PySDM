@@ -294,7 +294,7 @@ jobs:
         if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
-          name: animation-movie
+          name: animation-movie-${{ matrix.platform }}
           if-no-files-found: error
           path: ~/work/_temp/_github_home/figures/*.mp4
 
@@ -302,7 +302,7 @@ jobs:
         if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
-          name: animation-frame
+          name: animation-frame-${{ matrix.platform }}
           if-no-files-found: error
           path: ~/work/_temp/_github_home/figures/*.pdf
 
@@ -311,4 +311,4 @@ jobs:
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: /*(home|Users)/runner/work/_temp/_github_home/figures/*.mp4
+          files: ~/work/_temp/_github_home/figures/*.mp4
