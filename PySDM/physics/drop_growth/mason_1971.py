@@ -11,9 +11,7 @@ class Mason1971:  # pylint: disable=too-few-public-methods
 
     # pylint: disable=too-many-arguments
     @staticmethod
-    def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K):
-        return (
-            (RH - RH_eq)
-            / const.rho_w
-            / (const.Rv * T / D / pvs + lv / K / T * (lv / T / const.Rv - 1))
+    def r_dr_dt(RH_eq, RH, Fk_factor_for_heat_conduction, Fd_factor_for_mass_diffusion):
+        return (RH - RH_eq) / (
+            Fk_factor_for_heat_conduction + Fd_factor_for_mass_diffusion
         )
