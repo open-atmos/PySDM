@@ -12,7 +12,9 @@ class TestIsotopeVentilationRatio:  # pylint: disable=too-few-public-methods
             # Arrange
             formulae = Formulae(isotope_ventilation_ratio="Brutsaert1982")
             si = constants_defaults.si
-            sut = formulae.isotope_ventilation_ratio.isotope_ventilation_ratio
+            sut = (
+                formulae.isotope_ventilation_ratio.isotope_ventilation_ratio_heavy_to_light
+            )
 
             # Act
             re = sut(
