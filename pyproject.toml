@@ -9,7 +9,7 @@ version_scheme = "post-release"
 include = ["PySDM", "PySDM*"]
 
 [build-system]
-requires = ['setuptools==75.3.0', 'setuptools-scm==8.3.1']
+requires = ['setuptools==80.7.1', 'setuptools-scm==8.3.1']
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -20,11 +20,10 @@ keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
     "atmospheric-modelling", "particle-system", "numba", "thrust",
     "nvrtc", "pint", "atmospheric-physics",
     ]
-license = {text = "GPL-3.0"}
+license = "GPL-3.0-only"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering",

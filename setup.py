@@ -51,7 +51,7 @@ dependencies = [
         if CI
         else ""
     ),
-    "pyevtk" + ("==1.2.0" if CI else ""),
+    "pyevtk" + ("==1.6.0" if CI else ""),
 ]
 
 optional_dependencies = {

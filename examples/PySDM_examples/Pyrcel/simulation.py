@@ -91,7 +91,9 @@ class Simulation(BasicSimulation):
                 attr[drop_id].append(attr_data[drop_id])
         super()._save(output)
 
-    def run(self):
+    def run(self, observers=()):
+        for observer in observers:
+            self.particulator.observers.append(observer)
         output_products = super()._run(
             self.settings.nt, self.settings.steps_per_output_interval
         )

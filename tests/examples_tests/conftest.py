@@ -40,6 +40,8 @@ TEST_SUITES = {
         "Stewart_1975",
         "Kinzer_And_Gunn_1951",
         "Pruppacher_and_Rasmussen_1979",
+        "Fisher_1991",
+        "Jouzel_and_Merlivat_1984",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
