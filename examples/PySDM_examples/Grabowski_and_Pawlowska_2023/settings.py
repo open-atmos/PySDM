@@ -24,7 +24,7 @@ class Settings:
         displacement: float = 1000 * si.m,
         mass_accommodation_coefficient: float = 0.3,
         rtol_thd: float = condensation_tolerance,
-        rtol_x: float = condensation_tolerance
+        rtol_x: float = condensation_tolerance,
     ):
         self.formulae = Formulae(constants={"MAC": mass_accommodation_coefficient})
         self.n_sd = n_sd

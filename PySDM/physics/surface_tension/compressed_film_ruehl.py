@@ -81,7 +81,7 @@ class CompressedFilmRuehl:  # pylint: disable=too-few-public-methods
                 minfun(bracket[1], *args),
                 rtol,
                 max_iters,
-                within_tolerance
+                within_tolerance,
             )
             assert iters != max_iters
 

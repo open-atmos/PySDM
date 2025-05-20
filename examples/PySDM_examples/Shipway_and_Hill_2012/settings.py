@@ -48,7 +48,7 @@ class Settings:
         enable_condensation: bool = True,
         formulae: Formulae = None,
         save_spec_and_attr_times=(),
-        collision_kernel=None
+        collision_kernel=None,
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox

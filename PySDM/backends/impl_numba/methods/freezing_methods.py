@@ -116,7 +116,7 @@ class FreezingMethods(BackendMethods):
         a_w_ice,
         temperature,
         relative_humidity,
-        thaw: bool
+        thaw: bool,
     ):
         self.freeze_time_dependent_body(
             rand.data,
