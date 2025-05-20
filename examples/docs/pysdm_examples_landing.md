@@ -39,12 +39,15 @@ The 2D prescribed-flow framework used here can be traced back to the work of
     and dry-air potential temperature.
   In PySDM-examples, the Eulerian advection is handled using the <a href="https://doi.org/10.21105/joss.03896">PyMPDATA</a> Numba-based
     implementation of the <a href="https://doi.org/10.1002/fld.1071">MPDATA numerical scheme of Smolarkiewicz (e.g., 2006)</a>.
-  An animation depicting PySDM simulation capturing <mark>aerosol collisional processing</mark> by warm rain is shown below:
-
-<video controls style="width:100%">
+  An animation depicting PySDM simulation capturing <mark>aerosol collisional processing</mark> by warm rain is shown below
+  (<a href="https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/_HOWTOs/paraview_hello_world.ipynb">see
+  the Paraview hello-world HOWTO Jupyter notbook for code generating the simulation and visualisation</a>):
+<center>
+<video controls style="width:80%">
   <source src="https://github.com/open-atmos/PySDM/releases/download/tip/docs_intro_animation_ubuntu-24.04.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
+</center>
 
 Example notebooks:
 - `PySDM_examples.Arabas_et_al_2015`
