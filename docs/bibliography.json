@@ -617,7 +617,7 @@
   },
   "https://doi.org/10.1016/S0169-8095(97)00082-3": {
     "usages": [
-      "examples/PySDM_examples/Szumowski_et_al_1998/__init__.py"
+      "examples/PySDM_examples/utils/simulation_2D_prescribed_flow/__init__.py"
     ],
     "label": "Szumowski et al. 1998 (Atmos. Res. 45)",
     "title": "Simple two-dimensional kinematic framework designed to test warm rain microphysical models"
