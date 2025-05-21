@@ -83,19 +83,25 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     saturation_ratio_ice = (
                         current_relative_humidity[cid] / current_water_activity[cid]
                     )
-
+                    Fk = formulae.drop_growth__Fk(
+                        T=temperature,
+                        K=thermal_conductivity * heat_ventilation_factor,
+                        lv=latent_heat_sub,
+                    )
+                    Fd = formulae.drop_growth__Fd(
+                        T=temperature,
+                        D=diffusion_coefficient * mass_ventilation_factor,
+                        pvs=pvs_ice,
+                    )
                     if saturation_ratio_ice == 1:
                         continue
 
                     howell_factor_x_diffcoef_x_rhovsice_x_icess = (
                         formulae.drop_growth__r_dr_dt(
                             RH_eq=1,
-                            T=temperature,
                             RH=saturation_ratio_ice,
-                            lv=latent_heat_sub,
-                            pvs=pvs_ice,
-                            D=mass_ventilation_factor * diffusion_coefficient,
-                            K=heat_ventilation_factor * thermal_conductivity,
+                            Fk=Fk,
+                            Fd=Fd,
                         )
                         * formulae.constants.rho_w
                     )

@@ -8,7 +8,7 @@ The notation for terms associated with heat conduction and diffusion are from
 [Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).
 """
 
-from PySDM.physics.drop_growth import Howell1949
+from .howell_1949 import Howell1949
 
 
 class Mason1971(Howell1949):  # pylint: disable=too-few-public-methods

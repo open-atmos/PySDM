@@ -7,20 +7,17 @@ The notation for terms associated with heat conduction and diffusion are from eq
  in [Rogers & Yau 1971](https://archive.org/details/shortcourseinclo0000roge_m3k2).
 """
 
+from .fick import Fick
 
-class Howell1949:  # pylint: disable=too-few-public-methods
+
+class Howell1949(Fick):  # pylint: disable=too-few-public-methods
     def __init__(self, _):
-        pass
+        super().__init__(_)
 
     @staticmethod
     def Fk(const, T, K, lv):
         """thermodynamic term associated with heat conduction"""
         return const.rho_w * lv / T / K * (lv / T / const.Rv)
-
-    @staticmethod
-    def Fd(const, T, D, pvs):
-        """the term associated with vapour diffusion"""
-        return const.rho_w * const.Rv * T / D / pvs
 
     @staticmethod
     def r_dr_dt(RH_eq, RH, Fk, Fd):
