@@ -2,7 +2,7 @@
 import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.utils.simulation_2D_prescribed_flow import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation
 
 from PySDM.physics.constants import si
 

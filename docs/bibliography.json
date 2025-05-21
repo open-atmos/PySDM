@@ -2,7 +2,7 @@
   "https://doi.org/10.1007/978-1-935704-36-2_1": {
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
-      "examples/PySDM_examples/utils/simulation_2D_prescribed_flow/__init__.py"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
     ],
     "label": "Kessler 1969 (Meteorol. Monogr. 10)",
     "title": "On the Distribution and Continuity of Water Substance in Atmospheric Circulations"
@@ -91,7 +91,7 @@
       "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_2.ipynb",
       "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_3.ipynb",
       "examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py",
-      "examples/PySDM_examples/utils/simulation_2D_prescribed_flow/__init__.py"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
     ],
     "label": "Morrison & Grabowski 2007 (J. Atmos. Sci. 64)",
     "title": "Comparison of Bulk and Bin Warm-Rain Microphysics Models Using a Kinematic Framework"
@@ -258,7 +258,7 @@
       "examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb",
       "PySDM/dynamics/displacement.py",
       "PySDM/physics/particle_advection/implicit_in_space.py",
-      "examples/PySDM_examples/utils/simulation_2D_prescribed_flow/__init__.py"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
     ],
     "label": "Arabas et al. 2015 (Geosci. Model Dev. 2015)",
     "title": "libcloudph++ 1.0: a single-moment bulk, double-moment bulk, and particle-based warm-rain microphysics library in C++"
@@ -617,7 +617,7 @@
   },
   "https://doi.org/10.1016/S0169-8095(97)00082-3": {
     "usages": [
-      "examples/PySDM_examples/utils/simulation_2D_prescribed_flow/__init__.py"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
     ],
     "label": "Szumowski et al. 1998 (Atmos. Res. 45)",
     "title": "Simple two-dimensional kinematic framework designed to test warm rain microphysical models"

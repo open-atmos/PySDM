@@ -1,8 +1,8 @@
 import numpy as np
-from PySDM_examples.utils.simulation_2D_prescribed_flow.make_default_product_collection import (
+from PySDM_examples.utils.kinematic_2d.make_default_product_collection import (
     make_default_product_collection,
 )
-from PySDM_examples.utils.simulation_2D_prescribed_flow.mpdata_2d import MPDATA_2D
+from PySDM_examples.utils.kinematic_2d.mpdata_2d import MPDATA_2D
 from PySDM_examples.utils import DummyController
 
 from PySDM.backends import CPU
