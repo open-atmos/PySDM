@@ -1,6 +1,6 @@
 import numpy as np
 from PySDM_examples.Morrison_and_Grabowski_2007.common import Common
-from PySDM_examples.Szumowski_et_al_1998 import sounding
+from PySDM_examples.utils.simulation_2D_prescribed_flow import sounding
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
 
