@@ -740,6 +740,7 @@
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/terminal_velocity/rogers_yau.py",
+      "PySDM/physics/drop_growth/fick.py",
       "PySDM/physics/drop_growth/howell_1949.py",
       "PySDM/physics/drop_growth/mason_1971.py"
     ],

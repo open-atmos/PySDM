@@ -1,5 +1,8 @@
 """
 Fickian diffusion only drop growth
+
+The notation for terms associated with heat conduction and diffusion are from
+[Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).
 """
 
 
@@ -9,7 +12,7 @@ class Fick:
 
     @staticmethod
     def Fk(const, T, K, lv):  # pylint: disable=unused-argument
-        """thermodynamic term associated with heat conduction"""
+        """heat conduction not taken into account"""
 
     @staticmethod
     def Fd(const, T, D, pvs):
@@ -18,4 +21,13 @@ class Fick:
 
     @staticmethod
     def r_dr_dt(RH_eq, RH, Fk, Fd):  # pylint: disable=unused-argument
+        """Drop growth equation with radius r.
+
+        Parameters
+        ----------
+        Fk
+            Thermodynamic term associated with heat conduction from Rogers & Yau 1989.
+        Fd
+            Term associated with vapour diffusion.
+        """
         return (RH - RH_eq) / Fd
