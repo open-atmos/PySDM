@@ -307,7 +307,7 @@ jobs:
           path: ~/work/_temp/_github_home/figures/*.pdf
 
       - name: tip release upload
-        if: github.ref == 'refs/heads/main' && ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: github.ref == 'refs/heads/main' && ( startsWith(matrix.platform, 'ubuntu-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
