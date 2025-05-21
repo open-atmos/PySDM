@@ -10,7 +10,6 @@ class Fick:
     @staticmethod
     def Fk(const, T, K, lv):  # pylint: disable=unused-argument
         """thermodynamic term associated with heat conduction"""
-        pass
 
     @staticmethod
     def Fd(const, T, D, pvs):
