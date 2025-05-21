@@ -3,7 +3,7 @@ Fickian diffusion only drop growth
 """
 
 
-class Fick:  # pylint: disable=too-few-public-methods
+class Fick:
     def __init__(self, _):
         pass
 

@@ -8,7 +8,6 @@ from PySDM.formulae import _choices, Formulae
 from PySDM.physics import drop_growth
 from PySDM.physics.constants import PER_CENT, si, in_unit
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from tests.unit_tests.initialisation.test_spectro_glacial_discretisation import formulae
 
 
 class TestDropGrowth:

@@ -11,8 +11,6 @@ from .fick import Fick
 
 
 class Howell1949(Fick):  # pylint: disable=too-few-public-methods
-    def __init__(self, _):
-        super().__init__(_)
 
     @staticmethod
     def Fk(const, T, K, lv):

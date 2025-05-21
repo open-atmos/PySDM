@@ -12,8 +12,6 @@ from .howell_1949 import Howell1949
 
 
 class Mason1971(Howell1949):  # pylint: disable=too-few-public-methods
-    def __init__(self, _):
-        super().__init__(_)
 
     @staticmethod
     def Fk(const, T, K, lv):
