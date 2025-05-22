@@ -9,4 +9,3 @@ fig_2.ipynb:
 fig_3.ipynb:
 .. include:: ./fig_3.ipynb.badges.md
 """
-from .cumulus import Cumulus
