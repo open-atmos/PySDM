@@ -571,16 +571,6 @@
     "label": "Barkan & Luz 2005 (Rapid Commun. Mass Spectrom. 19)",
     "title": "High precision measurements of <sup>17</sup>O/<sup>16</sup>O and <sup>18</sup>O/<sup>16</sup>O ratios in H<sub>2</sub>O"
   },
-  "https://doi.org/10.1029/JC080i009p01133": {
-    "usages": [
-      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
-      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
-      "examples/PySDM_examples/Stewart_1975/__init__.py",
-      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
-    ],
-    "label": "Stewart 1975 (J. Geophys. Res. Oceans 80)",
-    "title": "Stable isotope fractionation due to evaporation and isotopic exchange of falling waterdrops: Applications to atmospheric processes and evaporation of lakes"
-  },
   "https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2": {
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
