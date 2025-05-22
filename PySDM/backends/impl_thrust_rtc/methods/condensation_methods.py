@@ -197,12 +197,12 @@ class CondensationMethods(
                     sqrt_re_times_cbrt_sc="qrt_re_times_cbrt_sc"
                 )};
                 auto heat_ventilation_factor = mass_ventilation_factor; // TODO #1588
-                Fk = {phys.drop_growth.Fk.c_inline(
+                auto Fk = {phys.drop_growth.Fk.c_inline(
                     T="_T",
                     K="heat_ventilation_factor*Kr",
                     lv="_lv",
                 )}; // TODO #1588
-                Fd = {phys.drop_growth.Fd.c_inline(
+                auto Fd = {phys.drop_growth.Fd.c_inline(
                     T="_T",
                     D="mass_ventilation_factor*Dr",
                     pvs="_pvs",
