@@ -1,7 +1,7 @@
 """assuming f'/f equals 1"""
 
 
-class Neglect:  # pylint disable=too-few-public-methods
+class Neglect:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
