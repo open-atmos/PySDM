@@ -132,12 +132,13 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             r = jit_formulae.trivia__radius(v)
             Dr = jit_formulae.diffusion_kinetics__D(DTp, r, lambdaD)
             Kr = jit_formulae.diffusion_kinetics__K(KTp, r, lambdaK)
-            ventilation_factor = jit_formulae.ventilation__ventilation_coefficient(
+            mass_ventilation_factor = jit_formulae.ventilation__ventilation_coefficient(
                 sqrt_re_times_cbrt_sc=jit_formulae.trivia__sqrt_re_times_cbrt_sc(
                     Re=reynolds_number[i],
                     Sc=schmidt_number,
                 )
             )
+            heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
             sgm = jit_formulae.surface_tension__sigma(T, v, dry_volume[i], f_org[i])
             r_dr_dt = jit_formulae.drop_growth__r_dr_dt(
                 jit_formulae.hygroscopicity__RH_eq(
@@ -147,9 +148,8 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
                 RH,
                 lv,
                 pvs,
-                Dr,
-                Kr,
-                ventilation_factor,
+                mass_ventilation_factor * Dr,
+                heat_ventilation_factor * Kr,
             )
             dm_dt = jit_formulae.particle_shape_and_density__dm_dt(r, r_dr_dt)
             dy_dt[idx_x + i] = jit_formulae.diffusion_coordinate__dx_dt(m, dm_dt)

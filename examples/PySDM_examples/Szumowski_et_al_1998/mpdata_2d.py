@@ -28,7 +28,7 @@ class MPDATA_2D:
         n_iters=2,
         infinite_gauge=True,
         nonoscillatory=True,
-        third_order_terms=False
+        third_order_terms=False,
     ):
         self._grid = grid
         self.size = size
@@ -65,7 +65,7 @@ class MPDATA_2D:
             options=self._options,
             grid=self._grid,
             non_unit_g_factor=True,
-            **disable_threads_if_needed
+            **disable_threads_if_needed,
         )
 
         advector_impl = VectorField(

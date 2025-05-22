@@ -50,7 +50,7 @@ class TestParticleSizeSpectrum:
                 product_class(
                     name=name,
                     radius_bins_edges=(min_size, max_size),
-                    **({"stp": stp} if stp else {})
+                    **({"stp": stp} if stp else {}),
                 ),
             ),
             attributes={

@@ -518,8 +518,8 @@ diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
 """
-[Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2)
-"""
+[Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469%281979%29036%3C1255:AWTIOT%3E2.0.CO;2)
+"""  # pylint: disable=line-too-long
 PRUPPACHER_RASMUSSEN_1979_CONSTSMALL = 1.0 * si.dimensionless
 """ 〃 """
 PRUPPACHER_RASMUSSEN_1979_COEFFSMALL = 0.108 * si.dimensionless
@@ -681,6 +681,12 @@ def compute_derived_values(c: dict):
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
     """
 
+    c["M_1H2_16O"] = c["M_1H"] * 2 + c["M_16O"]
+    c["M_2H_1H_16O"] = c["M_2H"] + c["M_1H"] + c["M_16O"]
+    c["M_3H_1H_16O"] = c["M_3H"] + c["M_1H"] + c["M_16O"]
+    c["M_1H2_17O"] = c["M_1H"] * 2 + c["M_17O"]
+    c["M_1H2_18O"] = c["M_1H"] * 2 + c["M_18O"]
+
     c["Mv"] = (
         (
             1
@@ -689,19 +695,15 @@ def compute_derived_values(c: dict):
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         )
-        * (c["M_1H"] * 2 + c["M_16O"])
+        * c["M_1H2_16O"]
         + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-        * (c["M_2H"] + c["M_1H"] + c["M_16O"])
+        * c["M_2H_1H_16O"]
         + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-        * (c["M_3H"] + c["M_1H"] + c["M_16O"])
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-        * (c["M_1H"] * 2 + c["M_17O"])
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
-        * (c["M_1H"] * 2 + c["M_18O"])
+        * c["M_3H_1H_16O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
     )
 
     c["eps"] = c["Mv"] / c["Md"]
