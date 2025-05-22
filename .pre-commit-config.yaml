@@ -1,4 +1,4 @@
-files: '.py|.json'
+files: '.py|bibliography.json'
 exclude: '.git'
 default_stages: [pre-commit]
 
