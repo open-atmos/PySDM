@@ -119,6 +119,7 @@ class CondensationMethods(
                         rd3=args("rd3"),
                         sgm="sgm"
                     )};
+
                     auto Fk = {phys.drop_growth.Fk.c_inline(
                         T=args("_T"),
                         K=f'{args("mass_ventilation_factor")}*{args("Kr")}',
@@ -196,19 +197,19 @@ class CondensationMethods(
                     sqrt_re_times_cbrt_sc="qrt_re_times_cbrt_sc"
                 )};
                 Fk = {phys.drop_growth.Fk.c_inline(
-                    T=args("_T"),
+                    T="_T",
                     K="heat_ventilation_factor*Kr",
-                    lv=args("_lv"),
+                    lv="_lv",
                 )}; // TODO #1588
                 Fd = {phys.drop_growth.Fd.c_inline(
-                    T=args("_T"),
+                    T="_T",
                     D="mass_ventilation_factor*Dr",
-                    pvs=args("_pvs"),
+                    pvs="_pvs",
                 )};
                 auto heat_ventilation_factor = mass_ventilation_factor; // TODO #1588
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
                     RH_eq="RH_eq",
-                    RH=args("_RH"),
+                    RH="_RH",
                     Fk="Fk",
                     Fd="Fd",
                 )};
