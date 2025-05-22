@@ -89,7 +89,9 @@ class TestIsotopeDiffusivityRatios:
         formulae = Formulae(isotope_diffusivity_ratios="GrahamsLaw")
 
         # act
-        sut = formulae.isotope_diffusivity_ratios.ratio_2H(temperature=np.nan)
+        sut = formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(
+            temperature=np.nan
+        )
 
         # assert
         np.testing.assert_approx_equal(sut, 0.973, significant=3)
