@@ -1,7 +1,7 @@
 """eq. 28 in [Miyake et al. 1968](https://doi.org/10.2467/mripapers1950.19.2_243)"""
 
 
-class MiyakeEtAl1968:  # pylint: disable=too-few-public-methods
+class MiyakeEtAl1968:
     def __init__(self, _):
         pass
 
@@ -11,3 +11,8 @@ class MiyakeEtAl1968:  # pylint: disable=too-few-public-methods
         return (radius**2 * alpha * const.rho_w * const.R_str * temperature) / (
             3 * e_s * D * M * vent_coeff
         )
+
+    @staticmethod
+    # pylint: disable=too-many-arguments unused-argument
+    def tau_of_rdrdt(const, radius, r_dr_dt, alpha):
+        return -(radius**2) / 3 / r_dr_dt * alpha
