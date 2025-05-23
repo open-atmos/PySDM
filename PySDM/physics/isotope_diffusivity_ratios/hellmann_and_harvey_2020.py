@@ -9,7 +9,7 @@ class HellmannAndHarvey2020:
         pass
 
     @staticmethod
-    def ratio_2H(const, temperature):
+    def ratio_2H_heavy_to_light(const, temperature):
         return (
             const.HELLMANN_HARVEY_EQ6_COEFF0
             + const.HELLMANN_HARVEY_EQ6_COEFF1
@@ -19,7 +19,7 @@ class HellmannAndHarvey2020:
         )
 
     @staticmethod
-    def ratio_17O(const, temperature):
+    def ratio_17O_heavy_to_light(const, temperature):
         return (
             const.HELLMANN_HARVEY_EQ7_COEFF0
             + const.HELLMANN_HARVEY_EQ7_COEFF1
@@ -29,7 +29,7 @@ class HellmannAndHarvey2020:
         )
 
     @staticmethod
-    def ratio_18O(const, temperature):
+    def ratio_18O_heavy_to_light(const, temperature):
         return (
             const.HELLMANN_HARVEY_EQ8_COEFF0
             + const.HELLMANN_HARVEY_EQ8_COEFF1
