@@ -75,7 +75,6 @@ TEST_SUITES = {
     ],
     "multi-process_e": [
         "deJong_Azimi",
-        "Szumowski_et_al_1998",
         "Bulenok_2023_MasterThesis",
         "Morrison_and_Grabowski_2007",
         "Shipway_and_Hill_2012",

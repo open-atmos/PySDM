@@ -3,7 +3,7 @@ import warnings
 import numpy as np
 from matplotlib import pyplot, rcParams
 from open_atmos_jupyter_utils import save_and_make_link
-from PySDM_examples.Szumowski_et_al_1998.plots import (
+from PySDM_examples.utils.kinematic_2d.plots import (
     _ImagePlot,
     _SpectrumPlot,
     _TemperaturePlot,

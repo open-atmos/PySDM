@@ -2,8 +2,10 @@ import os
 import sys
 
 from open_atmos_jupyter_utils import TemporaryFile
-from PySDM_examples.Szumowski_et_al_1998.gui_controller import GUIController
-from PySDM_examples.Szumowski_et_al_1998.gui_viewer import GUIViewer
+from PySDM_examples.utils.kinematic_2d.gui_controller import (
+    GUIController,
+)
+from PySDM_examples.utils.kinematic_2d.gui_viewer import GUIViewer
 from PySDM_examples.utils.widgets import HTML, Tab, VBox, display
 
 from PySDM.exporters import NetCDFExporter
