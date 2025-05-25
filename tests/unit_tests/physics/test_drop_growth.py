@@ -23,12 +23,9 @@ class TestDropGrowth:
             # act
             r_dr_dt = formulae.drop_growth.r_dr_dt(
                 RH_eq=1,
-                T=const.T_tri,
                 RH=1.05,
-                lv=const.l_tri,
-                pvs=const.p_tri,
-                D=const.D0,
-                K=const.K0,
+                Fk=formulae.drop_growth.Fk(T=const.T_tri, K=const.K0, lv=const.l_tri),
+                Fd=formulae.drop_growth.Fd(T=const.T_tri, D=const.D0, pvs=const.p_tri),
             )
 
             # assert
@@ -57,12 +54,17 @@ class TestDropGrowth:
         r_dr_dt = {
             paper: formulae[paper].drop_growth.r_dr_dt(
                 RH_eq=1,
-                T=temperatures,
                 RH=1.05,
-                lv=formulae[paper].constants.l_tri,
-                pvs=formulae[paper].constants.p_tri,
-                D=formulae[paper].constants.D0,
-                K=formulae[paper].constants.K0,
+                Fk=formulae[paper].drop_growth.Fk(
+                    T=temperatures,
+                    K=formulae[paper].constants.K0,
+                    lv=formulae[paper].constants.l_tri,
+                ),
+                Fd=formulae[paper].drop_growth.Fd(
+                    T=temperatures,
+                    D=formulae[paper].constants.D0,
+                    pvs=formulae[paper].constants.p_tri,
+                ),
             )
             for paper in papers
         }
