@@ -42,11 +42,12 @@ def _make_particulator(backend):
 
 
 @pytest.mark.parametrize(
-    "variant", [v for v in _choices(ventilation) if v != ventilation.Neglect.__name__]
+    "var_ventilation",
+    [v for v in _choices(ventilation) if v != ventilation.Neglect.__name__],
 )
-@pytest.mark.parametrize("variant_dg", [v for v in _choices(drop_growth)])
+@pytest.mark.parametrize("var_drop_growth", list(_choices(drop_growth)))
 @pytest.mark.parametrize("scipy_solver", (True, False))
-def test_ventilation(backend_class, variant, variant_dg, scipy_solver):
+def test_ventilation(backend_class, var_ventilation, var_drop_growth, scipy_solver):
     """tests checking effects of ventilation in a simplistic
     single-[super]droplet adiabatic parcel simulation set up to
     trigger evaporation of a large droplet in subsaturated air"""
@@ -54,9 +55,11 @@ def test_ventilation(backend_class, variant, variant_dg, scipy_solver):
     # arrange
     particulators = {
         key: _make_particulator(
-            backend_class(formulae=Formulae(ventilation=key, drop_growth=variant_dg))
+            backend_class(
+                formulae=Formulae(ventilation=key, drop_growth=var_drop_growth)
+            )
         )
-        for key in [variant, ventilation.Neglect.__name__]
+        for key in [var_ventilation, ventilation.Neglect.__name__]
     }
 
     if scipy_solver:
@@ -75,4 +78,4 @@ def test_ventilation(backend_class, variant, variant_dg, scipy_solver):
         key: particulator.attributes["water mass"].to_ndarray() / INITIAL_DROPLET_MASS
         for key, particulator in particulators.items()
     }
-    assert 0.93 < mass_ratios[variant] < mass_ratios["Neglect"] < 1
+    assert 0.93 < mass_ratios[var_ventilation] < mass_ratios["Neglect"] < 1
