@@ -405,9 +405,13 @@ class CondensationMethods(BackendMethods):
                     temperature, volume_new, formulae.constants.PI_4_3 * rd3, f_org
                 ),
             )
-            Fk = formulae.drop_growth__Fk(temperature, K * heat_ventilation_factor, lv)
-            Fd = formulae.drop_growth__Fd(temperature, D * mass_ventilation_factor, pvs)
-            r_dr_dt = formulae.drop_growth__r_dr_dt(RH_eq, RH, Fk, Fd)
+            Fk = formulae.drop_growth__Fk(
+                T=temperature, K=K * heat_ventilation_factor, lv=lv
+            )
+            Fd = formulae.drop_growth__Fd(
+                T=temperature, D=D * mass_ventilation_factor, pvs=pvs
+            )
+            r_dr_dt = formulae.drop_growth__r_dr_dt(RH_eq=RH_eq, RH=RH, Fk=Fk, Fd=Fd)
             dm_dt = formulae.particle_shape_and_density__dm_dt(r=r_new, r_dr_dt=r_dr_dt)
             return (
                 x_old
@@ -485,14 +489,14 @@ class CondensationMethods(BackendMethods):
                         mass_ventilation_factor,
                         heat_ventilation_factor,
                     )
-                    Fk_old = formulae.drop_growth__Fk(
-                        T, Kr * heat_ventilation_factor, lv
+                    Fk = formulae.drop_growth__Fk(
+                        T=T, K=Kr * heat_ventilation_factor, lv=lv
                     )
-                    Fd_old = formulae.drop_growth__Fd(
-                        T, Dr * mass_ventilation_factor, pvs
+                    Fd = formulae.drop_growth__Fd(
+                        T=T, D=Dr * mass_ventilation_factor, pvs=pvs
                     )
                     r_dr_dt_old = formulae.drop_growth__r_dr_dt(
-                        RH_eq, RH, Fk_old, Fd_old
+                        RH_eq=RH_eq, RH=RH, Fk=Fk, Fd=Fd
                     )
                     mass_old = formulae.diffusion_coordinate__mass(x_old)
                     dm_dt_old = formulae.particle_shape_and_density__dm_dt(
