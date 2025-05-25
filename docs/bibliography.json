@@ -88,7 +88,9 @@
   "https://doi.org/10.1175/JAS3980": {
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
-      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py",
+      "examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py",
+      "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_1.ipynb"
     ],
     "label": "Morrison & Grabowski 2007 (J. Atmos. Sci. 64)",
     "title": "Comparison of Bulk and Bin Warm-Rain Microphysics Models Using a Kinematic Framework"
