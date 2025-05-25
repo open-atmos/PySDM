@@ -76,17 +76,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
 
-  zenodo_json:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4.1.6
-      - uses: notiz-dev/github-action-json-property@release
-        with:
-          path: '.zenodo.json'
-          prop_path: 'creators'
-
   nojit_and_codecov:
-    needs: [precommit, pylint, devops, zenodo_json]
+    needs: [precommit, pylint, devops]
     runs-on: ubuntu-24.04
     env:
       NUMBA_DISABLE_JIT: 1
@@ -286,7 +277,7 @@ jobs:
           rm /tmp/pytest/test_run_notebooks_*current
           ls /tmp/pytest/test_run_notebooks_*/
           ls /tmp/pytest/test_run_notebooks_*/output/
-          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation_${{ matrix.platform }}.mp4
+          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv -loop 0 -vf "fps=10,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" $HOME/work/_temp/_github_home/figures/docs_intro_animation_${{ matrix.platform }}.gif
           mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
           ls $HOME/work/_temp/_github_home/figures
 
@@ -296,7 +287,7 @@ jobs:
         with:
           name: animation-movie-${{ matrix.platform }}
           if-no-files-found: error
-          path: ~/work/_temp/_github_home/figures/*.mp4
+          path: ~/work/_temp/_github_home/figures/*.gif
 
       - name: animation frame upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
@@ -307,8 +298,8 @@ jobs:
           path: ~/work/_temp/_github_home/figures/*.pdf
 
       - name: tip release upload
-        if: github.ref == 'refs/heads/main' && ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: github.ref == 'refs/heads/main' && ( startsWith(matrix.platform, 'ubuntu-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: /github/home/figures/*.mp4
+          files: /github/home/figures/*.gif
