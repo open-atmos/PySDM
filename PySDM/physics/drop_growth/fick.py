@@ -5,8 +5,6 @@ The notation for terms associated with heat conduction and diffusion are from
 [Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).
 """
 
-import numpy as np
-
 
 class Fick:
     def __init__(self, _):
@@ -15,7 +13,7 @@ class Fick:
     @staticmethod
     def Fk(const, T, K, lv):  # pylint: disable=unused-argument
         """heat conduction not taken into account"""
-        return np.nan
+        return 0
 
     @staticmethod
     def Fd(const, T, D, pvs):
