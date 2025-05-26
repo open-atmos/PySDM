@@ -334,17 +334,17 @@ KOOP_CORR = -1.522
 KOOP_MURRAY_C0 = -3020.684
 """ homogeneous ice nucleation rate for pure water droplets
 ([Koop & Murray 20016](https://doi.org/10.1063/1.4962355)) """
-KOOP_MURRAY_C1 = -425.921
+KOOP_MURRAY_C1 = -425.921 / si.K
 """ 〃 """
-KOOP_MURRAY_C2 = -25.9779
+KOOP_MURRAY_C2 = -25.9779 / si.K**2
 """ 〃 """
-KOOP_MURRAY_C3 = -0.868451
+KOOP_MURRAY_C3 = -0.868451 / si.K**3
 """ 〃 """
-KOOP_MURRAY_C4 = -1.66203e-2
+KOOP_MURRAY_C4 = -1.66203e-2 / si.K**4
 """ 〃 """
-KOOP_MURRAY_C5 = -1.71736e-4
+KOOP_MURRAY_C5 = -1.71736e-4 / si.K**5
 """ 〃 """
-KOOP_MURRAY_C6 = -7.46953e-7
+KOOP_MURRAY_C6 = -7.46953e-7 / si.K**6
 """ 〃 """
 
 J_HET = np.nan

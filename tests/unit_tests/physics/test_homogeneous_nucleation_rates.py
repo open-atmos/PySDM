@@ -2,24 +2,50 @@
 test for homogeneous nucleation rate parametrisations
 """
 
+from contextlib import nullcontext
+import re
 import pytest
+from matplotlib import pyplot
 import numpy as np
-from PySDM.formulae import Formulae
+from PySDM.formulae import Formulae, _choices
+from PySDM.physics import homogeneous_ice_nucleation_rate
+from PySDM import physics
+
+SPICHTINGER_ET_AL_2023_FIG2_DATA = {
+    "da_w_ice": [0.27, 0.29, 0.31, 0.33],
+    "jhom_log10": [5, 11, 15, 20],
+}
 
 
-class TestHomogeneousIceNucleationRate:  # pylint: disable=too-few-public-methods
+class TestHomogeneousIceNucleationRate:
     @staticmethod
     @pytest.mark.parametrize(
-        "da_w_ice, expected_value",
+        "index", range(len(SPICHTINGER_ET_AL_2023_FIG2_DATA["da_w_ice"]))
+    )
+    @pytest.mark.parametrize(
+        "parametrisation, context",
         (
-            (0.27, (5)),
-            (0.29, (11)),
-            (0.31, (15)),
-            (0.33, (20)),
+            ("Koop_Correction", nullcontext()),
+            (
+                "Koop2000",
+                pytest.raises(
+                    AssertionError, match="Items are not equal to 2 significant digits"
+                ),
+            ),
+            (
+                "KoopMurray2016",
+                pytest.raises(
+                    ValueError,
+                    match=re.escape(
+                        "x and y must have same first dimension, but have shapes (4,) and (1,)"
+                    ),
+                ),
+            ),
         ),
     )
-    @pytest.mark.parametrize("parametrisation", ("Koop_Correction",))
-    def test_homogeneous_ice_nucleation_rate(da_w_ice, expected_value, parametrisation):
+    def test_fig_2_in_spichtinger_et_al_2023(
+        index, parametrisation, context, plot=False
+    ):
         """Fig. 2 in [Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)"""
         # arrange
         formulae = Formulae(
@@ -27,11 +53,66 @@ class TestHomogeneousIceNucleationRate:  # pylint: disable=too-few-public-method
         )
 
         # act
-        jhom_log10 = np.log10(
-            formulae.homogeneous_ice_nucleation_rate.j_hom(np.nan, da_w_ice)
-        )
+        with context:
+            jhom_log10 = np.log10(
+                formulae.homogeneous_ice_nucleation_rate.j_hom(
+                    np.nan, np.asarray(SPICHTINGER_ET_AL_2023_FIG2_DATA["da_w_ice"])
+                )
+            )
 
-        # assert
-        np.testing.assert_approx_equal(
-            actual=jhom_log10, desired=expected_value, significant=2
-        )
+            # plot
+            pyplot.scatter(
+                x=[SPICHTINGER_ET_AL_2023_FIG2_DATA["da_w_ice"][index]],
+                y=[SPICHTINGER_ET_AL_2023_FIG2_DATA["jhom_log10"][index]],
+                color="red",
+                marker="x",
+            )
+            pyplot.plot(
+                SPICHTINGER_ET_AL_2023_FIG2_DATA["da_w_ice"],
+                jhom_log10,
+                marker=".",
+            )
+            pyplot.gca().set(
+                xlabel=r"water activity difference $\Delta a_w$",
+                ylabel="log$_{10}(J)$",
+                title=parametrisation,
+                xlim=(0.26, 0.34),
+                ylim=(0, 25),
+            )
+            pyplot.grid()
+            if plot:
+                pyplot.show()
+            else:
+                pyplot.clf()
+
+            # assert
+            np.testing.assert_approx_equal(
+                actual=jhom_log10[index],
+                desired=SPICHTINGER_ET_AL_2023_FIG2_DATA["jhom_log10"][index],
+                significant=2,
+            )
+
+    @staticmethod
+    @pytest.mark.parametrize("variant", _choices(homogeneous_ice_nucleation_rate))
+    def test_units(variant):
+        if variant == "Null":
+            pytest.skip()
+
+        with physics.dimensional_analysis.DimensionalAnalysis():
+            # arrange
+            si = physics.si
+            formulae = Formulae(
+                homogeneous_ice_nucleation_rate=variant,
+                constants=(
+                    {} if variant != "Constant" else {"J_HOM": 1 / si.m**3 / si.s}
+                ),
+            )
+            sut = formulae.homogeneous_ice_nucleation_rate
+            temperature = 250 * si.K
+            da_w_ice = 0.3 * si.dimensionless
+
+            # act
+            value = sut.j_hom(temperature, da_w_ice)
+
+            # assert
+            assert value.check("1/[volume]/[time]")

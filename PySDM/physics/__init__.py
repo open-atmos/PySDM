@@ -17,6 +17,7 @@ Physical constants and formulae (mostly one-liners)
 """
 
 from . import (
+    dimensional_analysis,
     diffusion_coordinate,
     constants_defaults,
     diffusion_kinetics,
