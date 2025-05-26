@@ -1,52 +1,30 @@
 """isotope e-fold timescale based on Fick's first law and Fourier's law"""
 
+import numpy as np
+
 
 class ZabaAndArabas2025:
     def __init__(self, _):
         pass
 
     @staticmethod
-    def tau(  # pylint: disable=too-many-arguments
-        *,
-        const,
-        radius,
-        Rv,
-        R_liq,
-        temperature,
-        D_isotope,
-        f_isotope,
-        k_isotope,
-        Rv_env,
-        RH,
-        pvs_water
-    ):
+    def tau(mass, dm_dt):
         """e-fold timescale with alpha and water vapour pressures heavy and light water
         calculated in the temperature of environment:
         - rho_w denotes density of a drop"""
-        return (
-            -(radius**2)
-            * const.rho_w
-            / 3
-            / D_isotope
-            / f_isotope
-            / k_isotope
-            / (pvs_water / const.R_str / temperature * const.Mv)
-            * R_liq
-            / (Rv_env * RH - Rv)
-        )
+        return mass / dm_dt
 
     @staticmethod
-    def mason_T0_to_Tinf_factor(const, vent_coeff, RH, RH_eq, Rv, T, D, pvs):
-        return 1 + vent_coeff * (RH - RH_eq) / (
-            const.K * Rv * T / const.lv / D / pvs + (const.lv / T / Rv - 1) / T
-        )
-
-    @staticmethod
-    def b_heavy(b_light, D_ratio, K_ratio, rho_s_iso, rho_s, T, lv):
+    def isotope_dm_dt(radius, D_iso, f_m, M_ratio, b, S, R_liq, alpha, R_vap, rho_w):
         return (
-            b_light
-            * D_ratio
-            / K_ratio
-            * rho_s_iso
-            / rho_s(1 + lv * (M_heavy - M_light) / lv * M_light - const.R_str * T)
+            4
+            * np.pi
+            * radius
+            * D_iso
+            * f_m
+            * M_ratio
+            * rho_w
+            * (1 + b * S)
+            / (1 + S)
+            * (R_liq / alpha - S * (1 + b) / (1 + b * S) * R_vap)
         )
