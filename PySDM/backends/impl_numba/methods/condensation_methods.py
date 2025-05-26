@@ -405,12 +405,6 @@ class CondensationMethods(BackendMethods):
                     temperature, volume_new, formulae.constants.PI_4_3 * rd3, f_org
                 ),
             )
-            Fk = formulae.drop_growth__Fk(
-                T=temperature, K=K * heat_ventilation_factor, lv=lv
-            )
-            Fd = formulae.drop_growth__Fd(
-                T=temperature, D=D * mass_ventilation_factor, pvs=pvs
-            )
             r_dr_dt = formulae.drop_growth__r_dr_dt(RH_eq=RH_eq, RH=RH, Fk=Fk, Fd=Fd)
             dm_dt = formulae.particle_shape_and_density__dm_dt(r=r_new, r_dr_dt=r_dr_dt)
             return (
