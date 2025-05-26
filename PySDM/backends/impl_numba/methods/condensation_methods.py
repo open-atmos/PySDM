@@ -376,20 +376,7 @@ class CondensationMethods(BackendMethods):
     ):
         @numba.njit(**jit_flags)
         def minfun(  # pylint: disable=too-many-arguments,too-many-locals
-            x_new,
-            x_old,
-            timestep,
-            kappa,
-            f_org,
-            rd3,
-            temperature,
-            RH,
-            lv,
-            pvs,
-            D,
-            K,
-            mass_ventilation_factor,
-            heat_ventilation_factor,
+            x_new, x_old, timestep, kappa, f_org, rd3, temperature, RH, Fk, Fd
         ):
             if x_new > formulae.diffusion_coordinate__x_max():
                 return x_old - x_new
@@ -468,6 +455,12 @@ class CondensationMethods(BackendMethods):
                         )
                     )
                     heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
+                    Fk = formulae.drop_growth__Fk(
+                        T=T, K=Kr * heat_ventilation_factor, lv=lv
+                    )
+                    Fd = formulae.drop_growth__Fd(
+                        T=T, D=Dr * mass_ventilation_factor, pvs=pvs
+                    )
                     args = (
                         x_old,
                         timestep,
@@ -476,18 +469,8 @@ class CondensationMethods(BackendMethods):
                         rd3,
                         T,
                         RH,
-                        lv,
-                        pvs,
-                        Dr,
-                        Kr,
-                        mass_ventilation_factor,
-                        heat_ventilation_factor,
-                    )
-                    Fk = formulae.drop_growth__Fk(
-                        T=T, K=Kr * heat_ventilation_factor, lv=lv
-                    )
-                    Fd = formulae.drop_growth__Fd(
-                        T=T, D=Dr * mass_ventilation_factor, pvs=pvs
+                        Fk,
+                        Fd,
                     )
                     r_dr_dt_old = formulae.drop_growth__r_dr_dt(
                         RH_eq=RH_eq, RH=RH, Fk=Fk, Fd=Fd
