@@ -103,8 +103,8 @@ class TestIsotopeKineticFractionationFactors:
         alpha_k = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
             alpha_equilibrium=alpha_s,
             saturation_over_ice=saturation,
-            diffusivity_ratio_heavy_to_light=(
-                formulae.isotope_diffusivity_ratios.ratio_18O_heavy_to_light(T),
+            diffusivity_ratio_heavy_to_light=formulae.isotope_diffusivity_ratios.ratio_18O_heavy_to_light(
+                T
             ),
         )
 
