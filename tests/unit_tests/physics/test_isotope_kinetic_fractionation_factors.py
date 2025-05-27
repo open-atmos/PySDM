@@ -98,14 +98,15 @@ class TestIsotopeKineticFractionationFactors:
             isotope_equilibrium_fractionation_factors="Majoube1970",
             isotope_diffusivity_ratios="Stewart1975",
         )
+        diffusivity_ratio_18O = (
+            formulae.isotope_diffusivity_ratios.ratio_18O_heavy_to_light
+        )
         T = formulae.trivia.C2K(temperature_C)
         alpha_s = formulae.isotope_equilibrium_fractionation_factors.alpha_i_18O(T)
         alpha_k = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
             alpha_equilibrium=alpha_s,
             saturation_over_ice=saturation,
-            diffusivity_ratio_heavy_to_light=formulae.isotope_diffusivity_ratios.ratio_18O_heavy_to_light(
-                T
-            ),
+            diffusivity_ratio_heavy_to_light=diffusivity_ratio_18O(T),
         )
 
         # act

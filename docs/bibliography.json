@@ -560,7 +560,7 @@
   },
   "https://doi.org/10.1088/0370-1301/64/9/307": {
     "usages": [
-      "PySDM/physics/drop_growth/mason_1951.py"
+      "PySDM/physics/drop_growth/howell_1949.py"
     ],
     "label": "Mason 1951 (Proc. Phys. Soc. B 64)",
     "title": "Spontaneous Condensation of Water Vapour in Expansion Chamber Experiments"
