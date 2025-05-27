@@ -72,10 +72,7 @@
                     <a class="class" href="#Mason1971">Mason1971</a>
                             <ul class="memberlist">
                         <li>
-                                <a class="function" href="#Mason1971.__init__">Mason1971</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Mason1971.r_dr_dt">r_dr_dt</a>
+                                <a class="function" href="#Mason1971.Fk">Fk</a>
                         </li>
                 </ul>
 
@@ -98,7 +95,11 @@
 
                         <div class="docstring"><p>single-equation approximation of the vapour and heat diffusion problem
 as given in eq. 3.11 in <a href="https://archive.org/details/physicsofclouds0000maso">Mason 1971</a>
-(see also discussion of the ventilation effect on page 125)</p>
+(see also discussion of the ventilation effect on page 125).
+The difference between Howell'49 and Mason'71 is <code>-1</code> in the <code>Fk</code> definition.</p>
+
+<p>The notation for terms associated with heat conduction and diffusion are from
+<a href="https://archive.org/details/shortcourseinclo0000roge_m3k2">Rogers &amp; Yau 1989</a>.</p>
 </div>
 
                         <input id="mod-mason_1971-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -108,22 +109,22 @@ as given in eq. 3.11 in <a href="https://archive.org/details/physicsofclouds0000
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">single-equation approximation of the vapour and heat diffusion problem</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">as given in eq. 3.11 in [Mason 1971](https://archive.org/details/physicsofclouds0000maso)</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">(see also discussion of the ventilation effect on page 125)</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">(see also discussion of the ventilation effect on page 125).</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">The difference between Howell&#39;49 and Mason&#39;71 is `-1` in the `Fk` definition.</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Mason1971</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">RH_eq</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">lv</span><span class="p">,</span> <span class="n">pvs</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>            <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">D</span> <span class="o">/</span> <span class="n">pvs</span> <span class="o">+</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">K</span> <span class="o">/</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="p">)</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">The notation for terms associated with heat conduction and diffusion are from</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">[Rogers &amp; Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.howell_1949</span><span class="w"> </span><span class="kn">import</span> <span class="n">Howell1949</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Mason1971</span><span class="p">(</span><span class="n">Howell1949</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -133,71 +134,60 @@ as given in eq. 3.11 in <a href="https://archive.org/details/physicsofclouds0000
 <div class="attr class">
             
     <span class="def">class</span>
-    <span class="name">Mason1971</span>:
+    <span class="name">Mason1971</span><wbr>(<span class="base"><a href="howell_1949.html#Howell1949">PySDM.physics.drop_growth.howell_1949.Howell1949</a></span>):
 
                 <label class="view-source-button" for="Mason1971-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Mason1971"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Mason1971-9"><a href="#Mason1971-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Mason1971</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="Mason1971-10"><a href="#Mason1971-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="Mason1971-11"><a href="#Mason1971-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
-</span><span id="Mason1971-12"><a href="#Mason1971-12"><span class="linenos">12</span></a>
-</span><span id="Mason1971-13"><a href="#Mason1971-13"><span class="linenos">13</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="Mason1971-14"><a href="#Mason1971-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Mason1971-15"><a href="#Mason1971-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">RH_eq</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">lv</span><span class="p">,</span> <span class="n">pvs</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
-</span><span id="Mason1971-16"><a href="#Mason1971-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="Mason1971-17"><a href="#Mason1971-17"><span class="linenos">17</span></a>            <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span>
-</span><span id="Mason1971-18"><a href="#Mason1971-18"><span class="linenos">18</span></a>            <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span>
-</span><span id="Mason1971-19"><a href="#Mason1971-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">D</span> <span class="o">/</span> <span class="n">pvs</span> <span class="o">+</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">K</span> <span class="o">/</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-</span><span id="Mason1971-20"><a href="#Mason1971-20"><span class="linenos">20</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Mason1971-15"><a href="#Mason1971-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Mason1971</span><span class="p">(</span><span class="n">Howell1949</span><span class="p">):</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="Mason1971-16"><a href="#Mason1971-16"><span class="linenos">16</span></a>
+</span><span id="Mason1971-17"><a href="#Mason1971-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Mason1971-18"><a href="#Mason1971-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
+</span><span id="Mason1971-19"><a href="#Mason1971-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
+</span><span id="Mason1971-20"><a href="#Mason1971-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
     
 
-                            <div id="Mason1971.__init__" class="classattr">
-                                        <input id="Mason1971.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="name">Mason1971</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">_</span></span>)</span>
-
-                <label class="view-source-button" for="Mason1971.__init__-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#Mason1971.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Mason1971.__init__-10"><a href="#Mason1971.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="Mason1971.__init__-11"><a href="#Mason1971.__init__-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
-</span></pre></div>
-
-
-    
-
-                            </div>
-                            <div id="Mason1971.r_dr_dt" class="classattr">
-                                        <input id="Mason1971.r_dr_dt-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Mason1971.Fk" class="classattr">
+                                        <input id="Mason1971.Fk-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">r_dr_dt</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">RH_eq</span>, </span><span class="param"><span class="n">T</span>, </span><span class="param"><span class="n">RH</span>, </span><span class="param"><span class="n">lv</span>, </span><span class="param"><span class="n">pvs</span>, </span><span class="param"><span class="n">D</span>, </span><span class="param"><span class="n">K</span></span><span class="return-annotation">):</span></span>
+        <span class="name">Fk</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">T</span>, </span><span class="param"><span class="n">K</span>, </span><span class="param"><span class="n">lv</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="Mason1971.r_dr_dt-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Mason1971.Fk-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Mason1971.r_dr_dt"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Mason1971.r_dr_dt-14"><a href="#Mason1971.r_dr_dt-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Mason1971.r_dr_dt-15"><a href="#Mason1971.r_dr_dt-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">RH_eq</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">lv</span><span class="p">,</span> <span class="n">pvs</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
-</span><span id="Mason1971.r_dr_dt-16"><a href="#Mason1971.r_dr_dt-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="Mason1971.r_dr_dt-17"><a href="#Mason1971.r_dr_dt-17"><span class="linenos">17</span></a>            <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span>
-</span><span id="Mason1971.r_dr_dt-18"><a href="#Mason1971.r_dr_dt-18"><span class="linenos">18</span></a>            <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span>
-</span><span id="Mason1971.r_dr_dt-19"><a href="#Mason1971.r_dr_dt-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">D</span> <span class="o">/</span> <span class="n">pvs</span> <span class="o">+</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">K</span> <span class="o">/</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-</span><span id="Mason1971.r_dr_dt-20"><a href="#Mason1971.r_dr_dt-20"><span class="linenos">20</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#Mason1971.Fk"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Mason1971.Fk-17"><a href="#Mason1971.Fk-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Mason1971.Fk-18"><a href="#Mason1971.Fk-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
+</span><span id="Mason1971.Fk-19"><a href="#Mason1971.Fk-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
+</span><span id="Mason1971.Fk-20"><a href="#Mason1971.Fk-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>thermodynamic term associated with heat conduction</p>
+</div>
 
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="fick.html#Fick">PySDM.physics.drop_growth.fick.Fick</a></dt>
+                                <dd id="Mason1971.__init__" class="function"><a href="fick.html#Fick.__init__">Fick</a></dd>
+                <dd id="Mason1971.Fd" class="function"><a href="fick.html#Fick.Fd">Fd</a></dd>
+
+            </div>
+            <div><dt><a href="howell_1949.html#Howell1949">PySDM.physics.drop_growth.howell_1949.Howell1949</a></dt>
+                                <dd id="Mason1971.r_dr_dt" class="function"><a href="howell_1949.html#Howell1949.r_dr_dt">r_dr_dt</a></dd>
+
+            </div>
+                                </dl>
                             </div>
                 </section>
     </main>
