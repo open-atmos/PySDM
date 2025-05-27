@@ -1,5 +1,4 @@
 import numpy as np
-from numpy import ndarray
 
 from PySDM_examples.utils.kinematic_2d.make_default_product_collection import (
     make_default_product_collection,
@@ -34,10 +33,10 @@ class Simulation:
     def products(self):
         return self.particulator.products
 
-    def reinit(
+    def reinit(  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
         self,
         products=None,
-        additional_advectees_initial_profiles: Dict[str, ndarray] = None,
+        additional_advectees_initial_profiles: dict[str, np.ndarray] = None,
     ):
         formulae = self.settings.formulae
         backend = self.backend_class(formulae=formulae)
