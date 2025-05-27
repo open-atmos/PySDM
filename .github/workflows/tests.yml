@@ -76,17 +76,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
 
-  zenodo_json:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4.1.6
-      - uses: notiz-dev/github-action-json-property@release
-        with:
-          path: '.zenodo.json'
-          prop_path: 'creators'
-
   nojit_and_codecov:
-    needs: [precommit, pylint, devops, zenodo_json]
+    needs: [precommit, pylint, devops]
     runs-on: ubuntu-24.04
     env:
       NUMBA_DISABLE_JIT: 1
