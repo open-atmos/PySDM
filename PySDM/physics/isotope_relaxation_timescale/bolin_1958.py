@@ -20,9 +20,3 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
     # pylint: disable=too-many-arguments unused-argument
     def c1_coeff(const, RH, R_vap):
         return R_vap / RH
-
-    @staticmethod
-    # pylint: disable=too-many-arguments
-    def tau_of_rdrdt_c1(radius, r_dr_dt, c1_coeff):
-        """timescale for evaporation of a falling drop with tritium"""
-        return -(radius**2) / 3 / r_dr_dt / c1_coeff

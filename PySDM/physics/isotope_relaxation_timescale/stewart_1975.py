@@ -2,18 +2,5 @@
 
 
 class Stewart1975:  # pylint: disable=too-few-public-methods
-    @staticmethod
-    # pylint: disable=too-many-arguments
-    def tau(const, e_s, Dn, M_iso, vent_coeff, radius, alpha, temperature):
-        """relaxation time for stationary droplet; Dn denotes D^n"""
-        return (
-            radius**2
-            * alpha
-            * const.rho_w
-            * temperature
-            / 3
-            / vent_coeff
-            / Dn
-            / e_s
-            / M_iso
-        )
+    def __init__(self, f):
+        pass
