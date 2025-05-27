@@ -518,7 +518,7 @@ diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
 """
-[Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2)
+[Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469%281979%29036%3C1255:AWTIOT%3E2.0.CO;2)
 also in
 [Beard & Pruppacher 1971](https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2)
 """
