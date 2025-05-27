@@ -841,7 +841,7 @@
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
   },
-  "https://doi.org/10.1175/1520-0469(1971)028%3C1455:AWTIOT%3E2.0.CO;2": {
+  "https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2": {
     "usages": [
       "PySDM/physics/constants_defaults.py"
     ],

@@ -520,7 +520,7 @@ PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
 """
 [Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2)
 also in
-[Beard & Pruppacher 1971](https://doi.org/10.1175/1520-0469(1971)028%3C1455:AWTIOT%3E2.0.CO;2)
+[Beard & Pruppacher 1971](https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2)
 """
 PRUPPACHER_RASMUSSEN_1979_CONSTSMALL = 1.0 * si.dimensionless
 """ 〃 """
