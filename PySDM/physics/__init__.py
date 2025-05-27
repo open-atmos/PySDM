@@ -17,6 +17,7 @@ Physical constants and formulae (mostly one-liners)
 """
 
 from . import (
+    dimensional_analysis,
     diffusion_coordinate,
     constants_defaults,
     diffusion_kinetics,
@@ -27,6 +28,7 @@ from . import (
     fragmentation_function,
     freezing_temperature_spectrum,
     heterogeneous_ice_nucleation_rate,
+    homogeneous_ice_nucleation_rate,
     hydrostatics,
     hygroscopicity,
     impl,
