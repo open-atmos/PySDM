@@ -140,16 +140,23 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             )
             heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
             sgm = jit_formulae.surface_tension__sigma(T, v, dry_volume[i], f_org[i])
+            Fk = jit_formulae.drop_growth__Fk(
+                T=T,
+                lv=lv,
+                K=heat_ventilation_factor * Kr,
+            )
+            Fd = jit_formulae.drop_growth__Fd(
+                T=T,
+                pvs=pvs,
+                D=mass_ventilation_factor * Dr,
+            )
             r_dr_dt = jit_formulae.drop_growth__r_dr_dt(
-                jit_formulae.hygroscopicity__RH_eq(
+                RH_eq=jit_formulae.hygroscopicity__RH_eq(
                     r, T, kappa[i], dry_volume[i] / PI_4_3, sgm
                 ),
-                T,
-                RH,
-                lv,
-                pvs,
-                mass_ventilation_factor * Dr,
-                heat_ventilation_factor * Kr,
+                RH=RH,
+                Fk=Fk,
+                Fd=Fd,
             )
             dm_dt = jit_formulae.particle_shape_and_density__dm_dt(r, r_dr_dt)
             dy_dt[idx_x + i] = jit_formulae.diffusion_coordinate__dx_dt(m, dm_dt)

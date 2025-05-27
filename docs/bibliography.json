@@ -729,7 +729,13 @@
     "label": "Gatley et al. 2008 (HVAC&R Res. 14)"
   },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
-    "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/terminal_velocity/rogers_yau.py",
+      "PySDM/physics/drop_growth/fick.py",
+      "PySDM/physics/drop_growth/howell_1949.py",
+      "PySDM/physics/drop_growth/mason_1971.py"
+    ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
   },
