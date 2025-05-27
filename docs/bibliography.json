@@ -843,7 +843,8 @@
   },
   "https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2": {
     "usages": [
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py"
     ],
     "title": "A Wind Tunnel Investigation of the Rate of Evaporation of Small Water Drops Falling at Terminal Velocity in Air",
     "label": "Beard & Pruppacher 1971 (J. Atmos. Sci. 28)"
