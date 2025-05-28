@@ -5,7 +5,7 @@ from threading import Thread
 import numpy as np
 from PyMPDATA import Options, ScalarField, Solver, Stepper, VectorField
 from PyMPDATA.boundary_conditions import Periodic
-from PySDM_examples.Szumowski_et_al_1998.fields import (
+from PySDM_examples.utils.kinematic_2d.fields import (
     nondivergent_vector_field_2d,
     x_vec_coord,
     z_vec_coord,

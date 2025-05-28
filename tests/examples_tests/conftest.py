@@ -40,6 +40,8 @@ TEST_SUITES = {
         "Stewart_1975",
         "Kinzer_And_Gunn_1951",
         "Pruppacher_and_Rasmussen_1979",
+        "Fisher_1991",
+        "Jouzel_and_Merlivat_1984",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
@@ -73,7 +75,6 @@ TEST_SUITES = {
     ],
     "multi-process_e": [
         "deJong_Azimi",
-        "Szumowski_et_al_1998",
         "Bulenok_2023_MasterThesis",
         "Morrison_and_Grabowski_2007",
         "Shipway_and_Hill_2012",

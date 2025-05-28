@@ -1,7 +1,8 @@
 {
   "https://doi.org/10.1007/978-1-935704-36-2_1": {
     "usages": [
-      "examples/docs/pysdm_examples_landing.md"
+      "examples/docs/pysdm_examples_landing.md",
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
     ],
     "label": "Kessler 1969 (Meteorol. Monogr. 10)",
     "title": "On the Distribution and Continuity of Water Substance in Atmospheric Circulations"
@@ -87,9 +88,9 @@
   "https://doi.org/10.1175/JAS3980": {
     "usages": [
       "examples/docs/pysdm_examples_landing.md",
-      "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_2.ipynb",
-      "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_3.ipynb",
-      "examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py",
+      "examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py",
+      "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_1.ipynb"
     ],
     "label": "Morrison & Grabowski 2007 (J. Atmos. Sci. 64)",
     "title": "Comparison of Bulk and Bin Warm-Rain Microphysics Models Using a Kinematic Framework"
@@ -255,7 +256,8 @@
       "examples/docs/pysdm_examples_landing.md",
       "examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb",
       "PySDM/dynamics/displacement.py",
-      "PySDM/physics/particle_advection/implicit_in_space.py"
+      "PySDM/physics/particle_advection/implicit_in_space.py",
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
     ],
     "label": "Arabas et al. 2015 (Geosci. Model Dev. 2015)",
     "title": "libcloudph++ 1.0: a single-moment bulk, double-moment bulk, and particle-based warm-rain microphysics library in C++"
@@ -558,7 +560,7 @@
   },
   "https://doi.org/10.1088/0370-1301/64/9/307": {
     "usages": [
-      "PySDM/physics/drop_growth/mason_1951.py"
+      "PySDM/physics/drop_growth/howell_1949.py"
     ],
     "label": "Mason 1951 (Proc. Phys. Soc. B 64)",
     "title": "Spontaneous Condensation of Water Vapour in Expansion Chamber Experiments"
@@ -570,16 +572,6 @@
     ],
     "label": "Barkan & Luz 2005 (Rapid Commun. Mass Spectrom. 19)",
     "title": "High precision measurements of <sup>17</sup>O/<sup>16</sup>O and <sup>18</sup>O/<sup>16</sup>O ratios in H<sub>2</sub>O"
-  },
-  "https://doi.org/10.1029/JC080i009p01133": {
-    "usages": [
-      "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
-      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
-      "examples/PySDM_examples/Stewart_1975/__init__.py",
-      "examples/PySDM_examples/Stewart_1975/fig_1.ipynb"
-    ],
-    "label": "Stewart 1975 (J. Geophys. Res. Oceans 80)",
-    "title": "Stable isotope fractionation due to evaporation and isotopic exchange of falling waterdrops: Applications to atmospheric processes and evaporation of lakes"
   },
   "https://doi.org/10.1175/1520-0469(1982)039%3C1317:ASMOPC%3E2.0.CO;2": {
     "usages": [
@@ -614,7 +606,7 @@
   },
   "https://doi.org/10.1016/S0169-8095(97)00082-3": {
     "usages": [
-      "examples/PySDM_examples/Szumowski_et_al_1998/__init__.py"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
     ],
     "label": "Szumowski et al. 1998 (Atmos. Res. 45)",
     "title": "Simple two-dimensional kinematic framework designed to test warm rain microphysical models"
@@ -737,7 +729,13 @@
     "label": "Gatley et al. 2008 (HVAC&R Res. 14)"
   },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
-    "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/terminal_velocity/rogers_yau.py",
+      "PySDM/physics/drop_growth/fick.py",
+      "PySDM/physics/drop_growth/howell_1949.py",
+      "PySDM/physics/drop_growth/mason_1971.py"
+    ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
   },
@@ -836,7 +834,8 @@
   },
   "https://doi.org/10.1175/1520-0469(1949)006%3C0134:TGOCDI%3E2.0.CO;2": {
     "usages": [
-      "PySDM/backends/impl_numba/methods/deposition_methods.py"
+      "PySDM/backends/impl_numba/methods/deposition_methods.py",
+      "PySDM/physics/drop_growth/howell_1949.py"
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
@@ -844,7 +843,11 @@
   "https://doi.org/10.1029/JD089iD07p11749": {
     "usages": [
       "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
-      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py"
+      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/__init__.py",
+      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/fig_8_9.ipynb",
+      "examples/PySDM_examples/Jouzel_and_Merlivat_1984/thermodynamic_profiles.py",
+      "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py",
+      "examples/PySDM_examples/Fisher_1991/__init__.py"
     ],
     "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
     "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
@@ -862,5 +865,13 @@
     ],
     "title": "IAEA Reference Sheet for International Measurement Standards: VSMOW & SLAP",
     "label": "IAEA 2006"
+  },
+  "https://doi.org/10.3402/tellusb.v43i5.15414": {
+    "usages": [
+      "examples/PySDM_examples/Fisher_1991/fig_2.ipynb",
+      "examples/PySDM_examples/Fisher_1991/__init__.py"
+    ],
+    "title": "Remarks on the deuterium excess in precipitation in cold regions",
+    "label": "Fisher 1991 (Tellus B)"
   }
 }

@@ -57,12 +57,13 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
                     capacity = formulae.diffusion_ice_capacity__capacity(diameter)
 
-                    ventilation_factor = formulae.ventilation__ventilation_coefficient(
+                    mass_ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=reynolds_number[i],
                             Sc=schmidt_number[cid],
                         )
                     )
+                    heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
 
                     Dv_const = formulae.diffusion_thermics__D(temperature, pressure)
                     lambdaD = formulae.diffusion_ice_kinetics__lambdaD(
@@ -82,20 +83,24 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     saturation_ratio_ice = (
                         current_relative_humidity[cid] / current_water_activity[cid]
                     )
-
                     if saturation_ratio_ice == 1:
                         continue
-
+                    Fk = formulae.drop_growth__Fk(
+                        T=temperature,
+                        K=thermal_conductivity * heat_ventilation_factor,
+                        lv=latent_heat_sub,
+                    )
+                    Fd = formulae.drop_growth__Fd(
+                        T=temperature,
+                        D=diffusion_coefficient * mass_ventilation_factor,
+                        pvs=pvs_ice,
+                    )
                     howell_factor_x_diffcoef_x_rhovsice_x_icess = (
                         formulae.drop_growth__r_dr_dt(
                             RH_eq=1,
-                            T=temperature,
                             RH=saturation_ratio_ice,
-                            lv=latent_heat_sub,
-                            pvs=pvs_ice,
-                            D=diffusion_coefficient,
-                            K=thermal_conductivity,
-                            ventilation_factor=ventilation_factor,
+                            Fk=Fk,
+                            Fd=Fd,
                         )
                         * formulae.constants.rho_w
                     )

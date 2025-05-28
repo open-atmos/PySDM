@@ -1,45 +1,36 @@
-# pylint: disable=missing-module-docstring
+"""
+test for isotope kinetic fractionation factors based on plot
+"""
+
 import numpy as np
 import pytest
 from matplotlib import pyplot
+
 from PySDM import Formulae
 from PySDM import physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.physics.isotope_kinetic_fractionation_factors import JouzelAndMerlivat1984
 
 
 class TestIsotopeKineticFractionationFactors:
     @staticmethod
-    @pytest.mark.parametrize(
-        "variant, kwargs",
-        (
-            (
-                physics.isotope_kinetic_fractionation_factors.CraigGordon,
-                {
-                    "turbulence_parameter_n": 1,
-                    "delta_diff": 1,
-                    "theta": 1,
-                },
-            ),
-            (
-                physics.isotope_kinetic_fractionation_factors.JouzelAndMerlivat1984,
-                {
-                    "alpha_equilibrium": 1,
-                    "heavy_to_light_diffusivity_ratio": 1,
-                },
-            ),
-        ),
-    )
-    def test_units(variant, kwargs):
+    def test_units():
         """checks that alphas are dimensionless"""
         with DimensionalAnalysis():
             # arrange
-            sut = variant.alpha_kinetic
+            alpha_eq = 1 * physics.si.dimensionless
+            D_ratio = 1 * physics.si.dimensionless
+            saturation_over_ice = 1 * physics.si.dimensionless
 
             # act
-            result = sut(relative_humidity=1 * physics.si.dimensionless, **kwargs)
+            sut = JouzelAndMerlivat1984.alpha_kinetic(
+                alpha_equilibrium=alpha_eq,
+                heavy_to_light_diffusivity_ratio=D_ratio,
+                saturation_over_ice=saturation_over_ice,
+            )
 
             # assert
-            assert result.check("[]")
+            assert sut.check("[]")
 
     @staticmethod
     def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
@@ -61,7 +52,7 @@ class TestIsotopeKineticFractionationFactors:
         alpha_k = {
             temperature: sut(
                 alpha_equilibrium=alpha_s[temperature],
-                relative_humidity=saturation,
+                saturation_over_ice=saturation,
                 heavy_to_light_diffusivity_ratio=heavy_to_light_diffusivity_ratio(
                     temperature
                 ),
@@ -92,23 +83,31 @@ class TestIsotopeKineticFractionationFactors:
         assert (alpha_s_times_alpha_k["-20C"] > alpha_s_times_alpha_k["-10C"]).all()
         for alpha_alpha in alpha_s_times_alpha_k.values():
             assert (np.diff(alpha_alpha) < 0).all()
-        np.testing.assert_approx_equal(
-            actual=alpha_s_times_alpha_k["-30C"][0],
-            desired=1.021,
-            significant=4,
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        ("temperature_C", "saturation", "alpha"),
+        ((-10, 1, 1.021), (-10, 1.35, 1.0075), (-30, 1, 1.0174), (-30, 1.35, 1.004)),
+    )
+    def test_fig9_values(temperature_C, saturation, alpha):
+        # arrange
+        formulae = Formulae(
+            isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
+            isotope_equilibrium_fractionation_factors="Majoube1970",
+            isotope_diffusivity_ratios="Stewart1975",
         )
-        np.testing.assert_approx_equal(
-            actual=alpha_s_times_alpha_k["-30C"][-1],
-            desired=1.0075,
-            significant=4,
+        T = formulae.trivia.C2K(temperature_C)
+        alpha_s = formulae.isotope_equilibrium_fractionation_factors.alpha_i_18O(T)
+        alpha_k = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
+            alpha_equilibrium=alpha_s,
+            saturation_over_ice=saturation,
+            heavy_to_light_diffusivity_ratio=formulae.isotope_diffusivity_ratios.ratio_18O(
+                T
+            ),
         )
-        np.testing.assert_approx_equal(
-            actual=alpha_s_times_alpha_k["-10C"][0],
-            desired=1.0174,
-            significant=4,
-        )
-        np.testing.assert_approx_equal(
-            actual=alpha_s_times_alpha_k["-10C"][-1],
-            desired=1.004,
-            significant=4,
-        )
+
+        # act
+        sut = alpha_s * alpha_k
+
+        # assert
+        np.testing.assert_approx_equal(actual=sut, desired=alpha, significant=3)

@@ -10,12 +10,12 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def alpha_kinetic(
-        alpha_equilibrium, relative_humidity, heavy_to_light_diffusivity_ratio
+        alpha_equilibrium, saturation_over_ice, heavy_to_light_diffusivity_ratio
     ):
-        """eq. (11) or eq. (14)"""
-        return relative_humidity / (
+        """eq. (11)"""
+        return saturation_over_ice / (
             alpha_equilibrium
             / heavy_to_light_diffusivity_ratio
-            * (relative_humidity - 1)
+            * (saturation_over_ice - 1)
             + 1
         )
