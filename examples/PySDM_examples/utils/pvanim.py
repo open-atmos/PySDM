@@ -200,7 +200,7 @@ def axes_settings(*, view):
     view.ViewSize = [2000, 800]
     view.Background = [1, 1, 1]
     view.CenterAxesVisibility = True
-    view.OrientationAxesVisibility = True
+    view.OrientationAxesVisibility = False
     axesGrid = view.AxesGrid
     axesGrid.Visibility = True
     axesGrid.XTitle = "Z [m]"
