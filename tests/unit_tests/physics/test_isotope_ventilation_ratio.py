@@ -32,7 +32,7 @@ class TestIsotopeVentilationRatio:  # pylint: disable=too-few-public-methods
         sut = formulae.isotope_ventilation_ratio.ratio_heavy_to_light
 
         # act
-        value = sut(np.nan)
+        value = sut(np.nan, np.nan)
 
         # assert
         assert value == 1
