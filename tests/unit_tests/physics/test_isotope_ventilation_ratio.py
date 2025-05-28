@@ -22,3 +22,15 @@ class TestIsotopeVentilationRatio:  # pylint: disable=too-few-public-methods
 
             # Assert
             assert re.check(si.dimensionless)
+
+    @staticmethod
+    def test_neglect_returns_one_ignoring_argument():
+        # arrange
+        formulae = Formulae(isotope_ventilation_ratio="Neglect")
+        sut = formulae.isotope_ventilation_ratio.ratio_heavy_to_light
+
+        # act
+        value = sut(np.nan)
+
+        # assert
+        assert value == 1
