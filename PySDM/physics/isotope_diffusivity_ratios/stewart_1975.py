@@ -17,7 +17,7 @@ class Stewart1975:
         pass
 
     @staticmethod
-    def ratio_2H(const, temperature):  # pylint: disable=unused-argument
+    def ratio_2H_heavy_to_light(const, temperature):  # pylint: disable=unused-argument
         return (
             (
                 (2 * const.M_1H + const.M_16O)
@@ -30,7 +30,7 @@ class Stewart1975:
         ) ** const.ONE_HALF
 
     @staticmethod
-    def ratio_18O(const, temperature):  # pylint: disable=unused-argument
+    def ratio_18O_heavy_to_light(const, temperature):  # pylint: disable=unused-argument
         return (
             ((2 * const.M_1H + const.M_16O) * (const.Md + 2 * const.M_1H + const.M_18O))
             / (
