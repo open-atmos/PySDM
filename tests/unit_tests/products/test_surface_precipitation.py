@@ -1,4 +1,4 @@
-""" sanity checks for the surface precipitation product """
+"""sanity checks for the surface precipitation product"""
 
 import pytest
 import numpy as np

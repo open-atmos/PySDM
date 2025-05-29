@@ -1,5 +1,5 @@
-""" comparing kappa-Koehler wet radius equilibration in PySDM and PartMC
-  (based on PyPartMC-examples notebook by Zach D'Aquino) """
+"""comparing kappa-Koehler wet radius equilibration in PySDM and PartMC
+(based on PyPartMC-examples notebook by Zach D'Aquino)"""
 
 # pylint: disable=missing-function-docstring,no-member
 import platform

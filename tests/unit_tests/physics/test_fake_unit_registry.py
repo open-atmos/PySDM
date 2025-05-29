@@ -1,4 +1,4 @@
-""" checks for SI units conversions in FakeUnitRegistry """
+"""checks for SI units conversions in FakeUnitRegistry"""
 
 from PySDM.physics import si
 

@@ -2,6 +2,8 @@
 CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 """
 
+from functools import cached_property
+
 import numba
 import numpy as np
 
@@ -40,23 +42,24 @@ class FreezingMethods(BackendMethods):
                 if attributes.freezing_temperature[i] == 0:
                     continue
                 if thaw and frozen_and_above_freezing_point(
-                    attributes.water_mass[i], temperature[cell[i]]
+                    attributes.signed_water_mass[i], temperature[cell[i]]
                 ):
-                    _thaw(attributes.water_mass, i)
+                    _thaw(attributes.signed_water_mass, i)
                 elif (
                     unfrozen_and_saturated(
-                        attributes.water_mass[i], relative_humidity[cell[i]]
+                        attributes.signed_water_mass[i], relative_humidity[cell[i]]
                     )
                     and temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
-                    _freeze(attributes.water_mass, i)
+                    _freeze(attributes.signed_water_mass, i)
 
         self.freeze_singular_body = freeze_singular_body
 
         j_het = self.formulae.heterogeneous_ice_nucleation_rate.j_het
+        prob_zero_events = self.formulae.trivia.poissonian_avoidance_function
 
         @numba.njit(**self.default_jit_flags)
-        def freeze_time_dependent_body(  # pylint: disable=unused-argument,too-many-arguments
+        def freeze_time_dependent_body(  # pylint: disable=too-many-arguments
             rand,
             attributes,
             timestep,
@@ -64,31 +67,28 @@ class FreezingMethods(BackendMethods):
             a_w_ice,
             temperature,
             relative_humidity,
-            record_freezing_temperature,
-            freezing_temperature,
             thaw,
         ):
-            n_sd = len(attributes.water_mass)
+            n_sd = len(attributes.signed_water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
                 cell_id = cell[i]
                 if thaw and frozen_and_above_freezing_point(
-                    attributes.water_mass[i], temperature[cell_id]
+                    attributes.signed_water_mass[i], temperature[cell_id]
                 ):
-                    _thaw(attributes.water_mass, i)
+                    _thaw(attributes.signed_water_mass, i)
                 elif unfrozen_and_saturated(
-                    attributes.water_mass[i], relative_humidity[cell_id]
+                    attributes.signed_water_mass[i], relative_humidity[cell_id]
                 ):
-                    rate = j_het(a_w_ice[cell_id])
-                    # TODO #594: this assumes constant T throughout timestep, can we do better?
-                    prob = 1 - np.exp(  # TODO #599: common code for Poissonian prob
-                        -rate * attributes.immersed_surface_area[i] * timestep
+                    rate_assuming_constant_temperature_within_dt = (
+                        j_het(a_w_ice[cell_id]) * attributes.immersed_surface_area[i]
+                    )
+                    prob = 1 - prob_zero_events(
+                        r=rate_assuming_constant_temperature_within_dt, dt=timestep
                     )
                     if rand[i] < prob:
-                        _freeze(attributes.water_mass, i)
-                        # if record_freezing_temperature:
-                        #     freezing_temperature[i] = temperature[cell_id]
+                        _freeze(attributes.signed_water_mass, i)
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
@@ -98,7 +98,7 @@ class FreezingMethods(BackendMethods):
         self.freeze_singular_body(
             SingularAttributes(
                 freezing_temperature=attributes.freezing_temperature.data,
-                water_mass=attributes.water_mass.data,
+                signed_water_mass=attributes.signed_water_mass.data,
             ),
             temperature.data,
             relative_humidity.data,
@@ -116,24 +116,44 @@ class FreezingMethods(BackendMethods):
         a_w_ice,
         temperature,
         relative_humidity,
-        record_freezing_temperature,
-        freezing_temperature,
-        thaw: bool
+        thaw: bool,
     ):
         self.freeze_time_dependent_body(
             rand.data,
             TimeDependentAttributes(
                 immersed_surface_area=attributes.immersed_surface_area.data,
-                water_mass=attributes.water_mass.data,
+                signed_water_mass=attributes.signed_water_mass.data,
             ),
             timestep,
             cell.data,
             a_w_ice.data,
             temperature.data,
             relative_humidity.data,
-            record_freezing_temperature=record_freezing_temperature,
-            freezing_temperature=(
-                freezing_temperature.data if record_freezing_temperature else None
-            ),
             thaw=thaw,
+        )
+
+    @cached_property
+    def _record_freezing_temperatures_body(self):
+        ff = self.formulae_flattened
+
+        @numba.njit(**{**self.default_jit_flags, "fastmath": False})
+        def body(data, cell_id, temperature, signed_water_mass):
+            for drop_id in numba.prange(len(data)):  # pylint: disable=not-an-iterable
+                if ff.trivia__unfrozen(signed_water_mass[drop_id]):
+                    if data[drop_id] > 0:
+                        data[drop_id] = np.nan
+                else:
+                    if np.isnan(data[drop_id]):
+                        data[drop_id] = temperature[cell_id[drop_id]]
+
+        return body
+
+    def record_freezing_temperatures(
+        self, *, data, cell_id, temperature, signed_water_mass
+    ):
+        self._record_freezing_temperatures_body(
+            data=data.data,
+            cell_id=cell_id.data,
+            temperature=temperature.data,
+            signed_water_mass=signed_water_mass.data,
         )

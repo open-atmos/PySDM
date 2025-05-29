@@ -5,9 +5,6 @@
 
 gui.ipynb:
 .. include:: ./gui.ipynb.badges.md
-
-paraview_hello_world.ipynb:
-.. include:: ./paraview_hello_world.ipynb.badges.md
 """
 from .settings import Settings
 from .spin_up import SpinUp

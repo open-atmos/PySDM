@@ -1,5 +1,5 @@
 """
-[Bolton 1980](https://doi.org/10.1175/1520-0493(1980)108<1046:TCOEPT>2.0.CO;2)
+[Bolton 1980](https://doi.org/10.1175/1520-0493(1980)108%3C1046:TCOEPT%3E2.0.CO;2)
 """
 
 import numpy as np

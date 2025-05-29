@@ -59,7 +59,7 @@ class Settings:
         v_dry = self.formulae.trivia.volume(radius=r_dry)
         self.seeded_particle_multiplicity = n_in_dv
         self.seeded_particle_extensive_attributes = {
-            "water mass": [0.0001 * si.ng] * n_sd_seeding,
+            "signed water mass": [0.0001 * si.ng] * n_sd_seeding,
             "dry volume": v_dry,
             "kappa times dry volume": 0.8 * v_dry,
         }

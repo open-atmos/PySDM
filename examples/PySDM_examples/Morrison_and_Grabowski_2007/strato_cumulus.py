@@ -23,7 +23,6 @@ class StratoCumulus(Common):
             self.formulae.hydrostatics,
             "p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio",
         )(
-            self.formulae.constants.g_std,
             self.p0,
             self.th_std0,
             self.initial_water_vapour_mixing_ratio,

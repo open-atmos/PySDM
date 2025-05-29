@@ -11,7 +11,7 @@ class Moist:
     def __init__(self, dt, mesh, variables, mixed_phase=False):
         variables += ["water_vapour_mixing_ratio", "thd", "T", "p", "RH"]
         if mixed_phase:
-            variables += ["a_w_ice"]
+            variables += ["a_w_ice", "RH_ice"]
         all_vars_unique = len(variables) == len(set(variables))
         assert all_vars_unique
 
@@ -84,6 +84,7 @@ class Moist:
                 RH=target["RH"],
                 water_vapour_mixing_ratio=target["water_vapour_mixing_ratio"],
                 a_w_ice=target["a_w_ice"],
+                RH_ice=target["RH_ice"],
             )
         if "air density" in self.variables:
             self.particulator.backend.air_density(

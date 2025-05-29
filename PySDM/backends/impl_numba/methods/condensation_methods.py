@@ -188,7 +188,7 @@ class CondensationMethods(BackendMethods):
         n_substeps_min = math.ceil(timestep / dt_range[1])
 
         @numba.njit(**jit_flags)
-        def adapt_substeps(args, n_substeps, thd, rtol_thd):
+        def adapt_substeps(step_impl_args, n_substeps, thd, rtol_thd):
             n_substeps = np.maximum(n_substeps_min, n_substeps // multiplier)
             success = False
             for burnout in range(fuse + 1):
@@ -202,7 +202,7 @@ class CondensationMethods(BackendMethods):
                         ),
                         return_value=(0, False),
                     )
-                thd_new_long, success = step_fake(args, timestep, n_substeps)
+                thd_new_long, success = step_fake(step_impl_args, timestep, n_substeps)
                 if success:
                     break
                 n_substeps *= multiplier
@@ -210,7 +210,7 @@ class CondensationMethods(BackendMethods):
                 if burnout == fuse:
                     return warn("burnout (short)", __file__, return_value=(0, False))
                 thd_new_short, success = step_fake(
-                    args, timestep, n_substeps * multiplier
+                    step_impl_args, timestep, n_substeps * multiplier
                 )
                 if not success:
                     return warn("short failed", __file__, return_value=(0, False))
@@ -230,9 +230,9 @@ class CondensationMethods(BackendMethods):
     @staticmethod
     def make_step_fake(jit_flags, step_impl):
         @numba.njit(**jit_flags)
-        def step_fake(args, dt, n_substeps):
+        def step_fake(step_impl_args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new, _, _, _, _, success = step_impl(*args, dt, 1, True)
+            _, thd_new, _, _, _, _, success = step_impl(*step_impl_args, dt, 1, True)
             return thd_new, success
 
         return step_fake
@@ -240,8 +240,8 @@ class CondensationMethods(BackendMethods):
     @staticmethod
     def make_step(jit_flags, step_impl):
         @numba.njit(**jit_flags)
-        def step(args, dt, n_substeps):
-            return step_impl(*args, dt, n_substeps, False)
+        def step(step_impl_args, dt, n_substeps):
+            return step_impl(*step_impl_args, dt, n_substeps, False)
 
         return step
 
@@ -290,9 +290,10 @@ class CondensationMethods(BackendMethods):
                     rhod, T, water_vapour_mixing_ratio
                 )
                 pv = formulae.state_variable_triplet__pv(p, water_vapour_mixing_ratio)
-                lv = formulae.latent_heat__lv(T)
+                lv = formulae.latent_heat_vapourisation__lv(T)
                 pvs = formulae.saturation_vapour_pressure__pvs_water(T)
                 DTp = formulae.diffusion_thermics__D(T, p)
+                KTp = formulae.diffusion_thermics__K(T, p)
                 RH = pv / pvs
                 Sc = formulae.trivia__air_schmidt_number(
                     dynamic_viscosity=air_dynamic_viscosity,
@@ -317,7 +318,7 @@ class CondensationMethods(BackendMethods):
                     lv,
                     pvs,
                     DTp,
-                    formulae.diffusion_thermics__K(T, p),
+                    KTp,
                     rtol_x,
                 )
                 dml_dt = (ml_new - ml_old) / timestep
@@ -376,44 +377,32 @@ class CondensationMethods(BackendMethods):
     ):
         @numba.njit(**jit_flags)
         def minfun(  # pylint: disable=too-many-arguments,too-many-locals
-            x_new,
-            x_old,
-            timestep,
-            kappa,
-            f_org,
-            rd3,
-            temperature,
-            RH,
-            lv,
-            pvs,
-            D,
-            K,
-            ventilation_factor,
+            x_new, x_old, timestep, kappa, f_org, rd3, temperature, RH, Fk, Fd
         ):
-            volume = formulae.condensation_coordinate__volume(x_new)
+            """
+            root finding problem for the implicit-in-x Euler step
+            neglecting dependence of `Fk` and `Fd` on particle size
+            """
+            if x_new > formulae.diffusion_coordinate__x_max():
+                return x_old - x_new
+            mass_new = formulae.diffusion_coordinate__mass(x_new)
+            volume_new = formulae.particle_shape_and_density__mass_to_volume(mass_new)
+            r_new = formulae.trivia__radius(volume_new)
             RH_eq = formulae.hygroscopicity__RH_eq(
-                formulae.trivia__radius(volume),
+                r_new,
                 temperature,
                 kappa,
                 rd3,
                 formulae.surface_tension__sigma(
-                    temperature, volume, formulae.constants.PI_4_3 * rd3, f_org
+                    temperature, volume_new, formulae.constants.PI_4_3 * rd3, f_org
                 ),
             )
-            r_dr_dt = formulae.drop_growth__r_dr_dt(
-                RH_eq,
-                temperature,
-                RH,
-                lv,
-                pvs,
-                D,
-                K,
-                ventilation_factor,
-            )
+            r_dr_dt = formulae.drop_growth__r_dr_dt(RH_eq=RH_eq, RH=RH, Fk=Fk, Fd=Fd)
+            dm_dt = formulae.particle_shape_and_density__dm_dt(r=r_new, r_dr_dt=r_dr_dt)
             return (
                 x_old
                 - x_new
-                + timestep * formulae.condensation_coordinate__dx_dt(x_new, r_dr_dt)
+                + timestep * formulae.diffusion_coordinate__dx_dt(mass_new, dm_dt)
             )
 
         @numba.njit(**jit_flags)
@@ -440,15 +429,17 @@ class CondensationMethods(BackendMethods):
             lambdaK = formulae.diffusion_kinetics__lambdaK(T, p)
             lambdaD = formulae.diffusion_kinetics__lambdaD(DTp, T)
             for drop in cell_idx:
+                if attributes.water_mass[drop] <= 0:
+                    continue
                 v_drop = formulae.particle_shape_and_density__mass_to_volume(
                     attributes.water_mass[drop]
                 )
-                if v_drop <= 0:
-                    continue
-                x_old = formulae.condensation_coordinate__x(v_drop)
+                x_old = formulae.diffusion_coordinate__x(attributes.water_mass[drop])
                 r_old = formulae.trivia__radius(v_drop)
-                x_insane = formulae.condensation_coordinate__x(
-                    attributes.vdry[drop] / 100
+                x_insane = formulae.diffusion_coordinate__x(
+                    formulae.particle_shape_and_density__volume_to_mass(
+                        attributes.vdry[drop] / 100
+                    )
                 )
                 rd3 = attributes.vdry[drop] / formulae.constants.PI_4_3
                 sgm = formulae.surface_tension__sigma(
@@ -462,13 +453,20 @@ class CondensationMethods(BackendMethods):
                 ):
                     Dr = formulae.diffusion_kinetics__D(DTp, r_old, lambdaD)
                     Kr = formulae.diffusion_kinetics__K(KTp, r_old, lambdaK)
-                    ventilation_factor = formulae.ventilation__ventilation_coefficient(
+                    mass_ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
                             Re=attributes.reynolds_number[drop],
                             Sc=Sc,
                         )
                     )
-                    args = (
+                    heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
+                    Fk = formulae.drop_growth__Fk(
+                        T=T, K=Kr * heat_ventilation_factor, lv=lv
+                    )
+                    Fd = formulae.drop_growth__Fd(
+                        T=T, D=Dr * mass_ventilation_factor, pvs=pvs
+                    )
+                    minfun_args = (
                         x_old,
                         timestep,
                         attributes.kappa[drop],
@@ -476,24 +474,18 @@ class CondensationMethods(BackendMethods):
                         rd3,
                         T,
                         RH,
-                        lv,
-                        pvs,
-                        Dr,
-                        Kr,
-                        ventilation_factor,
+                        Fk,
+                        Fd,
                     )
                     r_dr_dt_old = formulae.drop_growth__r_dr_dt(
-                        RH_eq,
-                        T,
-                        RH,
-                        lv,
-                        pvs,
-                        Dr,
-                        Kr,
-                        ventilation_factor,
+                        RH_eq=RH_eq, RH=RH, Fk=Fk, Fd=Fd
                     )
-                    dx_old = timestep * formulae.condensation_coordinate__dx_dt(
-                        x_old, r_dr_dt_old
+                    mass_old = formulae.diffusion_coordinate__mass(x_old)
+                    dm_dt_old = formulae.particle_shape_and_density__dm_dt(
+                        r=r_old, r_dr_dt=r_dr_dt_old
+                    )
+                    dx_old = timestep * formulae.diffusion_coordinate__dx_dt(
+                        mass_old, dm_dt_old
                     )
                 else:
                     dx_old = 0.0
@@ -502,8 +494,8 @@ class CondensationMethods(BackendMethods):
                 else:
                     a = x_old
                     b = max(x_insane, a + dx_old)
-                    fa = minfun(a, *args)
-                    fb = minfun(b, *args)
+                    fa = minfun(a, *minfun_args)
+                    fb = minfun(b, *minfun_args)
 
                     counter = 0
                     while not fa * fb < 0:
@@ -533,7 +525,7 @@ class CondensationMethods(BackendMethods):
                             success = False
                             break
                         b = max(x_insane, a + math.ldexp(dx_old, counter))
-                        fb = minfun(b, *args)
+                        fb = minfun(b, *minfun_args)
 
                     if not success:
                         break
@@ -544,7 +536,7 @@ class CondensationMethods(BackendMethods):
 
                         x_new, iters_taken = toms748_solve(
                             minfun,
-                            args,
+                            minfun_args,
                             a,
                             b,
                             fa,
@@ -561,9 +553,7 @@ class CondensationMethods(BackendMethods):
                     else:
                         x_new = x_old
 
-                mass_new = formulae.particle_shape_and_density__volume_to_mass(
-                    formulae.condensation_coordinate__volume(x_new)
-                )
+                mass_new = formulae.diffusion_coordinate__mass(x_new)
                 mass_cr = formulae.particle_shape_and_density__volume_to_mass(
                     attributes.v_cr[drop]
                 )
@@ -663,7 +653,7 @@ class CondensationMethods(BackendMethods):
             timestep,
             n_substeps,
         ):
-            args = (
+            step_impl_args = (
                 attributes,
                 cell_idx,
                 thd,
@@ -679,7 +669,9 @@ class CondensationMethods(BackendMethods):
             )
             success = True
             if adaptive:
-                n_substeps, success = adapt_substeps(args, n_substeps, thd, rtols.thd)
+                n_substeps, success = adapt_substeps(
+                    step_impl_args, n_substeps, thd, rtols.thd
+                )
             if success:
                 (
                     water_vapour_mixing_ratio,
@@ -689,7 +681,7 @@ class CondensationMethods(BackendMethods):
                     n_ripening,
                     RH_max,
                     success,
-                ) = step(args, timestep, n_substeps)
+                ) = step(step_impl_args, timestep, n_substeps)
             else:
                 n_activating, n_deactivating, n_ripening, RH_max = -1, -1, -1, -1
             return (

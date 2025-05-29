@@ -31,10 +31,10 @@
     <div style="padding-top: 2em">
         <h2>What is PySDM?</h2>
         <p>
-            <video controls style="float:right; width:40%">
-                <source src="https://github.com/open-atmos/PySDM/wiki/files/animation_save.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            <div style="float:right; width:40%">
+              <img style="width:100%" src="https://github.com/open-atmos/PySDM/releases/download/tip/docs_intro_animation_ubuntu-24.04.gif" />
+              <a href="https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/_HOWTOs/paraview_hello_world.ipynb" style="small">Jupyter notebook setting up and running the above PySDM simulation and generating the visualisation using Paraview</a>
+            </div>
             PySDM is a package for simulating the <mark>dynamics of population of particles undergoing diffusional and collisional growth (and breakage)</mark>.
             The package features a Pythonic high-performance (multi-threaded CPU &amp; CUDA GPU) implementation of the <mark>Super-Droplet Method (SDM) Monte-Carlo algorithm</mark> 
               for representing collisional growth (<a href="https://doi.org/10.1002/qj.441">Shima et al. 2009</a>), hence the name.
@@ -44,6 +44,10 @@
               particles immersed in moist air using the particle-based (a.k.a. super-droplet) approach to represent aerosol/cloud/rain microphysics.
             The key goal of PySDM is to enable rapid development and independent reproducibility of simulations in cloud microphysics
               while being free from the two-language barrier commonly separating prototype and high-performance research code.
+            PySDM ships with a set of examples reproducing results from literature and serving as tutorials. 
+            The animation shown here depicts a flow-coupled simulation in which the flow is resolved using PySDM's sibling project: <a href="https://open-atmos.github.io/PyMPDATA/">PyMPDATA</a>.
+            The examples include also single-column setups (with PyMPDATA used for advection) as well as adiabatic cloud parcel model setups
+              (with <mark>PySDM alone sufficient to constitute a microphysics-resolving cloud parcel model in Python</mark>).
         </p>
     </div>
     <div style="padding-top: 0.5em">
@@ -166,17 +170,26 @@ jupyter-notebook PySDM/examples</code></pre>
         </p>
         <p>
           Development of PySDM was supported by:
-          <ul style="list-style:square; margin-left:1em;">
+        </p>
+        <ul style="list-style:square;">
             <li><a href="https://www.fnp.org.pl/en/">Foundation for Polish Science</a> (grant no. POIR.04.04.00-00-5E1C/18 co-financed by the European Union under the European Regional Development Fund)</li>
             <li><a href="https://ncn.gov.pl/en">Polish National Science Centre</a> (grant no. 2020/39/D/ST10/01220)</li>
             <li><a href="https://science.energy.gov">US Department of Energy</a> via the <a href="https://www.krellinst.org/csgf/">Computational Science Graduate Fellowship</a> and via the <a href="https://asr.science.energy.gov/">Atmospheric System Research Program</a> (grant no. DE-SC0021034)</li>
             <li><a href="https://www.schmidtfutures.org/our-people/#eric-schmidt">Eric</a> and <a href="https://www.schmidtfutures.org/our-people/#wendy-schmidt">Wendy Schmidt</a> (by recommendation of <a href="https://www.schmidtfutures.org/">Schmidt Futures</a>)</li>
             <li><a href="https://www.hsfoundation.org/">Heising-Simons Foundation</a></li>
             <li><a href="https://www.nsf.gov/">National Science Foundation</a> (grant AGS-1835860)</li>
-          </ul>
-        </p>
+        </ul>
     </div>
+        <div>
+            <h2>Bibliography with code cross-references</h2>
+            <p>
+                The list below summarises all literature references included in PySDM codebase and includes links to both the referenced papers, as well as to the referring PySDM source files.
+            </p>
+            {% include "bibliography.html" %}
+            <h2>EOF</h2>
+        </div>
     </main>
-    {% include "search.html.jinja2" %}
+
+{#    {% include "search.html.jinja2" %}#}
 {% endblock %}
 

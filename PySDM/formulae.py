@@ -23,33 +23,39 @@ from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, Rogers
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
-class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
+class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes,too-many-statements
     def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         constants: Optional[dict] = None,
         seed: int = None,
         fastmath: bool = True,
-        condensation_coordinate: str = "VolumeLogarithm",
+        diffusion_coordinate: str = "WaterMassLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
-        latent_heat: str = "Kirchhoff",
+        latent_heat_vapourisation: str = "Kirchhoff",
+        latent_heat_sublimation: str = "MurphyKoop2005",
         hygroscopicity: str = "KappaKoehlerLeadingTerms",
         drop_growth: str = "Mason1971",
         surface_tension: str = "Constant",
         diffusion_kinetics: str = "FuchsSutugin",
+        diffusion_ice_kinetics: str = "Standard",
+        diffusion_ice_capacity: str = "Spherical",
         diffusion_thermics: str = "Neglect",
         ventilation: str = "Neglect",
         state_variable_triplet: str = "LibcloudphPlusPlus",
         particle_advection: str = "ImplicitInSpace",
-        hydrostatics: str = "Default",
+        hydrostatics: str = "ConstantGVapourMixingRatioAndThetaStd",
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
-        isotope_meteoric_water_line_excess: str = "Null",
+        isotope_kinetic_fractionation_factors: str = "Null",
+        isotope_meteoric_water_line: str = "Null",
         isotope_ratio_evolution: str = "Null",
         isotope_diffusivity_ratios: str = "Null",
         isotope_relaxation_timescale: str = "Null",
+        isotope_temperature_inference: str = "Null",
+        isotope_ventilation_ratio: str = "Null",
         optical_albedo: str = "Null",
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
@@ -62,13 +68,17 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         # in PyCharm and alike, all these fields are later overwritten within this ctor
         self.optical_albedo = optical_albedo
         self.optical_depth = optical_depth
-        self.condensation_coordinate = condensation_coordinate
+        self.diffusion_coordinate = diffusion_coordinate
+        self.diffusion_coordinate = diffusion_coordinate
         self.saturation_vapour_pressure = saturation_vapour_pressure
         self.hygroscopicity = hygroscopicity
         self.drop_growth = drop_growth
         self.surface_tension = surface_tension
         self.diffusion_kinetics = diffusion_kinetics
-        self.latent_heat = latent_heat
+        self.diffusion_ice_kinetics = diffusion_ice_kinetics
+        self.diffusion_ice_capacity = diffusion_ice_capacity
+        self.latent_heat_vapourisation = latent_heat_vapourisation
+        self.latent_heat_sublimation = latent_heat_sublimation
         self.diffusion_thermics = diffusion_thermics
         self.ventilation = ventilation
         self.state_variable_triplet = state_variable_triplet
@@ -80,10 +90,15 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.isotope_equilibrium_fractionation_factors = (
             isotope_equilibrium_fractionation_factors
         )
-        self.isotope_meteoric_water_line_excess = isotope_meteoric_water_line_excess
+        self.isotope_kinetic_fractionation_factors = (
+            isotope_kinetic_fractionation_factors
+        )
+        self.isotope_meteoric_water_line = isotope_meteoric_water_line
         self.isotope_ratio_evolution = isotope_ratio_evolution
         self.isotope_diffusivity_ratios = isotope_diffusivity_ratios
         self.isotope_relaxation_timescale = isotope_relaxation_timescale
+        self.isotope_temperature_inference = isotope_temperature_inference
+        self.isotope_ventilation_ratio = isotope_ventilation_ratio
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
@@ -169,7 +184,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
     @cached_property
     def flatten(self):
         """returns a "flattened" representation providing access to all formulae from within
-        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat__lv(T)"""
+        one Numba-JIT-usable named tuple, e.g. with obj.latent_heat_vapourisation__lv(T)
+        """
         functions = {}
         for component in ["trivia"] + list(self._components):
             for item in dir(getattr(self, component)):
@@ -201,9 +217,11 @@ def _formula(func, constants, dimensional_analysis, **kw):
     source = re.sub(r"\n\s+\):", "):", source)
     loc = {}
     for arg_name in special_params:
-        source = source.replace(
-            f"def {func.__name__}({arg_name},", f"def {func.__name__}("
-        )
+        for sep in ",", ")":
+            source = source.replace(
+                f"def {func.__name__}({arg_name}{sep}",
+                f"def {func.__name__}({')' if sep == ')' else ''}",
+            )
 
     extras = func.__extras if hasattr(func, "__extras") else {}
     exec(  # pylint:disable=exec-used
@@ -267,11 +285,20 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     post = r"([ )/*\-+,]|$)"
     real_fmt = ".32g"
     source = ""
+    in_docstring = False
     for line in inspect.getsourcelines(fun)[0]:
         stripped = line.strip()
+        if in_docstring:
+            if stripped.endswith('"""'):
+                in_docstring = False
+            continue
         if stripped.startswith("@"):
             continue
         if stripped.startswith("//"):
+            continue
+        if stripped.startswith('"""'):
+            if not (stripped.endswith('"""') and len(stripped) >= 6):
+                in_docstring = True
             continue
         if stripped.startswith("def "):
             continue

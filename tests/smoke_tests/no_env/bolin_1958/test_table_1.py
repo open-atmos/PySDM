@@ -6,7 +6,8 @@ from pathlib import Path
 from collections import defaultdict
 import numpy as np
 import pytest
-from PySDM_examples.utils import notebook_vars
+from open_atmos_jupyter_utils import notebook_vars
+
 from PySDM_examples import Bolin_1958
 
 
