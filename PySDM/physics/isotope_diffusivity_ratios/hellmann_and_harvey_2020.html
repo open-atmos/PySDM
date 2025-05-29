@@ -75,13 +75,13 @@
                                 <a class="function" href="#HellmannAndHarvey2020.__init__">HellmannAndHarvey2020</a>
                         </li>
                         <li>
-                                <a class="function" href="#HellmannAndHarvey2020.ratio_2H">ratio_2H</a>
+                                <a class="function" href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light">ratio_2H_heavy_to_light</a>
                         </li>
                         <li>
-                                <a class="function" href="#HellmannAndHarvey2020.ratio_17O">ratio_17O</a>
+                                <a class="function" href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light">ratio_17O_heavy_to_light</a>
                         </li>
                         <li>
-                                <a class="function" href="#HellmannAndHarvey2020.ratio_18O">ratio_18O</a>
+                                <a class="function" href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light">ratio_18O_heavy_to_light</a>
                         </li>
                 </ul>
 
@@ -121,7 +121,7 @@
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF0</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF1</span>
@@ -131,7 +131,7 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="p">)</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_17O</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_17O_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF0</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF1</span>
@@ -141,7 +141,7 @@
 </span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="p">)</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_18O</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_18O_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
 </span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF0</span>
 </span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF1</span>
@@ -169,7 +169,7 @@
 </span><span id="HellmannAndHarvey2020-10"><a href="#HellmannAndHarvey2020-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
 </span><span id="HellmannAndHarvey2020-11"><a href="#HellmannAndHarvey2020-11"><span class="linenos">11</span></a>
 </span><span id="HellmannAndHarvey2020-12"><a href="#HellmannAndHarvey2020-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="HellmannAndHarvey2020-13"><a href="#HellmannAndHarvey2020-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="HellmannAndHarvey2020-13"><a href="#HellmannAndHarvey2020-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
 </span><span id="HellmannAndHarvey2020-14"><a href="#HellmannAndHarvey2020-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="HellmannAndHarvey2020-15"><a href="#HellmannAndHarvey2020-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF0</span>
 </span><span id="HellmannAndHarvey2020-16"><a href="#HellmannAndHarvey2020-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF1</span>
@@ -179,7 +179,7 @@
 </span><span id="HellmannAndHarvey2020-20"><a href="#HellmannAndHarvey2020-20"><span class="linenos">20</span></a>        <span class="p">)</span>
 </span><span id="HellmannAndHarvey2020-21"><a href="#HellmannAndHarvey2020-21"><span class="linenos">21</span></a>
 </span><span id="HellmannAndHarvey2020-22"><a href="#HellmannAndHarvey2020-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="HellmannAndHarvey2020-23"><a href="#HellmannAndHarvey2020-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_17O</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="HellmannAndHarvey2020-23"><a href="#HellmannAndHarvey2020-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_17O_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
 </span><span id="HellmannAndHarvey2020-24"><a href="#HellmannAndHarvey2020-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="HellmannAndHarvey2020-25"><a href="#HellmannAndHarvey2020-25"><span class="linenos">25</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF0</span>
 </span><span id="HellmannAndHarvey2020-26"><a href="#HellmannAndHarvey2020-26"><span class="linenos">26</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF1</span>
@@ -189,7 +189,7 @@
 </span><span id="HellmannAndHarvey2020-30"><a href="#HellmannAndHarvey2020-30"><span class="linenos">30</span></a>        <span class="p">)</span>
 </span><span id="HellmannAndHarvey2020-31"><a href="#HellmannAndHarvey2020-31"><span class="linenos">31</span></a>
 </span><span id="HellmannAndHarvey2020-32"><a href="#HellmannAndHarvey2020-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="HellmannAndHarvey2020-33"><a href="#HellmannAndHarvey2020-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_18O</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="HellmannAndHarvey2020-33"><a href="#HellmannAndHarvey2020-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_18O_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
 </span><span id="HellmannAndHarvey2020-34"><a href="#HellmannAndHarvey2020-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="HellmannAndHarvey2020-35"><a href="#HellmannAndHarvey2020-35"><span class="linenos">35</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF0</span>
 </span><span id="HellmannAndHarvey2020-36"><a href="#HellmannAndHarvey2020-36"><span class="linenos">36</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF1</span>
@@ -220,81 +220,81 @@
     
 
                             </div>
-                            <div id="HellmannAndHarvey2020.ratio_2H" class="classattr">
-                                        <input id="HellmannAndHarvey2020.ratio_2H-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="HellmannAndHarvey2020.ratio_2H_heavy_to_light" class="classattr">
+                                        <input id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">ratio_2H</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
+        <span class="name">ratio_2H_heavy_to_light</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="HellmannAndHarvey2020.ratio_2H-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="HellmannAndHarvey2020.ratio_2H_heavy_to_light-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HellmannAndHarvey2020.ratio_2H"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HellmannAndHarvey2020.ratio_2H-12"><a href="#HellmannAndHarvey2020.ratio_2H-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-13"><a href="#HellmannAndHarvey2020.ratio_2H-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-14"><a href="#HellmannAndHarvey2020.ratio_2H-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-15"><a href="#HellmannAndHarvey2020.ratio_2H-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF0</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-16"><a href="#HellmannAndHarvey2020.ratio_2H-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF1</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-17"><a href="#HellmannAndHarvey2020.ratio_2H-17"><span class="linenos">17</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-18"><a href="#HellmannAndHarvey2020.ratio_2H-18"><span class="linenos">18</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF2</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-19"><a href="#HellmannAndHarvey2020.ratio_2H-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_AND_A_HALF</span><span class="p">)</span>
-</span><span id="HellmannAndHarvey2020.ratio_2H-20"><a href="#HellmannAndHarvey2020.ratio_2H-20"><span class="linenos">20</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-12"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-13"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-14"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-15"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-15"><span class="linenos">15</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF0</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-16"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-16"><span class="linenos">16</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF1</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-17"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-17"><span class="linenos">17</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-18"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-18"><span class="linenos">18</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ6_COEFF2</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-19"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_AND_A_HALF</span><span class="p">)</span>
+</span><span id="HellmannAndHarvey2020.ratio_2H_heavy_to_light-20"><a href="#HellmannAndHarvey2020.ratio_2H_heavy_to_light-20"><span class="linenos">20</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="HellmannAndHarvey2020.ratio_17O" class="classattr">
-                                        <input id="HellmannAndHarvey2020.ratio_17O-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="HellmannAndHarvey2020.ratio_17O_heavy_to_light" class="classattr">
+                                        <input id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">ratio_17O</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
+        <span class="name">ratio_17O_heavy_to_light</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="HellmannAndHarvey2020.ratio_17O-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="HellmannAndHarvey2020.ratio_17O_heavy_to_light-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HellmannAndHarvey2020.ratio_17O"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HellmannAndHarvey2020.ratio_17O-22"><a href="#HellmannAndHarvey2020.ratio_17O-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-23"><a href="#HellmannAndHarvey2020.ratio_17O-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_17O</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-24"><a href="#HellmannAndHarvey2020.ratio_17O-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-25"><a href="#HellmannAndHarvey2020.ratio_17O-25"><span class="linenos">25</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF0</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-26"><a href="#HellmannAndHarvey2020.ratio_17O-26"><span class="linenos">26</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF1</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-27"><a href="#HellmannAndHarvey2020.ratio_17O-27"><span class="linenos">27</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-28"><a href="#HellmannAndHarvey2020.ratio_17O-28"><span class="linenos">28</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF2</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-29"><a href="#HellmannAndHarvey2020.ratio_17O-29"><span class="linenos">29</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_AND_A_HALF</span><span class="p">)</span>
-</span><span id="HellmannAndHarvey2020.ratio_17O-30"><a href="#HellmannAndHarvey2020.ratio_17O-30"><span class="linenos">30</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-22"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-23"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_17O_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-24"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-25"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-25"><span class="linenos">25</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF0</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-26"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-26"><span class="linenos">26</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF1</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-27"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-27"><span class="linenos">27</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-28"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-28"><span class="linenos">28</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ7_COEFF2</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-29"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-29"><span class="linenos">29</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">TWO_AND_A_HALF</span><span class="p">)</span>
+</span><span id="HellmannAndHarvey2020.ratio_17O_heavy_to_light-30"><a href="#HellmannAndHarvey2020.ratio_17O_heavy_to_light-30"><span class="linenos">30</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="HellmannAndHarvey2020.ratio_18O" class="classattr">
-                                        <input id="HellmannAndHarvey2020.ratio_18O-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="HellmannAndHarvey2020.ratio_18O_heavy_to_light" class="classattr">
+                                        <input id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">ratio_18O</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
+        <span class="name">ratio_18O_heavy_to_light</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="HellmannAndHarvey2020.ratio_18O-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="HellmannAndHarvey2020.ratio_18O_heavy_to_light-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#HellmannAndHarvey2020.ratio_18O"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="HellmannAndHarvey2020.ratio_18O-32"><a href="#HellmannAndHarvey2020.ratio_18O-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-33"><a href="#HellmannAndHarvey2020.ratio_18O-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_18O</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-34"><a href="#HellmannAndHarvey2020.ratio_18O-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-35"><a href="#HellmannAndHarvey2020.ratio_18O-35"><span class="linenos">35</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF0</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-36"><a href="#HellmannAndHarvey2020.ratio_18O-36"><span class="linenos">36</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF1</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-37"><a href="#HellmannAndHarvey2020.ratio_18O-37"><span class="linenos">37</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-38"><a href="#HellmannAndHarvey2020.ratio_18O-38"><span class="linenos">38</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF2</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-39"><a href="#HellmannAndHarvey2020.ratio_18O-39"><span class="linenos">39</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">THREE</span><span class="p">)</span>
-</span><span id="HellmannAndHarvey2020.ratio_18O-40"><a href="#HellmannAndHarvey2020.ratio_18O-40"><span class="linenos">40</span></a>        <span class="p">)</span>
+    <a class="headerlink" href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-32"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-33"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_18O_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-34"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-35"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-35"><span class="linenos">35</span></a>            <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF0</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-36"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-36"><span class="linenos">36</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF1</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-37"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-37"><span class="linenos">37</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-38"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-38"><span class="linenos">38</span></a>            <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_EQ8_COEFF2</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-39"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-39"><span class="linenos">39</span></a>            <span class="o">/</span> <span class="p">(</span><span class="n">temperature</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">HELLMANN_HARVEY_T_UNIT</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">THREE</span><span class="p">)</span>
+</span><span id="HellmannAndHarvey2020.ratio_18O_heavy_to_light-40"><a href="#HellmannAndHarvey2020.ratio_18O_heavy_to_light-40"><span class="linenos">40</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 

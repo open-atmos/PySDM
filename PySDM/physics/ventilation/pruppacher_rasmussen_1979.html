@@ -103,6 +103,9 @@ NB: this parameterization is only experimentally validated for Re &lt; 2600
 but is hypothesized to be valid for spheres with Re &lt; 8 × 10⁴
 based on theory (Pruppacher &amp; Rasmussen, 1979).
 the parameterization also does not account for effects of air turbulence.</p>
+
+<p>For smaller droplets, such as 1.96 &lt;= Re &lt;= 158.76 previously published in
+<a href="https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2">Beard and Pruppacher</a></p>
 </div>
 
                         <input id="mod-pruppacher_rasmussen_1979-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -117,31 +120,35 @@ the parameterization also does not account for effects of air turbulence.</p>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">but is hypothesized to be valid for spheres with Re &lt; 8 × 10⁴</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="sd">based on theory (Pruppacher &amp; Rasmussen, 1979).</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="sd">the parameterization also does not account for effects of air turbulence.</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="sd">&quot;&quot;&quot;</span>  <span class="c1"># pylint: disable=line-too-long</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="sd">For smaller droplets, such as 1.96 &lt;= Re &lt;= 158.76 previously published in</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="sd">[Beard and Pruppacher](https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2)</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PruppacherAndRasmussen1979</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">pass</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="sd">&quot;&quot;&quot;</span>  <span class="c1"># pylint: disable=line-too-long</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ventilation_coefficient</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">):</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>            <span class="n">sqrt_re_times_cbrt_sc</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_XTHRES</span><span class="p">,</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>            <span class="p">(</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTSMALL</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFSMALL</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>                    <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_POWSMALL</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>                <span class="p">)</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="p">),</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="p">(</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTBIG</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFBIG</span> <span class="o">*</span> <span class="n">sqrt_re_times_cbrt_sc</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PruppacherAndRasmussen1979</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="k">pass</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ventilation_coefficient</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">):</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="n">sqrt_re_times_cbrt_sc</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_XTHRES</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>            <span class="p">(</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTSMALL</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFSMALL</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>                    <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_POWSMALL</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>                <span class="p">)</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>            <span class="p">),</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="p">)</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="p">(</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTBIG</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFBIG</span> <span class="o">*</span> <span class="n">sqrt_re_times_cbrt_sc</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>            <span class="p">),</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -157,26 +164,26 @@ the parameterization also does not account for effects of air turbulence.</p>
 
     </div>
     <a class="headerlink" href="#PruppacherAndRasmussen1979"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PruppacherAndRasmussen1979-15"><a href="#PruppacherAndRasmussen1979-15"><span class="linenos">15</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PruppacherAndRasmussen1979</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="PruppacherAndRasmussen1979-16"><a href="#PruppacherAndRasmussen1979-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="PruppacherAndRasmussen1979-17"><a href="#PruppacherAndRasmussen1979-17"><span class="linenos">17</span></a>        <span class="k">pass</span>
-</span><span id="PruppacherAndRasmussen1979-18"><a href="#PruppacherAndRasmussen1979-18"><span class="linenos">18</span></a>
-</span><span id="PruppacherAndRasmussen1979-19"><a href="#PruppacherAndRasmussen1979-19"><span class="linenos">19</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="PruppacherAndRasmussen1979-20"><a href="#PruppacherAndRasmussen1979-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ventilation_coefficient</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">):</span>
-</span><span id="PruppacherAndRasmussen1979-21"><a href="#PruppacherAndRasmussen1979-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979-22"><a href="#PruppacherAndRasmussen1979-22"><span class="linenos">22</span></a>            <span class="n">sqrt_re_times_cbrt_sc</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_XTHRES</span><span class="p">,</span>
-</span><span id="PruppacherAndRasmussen1979-23"><a href="#PruppacherAndRasmussen1979-23"><span class="linenos">23</span></a>            <span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979-24"><a href="#PruppacherAndRasmussen1979-24"><span class="linenos">24</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTSMALL</span>
-</span><span id="PruppacherAndRasmussen1979-25"><a href="#PruppacherAndRasmussen1979-25"><span class="linenos">25</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFSMALL</span>
-</span><span id="PruppacherAndRasmussen1979-26"><a href="#PruppacherAndRasmussen1979-26"><span class="linenos">26</span></a>                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979-27"><a href="#PruppacherAndRasmussen1979-27"><span class="linenos">27</span></a>                    <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_POWSMALL</span>
-</span><span id="PruppacherAndRasmussen1979-28"><a href="#PruppacherAndRasmussen1979-28"><span class="linenos">28</span></a>                <span class="p">)</span>
-</span><span id="PruppacherAndRasmussen1979-29"><a href="#PruppacherAndRasmussen1979-29"><span class="linenos">29</span></a>            <span class="p">),</span>
-</span><span id="PruppacherAndRasmussen1979-30"><a href="#PruppacherAndRasmussen1979-30"><span class="linenos">30</span></a>            <span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979-31"><a href="#PruppacherAndRasmussen1979-31"><span class="linenos">31</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTBIG</span>
-</span><span id="PruppacherAndRasmussen1979-32"><a href="#PruppacherAndRasmussen1979-32"><span class="linenos">32</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFBIG</span> <span class="o">*</span> <span class="n">sqrt_re_times_cbrt_sc</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PruppacherAndRasmussen1979-19"><a href="#PruppacherAndRasmussen1979-19"><span class="linenos">19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PruppacherAndRasmussen1979</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="PruppacherAndRasmussen1979-20"><a href="#PruppacherAndRasmussen1979-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="PruppacherAndRasmussen1979-21"><a href="#PruppacherAndRasmussen1979-21"><span class="linenos">21</span></a>        <span class="k">pass</span>
+</span><span id="PruppacherAndRasmussen1979-22"><a href="#PruppacherAndRasmussen1979-22"><span class="linenos">22</span></a>
+</span><span id="PruppacherAndRasmussen1979-23"><a href="#PruppacherAndRasmussen1979-23"><span class="linenos">23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PruppacherAndRasmussen1979-24"><a href="#PruppacherAndRasmussen1979-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ventilation_coefficient</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">):</span>
+</span><span id="PruppacherAndRasmussen1979-25"><a href="#PruppacherAndRasmussen1979-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979-26"><a href="#PruppacherAndRasmussen1979-26"><span class="linenos">26</span></a>            <span class="n">sqrt_re_times_cbrt_sc</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_XTHRES</span><span class="p">,</span>
+</span><span id="PruppacherAndRasmussen1979-27"><a href="#PruppacherAndRasmussen1979-27"><span class="linenos">27</span></a>            <span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979-28"><a href="#PruppacherAndRasmussen1979-28"><span class="linenos">28</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTSMALL</span>
+</span><span id="PruppacherAndRasmussen1979-29"><a href="#PruppacherAndRasmussen1979-29"><span class="linenos">29</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFSMALL</span>
+</span><span id="PruppacherAndRasmussen1979-30"><a href="#PruppacherAndRasmussen1979-30"><span class="linenos">30</span></a>                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979-31"><a href="#PruppacherAndRasmussen1979-31"><span class="linenos">31</span></a>                    <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_POWSMALL</span>
+</span><span id="PruppacherAndRasmussen1979-32"><a href="#PruppacherAndRasmussen1979-32"><span class="linenos">32</span></a>                <span class="p">)</span>
 </span><span id="PruppacherAndRasmussen1979-33"><a href="#PruppacherAndRasmussen1979-33"><span class="linenos">33</span></a>            <span class="p">),</span>
-</span><span id="PruppacherAndRasmussen1979-34"><a href="#PruppacherAndRasmussen1979-34"><span class="linenos">34</span></a>        <span class="p">)</span>
+</span><span id="PruppacherAndRasmussen1979-34"><a href="#PruppacherAndRasmussen1979-34"><span class="linenos">34</span></a>            <span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979-35"><a href="#PruppacherAndRasmussen1979-35"><span class="linenos">35</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTBIG</span>
+</span><span id="PruppacherAndRasmussen1979-36"><a href="#PruppacherAndRasmussen1979-36"><span class="linenos">36</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFBIG</span> <span class="o">*</span> <span class="n">sqrt_re_times_cbrt_sc</span>
+</span><span id="PruppacherAndRasmussen1979-37"><a href="#PruppacherAndRasmussen1979-37"><span class="linenos">37</span></a>            <span class="p">),</span>
+</span><span id="PruppacherAndRasmussen1979-38"><a href="#PruppacherAndRasmussen1979-38"><span class="linenos">38</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -192,8 +199,8 @@ the parameterization also does not account for effects of air turbulence.</p>
 
     </div>
     <a class="headerlink" href="#PruppacherAndRasmussen1979.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PruppacherAndRasmussen1979.__init__-16"><a href="#PruppacherAndRasmussen1979.__init__-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="PruppacherAndRasmussen1979.__init__-17"><a href="#PruppacherAndRasmussen1979.__init__-17"><span class="linenos">17</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PruppacherAndRasmussen1979.__init__-20"><a href="#PruppacherAndRasmussen1979.__init__-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="PruppacherAndRasmussen1979.__init__-21"><a href="#PruppacherAndRasmussen1979.__init__-21"><span class="linenos">21</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -212,22 +219,22 @@ the parameterization also does not account for effects of air turbulence.</p>
 
     </div>
     <a class="headerlink" href="#PruppacherAndRasmussen1979.ventilation_coefficient"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-19"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-19"><span class="linenos">19</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-20"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ventilation_coefficient</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">):</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-21"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-22"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-22"><span class="linenos">22</span></a>            <span class="n">sqrt_re_times_cbrt_sc</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_XTHRES</span><span class="p">,</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-23"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-23"><span class="linenos">23</span></a>            <span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-24"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-24"><span class="linenos">24</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTSMALL</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-25"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-25"><span class="linenos">25</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFSMALL</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-26"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-26"><span class="linenos">26</span></a>                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-27"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-27"><span class="linenos">27</span></a>                    <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_POWSMALL</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-28"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-28"><span class="linenos">28</span></a>                <span class="p">)</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-29"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-29"><span class="linenos">29</span></a>            <span class="p">),</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-30"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-30"><span class="linenos">30</span></a>            <span class="p">(</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-31"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-31"><span class="linenos">31</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTBIG</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-32"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-32"><span class="linenos">32</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFBIG</span> <span class="o">*</span> <span class="n">sqrt_re_times_cbrt_sc</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-23"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-23"><span class="linenos">23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-24"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ventilation_coefficient</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">):</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-25"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-26"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-26"><span class="linenos">26</span></a>            <span class="n">sqrt_re_times_cbrt_sc</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_XTHRES</span><span class="p">,</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-27"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-27"><span class="linenos">27</span></a>            <span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-28"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-28"><span class="linenos">28</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTSMALL</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-29"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-29"><span class="linenos">29</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFSMALL</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-30"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-30"><span class="linenos">30</span></a>                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-31"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-31"><span class="linenos">31</span></a>                    <span class="n">sqrt_re_times_cbrt_sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_POWSMALL</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-32"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-32"><span class="linenos">32</span></a>                <span class="p">)</span>
 </span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-33"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-33"><span class="linenos">33</span></a>            <span class="p">),</span>
-</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-34"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-34"><span class="linenos">34</span></a>        <span class="p">)</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-34"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-34"><span class="linenos">34</span></a>            <span class="p">(</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-35"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-35"><span class="linenos">35</span></a>                <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_CONSTBIG</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-36"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-36"><span class="linenos">36</span></a>                <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">PRUPPACHER_RASMUSSEN_1979_COEFFBIG</span> <span class="o">*</span> <span class="n">sqrt_re_times_cbrt_sc</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-37"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-37"><span class="linenos">37</span></a>            <span class="p">),</span>
+</span><span id="PruppacherAndRasmussen1979.ventilation_coefficient-38"><a href="#PruppacherAndRasmussen1979.ventilation_coefficient-38"><span class="linenos">38</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 

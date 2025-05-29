@@ -122,7 +122,7 @@ and as used in <a href="https://doi.org/10.1016/j.gca.2022.01.020">Pierchala et 
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">relative_humidity</span><span class="p">,</span> <span class="n">turbulence_parameter_n</span><span class="p">,</span> <span class="n">delta_diff</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;delta_diff = 1 - heavy_to_light_diffusivity_ratio&quot;&quot;&quot;</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;delta_diff = 1 - diffusivity_ratio_heavy_to_light&quot;&quot;&quot;</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">turbulence_parameter_n</span> <span class="o">*</span> <span class="n">delta_diff</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">relative_humidity</span><span class="p">)</span>
 </span></pre></div>
 
@@ -145,7 +145,7 @@ and as used in <a href="https://doi.org/10.1016/j.gca.2022.01.020">Pierchala et 
 </span><span id="CraigGordon-14"><a href="#CraigGordon-14"><span class="linenos">14</span></a>
 </span><span id="CraigGordon-15"><a href="#CraigGordon-15"><span class="linenos">15</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="CraigGordon-16"><a href="#CraigGordon-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">relative_humidity</span><span class="p">,</span> <span class="n">turbulence_parameter_n</span><span class="p">,</span> <span class="n">delta_diff</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
-</span><span id="CraigGordon-17"><a href="#CraigGordon-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;delta_diff = 1 - heavy_to_light_diffusivity_ratio&quot;&quot;&quot;</span>
+</span><span id="CraigGordon-17"><a href="#CraigGordon-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;delta_diff = 1 - diffusivity_ratio_heavy_to_light&quot;&quot;&quot;</span>
 </span><span id="CraigGordon-18"><a href="#CraigGordon-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">turbulence_parameter_n</span> <span class="o">*</span> <span class="n">delta_diff</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">relative_humidity</span><span class="p">)</span>
 </span></pre></div>
 
@@ -184,12 +184,12 @@ and as used in <a href="https://doi.org/10.1016/j.gca.2022.01.020">Pierchala et 
     <a class="headerlink" href="#CraigGordon.alpha_kinetic"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="CraigGordon.alpha_kinetic-15"><a href="#CraigGordon.alpha_kinetic-15"><span class="linenos">15</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="CraigGordon.alpha_kinetic-16"><a href="#CraigGordon.alpha_kinetic-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">relative_humidity</span><span class="p">,</span> <span class="n">turbulence_parameter_n</span><span class="p">,</span> <span class="n">delta_diff</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
-</span><span id="CraigGordon.alpha_kinetic-17"><a href="#CraigGordon.alpha_kinetic-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;delta_diff = 1 - heavy_to_light_diffusivity_ratio&quot;&quot;&quot;</span>
+</span><span id="CraigGordon.alpha_kinetic-17"><a href="#CraigGordon.alpha_kinetic-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;delta_diff = 1 - diffusivity_ratio_heavy_to_light&quot;&quot;&quot;</span>
 </span><span id="CraigGordon.alpha_kinetic-18"><a href="#CraigGordon.alpha_kinetic-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">theta</span> <span class="o">*</span> <span class="n">turbulence_parameter_n</span> <span class="o">*</span> <span class="n">delta_diff</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">relative_humidity</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>delta_diff = 1 - heavy_to_light_diffusivity_ratio</p>
+            <div class="docstring"><p>delta_diff = 1 - diffusivity_ratio_heavy_to_light</p>
 </div>
 
 

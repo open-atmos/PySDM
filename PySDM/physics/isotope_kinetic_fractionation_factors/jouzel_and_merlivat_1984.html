@@ -116,12 +116,12 @@
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">heavy_to_light_diffusivity_ratio</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="p">):</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)&quot;&quot;&quot;</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">saturation_over_ice</span> <span class="o">/</span> <span class="p">(</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="n">alpha_equilibrium</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>            <span class="o">/</span> <span class="n">heavy_to_light_diffusivity_ratio</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>            <span class="o">/</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">saturation_over_ice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="o">+</span> <span class="mi">1</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="p">)</span>
@@ -146,12 +146,12 @@
 </span><span id="JouzelAndMerlivat1984-11"><a href="#JouzelAndMerlivat1984-11"><span class="linenos">11</span></a>
 </span><span id="JouzelAndMerlivat1984-12"><a href="#JouzelAndMerlivat1984-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="JouzelAndMerlivat1984-13"><a href="#JouzelAndMerlivat1984-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span>
-</span><span id="JouzelAndMerlivat1984-14"><a href="#JouzelAndMerlivat1984-14"><span class="linenos">14</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">heavy_to_light_diffusivity_ratio</span>
+</span><span id="JouzelAndMerlivat1984-14"><a href="#JouzelAndMerlivat1984-14"><span class="linenos">14</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
 </span><span id="JouzelAndMerlivat1984-15"><a href="#JouzelAndMerlivat1984-15"><span class="linenos">15</span></a>    <span class="p">):</span>
 </span><span id="JouzelAndMerlivat1984-16"><a href="#JouzelAndMerlivat1984-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)&quot;&quot;&quot;</span>
 </span><span id="JouzelAndMerlivat1984-17"><a href="#JouzelAndMerlivat1984-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">saturation_over_ice</span> <span class="o">/</span> <span class="p">(</span>
 </span><span id="JouzelAndMerlivat1984-18"><a href="#JouzelAndMerlivat1984-18"><span class="linenos">18</span></a>            <span class="n">alpha_equilibrium</span>
-</span><span id="JouzelAndMerlivat1984-19"><a href="#JouzelAndMerlivat1984-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="n">heavy_to_light_diffusivity_ratio</span>
+</span><span id="JouzelAndMerlivat1984-19"><a href="#JouzelAndMerlivat1984-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
 </span><span id="JouzelAndMerlivat1984-20"><a href="#JouzelAndMerlivat1984-20"><span class="linenos">20</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">saturation_over_ice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span><span id="JouzelAndMerlivat1984-21"><a href="#JouzelAndMerlivat1984-21"><span class="linenos">21</span></a>            <span class="o">+</span> <span class="mi">1</span>
 </span><span id="JouzelAndMerlivat1984-22"><a href="#JouzelAndMerlivat1984-22"><span class="linenos">22</span></a>        <span class="p">)</span>
@@ -184,7 +184,7 @@
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">alpha_kinetic</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">alpha_equilibrium</span>,</span><span class="param">	<span class="n">saturation_over_ice</span>,</span><span class="param">	<span class="n">heavy_to_light_diffusivity_ratio</span></span><span class="return-annotation">):</span></span>
+        <span class="name">alpha_kinetic</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">alpha_equilibrium</span>,</span><span class="param">	<span class="n">saturation_over_ice</span>,</span><span class="param">	<span class="n">diffusivity_ratio_heavy_to_light</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="JouzelAndMerlivat1984.alpha_kinetic-view-source"><span>View Source</span></label>
 
@@ -192,12 +192,12 @@
     <a class="headerlink" href="#JouzelAndMerlivat1984.alpha_kinetic"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="JouzelAndMerlivat1984.alpha_kinetic-12"><a href="#JouzelAndMerlivat1984.alpha_kinetic-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-13"><a href="#JouzelAndMerlivat1984.alpha_kinetic-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-14"><a href="#JouzelAndMerlivat1984.alpha_kinetic-14"><span class="linenos">14</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">heavy_to_light_diffusivity_ratio</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-14"><a href="#JouzelAndMerlivat1984.alpha_kinetic-14"><span class="linenos">14</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-15"><a href="#JouzelAndMerlivat1984.alpha_kinetic-15"><span class="linenos">15</span></a>    <span class="p">):</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-16"><a href="#JouzelAndMerlivat1984.alpha_kinetic-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)&quot;&quot;&quot;</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-17"><a href="#JouzelAndMerlivat1984.alpha_kinetic-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">saturation_over_ice</span> <span class="o">/</span> <span class="p">(</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-18"><a href="#JouzelAndMerlivat1984.alpha_kinetic-18"><span class="linenos">18</span></a>            <span class="n">alpha_equilibrium</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-19"><a href="#JouzelAndMerlivat1984.alpha_kinetic-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="n">heavy_to_light_diffusivity_ratio</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-19"><a href="#JouzelAndMerlivat1984.alpha_kinetic-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-20"><a href="#JouzelAndMerlivat1984.alpha_kinetic-20"><span class="linenos">20</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">saturation_over_ice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-21"><a href="#JouzelAndMerlivat1984.alpha_kinetic-21"><span class="linenos">21</span></a>            <span class="o">+</span> <span class="mi">1</span>
 </span><span id="JouzelAndMerlivat1984.alpha_kinetic-22"><a href="#JouzelAndMerlivat1984.alpha_kinetic-22"><span class="linenos">22</span></a>        <span class="p">)</span>

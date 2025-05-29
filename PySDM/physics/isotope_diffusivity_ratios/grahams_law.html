@@ -75,7 +75,7 @@
                                 <a class="function" href="#GrahamsLaw.__init__">GrahamsLaw</a>
                         </li>
                         <li>
-                                <a class="function" href="#GrahamsLaw.ratio_2H">ratio_2H</a>
+                                <a class="function" href="#GrahamsLaw.ratio_2H_heavy_to_light">ratio_2H_heavy_to_light</a>
                         </li>
                 </ul>
 
@@ -114,7 +114,7 @@ see also eq. (21) in <a href="https://doi.org/10.1080/10256010801887174">Horita 
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="k">pass</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_2H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
@@ -138,7 +138,7 @@ see also eq. (21) in <a href="https://doi.org/10.1080/10256010801887174">Horita 
 </span><span id="GrahamsLaw-9"><a href="#GrahamsLaw-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
 </span><span id="GrahamsLaw-10"><a href="#GrahamsLaw-10"><span class="linenos">10</span></a>
 </span><span id="GrahamsLaw-11"><a href="#GrahamsLaw-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="GrahamsLaw-12"><a href="#GrahamsLaw-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="GrahamsLaw-12"><a href="#GrahamsLaw-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
 </span><span id="GrahamsLaw-13"><a href="#GrahamsLaw-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="GrahamsLaw-14"><a href="#GrahamsLaw-14"><span class="linenos">14</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_2H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
 </span><span id="GrahamsLaw-15"><a href="#GrahamsLaw-15"><span class="linenos">15</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
@@ -165,23 +165,23 @@ see also eq. (21) in <a href="https://doi.org/10.1080/10256010801887174">Horita 
     
 
                             </div>
-                            <div id="GrahamsLaw.ratio_2H" class="classattr">
-                                        <input id="GrahamsLaw.ratio_2H-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="GrahamsLaw.ratio_2H_heavy_to_light" class="classattr">
+                                        <input id="GrahamsLaw.ratio_2H_heavy_to_light-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">ratio_2H</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
+        <span class="name">ratio_2H_heavy_to_light</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="GrahamsLaw.ratio_2H-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="GrahamsLaw.ratio_2H_heavy_to_light-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#GrahamsLaw.ratio_2H"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="GrahamsLaw.ratio_2H-11"><a href="#GrahamsLaw.ratio_2H-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="GrahamsLaw.ratio_2H-12"><a href="#GrahamsLaw.ratio_2H-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
-</span><span id="GrahamsLaw.ratio_2H-13"><a href="#GrahamsLaw.ratio_2H-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="GrahamsLaw.ratio_2H-14"><a href="#GrahamsLaw.ratio_2H-14"><span class="linenos">14</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_2H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
-</span><span id="GrahamsLaw.ratio_2H-15"><a href="#GrahamsLaw.ratio_2H-15"><span class="linenos">15</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
+    <a class="headerlink" href="#GrahamsLaw.ratio_2H_heavy_to_light"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="GrahamsLaw.ratio_2H_heavy_to_light-11"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="GrahamsLaw.ratio_2H_heavy_to_light-12"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_2H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="GrahamsLaw.ratio_2H_heavy_to_light-13"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="GrahamsLaw.ratio_2H_heavy_to_light-14"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-14"><span class="linenos">14</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_2H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
+</span><span id="GrahamsLaw.ratio_2H_heavy_to_light-15"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-15"><span class="linenos">15</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
 </span></pre></div>
 
 
