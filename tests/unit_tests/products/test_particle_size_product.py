@@ -12,6 +12,7 @@ from PySDM.products import (
     MeanVolumeRadius,
     RadiusStandardDeviation,
 )
+from readme import products
 
 TRIVIA = Formulae().trivia
 NAME = "tested product"
@@ -130,3 +131,32 @@ def test_particle_size_product(
 
     # assert
     np.testing.assert_almost_equal(actual, expected, decimal=10)
+
+
+def test_size_standard_deviation_allocates_once(backend_instance):
+    """checks if calling get() does not allocate new memory"""
+    # arrange
+    builder = Builder(
+        backend=backend_instance, environment=Box(dt=np.nan, dv=np.nan), n_sd=10
+    )
+    particulator = builder.build(
+        products=(
+            AreaStandardDeviation(
+                name="sut", count_activated=True, count_unactivated=True
+            ),
+        ),
+        attributes={
+            "multiplicity": np.arange(builder.particulator.n_sd),
+            "water mass": np.arange(builder.particulator.n_sd),
+            "dry volume": np.arange(builder.particulator.n_sd),
+            "kappa times dry volume": np.arange(builder.particulator.n_sd),
+        },
+    )
+    particulator.environment["T"] = 300 * si.K
+
+    # act
+    arr1 = particulator.products["sut"].get()
+    arr2 = particulator.products["sut"].get()
+
+    # assert
+    assert arr1.ctypes.data == arr2.ctypes.data
