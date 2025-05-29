@@ -12,7 +12,6 @@ from PySDM.products import (
     MeanVolumeRadius,
     RadiusStandardDeviation,
 )
-from readme import products
 
 TRIVIA = Formulae().trivia
 NAME = "tested product"
