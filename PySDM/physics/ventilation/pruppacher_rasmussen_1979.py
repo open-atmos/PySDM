@@ -6,6 +6,10 @@ NB: this parameterization is only experimentally validated for Re < 2600
 but is hypothesized to be valid for spheres with Re < 8 × 10⁴
 based on theory (Pruppacher & Rasmussen, 1979).
 the parameterization also does not account for effects of air turbulence.
+
+For smaller droplets, such as 1.96 <= Re <= 158.76 previously published in
+[Beard and Pruppacher](https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2)
+
 """  # pylint: disable=line-too-long
 
 import numpy as np
