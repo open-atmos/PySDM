@@ -145,10 +145,10 @@ def test_size_standard_deviation_allocates_once(backend_instance):
             ),
         ),
         attributes={
-            "multiplicity": np.arange(builder.particulator.n_sd),
-            "water mass": np.arange(builder.particulator.n_sd),
-            "dry volume": np.arange(builder.particulator.n_sd),
-            "kappa times dry volume": np.arange(builder.particulator.n_sd),
+            "multiplicity": np.arange(1, builder.particulator.n_sd + 1),
+            "water mass": np.arange(1, builder.particulator.n_sd + 1),
+            "dry volume": np.arange(1, builder.particulator.n_sd + 1),
+            "kappa times dry volume": np.arange(1, builder.particulator.n_sd + 1),
         },
     )
     particulator.environment["T"] = 300 * si.K
