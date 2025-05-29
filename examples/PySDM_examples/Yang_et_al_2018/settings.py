@@ -1,6 +1,8 @@
 import numpy as np
 from pystrict import strict
 
+from PySDM_examples import Jensen_and_Nugent_2017
+
 from PySDM.backends import CPU
 from PySDM.dynamics import condensation
 from PySDM.initialisation import spectra
@@ -41,16 +43,16 @@ class Settings:
         )
 
         self.backend = CPU
-        self.coord = "VolumeLogarithm"
+        self.coord = "WaterMassLogarithm"
         self.adaptive = True
         self.rtol_x = condensation.DEFAULTS.rtol_x
         self.rtol_thd = condensation.DEFAULTS.rtol_thd
         self.dt_cond_range = condensation.DEFAULTS.cond_range
 
-        self.T0 = 284.3 * si.kelvin
-        self.initial_water_vapour_mixing_ratio = 7.6 * si.grams / si.kilogram
-        self.p0 = 938.5 * si.hectopascals
-        self.z0 = 600 * si.metres
+        self.T0 = Jensen_and_Nugent_2017.settings.INITIAL_TEMPERATURE
+        self.RH0 = Jensen_and_Nugent_2017.settings.INITIAL_RELATIVE_HUMIDITY
+        self.p0 = Jensen_and_Nugent_2017.settings.INITIAL_PRESSURE
+        self.z0 = Jensen_and_Nugent_2017.settings.INITIAL_ALTITUDE
         self.kappa = 0.53  # Petters and S. M. Kreidenweis mean growth-factor derived
 
         self.t0 = 1200 * si.second

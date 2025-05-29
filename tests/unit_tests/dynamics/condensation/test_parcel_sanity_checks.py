@@ -1,4 +1,7 @@
-""" tests ensuring proper condensation solver operation in some parcel-model based cases """
+"""tests ensuring proper condensation solver operation in some parcel-model based cases"""
+
+import numpy as np
+
 import pytest
 from matplotlib import pyplot
 from scipy import signal
@@ -12,6 +15,15 @@ from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
 
+FORMULAE = Formulae()
+SPECTRUM = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
+N_SD = 64
+R_DRY, specific_concentration = spectral_sampling.Logarithmic(SPECTRUM).sample(N_SD)
+V_DRY = FORMULAE.trivia.volume(radius=R_DRY)
+KAPPA = 0.5
+CLOUD_RANGE = (0.5 * si.um, 25 * si.um)
+PARCEL_CELL = 0
+
 
 class TestParcelSanityChecks:
     @staticmethod
@@ -20,82 +32,74 @@ class TestParcelSanityChecks:
         (
             CPU,
             pytest.param(
-                GPU, marks=pytest.mark.xfail(strict=True)
-            ),  # TODO #1117 (works with CUDA!)
+                GPU,
+                marks=pytest.mark.xfail(
+                    strict=True,
+                    reason="TODO #1117 (works with CUDA!)",
+                ),
+            ),
         ),
     )
-    def test_noisy_supersaturation_profiles(
-        backend_class, plot=False
-    ):  # pylint: disable=too-many-locals
+    def test_noisy_supersaturation_profiles(backend_class, plot=False):
         """cases found using the README parcel snippet"""
         # arrange
         env = Parcel(
-            dt=0.25 * si.s,
+            dt=1 * si.s,
             mass_of_dry_air=1e3 * si.kg,
             p0=1122 * si.hPa,
             initial_water_vapour_mixing_ratio=20 * si.g / si.kg,
             T0=300 * si.K,
             w=2.5 * si.m / si.s,
         )
-        spectrum = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
-        kappa = 0.5 * si.dimensionless
-        cloud_range = (0.5 * si.um, 25 * si.um)
-        output_interval = 10
-        output_points = 200
-        n_sd = 64
+        output_interval = 2
+        output_points = 20
 
-        formulae = Formulae()
-        builder = Builder(backend=backend_class(formulae), n_sd=n_sd)
-        builder.set_environment(env)
+        builder = Builder(backend=backend_class(FORMULAE), n_sd=N_SD, environment=env)
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
 
-        r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(
-            n_sd
-        )
-        v_dry = formulae.trivia.volume(radius=r_dry)
         r_wet = equilibrate_wet_radii(
-            r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry
+            r_dry=R_DRY,
+            environment=builder.particulator.environment,
+            kappa_times_dry_volume=KAPPA * V_DRY,
+            rtol=1e-3,
         )
-
-        attributes = {
-            "multiplicity": discretise_multiplicities(
-                specific_concentration * env.mass_of_dry_air
-            ),
-            "dry volume": v_dry,
-            "kappa times dry volume": kappa * v_dry,
-            "volume": formulae.trivia.volume(radius=r_wet),
-        }
 
         particulator = builder.build(
-            attributes,
+            attributes={
+                "multiplicity": discretise_multiplicities(
+                    specific_concentration * env.mass_of_dry_air
+                ),
+                "dry volume": V_DRY,
+                "kappa times dry volume": KAPPA * V_DRY,
+                "volume": FORMULAE.trivia.volume(radius=r_wet),
+            },
             products=(
                 products.PeakSupersaturation(name="S_max", unit="%"),
                 products.EffectiveRadius(
-                    name="r_eff", unit="um", radius_range=cloud_range
+                    name="r_eff", unit="um", radius_range=CLOUD_RANGE
                 ),
                 products.ParticleConcentration(
-                    name="n_c_cm3", unit="cm^-3", radius_range=cloud_range
+                    name="n_c_cm3", unit="cm^-3", radius_range=CLOUD_RANGE
                 ),
                 products.WaterMixingRatio(
                     name="liquid water mixing ratio",
                     unit="g/kg",
-                    radius_range=cloud_range,
+                    radius_range=CLOUD_RANGE,
                 ),
                 products.ParcelDisplacement(name="z"),
             ),
         )
 
-        cell_id = 0
         output = {
-            product.name: [product.get()[cell_id]]
+            product.name: [product.get()[PARCEL_CELL]]
             for product in particulator.products.values()
         }
 
         for _ in range(output_points):
             particulator.run(steps=output_interval)
             for product in particulator.products.values():
-                output[product.name].append(product.get()[cell_id])
+                output[product.name].append(product.get()[PARCEL_CELL])
 
         # plot
         fig, axs = pyplot.subplots(1, len(particulator.products) - 1, sharey="all")
@@ -113,9 +117,7 @@ class TestParcelSanityChecks:
             pyplot.clf()
 
         # assert
-        supersaturation_peaks, _ = signal.find_peaks(
-            output["S_max"], width=2, prominence=0.01
-        )
+        supersaturation_peaks, _ = signal.find_peaks(output["S_max"])
         assert len(supersaturation_peaks) == 1
 
     @staticmethod
@@ -125,17 +127,15 @@ class TestParcelSanityChecks:
         """asserting that condensation modifies env thd and water_vapour_mixing_ratio only,
         not rhod"""
         # arrange
-        builder = Builder(n_sd=10, backend=backend_class())
-        builder.set_environment(
-            Parcel(
-                dt=1 * si.s,
-                mass_of_dry_air=1 * si.mg,
-                p0=1000 * si.hPa,
-                initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
-                T0=300 * si.K,
-                w=1 * si.m / si.s,
-            )
+        env = Parcel(
+            dt=1 * si.s,
+            mass_of_dry_air=1 * si.mg,
+            p0=1000 * si.hPa,
+            initial_water_vapour_mixing_ratio=22.2 * si.g / si.kg,
+            T0=300 * si.K,
+            w=1 * si.m / si.s,
         )
+        builder = Builder(n_sd=10, backend=backend_class(), environment=env)
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(
             Condensation(
@@ -183,3 +183,29 @@ class TestParcelSanityChecks:
             assert pred_thd_old != env.get_predicted("thd")[cell_id]
         else:
             assert pred_thd_old == env.get_predicted("thd")[cell_id]
+
+    @staticmethod
+    def test_zero_initial_delta_liquid_water_mixing_ratio(backend_class):
+        # arrange
+        env = Parcel(
+            dt=1 * si.s,
+            mass_of_dry_air=np.nan * si.mg,
+            p0=np.nan * si.hPa,
+            initial_water_vapour_mixing_ratio=44 * si.g / si.kg,
+            T0=np.nan * si.K,
+            w=np.nan * si.m / si.s,
+        )
+        builder = Builder(n_sd=1, backend=backend_class(), environment=env)
+        builder.add_dynamic(AmbientThermodynamics())
+        builder.add_dynamic(Condensation())
+
+        # act
+        particulator = builder.build(
+            products=(),
+            attributes=builder.particulator.environment.init_attributes(
+                kappa=1, r_dry=0.25 * si.um, n_in_dv=1000
+            ),
+        )
+
+        # assert
+        assert particulator.environment.delta_liquid_water_mixing_ratio == 0

@@ -27,10 +27,12 @@ from PySDM.products.size_spectral import (
 def run_box_breakup(
     settings, steps=None, backend_class=CPU, sample_in_radius=False, return_nv=False
 ):
-    builder = Builder(n_sd=settings.n_sd, backend=backend_class(settings.formulae))
-    env = Box(dv=settings.dv, dt=settings.dt)
-    builder.set_environment(env)
-    env["rhod"] = 1.0
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
+    )
+    builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     if sample_in_radius:
         diams, attributes["multiplicity"] = Logarithmic(settings.spectrum).sample(
@@ -77,11 +79,11 @@ def run_box_breakup(
         core.run(step - core.n_steps)
         y[i] = core.products["dv/dlnr"].get()[0]
         if return_nv:
-            y2[i] = core.products["N(v)"].get()[0]
-        rates[i, 0] = core.products["cr"].get()
-        rates[i, 1] = core.products["crd"].get()
-        rates[i, 2] = core.products["cor"].get()
-        rates[i, 3] = core.products["br"].get()
+            (y2[i],) = core.products["N(v)"].get()
+        (rates[i, 0],) = core.products["cr"].get()
+        (rates[i, 1],) = core.products["crd"].get()
+        (rates[i, 2],) = core.products["cor"].get()
+        (rates[i, 3],) = core.products["br"].get()
 
     x = (settings.radius_bins_edges[:-1] / si.micrometres,)[0]
 
@@ -89,10 +91,12 @@ def run_box_breakup(
 
 
 def run_box_NObreakup(settings, steps=None, backend_class=CPU):
-    builder = Builder(n_sd=settings.n_sd, backend=backend_class(settings.formulae))
-    env = Box(dv=settings.dv, dt=settings.dt)
-    builder.set_environment(env)
-    env["rhod"] = 1.0
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=backend_class(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
+    )
+    builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
@@ -120,10 +124,10 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     # run
     for i, step in enumerate(steps):
         core.run(step - core.n_steps)
-        y[i] = core.products["dv/dlnr"].get()[0]
-        rates[i, 0] = core.products["cr"].get()
-        rates[i, 1] = core.products["crd"].get()
-        rates[i, 2] = core.products["cor"].get()
+        (y[i],) = core.products["dv/dlnr"].get()
+        (rates[i, 0],) = core.products["cr"].get()
+        (rates[i, 1],) = core.products["crd"].get()
+        (rates[i, 2],) = core.products["cor"].get()
 
     x = (settings.radius_bins_edges[:-1] / si.micrometres,)[0]
 

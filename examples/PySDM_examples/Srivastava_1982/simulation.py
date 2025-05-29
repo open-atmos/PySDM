@@ -22,6 +22,7 @@ class Simulation:
         }
 
     def build(self, n_sd, seed, products):
+        env = Box(dt=self.settings.dt, dv=self.settings.dv)
         builder = Builder(
             backend=self.settings.backend_class(
                 formulae=Formulae(
@@ -32,8 +33,8 @@ class Simulation:
                 double_precision=self.double_precision,
             ),
             n_sd=n_sd,
+            environment=env,
         )
-        builder.set_environment(Box(dt=self.settings.dt, dv=self.settings.dv))
         builder.add_dynamic(self.collision_dynamic)
         particulator = builder.build(
             products=products,
@@ -69,9 +70,9 @@ class Simulation:
                     if step != 0:
                         particulator.run(steps=1)
                     for prod in self.settings.prods:
-                        self.simulation_res[n_sd][prod][seed][
-                            step
-                        ] = particulator.products[prod].get()
+                        (self.simulation_res[n_sd][prod][seed][step],) = (
+                            particulator.products[prod].get()
+                        )
 
                 np.testing.assert_allclose(
                     actual=self.simulation_res[n_sd][

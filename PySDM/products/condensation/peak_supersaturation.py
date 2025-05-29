@@ -4,11 +4,13 @@ highest supersaturation encountered while solving for condensation/evaporation (
  `PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity`;
  fetching a value resets the maximum value)
 """
+
 import numpy as np
 
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class PeakSupersaturation(Product):
     def __init__(self, unit="dimensionless", name=None):
         super().__init__(unit=unit, name=name)
@@ -18,6 +20,10 @@ class PeakSupersaturation(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
+
+        assert (
+            "Condensation" in self.particulator.dynamics
+        ), "It seems the Condensation dynamic was not added when building particulator"
         self.condensation = self.particulator.dynamics["Condensation"]
         self.RH_max = np.full_like(self.buffer, np.nan)
 

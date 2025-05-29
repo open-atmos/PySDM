@@ -1,4 +1,7 @@
+from functools import cached_property
+
 import numpy as np
+
 from PyMPDATA import Options, ScalarField, Solver, Stepper, VectorField
 from PyMPDATA.boundary_conditions import Extrapolated
 
@@ -19,41 +22,55 @@ class MPDATA_1D:
         self.dt = dt
         self.advector_of_t = advector_of_t
 
-        grid = (nz,)
-        options = Options(
+        self._grid = (nz,)
+        self._options = Options(
             n_iters=mpdata_settings["n_iters"],
             infinite_gauge=mpdata_settings["iga"],
             nonoscillatory=mpdata_settings["fct"],
             third_order_terms=mpdata_settings["tot"],
         )
-        stepper = Stepper(options=options, grid=grid, non_unit_g_factor=True)
         bcs = (Extrapolated(),)
-        zZ_scalar = arakawa_c.z_scalar_coord(grid) / nz
-        g_factor = ScalarField(
+        zZ_scalar = arakawa_c.z_scalar_coord(self._grid) / nz
+        self._g_factor = ScalarField(
             data=g_factor_of_zZ(zZ_scalar),
-            halo=options.n_halo,
+            halo=self._options.n_halo,
             boundary_conditions=bcs,
         )
-        advector = VectorField(
+        self._advector = VectorField(
             data=(np.full(nz + 1, advector_of_t(0)),),
-            halo=options.n_halo,
+            halo=self._options.n_halo,
             boundary_conditions=bcs,
         )
-        self.advectee = ScalarField(
+        self._advectee = ScalarField(
             data=advectee_of_zZ_at_t0(zZ_scalar),
-            halo=options.n_halo,
+            halo=self._options.n_halo,
             boundary_conditions=bcs,
         )
-        self.solver = Solver(
-            stepper=stepper,
-            advectee=self.advectee,
-            advector=advector,
-            g_factor=g_factor,
+
+    @cached_property
+    def solver(self):
+        return Solver(
+            stepper=Stepper(
+                options=self._options, grid=self._grid, non_unit_g_factor=True
+            ),
+            advectee=self._advectee,
+            advector=self._advector,
+            g_factor=self._g_factor,
         )
 
     @property
+    def solver_cached(self):
+        return "solver" in self.__dict__
+
+    @property
+    def advectee(self):
+        return (self.solver.advectee if self.solver_cached else self._advectee).get()
+
+    @property
     def advector(self):
-        return self.solver.advector.get_component(0)
+        return (
+            self.solver.advector if self.solver_cached else self._advector
+        ).get_component(0)
 
     def update_advector_field(self):
         self.__t += 0.5 * self.dt
@@ -61,5 +78,5 @@ class MPDATA_1D:
         np.testing.assert_array_less(np.abs(self.advector), 1)
         self.__t += 0.5 * self.dt
 
-    def __call__(self):
+    def __call__(self, _):
         self.solver.advance(1)

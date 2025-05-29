@@ -1,6 +1,7 @@
 """
 attribute storage class featuring particle permutation logic
 """
+
 from .storage_utils import StorageSignature
 
 

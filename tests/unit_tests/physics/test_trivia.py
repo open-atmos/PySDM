@@ -4,6 +4,8 @@ import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.physics import constants_defaults
 
 
 class TestTrivia:
@@ -39,3 +41,75 @@ class TestTrivia:
         # assert
         diff = np.abs(params - 0.2253)
         np.testing.assert_array_less(diff, 1e-3)
+
+    @staticmethod
+    def test_isotopic_enrichment_to_delta_SMOW():
+        # arrange
+        formulae = Formulae()
+        ARBITRARY_VALUE = 44
+
+        # act
+        delta = formulae.trivia.isotopic_enrichment_to_delta_SMOW(ARBITRARY_VALUE, 0)
+
+        # assert
+        assert delta == ARBITRARY_VALUE
+
+    @staticmethod
+    def test_schmidt_number():
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae()
+            si = constants_defaults.si
+            sut = formulae.trivia.air_schmidt_number
+            eta_air = formulae.air_dynamic_viscosity.eta_air(temperature=300 * si.K)
+
+            # Act
+            sc = sut(
+                dynamic_viscosity=eta_air,
+                diffusivity=constants_defaults.D0,
+                density=1 * si.kg / si.m**3,
+            )
+
+            # Assert
+            assert sc.check(si.dimensionless)
+
+    @staticmethod
+    def test_poissonian_avoidance_function():
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae()
+            si = constants_defaults.si
+            sut = formulae.trivia.poissonian_avoidance_function
+
+            # Act
+            prob = sut(
+                r=1 / si.s,
+                dt=10 * si.min,
+            )
+
+            # Assert
+            assert prob.check(si.dimensionless)
+
+    @staticmethod
+    def test_kelvin_to_celsius():
+        # arrange
+        formulae = Formulae()
+        temperature_in_kelvin = 44
+
+        # act
+        temperature_in_celsius = formulae.trivia.K2C(temperature_in_kelvin)
+
+        # assert
+        assert temperature_in_celsius == temperature_in_kelvin - 273.15
+
+    @staticmethod
+    def test_celsius_to_kelvin():
+        # arrange
+        formulae = Formulae()
+        temperature_in_celsius = 666
+
+        # act
+        temperature_in_kelvin = formulae.trivia.C2K(temperature_in_celsius)
+
+        # assert
+        assert temperature_in_kelvin == temperature_in_celsius + 273.15

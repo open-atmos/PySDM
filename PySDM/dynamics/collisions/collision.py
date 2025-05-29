@@ -8,12 +8,13 @@ General algorithm format:
         1 - Ec - Eb = bounce back to original fragments (subset of breakup)
     b. Perform the relevant dynamic
 """
+
 import warnings
 from collections import namedtuple
 
 import numpy as np
 
-from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.impl import get_attribute_class
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
@@ -22,6 +23,7 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
     RandomGeneratorOptimizerNoPair,
 )
 from PySDM.physics import si
+from PySDM.dynamics.impl import register_dynamic
 
 # pylint: disable=too-many-lines
 
@@ -31,10 +33,11 @@ DEFAULTS = namedtuple(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     adaptive=True,
     substeps=1,
-    max_multiplicity=Multiplicities.MAX_VALUE // int(2e5),
+    max_multiplicity=get_attribute_class("multiplicity").MAX_VALUE // int(2e5),
 )
 
 
+@register_dynamic()
 class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -287,6 +290,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         )
 
 
+@register_dynamic()
 class Coalescence(Collision):
     def __init__(
         self,
@@ -315,6 +319,7 @@ class Coalescence(Collision):
         )
 
 
+@register_dynamic()
 class Breakup(Collision):
     def __init__(
         self,

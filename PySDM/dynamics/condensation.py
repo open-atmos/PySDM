@@ -2,11 +2,13 @@
 bespoke condensational growth solver
 with implicit-in-particle-size integration and adaptive timestepping
 """
+
 from collections import namedtuple
 
 import numpy as np
 
-from ..physics import si
+from PySDM.physics import si
+from PySDM.dynamics.impl import register_dynamic
 
 DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
     rtol_x=1e-6,
@@ -16,6 +18,7 @@ DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
 )
 
 
+@register_dynamic()
 class Condensation:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
@@ -68,6 +71,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         builder.request_attribute("critical volume")
         builder.request_attribute("kappa")
         builder.request_attribute("dry volume organic fraction")
+        builder.request_attribute("Reynolds number")
 
         for counter in ("n_substeps", "n_activating", "n_deactivating", "n_ripening"):
             self.counters[counter] = self.particulator.Storage.empty(

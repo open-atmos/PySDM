@@ -3,7 +3,6 @@ from typing import Optional
 from pystrict import strict
 
 from PySDM import Formulae
-from PySDM.physics import constants as const
 from PySDM.physics import si
 
 
@@ -16,7 +15,7 @@ class Settings:
         ccn_sampling_n: int = 11,
         in_sampling_n: int = 20,
         initial_temperature: float,
-        timestep: float
+        timestep: float,
     ):
         self.ccn_sampling_n = ccn_sampling_n
         self.in_sampling_n = in_sampling_n
@@ -40,7 +39,7 @@ class Settings:
 
     @property
     def pv0(self):
-        pvs = self.formulae.saturation_vapour_pressure.pvs_Celsius(self.T0 - const.T0)
+        pvs = self.formulae.saturation_vapour_pressure.pvs_water(self.T0)
         return self.initial_relative_humidity * pvs
 
     @property

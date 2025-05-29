@@ -1,7 +1,9 @@
-""" comparing kappa-Koehler wet radius equilibration in PySDM and PartMC
-  (based on PyPartMC-examples notebook by Zach D'Aquino) """
+"""comparing kappa-Koehler wet radius equilibration in PySDM and PartMC
+(based on PyPartMC-examples notebook by Zach D'Aquino)"""
+
 # pylint: disable=missing-function-docstring,no-member
 import platform
+import sys
 from collections import namedtuple
 
 import numpy as np
@@ -15,7 +17,7 @@ from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
 
-if platform.architecture()[0] == "64bit":
+if platform.architecture()[0] == "64bit" and sys.version_info < (3, 12):  # TODO #1410
     import PyPartMC
 
 linestyles = {"PyPartMC": "dashed", "PySDM": "dotted"}
@@ -25,15 +27,13 @@ y_unit = 1 / si.cm**3
 
 def pysdm(dry_diam, temp, rel_humid, kpa):
     r_dry = dry_diam / 2
-    builder = Builder(n_sd=0, backend=CPU())
-    environment = Box(dt=np.nan, dv=np.nan)
-    environment.register(builder)
-    environment["T"] = temp
-    environment["RH"] = rel_humid
+    builder = Builder(n_sd=0, backend=CPU(), environment=Box(dt=np.nan, dv=np.nan))
+    builder.particulator.environment["T"] = temp
+    builder.particulator.environment["RH"] = rel_humid
     kappa_times_dry_volume = kpa * (np.pi / 6) * dry_diam**3
     return 2 * equilibrate_wet_radii(
         r_dry=r_dry,
-        environment=environment,
+        environment=builder.particulator.environment,
         kappa_times_dry_volume=kappa_times_dry_volume,
     )
 
@@ -75,7 +75,8 @@ def pypartmc(dry_diam, temp, rel_humid, kpa):
 
 
 @pytest.mark.skipif(
-    platform.architecture()[0] != "64bit", reason="binary package availability"
+    platform.architecture()[0] != "64bit" or sys.version_info >= (3, 12),
+    reason="binary package availability",  # TODO #1410
 )
 @pytest.mark.parametrize("kappa", (0.1, 1))
 @pytest.mark.parametrize("temperature", (300 * si.K,))

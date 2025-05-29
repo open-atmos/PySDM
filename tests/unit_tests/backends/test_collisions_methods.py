@@ -67,9 +67,9 @@ class TestCollisionMethods:
             ((4, 5, 4.5, 3, 0.1), (0, 1, 2, 3, 4, 5), 5),
         ),
     )
-    def test_adaptive_sdm_end(backend_class, dt_left, cell_start, expected):
+    def test_adaptive_sdm_end(backend_instance, dt_left, cell_start, expected):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
         cell_start = backend.Storage.from_ndarray(np.asarray(cell_start))
 
@@ -150,7 +150,7 @@ class TestCollisionMethods:
     # pylint: disable=too-many-locals
     def test_scale_prob_for_adaptive_sdm_gamma(
         *,
-        backend_class,
+        backend_instance,
         gamma,
         idx,
         n,
@@ -163,7 +163,7 @@ class TestCollisionMethods:
         expected_n_substep,
     ):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
         _idx = make_Index(backend).from_ndarray(np.asarray(idx))
         _n = make_IndexedStorage(backend).from_ndarray(_idx, np.asarray(n))

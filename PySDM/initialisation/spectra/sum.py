@@ -2,6 +2,7 @@
 spectrum defined as a sum of an arbitrary set of
  `PySDM.initialisation.impl.spectrum.Spectrum` instances
 """
+
 import numpy as np
 from scipy.interpolate import interp1d
 

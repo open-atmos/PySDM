@@ -12,19 +12,22 @@ from PySDM.physics import si
 
 class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
-        env = Parcel(
-            dt=settings.dt,
-            mass_of_dry_air=settings.mass_of_dry_air,
-            p0=settings.p0,
-            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-            T0=settings.T0,
-            w=settings.w,
+        builder = Builder(
+            n_sd=settings.n_sd,
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
+            ),
+            environment=Parcel(
+                dt=settings.dt,
+                mass_of_dry_air=settings.mass_of_dry_air,
+                p0=settings.p0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+                T0=settings.T0,
+                w=settings.w,
+            ),
         )
 
-        builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
-        builder.set_environment(env)
-
-        attributes = env.init_attributes(
+        attributes = builder.particulator.environment.init_attributes(
             n_in_dv=settings.n_in_dv,
             kappa=settings.kappa,
             r_dry=settings.r_dry,
@@ -111,7 +114,7 @@ class Simulation(BasicSimulation):
                 key="S_VI",
                 dry_radius_bins_edges=settings.dry_radius_bins_edges,
                 name="dm_S_VI/dlog_10(dry diameter)",
-                unit='ug / m^3"',
+                unit="ug / m^3",
             ),
         )
 

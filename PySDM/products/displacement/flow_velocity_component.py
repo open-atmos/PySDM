@@ -1,12 +1,13 @@
 """
-reports on the maximum Courant field value for each cell (maximum of
-absolute values of Courant number on all edges of a cell)
+reports on the flow velocity
 """
+
 import numpy as np
 
-from PySDM.products.impl.product import Product
+from PySDM.products.impl import Product, register_product
 
 
+@register_product()
 class FlowVelocityComponent(Product):
     def __init__(self, component: int, name=None, unit="m/s"):
         super().__init__(unit=unit, name=name)

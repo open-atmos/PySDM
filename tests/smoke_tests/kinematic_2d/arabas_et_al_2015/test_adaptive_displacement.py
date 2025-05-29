@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from matplotlib import pyplot
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation
 
 from PySDM import Formulae
 from PySDM.backends import CPU
@@ -64,10 +64,12 @@ def test_adaptive_displacement(rtol, plot=False):
     pyplot.yticks(np.arange(settings.grid[1] + 1))
     if plot:
         pyplot.show()
+    else:
+        pyplot.clf()
 
     # Assert
     if rtol is not None:
         assert 1 < simulation.particulator.dynamics["Displacement"]._n_substeps < 50
-    assert np.count_nonzero(sd_count) == np.product(settings.grid)
+    assert np.count_nonzero(sd_count) == np.prod(settings.grid)
     assert np.std(sd_count) < settings.n_sd_per_gridbox / 2.5
     assert np.max(sd_count) < 2.5 * settings.n_sd_per_gridbox

@@ -2,11 +2,13 @@
 average pH (averaging after or before taking the logarithm in pH definition)
 with weighting either by number or volume
 """
+
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import MomentProduct, register_product
 
 
+@register_product()
 class Acidity(MomentProduct):
     def __init__(
         self,
@@ -15,7 +17,7 @@ class Acidity(MomentProduct):
         weighting="volume",
         attr="conc_H",
         unit="dimensionless",
-        name=None
+        name=None,
     ):
         assert attr in ("pH", "moles_H", "conc_H")
         self.attr = attr

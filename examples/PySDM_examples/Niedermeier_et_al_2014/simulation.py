@@ -16,18 +16,19 @@ from PySDM.products import AmbientTemperature, IceWaterContent, ParcelDisplaceme
 class Simulation(BasicSimulation):
     def __init__(self, settings: Settings):
         n_particles = settings.ccn_sampling_n - 1 + settings.in_sampling_n
-        builder = Builder(n_sd=n_particles, backend=CPU(settings.formulae))
-        builder.set_environment(
-            Parcel(
-                dt=settings.timestep,
-                p0=settings.p0,
-                T0=settings.T0,
-                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                mass_of_dry_air=settings.mass_of_dry_air,
-                w=settings.vertical_velocity,
-                mixed_phase=True,
-            )
+        env = Parcel(
+            dt=settings.timestep,
+            p0=settings.p0,
+            T0=settings.T0,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+            mass_of_dry_air=settings.mass_of_dry_air,
+            w=settings.vertical_velocity,
+            mixed_phase=True,
         )
+        builder = Builder(
+            n_sd=n_particles, backend=CPU(settings.formulae), environment=env
+        )
+
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
         builder.add_dynamic(Freezing(singular=False))
@@ -50,15 +51,15 @@ class Simulation(BasicSimulation):
             "multiplicity": ccn_conc_float * air_volume,
             "dry volume": dry_volume,
             "kappa times dry volume": settings.kappa * dry_volume,
-            "volume": None,
             "immersed surface area": immersed_surface_area,
         }
-        attributes["volume"] = settings.formulae.trivia.volume(
+        attributes["signed water mass"] = settings.formulae.trivia.volume(
             radius=equilibrate_wet_radii(
                 r_dry=ccn_diameter / 2,
                 environment=builder.particulator.environment,
                 kappa_times_dry_volume=attributes["kappa times dry volume"],
             )
+            * settings.formulae.constants.rho_w
         )
 
         for attribute, data in attributes.items():
@@ -67,9 +68,11 @@ class Simulation(BasicSimulation):
                     data[:-1],
                     np.full(
                         settings.in_sampling_n,
-                        data[-1]
-                        if attribute != "multiplicity"
-                        else data[-1] / settings.in_sampling_n,
+                        (
+                            data[-1]
+                            if attribute != "multiplicity"
+                            else data[-1] / settings.in_sampling_n
+                        ),
                     ),
                 )
             )

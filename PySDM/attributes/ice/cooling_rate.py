@@ -3,11 +3,12 @@ cooling rate estimated as the difference in current and previous grid-cell
  temperatures divided by the timestep (i.e. equals zero if particle has not
  moved to a different cell since the last timestep)
 """
+
 import numpy as np
+from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
-from PySDM.attributes.impl import DerivedAttribute
 
-
+@register_attribute()
 class CoolingRate(DerivedAttribute):
     def __init__(self, builder):
         self.cell_id = builder.get_attribute("cell id")
@@ -20,6 +21,9 @@ class CoolingRate(DerivedAttribute):
         builder.particulator.observers.append(self)
 
     def notify(self):
+        """triggers update to ensure recalculation is done before
+        overwriting `self.prev_T` with current temperature"""
+        self.update()
         cell_id = self.particulator.attributes["cell id"]
         self.prev_T[:] = self.particulator.environment["T"][cell_id]
 

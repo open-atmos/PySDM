@@ -1,14 +1,16 @@
 """
 Provides radius bin-resolved average terminal velocity (average is particle-number weighted)
 """
+
 import numpy as np
 
-from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
+from PySDM.products.impl import SpectrumMomentProduct, register_product
 
 ATTR = "terminal velocity"
 RANK = 1
 
 
+@register_product()
 class RadiusBinnedNumberAveragedTerminalVelocity(SpectrumMomentProduct):
     def __init__(self, radius_bin_edges, name=None, unit="m/s"):
         super().__init__(name=name, unit=unit, attr_unit="m")

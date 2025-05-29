@@ -1,6 +1,6 @@
 import numpy as np
+from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 from pystrict import strict
-from scipy import constants as sci
 
 from PySDM import Formulae
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
@@ -18,31 +18,19 @@ class Settings:
         model: str,
         spectral_sampling: type(spec_sampling.SpectralSampling),
         w: float = 0.32 * si.m / si.s,
-        delta_min: float = 0.1,  # 0.2 in paper, but 0.1 matches plot fig 1c/d
-        MAC: float = 1,
-        HAC: float = 1,
-        c_pd: float = 1005 * si.joule / si.kilogram / si.kelvin,
-        g_std: float = sci.g * si.metre / si.second**2,
-        scipy_ode_solver: bool = False,
     ):
         assert model in ("Constant", "CompressedFilmOvadnevaite")
         self.model = model
         self.n_sd_per_mode = n_sd_per_mode
-        self.scipy_ode_solver = scipy_ode_solver
         self.formulae = Formulae(
             surface_tension=model,
-            constants={
-                "sgm_org": 40 * si.mN / si.m,
-                "delta_min": delta_min * si.nm,
-                "MAC": MAC,
-                "HAC": HAC,
-                "c_pd": c_pd,
-                "g_std": g_std,
-            },
+            constants=LOWE_CONSTS,
             diffusion_kinetics="LoweEtAl2019",
             diffusion_thermics="LoweEtAl2019",
-            latent_heat="Lowe2019",
+            latent_heat_vapourisation="Lowe2019",
             saturation_vapour_pressure="Lowe1977",
+            optical_albedo="Bohren1987",
+            optical_depth="Stephens1978",
         )
         const = self.formulae.constants
         self.aerosol = aerosol
@@ -54,13 +42,9 @@ class Settings:
         self.dt = dz / self.w
         self.output_interval = 1 * self.dt
 
-        self.g = 9.81 * si.m / si.s**2
-
         self.p0 = 980 * si.mbar
         self.T0 = 280 * si.K
-        pv0 = 0.999 * self.formulae.saturation_vapour_pressure.pvs_Celsius(
-            self.T0 - const.T0
-        )
+        pv0 = 0.999 * self.formulae.saturation_vapour_pressure.pvs_water(self.T0)
         self.initial_water_vapour_mixing_ratio = const.eps * pv0 / (self.p0 - pv0)
 
         self.cloud_radius_range = (0.5 * si.micrometre, np.inf)

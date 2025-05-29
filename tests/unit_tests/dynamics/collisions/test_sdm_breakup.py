@@ -54,10 +54,12 @@ class TestSDMBreakup:
         nsteps = 10
 
         n_sd = len(attributes["multiplicity"])
+        env = Box(dv=1 * si.cm**3, dt=dt)
         builder = Builder(
-            n_sd, backend_class(Formulae(fragmentation_function="AlwaysN"))
+            n_sd,
+            backend_class(Formulae(fragmentation_function="AlwaysN")),
+            environment=env,
         )
-        builder.set_environment(Box(dv=1 * si.cm**3, dt=dt))
         builder.add_dynamic(breakup)
         particulator = builder.build(attributes=attributes, products=())
 
@@ -92,12 +94,12 @@ class TestSDMBreakup:
             ),
         ],
     )
-    def test_single_collision_bounce(params, backend_class):
+    def test_single_collision_bounce(params, backend_instance):
         # Arrange
-        backend = backend_class()
+        backend = backend_instance
         n_sd = 2
-        builder = Builder(n_sd, backend)
-        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        env = Box(dv=np.NaN, dt=np.NaN)
+        builder = Builder(n_sd, backend, environment=env)
         n_init = [6, 6]
         particulator = builder.build(
             attributes={
@@ -170,12 +172,14 @@ class TestSDMBreakup:
             },
         ],
     )
-    def test_breakup_counters(params, backend_class):  # pylint: disable=too-many-locals
+    def test_breakup_counters(
+        params, backend_instance
+    ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
-        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        env = Box(dv=np.NaN, dt=np.NaN)
+        builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
@@ -343,8 +347,8 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class(double_precision=True))
-        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        env = Box(dv=np.NaN, dt=np.NaN)
+        builder = Builder(n_sd, backend_class(double_precision=True), environment=env)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
@@ -463,8 +467,8 @@ class TestSDMBreakup:
         def run_simulation(_n_times, _gamma):
             n_init = params["n_init"]
             n_sd = len(n_init)
-            builder = Builder(n_sd, backend_class())
-            builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+            env = Box(dv=np.NaN, dt=np.NaN)
+            builder = Builder(n_sd, backend_class(), environment=env)
             particulator = builder.build(
                 attributes={
                     "multiplicity": np.asarray(n_init),
@@ -542,8 +546,8 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend)
-        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        env = Box(dv=np.NaN, dt=np.NaN)
+        builder = Builder(n_sd, backend, environment=env)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
@@ -611,8 +615,8 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend)
-        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        env = Box(dv=np.NaN, dt=np.NaN)
+        builder = Builder(n_sd, backend, environment=env)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
@@ -704,13 +708,13 @@ class TestSDMBreakup:
     )
     @pytest.mark.parametrize("flag", ("multiplicity", "v", "conserve", "deficit"))
     def test_noninteger_fragments(
-        params, flag, backend_class
+        params, flag, backend_instance
     ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
-        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        env = Box(dv=np.NaN, dt=np.NaN)
+        builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),
@@ -785,13 +789,11 @@ class TestSDMBreakup:
         backend=CPU(),
     ):  # pylint: disable=too-many-locals
         n_sd = 2**5
-        builder = Builder(n_sd=n_sd, backend=backend)
 
         dv = 1 * si.m**3
         dt = 1 * si.s
         env = Box(dv=dv, dt=dt)
-        builder.set_environment(env)
-        env["rhod"] = 1.0
+        builder = Builder(n_sd=n_sd, backend=backend, environment=env)
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
@@ -824,6 +826,7 @@ class TestSDMBreakup:
             ),
         )
         particulator = builder.build(attributes, products)
+        particulator.environment["rhod"] = 1.0
 
         t_end = 100
         particulator.run(t_end - particulator.n_steps)
@@ -863,8 +866,10 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class(Formulae(handle_all_breakups=True)))
-        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        env = Box(dv=np.NaN, dt=np.NaN)
+        builder = Builder(
+            n_sd, backend_class(Formulae(handle_all_breakups=True)), environment=env
+        )
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(n_init),

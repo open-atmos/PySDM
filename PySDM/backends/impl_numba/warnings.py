@@ -2,6 +2,7 @@
 warning reporting logic for use whithin Numba njitted code (printing to standard
  error using numba.objmode() allowing to capture the output from Python tests
 """
+
 import sys
 
 import numba

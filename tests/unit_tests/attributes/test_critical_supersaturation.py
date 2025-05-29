@@ -15,20 +15,18 @@ def test_critical_supersaturation():
     S_max = 0.01
     vdry = np.linspace(0.001, 1, n_sd) * si.um**3
 
-    builder = Builder(n_sd=n_sd, backend=CPU())
     env = Box(dt=np.nan, dv=np.nan)
-    builder.set_environment(env)
-    env["T"] = T
+    builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
     particulator = builder.build(
         attributes={
             "multiplicity": np.ones(n_sd),
             "volume": np.linspace(0.01, 10, n_sd) * si.um**3,
             "dry volume": vdry,
             "kappa times dry volume": 0.9 * vdry,
-            "dry volume organic": np.zeros(n_sd),
         },
         products=(ActivableFraction(),),
     )
+    particulator.environment["T"] = T
 
     # act
     AF = particulator.products["activable fraction"].get(S_max=S_max)

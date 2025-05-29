@@ -1,12 +1,15 @@
 """
 spatial mesh representation (incl. memory strides)
 """
+
 import numpy as np
+from PySDM.physics import si
 
 
 class Mesh:
     # pylint: disable=too-many-arguments
     def __init__(self, grid, size, n_cell=None, dv=None, n_dims=None, strides=None):
+        """sizes of dimensions not specified in grid/size are assumed to be of 1 m"""
         self.grid = grid
         self.size = size
         self.strides = strides or Mesh.__strides(grid)
@@ -25,6 +28,14 @@ class Mesh:
     @property
     def dim(self):
         return self.n_dims
+
+    @property
+    def domain_bottom_surface_area(self):
+        assert self.n_dims > 0
+        return {
+            1: 1 * si.m**2,
+            2: 1 * si.m * self.size[0],
+        }[self.n_dims]
 
     @staticmethod
     def mesh_0d(dv=None):

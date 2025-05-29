@@ -1,6 +1,7 @@
 """
 factory logic for creating `PySDM.impl.particle_attributes.ParticleAttributes` instances
 """
+
 import numpy as np
 
 from PySDM.attributes.impl import (
@@ -10,8 +11,8 @@ from PySDM.attributes.impl import (
     ExtensiveAttribute,
     MaximumAttribute,
 )
-from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.impl.particle_attributes import ParticleAttributes
+from PySDM.attributes.impl import get_attribute_class
 
 
 class ParticleAttributesFactory:
@@ -29,7 +30,12 @@ class ParticleAttributesFactory:
                 maximum_attr.append(attr_name)
             elif not isinstance(
                 req_attr[attr_name],
-                (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute),
+                (
+                    DerivedAttribute,
+                    get_attribute_class("multiplicity"),
+                    CellAttribute,
+                    DummyAttribute,
+                ),
             ):
                 raise AssertionError()
 

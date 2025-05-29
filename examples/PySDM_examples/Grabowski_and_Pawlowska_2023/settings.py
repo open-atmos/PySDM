@@ -24,7 +24,7 @@ class Settings:
         displacement: float = 1000 * si.m,
         mass_accommodation_coefficient: float = 0.3,
         rtol_thd: float = condensation_tolerance,
-        rtol_x: float = condensation_tolerance
+        rtol_x: float = condensation_tolerance,
     ):
         self.formulae = Formulae(constants={"MAC": mass_accommodation_coefficient})
         self.n_sd = n_sd
@@ -61,9 +61,7 @@ class Settings:
         self.initial_temperature = initial_temperature
         pv0 = (
             initial_relative_humidity
-            * self.formulae.saturation_vapour_pressure.pvs_Celsius(
-                initial_temperature - const.T0
-            )
+            * self.formulae.saturation_vapour_pressure.pvs_water(initial_temperature)
         )
         self.initial_vapour_mixing_ratio = const.eps * pv0 / (initial_pressure - pv0)
         self.t_max = displacement / vertical_velocity

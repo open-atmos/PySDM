@@ -14,11 +14,11 @@ class Settings:
         N_STP: float,
         r_dry: float,
         mass_of_dry_air: float,
-        coord: str = "VolumeLogarithm",
+        coord: str = "WaterMassLogarithm",
     ):
         self.formulae = Formulae(
             saturation_vapour_pressure="AugustRocheMagnus",
-            condensation_coordinate=coord,
+            diffusion_coordinate=coord,
         )
         const = self.formulae.constants
         self.p0 = 1000 * si.hectopascals
@@ -27,7 +27,7 @@ class Settings:
         self.T0 = 300 * si.kelvin
         self.z_half = 150 * si.metres
 
-        pvs = self.formulae.saturation_vapour_pressure.pvs_Celsius(self.T0 - const.T0)
+        pvs = self.formulae.saturation_vapour_pressure.pvs_water(self.T0)
         self.initial_water_vapour_mixing_ratio = const.eps / (
             self.p0 / self.RH0 / pvs - 1
         )

@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from PySDM import Builder, Formulae
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, RogersYau
+from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
 from PySDM.environments import Box
 from PySDM.physics import constants as const
 from PySDM.physics import si
@@ -21,13 +21,14 @@ def test_approximation(backend_class, plot=False):
         * const.si.mm
         / 2
     )
-    particulator = DummyParticulator(backend_class, n_sd=len(r))
+    particulator = DummyParticulator(
+        backend_class, n_sd=len(r), formulae=Formulae(terminal_velocity="RogersYau")
+    )
     r = particulator.backend.Storage.from_ndarray(r)
     u = (
         np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565])
         / 100
     )
-
     u_term_ry = particulator.backend.Storage.empty((len(u),), float)
     RogersYau(particulator=particulator)(u_term_ry, r)
 
@@ -67,8 +68,8 @@ def test_terminal_velocity_boundary_values(
         context = exception_context
 
     formulae = Formulae(terminal_velocity=variant)
-    builder = Builder(n_sd=1, backend=backend_class(formulae))
-    builder.set_environment(Box(dv=np.nan, dt=np.nan))
+    env = Box(dv=np.nan, dt=np.nan)
+    builder = Builder(n_sd=1, backend=backend_class(formulae), environment=env)
     builder.request_attribute("terminal velocity")
     particulator = builder.build(
         attributes={
@@ -79,7 +80,33 @@ def test_terminal_velocity_boundary_values(
 
     # act
     with context:
-        v_term = particulator.attributes["terminal velocity"].to_ndarray()
+        (v_term,) = particulator.attributes["terminal velocity"].to_ndarray()
 
         # assert
         np.testing.assert_approx_equal(v_term, expected_v_term)
+
+
+@pytest.mark.parametrize(
+    "prefactors, powers",
+    [
+        ([2.0], [1 / 6]),
+        ([2.0, 1.0], [1 / 6, 1 / 8]),
+        pytest.param([1.0], [1 / 6, 1 / 8], marks=pytest.mark.xfail(strict=True)),
+    ],
+)
+def test_power_series(backend_class, prefactors, powers):
+    r = np.array([0.01, 0.1, 1.0]) * const.si.mm / 2
+    particulator = DummyParticulator(backend_class, n_sd=len(r))
+    u = np.zeros_like(r)
+    for j, pref in enumerate(prefactors):
+        u = u + pref * 4 / 3 * const.PI * (r ** (powers[j] * 3))
+    r = particulator.backend.Storage.from_ndarray(r)
+
+    u_term_ps = particulator.backend.Storage.empty((len(u),), float)
+    PowerSeries(particulator=particulator, prefactors=prefactors, powers=powers)(
+        u_term_ps, r
+    )
+
+    u_term_true = particulator.backend.Storage.from_ndarray(u)
+
+    np.testing.assert_array_almost_equal(u, u_term_true)

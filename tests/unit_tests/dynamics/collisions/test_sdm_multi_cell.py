@@ -16,9 +16,8 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
     @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
     def test_coalescence_call(n_sd, backend_class, adaptive):
-        # TODO #330
         if backend_class is ThrustRTC:
-            return
+            pytest.skip("TODO #330")
 
         # Arrange
         n = np.ones(n_sd)

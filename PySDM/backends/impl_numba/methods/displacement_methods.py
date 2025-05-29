@@ -1,6 +1,9 @@
 """
 CPU implementation of backend methods for particle displacement (advection and sedimentation)
 """
+
+from functools import cached_property
+
 import numba
 
 from PySDM.backends.impl_numba import conf
@@ -142,62 +145,69 @@ class DisplacementMethods(BackendMethods):
         else:
             raise NotImplementedError()
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-    # pylint: disable=too-many-arguments
-    def flag_precipitated_body(
-        cell_origin,
-        position_in_cell,
-        volume,
-        multiplicity,
-        idx,
-        length,
-        healthy,
-        precipitation_counting_level_index,
-        displacement,
-    ):
-        rainfall = 0.0
-        flag = len(idx)
-        for i in range(length):
-            position_within_column = (
-                cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-            )
-            if (
-                # falling
-                displacement[-1, idx[i]] < 0
-                and
-                # and crossed precip-counting level
-                position_within_column < precipitation_counting_level_index
-            ):
-                rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
-                idx[i] = flag
-                healthy[0] = 0
-        return rainfall
+    @cached_property
+    def _flag_precipitated_body(self):
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
+        # pylint: disable=too-many-arguments
+        def body(
+            cell_origin,
+            position_in_cell,
+            water_mass,
+            multiplicity,
+            idx,
+            length,
+            healthy,
+            precipitation_counting_level_index,
+            displacement,
+        ):
+            rainfall_mass = 0.0
+            flag = len(idx)
+            for i in range(length):
+                position_within_column = (
+                    cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
+                )
+                if (
+                    # falling
+                    displacement[-1, idx[i]] < 0
+                    and
+                    # and crossed precip-counting level
+                    position_within_column < precipitation_counting_level_index
+                ):
+                    rainfall_mass += abs(water_mass[idx[i]]) * multiplicity[idx[i]]
+                    idx[i] = flag
+                    healthy[0] = 0
+            return rainfall_mass
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-    # pylint: disable=too-many-arguments
-    def flag_out_of_column_body(
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-    ):
-        flag = len(idx)
-        for i in range(length):
-            position_within_column = (
-                cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
-            )
-            if (
-                position_within_column < 0
-                or position_within_column > domain_top_level_index
-            ):
-                idx[i] = flag
-                healthy[0] = 0
+        return body
 
-    @staticmethod
+    @cached_property
+    def _flag_out_of_column_body(self):
+        @numba.njit(**{**self.default_jit_flags, "parallel": False})
+        # pylint: disable=too-many-arguments
+        def body(
+            cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+        ):
+            flag = len(idx)
+            for i in range(length):
+                position_within_column = (
+                    cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]]
+                )
+                if (
+                    position_within_column < 0
+                    or position_within_column > domain_top_level_index
+                ):
+                    idx[i] = flag
+                    healthy[0] = 0
+
+        return body
+
     # pylint: disable=too-many-arguments
     def flag_precipitated(
+        self,
+        *,
         cell_origin,
         position_in_cell,
-        volume,
+        water_mass,
         multiplicity,
         idx,
         length,
@@ -205,10 +215,12 @@ class DisplacementMethods(BackendMethods):
         precipitation_counting_level_index,
         displacement,
     ) -> float:
-        return DisplacementMethods.flag_precipitated_body(
+        """return a scalar value corresponding to the mass of water (all phases) that crossed
+        the bottom boundary of the entire domain"""
+        return self._flag_precipitated_body(
             cell_origin.data,
             position_in_cell.data,
-            volume.data,
+            water_mass.data,
             multiplicity.data,
             idx.data,
             length,
@@ -217,12 +229,17 @@ class DisplacementMethods(BackendMethods):
             displacement.data,
         )
 
-    @staticmethod
     # pylint: disable=too-many-arguments
     def flag_out_of_column(
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
-    ) -> float:
-        return DisplacementMethods.flag_out_of_column_body(
+        self,
+        cell_origin,
+        position_in_cell,
+        idx,
+        length,
+        healthy,
+        domain_top_level_index,
+    ):
+        self._flag_out_of_column_body(
             cell_origin.data,
             position_in_cell.data,
             idx.data,

@@ -3,10 +3,11 @@ Various (hopefully) undebatable formulae
 
 `erfinv` approximation based on eqs. 11-12 from Vedder 1987, https://doi.org/10.1119/1.15018
 """
+
 import numpy as np
 
 
-class Trivia:
+class Trivia:  # pylint: disable=too-many-public-methods
     def __init__(self, _):
         pass
 
@@ -75,12 +76,16 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen_and_saturated(_, water_mass, relative_humidity):
-        return water_mass > 0 and relative_humidity > 1
+    def unfrozen(signed_water_mass):
+        return signed_water_mass > 0
 
     @staticmethod
-    def frozen_and_above_freezing_point(const, water_mass, temperature):
-        return water_mass < 0 and temperature > const.T0
+    def unfrozen_and_saturated(signed_water_mass, relative_humidity):
+        return signed_water_mass > 0 and relative_humidity > 1
+
+    @staticmethod
+    def frozen_and_above_freezing_point(const, signed_water_mass, temperature):
+        return signed_water_mass < 0 and temperature > const.T0
 
     @staticmethod
     def erfinv_approx(const, c):
@@ -97,3 +102,58 @@ class Trivia:
                 / 3
             )
         )
+
+    @staticmethod
+    def isotopic_delta_2_ratio(delta, reference_ratio):
+        return (delta + 1) * reference_ratio
+
+    @staticmethod
+    def isotopic_ratio_2_delta(ratio, reference_ratio):
+        return ratio / reference_ratio - 1
+
+    @staticmethod
+    def isotopic_enrichment_to_delta_SMOW(E, delta_0_SMOW):
+        """(see also eq. 10 in Pierchala et al. 2022)
+
+        conversion from E to delta_R_SMOW with:
+          δ_R/SMOW = R / R_SMOW - 1
+          E = δ_R/R0 = R / R0 - 1
+        and the sought formula (the quantity used to define d-excess, etc.) is:
+          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1
+                      = (E + 1) * (δ_R0/SMOW + 1) - 1
+        where:
+          δ_R0/SMOW is the initial SMOW-delta in the experiment
+        """
+        return (E + 1) * (delta_0_SMOW + 1) - 1
+
+    @staticmethod
+    def mixing_ratio_to_specific_content(mixing_ratio):
+        return mixing_ratio / (1 + mixing_ratio)
+
+    @staticmethod
+    def dn_dlogr(r, dn_dr):
+        return np.log(10) * r * dn_dr
+
+    @staticmethod
+    def air_schmidt_number(dynamic_viscosity, diffusivity, density):
+        return dynamic_viscosity / diffusivity / density
+
+    @staticmethod
+    def sqrt_re_times_cbrt_sc(const, Re, Sc):
+        return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)
+
+    @staticmethod
+    def K2C(const, TK):
+        return TK - const.T0
+
+    @staticmethod
+    def C2K(const, TC):
+        return TC + const.T0
+
+    @staticmethod
+    def poissonian_avoidance_function(r, dt):
+        """cumulative probability of zero events occurring within time `dt`
+        (or void probability, or avoidance function) in a Poisson counting
+        process with a constant rate `r`
+        """
+        return np.exp(-r * dt)

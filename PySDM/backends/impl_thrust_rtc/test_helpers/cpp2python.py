@@ -2,6 +2,7 @@
 a simplistic C++ to Python translation utils for use in
  `PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC`
 """
+
 import re
 
 from ...impl_numba.conf import JIT_FLAGS
@@ -197,7 +198,8 @@ def make(self):
         arctanh as atanh,
         arcsinh as asinh,
         sinh,
-        maximum, minimum
+        maximum, minimum,
+        where,  # TODO #1295
     )
     import numba
 

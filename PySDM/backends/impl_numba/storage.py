@@ -1,6 +1,7 @@
 """
 CPU Numpy-based implementation of Storage class
 """
+
 import numpy as np
 
 from PySDM.backends.impl_common.storage_utils import (
@@ -60,6 +61,14 @@ class Storage(StorageBase):
     def __iadd__(self, other):
         if isinstance(other, Storage):
             impl.add(self.data, other.data)
+        elif (
+            isinstance(other, tuple)
+            and len(other) == 3
+            and isinstance(other[0], float)
+            and other[1] == "*"
+            and isinstance(other[2], Storage)
+        ):
+            impl.add_with_multiplier(self.data, other[2].data, other[0])
         else:
             impl.add(self.data, other)
         return self
@@ -111,7 +120,7 @@ class Storage(StorageBase):
     @staticmethod
     def _get_empty_data(shape, dtype):
         if dtype in (float, Storage.FLOAT):
-            data = np.full(shape, -1.0, dtype=Storage.FLOAT)
+            data = np.full(shape, np.nan, dtype=Storage.FLOAT)
             dtype = Storage.FLOAT
         elif dtype in (int, Storage.INT):
             data = np.full(shape, -1, dtype=Storage.INT)
@@ -199,3 +208,6 @@ class Storage(StorageBase):
 
     def exp(self):
         self.data[:] = np.exp(self.data)
+
+    def abs(self):
+        self.data[:] = np.abs(self.data)

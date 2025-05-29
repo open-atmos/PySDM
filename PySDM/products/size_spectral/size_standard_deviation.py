@@ -2,13 +2,17 @@
 standard deviation of radius/area/volume of particles within a grid cell,
 for activated, unactivated or both
 """
+
 import numpy as np
 
-from PySDM.products.impl.activation_filtered_product import _ActivationFilteredProduct
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl import (
+    ActivationFilteredProduct,
+    MomentProduct,
+    register_product,
+)
 
 
-class _SizeStandardDeviation(MomentProduct, _ActivationFilteredProduct):
+class _SizeStandardDeviation(MomentProduct, ActivationFilteredProduct):
     # pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -20,28 +24,30 @@ class _SizeStandardDeviation(MomentProduct, _ActivationFilteredProduct):
     ):
         self.attr = attr
         MomentProduct.__init__(self, name=name, unit=unit)
-        _ActivationFilteredProduct.__init__(
+        ActivationFilteredProduct.__init__(
             self, count_activated=count_activated, count_unactivated=count_unactivated
         )
+        self.tmp = None
 
     def register(self, builder):
         builder.request_attribute(self.attr)
-        for base_class in (_ActivationFilteredProduct, MomentProduct):
+        for base_class in (ActivationFilteredProduct, MomentProduct):
             base_class.register(self, builder)
+        self.tmp = np.empty_like(self.buffer)
 
     def _impl(self, **kwargs):
-        _ActivationFilteredProduct.impl(self, attr=self.attr, rank=1)
-        tmp = np.empty_like(self.buffer)
-        tmp[:] = -self.buffer**2
-        _ActivationFilteredProduct.impl(self, attr=self.attr, rank=2)
-        tmp[:] += self.buffer
-        tmp[:] = np.sqrt(tmp)
-        return tmp
+        ActivationFilteredProduct.impl(self, attr=self.attr, rank=1)
+        self.tmp[:] = -self.buffer**2
+        ActivationFilteredProduct.impl(self, attr=self.attr, rank=2)
+        self.tmp[:] += self.buffer
+        self.tmp[:] = np.sqrt(self.tmp)
+        return self.tmp
 
 
-RadiusStandardDeviation = _SizeStandardDeviation
+RadiusStandardDeviation = register_product()(_SizeStandardDeviation)
 
 
+@register_product()
 class AreaStandardDeviation(_SizeStandardDeviation):
     def __init__(
         self, *, name=None, unit="m^2", count_activated: bool, count_unactivated: bool
@@ -55,6 +61,7 @@ class AreaStandardDeviation(_SizeStandardDeviation):
         )
 
 
+@register_product()
 class VolumeStandardDeviation(_SizeStandardDeviation):
     def __init__(
         self, *, name=None, unit="m^3", count_activated: bool, count_unactivated: bool

@@ -1,6 +1,5 @@
-""" logic around `PySDM.attributes.impl.dummy_attribute.DummyAttribute` - parent class
-for do-nothing attributes """
-import warnings
+"""logic around `PySDM.attributes.impl.dummy_attribute.DummyAttribute` - parent class
+for do-nothing attributes"""
 
 import numpy as np
 
@@ -17,15 +16,3 @@ class DummyAttribute(Attribute):
 
     def get(self):
         return self.data
-
-
-def make_dummy_attribute_factory(name, warn=False):
-    def _factory(builder):
-        return DummyAttribute(builder, name=name)
-
-    if warn:
-        warnings.warn(
-            f"dummy implementation used for requested attribute named '{name}'"
-        )
-
-    return _factory

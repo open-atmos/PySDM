@@ -1,10 +1,11 @@
 """
 common base class for products filtering droplets based on their activation state
 """
+
 import numpy as np
 
 
-class _ActivationFilteredProduct:
+class ActivationFilteredProduct:
     def __init__(
         self,
         *,

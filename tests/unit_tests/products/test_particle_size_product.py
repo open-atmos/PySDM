@@ -86,18 +86,20 @@ def test_particle_size_product(
     validation_fun,
 ):
     # arrange
-    builder = Builder(n_sd=len(n), backend=backend_class(double_precision=True))
+    builder = Builder(
+        n_sd=len(n),
+        backend=backend_class(double_precision=True),
+        environment=Box(dt=np.nan, dv=np.nan),
+    )
     volume = builder.formulae.trivia.volume(np.asarray(r))
     dry_volume = np.full_like(volume, (0.01 * si.um) ** 3)
 
-    builder.set_environment(Box(dt=np.nan, dv=np.nan))
     builder.request_attribute("critical volume")
     particulator = builder.build(
         attributes={
             "multiplicity": np.asarray(n),
             "volume": volume,
             "dry volume": dry_volume,
-            "dry volume organic": np.full_like(r, 0),
             "kappa times dry volume": KAPPA * dry_volume,
         },
         products=(

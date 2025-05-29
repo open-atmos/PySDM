@@ -5,7 +5,7 @@ from scipy.optimize import minimize
 from PySDM.backends import CPU
 from PySDM.physics import constants as const
 
-backend = CPU
+backend = CPU()
 um = const.si.um
 
 
@@ -15,7 +15,7 @@ def full_params(params):
 
 def print_collection_efficiency_portrait(params):
     size = 2 * 5.236
-    plt.figure(num=1, figsize=(size / 2, size))
+    plt.figure(figsize=(size / 2, size))
     points = 200
     Y_c = np.zeros(points)
     x_values = np.linspace(0, 1, points)
@@ -28,7 +28,7 @@ def print_collection_efficiency_portrait(params):
         pair[0] = r
         for i, _ in enumerate(x_values):
             pair[1] = x_values[i] * r
-            backend.linear_collection_efficiency_body(
+            backend._linear_collection_efficiency_body(
                 params=full_params(params),
                 output=Y_c[i : i + 1],
                 radii=pair,
@@ -71,7 +71,7 @@ def Y_c_portrait(
         pair[0] = radii[i]
         for j, __ in enumerate(p):
             pair[1] = p[j] * radii[i]
-            backend.linear_collection_efficiency_body(
+            backend._linear_collection_efficiency_body(
                 params=full_params(params),
                 output=Y_c[i : i + 1, j],
                 radii=pair,

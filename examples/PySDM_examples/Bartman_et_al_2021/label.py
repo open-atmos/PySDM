@@ -1,11 +1,11 @@
 def label(settings):
     lbl = str(
         {
-            k.replace("condensation_", ""): f"{v:.1e}"
-            if isinstance(v, float)
-            else str(v).zfill(2)
-            if isinstance(v, int)
-            else v
+            k.replace("condensation_", ""): (
+                f"{v:.1e}"
+                if isinstance(v, float)
+                else str(v).zfill(2) if isinstance(v, int) else v
+            )
             for k, v in settings.items()
         }
     )

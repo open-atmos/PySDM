@@ -1,6 +1,7 @@
 """
-See [Low & List 1982](https://doi.org/10.1175/1520-0469(1982)039<1607:CCABOR>2.0.CO;2)
+See [Low & List 1982](https://doi.org/10.1175/1520-0469(1982)039%3C1607:CCABOR%3E2.0.CO;2)
 """
+
 from .impl import VolumeBasedFragmentationFunction
 
 
