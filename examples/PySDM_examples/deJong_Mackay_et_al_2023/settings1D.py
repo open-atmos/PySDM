@@ -49,7 +49,7 @@ class Settings1D(SettingsSH):
         stochastic_breakup: bool = False,
         warn_breakup_overflow: bool = False,
         output_every_n_steps: int = 1,
-        save_spec_at=()
+        save_spec_at=(),
     ):
         if stochastic_breakup:
             self.coalescence_efficiency = Straub2010Ec()

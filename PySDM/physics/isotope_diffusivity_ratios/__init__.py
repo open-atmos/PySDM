@@ -1,4 +1,4 @@
-""" heavy-to-light diffusivity ratios for water molecules """
+"""heavy-to-light diffusivity ratios for water molecules"""
 
 from PySDM.impl.null_physics_class import Null
 from .grahams_law import GrahamsLaw

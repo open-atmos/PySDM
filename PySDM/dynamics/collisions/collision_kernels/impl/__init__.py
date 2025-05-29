@@ -1,1 +1,1 @@
-""" common code for implementing collision kernels """
+"""common code for implementing collision kernels"""

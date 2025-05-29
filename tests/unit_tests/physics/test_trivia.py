@@ -71,4 +71,45 @@ class TestTrivia:
             )
 
             # Assert
-            assert sc.check("[]")
+            assert sc.check(si.dimensionless)
+
+    @staticmethod
+    def test_poissonian_avoidance_function():
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae()
+            si = constants_defaults.si
+            sut = formulae.trivia.poissonian_avoidance_function
+
+            # Act
+            prob = sut(
+                r=1 / si.s,
+                dt=10 * si.min,
+            )
+
+            # Assert
+            assert prob.check(si.dimensionless)
+
+    @staticmethod
+    def test_kelvin_to_celsius():
+        # arrange
+        formulae = Formulae()
+        temperature_in_kelvin = 44
+
+        # act
+        temperature_in_celsius = formulae.trivia.K2C(temperature_in_kelvin)
+
+        # assert
+        assert temperature_in_celsius == temperature_in_kelvin - 273.15
+
+    @staticmethod
+    def test_celsius_to_kelvin():
+        # arrange
+        formulae = Formulae()
+        temperature_in_celsius = 666
+
+        # act
+        temperature_in_kelvin = formulae.trivia.C2K(temperature_in_celsius)
+
+        # assert
+        assert temperature_in_kelvin == temperature_in_celsius + 273.15

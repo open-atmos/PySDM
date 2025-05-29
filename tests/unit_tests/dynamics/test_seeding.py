@@ -1,4 +1,4 @@
-""" Seeding dynamic tests """
+"""Seeding dynamic tests"""
 
 from collections import namedtuple
 
@@ -76,7 +76,7 @@ class TestSeeding:
         common_seeding_ctor_args = {
             "seeded_particle_multiplicity": [1],
             "seeded_particle_extensive_attributes": {
-                "water mass": [0.001 * si.ng],
+                "signed water mass": [0.001 * si.ng],
             },
         }
         output = {

@@ -1,6 +1,6 @@
 # Introduction
 
-<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
+<img align="left" src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" width=150 height=219 alt="pysdm logo" style="padding-right:1em">
 
 PySDM offers a set of building blocks for development of atmospheric cloud
 simulation systems revolving around the particle-based microphysics modelling concept
@@ -680,12 +680,14 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
   https://github.com/emmacware/droplets.jl
 - LacmoPy (Python/Numba)
   https://github.com/JanKBohrer/LacmoPy/blob/master/collision/all_or_nothing.py
-- McSnow (FORTRAN):
+- McSnow (FORTRAN)
   https://gitlab.dkrz.de/mcsnow/mcsnow/-/blob/master/src/mo_coll.f90
+- Particula (Python)
+  https://github.com/uncscode/particula/blob/main/particula/dynamics/coagulation/particle_resolved_step/super_droplet_method.py
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
-- PartMC (Fortran):
+- PartMC (Fortran with a <a href="https://open-atmos.github.io/PyPartMC">Python interface</a>):
   https://github.com/compdyn/partmc
 
 ### Python models with discrete-particle (moving-sectional) representation of particle size spectrum
@@ -694,7 +696,7 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - PyBox: https://github.com/loftytopping/PyBox
 - py-cloud-parcel-model: https://github.com/emmasimp/py-cloud-parcel-model
 
-### non-Python cloud microphysics open-source software
+### Open-source models with other than discrete-particle representations of coagulation
 
-- CloudMicrophysics.jl: https://github.com/CliMA/CloudMicrophysics.jl
-- McSnow: https://gitlab.dkrz.de/mcsnow/mcsnow
+- DustPy: https://stammler.github.io/dustpy
+- Cloudy.jl: https://github.com/CliMA/Cloudy.jl

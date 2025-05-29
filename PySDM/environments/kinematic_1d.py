@@ -40,7 +40,7 @@ class Kinematic1D(Moist):
         spectral_discretisation,
         kappa,
         z_part=None,
-        collisions_only=False
+        collisions_only=False,
     ):
         super().sync()
         self.notify()

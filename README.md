@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/.github/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
+# <img src="https://raw.githubusercontent.com/open-atmos/PySDM/main/docs/logos/pysdm_logo.svg" width=100 height=146 alt="pysdm logo">
 
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
 [![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
@@ -17,7 +17,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-[![Github Actions Build Status](https://github.com/open-atmos/PySDM/workflows/tests+artifacts+pypi/badge.svg?branch=main)](https://github.com/open-atmos/PySDM/actions)
+[![Github Actions Build Status](https://github.com/open-atmos/PySDM/workflows/tests/badge.svg?branch=main)](https://github.com/open-atmos/PySDM/actions)
 [![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/open-atmos/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
 [![Coverage Status](https://codecov.io/gh/open-atmos/PySDM/branch/main/graph/badge.svg)](https://app.codecov.io/gh/open-atmos/PySDM)    
 [![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
@@ -33,9 +33,11 @@ Currently, the development is focused on atmospheric cloud physics
   to represent aerosol/cloud/rain microphysics.
 The package features a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
-  ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
+  ([Shima et al. 2009](https://doi.org/10.1002/qj.441)), hence the name. 
 
-There is a growing set of example Jupyter notebooks exemplifying how to perform 
+PySDM documentation is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
+
+There is a growing set of [example Jupyter notebooks](https://open-atmos.github.io/PySDM/PySDM_examples.html) exemplifying how to perform 
   various types of calculations and simulations using PySDM.
 Most of the example notebooks reproduce results and plot from literature, see below for 
   a list of examples and links to the notebooks (which can be either executed or viewed 
@@ -65,14 +67,6 @@ For an overview of PySDM features (and the preferred way to cite PySDM in papers
 PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
 For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
-A [pdoc-generated](https://pdoc.dev/) documentation of PySDM public API is maintained at: [https://open-atmos.github.io/PySDM](https://open-atmos.github.io/PySDM) 
-
-## Example Jupyter notebooks (reproducing results from literature):
-
-See [PySDM-examples README](https://github.com/open-atmos/PySDM/blob/main/examples/README.md).
-
-![animation](https://github.com/open-atmos/PySDM/wiki/files/kinematic_2D_example.gif)
-
 ## Dependencies and Installation
 
 PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [SciPy](https://scipy.org/), 
@@ -94,7 +88,7 @@ Conda users may use ``pip`` as well, see the [Installing non-conda packages](htt
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies can be installed with ``pip -e .[tests]``.
 
-PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM-examples) package.
+PySDM examples constitute the [``PySDM-examples``](https://github.com/open-atmos/PySDM/blob/main/examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/open-atmos/PySDM/blob/main/examples/setup.py) file.
 Running the example Jupyter notebooks requires the ``PySDM_examples`` package to be installed.
 The suggested install and launch steps are:
@@ -149,7 +143,8 @@ To run all pre-commit hooks, run `pre-commit run --all-files`.
 The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
   existing ones need to be altered.  
 
-Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki).
+Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki)
+  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOS).
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).

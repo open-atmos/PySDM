@@ -15,7 +15,7 @@ def full_params(params):
 
 def print_collection_efficiency_portrait(params):
     size = 2 * 5.236
-    plt.figure(num=1, figsize=(size / 2, size))
+    plt.figure(figsize=(size / 2, size))
     points = 200
     Y_c = np.zeros(points)
     x_values = np.linspace(0, 1, points)

@@ -1,10 +1,10 @@
 """
-cloud water content products, Specific means per mass of dry air
+cloud water content products
+if `specific=True`, reports values per mass of dry air, otherwise per volume
 
 CloudWaterContent is both liquid and ice
 LiquidWaterContent is just liquid
 IceWaterContent is just ice
-
 """
 
 import numpy as np
@@ -38,15 +38,21 @@ class CloudWaterContent(MomentProduct):
 
         if self.ice:
             self._download_moment_to_buffer(
-                attr="water mass", rank=1, filter_range=(-np.inf, 0)
+                attr="water mass",
+                rank=1,
+                filter_range=(-np.inf, 0),
+                filter_attr="signed water mass",
             )
             mass = self.buffer.copy()
 
             self._download_moment_to_buffer(
-                attr="water mass", rank=0, filter_range=(-np.inf, 0)
+                attr="water mass",
+                rank=0,
+                filter_range=(-np.inf, 0),
+                filter_attr="signed water mass",
             )
             conc = self.buffer
-            cwc -= mass * conc / self.particulator.mesh.dv
+            cwc += mass * conc / self.particulator.mesh.dv
 
         if self.specific:
             self._download_to_buffer(self.particulator.environment["rhod"])

@@ -62,7 +62,7 @@ class MolesLightWater(Helper):
                 / M_H2O,
                 builder.get_attribute("moles_18O"): -(2 * const.M_1H + const.M_18O)
                 / M_H2O,
-                builder.get_attribute("water mass"): 1 / M_H2O,
+                builder.get_attribute("signed water mass"): 1 / M_H2O,
             },
         )
 

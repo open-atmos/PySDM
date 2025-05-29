@@ -1,4 +1,4 @@
-""" Seeding backend tests of injection logic """
+"""Seeding backend tests of injection logic"""
 
 from contextlib import nullcontext
 

@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation
 
 from PySDM import Formulae
 from PySDM.backends import CPU
@@ -23,7 +23,7 @@ def test_freezing(singular):
         Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             seed=44,
-            condensation_coordinate="VolumeLogarithm",
+            diffusion_coordinate="WaterMassLogarithm",
             fastmath=True,
             freezing_temperature_spectrum="Niemand_et_al_2012",
             heterogeneous_ice_nucleation_rate="ABIFM",

@@ -220,6 +220,7 @@ def simulation(
         environment=Box(dt=time_step, dv=volume),
     )
     builder.add_dynamic(Freezing(singular=False))
+    builder.request_attribute("volume")
 
     if hasattr(spectrum, "s_geom") and spectrum.s_geom == 1:
         _isa, _conc = np.full(n_sd, spectrum.m_mode), np.full(
@@ -230,7 +231,7 @@ def simulation(
     attributes = {
         "multiplicity": discretise_multiplicities(_conc * volume),
         "immersed surface area": _isa,
-        "volume": np.full(n_sd, droplet_volume),
+        "signed water mass": np.full(n_sd, droplet_volume * formulae.constants.rho_w),
     }
     np.testing.assert_almost_equal(attributes["multiplicity"], multiplicity)
     products = (

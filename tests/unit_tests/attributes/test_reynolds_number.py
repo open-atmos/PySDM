@@ -1,4 +1,4 @@
-""" tests calculation of particle Reynolds number """
+"""tests calculation of particle Reynolds number"""
 
 import pytest
 import numpy as np
