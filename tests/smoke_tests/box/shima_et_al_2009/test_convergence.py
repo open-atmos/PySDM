@@ -3,6 +3,7 @@ Tests checking if, for the example case from Fig 4 in
 [Shima et al. 2009](https://doi.org/10.1002/qj.441),
 the simulations converge towards analytic solution.
 """
+
 from inspect import signature
 from itertools import islice
 
