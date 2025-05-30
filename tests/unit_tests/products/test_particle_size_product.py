@@ -130,3 +130,32 @@ def test_particle_size_product(
 
     # assert
     np.testing.assert_almost_equal(actual, expected, decimal=10)
+
+
+def test_size_standard_deviation_allocates_once(backend_instance):
+    """checks if calling get() does not allocate new memory"""
+    # arrange
+    builder = Builder(
+        backend=backend_instance, environment=Box(dt=np.nan, dv=np.nan), n_sd=10
+    )
+    particulator = builder.build(
+        products=(
+            AreaStandardDeviation(
+                name="sut", count_activated=True, count_unactivated=True
+            ),
+        ),
+        attributes={
+            "multiplicity": np.arange(1, builder.particulator.n_sd + 1),
+            "water mass": np.arange(1, builder.particulator.n_sd + 1),
+            "dry volume": np.arange(1, builder.particulator.n_sd + 1),
+            "kappa times dry volume": np.arange(1, builder.particulator.n_sd + 1),
+        },
+    )
+    particulator.environment["T"] = 300 * si.K
+
+    # act
+    arr1 = particulator.products["sut"].get()
+    arr2 = particulator.products["sut"].get()
+
+    # assert
+    assert arr1.ctypes.data == arr2.ctypes.data
