@@ -800,6 +800,13 @@
     "title": "Environmental isotopes in lake studies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
   },
+  "https://doi.org/10.1007/978-94-017-1497-6": {
+    "usages": [
+      "PySDM/physics/isotope_ventilation_ratio/brutsaert_1982.py"
+    ],
+    "title": "Evaporation into the Atmosphere: Theory, History, and Applications",
+    "label": "Brutsaert 1982 (Springer Netherlands)"
+  },
   "https://doi.org/10.1029/JC080i009p01133": {
     "usages": [
       "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
@@ -839,6 +846,14 @@
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
+  },
+  "https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py"
+    ],
+    "title": "A Wind Tunnel Investigation of the Rate of Evaporation of Small Water Drops Falling at Terminal Velocity in Air",
+    "label": "Beard & Pruppacher 1971 (J. Atmos. Sci. 28)"
   },
   "https://doi.org/10.1029/JD089iD07p11749": {
     "usages": [
