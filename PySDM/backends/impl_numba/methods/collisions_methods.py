@@ -43,9 +43,10 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def coalesce(  # pylint: disable=too-many-arguments
-    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
+    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate, flag_coalescence
 ):
     atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
+    flag_coalescence[j] = flag_coalescence[k] = True
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n > 0:
         multiplicity[j] = new_n
@@ -269,6 +270,7 @@ class CollisionsMethods(BackendMethods):
             max_multiplicity,
             warn_overflows,
             particle_mass,
+            flag_coalescence,
         ):
             # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
             for i in numba.prange(length // 2):
@@ -289,6 +291,7 @@ class CollisionsMethods(BackendMethods):
                         gamma,
                         attributes,
                         coalescence_rate,
+                        flag_coalescence,
                     )
                 else:
                     _break_up(
@@ -421,6 +424,7 @@ class CollisionsMethods(BackendMethods):
             cell_id,
             coalescence_rate,
             is_first_in_pair,
+            flag_coalescence,
         ):
             for (
                 i
@@ -439,6 +443,7 @@ class CollisionsMethods(BackendMethods):
                     gamma,
                     attributes,
                     coalescence_rate,
+                    flag_coalescence,
                 )
                 flag_zero_multiplicity(j, k, multiplicity, healthy)
 
@@ -455,6 +460,7 @@ class CollisionsMethods(BackendMethods):
         cell_id,
         coalescence_rate,
         is_first_in_pair,
+        flag_coalescence,
     ):
         self._collision_coalescence_body(
             multiplicity=multiplicity.data,
@@ -466,6 +472,7 @@ class CollisionsMethods(BackendMethods):
             cell_id=cell_id.data,
             coalescence_rate=coalescence_rate.data,
             is_first_in_pair=is_first_in_pair.indicator.data,
+            flag_coalescence=flag_coalescence.data,
         )
 
     def collision_coalescence_breakup(
@@ -488,6 +495,7 @@ class CollisionsMethods(BackendMethods):
         warn_overflows,
         particle_mass,
         max_multiplicity,
+        flag_coalescence,
     ):
         # pylint: disable=too-many-locals
         self._collision_coalescence_breakup_body(
@@ -509,6 +517,7 @@ class CollisionsMethods(BackendMethods):
             max_multiplicity=max_multiplicity,
             warn_overflows=warn_overflows,
             particle_mass=particle_mass.data,
+            flag_coalescence=flag_coalescence.data,
         )
 
     @cached_property

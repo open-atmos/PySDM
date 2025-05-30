@@ -10,6 +10,7 @@ from PySDM.attributes.impl import (
     DummyAttribute,
     ExtensiveAttribute,
     MaximumAttribute,
+    FlagAttribute,
 )
 from PySDM.impl.particle_attributes import ParticleAttributes
 from PySDM.attributes.impl import get_attribute_class
@@ -35,6 +36,7 @@ class ParticleAttributesFactory:
                     get_attribute_class("multiplicity"),
                     CellAttribute,
                     DummyAttribute,
+                    FlagAttribute,
                 ),
             ):
                 raise AssertionError()
@@ -47,10 +49,10 @@ class ParticleAttributesFactory:
         )
 
         for attr in req_attr.values():
-            if isinstance(attr, (DerivedAttribute, DummyAttribute)):
+            if isinstance(attr, (DerivedAttribute, DummyAttribute, FlagAttribute)):
                 if attr.name in attributes:
                     raise ValueError(
-                        f"attribute '{attr.name}' is a dummy/derived one,"
+                        f"attribute '{attr.name}' is a dummy/derived/flag attribute,"
                         f" but values were provided"
                     )
                 attr.allocate(idx)
