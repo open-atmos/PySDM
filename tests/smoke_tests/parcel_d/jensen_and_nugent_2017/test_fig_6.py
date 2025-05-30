@@ -51,7 +51,7 @@ class TestFig6:
 
     @staticmethod
     def test_supersaturation_maximum(variables):
-        supersaturation = np.asarray(variables["output"]["products"]["S_max"])
+        supersaturation = np.asarray(variables["output"]["products"]["S_max"]) - 1
         extrema = signal.argrelextrema(supersaturation, np.greater, order=12)
         assert extrema[0].shape[0] == 1
         assert 1.2 * PER_CENT < np.nanmax(supersaturation) < 1.3 * PER_CENT

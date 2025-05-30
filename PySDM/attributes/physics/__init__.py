@@ -3,11 +3,11 @@ attributes carrying information on particle physical properties
 """
 
 from .area import Area
-from .critical_supersaturation import CriticalSupersaturation
+from .critical_saturation import CriticalSaturation
 from .critical_volume import CriticalVolume, WetToCriticalVolumeRatio
 from .dry_radius import DryRadius
 from .dry_volume import DryVolume
-from .equilibrium_supersaturation import EquilibriumSupersaturation
+from .equilibrium_saturation import EquilibriumSaturation
 from .heat import Heat
 from .hygroscopicity import Kappa, KappaTimesDryVolume
 from .water_mass import SignedWaterMass

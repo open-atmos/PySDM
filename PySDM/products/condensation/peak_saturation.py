@@ -1,5 +1,5 @@
 """
-highest supersaturation encountered while solving for condensation/evaporation (takes into account
+highest saturation encountered while solving for condensation/evaporation (takes into account
  substeps thus values might differ from ambient saturation reported via
  `PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity`;
  fetching a value resets the maximum value)
@@ -11,7 +11,7 @@ from PySDM.products.impl import Product, register_product
 
 
 @register_product()
-class PeakSupersaturation(Product):
+class PeakSaturation(Product):
     def __init__(self, unit="dimensionless", name=None):
         super().__init__(unit=unit, name=name)
         self.condensation = None
@@ -28,8 +28,8 @@ class PeakSupersaturation(Product):
         self.RH_max = np.full_like(self.buffer, np.nan)
 
     def _impl(self, **kwargs):
-        self.buffer[:] = self.RH_max[:] - 1
-        self.RH_max[:] = -1
+        self.buffer[:] = self.RH_max[:]
+        self.RH_max[:] = 0
         return self.buffer
 
     def notify(self):
