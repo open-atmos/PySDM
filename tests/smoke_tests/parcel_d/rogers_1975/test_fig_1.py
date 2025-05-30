@@ -1,15 +1,13 @@
 """test values on the plot against paper"""
 
-import numpy as np
-import pytest
 from pathlib import Path
 
-from numpy.ma.core import argmax
+import numpy as np
+import pytest
 
-from PySDM.physics import si
-from PySDM.physics.constants import PER_CENT
-from PySDM_examples import Rogers_1975
 from open_atmos_jupyter_utils import notebook_vars
+from PySDM_examples import Rogers_1975
+from PySDM.physics.constants import PER_CENT
 
 
 @pytest.fixture(scope="session", name="variables")
@@ -29,8 +27,8 @@ class TestFig1:
         expected_peak_value = 0.97 * PER_CENT
 
         # act
-        peak_value = max(SS)
-        peak_time = time[argmax(SS)]
+        peak_value = np.max(SS)
+        peak_time = time[np.argmax(SS)]
 
         # assert
         np.testing.assert_allclose(
@@ -40,23 +38,22 @@ class TestFig1:
             actual=peak_time, desired=expected_peak_time, atol=0.5
         )
 
+    @staticmethod
+    def test_fig1_radius_scope(variables):
+        """
+        Check if for first 2.5 seconds slope is smaller than after this time.
+        It represents slower droplets growth with small supersaturation.
+        """
+        # arrange
+        radius = variables["solution"].r
+        time_less_than = np.sum(variables["tsteps"].magnitude <= 2.5)
+        dr_before = np.diff(radius[:time_less_than]).magnitude
+        dr_after = np.diff(radius[time_less_than:]).magnitude
 
-@staticmethod
-def test_fig1_radius_scope(variables):
-    """
-    Check if for first 2.5 seconds slope is smaller than after this time.
-    It represents slower droplets growth with small supersaturation.
-    """
-    # arrange
-    radius = variables["solution"].r
-    time_less_than = np.sum(variables["tsteps"].magnitude <= 2.5)
-    dr_before = np.diff(radius[:time_less_than]).magnitude
-    dr_after = np.diff(radius[time_less_than:]).magnitude
+        # act
+        sut = np.mean(dr_before) / np.mean(dr_after)
 
-    # act
-    sut = np.mean(dr_before) / np.mean(dr_after)
-
-    # assert
-    assert sut < 1
-    assert sut > 0
-    assert (dr_before > 0).all()
+        # assert
+        assert sut < 1
+        assert sut > 0
+        assert (dr_before > 0).all()
