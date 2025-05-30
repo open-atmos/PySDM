@@ -1,4 +1,4 @@
-name: precommit
+name: precommit and devops tests
 
 defaults:
   run:
