@@ -32,10 +32,10 @@ class TestFig1:
 
         # assert
         np.testing.assert_allclose(
-            actual=peak_value, desired=expected_peak_value, rtol=1e-3
+            actual=peak_value.magnitude, desired=expected_peak_value, rtol=1e-3
         )
         np.testing.assert_allclose(
-            actual=peak_time, desired=expected_peak_time, atol=0.5
+            actual=peak_time.magnitude, desired=expected_peak_time, atol=0.5
         )
 
     @staticmethod
