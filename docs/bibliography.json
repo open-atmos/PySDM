@@ -739,6 +739,14 @@
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
   },
+  "https://doi.org/10.1080/00046973.1975.9648397": {
+    "usages": [
+      "examples/PySDM_examples/Rogers_1975/__init__.py",
+      "examples/PySDM_examples/Rogers_1975/fig_1.ipynb"
+    ],
+    "title": "An Elementary Parcel Model with Explicit Condensation and Supersaturation",
+    "label": "Rogers 1975"
+  },
   "https://doi.org/10.1016/b978-0-444-42225-5.50007-3": {
     "usages": ["PySDM/physics/constants_defaults.py"],
     "title": "Isotopes in cloud physics: Multiphase and multistage condensation process",
