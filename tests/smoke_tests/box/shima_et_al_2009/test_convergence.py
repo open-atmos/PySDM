@@ -39,7 +39,7 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
         errors = {}
 
         # act
-        for i, ln2_nsd in enumerate((13, 15, 17)):
+        for i, ln2_nsd in enumerate((11, 15, 19)):
             settings.dt = dt
             settings.n_sd = 2**ln2_nsd
             values, _ = run(settings)
