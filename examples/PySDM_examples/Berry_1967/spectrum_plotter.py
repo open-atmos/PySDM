@@ -26,6 +26,8 @@ class SpectrumPlotter(SuperSpectrumPlotter):
         self.ticks()
         show_plot()
 
-    def plot(self, spectrum, t):
+    def plot(
+        self, spectrum, t, label=None, color=None, title=None, add_error_to_label=False
+    ):
         settings = self.settings
-        self.plot_data(settings, t, spectrum)
+        self.plot_data(settings, t, spectrum, label, color)
