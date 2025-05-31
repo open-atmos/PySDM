@@ -46,9 +46,9 @@ class TestFig1:
         """
         # arrange
         radius = variables["solution"].r
-        time_less_than = np.sum(variables["tsteps"].magnitude <= 2.5)
-        dr_before = np.diff(radius[:time_less_than]).magnitude
-        dr_after = np.diff(radius[time_less_than:]).magnitude
+        time_less_than = np.sum(variables["tsteps"].to_base_units().magnitude <= 2.5)
+        dr_before = np.diff(radius[:time_less_than]).to_base_units().magnitude
+        dr_after = np.diff(radius[time_less_than:]).to_base_units().magnitude
 
         # act
         sut = np.mean(dr_before) / np.mean(dr_after)
