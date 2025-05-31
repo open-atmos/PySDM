@@ -26,7 +26,7 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
             pytest.param(False, 100 * si.s, marks=pytest.mark.xfail(strict=True)),
             (True, 100 * si.s),
             pytest.param(False, 50 * si.s, marks=pytest.mark.xfail(strict=True)),
-            (False, 5 * si.s),
+            (True, 50 * si.s),
         ),
     )
     def test_convergence_with_sd_count(dt, adaptive, plot=False):
@@ -74,7 +74,6 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
             pyplot.clf()
 
         # assert monotonicity (i.e., the larger the sd count, the smaller the error)
-        print(errors)
         assert tuple(errors.keys()) == tuple(sorted(errors.keys()))
         assert tuple(errors.values()) == tuple(reversed(sorted(errors.values())))
 
