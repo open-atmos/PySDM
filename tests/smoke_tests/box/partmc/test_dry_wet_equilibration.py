@@ -74,10 +74,6 @@ def pypartmc(dry_diam, temp, rel_humid, kpa):
     return wet_diameters
 
 
-@pytest.mark.skipif(
-    platform.architecture()[0] != "64bit" or sys.version_info >= (3, 12),
-    reason="binary package availability",  # TODO #1410
-)
 @pytest.mark.parametrize("kappa", (0.1, 1))
 @pytest.mark.parametrize("temperature", (300 * si.K,))
 @pytest.mark.parametrize("relative_humidity", (0.5, 0.75, 0.99))
