@@ -9,6 +9,7 @@ from collections import namedtuple
 import numpy as np
 import pytest
 from matplotlib import pyplot
+import PyPartMC
 
 from PySDM import Builder
 from PySDM.backends import CPU
@@ -16,9 +17,6 @@ from PySDM.environments import Box
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
-
-if platform.architecture()[0] == "64bit" and sys.version_info < (3, 12):  # TODO #1410
-    import PyPartMC
 
 linestyles = {"PyPartMC": "dashed", "PySDM": "dotted"}
 x_unit = si.um
