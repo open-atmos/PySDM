@@ -55,6 +55,13 @@ def cli_using_argparse(argp):
         help="Opacity for sd_attributes",
     )
     argp.add_argument(
+        "--animation_size",
+        nargs=2,
+        type=int,
+        default=[2000, 800],
+        help="Animation size [x,y]",
+    )
+    argp.add_argument(
         "--animationframename",
         type=str,
         help="Name of the file with animation last frame",
@@ -179,7 +186,8 @@ def apply_presets_logscale_opacity_and_update(*, y, attdisplay, erLUT, proddispl
 
 def get_layout(*, y):
     layout1 = pvs.GetLayout()
-    layout1.SetSize(1205, 739)
+    layout1.SetSize(args.animation_size)
+    layout1.PreviewMode = args.animation_size
     y.renderView1.Update()
 
 
@@ -197,7 +205,6 @@ def set_current_camera_placement(*, y):
 
 
 def axes_settings(*, view):
-    view.ViewSize = [2000, 800]
     view.Background = [1, 1, 1]
     view.CenterAxesVisibility = True
     view.OrientationAxesVisibility = False
