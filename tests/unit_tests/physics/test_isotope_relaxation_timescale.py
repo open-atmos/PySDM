@@ -6,7 +6,7 @@ import pytest
 
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.formulae import Formulae, _choices
-from PySDM.physics import constants_defaults, isotope_relaxation_timescale
+from PySDM.physics import constants_defaults, isotope_relaxation_timescale, si
 
 
 @pytest.mark.parametrize(
@@ -64,3 +64,15 @@ def test_bolin_tritium_formula_unit():
 
         # assert
         assert result.check("[time]")
+
+
+def test_isotope_m_dm_dt(plot=True):
+    # arrange
+    formulae = Formulae(isotope_relaxation_timescale="ZabaAndArabas2025")
+
+    M_ratio = const.M_2H / M_1H
+    radii = np.asarray([0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.15, 0.20]) * si.cm
+    T = formulae.trivia.C2K(10)
+    sut = formulae.isotope_relaxation_timescale.isotope_m_dm_dt(
+        radius, D_iso, f_m, M_ratio, b, S, R_liq, alpha, R_vap, rho_w
+    )
