@@ -2,8 +2,6 @@
 (based on PyPartMC-examples notebook by Zach D'Aquino)"""
 
 # pylint: disable=missing-function-docstring,no-member
-import platform
-import sys
 from collections import namedtuple
 
 import numpy as np
