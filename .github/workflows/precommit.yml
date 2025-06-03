@@ -1,0 +1,46 @@
+name: precommit and devops tests
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # common options for pytest
+  pytest_options: "--durations=10 -v -s -We -p no:unraisableexception"
+
+on:
+  push:
+    branches: [ main ]
+    paths: ['docs/**', '**.md']
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 13 * * 4'
+
+jobs:
+  precommit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.1.6
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: 3.9
+      - run: |
+          pip install pre-commit
+          pre-commit clean
+          pre-commit autoupdate
+          pre-commit run --all-files
+      - if: ${{ failure() }}
+        run: git diff
+
+  devops:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
+      - run: pip install -r tests/devops_tests/requirements.txt
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests

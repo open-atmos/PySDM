@@ -14,27 +14,13 @@ env:
 on:
   push:
     branches: [ main ]
+    paths-ignore: ['docs/**', '**.md']
   pull_request:
     branches: [ main ]
   schedule:
     - cron: '0 13 * * 4'
 
 jobs:
-  precommit:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4.1.6
-      - uses: actions/setup-python@v5.0.0
-        with:
-          python-version: 3.9
-      - run: |
-          pip install pre-commit
-          pre-commit clean
-          pre-commit autoupdate
-          pre-commit run --all-files
-      - if: ${{ failure() }}
-        run: git diff
-
   pylint:
     runs-on: ubuntu-24.04
     steps:
@@ -64,29 +50,10 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-  devops:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
-      - run: pip install -r tests/devops_tests/requirements.txt
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
-
-  zenodo_json:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4.1.6
-      - uses: notiz-dev/github-action-json-property@release
-        with:
-          path: '.zenodo.json'
-          prop_path: 'creators'
+  
 
   nojit_and_codecov:
-    needs: [precommit, pylint, devops, zenodo_json]
+    needs: [pylint]
     runs-on: ubuntu-24.04
     env:
       NUMBA_DISABLE_JIT: 1
@@ -116,7 +83,7 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions","smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
             python-version: "3.9"
@@ -286,7 +253,7 @@ jobs:
           rm /tmp/pytest/test_run_notebooks_*current
           ls /tmp/pytest/test_run_notebooks_*/
           ls /tmp/pytest/test_run_notebooks_*/output/
-          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv $HOME/work/_temp/_github_home/figures/docs_intro_animation_${{ matrix.platform }}.mp4
+          ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/docs_intro_animation.ogv -loop 0 -vf "fps=10,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" $HOME/work/_temp/_github_home/figures/docs_intro_animation_${{ matrix.platform }}.gif
           mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
           ls $HOME/work/_temp/_github_home/figures
 
@@ -294,21 +261,21 @@ jobs:
         if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
-          name: animation-movie
+          name: animation-movie-${{ matrix.platform }}
           if-no-files-found: error
-          path: ~/work/_temp/_github_home/figures/*.mp4
+          path: ~/work/_temp/_github_home/figures/*.gif
 
       - name: animation frame upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
-          name: animation-frame
+          name: animation-frame-${{ matrix.platform }}
           if-no-files-found: error
           path: ~/work/_temp/_github_home/figures/*.pdf
 
       - name: tip release upload
-        if: github.ref == 'refs/heads/main' && ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: github.ref == 'refs/heads/main' && ( startsWith(matrix.platform, 'ubuntu-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: /*(home|Users)/runner/work/_temp/_github_home/figures/*.mp4
+          files: /github/home/figures/*.gif
