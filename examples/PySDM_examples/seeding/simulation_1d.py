@@ -113,7 +113,7 @@ class Simulation:
                     settings.seed_particles_per_volume_STP
                     / settings.formulae.constants.rho_STP
                 ),
-                m_mode=1 * si.um,
+                m_mode=settings.seed_radius,
                 s_geom=1.4,
             )
         ).sample(
@@ -146,10 +146,10 @@ class Simulation:
             * v_dry,  # include kappa argument for seeds
         )
         self.seeded_particle_volume = settings.formulae.trivia.volume(radius=r_wet)
-        #self.builder.particulator.backend.mass_of_water_volume(
+        # self.builder.particulator.backend.mass_of_water_volume(
         #    self.seeded_particle_extensive_attributes["signed water mass"],
         #    self.seeded_particle_volume,
-        #)
+        # )
 
         self.builder.add_dynamic(
             Seeding(
