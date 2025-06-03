@@ -8,14 +8,16 @@ class ZabaAndArabas2025:
         pass
 
     @staticmethod
-    def tau(const, m_dm_dt):
+    def tau(m_dm_dt):
         """e-fold timescale with alpha and water vapour pressures heavy and light water
         calculated in the temperature of environment:
         """
         return 1 / m_dm_dt
 
     @staticmethod
-    def isotope_m_dm_dt(const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk):
+    def isotope_m_dm_dt(
+        const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
+    ):  # pylint: disable=too-many-arguments
         """
         Parameters
         ----------
