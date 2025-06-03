@@ -96,7 +96,6 @@ class Common:
             "sedimentation": True,
             "breakup": False,
             "freezing": False,
-            "seeding": False,
         }
 
         self.mpdata_iters = 2

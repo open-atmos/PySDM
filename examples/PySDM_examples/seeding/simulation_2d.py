@@ -17,8 +17,12 @@ from PySDM.dynamics import (
     Freezing,
     Seeding,
 )
+from PySDM.impl.mesh import Mesh
 from PySDM.environments import Kinematic2D
-from PySDM.initialisation.sampling import spatial_sampling
+from PySDM.initialisation import spectra
+from PySDM.initialisation.sampling import spatial_sampling, spectral_sampling
+from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+from PySDM.physics import si
 
 
 class Simulation:
@@ -36,6 +40,7 @@ class Simulation:
     def reinit(self, products=None):
         formulae = self.settings.formulae
         backend = self.backend_class(formulae=formulae)
+        self.mesh = Mesh(grid=self.settings.grid, size=self.settings.size)
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
@@ -44,7 +49,9 @@ class Simulation:
             mixed_phase=self.settings.processes["freezing"],
         )
         builder = Builder(
-            n_sd=self.settings.n_sd, backend=backend, environment=environment
+            n_sd=self.settings.n_sd + self.settings.n_sd_seeding,
+            backend=backend,
+            environment=environment,
         )
 
         if products is not None:
@@ -154,6 +161,60 @@ class Simulation:
             // (2 if self.settings.freezing_inp_frac != 1 else 1),
         )
 
+        r_dry, n_in_dv = spectral_sampling.ConstantMultiplicity(
+            spectra.Lognormal(
+                norm_factor=(
+                    self.settings.seed_particles_per_volume_STP
+                    / self.settings.formulae.constants.rho_STP
+                ),
+                m_mode=self.settings.seed_radius,
+                s_geom=1.4,
+            )
+        ).sample(
+            n_sd=self.settings.n_sd_seeding
+        )  # TODO #1387: does not have to be the same?
+        v_dry = self.settings.formulae.trivia.volume(radius=r_dry)
+        self.seeded_particle_extensive_attributes = {
+            "signed water mass": np.array(
+                [0.0001 * si.ng] * self.settings.n_sd_seeding
+            ),
+            "dry volume": v_dry,
+            "kappa times dry volume": self.settings.seed_kappa
+            * v_dry,  # include kappa argument for seeds
+        }
+        self.seeded_particle_multiplicity = n_in_dv * np.prod(np.array(self.mesh.size))
+
+        positions = spatial_sampling.Pseudorandom().sample(
+            backend=backend,
+            grid=self.mesh.grid,
+            n_sd=self.settings.n_sd_seeding,
+        )
+        cell_id, cell_origin, pos_cell = self.mesh.cellular_attributes(positions)
+        self.seeded_particle_cell_id = cell_id
+        self.seeded_particle_cell_origin = cell_origin
+        self.seeded_particle_pos_cell = pos_cell
+
+        r_wet = equilibrate_wet_radii(
+            r_dry=self.settings.formulae.trivia.radius(volume=v_dry),
+            environment=builder.particulator.environment,
+            cell_id=cell_id,
+            kappa_times_dry_volume=self.settings.seed_kappa
+            * v_dry,  # include kappa argument for seeds
+        )
+        self.seeded_particle_volume = self.settings.formulae.trivia.volume(radius=r_wet)
+
+        builder.add_dynamic(
+            Seeding(
+                super_droplet_injection_rate=self.settings.super_droplet_injection_rate,
+                seeded_particle_multiplicity=self.seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes=self.seeded_particle_extensive_attributes,
+                seeded_particle_cell_id=self.seeded_particle_cell_id,
+                seeded_particle_cell_origin=self.seeded_particle_cell_origin,
+                seeded_particle_pos_cell=self.seeded_particle_pos_cell,
+                seeded_particle_volume=self.seeded_particle_volume,
+            )
+        )
+
         if self.settings.processes["freezing"]:
             attributes["signed water mass"] = attributes.pop("water mass")
 
@@ -217,7 +278,22 @@ class Simulation:
                 ) / np.prod(self.settings.grid)
                 assert non_zero_per_gridbox == self.settings.n_sd_per_gridbox / 2
 
-        self.particulator = builder.build(attributes, tuple(products))
+        self.particulator = builder.build(
+            attributes={
+                k: np.pad(
+                    array=v,
+                    pad_width=(
+                        ((0, 0), (0, self.settings.n_sd_seeding))
+                        if k in ("position in cell", "cell origin")
+                        else (0, self.settings.n_sd_seeding)
+                    ),
+                    mode="constant",
+                    constant_values=np.nan if k == "multiplicity" else 0,
+                )
+                for k, v in attributes.items()
+            },
+            products=tuple(products),
+        )
 
         if self.SpinUp is not None:
             self.SpinUp(self.particulator, self.settings.n_spin_up)

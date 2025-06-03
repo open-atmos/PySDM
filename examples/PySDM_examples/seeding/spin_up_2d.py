@@ -1,4 +1,4 @@
-from PySDM.dynamics import Collision, Displacement, Freezing
+from PySDM.dynamics import Collision, Displacement, Freezing, Seeding
 
 
 class SpinUp:
@@ -9,12 +9,14 @@ class SpinUp:
         self.set(Collision, "enable", False)
         self.set(Displacement, "enable_sedimentation", False)
         self.set(Freezing, "enable", False)
+        self.set(Seeding, "enable", False)
 
     def notify(self):
         if self.particulator.n_steps == self.spin_up_steps:
             self.set(Collision, "enable", True)
             self.set(Displacement, "enable_sedimentation", True)
             self.set(Freezing, "enable", True)
+            self.set(Seeding, "enable", True)
 
     def set(self, dynamic, attr, value):
         key = dynamic.__name__

@@ -30,6 +30,11 @@ class Settings(StratoCumulus):
             "x_part",
             "simulation_time",
             "spin_up_time",
+            "n_sd_seeding",
+            "seed_particles_per_volume_STP",
+            "super_droplet_injection_rate",
+            "seed_radius",
+            "seed_kappa",
         )
 
     def __init__(
@@ -47,6 +52,11 @@ class Settings(StratoCumulus):
         simulation_time: float = None,
         dt: float = None,
         spin_up_time: float = None,
+        n_sd_seeding: Optional[int] = None,
+        seed_particles_per_volume_STP: int = 0 / si.cm**3,
+        super_droplet_injection_rate: Optional[callable] = None,
+        seed_radius: float = 1 * si.micrometre,
+        seed_kappa: float = 0.8,
     ):
         super().__init__(
             formulae or Formulae(),
@@ -65,6 +75,11 @@ class Settings(StratoCumulus):
         self.kappa = kappa
         self.z_part = z_part
         self.x_part = x_part
+        self.seed_radius = seed_radius
+        self.seed_kappa = seed_kappa
+        self.n_sd_seeding = n_sd_seeding
+        self.seed_particles_per_volume_STP = seed_particles_per_volume_STP
+        self.super_droplet_injection_rate = super_droplet_injection_rate
 
         # output steps
         self.simulation_time = simulation_time  # 90 * si.minute
