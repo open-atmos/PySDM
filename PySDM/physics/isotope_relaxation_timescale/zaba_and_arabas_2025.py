@@ -15,9 +15,7 @@ class ZabaAndArabas2025:
         return 1 / m_dm_dt
 
     @staticmethod
-    def isotope_m_dm_dt(
-        const, rho_s, radius, D_iso, D, f_iso, f, S, R_liq, alpha, R_vap, Fk
-    ):
+    def isotope_m_dm_dt(const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk):
         """
         Parameters
         ----------
@@ -26,13 +24,12 @@ class ZabaAndArabas2025:
         rho_w
             Density of liquid water.
         """
-        return (
+        return np.abs(
             -3
             * rho_s
             / radius**2
             / const.rho_w
             / alpha
             * D_iso
-            * f_iso
-            * (S * alpha * R_vap / R_liq + (S - 1) / (1 + D * f * Fk) - S)
+            * (S * (alpha * R_vap / R_liq - 1) + (S - 1) / (1 + D * Fk))
         )
