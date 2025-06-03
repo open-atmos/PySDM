@@ -896,5 +896,10 @@
     ],
     "title": "Remarks on the deuterium excess in precipitation in cold regions",
     "label": "Fisher 1991 (Tellus B)"
+  },
+  "https://doi.org/10.1029/JC080i036p05015": {
+    "usages": ["PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py"],
+    "title": "Isotopic study of hail",
+    "label": "Jouzel et al. 1975 (J. Geophys. Res. 80)"
   }
 }

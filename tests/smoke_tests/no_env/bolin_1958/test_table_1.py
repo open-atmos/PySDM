@@ -2,10 +2,10 @@
 test checking values in the notebook table against those listed in the paper
 """
 
-import pytest
-
 from pathlib import Path
 from collections import defaultdict
+
+import pytest
 import numpy as np
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Bolin_1958
