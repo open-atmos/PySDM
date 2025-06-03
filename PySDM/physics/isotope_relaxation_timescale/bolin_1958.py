@@ -18,5 +18,5 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     # pylint: disable=too-many-arguments unused-argument
-    def c1_coeff(const, RH, R_vap):
-        return R_vap / RH
+    def c1_coeff(const, rho_s, R_vap):
+        return R_vap * rho_s / const.rho_w

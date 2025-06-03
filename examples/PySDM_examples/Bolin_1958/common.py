@@ -4,7 +4,6 @@ from PySDM import Formulae
 
 formulae = Formulae(
     terminal_velocity="RogersYau",
-    drop_growth="Mason1951",
     diffusion_thermics="Neglect",
     saturation_vapour_pressure="AugustRocheMagnus",
     ventilation="Froessling1938",
@@ -22,6 +21,8 @@ pvs = formulae.saturation_vapour_pressure.pvs_water(temperature)
 v_term = formulae.terminal_velocity.v_term(radii)
 eta_air = formulae.air_dynamic_viscosity.eta_air(temperature)
 D = formulae.diffusion_thermics.D(T=temperature, p=pressure)
+
+
 class IsotopeTimescale:
     def __init__(self, *, settings, temperature, radii):
         self.radii = radii
@@ -42,6 +43,7 @@ class IsotopeTimescale:
     def vent_coeff_fun(self):
         eta_air = self.formulae.air_dynamic_viscosity.eta_air(self.temperature)
         air_density = self.pressure / self.formulae.constants.Rd / self.temperature
+
 
 air_density = pressure / const.Rd / temperature
 assert abs(air_density - 1) / air_density < 0.3
@@ -70,6 +72,3 @@ r_dr_dt = formulae.drop_growth.r_dr_dt(
     K=any_non_zero_value,
     ventilation_factor=F,
 )
-
-    def tau_rh(self, rh):
-        return 3
