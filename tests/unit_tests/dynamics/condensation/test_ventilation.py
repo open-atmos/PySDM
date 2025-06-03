@@ -6,7 +6,7 @@ import numpy as np
 from PySDM import Formulae, Builder
 from PySDM.environments import Parcel
 from PySDM.formulae import _choices
-from PySDM.physics import ventilation, si
+from PySDM.physics import drop_growth, ventilation, si
 from PySDM.dynamics import Condensation, AmbientThermodynamics
 from PySDM.products import AmbientRelativeHumidity
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
@@ -42,18 +42,24 @@ def _make_particulator(backend):
 
 
 @pytest.mark.parametrize(
-    "variant", [v for v in _choices(ventilation) if v != ventilation.Neglect.__name__]
+    "var_ventilation",
+    [v for v in _choices(ventilation) if v != ventilation.Neglect.__name__],
 )
+@pytest.mark.parametrize("var_drop_growth", list(_choices(drop_growth)))
 @pytest.mark.parametrize("scipy_solver", (True, False))
-def test_ventilation(backend_class, variant, scipy_solver):
+def test_ventilation(backend_class, var_ventilation, var_drop_growth, scipy_solver):
     """tests checking effects of ventilation in a simplistic
     single-[super]droplet adiabatic parcel simulation set up to
     trigger evaporation of a large droplet in subsaturated air"""
 
     # arrange
     particulators = {
-        key: _make_particulator(backend_class(formulae=Formulae(ventilation=key)))
-        for key in [variant, ventilation.Neglect.__name__]
+        key: _make_particulator(
+            backend_class(
+                formulae=Formulae(ventilation=key, drop_growth=var_drop_growth)
+            )
+        )
+        for key in [var_ventilation, ventilation.Neglect.__name__]
     }
 
     if scipy_solver:
@@ -72,4 +78,4 @@ def test_ventilation(backend_class, variant, scipy_solver):
         key: particulator.attributes["water mass"].to_ndarray() / INITIAL_DROPLET_MASS
         for key, particulator in particulators.items()
     }
-    assert 0.95 < mass_ratios[variant] < mass_ratios["Neglect"] < 1
+    assert 0.93 < mass_ratios[var_ventilation] < mass_ratios["Neglect"] < 1

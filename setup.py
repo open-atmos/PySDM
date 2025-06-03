@@ -51,7 +51,7 @@ dependencies = [
         if CI
         else ""
     ),
-    "pyevtk" + ("==1.2.0" if CI else ""),
+    "pyevtk" + ("==1.6.0" if CI else ""),
 ]
 
 optional_dependencies = {
@@ -62,7 +62,7 @@ optional_dependencies = {
         "PySDM-examples",
         "open-atmos-jupyter-utils>=v1.2.0",
     ]
-    + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
+    + ["PyPartMC" + ("==1.7.2" if CI else "")]
     + (
         [
             "pyrcel",

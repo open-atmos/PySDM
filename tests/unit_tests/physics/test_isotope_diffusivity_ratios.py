@@ -28,7 +28,9 @@ class TestIsotopeDiffusivityRatios:
             constants={"Md": constants_defaults.Md * 0.9986},
             isotope_diffusivity_ratios="Stewart1975",
         )
-        sut = getattr(formulae.isotope_diffusivity_ratios, f"ratio_{isotope}")
+        sut = getattr(
+            formulae.isotope_diffusivity_ratios, f"ratio_{isotope}_heavy_to_light"
+        )
 
         # act
         actual_value = sut(temperature=np.nan)
@@ -73,7 +75,9 @@ class TestIsotopeDiffusivityRatios:
     ):
         # arrange
         formulae = Formulae(isotope_diffusivity_ratios="HellmannAndHarvey2020")
-        sut = getattr(formulae.isotope_diffusivity_ratios, f"ratio_{isotope_label}")
+        sut = getattr(
+            formulae.isotope_diffusivity_ratios, f"ratio_{isotope_label}_heavy_to_light"
+        )
 
         # act
         actual_value = sut(temperature=temperature)
@@ -89,7 +93,9 @@ class TestIsotopeDiffusivityRatios:
         formulae = Formulae(isotope_diffusivity_ratios="GrahamsLaw")
 
         # act
-        sut = formulae.isotope_diffusivity_ratios.ratio_2H(temperature=np.nan)
+        sut = formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(
+            temperature=np.nan
+        )
 
         # assert
         np.testing.assert_approx_equal(sut, 0.973, significant=3)
@@ -105,7 +111,7 @@ class TestIsotopeDiffusivityRatios:
                     Formulae(
                         isotope_diffusivity_ratios=paper
                     ).isotope_diffusivity_ratios,
-                    f"ratio_{isotope_label}",
+                    f"ratio_{isotope_label}_heavy_to_light",
                 )
             except AttributeError:
                 pytest.skip()
@@ -125,20 +131,27 @@ class TestIsotopeDiffusivityRatios:
             for isotope_label in ("2H", "17O", "18O"):
                 try:
                     sut = getattr(
-                        formulae.isotope_diffusivity_ratios, f"ratio_{isotope_label}"
+                        formulae.isotope_diffusivity_ratios,
+                        f"ratio_{isotope_label}_heavy_to_light",
                     )
                 except AttributeError:
                     pass
                 else:
-                    diffusivity_ratio = sut(temperature)
-                    min_value = min(np.amin(diffusivity_ratio), min_value)
-                    max_value = max(np.amax(diffusivity_ratio), max_value)
+                    diffusivity_ratio_heavy_to_light = sut(temperature)
+                    min_value = min(
+                        np.amin(diffusivity_ratio_heavy_to_light), min_value
+                    )
+                    max_value = max(
+                        np.amax(diffusivity_ratio_heavy_to_light), max_value
+                    )
                     pyplot.plot(
                         temperature,
                         (
-                            diffusivity_ratio
-                            if isinstance(diffusivity_ratio, np.ndarray)
-                            else np.full_like(temperature, diffusivity_ratio)
+                            diffusivity_ratio_heavy_to_light
+                            if isinstance(diffusivity_ratio_heavy_to_light, np.ndarray)
+                            else np.full_like(
+                                temperature, diffusivity_ratio_heavy_to_light
+                            )
                         ),
                         label=f"{paper=} {isotope_label=}",
                     )
