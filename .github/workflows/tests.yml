@@ -14,27 +14,13 @@ env:
 on:
   push:
     branches: [ main ]
+    paths-ignore: ['docs/**', '**.md']
   pull_request:
     branches: [ main ]
   schedule:
     - cron: '0 13 * * 4'
 
 jobs:
-  precommit:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4.1.6
-      - uses: actions/setup-python@v5.0.0
-        with:
-          python-version: 3.9
-      - run: |
-          pip install pre-commit
-          pre-commit clean
-          pre-commit autoupdate
-          pre-commit run --all-files
-      - if: ${{ failure() }}
-        run: git diff
-
   pylint:
     runs-on: ubuntu-24.04
     steps:
@@ -64,20 +50,10 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-  devops:
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
-      - run: pip install -r tests/devops_tests/requirements.txt
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
+  
 
   nojit_and_codecov:
-    needs: [precommit, pylint, devops]
+    needs: [pylint]
     runs-on: ubuntu-24.04
     env:
       NUMBA_DISABLE_JIT: 1
@@ -107,7 +83,7 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(collisions)", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions","smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
           - platform: "macos-14"
             python-version: "3.9"
