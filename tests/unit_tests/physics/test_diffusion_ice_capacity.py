@@ -2,8 +2,6 @@
 test for diffusion ice capacity parametrisations
 """
 
-from contextlib import nullcontext
-import re
 import pytest
 from matplotlib import pyplot
 import numpy as np
@@ -33,7 +31,7 @@ class TestDiffusionIceCapacity:
         pyplot.ylabel("capacity (m)")
         pyplot.xlim(masses[0], masses[-1])
         pyplot.xscale("log")
-        # pyplot.ylim(1e-16, 1e-11)
+        pyplot.ylim(1e-7, 5e-4)
         pyplot.yscale("log")
         pyplot.grid()
         pyplot.plot(masses, values, color="black")
@@ -52,8 +50,6 @@ class TestDiffusionIceCapacity:
     @staticmethod
     @pytest.mark.parametrize("variant", _choices(diffusion_ice_capacity))
     def test_units(variant):
-        if variant == "Spherical":
-            pytest.skip()
 
         with physics.dimensional_analysis.DimensionalAnalysis():
             # arrange
@@ -62,7 +58,7 @@ class TestDiffusionIceCapacity:
                 diffusion_ice_capacity=variant,
             )
             sut = formulae.diffusion_ice_capacity
-            mass = 10.**-12 * si.kg
+            mass = 1e-12 * si.kg
 
             # act
             value = sut.capacity(mass)

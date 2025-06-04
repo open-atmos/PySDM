@@ -47,7 +47,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         signed_water_mass[i]
                     )
 
-                    diameter = radius * 2.0
+                    # diameter = radius * 2.0
 
                     temperature = current_temperature[cid]
                     pressure = current_total_pressure[cid]
@@ -55,7 +55,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     pvs_ice = formulae.saturation_vapour_pressure__pvs_ice(temperature)
                     latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
 
-                    capacity = formulae.diffusion_ice_capacity__capacity(diameter)
+                    capacity = formulae.diffusion_ice_capacity__capacity(ice_mass)
 
                     mass_ventilation_factor = formulae.ventilation__ventilation_coefficient(
                         sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
