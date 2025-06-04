@@ -21,11 +21,14 @@ class Settings:
             "n_sd_seeding",
             "super_droplet_injection_rate",
             "p0",
+            "radius",
             "kappa",
             "rho_times_w_1",
             "particles_per_volume_STP",
             "seed_particles_per_volume_STP",
-            "seed_kappa" "dt",
+            "seed_radius",
+            "seed_kappa",
+            "dt",
             "dz",
             "precip",
             "z_max",
@@ -44,10 +47,12 @@ class Settings:
         n_sd_seeding: Optional[int] = None,
         super_droplet_injection_rate: Optional[callable] = None,
         p0: float = 1007 * si.hPa,  # as used in Olesik et al. 2022 (GMD)
+        radius: float = 0.04 * si.um,
         kappa: float = 1,
         rho_times_w_1: float = 2 * si.m / si.s * si.kg / si.m**3,
         particles_per_volume_STP: int = 50 / si.cm**3,
         seed_particles_per_volume_STP: int = 0 / si.cm**3,
+        seed_radius: float = 1 * si.um,
         seed_kappa: float = 0.8,
         dt: float = 1 * si.s,
         dz: float = 25 * si.m,
@@ -69,6 +74,7 @@ class Settings:
         self.rho_times_w_1 = rho_times_w_1
         self.particles_per_volume_STP = particles_per_volume_STP
         self.seed_particles_per_volume_STP = seed_particles_per_volume_STP
+        self.seed_radius = seed_radius
         self.seed_kappa = seed_kappa
         self.dt = dt
         self.dz = dz
@@ -90,7 +96,7 @@ class Settings:
 
         self.wet_radius_spectrum_per_mass_of_dry_air = spectra.Lognormal(
             norm_factor=particles_per_volume_STP / self.formulae.constants.rho_STP,
-            m_mode=0.08 / 2 * si.um,
+            m_mode=radius,
             s_geom=1.4,
         )
 
