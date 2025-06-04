@@ -19,7 +19,7 @@ class Howell1949(Fick):  # pylint: disable=too-few-public-methods
         Parameters
         ----------
         T
-            Temperature in Kelvins.
+            Temperature.
         K
             Thermal diffusivity with heat ventilation factor.
         lv

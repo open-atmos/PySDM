@@ -1,6 +1,5 @@
 """
-kinetic fractionation factor  for liquid and ice from
-[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749),
+kinetic fractionation factor [Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749),
 as eq. 3e for n=1 in [Stewart 1975](https://doi.org/10.1029/JC080i009p01133)
 and eq. 1 in [Bolot 2013](https://doi.org/10.5194/acp-13-7903-2013),
 where alpha_kinetic is multiplied by alpha equilibrium (eq. 1 defines effective alpha).

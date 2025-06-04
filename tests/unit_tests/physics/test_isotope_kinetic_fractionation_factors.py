@@ -5,7 +5,6 @@ test for isotope kinetic fractionation factors based on plot
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from open_atmos_jupyter_utils import show_plot
 
 from PySDM import Formulae
 from PySDM import physics
@@ -192,7 +191,7 @@ class TestIsotopeKineticFractionationFactors:
         pyplot.grid()
 
         if plot:
-            show_plot()
+            pyplot.show()
         else:
             pyplot.clf()
 
