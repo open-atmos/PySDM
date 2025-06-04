@@ -28,7 +28,8 @@ setup(
         "PyMPDATA" + (">=1.0.15" if CI else ""),
         "open-atmos-jupyter-utils",
         "pystrict",
-        "matplotlib" + (">=3.9.4" if CI else ""),
+        # https://github.com/matplotlib/matplotlib/issues/28551
+        "matplotlib" + ("!=3.9.1" if CI else ""),
         "joblib",
         "ipywidgets",
         "seaborn",

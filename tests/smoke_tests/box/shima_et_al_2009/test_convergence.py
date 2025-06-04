@@ -71,7 +71,8 @@ class TestConvergence:  # pylint: disable=missing-class-docstring
         if plot:
             plotter.show()
         else:
-            pyplot.delaxes()
+            # https://github.com/matplotlib/matplotlib/issues/9970
+            pyplot.xscale("linear")
             pyplot.clf()
 
         # assert monotonicity (i.e., the larger the sd count, the smaller the error)
