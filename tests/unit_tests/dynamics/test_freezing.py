@@ -14,7 +14,7 @@ VERY_BIG_J_HET = 1e20
 EPSILON_RH = 1e-3
 
 
-class TestImmersionFreezing:
+class TestDropletFreezing:
     @staticmethod
     @pytest.mark.parametrize(
         "record_freezing_temperature",
@@ -86,27 +86,49 @@ class TestImmersionFreezing:
         pass
 
     @staticmethod
-    @pytest.mark.parametrize("singular", (True, False))
+    @pytest.mark.parametrize(
+        "freezing_type", ("het_singular", "het_time_dependent", "hom_time_dependent")
+    )
     @pytest.mark.parametrize("thaw", (True, False))
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
-    def test_thaw(backend_class, singular, thaw, epsilon):
+    def test_thaw(backend_class, freezing_type, thaw, epsilon):
         # arrange
+        singular = False
+        immersion_freezing = True
+        homogeneous_freezing = False
+        if freezing_type == "het_singular":
+            freezing_parameter = {}
+            singular = True
+        elif freezing_type == "het_time_dependent":
+            freezing_parameter = {
+                "heterogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HET": 0},
+            }
+        elif freezing_type == "hom_time_dependent":
+            freezing_parameter = {
+                "homogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HOM": 0},
+            }
+            immersion_freezing = False
+            homogeneous_freezing = True
+            if backend_class.__name__ == "ThrustRTC":
+                pytest.skip()
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
-            **(
-                {}
-                if singular
-                else {
-                    "heterogeneous_ice_nucleation_rate": "Constant",
-                    "constants": {"J_HET": 0},
-                }
-            ),
+            **(freezing_parameter),
         )
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder = Builder(
             n_sd=1, backend=backend_class(formulae=formulae), environment=env
         )
-        builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
+        builder.add_dynamic(
+            Freezing(
+                singular=singular,
+                homogeneous_freezing=homogeneous_freezing,
+                immersion_freezing=immersion_freezing,
+                thaw=thaw,
+            )
+        )
         particulator = builder.build(
             products=(IceWaterContent(),),
             attributes={
@@ -123,6 +145,7 @@ class TestImmersionFreezing:
         )
         particulator.environment["T"] = formulae.constants.T0 + epsilon
         particulator.environment["RH"] = np.nan
+        particulator.environment["RH_ice"] = np.nan
         if not singular:
             particulator.environment["a_w_ice"] = np.nan
         assert particulator.products["ice water content"].get() > 0
@@ -137,7 +160,7 @@ class TestImmersionFreezing:
             assert particulator.products["ice water content"].get() > 0
 
     @staticmethod
-    def test_freeze_singular(backend_class):
+    def test_immersion_freezing_singular(backend_class):
         # arrange
         n_sd = 44
         dt = 1 * si.s
@@ -176,8 +199,13 @@ class TestImmersionFreezing:
 
     @staticmethod
     @pytest.mark.parametrize("double_precision", (True, False))
-    # pylint: disable=too-many-locals
-    def test_freeze_time_dependent(backend_class, double_precision, plot=False):
+    @pytest.mark.parametrize(
+        "freezing_type", ("het_time_dependent", "hom_time_dependent")
+    )
+    # pylint: disable=too-many-locals,too-many-statements
+    def test_freezing_time_dependent(
+        backend_class, freezing_type, double_precision, plot=False
+    ):
         if backend_class.__name__ == "Numba" and not double_precision:
             pytest.skip()
 
@@ -193,6 +221,7 @@ class TestImmersionFreezing:
         )
         rate = 1e-9
         immersed_surface_area = 1
+        droplet_volume = 1
 
         number_of_real_droplets = 1024
         total_time = (
@@ -200,9 +229,7 @@ class TestImmersionFreezing:
         )
 
         # dummy (but must-be-set) values
-        initial_water_mass = (
-            44  # for sign flip (ice water has negative volumes), value does not matter
-        )
+        initial_water_mass = 1000  # for sign flip (ice water has negative volumes)
         d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
 
         def hgh(t):
@@ -211,15 +238,32 @@ class TestImmersionFreezing:
         def low(t):
             return np.exp(-1.25 * rate * (t + total_time / 4))
 
+        immersion_freezing = True
+        homogeneous_freezing = False
+        if freezing_type == "het_time_dependent":
+            freezing_parameter = {
+                "heterogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HET": rate / immersed_surface_area},
+            }
+        elif freezing_type == "hom_time_dependent":
+            freezing_parameter = {
+                "homogeneous_ice_nucleation_rate": "Constant",
+                "constants": {"J_HOM": rate / droplet_volume},
+            }
+            immersion_freezing = False
+            homogeneous_freezing = True
+            if backend_class.__name__ == "ThrustRTC":
+                pytest.skip()
+
         # Act
         output = {}
 
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
-            heterogeneous_ice_nucleation_rate="Constant",
-            constants={"J_HET": rate / immersed_surface_area},
+            **(freezing_parameter),
             seed=seed,
         )
+
         products = (IceWaterContent(name="qi"),)
 
         for case in cases:
@@ -238,7 +282,13 @@ class TestImmersionFreezing:
                 ),
                 environment=env,
             )
-            builder.add_dynamic(Freezing(singular=False))
+            builder.add_dynamic(
+                Freezing(
+                    singular=False,
+                    immersion_freezing=immersion_freezing,
+                    homogeneous_freezing=homogeneous_freezing,
+                )
+            )
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),
                 "immersed surface area": np.full(n_sd, immersed_surface_area),
@@ -246,7 +296,8 @@ class TestImmersionFreezing:
             }
             particulator = builder.build(attributes=attributes, products=products)
             particulator.environment["RH"] = 1.0001
-            particulator.environment["a_w_ice"] = np.nan
+            particulator.environment["RH_ice"] = 1.5
+            particulator.environment["a_w_ice"] = 0.6
             particulator.environment["T"] = np.nan
 
             cell_id = 0
