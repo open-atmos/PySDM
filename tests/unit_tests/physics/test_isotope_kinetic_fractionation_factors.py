@@ -17,7 +17,7 @@ PLOT = False
 
 class TestIsotopeKineticFractionationFactors:
     @staticmethod
-    def test_units():
+    def test_units_alpha_kinetic():
         """checks that alphas are dimensionless"""
         with DimensionalAnalysis():
             # arrange
@@ -30,6 +30,34 @@ class TestIsotopeKineticFractionationFactors:
                 alpha_equilibrium=alpha_eq,
                 D_ratio_heavy_to_light=D_ratio,
                 saturation=saturation_over_ice,
+            )
+
+            # assert
+            assert sut.check("[]")
+
+    @staticmethod
+    def test_units_transfer_coefficient():
+        with DimensionalAnalysis():
+            # arrange
+            D = 1 * physics.si.m**2 / physics.si.s
+            Fk = 1 * physics.si.s / physics.si.m**2
+
+            # act
+            sut = JouzelAndMerlivat1984.transfer_coefficient(D=D, Fk=Fk)
+
+            # assert
+            assert sut.check("[]")
+
+    @staticmethod
+    def test_units_eff_saturation():
+        with DimensionalAnalysis():
+            # arrange
+            transfer_coeff = 1 * physics.si.dimensionless
+            relative_humidity = 1 * physics.si.dimensionless
+
+            # act
+            sut = JouzelAndMerlivat1984.effective_saturation(
+                transfer_coefficient=transfer_coeff, RH=relative_humidity
             )
 
             # assert
@@ -118,9 +146,12 @@ class TestIsotopeKineticFractionationFactors:
 
     @staticmethod
     @pytest.mark.parametrize("isotope", ("2H", "18O", "17O"))
-    def test_alpha_kinetic_jouzel_merlivat_vs_craig_gordon(isotope, plot=PLOT):
+    @pytest.mark.parametrize("temperature_C", (-30, -20, -1))
+    def test_alpha_kinetic_jouzel_merlivat_vs_craig_gordon(
+        isotope, temperature_C, plot=PLOT
+    ):
         # arrange
-        T = 273
+        T = Formulae().trivia.C2K(temperature_C)
         RH = np.linspace(0.3, 1)
         formulae = Formulae(
             isotope_equilibrium_fractionation_factors="VanHook1968",
@@ -140,8 +171,6 @@ class TestIsotopeKineticFractionationFactors:
             D_ratio_heavy_to_light=D_heavy_to_light,
         )
         formulae = Formulae(
-            isotope_equilibrium_fractionation_factors="VanHook1968",
-            isotope_diffusivity_ratios="HellmannAndHarvey2020",
             isotope_kinetic_fractionation_factors="CraigGordon",
         )
         alpha_kin_cg = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
