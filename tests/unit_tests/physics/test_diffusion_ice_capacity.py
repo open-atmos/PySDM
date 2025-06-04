@@ -16,9 +16,7 @@ class TestDiffusionIceCapacity:
     def test_basics(variant, plot=False):
         # arrange
         si = physics.si
-        masses = (
-                np.logspace(base=10, start=-16, stop=-8.5, num=10) * si.kg
-        )
+        masses = np.logspace(base=10, start=-16, stop=-8.5, num=10) * si.kg
         formulae = Formulae(
             diffusion_ice_capacity=variant,
         )
@@ -45,7 +43,6 @@ class TestDiffusionIceCapacity:
         # assert
         assert (values > 0).all()
         assert (np.diff(values) > 0).all()
-
 
     @staticmethod
     @pytest.mark.parametrize("variant", _choices(diffusion_ice_capacity))
