@@ -5,11 +5,14 @@ test for isotope kinetic fractionation factors based on plot
 import numpy as np
 import pytest
 from matplotlib import pyplot
+from open_atmos_jupyter_utils import show_plot
 
 from PySDM import Formulae
 from PySDM import physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics.isotope_kinetic_fractionation_factors import JouzelAndMerlivat1984
+
+PLOT = False
 
 
 class TestIsotopeKineticFractionationFactors:
@@ -114,3 +117,58 @@ class TestIsotopeKineticFractionationFactors:
 
         # assert
         np.testing.assert_approx_equal(actual=sut, desired=alpha, significant=3)
+
+    @staticmethod
+    @pytest.mark.parametrize("isotope", ("2H", "18O", "17O"))
+    def test_alpha_kinetic_jouzel_merlivat_vs_craig_gordon(isotope, plot=PLOT):
+        # arrange
+        T = 273
+        RH = np.linspace(0.3, 1)
+        formulae = Formulae(
+            isotope_equilibrium_fractionation_factors="VanHook1968",
+            isotope_diffusivity_ratios="HellmannAndHarvey2020",
+            isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
+        )
+        Si = formulae.saturation_vapour_pressure.pvs_ice(T)
+        alpha_eq = getattr(
+            formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{isotope}"
+        )(T)
+        D_heavy_to_light = getattr(
+            formulae.isotope_diffusivity_ratios, f"ratio_{isotope}_heavy_to_light"
+        )(T)
+        alpha_kin_jm = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
+            alpha_equilibrium=alpha_eq,
+            saturation_over_ice=Si,
+            diffusivity_ratio_heavy_to_light=D_heavy_to_light,
+        )
+        formulae = Formulae(
+            isotope_equilibrium_fractionation_factors="VanHook1968",
+            isotope_diffusivity_ratios="HellmannAndHarvey2020",
+            isotope_kinetic_fractionation_factors="CraigGordon",
+        )
+        alpha_kin_cg = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
+            relative_humidity=RH,
+            turbulence_parameter_n=1,
+            delta_diff=alpha_eq - 1,
+            theta=1,
+        )
+
+        # act
+        n = (alpha_kin_jm + 1) / (alpha_kin_cg + 1)
+
+        # plot
+        pyplot.plot(1 - RH, n)
+        pyplot.gca().set(
+            xlabel="1-RH",
+            ylabel="turbulence parameter n",
+        )
+        pyplot.grid()
+
+        if plot:
+            show_plot()
+        else:
+            pyplot.clf()
+
+        # assert
+        np.testing.assert_equal(n > 0.5, True)
+        np.testing.assert_equal(n < 1, True)

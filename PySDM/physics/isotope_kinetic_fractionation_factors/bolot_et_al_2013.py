@@ -14,32 +14,22 @@ class BolotEtAl2013(JouzelAndMerlivat1984):
         pass
 
     @staticmethod
-    def transfer_coefficient_liq_to_ice(
-        const,
-        diffusion_ventilation_coefficient,
-        condensed_water_density,
-        # mass_ventilation_coefficient,
-        # heat_ventilation_coefficient,
-        pvs,
-        molar_mass,
-        temperature,
-        relative_humidity,
-        r_dr_dt_assuming_RHeq0,
-    ):  # pylint: disable=too-many-arguments
+    def transfer_coefficient_liq_to_ice(D, Fk):
+        """eq. (A6) in Bolot.
+
+        Parameters
+        ----------
+        D
+            light isotope diffusion coefficient
+        Fk
+            term associated with heat transfer
+
+        Returns
+        ----------
+        A_li
+            liquid to ice transfer coefficient
         """
-        Temperature is in 'infinity' T_inf;
-        For exact formula from Bolot et al. 2013 use `r_dr_dt` from Mason 1971
-            assuming `RH_eq` equal to zero and putting
-            `K * heat_ventilation_coefficient / mass_ventilation_coefficient`
-            instead of `K`.
-        """
-        return 1 / (
-            r_dr_dt_assuming_RHeq0
-            * condensed_water_density
-            / relative_humidity
-            / diffusion_ventilation_coefficient
-            * (const.R_str * temperature / molar_mass / pvs)
-        )
+        return 1 / (1 + D * Fk)
 
     @staticmethod
     def effective_supersaturation(transfer_coefficient_liq_to_ice, relative_humidity):
