@@ -52,7 +52,7 @@ class Settings(StratoCumulus):
         simulation_time: float = None,
         dt: float = None,
         spin_up_time: float = None,
-        n_sd_seeding: Optional[int] = None,
+        n_sd_seeding: Optional[int] = 0,
         seed_particles_per_volume_STP: int = 0 / si.cm**3,
         super_droplet_injection_rate: Optional[callable] = None,
         seed_radius: float = 1 * si.micrometre,
