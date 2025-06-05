@@ -14,11 +14,7 @@ from PySDM.physics import constants_defaults, isotope_relaxation_timescale
     "paper",
     [
         choice
-        for choice in (
-            "JouzelEtAl1975",
-            "ZabaAndArabas2025",
-            "MiyakeEtAl1968",
-        )  # _choices(isotope_relaxation_timescale)
+        for choice in _choices(isotope_relaxation_timescale)
         if choice not in ("Null", "Bolin1958")
     ],
 )

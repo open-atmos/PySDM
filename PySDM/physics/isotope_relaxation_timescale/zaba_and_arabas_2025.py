@@ -1,4 +1,4 @@
-"""isotope e-fold timescale based on Fick's first law and Fourier's law"""
+"""isotope e-folding timescale based on Fick's first law and Fourier's law"""
 
 import numpy as np
 
@@ -19,7 +19,6 @@ class ZabaAndArabas2025:
         const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
     ):  # pylint: disable=too-many-arguments
         """
-        TODO: check '2' multiplier
         Parameters
         ----------
         D_iso
