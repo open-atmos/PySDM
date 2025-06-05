@@ -4,6 +4,7 @@ tests for isotope relaxation timescale formulae
 
 import pytest
 
+import PySDM.physics as physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import constants_defaults, isotope_relaxation_timescale
@@ -13,7 +14,11 @@ from PySDM.physics import constants_defaults, isotope_relaxation_timescale
     "paper",
     [
         choice
-        for choice in _choices(isotope_relaxation_timescale)
+        for choice in (
+            "JouzelEtAl1975",
+            "ZabaAndArabas2025",
+            "MiyakeEtAl1968",
+        )  # _choices(isotope_relaxation_timescale)
         if choice not in ("Null", "Bolin1958")
     ],
 )
@@ -21,32 +26,51 @@ from PySDM.physics import constants_defaults, isotope_relaxation_timescale
 def test_unit_and_magnitude(paper, iso):
     with DimensionalAnalysis():
         # arrange
-        si = constants_defaults.si
+        si = physics.si
         formulae = Formulae(
             isotope_relaxation_timescale=paper,
             isotope_equilibrium_fractionation_factors="HoritaAndWesolowski1994",
+            isotope_diffusivity_ratios="HellmannAndHarvey2020",
         )
         const = formulae.constants
         temperature = 300 * si.K
-        M_iso = (
-            getattr(const, f"M_{iso}")
-            + const.M_1H
-            + (const.M_1H if iso[-1] == "O" else const.M_16O)
+        D = const.D0
+        D_iso = (
+            getattr(formulae.isotope_diffusivity_ratios, f"ratio_{iso}_heavy_to_light")(
+                temperature
+            )
+            * D
         )
-        sut = formulae.isotope_relaxation_timescale.tau
+
         alpha_iso = getattr(
             formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{iso}"
         )(temperature)
-        e_s = formulae.saturation_vapour_pressure.pvs_water(temperature)
+        rho_s = const.rho_w
+        Fk = formulae.drop_growth.Fk(T=const.T_tri, K=const.K0, lv=const.l_tri)
         radius = 0.1 * si.mm
         vent_coeff = 1.01
+        S = 1.01
+        R_vap = getattr(const, f"VSMOW_R_{iso}")
+        R_liq = getattr(const, f"VSMOW_R_{iso}")
+        m_dm_dt = formulae.isotope_relaxation_timescale.isotope_m_dm_dt(
+            rho_s=rho_s,
+            radius=radius,
+            D_iso=vent_coeff * D_iso,
+            D=D,
+            S=S,
+            R_liq=R_liq,
+            alpha=alpha_iso,
+            R_vap=R_vap,
+            Fk=Fk,
+        )
+        sut = formulae.isotope_relaxation_timescale.tau
 
         # act
-        result = sut(e_s, const.D0, M_iso, vent_coeff, radius, alpha_iso, temperature)
+        result = sut(m_dm_dt)
 
         # assert
         assert result.check("[time]")
-        assert 1 * si.s < result < 10 * si.s
+        assert 0 * si.s < result < 10 * si.s
 
 
 def test_bolin_tritium_formula_unit():

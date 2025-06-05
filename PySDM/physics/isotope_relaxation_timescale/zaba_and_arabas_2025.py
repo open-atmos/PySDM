@@ -19,14 +19,13 @@ class ZabaAndArabas2025:
         const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
     ):  # pylint: disable=too-many-arguments
         """
+        TODO: check '2' multiplier
         Parameters
         ----------
         D_iso
             Mass diffusivity coefficient for heavy isotope.
-        rho_w
-            Density of liquid water.
         """
-        return np.abs(
+        return abs(
             -3
             * rho_s
             / radius**2
