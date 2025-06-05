@@ -37,27 +37,19 @@ def test_unit_and_magnitude(paper, iso):
             )
             * D
         )
-
-        alpha_iso = getattr(
-            formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{iso}"
-        )(temperature)
-        rho_s = const.rho_w
-        Fk = formulae.drop_growth.Fk(T=const.T_tri, K=const.K0, lv=const.l_tri)
-        radius = 0.1 * si.mm
         vent_coeff = 1.01
-        S = 1.01
-        R_vap = getattr(const, f"VSMOW_R_{iso}")
-        R_liq = getattr(const, f"VSMOW_R_{iso}")
         m_dm_dt = formulae.isotope_relaxation_timescale.isotope_m_dm_dt(
-            rho_s=rho_s,
-            radius=radius,
+            rho_s=const.rho_w,
+            radius=0.1 * si.mm,
             D_iso=vent_coeff * D_iso,
             D=D,
-            S=S,
-            R_liq=R_liq,
-            alpha=alpha_iso,
-            R_vap=R_vap,
-            Fk=Fk,
+            S=1.01,
+            R_liq=getattr(const, f"VSMOW_R_{iso}"),
+            alpha=getattr(
+                formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{iso}"
+            )(temperature),
+            R_vap=getattr(const, f"VSMOW_R_{iso}"),
+            Fk=formulae.drop_growth.Fk(T=const.T_tri, K=const.K0, lv=const.l_tri),
         )
         sut = formulae.isotope_relaxation_timescale.tau
 
