@@ -7,6 +7,7 @@ from matplotlib import pyplot
 import numpy as np
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import diffusion_ice_capacity
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM import physics
 
 
@@ -48,7 +49,7 @@ class TestDiffusionIceCapacity:
     @pytest.mark.parametrize("variant", _choices(diffusion_ice_capacity))
     def test_units(variant):
 
-        with physics.dimensional_analysis.DimensionalAnalysis():
+        with DimensionalAnalysis():
             # arrange
             si = physics.si
             formulae = Formulae(

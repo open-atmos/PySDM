@@ -47,7 +47,7 @@ COMMON = {
     "environment": MoistBox(dt=0.01 * si.s, dv=1 * si.m**3),
     "products": (IceWaterContent(),),
     "formulae": {
-        f"{diffusion_coordinate}": Formulae(
+        diffusion_coordinate: Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             diffusion_coordinate=diffusion_coordinate,
             diffusion_ice_capacity="Spherical",
