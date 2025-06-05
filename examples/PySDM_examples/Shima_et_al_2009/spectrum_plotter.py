@@ -81,12 +81,16 @@ class SpectrumPlotter:
         self.finish()
         pyplot.savefig(file, format=self.format)
 
-    def plot(self, spectrum, t):
-        error = self.plot_analytic_solution(self.settings, t, spectrum)
-        self.plot_data(self.settings, t, spectrum)
+    def plot(
+        self, spectrum, t, label=None, color=None, title=None, add_error_to_label=False
+    ):
+        error = self.plot_analytic_solution(self.settings, t, spectrum, title)
+        if label is not None and add_error_to_label:
+            label += f" error={error:.4g}"
+        self.plot_data(self.settings, t, spectrum, label, color)
         return error
 
-    def plot_analytic_solution(self, settings, t, spectrum=None):
+    def plot_analytic_solution(self, settings, t, spectrum, title):
         if t == 0:
             analytic_solution = settings.spectrum.size_distribution
         else:
@@ -123,11 +127,13 @@ class SpectrumPlotter:
         if spectrum is not None:
             y = spectrum * si.kilograms / si.grams
             error = error_measure(y, y_true, x)
-            self.title = f"error measure: {error:.2f}"  # TODO #327 relative error
+            self.title = (
+                title or f"error measure: {error:.2f}"
+            )  # TODO #327 relative error
             return error
         return None
 
-    def plot_data(self, settings, t, spectrum):
+    def plot_data(self, settings, t, spectrum, label, color):
         if self.smooth:
             scope = self.smooth_scope
             if t != 0:
@@ -144,18 +150,16 @@ class SpectrumPlotter:
             self.ax.plot(
                 (x[:-1] + dx / 2) * si.metres / si.micrometres,
                 spectrum[:-scope] * si.kilograms / si.grams,
-                label=f"t = {t}s",
-                color=self.colors(
-                    t / (self.settings.output_steps[-1] * self.settings.dt)
-                ),
+                label=label or f"t = {t}s",
+                color=color
+                or self.colors(t / (self.settings.output_steps[-1] * self.settings.dt)),
             )
         else:
             self.ax.step(
                 settings.radius_bins_edges[:-1] * si.metres / si.micrometres,
                 spectrum * si.kilograms / si.grams,
                 where="post",
-                label=f"t = {t}s",
-                color=self.colors(
-                    t / (self.settings.output_steps[-1] * self.settings.dt)
-                ),
+                label=label or f"t = {t}s",
+                color=color
+                or self.colors(t / (self.settings.output_steps[-1] * self.settings.dt)),
             )
