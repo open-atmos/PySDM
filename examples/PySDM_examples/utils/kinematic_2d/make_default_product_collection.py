@@ -67,7 +67,7 @@ def make_default_product_collection(settings):
     if settings.processes["condensation"]:
         products.append(PySDM_products.CondensationTimestepMin(name="dt_cond_min"))
         products.append(PySDM_products.CondensationTimestepMax(name="dt_cond_max"))
-        products.append(PySDM_products.PeakSupersaturation(unit="%", name="S_max"))
+        products.append(PySDM_products.PeakSaturation(unit="%", name="S_max_percent"))
         products.append(PySDM_products.ActivatingRate())
         products.append(PySDM_products.DeactivatingRate())
         products.append(PySDM_products.RipeningRate())
