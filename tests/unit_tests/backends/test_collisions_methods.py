@@ -240,15 +240,17 @@ class TestCollisionMethods:
     @pytest.mark.parametrize(
         "gamma, permutation, multiplicity, cell_id, dt_left, dt, dt_max, is_first_in_pair, ",
         (
-            (
+            (  # pylint: disable=undefined-variable,unused-variable
                 [2, 2, 2] + [3, 3] + [1, 1, 1],
                 tuple(range(n_part := 16)),
-                [1]*2 + [100]*(n_part-2),
-                [0]*(n_in_cell_0 := 6) + [1]*(n_in_cell_1 := 4) + [2]*(n_in_cell_2 := 6),
-                [dt := 12.]*(n_cell := 3),
+                [1] * 2 + [100] * (n_part - 2),
+                [0] * (n_in_cell_0 := 6)
+                + [1] * (n_in_cell_1 := 4)
+                + [2] * (n_in_cell_2 := 6),
+                [dt := 12.0] * (n_cell := 3),
                 dt,
                 dt,
-                [True, False]*(n_part // 2),
+                [True, False] * (n_part // 2),
             ),
         ),
     )
@@ -262,12 +264,14 @@ class TestCollisionMethods:
         dt_left,
         dt,
         dt_max,
-        is_first_in_pair
+        is_first_in_pair,
     ):
         # Arrange
-        backend = CPU() 
+        backend = CPU()
         _permutation = make_Index(backend).from_ndarray(np.asarray(permutation))
-        _multiplicity = make_IndexedStorage(backend).from_ndarray(_permutation, np.asarray(multiplicity))
+        _multiplicity = make_IndexedStorage(backend).from_ndarray(
+            _permutation, np.asarray(multiplicity)
+        )
         _cell_id = backend.Storage.from_ndarray(np.asarray(cell_id))
         _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
         _is_first_in_pair = make_PairIndicator(backend)(len(multiplicity))
@@ -308,7 +312,12 @@ class TestCollisionMethods:
                         cid=cell_id[j],
                         multiplicity=_multiplicity.data,
                         gamma=_gamma.data,
-                        attributes=np.empty(shape=(0,0,)),
+                        attributes=np.empty(
+                            shape=(
+                                0,
+                                0,
+                            )
+                        ),
                         coalescence_rate=np.empty(n_cell),
                     )
                     if _multiplicity.data[j] == 0:
@@ -321,4 +330,7 @@ class TestCollisionMethods:
         assert _n_substep[2] == 1
         assert (_dt_left.to_ndarray() == 0.0).all()
         assert all(_dt_min.data == dt / _n_substep.data)
-        assert all(_multiplicity.data == (0, 1, 25, 25, 25, 25, 12, 13, 12, 13, 50, 50, 50, 50, 50, 50))
+        assert all(
+            _multiplicity.data
+            == (0, 1, 25, 25, 25, 25, 12, 13, 12, 13, 50, 50, 50, 50, 50, 50)
+        )
