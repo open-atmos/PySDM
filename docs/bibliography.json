@@ -831,7 +831,8 @@
   "https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2": {
     "usages": [
       "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py",
-      "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py"
+      "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py",
+      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
     ],
     "title": "The Evaporation, Temperature and Thermal Relaxation-Time of Freely Falling Waterdrops",
     "label": "Kinzer & Gunn 1951 (J. Meteor.)"
