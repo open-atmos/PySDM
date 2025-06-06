@@ -4,10 +4,10 @@ test checking values in the notebook table against those listed in the paper
 
 from pathlib import Path
 from collections import defaultdict
-import numpy as np
-import pytest
-from open_atmos_jupyter_utils import notebook_vars
 
+import pytest
+import numpy as np
+from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Bolin_1958
 
 
@@ -66,5 +66,5 @@ def test_table_1_against_values_from_the_paper(
     np.testing.assert_allclose(
         actual=notebook_variables["data"][column_label][row],
         desired=locals()[column_var],
-        rtol=defaultdict(lambda: 0.53, radius_cm=0)[column_var],
+        rtol=defaultdict(lambda: 0.3, radius_cm=0)[column_var],
     )

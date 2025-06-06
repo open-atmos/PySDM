@@ -1,9 +1,9 @@
-"""eq. 28 in [Miyake et al. 1968](https://doi.org/10.2467/mripapers1950.19.2_243)
-theta = 1 + E * sqrt(Re) / (sqrt(4 pi) D eta - mass ventilation factor.
-"""
+"""eq. 7 in [Jouzel et al. 1975](https://doi.org/10.1029/JC080i036p05015)
+with assumptions that the supersaturation is absent (S=1)
+and at constant vapour phase (R_liq = alpha * R_vap)"""
 
 
-class MiyakeEtAl1968:
+class JouzelEtAl1975:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
@@ -18,9 +18,5 @@ class MiyakeEtAl1968:
     def isotope_m_dm_dt(
         const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
     ):  # pylint: disable=too-many-arguments, unused-argument
+        """relative growth of heavy isotope as a function of mass"""
         return abs(-3 * rho_s / radius**2 / const.rho_w / alpha * D_iso)
-
-    @staticmethod
-    # pylint: disable=too-many-arguments unused-argument
-    def tau_of_rdrdt(const, radius, r_dr_dt, alpha):
-        return -(radius**2) / 3 / r_dr_dt * alpha
