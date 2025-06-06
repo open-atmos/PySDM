@@ -4,7 +4,6 @@ tests for isotope relaxation timescale formulae
 
 import pytest
 
-import PySDM.physics as physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import constants_defaults, isotope_relaxation_timescale
@@ -22,7 +21,7 @@ from PySDM.physics import constants_defaults, isotope_relaxation_timescale
 def test_unit_and_magnitude(paper, iso):
     with DimensionalAnalysis():
         # arrange
-        si = physics.si
+        si = constants_defaults.si
         formulae = Formulae(
             isotope_relaxation_timescale=paper,
             isotope_equilibrium_fractionation_factors="HoritaAndWesolowski1994",
@@ -69,10 +68,10 @@ def test_bolin_tritium_formula_unit():
             isotope_relaxation_timescale="Bolin1958",
             constants={"BOLIN_ISOTOPE_TIMESCALE_COEFF_C1": 1 * si.dimensionless},
         )
-        sut = formulae.isotope_relaxation_timescale.tau
+        sut = formulae.isotope_relaxation_timescale.tau_of_rdrdt
 
         # act
-        result = sut(radius=si.um, r_dr_dt=si.um**2 / si.s)
+        result = sut(radius=1 * si.um, r_dr_dt=1 * si.um**2 / si.s)
 
         # assert
         assert result.check("[time]")
