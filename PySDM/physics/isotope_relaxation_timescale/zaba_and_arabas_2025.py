@@ -24,7 +24,7 @@ class ZabaAndArabas2025:
         D_iso
             Mass diffusivity coefficient for heavy isotope.
         """
-        return abs(
+        return np.abs(
             -3
             * rho_s
             / radius**2
