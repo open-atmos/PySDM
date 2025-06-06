@@ -671,8 +671,7 @@
   },
   "https://doi.org/10.1029/JD092iD04p04171": {
     "usages": [
-      "PySDM/backends/impl_numba/methods/chemistry_methods.py",
-      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
+      "PySDM/backends/impl_numba/methods/chemistry_methods.py"
     ],
     "label": "Lind et al. 1987 (J. Geophys. Res. Atmos. 92)",
     "title": "Aqueous phase oxidation of sulfur(IV) by hydrogen peroxide, methylhydroperoxide, and peroxyacetic acid"
@@ -682,7 +681,8 @@
       "PySDM/physics/isotope_relaxation_timescale/bolin_1958.py",
       "PySDM/physics/constants_defaults.py",
       "examples/PySDM_examples/Bolin_1958/table_1.ipynb",
-      "examples/PySDM_examples/Bolin_1958/__init__.py"
+      "examples/PySDM_examples/Bolin_1958/__init__.py",
+      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
     ],
     "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
