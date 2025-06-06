@@ -344,12 +344,12 @@ class CollisionsMethods(BackendMethods):
             stats_n_substep,
             stats_dt_min,
         ):
-            """ Modified parameters are: `dt_left[cell_id]`, `prob[pair_id]`,
+            """Modified parameters are: `dt_left[cell_id]`, `prob[pair_id]`,
             `stats_n_substep[cell_id]`, `stats_dt_min[cell_id]`;
             `dt_todo[cell_id]` is a local temporary array of time steps to be taken in each cell,
             which will be equal to `dt` if no adaptive substepping is needed.
             `stats_n_substep[cell_id]` gets updated by +1 if a given cell will take another substep.
-            After a full model step is completed, `stats_n_substep[cell_id]` would be 1 if 
+            After a full model step is completed, `stats_n_substep[cell_id]` would be 1 if
             no adaptive substepping was needed.
             """
             dt_todo = np.empty_like(dt_left)
