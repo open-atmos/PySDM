@@ -80,7 +80,8 @@
       "examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb",
       "examples/PySDM_examples/Gedzelman_and_Arnold_1994/__init__.py",
       "PySDM/physics/isotope_ratio_evolution/gedzelman_and_arnold_1994.py",
-      "PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py"
+      "PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py",
+      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
     ],
     "label": "Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99)",
     "title": "Modeling the isotopic composition of precipitation"
@@ -158,7 +159,8 @@
   "https://doi.org/10.2467/mripapers1950.19.2_243": {
     "usages": [
       "examples/PySDM_examples/Miyake_et_al_1968/fig_19.ipynb",
-      "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py"
+      "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
+      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
     ],
     "label": "Miyake et al. 1968 (Pap. Meteorol. Geophys. 19)",
     "title": "An Isotopic Study on Meteoric Precipitation"
@@ -669,7 +671,8 @@
   },
   "https://doi.org/10.1029/JD092iD04p04171": {
     "usages": [
-      "PySDM/backends/impl_numba/methods/chemistry_methods.py"
+      "PySDM/backends/impl_numba/methods/chemistry_methods.py",
+      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
     ],
     "label": "Lind et al. 1987 (J. Geophys. Res. Atmos. 92)",
     "title": "Aqueous phase oxidation of sulfur(IV) by hydrogen peroxide, methylhydroperoxide, and peroxyacetic acid"
@@ -898,7 +901,10 @@
     "label": "Fisher 1991 (Tellus B)"
   },
   "https://doi.org/10.1029/JC080i036p05015": {
-    "usages": ["PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py"],
+    "usages": [
+      "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
+    "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
+    ],
     "title": "Isotopic study of hail",
     "label": "Jouzel et al. 1975 (J. Geophys. Res. 80)"
   }
