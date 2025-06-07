@@ -18,9 +18,9 @@ from PySDM.attributes.impl import get_attribute_class
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
-from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
+from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorThing
 from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
-    RandomGeneratorOptimizerNoPair,
+    RandomGeneratorThingNoPair,
 )
 from PySDM.physics import si
 from PySDM.dynamics.impl import register_dynamic
@@ -47,7 +47,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         breakup_efficiency,
         fragmentation_function,
         croupier=None,
-        optimized_random=False,
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
@@ -71,11 +70,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.rnd_opt_frag = None
         self.rnd_opt_coll = None
         self.rnd_opt_proc = None
-        self.optimised_random = None
 
         assert dt_coal_range[0] > 0
         self.croupier = croupier
-        self.optimized_random = optimized_random
         self.__substeps = substeps
         self.adaptive = adaptive
         self.stats_n_substep = None
@@ -101,14 +98,13 @@ class Collision:  # pylint: disable=too-many-instance-attributes
     def register(self, builder):
         self.particulator = builder.particulator
         rnd_args = {
-            "optimized_random": self.optimized_random,
             "dt_min": self.dt_coal_range[0],
             "seed": builder.formulae.seed,
         }
-        self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
+        self.rnd_opt_coll = RandomGeneratorThing(**rnd_args)
         if self.enable_breakup:
-            self.rnd_opt_proc = RandomGeneratorOptimizerNoPair(**rnd_args)
-            self.rnd_opt_frag = RandomGeneratorOptimizerNoPair(**rnd_args)
+            self.rnd_opt_proc = RandomGeneratorThingNoPair(**rnd_args)
+            self.rnd_opt_frag = RandomGeneratorThingNoPair(**rnd_args)
 
         if self.particulator.n_sd < 2:
             raise ValueError("No one to collide with!")
@@ -188,10 +184,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
 
                 self.particulator.attributes.reset_working_length()
                 self.particulator.attributes.reset_cell_idx()
-            self.rnd_opt_coll.reset()
-            if self.enable_breakup:
-                self.rnd_opt_proc.reset()
-                self.rnd_opt_frag.reset()
 
     def step(self):
         pairs_rand, rand = self.rnd_opt_coll.get_random_arrays()
@@ -298,7 +290,6 @@ class Coalescence(Collision):
         collision_kernel,
         coalescence_efficiency=ConstEc(Ec=1),
         croupier=None,
-        optimized_random=False,
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
@@ -311,7 +302,6 @@ class Coalescence(Collision):
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,
             croupier=croupier,
-            optimized_random=optimized_random,
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
@@ -327,7 +317,6 @@ class Breakup(Collision):
         collision_kernel,
         fragmentation_function,
         croupier=None,
-        optimized_random=False,
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
@@ -341,7 +330,6 @@ class Breakup(Collision):
             breakup_efficiency=breakup_efficiency,
             fragmentation_function=fragmentation_function,
             croupier=croupier,
-            optimized_random=optimized_random,
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
