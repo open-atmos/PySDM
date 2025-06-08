@@ -11,7 +11,12 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
         assert np.isfinite(const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1)
 
     @staticmethod
-    # pylint: disable=too-many-arguments
-    def tau(const, radius, r_dr_dt):
+    # pylint: disable=too-many-arguments unused-argument
+    def tau_of_rdrdt(const, radius, r_dr_dt, alpha=0):
         """timescale for evaporation of a falling drop with tritium"""
-        return (-3 / radius**2 * r_dr_dt * const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1) ** -1
+        return -(radius**2) / 3 / r_dr_dt / const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
+
+    @staticmethod
+    # pylint: disable=too-many-arguments unused-argument
+    def c1_coeff(const, rho_s, R_vap):
+        return R_vap * rho_s / const.rho_w
