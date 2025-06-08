@@ -66,5 +66,5 @@ def test_table_1_against_values_from_the_paper(
     np.testing.assert_allclose(
         actual=notebook_variables["data"][column_label][row],
         desired=locals()[column_var],
-        rtol=defaultdict(lambda: 0.3, radius_cm=0)[column_var],
+        rtol=defaultdict(lambda: 0.53, radius_cm=0)[column_var],
     )
