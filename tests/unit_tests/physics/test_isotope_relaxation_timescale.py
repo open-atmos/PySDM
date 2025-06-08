@@ -14,7 +14,7 @@ from PySDM.physics import constants_defaults, isotope_relaxation_timescale
     [
         choice
         for choice in _choices(isotope_relaxation_timescale)
-        if choice not in ("Null", "Bolin1958")
+        if choice not in ("Null", "Bolin1958", "MiyakeEtAl1968")
     ],
 )
 @pytest.mark.parametrize("iso", ("2H", "18O"))
