@@ -295,7 +295,7 @@ T_STP = (sci.zero_Celsius + 15) * si.kelvin
 p_STP = 101325 * si.pascal
 """ ... and pressure """
 
-ROOM_TEMP = T_tri + 25 * si.K
+ROOM_TEMP = T0 + 25 * si.K
 """ room temperature """
 
 dT_u = si.K
