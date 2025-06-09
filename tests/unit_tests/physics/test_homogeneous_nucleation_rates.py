@@ -10,6 +10,7 @@ import numpy as np
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import homogeneous_ice_nucleation_rate
 from PySDM import physics
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 SPICHTINGER_ET_AL_2023_FIG2_DATA = {
     "da_w_ice": [0.27, 0.29, 0.31, 0.33],
@@ -98,7 +99,7 @@ class TestHomogeneousIceNucleationRate:
         if variant == "Null":
             pytest.skip()
 
-        with physics.dimensional_analysis.DimensionalAnalysis():
+        with DimensionalAnalysis():
             # arrange
             si = physics.si
             formulae = Formulae(
