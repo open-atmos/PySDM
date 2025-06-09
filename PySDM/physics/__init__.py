@@ -39,6 +39,7 @@ from . import (
     isotope_diffusivity_ratios,
     isotope_relaxation_timescale,
     isotope_temperature_inference,
+    isotope_ventilation_ratio,
     latent_heat_vapourisation,
     latent_heat_sublimation,
     optical_albedo,

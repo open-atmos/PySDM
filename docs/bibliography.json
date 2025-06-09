@@ -121,7 +121,8 @@
       "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
       "PySDM/dynamics/collisions/collision.py",
       "tutorials/collisions/collisions_playground.ipynb",
-      "tutorials/wikipedia/sdm.ipynb"
+      "tutorials/wikipedia/sdm.ipynb",
+      "tests/smoke_tests/box/shima_et_al_2009/test_convergence.py"
     ],
     "label": "Shima et al. 2009 (Q. J. R. Meteorol. Soc. 135)",
     "title": "The super-droplet method for the numerical simulation of clouds and precipitation: a particle-based and probabilistic microphysics model coupled with a non-hydrostatic model"
@@ -729,9 +730,23 @@
     "label": "Gatley et al. 2008 (HVAC&R Res. 14)"
   },
   "https://archive.org/details/shortcourseinclo0000roge_m3k2": {
-    "usages": ["PySDM/physics/constants_defaults.py", "PySDM/physics/terminal_velocity/rogers_yau.py"],
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/terminal_velocity/rogers_yau.py",
+      "PySDM/physics/drop_growth/fick.py",
+      "PySDM/physics/drop_growth/howell_1949.py",
+      "PySDM/physics/drop_growth/mason_1971.py"
+    ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
+  },
+  "https://doi.org/10.1080/00046973.1975.9648397": {
+    "usages": [
+      "examples/PySDM_examples/Rogers_1975/__init__.py",
+      "examples/PySDM_examples/Rogers_1975/fig_1.ipynb"
+    ],
+    "title": "An Elementary Parcel Model with Explicit Condensation and Supersaturation",
+    "label": "Rogers 1975"
   },
   "https://doi.org/10.1016/b978-0-444-42225-5.50007-3": {
     "usages": ["PySDM/physics/constants_defaults.py"],
@@ -794,6 +809,13 @@
     "title": "Environmental isotopes in lake studies",
     "label": "Gonfiantini 1986 (The Terrestrial Environment, B)"
   },
+  "https://doi.org/10.1007/978-94-017-1497-6": {
+    "usages": [
+      "PySDM/physics/isotope_ventilation_ratio/brutsaert_1982.py"
+    ],
+    "title": "Evaporation into the Atmosphere: Theory, History, and Applications",
+    "label": "Brutsaert 1982 (Springer Netherlands)"
+  },
   "https://doi.org/10.1029/JC080i009p01133": {
     "usages": [
       "PySDM/physics/isotope_diffusivity_ratios/stewart_1975.py",
@@ -833,6 +855,14 @@
     ],
     "title": "The Growth of Cloud Drops in Uniformly Cooled Air",
     "label": "Howell 1949 (J. Atmos. Sci.)"
+  },
+  "https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py"
+    ],
+    "title": "A Wind Tunnel Investigation of the Rate of Evaporation of Small Water Drops Falling at Terminal Velocity in Air",
+    "label": "Beard & Pruppacher 1971 (J. Atmos. Sci. 28)"
   },
   "https://doi.org/10.1029/JD089iD07p11749": {
     "usages": [

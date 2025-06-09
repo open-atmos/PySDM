@@ -73,6 +73,7 @@ jobs:
       - uses: matlab-actions/setup-matlab@v2.1.0
         with:
           release: R2022a
+          cache: true
       - uses: matlab-actions/run-command@v2.1.0
         with:
           command: readme

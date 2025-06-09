@@ -13,24 +13,11 @@ from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
-ARGS_VARS = (
-    "x_old",
-    "dt",
-    "kappa",
-    "f_org",
-    "rd3",
-    "_T",
-    "_RH",
-    "_lv",
-    "_pvs",
-    "Dr",
-    "Kr",
-    "mass_ventilation_factor",
-)
+MINFUN_ARGS_VARS = ("x_old", "dt", "kappa", "f_org", "rd3", "_T", "_RH", "Fk", "Fd")
 
 
-def args(arg):
-    return f"args[{ARGS_VARS.index(arg)}]"
+def arg(name):
+    return f"minfun_args[{MINFUN_ARGS_VARS.index(name)}]"
 
 
 class CondensationMethods(
@@ -44,6 +31,7 @@ class CondensationMethods(
         "pvs",
         "RH",
         "DTp",
+        "KTp",
         "lambdaK",
         "lambdaD",
         "schmidt_number",
@@ -98,40 +86,37 @@ class CondensationMethods(
             name_iter="i",
             body=f"""
             struct Minfun {{
-                static __device__ real_type value(real_type x_new, void* args_p) {{
-                    auto args = static_cast<real_type*>(args_p);
+                static __device__ real_type value(real_type x_new, void* minfun_args_p) {{
+                    auto minfun_args = static_cast<real_type*>(minfun_args_p);
                     if (x_new > {phys.diffusion_coordinate.x_max.c_inline()}) {{
-                        return {args("x_old")} - x_new;
+                        return {arg("x_old")} - x_new;
                     }}
                     auto m_new = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
                     auto v_new = {phys.particle_shape_and_density.mass_to_volume.c_inline(mass="m_new")};
                     auto r_new = {phys.trivia.radius.c_inline(volume="v_new")};
                     auto sgm = {phys.surface_tension.sigma.c_inline(
-                        T=args('_T'),
+                        T=arg('_T'),
                         v_wet="v_new",
-                        v_dry=f"const.PI_4_3 * {args('rd3')}",
-                        f_org=args("f_org")
+                        v_dry=f"const.PI_4_3 * {arg('rd3')}",
+                        f_org=arg("f_org")
                     )};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(
                         r="r_new",
-                        T=args('_T'),
-                        kp=args("kappa"),
-                        rd3=args("rd3"),
+                        T=arg('_T'),
+                        kp=arg("kappa"),
+                        rd3=arg("rd3"),
                         sgm="sgm"
                     )};
                     auto r_dr_dt = {phys.drop_growth.r_dr_dt.c_inline(
                         RH_eq="RH_eq",
-                        T=args("_T"),
-                        RH=args("_RH"),
-                        lv=args("_lv"),
-                        pvs=args("_pvs"),
-                        D=f'{args("mass_ventilation_factor")}*{args("Dr")}',
-                        K=f'{args("mass_ventilation_factor")}*{args("Kr")}',
-                    )}; // TODO #1588
+                        RH=arg("_RH"),
+                        Fk=arg("Fk"),
+                        Fd=arg("Fd"),
+                    )};
                     auto dm_dt = {phys.particle_shape_and_density.dm_dt.c_inline(
                         r="r_new", r_dr_dt="r_dr_dt"
                     )};
-                    return {args("x_old")} - x_new + {args("dt")} * {
+                    return {arg("x_old")} - x_new + {arg("dt")} * {
                         phys.diffusion_coordinate.dx_dt.c_inline(m="m_new", dm_dt="dm_dt")
                     };
                 }}
@@ -144,6 +129,7 @@ class CondensationMethods(
             auto _pvs = pvs[cell_id[i]];
             auto _RH = RH[cell_id[i]];
             auto _DTp = DTp[cell_id[i]];
+            auto _KTp = KTp[cell_id[i]];
             auto _lambdaK = lambdaK[cell_id[i]];
             auto _lambdaD = lambdaD[cell_id[i]];
             auto _schmidt_number = schmidt_number[cell_id[i]];
@@ -163,10 +149,8 @@ class CondensationMethods(
                 r="r_old", T="_T", kp="_kappa[i]", rd3="rd3", sgm="sgm"
             )};
 
-            real_type Dr=0;
-            real_type Kr=0;
-            real_type qrt_re_times_cbrt_sc=0;
-            real_type mass_ventilation_factor=0;
+            real_type Fk=0;
+            real_type Fd=0;
             real_type r_dr_dt_old=0;
             real_type dm_dt_old=0;
             real_type dx_old=0;
@@ -175,23 +159,31 @@ class CondensationMethods(
             if ( ! {phys.trivia.within_tolerance.c_inline(
                 return_type='bool', error_estimate="abs(_RH - RH_eq)", value="_RH", rtol="RH_rtol"
             )}) {{
-                Dr = {phys.diffusion_kinetics.D.c_inline(
-                    D="_DTp", r="r_old", lmbd="_lambdaD"
-                )};
-                Kr = {phys.diffusion_kinetics.K.c_inline(
-                    K="const.K0", r="r_old", lmbd="_lambdaK"
-                )};
-                qrt_re_times_cbrt_sc={phys.trivia.sqrt_re_times_cbrt_sc.c_inline(
+                auto Dr = {phys.diffusion_kinetics.D.c_inline(D="_DTp", r="r_old", lmbd="_lambdaD")};
+                auto Kr = {phys.diffusion_kinetics.K.c_inline(K="_KTp", r="r_old", lmbd="_lambdaK")};
+                auto qrt_re_times_cbrt_sc={phys.trivia.sqrt_re_times_cbrt_sc.c_inline(
                     Re="reynolds_number[i]",
                     Sc="_schmidt_number",
                 )};
-                mass_ventilation_factor = {phys.ventilation.ventilation_coefficient.c_inline(
+                auto mass_ventilation_factor = {phys.ventilation.ventilation_coefficient.c_inline(
                     sqrt_re_times_cbrt_sc="qrt_re_times_cbrt_sc"
                 )};
                 auto heat_ventilation_factor = mass_ventilation_factor; // TODO #1588
+                Fk = {phys.drop_growth.Fk.c_inline(
+                    T="_T",
+                    K="heat_ventilation_factor*Kr",
+                    lv="_lv",
+                )}; // TODO #1588
+                Fd = {phys.drop_growth.Fd.c_inline(
+                    T="_T",
+                    D="mass_ventilation_factor*Dr",
+                    pvs="_pvs",
+                )};
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
-                    RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs",
-                    D="mass_ventilation_factor*Dr", K="heat_ventilation_factor*Kr",
+                    RH_eq="RH_eq",
+                    RH="_RH",
+                    Fk="Fk",
+                    Fd="Fd",
                 )};
                 dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")};
                 dx_old = dt * {phys.diffusion_coordinate.dx_dt.c_inline(
@@ -203,7 +195,7 @@ class CondensationMethods(
             }}
             real_type kappa = _kappa[i];
             real_type f_org = _f_org[i];
-            real_type args[] = {{{','.join(ARGS_VARS)}}}; // array
+            real_type minfun_args[] = {{{','.join(MINFUN_ARGS_VARS)}}}; // array
 
             if (dx_old == 0) {{
                 x_new = x_old;
@@ -211,8 +203,8 @@ class CondensationMethods(
             else {{
                 auto a = x_old;
                 auto b = max(x_insane, a + dx_old);
-                auto fa = Minfun::value(a, &args);
-                auto fb = Minfun::value(b, &args);
+                auto fa = Minfun::value(a, &minfun_args);
+                auto fb = Minfun::value(b, &minfun_args);
 
                 auto counter = 0;
                 while ( ! fa * fb < 0) {{
@@ -223,7 +215,7 @@ class CondensationMethods(
                         return;
                     }}
                     b = max(x_insane, a + ldexp(dx_old, 1.*counter));
-                    fb = Minfun::value(b, &args);
+                    fb = Minfun::value(b, &minfun_args);
                 }}
 
                 //if not success:
@@ -238,7 +230,7 @@ class CondensationMethods(
                         fa = fb;
                         fb = ftmp;
                     }}
-                    x_new = Bisect::bisect(Minfun::value, &args, a, b, fa, fb, rtol_x);
+                    x_new = Bisect::bisect(Minfun::value, &minfun_args, a, b, fa, fb, rtol_x);
                     //if iters_taken in (-1, max_iters):
                     //    if not fake:
                     //        print("TOMS failed")
@@ -331,6 +323,9 @@ class CondensationMethods(
             RH_max[i] = max(RH_max[i], RH[i]);
             DTp[i] = {phys.diffusion_thermics.D.c_inline(
                 T='T[i]', p='p[i]')};
+            KTp[i] = {phys.diffusion_thermics.K.c_inline(
+                T='T[i]', p='p[i]'
+            )};
             lambdaK[i] = {phys.diffusion_kinetics.lambdaK.c_inline(
                 T='T[i]', p='p[i]')};
             lambdaD[i] = {phys.diffusion_kinetics.lambdaD.c_inline(

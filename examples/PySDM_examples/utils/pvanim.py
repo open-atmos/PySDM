@@ -13,6 +13,12 @@ def cli_using_argparse(argp):
     argp.add_argument("attributes_path", help=" path to pvd attributes file")
     argp.add_argument("output_path", help="path where to write output files")
     argp.add_argument(
+        "--mode",
+        choices=["light", "dark"],
+        default="dark",
+        help="Choose 'light' or 'dark' mode.",
+    )
+    argp.add_argument(
         "--multiplicity_preset",
         default="Inferno (matplotlib)",
         help="Preset for multiplicity",
@@ -55,6 +61,13 @@ def cli_using_argparse(argp):
         help="Opacity for sd_attributes",
     )
     argp.add_argument(
+        "--animation_size",
+        nargs=2,
+        type=int,
+        default=[800, 800],
+        help="Animation size [x,y]",
+    )
+    argp.add_argument(
         "--animationframename",
         type=str,
         help="Name of the file with animation last frame",
@@ -86,12 +99,14 @@ setup = {
     "sd_productspvdDisplay": pvs.GetDisplayProperties(
         sd_productspvd, view=pvs.GetActiveViewOrCreate("RenderView")
     ),
+    "color": [1, 1, 1] if args.mode == "dark" else [0, 0, 0],
+    "inverted_color": [0.129, 0.145, 0.161] if args.mode == "dark" else [1, 1, 1],
 }
 
 setup = namedtuple("Setup", setup.keys())(**setup)
 
 setup.effectiveradiusLUT.RescaleTransferFunction(0.1380997175392798, 207.7063518856934)
-
+materialLibrary1 = pvs.GetMaterialLibrary()
 setup.renderView1.Update()
 
 
@@ -127,6 +142,10 @@ def scalar_bar(name, *, y, erLUT):
     scalarBar = pvs.GetScalarBar(erLUT.effectiveradiusLUT, y.renderView1)
     scalarBar.ComponentTitle = ""
     scalarBar.Title = name
+    scalarBar.TitleFontSize = 25
+    scalarBar.LabelFontSize = 25
+    scalarBar.LabelColor = setup.color
+    scalarBar.TitleColor = setup.color
     y.renderView1.Update()
 
 
@@ -139,6 +158,12 @@ def create_glyph(
     glyph.ScaleArray = [scale_array1, scale_array2]
     glyph.ScaleFactor = 100
     glyphDisplay.SetScalarBarVisibility(y.renderView1, True)
+    multiplicityLUT = pvs.GetColorTransferFunction("multiplicity")
+    multiplicityLUTColorBar = pvs.GetScalarBar(multiplicityLUT, y.renderView1)
+    multiplicityLUTColorBar.TitleFontSize = 25
+    multiplicityLUTColorBar.LabelFontSize = 25
+    multiplicityLUTColorBar.LabelColor = setup.color
+    multiplicityLUTColorBar.TitleColor = setup.color
     if color_by is True:
         glyphDisplay.ColorArrayName = ["POINTS", ""]
         pvs.ColorBy(glyphDisplay, None)
@@ -178,29 +203,33 @@ def apply_presets_logscale_opacity_and_update(*, y, attdisplay, erLUT, proddispl
 
 
 def get_layout(*, y):
+    pvs.SetViewProperties(
+        Background=setup.inverted_color, UseColorPaletteForBackground=0
+    )
+    pvs.Render(setup.renderView1)
     layout1 = pvs.GetLayout()
-    layout1.SetSize(1205, 739)
+    layout1.SetSize(args.animation_size)
+    layout1.PreviewMode = args.animation_size
     y.renderView1.Update()
 
 
 def set_current_camera_placement(*, y):
     y.renderView1.InteractionMode = "2D"
     y.renderView1.CameraPosition = [
-        836.5045867211775,
-        677.8909274570431,
-        -4098.0762113533165,
+        836,
+        677,
+        -4098,
     ]
-    y.renderView1.CameraFocalPoint = [836.5045867211775, 677.8909274570431, 0.0]
+    y.renderView1.CameraFocalPoint = [636, 1030, 0.0]
     y.renderView1.CameraViewUp = [1.0, 0.0, 0.0]
-    y.renderView1.CameraParallelScale = 1060.6601717798205
+    y.renderView1.CameraParallelScale = 1560
     y.renderView1.Update()
 
 
 def axes_settings(*, view):
-    view.ViewSize = [2000, 800]
-    view.Background = [1, 1, 1]
+    # setup.renderView1.Background = [1,0.5,0.2]
     view.CenterAxesVisibility = True
-    view.OrientationAxesVisibility = True
+    view.OrientationAxesVisibility = False
     axesGrid = view.AxesGrid
     axesGrid.Visibility = True
     axesGrid.XTitle = "Z [m]"
@@ -216,10 +245,10 @@ def axes_settings(*, view):
     axesGrid.YTitleFontSize = 30
     axesGrid.YLabelFontSize = 30
 
-    axesGrid.XTitleColor = [1.0, 1.0, 1.0]
-    axesGrid.XLabelColor = [1.0, 1.0, 1.0]
-    axesGrid.YTitleColor = [1.0, 1.0, 1.0]
-    axesGrid.YLabelColor = [1.0, 1.0, 1.0]
+    axesGrid.XTitleColor = setup.color
+    axesGrid.XLabelColor = setup.color
+    axesGrid.YTitleColor = setup.color
+    axesGrid.YLabelColor = setup.color
     axesGrid.GridColor = [0.1, 0.1, 0.1]
     view.CenterAxesVisibility = False
     view.Update()
@@ -227,9 +256,14 @@ def axes_settings(*, view):
 
 def time_annotation(*, y):
     time = pvs.AnnotateTimeFilter(
-        guiName="AnnotateTimeFilter1", Format="Time:{time:f}s"
+        guiName="AnnotateTimeFilter1", Scale=1 / 60, Format="Time:{time:g}min"
     )
-    pvs.Show(time, y.renderView1)
+    timedisplay = pvs.Show(time, y.renderView1)
+    timedisplay.FontSize = 25
+    timedisplay.WindowLocation = "Any Location"
+    timedisplay.FontSize = 30
+    timedisplay.Position = [0.31, 0.9]
+    timedisplay.Color = setup.color
     y.renderView1.Update()
 
 
@@ -237,10 +271,10 @@ def text(text_in, position_y, *, view):
     sentence = pvs.Text()
     sentence.Text = text_in
     textDisplay = pvs.Show(sentence, view)
-    textDisplay.Color = [1.0, 1.0, 1.0]
+    textDisplay.Color = setup.color
     textDisplay.WindowLocation = "Any Location"
-    textDisplay.FontSize = 16
-    textDisplay.Position = [0.01, position_y]
+    textDisplay.FontSize = 28
+    textDisplay.Position = [0.17, position_y]
 
 
 def last_anim_frame(animation_frame_name):
@@ -290,9 +324,11 @@ get_layout(y=setup)
 set_current_camera_placement(y=setup)
 axes_settings(view=setup.renderView1)
 time_annotation(y=setup)
-text("Arrows scale with Courant number C=u*Δt/Δx,", 0.7, view=setup.renderView1)
-text("reflecting the grid spacing Δx and Δy.", 0.65, view=setup.renderView1)
-last_anim_frame(animation_frame_name=args.animationframename)
+text("Arrows scale with Courant", 0.15, view=setup.renderView1)
+text("number C=u·Δt/Δx, reflecting", 0.1, view=setup.renderView1)
+text("the grid spacing Δx and Δy.", 0.05, view=setup.renderView1)
+if args.animationframename is not None:
+    last_anim_frame(animation_frame_name=args.animationframename)
 scene = pvs.GetAnimationScene()
 scene.UpdateAnimationUsingDataTimeSteps()
 pvs.Render(setup.renderView1)
