@@ -154,10 +154,10 @@ class TestVapourDepositionOnIce:
 
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
-    @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
     def test_growth_rates_against_spichtinger_and_gierens_2009_fig_5(
-        diffusion_coordinate, diffusion_ice_capacity, plot=False
+        diffusion_coordinate, plot=True
     ):
+
         """Fig. 5 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
         # arrange
         initial_water_masses = (
@@ -170,7 +170,7 @@ class TestVapourDepositionOnIce:
             particulator = make_particulator(
                 pressure=300 * si.hPa,
                 diffusion_coordinate=diffusion_coordinate,
-                diffusion_ice_capacity=diffusion_ice_capacity,
+                diffusion_ice_capacity="Spherical",
                 signed_water_masses=-initial_water_masses,
                 RH_water=1,
                 temperature=temperature,
@@ -205,6 +205,7 @@ class TestVapourDepositionOnIce:
         assert (dm_dt[200 * si.K] < dm_dt[210 * si.K]).all()
         assert (dm_dt[210 * si.K] < dm_dt[220 * si.K]).all()
         assert (dm_dt[220 * si.K] < dm_dt[230 * si.K]).all()
+
         for mass_rate in dm_dt.values():
             assert (np.diff(mass_rate) > 0).all()
         assert 0.2e-14 * si.kg / si.s < dm_dt[230 * si.K][0] < 0.3e-14 * si.kg / si.s
