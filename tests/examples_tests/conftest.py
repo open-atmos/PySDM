@@ -84,6 +84,7 @@ TEST_SUITES = {
         "utils",
         "Zaba_et_al_2025",
         "Gonfiantini_1986",
+        "Loftus_and_Wordsworth_2021",
     ],
 }
 
