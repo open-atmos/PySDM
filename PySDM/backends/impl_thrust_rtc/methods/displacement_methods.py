@@ -24,8 +24,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                     "courant_shape_0",
                     "courant_shape_1",
                     "cell_origin",
+                    "cell_id",
                     "position_in_cell",
                     "n_substeps",
+                    "enable_monte_carlo",
+                    "u01",
                 ),
                 name_iter="i",
                 body=f"""
@@ -52,8 +55,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
             displacement[i + n_sd * dim] = {
                 self.formulae.particle_advection.displacement.c_inline(
                     position_in_cell="position_in_cell[i + n_sd * dim]",
+                    cell_id="cell_id[i + n_sd * dim]",
                     c_l="courant[_l] / n_substeps",
-                    c_r="courant[_r] / n_substeps"
+                    c_r="courant[_r] / n_substeps",
+                    enable_monte_carlo="false",
+                    u01="u01"
                 )
             };
             """.replace(
@@ -96,7 +102,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(
-        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, cell_id, n_substeps, enable_monte_carlo, rng
     ):
         n_dim = len(courant.shape)
         n_sd = position_in_cell.shape[1]
@@ -110,8 +116,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 trtc.DVInt64(courant.shape[0]),
                 trtc.DVInt64(courant.shape[1] if n_dim > 2 else -1),
                 cell_origin.data,
+                cell_id.data,
                 position_in_cell.data,
                 trtc.DVInt64(n_substeps),
+                trtc.DVBool(enable_monte_carlo),
+                trtc.DVDouble(1.0) # TODO
             ),
         )
 
