@@ -117,3 +117,26 @@ class TestExplicitEulerWithInterpolation:
                 sut.displacement[0, slice(0, 1)].to_ndarray(),
                 2.125
             )
+            
+    def test_single_cell(
+        backend_class, positions, expected_positions, courant_field: tuple
+    ):
+        # Arrange
+        settings = DisplacementSettings(
+            courant_field_data=courant_field,
+            positions=positions,
+            grid=tuple([1] * len(courant_field)),
+            n_sd=len(positions[0]),
+        )
+        sut, particulator = settings.get_displacement(
+            backend_class, scheme="ImplicitInSpace"
+        )
+
+        # Act
+        sut()
+
+        # Assert
+        np.testing.assert_array_almost_equal(
+            np.asarray(expected_positions),
+            particulator.attributes["position in cell"].to_ndarray(),
+        )
