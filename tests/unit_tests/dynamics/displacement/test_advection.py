@@ -97,15 +97,16 @@ class TestExplicitEulerWithInterpolation:
         )
         settings.positions = [[weight], [0]]
         sut, particulator = settings.get_displacement(
-            backend_class, scheme="ExplicitInSpace", adaptive=False
+            backend_class, scheme="ExplicitInSpace", adaptive=False, enable_monte_carlo=False
         )
 
         # Act
         sut.calculate_displacement(
-            sut.displacement,
-            sut.courant,
-            particulator.attributes["cell origin"],
-            particulator.attributes["position in cell"],
+            displacement=sut.displacement,
+            courant=sut.courant,
+            cell_origin=particulator.attributes["cell origin"],
+            position_in_cell=particulator.attributes["position in cell"],
+            cell_id=particulator.attributes["cell id"],
         )
 
         # Assert
@@ -127,15 +128,16 @@ class TestExplicitEulerWithInterpolation:
         )
         settings.positions = [[0], [weight]]
         sut, particulator = settings.get_displacement(
-            backend_class, scheme="ExplicitInSpace", adaptive=False
+            backend_class, scheme="ExplicitInSpace", adaptive=False, enable_monte_carlo=False
         )
 
         # Act
         sut.calculate_displacement(
-            sut.displacement,
-            sut.courant,
-            particulator.attributes["cell origin"],
-            particulator.attributes["position in cell"],
+            displacement=sut.displacement,
+            courant=sut.courant,
+            cell_origin=particulator.attributes["cell origin"],
+            position_in_cell=particulator.attributes["position in cell"],
+            cell_id=particulator.attributes["cell id"],
         )
 
         # Assert
