@@ -155,7 +155,7 @@ class TestVapourDepositionOnIce:
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
     def test_growth_rates_against_spichtinger_and_gierens_2009_fig_5(
-        diffusion_coordinate, plot=True
+        diffusion_coordinate, plot=False
     ):
 
         """Fig. 5 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
