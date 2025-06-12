@@ -102,9 +102,13 @@ HAC = 1.0
 MAC_ice = 0.5
 """ mass accommodation coefficient for vapour deposition as recommended in
 [Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
-HAC_ice = 0.7
+HAC_ice = 1.0
 """ thermal accommodation coefficient for vapour deposition as recommended in
 [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
+
+C_cunn = 0.7
+""" Cunningham correction factor as used in
+[Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
 
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
@@ -497,6 +501,16 @@ CRAIG_1961_SLOPE_COEFF = 8
 """ [Craig 1961](https://doi.org/10.1126/science.133.3465.1702) """
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 """ 〃 """
+
+capacity_columnar_ice_B1 = 0.3
+""" [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
+capacity_columnar_ice_B2 = 0.43
+""" 〃 """
+capacity_columnar_ice_A1 = 0.015755 * si.m / si.kg ** (capacity_columnar_ice_B1)
+""" 〃 """
+capacity_columnar_ice_A2 = 0.33565 * si.m / si.kg ** (capacity_columnar_ice_B2)
+""" 〃 """
+
 
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 """ [Bohren 1987](https://doi.org/10.1119/1.15109) """
