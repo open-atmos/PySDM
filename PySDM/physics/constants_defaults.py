@@ -106,6 +106,10 @@ HAC_ice = 1.0
 """ thermal accommodation coefficient for vapour deposition as recommended in
 [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
+C_cunn = 0.7
+""" Cunningham correction factor as used in
+[Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
+
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
 c_pv = 1850 * si.joule / si.kilogram / si.kelvin

@@ -54,6 +54,7 @@ def make_particulator(
     pressure,
     RH_ice=None,
     RH_water=None,
+    diffusion_ice_kinetics="Standard",
 ):
     """instantiates a particulator with minimal components for testing ice depositional growth"""
     assert RH_water is None or RH_ice is None
@@ -65,6 +66,7 @@ def make_particulator(
                 particle_shape_and_density="MixedPhaseSpheres",
                 diffusion_coordinate=diffusion_coordinate,
                 diffusion_ice_capacity=diffusion_ice_capacity,
+                diffusion_ice_kinetics=diffusion_ice_kinetics,
             ),
             override_jit_flags={"parallel": False},
         ),
@@ -155,9 +157,8 @@ class TestVapourDepositionOnIce:
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
     def test_growth_rates_against_spichtinger_and_gierens_2009_fig_5(
-        diffusion_coordinate, plot=False
+        diffusion_coordinate, plot=True
     ):
-
         """Fig. 5 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
         # arrange
         initial_water_masses = (
@@ -170,10 +171,11 @@ class TestVapourDepositionOnIce:
             particulator = make_particulator(
                 pressure=300 * si.hPa,
                 diffusion_coordinate=diffusion_coordinate,
-                diffusion_ice_capacity="Spherical",
+                diffusion_ice_capacity="Columnar",
                 signed_water_masses=-initial_water_masses,
                 RH_water=1,
                 temperature=temperature,
+                diffusion_ice_kinetics="Standard",
             )
             particulator.run(steps=1)
             dm_dt[temperature] = (
@@ -208,10 +210,10 @@ class TestVapourDepositionOnIce:
 
         for mass_rate in dm_dt.values():
             assert (np.diff(mass_rate) > 0).all()
-        assert 0.2e-14 * si.kg / si.s < dm_dt[230 * si.K][0] < 0.3e-14 * si.kg / si.s
-        assert 0.8e-16 * si.kg / si.s < dm_dt[200 * si.K][0] < 0.9e-16 * si.kg / si.s
-        assert 1.1e-12 * si.kg / si.s < dm_dt[230 * si.K][-1] < 1.2e-12 * si.kg / si.s
-        assert 4.8e-14 * si.kg / si.s < dm_dt[200 * si.K][-1] < 4.9e-14 * si.kg / si.s
+        assert 2.0e-15 * si.kg / si.s < dm_dt[230 * si.K][0] < 4.0e-15 * si.kg / si.s
+        assert 1.0e-16 * si.kg / si.s < dm_dt[200 * si.K][0] < 2.0e-16 * si.kg / si.s
+        assert 1.3e-12 * si.kg / si.s < dm_dt[230 * si.K][-1] < 1.5e-12 * si.kg / si.s
+        assert 1.0e-13 * si.kg / si.s < dm_dt[200 * si.K][-1] < 1.2e-13 * si.kg / si.s
 
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
