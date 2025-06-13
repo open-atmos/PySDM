@@ -426,7 +426,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.attributes.sanitize()
 
     def calculate_displacement(
-        self, *, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, displacement, courant, cell_origin, cell_id, position_in_cell, n_substeps, enable_monte_carlo
     ):
         for dim in range(len(self.environment.mesh.grid)):
             self.backend.calculate_displacement(
@@ -434,8 +434,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 displacement=displacement,
                 courant=courant[dim],
                 cell_origin=cell_origin,
+                cell_id=cell_id,
                 position_in_cell=position_in_cell,
                 n_substeps=n_substeps,
+                enable_monte_carlo=enable_monte_carlo,
+                rng=self.Random(1,1).generator,
             )
 
     def isotopic_fractionation(self, heavy_isotopes: tuple):
