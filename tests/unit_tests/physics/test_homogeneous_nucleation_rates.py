@@ -1,5 +1,5 @@
 """
-test for homogeneous nucleation rate parametrisations
+test for homogeneous nucleation rate parameterisations
 """
 
 from contextlib import nullcontext
