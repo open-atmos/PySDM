@@ -92,6 +92,8 @@ Example notebooks include:
 - condensation and aqueous-chemistry
   - `PySDM_examples.Kreidenweis_et_al_2003`: <mark>Hoppel gap</mark> simulation setup (i.e. depiction of evolution of aerosol mass spectrum from a monomodal to bimodal due to aqueous‐phase SO2 oxidation)
   - `PySDM_examples.Jaruga_and_Pawlowska_2018`: exploration of numerical convergence using the above Hoppel-gap simulation setup
+- freezing
+  - `PySDM_examples.Spichtinger_et_al_2023`: <mark>homogeneous freezing</mark> and ice growth (<mark>Wegener-Bergeron-Findeisen process</mark>)
 
 The parcel environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
 

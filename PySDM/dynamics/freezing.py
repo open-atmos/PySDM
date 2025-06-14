@@ -1,14 +1,25 @@
 """
-immersion freezing using either singular or time-dependent formulation
+droplet freezing using either singular or
+time-dependent formulation for immersion freezing
+and homogeneous freezing and thaw
 """
 
 from PySDM.dynamics.impl import register_dynamic
 
 
 @register_dynamic()
-class Freezing:
-    def __init__(self, *, singular=True, thaw=False):
+class Freezing:  # pylint: disable=too-many-instance-attributes
+    def __init__(
+        self,
+        *,
+        singular=True,
+        homogeneous_freezing=False,
+        immersion_freezing=True,
+        thaw=False,
+    ):
         self.singular = singular
+        self.homogeneous_freezing = homogeneous_freezing
+        self.immersion_freezing = immersion_freezing
         self.thaw = thaw
         self.enable = True
         self.rand = None
@@ -26,12 +37,21 @@ class Freezing:
         if self.singular:
             builder.request_attribute("freezing temperature")
 
-        if not self.singular:
+        if not self.singular and self.immersion_freezing:
             assert (
                 self.particulator.formulae.heterogeneous_ice_nucleation_rate.__name__
                 != "Null"
             )
             builder.request_attribute("immersed surface area")
+
+        if self.homogeneous_freezing:
+            assert (
+                self.particulator.formulae.homogeneous_ice_nucleation_rate.__name__
+                != "Null"
+            )
+            builder.request_attribute("volume")
+
+        if self.homogeneous_freezing or not self.singular:
             self.rand = self.particulator.Storage.empty(
                 self.particulator.n_sd, dtype=float
             )
@@ -49,11 +69,19 @@ class Freezing:
         if not self.enable:
             return
 
-        if self.singular:
-            self.particulator.immersion_freezing_singular(thaw=self.thaw)
-        else:
+        if self.immersion_freezing:
+            if self.singular:
+                self.particulator.immersion_freezing_singular(thaw=self.thaw)
+            else:
+                self.rand.urand(self.rng)
+                self.particulator.immersion_freezing_time_dependent(
+                    rand=self.rand,
+                    thaw=self.thaw,
+                )
+
+        if self.homogeneous_freezing:
             self.rand.urand(self.rng)
-            self.particulator.immersion_freezing_time_dependent(
+            self.particulator.homogeneous_freezing_time_dependent(
                 rand=self.rand,
                 thaw=self.thaw,
             )
