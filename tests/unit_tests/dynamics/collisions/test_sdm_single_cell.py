@@ -2,7 +2,6 @@
 import numpy as np
 import pytest
 
-from PySDM.backends import ThrustRTC
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
