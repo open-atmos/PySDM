@@ -118,12 +118,12 @@ class TestFigure1And2:
     ):
         output = outputs[aerosol][w_cm_per_s]
         attributes = output["attributes"]
-        for vol, crit_vol, eq_ss in zip(
+        for vol, crit_vol, eq_s in zip(
             attributes["volume"],
             attributes["critical volume"],
             attributes["equilibrium saturation"],
         ):
             if np.all(vol < crit_vol):
                 assert np.isclose(
-                    output["products"]["S_max"], eq_ss, rtol=rtol, atol=0
+                    output["products"]["S_max"], eq_s, rtol=rtol, atol=0
                 ).all()

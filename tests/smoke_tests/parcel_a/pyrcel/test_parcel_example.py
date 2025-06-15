@@ -54,7 +54,7 @@ class TestParcelExample:  # pylint: disable=too-few-public-methods
         output = simulation.run()
 
         # assert
-        print(np.nanmax(np.asarray(output["products"]["RH"])) - 100, s_max)
+        print(np.nanmax((np.asarray(output["products"]["RH"])) - 1) * 100, s_max)
         print(output["products"]["T"][-1], T_250m)
         print(output["products"]["RH_percent"][-1] - 100, s_250m)
         np.testing.assert_approx_equal(

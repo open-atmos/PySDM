@@ -367,7 +367,7 @@ attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = formulae.trivia.volume(radius=r_wet)
 
 particulator = builder.build(attributes, products=[
-    products.PeakSaturation(name="S_max", unit="%"),
+    products.PeakSaturation(name="S_max_percent", unit="%"),
     products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
     products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
     products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
@@ -455,7 +455,7 @@ attributes = py.dict(pyargs( ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
-    products.PeakSaturation(pyargs('name', 'S_max', 'unit', '%')), ...
+    products.PeakSaturation(pyargs('name', 'S_max_percent', 'unit', '%')), ...
     products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
     products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
     products.WaterMixingRatio(pyargs('name', 'liquid water mixing ratio', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
@@ -549,7 +549,7 @@ attributes = {
 }
 
 particulator = builder.build(attributes, products=[
-  products.PeakSaturation(name='S_max', unit='%'),
+  products.PeakSaturation(name='S_max_percent', unit='%'),
   products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
   products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
   products.WaterMixingRatio(name='liquid water mixing ratio', unit='g/kg', radius_range=cloud_range),
