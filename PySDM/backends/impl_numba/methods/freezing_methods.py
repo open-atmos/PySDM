@@ -20,7 +20,7 @@ from ...impl_common.freezing_attributes import (
 class FreezingMethods(BackendMethods):
     @cached_property
     def _freeze(self):
-        @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
+        @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def body(signed_water_mass, i):
             signed_water_mass[i] = -1 * signed_water_mass[i]
             # TODO #599: change thd (latent heat)!
@@ -29,7 +29,7 @@ class FreezingMethods(BackendMethods):
 
     @cached_property
     def _thaw(self):
-        @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
+        @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def body(signed_water_mass, i):
             signed_water_mass[i] = -1 * signed_water_mass[i]
             # TODO #599: change thd (latent heat)!
