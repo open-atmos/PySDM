@@ -20,9 +20,7 @@ class TestParcelExample:  # pylint: disable=too-few-public-methods
     @pytest.mark.xfail(
         strict=True
     )  # TODO #1246 s_250m (only) fails for both solver options
-    def test_supersaturation_and_temperature_profile(
-        s_max, s_250m, T_250m, scipy_solver
-    ):
+    def test_humidity_and_temperature_profile(s_max, s_250m, T_250m, scipy_solver):
         # arrange
         settings = Settings(
             dz=1 * si.m,
@@ -46,7 +44,7 @@ class TestParcelExample:  # pylint: disable=too-few-public-methods
             settings,
             products=(
                 ParcelDisplacement(name="z"),
-                AmbientRelativeHumidity(name="RH", unit="%"),
+                AmbientRelativeHumidity(name="RH_percent", unit="%"),
                 AmbientTemperature(name="T"),
             ),
             scipy_solver=scipy_solver,
@@ -56,15 +54,17 @@ class TestParcelExample:  # pylint: disable=too-few-public-methods
         output = simulation.run()
 
         # assert
-        print(np.nanmax(np.asarray(output["products"]["RH"])) - 100, s_max)
+        print(np.nanmax((np.asarray(output["products"]["RH"])) - 1) * 100, s_max)
         print(output["products"]["T"][-1], T_250m)
-        print(output["products"]["RH"][-1] - 100, s_250m)
+        print(output["products"]["RH_percent"][-1] - 100, s_250m)
         np.testing.assert_approx_equal(
-            np.nanmax(np.asarray(output["products"]["RH"])) - 100, s_max, significant=2
+            np.nanmax(np.asarray(output["products"]["RH_percent"])) - 100,
+            s_max,
+            significant=2,
         )
         np.testing.assert_approx_equal(
             output["products"]["T"][-1], T_250m, significant=2
         )
         np.testing.assert_approx_equal(
-            output["products"]["RH"][-1] - 100, s_250m, significant=2
+            output["products"]["RH_percent"][-1] - 100, s_250m, significant=2
         )

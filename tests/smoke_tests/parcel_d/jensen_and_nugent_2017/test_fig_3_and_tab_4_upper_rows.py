@@ -17,7 +17,7 @@ PLOT = False
 
 def find_cloud_base_index(products):
     for index, value in enumerate(products["S_max"]):
-        if value > 0:
+        if value > 1:
             cloud_base_index = index
             break
     return cloud_base_index
@@ -67,7 +67,7 @@ class TestFig3:
 
     @staticmethod
     def test_supersaturation_maximum(variables):
-        supersaturation = np.asarray(variables["output"]["products"]["S_max"])
+        supersaturation = np.asarray(variables["output"]["products"]["S_max"]) - 1
         assert signal.argrelextrema(supersaturation, np.greater)[0].shape[0] == 1
         assert 0.35 * PER_CENT < np.nanmax(supersaturation) < 0.5 * PER_CENT
 

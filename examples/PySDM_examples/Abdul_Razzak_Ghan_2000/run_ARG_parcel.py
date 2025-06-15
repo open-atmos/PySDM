@@ -28,7 +28,7 @@ def run_parcel(
 ):
     products = (
         PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid water mixing ratio"),
-        PySDM_products.PeakSupersaturation(name="S max"),
+        PySDM_products.PeakSaturation(name="S max"),
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.ParcelDisplacement(name="z"),
     )
@@ -54,7 +54,7 @@ def run_parcel(
     builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation())
-    builder.request_attribute("critical supersaturation")
+    builder.request_attribute("critical saturation")
 
     attributes = {
         k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "multiplicity")
@@ -87,7 +87,7 @@ def run_parcel(
         "multiplicity": tuple([] for _ in range(particulator.n_sd)),
         "volume": tuple([] for _ in range(particulator.n_sd)),
         "critical volume": tuple([] for _ in range(particulator.n_sd)),
-        "critical supersaturation": tuple([] for _ in range(particulator.n_sd)),
+        "critical saturation": tuple([] for _ in range(particulator.n_sd)),
     }
 
     for _ in range(n_steps):
@@ -109,7 +109,7 @@ def run_parcel(
         RHmax = np.nanmax(np.asarray(output["RH"]))
         for i, volume in enumerate(output_attributes["volume"]):
             if j * n_sd_per_mode <= i < (j + 1) * n_sd_per_mode:
-                if output_attributes["critical supersaturation"][i][-1] < RHmax:
+                if output_attributes["critical saturation"][i][-1] < RHmax:
                     activated_drops_j_S += output_attributes["multiplicity"][i][-1]
                 if output_attributes["critical volume"][i][-1] < volume[-1]:
                     activated_drops_j_V += output_attributes["multiplicity"][i][-1]

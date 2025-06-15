@@ -81,8 +81,8 @@ class Simulation(BasicSimulation):
         products = products or (
             PySDM_products.ParcelDisplacement(name="z"),
             PySDM_products.Time(name="t"),
-            PySDM_products.PeakSupersaturation(unit="%", name="S_max"),
-            PySDM_products.AmbientRelativeHumidity(unit="%", name="RH"),
+            PySDM_products.PeakSaturation(name="S_max"),
+            PySDM_products.AmbientRelativeHumidity(name="RH"),
             PySDM_products.ActivatedParticleConcentration(
                 name="CDNC_cm3",
                 unit="cm^-3",

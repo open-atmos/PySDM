@@ -106,7 +106,7 @@ class Simulation(BasicSimulation):
             PySDM_products.TotalDryMassMixingRatio(
                 settings.DRY_RHO, name="q_dry", unit="ug/kg"
             ),
-            PySDM_products.PeakSupersaturation(unit="%", name="S_max"),
+            PySDM_products.PeakSaturation(unit="%", name="S_max_percent"),
             PySDM_products.ParticleSpecificConcentration(
                 radius_range=settings.cloud_radius_range, name="n_c_mg", unit="mg^-1"
             ),

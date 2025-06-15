@@ -51,7 +51,7 @@ class TestFigure1And2:
     @staticmethod
     @pytest.mark.parametrize("aerosol", AEROSOLS)
     @pytest.mark.parametrize("w_cm_per_s", VELOCITIES_CM_PER_S)
-    @pytest.mark.parametrize("attribute", ("volume", "equilibrium supersaturation"))
+    @pytest.mark.parametrize("attribute", ("volume", "equilibrium saturation"))
     @pytest.mark.parametrize("drop_id", (0, -1))
     def test_values_at_final_step(
         outputs: dict,
@@ -85,7 +85,7 @@ class TestFigure1And2:
                     },
                 },
             },
-            "equilibrium supersaturation": {
+            "equilibrium saturation": {
                 "pristine": {
                     25: {0: 0.05 / 100 + 1, -1: 0.005 / 100 + 1},
                     100: {0: 0.15 / 100 + 1, -1: 0.005 / 100 + 1},
@@ -118,12 +118,12 @@ class TestFigure1And2:
     ):
         output = outputs[aerosol][w_cm_per_s]
         attributes = output["attributes"]
-        for vol, crit_vol, eq_ss in zip(
+        for vol, crit_vol, eq_s in zip(
             attributes["volume"],
             attributes["critical volume"],
-            attributes["equilibrium supersaturation"],
+            attributes["equilibrium saturation"],
         ):
             if np.all(vol < crit_vol):
                 assert np.isclose(
-                    output["products"]["S_max"], eq_ss, rtol=rtol, atol=0
+                    output["products"]["S_max"], eq_s, rtol=rtol, atol=0
                 ).all()
