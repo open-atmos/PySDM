@@ -16,7 +16,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         formulae = self.formulae_flattened
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
-        def body(  # pylint: disable=too-many-arguments
+        def body(  # pylint: disable=too-many-arguments,unused-argument
             *,
             multiplicity,
             signed_water_mass,
