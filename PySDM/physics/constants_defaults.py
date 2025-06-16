@@ -326,6 +326,9 @@ KOOP_2000_C4 = 29180
 """ 〃 """
 KOOP_UNIT = 1 / si.cm**3 / si.s
 """ 〃 """
+KOOP_MIN_DA_W_ICE = 0.26
+""" 〃 """
+KOOP_MAX_DA_W_ICE = 0.34
 
 KOOP_CORR = -1.522
 """ homogeneous ice nucleation rate correction factor

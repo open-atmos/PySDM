@@ -120,6 +120,12 @@ class FreezingMethods(BackendMethods):
         unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
         j_hom = self.formulae.homogeneous_ice_nucleation_rate.j_hom
         prob_zero_events = self.formulae.trivia.poissonian_avoidance_function
+        d_a_w_ice_within_range = (
+            self.formulae.homogeneous_ice_nucleation_rate.d_a_w_ice_within_range
+        )
+        d_a_w_ice_maximum = (
+            self.formulae.homogeneous_ice_nucleation_rate.d_a_w_ice_maximum
+        )
 
         @numba.njit(**self.default_jit_flags)
         def body(  # pylint: disable=unused-argument,too-many-arguments
@@ -146,7 +152,9 @@ class FreezingMethods(BackendMethods):
                     d_a_w_ice = (relative_humidity_ice[cell_id] - 1.0) * a_w_ice[
                         cell_id
                     ]
-                    if 0.23 < d_a_w_ice < 0.34:
+
+                    if d_a_w_ice_within_range(d_a_w_ice):
+                        d_a_w_ice = d_a_w_ice_maximum(d_a_w_ice)
                         rate_assuming_constant_temperature_within_dt = (
                             j_hom(temperature[cell_id], d_a_w_ice)
                             * attributes.volume[i]
