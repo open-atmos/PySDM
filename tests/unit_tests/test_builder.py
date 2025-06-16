@@ -32,7 +32,7 @@ class TestBuilder:
         builder.add_dynamic(Condensation())
 
         # act
-        builder.request_attribute("critical supersaturation")
+        builder.request_attribute("critical saturation")
 
         # assert
         particulator = builder.build(
@@ -48,7 +48,7 @@ class TestBuilder:
             },
         )
         particulator.environment["T"] = np.nan
-        _ = particulator.attributes["critical supersaturation"].to_ndarray()
+        _ = particulator.attributes["critical saturation"].to_ndarray()
 
     @staticmethod
     @pytest.mark.parametrize(

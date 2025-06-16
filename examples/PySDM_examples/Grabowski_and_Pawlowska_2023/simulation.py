@@ -38,8 +38,8 @@ class Simulation(BasicSimulation):
             Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x)
         )
         for attribute in (
-            "critical supersaturation",
-            "equilibrium supersaturation",
+            "critical saturation",
+            "equilibrium saturation",
             "critical volume",
         ):
             builder.request_attribute(attribute)
@@ -80,12 +80,8 @@ class Simulation(BasicSimulation):
         self.output_attributes = {
             "volume": tuple([] for _ in range(self.particulator.n_sd)),
             "dry volume": tuple([] for _ in range(self.particulator.n_sd)),
-            "critical supersaturation": tuple(
-                [] for _ in range(self.particulator.n_sd)
-            ),
-            "equilibrium supersaturation": tuple(
-                [] for _ in range(self.particulator.n_sd)
-            ),
+            "critical saturation": tuple([] for _ in range(self.particulator.n_sd)),
+            "equilibrium saturation": tuple([] for _ in range(self.particulator.n_sd)),
             "critical volume": tuple([] for _ in range(self.particulator.n_sd)),
             "multiplicity": tuple([] for _ in range(self.particulator.n_sd)),
         }
