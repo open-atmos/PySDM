@@ -102,6 +102,15 @@
 
             </li>
             <li>
+                    <a class="class" href="#CriticalVolumeNeglectingTemperatureVariations">CriticalVolumeNeglectingTemperatureVariations</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#CriticalVolumeNeglectingTemperatureVariations.__init__">CriticalVolumeNeglectingTemperatureVariations</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
                     <a class="class" href="#WetToCriticalVolumeRatio">WetToCriticalVolumeRatio</a>
                             <ul class="memberlist">
                         <li>
@@ -115,6 +124,15 @@
                         </li>
                         <li>
                                 <a class="function" href="#WetToCriticalVolumeRatio.recalculate">recalculate</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations">WetToCriticalVolumeRatioNeglectingTemperatureVariations</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__">WetToCriticalVolumeRatioNeglectingTemperatureVariations</a>
                         </li>
                 </ul>
 
@@ -135,7 +153,7 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../attributes.html">attributes</a><wbr>.<a href="./../physics.html">physics</a><wbr>.critical_volume    </h1>
 
-                        <div class="docstring"><p>critical wet volume (kappa-Koehler, computed using actual temperature)</p>
+                        <div class="docstring"><p>critical wet volume (kappa-Koehler, computed using actual or initial temperature)</p>
 </div>
 
                         <input id="mod-critical_volume-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -143,50 +161,93 @@
                         <label class="view-source-button" for="mod-critical_volume-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">critical wet volume (kappa-Koehler, computed using actual temperature)</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">critical wet volume (kappa-Koehler, computed using actual or initial temperature)</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.attributes.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">DerivedAttribute</span><span class="p">,</span> <span class="n">register_attribute</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CriticalVolume</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume&quot;</span><span class="p">)</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f_org</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume organic fraction&quot;</span><span class="p">)</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;critical volume&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">(</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>            <span class="n">v_cr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">kappa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="n">f_org</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_org</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>            <span class="n">v_dry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>            <span class="n">v_wet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="n">T</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>            <span class="n">cell</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="p">)</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WetToCriticalVolumeRatio</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;critical volume&quot;</span><span class="p">)</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>            <span class="n">builder</span><span class="p">,</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">,</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">),</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>        <span class="p">)</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.attributes.impl</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>    <span class="n">DerivedAttribute</span><span class="p">,</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="n">register_attribute</span><span class="p">,</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="n">TemperatureVariationOptionAttribute</span><span class="p">,</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="p">)</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CriticalVolume</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">,</span> <span class="n">TemperatureVariationOptionAttribute</span><span class="p">):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume&quot;</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f_org</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume organic fraction&quot;</span><span class="p">)</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="n">TemperatureVariationOptionAttribute</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="n">DerivedAttribute</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;critical volume&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="p">)</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="n">temperature</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">initial_temperature</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">neglect_temperature_variations</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">(</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>            <span class="n">v_cr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>            <span class="n">kappa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>            <span class="n">f_org</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_org</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>            <span class="n">v_dry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>            <span class="n">v_wet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>            <span class="n">T</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>            <span class="n">cell</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>        <span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CriticalVolumeNeglectingTemperatureVariations</span><span class="p">(</span><span class="n">CriticalVolume</span><span class="p">):</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WetToCriticalVolumeRatio</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>        <span class="n">builder</span><span class="p">,</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>        <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">,</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>    <span class="p">):</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>            <span class="s2">&quot;critical volume&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>            <span class="o">+</span> <span class="p">(</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>                <span class="s2">&quot; neglecting temperature variations&quot;</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>                <span class="k">if</span> <span class="n">neglect_temperature_variations</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>                <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>            <span class="p">)</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>        <span class="p">)</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">),</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>        <span class="p">)</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WetToCriticalVolumeRatioNeglectingTemperatureVariations</span><span class="p">(</span><span class="n">WetToCriticalVolumeRatio</span><span class="p">):</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>            <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio neglecting temperature variations&quot;</span><span class="p">,</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos">88</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -197,60 +258,79 @@
                     <div class="decorator decorator-register_attribute">@register_attribute()</div>
 
     <span class="def">class</span>
-    <span class="name">CriticalVolume</span><wbr>(<span class="base"><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></span>):
+    <span class="name">CriticalVolume</span><wbr>(<span class="base"><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></span>, <span class="base"><a href="../impl/temperature_variation_option_attribute.html#TemperatureVariationOptionAttribute">PySDM.attributes.impl.temperature_variation_option_attribute.TemperatureVariationOptionAttribute</a></span>):
 
                 <label class="view-source-button" for="CriticalVolume-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#CriticalVolume"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolume-9"><a href="#CriticalVolume-9"><span class="linenos"> 9</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
-</span><span id="CriticalVolume-10"><a href="#CriticalVolume-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CriticalVolume</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
-</span><span id="CriticalVolume-11"><a href="#CriticalVolume-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="CriticalVolume-12"><a href="#CriticalVolume-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume-13"><a href="#CriticalVolume-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume-14"><a href="#CriticalVolume-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume-15"><a href="#CriticalVolume-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume-16"><a href="#CriticalVolume-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f_org</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume organic fraction&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume-17"><a href="#CriticalVolume-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span>
-</span><span id="CriticalVolume-18"><a href="#CriticalVolume-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="CriticalVolume-19"><a href="#CriticalVolume-19"><span class="linenos">19</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
-</span><span id="CriticalVolume-20"><a href="#CriticalVolume-20"><span class="linenos">20</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;critical volume&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
-</span><span id="CriticalVolume-21"><a href="#CriticalVolume-21"><span class="linenos">21</span></a>
-</span><span id="CriticalVolume-22"><a href="#CriticalVolume-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="CriticalVolume-23"><a href="#CriticalVolume-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">(</span>
-</span><span id="CriticalVolume-24"><a href="#CriticalVolume-24"><span class="linenos">24</span></a>            <span class="n">v_cr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="CriticalVolume-25"><a href="#CriticalVolume-25"><span class="linenos">25</span></a>            <span class="n">kappa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume-26"><a href="#CriticalVolume-26"><span class="linenos">26</span></a>            <span class="n">f_org</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_org</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume-27"><a href="#CriticalVolume-27"><span class="linenos">27</span></a>            <span class="n">v_dry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume-28"><a href="#CriticalVolume-28"><span class="linenos">28</span></a>            <span class="n">v_wet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume-29"><a href="#CriticalVolume-29"><span class="linenos">29</span></a>            <span class="n">T</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
-</span><span id="CriticalVolume-30"><a href="#CriticalVolume-30"><span class="linenos">30</span></a>            <span class="n">cell</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume-31"><a href="#CriticalVolume-31"><span class="linenos">31</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolume-13"><a href="#CriticalVolume-13"><span class="linenos">13</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="CriticalVolume-14"><a href="#CriticalVolume-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CriticalVolume</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">,</span> <span class="n">TemperatureVariationOptionAttribute</span><span class="p">):</span>
+</span><span id="CriticalVolume-15"><a href="#CriticalVolume-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="CriticalVolume-16"><a href="#CriticalVolume-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume-17"><a href="#CriticalVolume-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume-18"><a href="#CriticalVolume-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume-19"><a href="#CriticalVolume-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume-20"><a href="#CriticalVolume-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f_org</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume organic fraction&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume-21"><a href="#CriticalVolume-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span>
+</span><span id="CriticalVolume-22"><a href="#CriticalVolume-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="CriticalVolume-23"><a href="#CriticalVolume-23"><span class="linenos">23</span></a>
+</span><span id="CriticalVolume-24"><a href="#CriticalVolume-24"><span class="linenos">24</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
+</span><span id="CriticalVolume-25"><a href="#CriticalVolume-25"><span class="linenos">25</span></a>        <span class="n">TemperatureVariationOptionAttribute</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="CriticalVolume-26"><a href="#CriticalVolume-26"><span class="linenos">26</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span>
+</span><span id="CriticalVolume-27"><a href="#CriticalVolume-27"><span class="linenos">27</span></a>        <span class="p">)</span>
+</span><span id="CriticalVolume-28"><a href="#CriticalVolume-28"><span class="linenos">28</span></a>        <span class="n">DerivedAttribute</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="CriticalVolume-29"><a href="#CriticalVolume-29"><span class="linenos">29</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;critical volume&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span>
+</span><span id="CriticalVolume-30"><a href="#CriticalVolume-30"><span class="linenos">30</span></a>        <span class="p">)</span>
+</span><span id="CriticalVolume-31"><a href="#CriticalVolume-31"><span class="linenos">31</span></a>
+</span><span id="CriticalVolume-32"><a href="#CriticalVolume-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CriticalVolume-33"><a href="#CriticalVolume-33"><span class="linenos">33</span></a>        <span class="n">temperature</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="CriticalVolume-34"><a href="#CriticalVolume-34"><span class="linenos">34</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">initial_temperature</span>
+</span><span id="CriticalVolume-35"><a href="#CriticalVolume-35"><span class="linenos">35</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">neglect_temperature_variations</span>
+</span><span id="CriticalVolume-36"><a href="#CriticalVolume-36"><span class="linenos">36</span></a>            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+</span><span id="CriticalVolume-37"><a href="#CriticalVolume-37"><span class="linenos">37</span></a>        <span class="p">)</span>
+</span><span id="CriticalVolume-38"><a href="#CriticalVolume-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">(</span>
+</span><span id="CriticalVolume-39"><a href="#CriticalVolume-39"><span class="linenos">39</span></a>            <span class="n">v_cr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="CriticalVolume-40"><a href="#CriticalVolume-40"><span class="linenos">40</span></a>            <span class="n">kappa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume-41"><a href="#CriticalVolume-41"><span class="linenos">41</span></a>            <span class="n">f_org</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_org</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume-42"><a href="#CriticalVolume-42"><span class="linenos">42</span></a>            <span class="n">v_dry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume-43"><a href="#CriticalVolume-43"><span class="linenos">43</span></a>            <span class="n">v_wet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume-44"><a href="#CriticalVolume-44"><span class="linenos">44</span></a>            <span class="n">T</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+</span><span id="CriticalVolume-45"><a href="#CriticalVolume-45"><span class="linenos">45</span></a>            <span class="n">cell</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume-46"><a href="#CriticalVolume-46"><span class="linenos">46</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>base class</p>
+</div>
+
 
                             <div id="CriticalVolume.__init__" class="classattr">
                                         <input id="CriticalVolume.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">CriticalVolume</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+        <span class="name">CriticalVolume</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span>, </span><span class="param"><span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span></span>)</span>
 
                 <label class="view-source-button" for="CriticalVolume.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#CriticalVolume.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolume.__init__-11"><a href="#CriticalVolume.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="CriticalVolume.__init__-12"><a href="#CriticalVolume.__init__-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume.__init__-13"><a href="#CriticalVolume.__init__-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume.__init__-14"><a href="#CriticalVolume.__init__-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume.__init__-15"><a href="#CriticalVolume.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume.__init__-16"><a href="#CriticalVolume.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f_org</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume organic fraction&quot;</span><span class="p">)</span>
-</span><span id="CriticalVolume.__init__-17"><a href="#CriticalVolume.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span>
-</span><span id="CriticalVolume.__init__-18"><a href="#CriticalVolume.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="CriticalVolume.__init__-19"><a href="#CriticalVolume.__init__-19"><span class="linenos">19</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
-</span><span id="CriticalVolume.__init__-20"><a href="#CriticalVolume.__init__-20"><span class="linenos">20</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;critical volume&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolume.__init__-15"><a href="#CriticalVolume.__init__-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="CriticalVolume.__init__-16"><a href="#CriticalVolume.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume.__init__-17"><a href="#CriticalVolume.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume.__init__-18"><a href="#CriticalVolume.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume.__init__-19"><a href="#CriticalVolume.__init__-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">kappa</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume.__init__-20"><a href="#CriticalVolume.__init__-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">f_org</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;dry volume organic fraction&quot;</span><span class="p">)</span>
+</span><span id="CriticalVolume.__init__-21"><a href="#CriticalVolume.__init__-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">environment</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span>
+</span><span id="CriticalVolume.__init__-22"><a href="#CriticalVolume.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particles</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="CriticalVolume.__init__-23"><a href="#CriticalVolume.__init__-23"><span class="linenos">23</span></a>
+</span><span id="CriticalVolume.__init__-24"><a href="#CriticalVolume.__init__-24"><span class="linenos">24</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
+</span><span id="CriticalVolume.__init__-25"><a href="#CriticalVolume.__init__-25"><span class="linenos">25</span></a>        <span class="n">TemperatureVariationOptionAttribute</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="CriticalVolume.__init__-26"><a href="#CriticalVolume.__init__-26"><span class="linenos">26</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span>
+</span><span id="CriticalVolume.__init__-27"><a href="#CriticalVolume.__init__-27"><span class="linenos">27</span></a>        <span class="p">)</span>
+</span><span id="CriticalVolume.__init__-28"><a href="#CriticalVolume.__init__-28"><span class="linenos">28</span></a>        <span class="n">DerivedAttribute</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="CriticalVolume.__init__-29"><a href="#CriticalVolume.__init__-29"><span class="linenos">29</span></a>            <span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;critical volume&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span>
+</span><span id="CriticalVolume.__init__-30"><a href="#CriticalVolume.__init__-30"><span class="linenos">30</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -345,16 +425,21 @@
 
     </div>
     <a class="headerlink" href="#CriticalVolume.recalculate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolume.recalculate-22"><a href="#CriticalVolume.recalculate-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="CriticalVolume.recalculate-23"><a href="#CriticalVolume.recalculate-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">(</span>
-</span><span id="CriticalVolume.recalculate-24"><a href="#CriticalVolume.recalculate-24"><span class="linenos">24</span></a>            <span class="n">v_cr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="CriticalVolume.recalculate-25"><a href="#CriticalVolume.recalculate-25"><span class="linenos">25</span></a>            <span class="n">kappa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume.recalculate-26"><a href="#CriticalVolume.recalculate-26"><span class="linenos">26</span></a>            <span class="n">f_org</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_org</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume.recalculate-27"><a href="#CriticalVolume.recalculate-27"><span class="linenos">27</span></a>            <span class="n">v_dry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume.recalculate-28"><a href="#CriticalVolume.recalculate-28"><span class="linenos">28</span></a>            <span class="n">v_wet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume.recalculate-29"><a href="#CriticalVolume.recalculate-29"><span class="linenos">29</span></a>            <span class="n">T</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
-</span><span id="CriticalVolume.recalculate-30"><a href="#CriticalVolume.recalculate-30"><span class="linenos">30</span></a>            <span class="n">cell</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
-</span><span id="CriticalVolume.recalculate-31"><a href="#CriticalVolume.recalculate-31"><span class="linenos">31</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolume.recalculate-32"><a href="#CriticalVolume.recalculate-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="CriticalVolume.recalculate-33"><a href="#CriticalVolume.recalculate-33"><span class="linenos">33</span></a>        <span class="n">temperature</span> <span class="o">=</span> <span class="p">(</span>
+</span><span id="CriticalVolume.recalculate-34"><a href="#CriticalVolume.recalculate-34"><span class="linenos">34</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">initial_temperature</span>
+</span><span id="CriticalVolume.recalculate-35"><a href="#CriticalVolume.recalculate-35"><span class="linenos">35</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">neglect_temperature_variations</span>
+</span><span id="CriticalVolume.recalculate-36"><a href="#CriticalVolume.recalculate-36"><span class="linenos">36</span></a>            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">]</span>
+</span><span id="CriticalVolume.recalculate-37"><a href="#CriticalVolume.recalculate-37"><span class="linenos">37</span></a>        <span class="p">)</span>
+</span><span id="CriticalVolume.recalculate-38"><a href="#CriticalVolume.recalculate-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">(</span>
+</span><span id="CriticalVolume.recalculate-39"><a href="#CriticalVolume.recalculate-39"><span class="linenos">39</span></a>            <span class="n">v_cr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="CriticalVolume.recalculate-40"><a href="#CriticalVolume.recalculate-40"><span class="linenos">40</span></a>            <span class="n">kappa</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume.recalculate-41"><a href="#CriticalVolume.recalculate-41"><span class="linenos">41</span></a>            <span class="n">f_org</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">f_org</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume.recalculate-42"><a href="#CriticalVolume.recalculate-42"><span class="linenos">42</span></a>            <span class="n">v_dry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_dry</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume.recalculate-43"><a href="#CriticalVolume.recalculate-43"><span class="linenos">43</span></a>            <span class="n">v_wet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v_wet</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume.recalculate-44"><a href="#CriticalVolume.recalculate-44"><span class="linenos">44</span></a>            <span class="n">T</span><span class="o">=</span><span class="n">temperature</span><span class="p">,</span>
+</span><span id="CriticalVolume.recalculate-45"><a href="#CriticalVolume.recalculate-45"><span class="linenos">45</span></a>            <span class="n">cell</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="CriticalVolume.recalculate-46"><a href="#CriticalVolume.recalculate-46"><span class="linenos">46</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -383,6 +468,93 @@
                 <dd id="CriticalVolume.get" class="function"><a href="../impl/attribute.html#Attribute.get">get</a></dd>
 
             </div>
+            <div><dt><a href="../impl/temperature_variation_option_attribute.html#TemperatureVariationOptionAttribute">PySDM.attributes.impl.temperature_variation_option_attribute.TemperatureVariationOptionAttribute</a></dt>
+                                <dd id="CriticalVolume.neglect_temperature_variations" class="variable"><a href="../impl/temperature_variation_option_attribute.html#TemperatureVariationOptionAttribute.neglect_temperature_variations">neglect_temperature_variations</a></dd>
+                <dd id="CriticalVolume.initial_temperature" class="variable"><a href="../impl/temperature_variation_option_attribute.html#TemperatureVariationOptionAttribute.initial_temperature">initial_temperature</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="CriticalVolumeNeglectingTemperatureVariations">
+                            <input id="CriticalVolumeNeglectingTemperatureVariations-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator decorator-register_attribute">@register_attribute()</div>
+
+    <span class="def">class</span>
+    <span class="name">CriticalVolumeNeglectingTemperatureVariations</span><wbr>(<span class="base"><a href="#CriticalVolume">CriticalVolume</a></span>):
+
+                <label class="view-source-button" for="CriticalVolumeNeglectingTemperatureVariations-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CriticalVolumeNeglectingTemperatureVariations"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolumeNeglectingTemperatureVariations-49"><a href="#CriticalVolumeNeglectingTemperatureVariations-49"><span class="linenos">49</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="CriticalVolumeNeglectingTemperatureVariations-50"><a href="#CriticalVolumeNeglectingTemperatureVariations-50"><span class="linenos">50</span></a><span class="k">class</span><span class="w"> </span><span class="nc">CriticalVolumeNeglectingTemperatureVariations</span><span class="p">(</span><span class="n">CriticalVolume</span><span class="p">):</span>
+</span><span id="CriticalVolumeNeglectingTemperatureVariations-51"><a href="#CriticalVolumeNeglectingTemperatureVariations-51"><span class="linenos">51</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="CriticalVolumeNeglectingTemperatureVariations-52"><a href="#CriticalVolumeNeglectingTemperatureVariations-52"><span class="linenos">52</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>base class</p>
+</div>
+
+
+                            <div id="CriticalVolumeNeglectingTemperatureVariations.__init__" class="classattr">
+                                        <input id="CriticalVolumeNeglectingTemperatureVariations.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">CriticalVolumeNeglectingTemperatureVariations</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+
+                <label class="view-source-button" for="CriticalVolumeNeglectingTemperatureVariations.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#CriticalVolumeNeglectingTemperatureVariations.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CriticalVolumeNeglectingTemperatureVariations.__init__-51"><a href="#CriticalVolumeNeglectingTemperatureVariations.__init__-51"><span class="linenos">51</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="CriticalVolumeNeglectingTemperatureVariations.__init__-52"><a href="#CriticalVolumeNeglectingTemperatureVariations.__init__-52"><span class="linenos">52</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#CriticalVolume">CriticalVolume</a></dt>
+                                <dd id="CriticalVolumeNeglectingTemperatureVariations.cell_id" class="variable"><a href="#CriticalVolume.cell_id">cell_id</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.v_dry" class="variable"><a href="#CriticalVolume.v_dry">v_dry</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.v_wet" class="variable"><a href="#CriticalVolume.v_wet">v_wet</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.kappa" class="variable"><a href="#CriticalVolume.kappa">kappa</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.f_org" class="variable"><a href="#CriticalVolume.f_org">f_org</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.environment" class="variable"><a href="#CriticalVolume.environment">environment</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.particles" class="variable"><a href="#CriticalVolume.particles">particles</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.recalculate" class="function"><a href="#CriticalVolume.recalculate">recalculate</a></dd>
+
+            </div>
+            <div><dt><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></dt>
+                                <dd id="CriticalVolumeNeglectingTemperatureVariations.dependencies" class="variable"><a href="../impl/derived_attribute.html#DerivedAttribute.dependencies">dependencies</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.update" class="function"><a href="../impl/derived_attribute.html#DerivedAttribute.update">update</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.mark_updated" class="function"><a href="../impl/derived_attribute.html#DerivedAttribute.mark_updated">mark_updated</a></dd>
+
+            </div>
+            <div><dt><a href="../impl/attribute.html#Attribute">PySDM.attributes.impl.attribute.Attribute</a></dt>
+                                <dd id="CriticalVolumeNeglectingTemperatureVariations.particulator" class="variable"><a href="../impl/attribute.html#Attribute.particulator">particulator</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.timestamp" class="variable"><a href="../impl/attribute.html#Attribute.timestamp">timestamp</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.data" class="variable"><a href="../impl/attribute.html#Attribute.data">data</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.dtype" class="variable"><a href="../impl/attribute.html#Attribute.dtype">dtype</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.n_vector_components" class="variable"><a href="../impl/attribute.html#Attribute.n_vector_components">n_vector_components</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.name" class="variable"><a href="../impl/attribute.html#Attribute.name">name</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.formulae" class="variable"><a href="../impl/attribute.html#Attribute.formulae">formulae</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.allocate" class="function"><a href="../impl/attribute.html#Attribute.allocate">allocate</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.set_data" class="function"><a href="../impl/attribute.html#Attribute.set_data">set_data</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.get" class="function"><a href="../impl/attribute.html#Attribute.get">get</a></dd>
+
+            </div>
+            <div><dt><a href="../impl/temperature_variation_option_attribute.html#TemperatureVariationOptionAttribute">PySDM.attributes.impl.temperature_variation_option_attribute.TemperatureVariationOptionAttribute</a></dt>
+                                <dd id="CriticalVolumeNeglectingTemperatureVariations.neglect_temperature_variations" class="variable"><a href="../impl/temperature_variation_option_attribute.html#TemperatureVariationOptionAttribute.neglect_temperature_variations">neglect_temperature_variations</a></dd>
+                <dd id="CriticalVolumeNeglectingTemperatureVariations.initial_temperature" class="variable"><a href="../impl/temperature_variation_option_attribute.html#TemperatureVariationOptionAttribute.initial_temperature">initial_temperature</a></dd>
+
+            </div>
                                 </dl>
                             </div>
                 </section>
@@ -398,19 +570,31 @@
 
     </div>
     <a class="headerlink" href="#WetToCriticalVolumeRatio"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatio-34"><a href="#WetToCriticalVolumeRatio-34"><span class="linenos">34</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
-</span><span id="WetToCriticalVolumeRatio-35"><a href="#WetToCriticalVolumeRatio-35"><span class="linenos">35</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WetToCriticalVolumeRatio</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
-</span><span id="WetToCriticalVolumeRatio-36"><a href="#WetToCriticalVolumeRatio-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="WetToCriticalVolumeRatio-37"><a href="#WetToCriticalVolumeRatio-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;critical volume&quot;</span><span class="p">)</span>
-</span><span id="WetToCriticalVolumeRatio-38"><a href="#WetToCriticalVolumeRatio-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
-</span><span id="WetToCriticalVolumeRatio-39"><a href="#WetToCriticalVolumeRatio-39"><span class="linenos">39</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="WetToCriticalVolumeRatio-40"><a href="#WetToCriticalVolumeRatio-40"><span class="linenos">40</span></a>            <span class="n">builder</span><span class="p">,</span>
-</span><span id="WetToCriticalVolumeRatio-41"><a href="#WetToCriticalVolumeRatio-41"><span class="linenos">41</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">,</span>
-</span><span id="WetToCriticalVolumeRatio-42"><a href="#WetToCriticalVolumeRatio-42"><span class="linenos">42</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">),</span>
-</span><span id="WetToCriticalVolumeRatio-43"><a href="#WetToCriticalVolumeRatio-43"><span class="linenos">43</span></a>        <span class="p">)</span>
-</span><span id="WetToCriticalVolumeRatio-44"><a href="#WetToCriticalVolumeRatio-44"><span class="linenos">44</span></a>
-</span><span id="WetToCriticalVolumeRatio-45"><a href="#WetToCriticalVolumeRatio-45"><span class="linenos">45</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="WetToCriticalVolumeRatio-46"><a href="#WetToCriticalVolumeRatio-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatio-55"><a href="#WetToCriticalVolumeRatio-55"><span class="linenos">55</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="WetToCriticalVolumeRatio-56"><a href="#WetToCriticalVolumeRatio-56"><span class="linenos">56</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WetToCriticalVolumeRatio</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatio-57"><a href="#WetToCriticalVolumeRatio-57"><span class="linenos">57</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio-58"><a href="#WetToCriticalVolumeRatio-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio-59"><a href="#WetToCriticalVolumeRatio-59"><span class="linenos">59</span></a>        <span class="n">builder</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio-60"><a href="#WetToCriticalVolumeRatio-60"><span class="linenos">60</span></a>        <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio-61"><a href="#WetToCriticalVolumeRatio-61"><span class="linenos">61</span></a>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio-62"><a href="#WetToCriticalVolumeRatio-62"><span class="linenos">62</span></a>    <span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatio-63"><a href="#WetToCriticalVolumeRatio-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio-64"><a href="#WetToCriticalVolumeRatio-64"><span class="linenos">64</span></a>            <span class="s2">&quot;critical volume&quot;</span>
+</span><span id="WetToCriticalVolumeRatio-65"><a href="#WetToCriticalVolumeRatio-65"><span class="linenos">65</span></a>            <span class="o">+</span> <span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio-66"><a href="#WetToCriticalVolumeRatio-66"><span class="linenos">66</span></a>                <span class="s2">&quot; neglecting temperature variations&quot;</span>
+</span><span id="WetToCriticalVolumeRatio-67"><a href="#WetToCriticalVolumeRatio-67"><span class="linenos">67</span></a>                <span class="k">if</span> <span class="n">neglect_temperature_variations</span>
+</span><span id="WetToCriticalVolumeRatio-68"><a href="#WetToCriticalVolumeRatio-68"><span class="linenos">68</span></a>                <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+</span><span id="WetToCriticalVolumeRatio-69"><a href="#WetToCriticalVolumeRatio-69"><span class="linenos">69</span></a>            <span class="p">)</span>
+</span><span id="WetToCriticalVolumeRatio-70"><a href="#WetToCriticalVolumeRatio-70"><span class="linenos">70</span></a>        <span class="p">)</span>
+</span><span id="WetToCriticalVolumeRatio-71"><a href="#WetToCriticalVolumeRatio-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="WetToCriticalVolumeRatio-72"><a href="#WetToCriticalVolumeRatio-72"><span class="linenos">72</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio-73"><a href="#WetToCriticalVolumeRatio-73"><span class="linenos">73</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio-74"><a href="#WetToCriticalVolumeRatio-74"><span class="linenos">74</span></a>            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio-75"><a href="#WetToCriticalVolumeRatio-75"><span class="linenos">75</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">),</span>
+</span><span id="WetToCriticalVolumeRatio-76"><a href="#WetToCriticalVolumeRatio-76"><span class="linenos">76</span></a>        <span class="p">)</span>
+</span><span id="WetToCriticalVolumeRatio-77"><a href="#WetToCriticalVolumeRatio-77"><span class="linenos">77</span></a>
+</span><span id="WetToCriticalVolumeRatio-78"><a href="#WetToCriticalVolumeRatio-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatio-79"><a href="#WetToCriticalVolumeRatio-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -420,20 +604,32 @@
                                         <input id="WetToCriticalVolumeRatio.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">WetToCriticalVolumeRatio</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+        <span class="name">WetToCriticalVolumeRatio</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">builder</span>,</span><span class="param">	<span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span>,</span><span class="param">	<span class="n">name</span><span class="o">=</span><span class="s1">&#39;wet to critical volume ratio&#39;</span></span>)</span>
 
                 <label class="view-source-button" for="WetToCriticalVolumeRatio.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#WetToCriticalVolumeRatio.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatio.__init__-36"><a href="#WetToCriticalVolumeRatio.__init__-36"><span class="linenos">36</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="WetToCriticalVolumeRatio.__init__-37"><a href="#WetToCriticalVolumeRatio.__init__-37"><span class="linenos">37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;critical volume&quot;</span><span class="p">)</span>
-</span><span id="WetToCriticalVolumeRatio.__init__-38"><a href="#WetToCriticalVolumeRatio.__init__-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
-</span><span id="WetToCriticalVolumeRatio.__init__-39"><a href="#WetToCriticalVolumeRatio.__init__-39"><span class="linenos">39</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-</span><span id="WetToCriticalVolumeRatio.__init__-40"><a href="#WetToCriticalVolumeRatio.__init__-40"><span class="linenos">40</span></a>            <span class="n">builder</span><span class="p">,</span>
-</span><span id="WetToCriticalVolumeRatio.__init__-41"><a href="#WetToCriticalVolumeRatio.__init__-41"><span class="linenos">41</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">,</span>
-</span><span id="WetToCriticalVolumeRatio.__init__-42"><a href="#WetToCriticalVolumeRatio.__init__-42"><span class="linenos">42</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">),</span>
-</span><span id="WetToCriticalVolumeRatio.__init__-43"><a href="#WetToCriticalVolumeRatio.__init__-43"><span class="linenos">43</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatio.__init__-57"><a href="#WetToCriticalVolumeRatio.__init__-57"><span class="linenos">57</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-58"><a href="#WetToCriticalVolumeRatio.__init__-58"><span class="linenos">58</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-59"><a href="#WetToCriticalVolumeRatio.__init__-59"><span class="linenos">59</span></a>        <span class="n">builder</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-60"><a href="#WetToCriticalVolumeRatio.__init__-60"><span class="linenos">60</span></a>        <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-61"><a href="#WetToCriticalVolumeRatio.__init__-61"><span class="linenos">61</span></a>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-62"><a href="#WetToCriticalVolumeRatio.__init__-62"><span class="linenos">62</span></a>    <span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-63"><a href="#WetToCriticalVolumeRatio.__init__-63"><span class="linenos">63</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-64"><a href="#WetToCriticalVolumeRatio.__init__-64"><span class="linenos">64</span></a>            <span class="s2">&quot;critical volume&quot;</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-65"><a href="#WetToCriticalVolumeRatio.__init__-65"><span class="linenos">65</span></a>            <span class="o">+</span> <span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-66"><a href="#WetToCriticalVolumeRatio.__init__-66"><span class="linenos">66</span></a>                <span class="s2">&quot; neglecting temperature variations&quot;</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-67"><a href="#WetToCriticalVolumeRatio.__init__-67"><span class="linenos">67</span></a>                <span class="k">if</span> <span class="n">neglect_temperature_variations</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-68"><a href="#WetToCriticalVolumeRatio.__init__-68"><span class="linenos">68</span></a>                <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-69"><a href="#WetToCriticalVolumeRatio.__init__-69"><span class="linenos">69</span></a>            <span class="p">)</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-70"><a href="#WetToCriticalVolumeRatio.__init__-70"><span class="linenos">70</span></a>        <span class="p">)</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-71"><a href="#WetToCriticalVolumeRatio.__init__-71"><span class="linenos">71</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-72"><a href="#WetToCriticalVolumeRatio.__init__-72"><span class="linenos">72</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-73"><a href="#WetToCriticalVolumeRatio.__init__-73"><span class="linenos">73</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-74"><a href="#WetToCriticalVolumeRatio.__init__-74"><span class="linenos">74</span></a>            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-75"><a href="#WetToCriticalVolumeRatio.__init__-75"><span class="linenos">75</span></a>            <span class="n">dependencies</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">),</span>
+</span><span id="WetToCriticalVolumeRatio.__init__-76"><a href="#WetToCriticalVolumeRatio.__init__-76"><span class="linenos">76</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -473,8 +669,8 @@
 
     </div>
     <a class="headerlink" href="#WetToCriticalVolumeRatio.recalculate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatio.recalculate-45"><a href="#WetToCriticalVolumeRatio.recalculate-45"><span class="linenos">45</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="WetToCriticalVolumeRatio.recalculate-46"><a href="#WetToCriticalVolumeRatio.recalculate-46"><span class="linenos">46</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatio.recalculate-78"><a href="#WetToCriticalVolumeRatio.recalculate-78"><span class="linenos">78</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatio.recalculate-79"><a href="#WetToCriticalVolumeRatio.recalculate-79"><span class="linenos">79</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical_volume</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
 </span></pre></div>
 
 
@@ -501,6 +697,84 @@
                 <dd id="WetToCriticalVolumeRatio.allocate" class="function"><a href="../impl/attribute.html#Attribute.allocate">allocate</a></dd>
                 <dd id="WetToCriticalVolumeRatio.set_data" class="function"><a href="../impl/attribute.html#Attribute.set_data">set_data</a></dd>
                 <dd id="WetToCriticalVolumeRatio.get" class="function"><a href="../impl/attribute.html#Attribute.get">get</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
+                <section id="WetToCriticalVolumeRatioNeglectingTemperatureVariations">
+                            <input id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+                    <div class="decorator decorator-register_attribute">@register_attribute()</div>
+
+    <span class="def">class</span>
+    <span class="name">WetToCriticalVolumeRatioNeglectingTemperatureVariations</span><wbr>(<span class="base"><a href="#WetToCriticalVolumeRatio">WetToCriticalVolumeRatio</a></span>):
+
+                <label class="view-source-button" for="WetToCriticalVolumeRatioNeglectingTemperatureVariations-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-82"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-82"><span class="linenos">82</span></a><span class="nd">@register_attribute</span><span class="p">()</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-83"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-83"><span class="linenos">83</span></a><span class="k">class</span><span class="w"> </span><span class="nc">WetToCriticalVolumeRatioNeglectingTemperatureVariations</span><span class="p">(</span><span class="n">WetToCriticalVolumeRatio</span><span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-84"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-84"><span class="linenos">84</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-85"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-85"><span class="linenos">85</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-86"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-86"><span class="linenos">86</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-87"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-87"><span class="linenos">87</span></a>            <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-88"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-88"><span class="linenos">88</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio neglecting temperature variations&quot;</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations-89"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations-89"><span class="linenos">89</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            <div id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__" class="classattr">
+                                        <input id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">WetToCriticalVolumeRatioNeglectingTemperatureVariations</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">builder</span></span>)</span>
+
+                <label class="view-source-button" for="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-84"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-84"><span class="linenos">84</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-85"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-85"><span class="linenos">85</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-86"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-86"><span class="linenos">86</span></a>            <span class="n">builder</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-87"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-87"><span class="linenos">87</span></a>            <span class="n">neglect_temperature_variations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-88"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-88"><span class="linenos">88</span></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wet to critical volume ratio neglecting temperature variations&quot;</span><span class="p">,</span>
+</span><span id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-89"><a href="#WetToCriticalVolumeRatioNeglectingTemperatureVariations.__init__-89"><span class="linenos">89</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#WetToCriticalVolumeRatio">WetToCriticalVolumeRatio</a></dt>
+                                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.critical_volume" class="variable"><a href="#WetToCriticalVolumeRatio.critical_volume">critical_volume</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.volume" class="variable"><a href="#WetToCriticalVolumeRatio.volume">volume</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.recalculate" class="function"><a href="#WetToCriticalVolumeRatio.recalculate">recalculate</a></dd>
+
+            </div>
+            <div><dt><a href="../impl/derived_attribute.html#DerivedAttribute">PySDM.attributes.impl.derived_attribute.DerivedAttribute</a></dt>
+                                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.dependencies" class="variable"><a href="../impl/derived_attribute.html#DerivedAttribute.dependencies">dependencies</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.update" class="function"><a href="../impl/derived_attribute.html#DerivedAttribute.update">update</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.mark_updated" class="function"><a href="../impl/derived_attribute.html#DerivedAttribute.mark_updated">mark_updated</a></dd>
+
+            </div>
+            <div><dt><a href="../impl/attribute.html#Attribute">PySDM.attributes.impl.attribute.Attribute</a></dt>
+                                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.particulator" class="variable"><a href="../impl/attribute.html#Attribute.particulator">particulator</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.timestamp" class="variable"><a href="../impl/attribute.html#Attribute.timestamp">timestamp</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.data" class="variable"><a href="../impl/attribute.html#Attribute.data">data</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.dtype" class="variable"><a href="../impl/attribute.html#Attribute.dtype">dtype</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.n_vector_components" class="variable"><a href="../impl/attribute.html#Attribute.n_vector_components">n_vector_components</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.name" class="variable"><a href="../impl/attribute.html#Attribute.name">name</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.formulae" class="variable"><a href="../impl/attribute.html#Attribute.formulae">formulae</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.allocate" class="function"><a href="../impl/attribute.html#Attribute.allocate">allocate</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.set_data" class="function"><a href="../impl/attribute.html#Attribute.set_data">set_data</a></dd>
+                <dd id="WetToCriticalVolumeRatioNeglectingTemperatureVariations.get" class="function"><a href="../impl/attribute.html#Attribute.get">get</a></dd>
 
             </div>
                                 </dl>

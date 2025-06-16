@@ -75,6 +75,9 @@
                                 <a class="function" href="#ActivableFraction.__init__">ActivableFraction</a>
                         </li>
                         <li>
+                                <a class="variable" href="#ActivableFraction.filter_attr">filter_attr</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#ActivableFraction.register">register</a>
                         </li>
                         <li>
@@ -99,7 +102,7 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../products.html">products</a><wbr>.<a href="./../condensation.html">condensation</a><wbr>.activable_fraction    </h1>
 
-                        <div class="docstring"><p>fraction of particles with critical supersaturation lower than a given supersaturation
+                        <div class="docstring"><p>fraction of particles with critical saturation lower than a given saturation
  (passed as keyword argument while calling <code>get()</code>)</p>
 </div>
 
@@ -108,34 +111,45 @@
                         <label class="view-source-button" for="mod-activable_fraction-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">fraction of particles with critical supersaturation lower than a given supersaturation</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">fraction of particles with critical saturation lower than a given saturation</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd"> (passed as keyword argument while calling `get()`)</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.products.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">MomentProduct</span><span class="p">,</span> <span class="n">register_product</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.products.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">MomentProduct</span><span class="p">,</span> <span class="n">register_product</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="nd">@register_product</span><span class="p">()</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ActivableFraction</span><span class="p">(</span><span class="n">MomentProduct</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;critical supersaturation&quot;</span><span class="p">)</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="nd">@register_product</span><span class="p">()</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ActivableFraction</span><span class="p">(</span><span class="n">MomentProduct</span><span class="p">):</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_attr</span><span class="o">=</span><span class="s2">&quot;critical saturation&quot;</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span> <span class="o">=</span> <span class="n">filter_attr</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="n">s_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;S_max&quot;</span><span class="p">]</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>            <span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>            <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>            <span class="n">filter_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">s_max</span> <span class="o">/</span> <span class="mi">100</span><span class="p">),</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">filter_attr</span><span class="o">=</span><span class="s2">&quot;critical supersaturation&quot;</span><span class="p">,</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="p">)</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="n">frac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="n">frac</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">frac</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="p">)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;critical saturation&quot;</span><span class="p">):</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>            <span class="n">s_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;S_max&quot;</span><span class="p">]</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="k">assert</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">s_max</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">s_max</span> <span class="o">&lt;</span> <span class="mf">1.1</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>            <span class="n">filter_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s_max</span><span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">):</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>            <span class="n">filter_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>            <span class="k">assert</span> <span class="kc">False</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>            <span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="n">filter_range</span><span class="o">=</span><span class="n">filter_range</span><span class="p">,</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>            <span class="n">filter_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="p">,</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="n">frac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="n">frac</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="n">frac</span>
 </span></pre></div>
 
 
@@ -152,27 +166,37 @@
 
     </div>
     <a class="headerlink" href="#ActivableFraction"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivableFraction-10"><a href="#ActivableFraction-10"><span class="linenos">10</span></a><span class="nd">@register_product</span><span class="p">()</span>
-</span><span id="ActivableFraction-11"><a href="#ActivableFraction-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ActivableFraction</span><span class="p">(</span><span class="n">MomentProduct</span><span class="p">):</span>
-</span><span id="ActivableFraction-12"><a href="#ActivableFraction-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="ActivableFraction-13"><a href="#ActivableFraction-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
-</span><span id="ActivableFraction-14"><a href="#ActivableFraction-14"><span class="linenos">14</span></a>
-</span><span id="ActivableFraction-15"><a href="#ActivableFraction-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="ActivableFraction-16"><a href="#ActivableFraction-16"><span class="linenos">16</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
-</span><span id="ActivableFraction-17"><a href="#ActivableFraction-17"><span class="linenos">17</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;critical supersaturation&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivableFraction-11"><a href="#ActivableFraction-11"><span class="linenos">11</span></a><span class="nd">@register_product</span><span class="p">()</span>
+</span><span id="ActivableFraction-12"><a href="#ActivableFraction-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ActivableFraction</span><span class="p">(</span><span class="n">MomentProduct</span><span class="p">):</span>
+</span><span id="ActivableFraction-13"><a href="#ActivableFraction-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="ActivableFraction-14"><a href="#ActivableFraction-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_attr</span><span class="o">=</span><span class="s2">&quot;critical saturation&quot;</span>
+</span><span id="ActivableFraction-15"><a href="#ActivableFraction-15"><span class="linenos">15</span></a>    <span class="p">):</span>
+</span><span id="ActivableFraction-16"><a href="#ActivableFraction-16"><span class="linenos">16</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+</span><span id="ActivableFraction-17"><a href="#ActivableFraction-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span> <span class="o">=</span> <span class="n">filter_attr</span>
 </span><span id="ActivableFraction-18"><a href="#ActivableFraction-18"><span class="linenos">18</span></a>
-</span><span id="ActivableFraction-19"><a href="#ActivableFraction-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="ActivableFraction-20"><a href="#ActivableFraction-20"><span class="linenos">20</span></a>        <span class="n">s_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;S_max&quot;</span><span class="p">]</span>
-</span><span id="ActivableFraction-21"><a href="#ActivableFraction-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
-</span><span id="ActivableFraction-22"><a href="#ActivableFraction-22"><span class="linenos">22</span></a>            <span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span>
-</span><span id="ActivableFraction-23"><a href="#ActivableFraction-23"><span class="linenos">23</span></a>            <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-</span><span id="ActivableFraction-24"><a href="#ActivableFraction-24"><span class="linenos">24</span></a>            <span class="n">filter_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">s_max</span> <span class="o">/</span> <span class="mi">100</span><span class="p">),</span>
-</span><span id="ActivableFraction-25"><a href="#ActivableFraction-25"><span class="linenos">25</span></a>            <span class="n">filter_attr</span><span class="o">=</span><span class="s2">&quot;critical supersaturation&quot;</span><span class="p">,</span>
-</span><span id="ActivableFraction-26"><a href="#ActivableFraction-26"><span class="linenos">26</span></a>        <span class="p">)</span>
-</span><span id="ActivableFraction-27"><a href="#ActivableFraction-27"><span class="linenos">27</span></a>        <span class="n">frac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</span><span id="ActivableFraction-28"><a href="#ActivableFraction-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</span><span id="ActivableFraction-29"><a href="#ActivableFraction-29"><span class="linenos">29</span></a>        <span class="n">frac</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span>
-</span><span id="ActivableFraction-30"><a href="#ActivableFraction-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">frac</span>
+</span><span id="ActivableFraction-19"><a href="#ActivableFraction-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="ActivableFraction-20"><a href="#ActivableFraction-20"><span class="linenos">20</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="ActivableFraction-21"><a href="#ActivableFraction-21"><span class="linenos">21</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="p">)</span>
+</span><span id="ActivableFraction-22"><a href="#ActivableFraction-22"><span class="linenos">22</span></a>
+</span><span id="ActivableFraction-23"><a href="#ActivableFraction-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="ActivableFraction-24"><a href="#ActivableFraction-24"><span class="linenos">24</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;critical saturation&quot;</span><span class="p">):</span>
+</span><span id="ActivableFraction-25"><a href="#ActivableFraction-25"><span class="linenos">25</span></a>            <span class="n">s_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;S_max&quot;</span><span class="p">]</span>
+</span><span id="ActivableFraction-26"><a href="#ActivableFraction-26"><span class="linenos">26</span></a>            <span class="k">assert</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">s_max</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">s_max</span> <span class="o">&lt;</span> <span class="mf">1.1</span>
+</span><span id="ActivableFraction-27"><a href="#ActivableFraction-27"><span class="linenos">27</span></a>            <span class="n">filter_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">s_max</span><span class="p">)</span>
+</span><span id="ActivableFraction-28"><a href="#ActivableFraction-28"><span class="linenos">28</span></a>        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;wet to critical volume ratio&quot;</span><span class="p">):</span>
+</span><span id="ActivableFraction-29"><a href="#ActivableFraction-29"><span class="linenos">29</span></a>            <span class="n">filter_range</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+</span><span id="ActivableFraction-30"><a href="#ActivableFraction-30"><span class="linenos">30</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="ActivableFraction-31"><a href="#ActivableFraction-31"><span class="linenos">31</span></a>            <span class="k">assert</span> <span class="kc">False</span>
+</span><span id="ActivableFraction-32"><a href="#ActivableFraction-32"><span class="linenos">32</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span>
+</span><span id="ActivableFraction-33"><a href="#ActivableFraction-33"><span class="linenos">33</span></a>            <span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span>
+</span><span id="ActivableFraction-34"><a href="#ActivableFraction-34"><span class="linenos">34</span></a>            <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+</span><span id="ActivableFraction-35"><a href="#ActivableFraction-35"><span class="linenos">35</span></a>            <span class="n">filter_range</span><span class="o">=</span><span class="n">filter_range</span><span class="p">,</span>
+</span><span id="ActivableFraction-36"><a href="#ActivableFraction-36"><span class="linenos">36</span></a>            <span class="n">filter_attr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="p">,</span>
+</span><span id="ActivableFraction-37"><a href="#ActivableFraction-37"><span class="linenos">37</span></a>        <span class="p">)</span>
+</span><span id="ActivableFraction-38"><a href="#ActivableFraction-38"><span class="linenos">38</span></a>        <span class="n">frac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="ActivableFraction-39"><a href="#ActivableFraction-39"><span class="linenos">39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_download_moment_to_buffer</span><span class="p">(</span><span class="n">attr</span><span class="o">=</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="ActivableFraction-40"><a href="#ActivableFraction-40"><span class="linenos">40</span></a>        <span class="n">frac</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span>
+</span><span id="ActivableFraction-41"><a href="#ActivableFraction-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="n">frac</span>
 </span></pre></div>
 
 
@@ -185,17 +209,31 @@ inheritance.</p>
                                         <input id="ActivableFraction.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">ActivableFraction</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;dimensionless&#39;</span>, </span><span class="param"><span class="n">name</span><span class="o">=</span><span class="kc">None</span></span>)</span>
+        <span class="name">ActivableFraction</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">unit</span><span class="o">=</span><span class="s1">&#39;dimensionless&#39;</span>, </span><span class="param"><span class="n">name</span><span class="o">=</span><span class="kc">None</span>, </span><span class="param"><span class="n">filter_attr</span><span class="o">=</span><span class="s1">&#39;critical saturation&#39;</span></span>)</span>
 
                 <label class="view-source-button" for="ActivableFraction.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#ActivableFraction.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivableFraction.__init__-12"><a href="#ActivableFraction.__init__-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="ActivableFraction.__init__-13"><a href="#ActivableFraction.__init__-13"><span class="linenos">13</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivableFraction.__init__-13"><a href="#ActivableFraction.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="ActivableFraction.__init__-14"><a href="#ActivableFraction.__init__-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;dimensionless&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_attr</span><span class="o">=</span><span class="s2">&quot;critical saturation&quot;</span>
+</span><span id="ActivableFraction.__init__-15"><a href="#ActivableFraction.__init__-15"><span class="linenos">15</span></a>    <span class="p">):</span>
+</span><span id="ActivableFraction.__init__-16"><a href="#ActivableFraction.__init__-16"><span class="linenos">16</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="n">unit</span><span class="p">)</span>
+</span><span id="ActivableFraction.__init__-17"><a href="#ActivableFraction.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span> <span class="o">=</span> <span class="n">filter_attr</span>
 </span></pre></div>
 
 
+    
+
+                            </div>
+                            <div id="ActivableFraction.filter_attr" class="classattr">
+                                <div class="attr variable">
+            <span class="name">filter_attr</span>
+
+        
+    </div>
+    <a class="headerlink" href="#ActivableFraction.filter_attr"></a>
+    
     
 
                             </div>
@@ -210,9 +248,9 @@ inheritance.</p>
 
     </div>
     <a class="headerlink" href="#ActivableFraction.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivableFraction.register-15"><a href="#ActivableFraction.register-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="ActivableFraction.register-16"><a href="#ActivableFraction.register-16"><span class="linenos">16</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
-</span><span id="ActivableFraction.register-17"><a href="#ActivableFraction.register-17"><span class="linenos">17</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;critical supersaturation&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ActivableFraction.register-19"><a href="#ActivableFraction.register-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="ActivableFraction.register-20"><a href="#ActivableFraction.register-20"><span class="linenos">20</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">builder</span><span class="p">)</span>
+</span><span id="ActivableFraction.register-21"><a href="#ActivableFraction.register-21"><span class="linenos">21</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_attr</span><span class="p">)</span>
 </span></pre></div>
 
 
