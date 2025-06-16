@@ -10,11 +10,11 @@ class Constant:  # pylint: disable=too-few-public-methods
         assert np.isfinite(const.J_HOM)
 
     @staticmethod
-    def d_a_w_ice_within_range(const, da_w_ice):
+    def d_a_w_ice_within_range(const, da_w_ice):  # pylint: disable=unused-argument
         return True
 
     @staticmethod
-    def d_a_w_ice_maximum(const, da_w_ice):
+    def d_a_w_ice_maximum(const, da_w_ice):  # pylint: disable=unused-argument
         return da_w_ice
 
     @staticmethod
