@@ -36,3 +36,9 @@ class Sum:
 
     def percentiles(self, cdf_values):
         return self.inverse_cdf(cdf_values)
+    
+    def pdf(self, arg):
+        return self.size_distribution(arg) / self.norm_factor
+
+    def cdf(self, arg):
+        return self.cumulative(arg) / self.norm_factor
