@@ -25,6 +25,7 @@ TEST_SUITES = {
         "Alpert_and_Knopf_2016",
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
+        "Spichtinger_et_al_2023",
     ],
     "isotopes": [
         "Bolot_et_al_2013",
@@ -46,6 +47,7 @@ TEST_SUITES = {
     "condensation_a": [
         "Lowe_et_al_2019",
         "Singer_Ward",
+        "Rogers_1975",
     ],
     "condensation_b": [
         "Abdul_Razzak_Ghan_2000",
@@ -57,7 +59,6 @@ TEST_SUITES = {
         "Grabowski_and_Pawlowska_2023",
         "Jensen_and_Nugent_2017",
         "Abade_and_Albuquerque_2024",
-        "Rogers_1975",
     ],
     "coagulation": ["Berry_1967", "Shima_et_al_2009"],
     "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
