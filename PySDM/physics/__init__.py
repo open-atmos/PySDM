@@ -27,6 +27,7 @@ from . import (
     fragmentation_function,
     freezing_temperature_spectrum,
     heterogeneous_ice_nucleation_rate,
+    homogeneous_ice_nucleation_rate,
     hydrostatics,
     hygroscopicity,
     impl,
