@@ -129,6 +129,9 @@
                                 <a class="function" href="#Trivia.unfrozen_and_saturated">unfrozen_and_saturated</a>
                         </li>
                         <li>
+                                <a class="function" href="#Trivia.unfrozen_and_ice_saturated">unfrozen_and_ice_saturated</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Trivia.frozen_and_above_freezing_point">frozen_and_above_freezing_point</a>
                         </li>
                         <li>
@@ -278,79 +281,83 @@
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity</span> <span class="o">&gt;</span> <span class="mi">1</span>
 </span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>
 </span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">unfrozen_and_ice_saturated</span><span class="p">(</span><span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">):</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity_ice</span> <span class="o">&gt;</span> <span class="mi">1</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
 </span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>            <span class="mi">2</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>                    <span class="o">/</span> <span class="mi">2</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>                <span class="p">)</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>                <span class="o">/</span> <span class="mi">3</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>            <span class="p">)</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="p">)</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>            <span class="mi">2</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>                    <span class="o">/</span> <span class="mi">2</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>                <span class="p">)</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>                <span class="o">/</span> <span class="mi">3</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>            <span class="p">)</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="p">)</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
 </span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>
 </span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
 </span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">        where:</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="sd">        where:</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 </span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>
 </span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
 </span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>
 </span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
 </span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>
 </span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
 </span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a>
 </span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
 </span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
 </span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>
 </span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+</span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="sd">        process with a constant rate `r`</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -443,79 +450,83 @@
 </span><span id="Trivia-85"><a href="#Trivia-85"><span class="linenos"> 85</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity</span> <span class="o">&gt;</span> <span class="mi">1</span>
 </span><span id="Trivia-86"><a href="#Trivia-86"><span class="linenos"> 86</span></a>
 </span><span id="Trivia-87"><a href="#Trivia-87"><span class="linenos"> 87</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-88"><a href="#Trivia-88"><span class="linenos"> 88</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="Trivia-89"><a href="#Trivia-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-88"><a href="#Trivia-88"><span class="linenos"> 88</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">unfrozen_and_ice_saturated</span><span class="p">(</span><span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">):</span>
+</span><span id="Trivia-89"><a href="#Trivia-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity_ice</span> <span class="o">&gt;</span> <span class="mi">1</span>
 </span><span id="Trivia-90"><a href="#Trivia-90"><span class="linenos"> 90</span></a>
 </span><span id="Trivia-91"><a href="#Trivia-91"><span class="linenos"> 91</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-92"><a href="#Trivia-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-</span><span id="Trivia-93"><a href="#Trivia-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="Trivia-94"><a href="#Trivia-94"><span class="linenos"> 94</span></a>            <span class="mi">2</span>
-</span><span id="Trivia-95"><a href="#Trivia-95"><span class="linenos"> 95</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
-</span><span id="Trivia-96"><a href="#Trivia-96"><span class="linenos"> 96</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
-</span><span id="Trivia-97"><a href="#Trivia-97"><span class="linenos"> 97</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
-</span><span id="Trivia-98"><a href="#Trivia-98"><span class="linenos"> 98</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-</span><span id="Trivia-99"><a href="#Trivia-99"><span class="linenos"> 99</span></a>                    <span class="o">/</span> <span class="mi">2</span>
-</span><span id="Trivia-100"><a href="#Trivia-100"><span class="linenos">100</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
-</span><span id="Trivia-101"><a href="#Trivia-101"><span class="linenos">101</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
-</span><span id="Trivia-102"><a href="#Trivia-102"><span class="linenos">102</span></a>                <span class="p">)</span>
-</span><span id="Trivia-103"><a href="#Trivia-103"><span class="linenos">103</span></a>                <span class="o">/</span> <span class="mi">3</span>
-</span><span id="Trivia-104"><a href="#Trivia-104"><span class="linenos">104</span></a>            <span class="p">)</span>
-</span><span id="Trivia-105"><a href="#Trivia-105"><span class="linenos">105</span></a>        <span class="p">)</span>
-</span><span id="Trivia-106"><a href="#Trivia-106"><span class="linenos">106</span></a>
-</span><span id="Trivia-107"><a href="#Trivia-107"><span class="linenos">107</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-108"><a href="#Trivia-108"><span class="linenos">108</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
-</span><span id="Trivia-109"><a href="#Trivia-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
+</span><span id="Trivia-92"><a href="#Trivia-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="Trivia-93"><a href="#Trivia-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-94"><a href="#Trivia-94"><span class="linenos"> 94</span></a>
+</span><span id="Trivia-95"><a href="#Trivia-95"><span class="linenos"> 95</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-96"><a href="#Trivia-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="Trivia-97"><a href="#Trivia-97"><span class="linenos"> 97</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="Trivia-98"><a href="#Trivia-98"><span class="linenos"> 98</span></a>            <span class="mi">2</span>
+</span><span id="Trivia-99"><a href="#Trivia-99"><span class="linenos"> 99</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
+</span><span id="Trivia-100"><a href="#Trivia-100"><span class="linenos">100</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
+</span><span id="Trivia-101"><a href="#Trivia-101"><span class="linenos">101</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
+</span><span id="Trivia-102"><a href="#Trivia-102"><span class="linenos">102</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span id="Trivia-103"><a href="#Trivia-103"><span class="linenos">103</span></a>                    <span class="o">/</span> <span class="mi">2</span>
+</span><span id="Trivia-104"><a href="#Trivia-104"><span class="linenos">104</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
+</span><span id="Trivia-105"><a href="#Trivia-105"><span class="linenos">105</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
+</span><span id="Trivia-106"><a href="#Trivia-106"><span class="linenos">106</span></a>                <span class="p">)</span>
+</span><span id="Trivia-107"><a href="#Trivia-107"><span class="linenos">107</span></a>                <span class="o">/</span> <span class="mi">3</span>
+</span><span id="Trivia-108"><a href="#Trivia-108"><span class="linenos">108</span></a>            <span class="p">)</span>
+</span><span id="Trivia-109"><a href="#Trivia-109"><span class="linenos">109</span></a>        <span class="p">)</span>
 </span><span id="Trivia-110"><a href="#Trivia-110"><span class="linenos">110</span></a>
 </span><span id="Trivia-111"><a href="#Trivia-111"><span class="linenos">111</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-112"><a href="#Trivia-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
-</span><span id="Trivia-113"><a href="#Trivia-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="Trivia-112"><a href="#Trivia-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia-113"><a href="#Trivia-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
 </span><span id="Trivia-114"><a href="#Trivia-114"><span class="linenos">114</span></a>
 </span><span id="Trivia-115"><a href="#Trivia-115"><span class="linenos">115</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-116"><a href="#Trivia-116"><span class="linenos">116</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
-</span><span id="Trivia-117"><a href="#Trivia-117"><span class="linenos">117</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="Trivia-116"><a href="#Trivia-116"><span class="linenos">116</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia-117"><a href="#Trivia-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
 </span><span id="Trivia-118"><a href="#Trivia-118"><span class="linenos">118</span></a>
-</span><span id="Trivia-119"><a href="#Trivia-119"><span class="linenos">119</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
-</span><span id="Trivia-120"><a href="#Trivia-120"><span class="linenos">120</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
-</span><span id="Trivia-121"><a href="#Trivia-121"><span class="linenos">121</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
-</span><span id="Trivia-122"><a href="#Trivia-122"><span class="linenos">122</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
-</span><span id="Trivia-123"><a href="#Trivia-123"><span class="linenos">123</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
-</span><span id="Trivia-124"><a href="#Trivia-124"><span class="linenos">124</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
-</span><span id="Trivia-125"><a href="#Trivia-125"><span class="linenos">125</span></a><span class="sd">        where:</span>
-</span><span id="Trivia-126"><a href="#Trivia-126"><span class="linenos">126</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
-</span><span id="Trivia-127"><a href="#Trivia-127"><span class="linenos">127</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Trivia-128"><a href="#Trivia-128"><span class="linenos">128</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span id="Trivia-129"><a href="#Trivia-129"><span class="linenos">129</span></a>
-</span><span id="Trivia-130"><a href="#Trivia-130"><span class="linenos">130</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-131"><a href="#Trivia-131"><span class="linenos">131</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
-</span><span id="Trivia-132"><a href="#Trivia-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+</span><span id="Trivia-119"><a href="#Trivia-119"><span class="linenos">119</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-120"><a href="#Trivia-120"><span class="linenos">120</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
+</span><span id="Trivia-121"><a href="#Trivia-121"><span class="linenos">121</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="Trivia-122"><a href="#Trivia-122"><span class="linenos">122</span></a>
+</span><span id="Trivia-123"><a href="#Trivia-123"><span class="linenos">123</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
+</span><span id="Trivia-124"><a href="#Trivia-124"><span class="linenos">124</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
+</span><span id="Trivia-125"><a href="#Trivia-125"><span class="linenos">125</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
+</span><span id="Trivia-126"><a href="#Trivia-126"><span class="linenos">126</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
+</span><span id="Trivia-127"><a href="#Trivia-127"><span class="linenos">127</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
+</span><span id="Trivia-128"><a href="#Trivia-128"><span class="linenos">128</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
+</span><span id="Trivia-129"><a href="#Trivia-129"><span class="linenos">129</span></a><span class="sd">        where:</span>
+</span><span id="Trivia-130"><a href="#Trivia-130"><span class="linenos">130</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
+</span><span id="Trivia-131"><a href="#Trivia-131"><span class="linenos">131</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-132"><a href="#Trivia-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 </span><span id="Trivia-133"><a href="#Trivia-133"><span class="linenos">133</span></a>
 </span><span id="Trivia-134"><a href="#Trivia-134"><span class="linenos">134</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-135"><a href="#Trivia-135"><span class="linenos">135</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
-</span><span id="Trivia-136"><a href="#Trivia-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
+</span><span id="Trivia-135"><a href="#Trivia-135"><span class="linenos">135</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
+</span><span id="Trivia-136"><a href="#Trivia-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
 </span><span id="Trivia-137"><a href="#Trivia-137"><span class="linenos">137</span></a>
 </span><span id="Trivia-138"><a href="#Trivia-138"><span class="linenos">138</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-139"><a href="#Trivia-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
-</span><span id="Trivia-140"><a href="#Trivia-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
+</span><span id="Trivia-139"><a href="#Trivia-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
+</span><span id="Trivia-140"><a href="#Trivia-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
 </span><span id="Trivia-141"><a href="#Trivia-141"><span class="linenos">141</span></a>
 </span><span id="Trivia-142"><a href="#Trivia-142"><span class="linenos">142</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-143"><a href="#Trivia-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
-</span><span id="Trivia-144"><a href="#Trivia-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+</span><span id="Trivia-143"><a href="#Trivia-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
+</span><span id="Trivia-144"><a href="#Trivia-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
 </span><span id="Trivia-145"><a href="#Trivia-145"><span class="linenos">145</span></a>
 </span><span id="Trivia-146"><a href="#Trivia-146"><span class="linenos">146</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-147"><a href="#Trivia-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
-</span><span id="Trivia-148"><a href="#Trivia-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-147"><a href="#Trivia-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
+</span><span id="Trivia-148"><a href="#Trivia-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span><span id="Trivia-149"><a href="#Trivia-149"><span class="linenos">149</span></a>
 </span><span id="Trivia-150"><a href="#Trivia-150"><span class="linenos">150</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-151"><a href="#Trivia-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
-</span><span id="Trivia-152"><a href="#Trivia-152"><span class="linenos">152</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-151"><a href="#Trivia-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
+</span><span id="Trivia-152"><a href="#Trivia-152"><span class="linenos">152</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
 </span><span id="Trivia-153"><a href="#Trivia-153"><span class="linenos">153</span></a>
 </span><span id="Trivia-154"><a href="#Trivia-154"><span class="linenos">154</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia-155"><a href="#Trivia-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="Trivia-156"><a href="#Trivia-156"><span class="linenos">156</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
-</span><span id="Trivia-157"><a href="#Trivia-157"><span class="linenos">157</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
-</span><span id="Trivia-158"><a href="#Trivia-158"><span class="linenos">158</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="Trivia-159"><a href="#Trivia-159"><span class="linenos">159</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Trivia-160"><a href="#Trivia-160"><span class="linenos">160</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+</span><span id="Trivia-155"><a href="#Trivia-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
+</span><span id="Trivia-156"><a href="#Trivia-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+</span><span id="Trivia-157"><a href="#Trivia-157"><span class="linenos">157</span></a>
+</span><span id="Trivia-158"><a href="#Trivia-158"><span class="linenos">158</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-159"><a href="#Trivia-159"><span class="linenos">159</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+</span><span id="Trivia-160"><a href="#Trivia-160"><span class="linenos">160</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="Trivia-161"><a href="#Trivia-161"><span class="linenos">161</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
+</span><span id="Trivia-162"><a href="#Trivia-162"><span class="linenos">162</span></a><span class="sd">        process with a constant rate `r`</span>
+</span><span id="Trivia-163"><a href="#Trivia-163"><span class="linenos">163</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-164"><a href="#Trivia-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -917,6 +928,27 @@
     
 
                             </div>
+                            <div id="Trivia.unfrozen_and_ice_saturated" class="classattr">
+                                        <input id="Trivia.unfrozen_and_ice_saturated-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">unfrozen_and_ice_saturated</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">signed_water_mass</span>, </span><span class="param"><span class="n">relative_humidity_ice</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.unfrozen_and_ice_saturated-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.unfrozen_and_ice_saturated"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.unfrozen_and_ice_saturated-87"><a href="#Trivia.unfrozen_and_ice_saturated-87"><span class="linenos">87</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.unfrozen_and_ice_saturated-88"><a href="#Trivia.unfrozen_and_ice_saturated-88"><span class="linenos">88</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">unfrozen_and_ice_saturated</span><span class="p">(</span><span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">):</span>
+</span><span id="Trivia.unfrozen_and_ice_saturated-89"><a href="#Trivia.unfrozen_and_ice_saturated-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">relative_humidity_ice</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
                             <div id="Trivia.frozen_and_above_freezing_point" class="classattr">
                                         <input id="Trivia.frozen_and_above_freezing_point-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -929,9 +961,9 @@
 
     </div>
     <a class="headerlink" href="#Trivia.frozen_and_above_freezing_point"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.frozen_and_above_freezing_point-87"><a href="#Trivia.frozen_and_above_freezing_point-87"><span class="linenos">87</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.frozen_and_above_freezing_point-88"><a href="#Trivia.frozen_and_above_freezing_point-88"><span class="linenos">88</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="Trivia.frozen_and_above_freezing_point-89"><a href="#Trivia.frozen_and_above_freezing_point-89"><span class="linenos">89</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.frozen_and_above_freezing_point-91"><a href="#Trivia.frozen_and_above_freezing_point-91"><span class="linenos">91</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.frozen_and_above_freezing_point-92"><a href="#Trivia.frozen_and_above_freezing_point-92"><span class="linenos">92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">frozen_and_above_freezing_point</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
+</span><span id="Trivia.frozen_and_above_freezing_point-93"><a href="#Trivia.frozen_and_above_freezing_point-93"><span class="linenos">93</span></a>        <span class="k">return</span> <span class="n">signed_water_mass</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">temperature</span> <span class="o">&gt;</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
 </span></pre></div>
 
 
@@ -950,21 +982,21 @@
 
     </div>
     <a class="headerlink" href="#Trivia.erfinv_approx"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.erfinv_approx-91"><a href="#Trivia.erfinv_approx-91"><span class="linenos"> 91</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.erfinv_approx-92"><a href="#Trivia.erfinv_approx-92"><span class="linenos"> 92</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
-</span><span id="Trivia.erfinv_approx-93"><a href="#Trivia.erfinv_approx-93"><span class="linenos"> 93</span></a>        <span class="k">return</span> <span class="p">(</span>
-</span><span id="Trivia.erfinv_approx-94"><a href="#Trivia.erfinv_approx-94"><span class="linenos"> 94</span></a>            <span class="mi">2</span>
-</span><span id="Trivia.erfinv_approx-95"><a href="#Trivia.erfinv_approx-95"><span class="linenos"> 95</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
-</span><span id="Trivia.erfinv_approx-96"><a href="#Trivia.erfinv_approx-96"><span class="linenos"> 96</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
-</span><span id="Trivia.erfinv_approx-97"><a href="#Trivia.erfinv_approx-97"><span class="linenos"> 97</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
-</span><span id="Trivia.erfinv_approx-98"><a href="#Trivia.erfinv_approx-98"><span class="linenos"> 98</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-</span><span id="Trivia.erfinv_approx-99"><a href="#Trivia.erfinv_approx-99"><span class="linenos"> 99</span></a>                    <span class="o">/</span> <span class="mi">2</span>
-</span><span id="Trivia.erfinv_approx-100"><a href="#Trivia.erfinv_approx-100"><span class="linenos">100</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
-</span><span id="Trivia.erfinv_approx-101"><a href="#Trivia.erfinv_approx-101"><span class="linenos">101</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
-</span><span id="Trivia.erfinv_approx-102"><a href="#Trivia.erfinv_approx-102"><span class="linenos">102</span></a>                <span class="p">)</span>
-</span><span id="Trivia.erfinv_approx-103"><a href="#Trivia.erfinv_approx-103"><span class="linenos">103</span></a>                <span class="o">/</span> <span class="mi">3</span>
-</span><span id="Trivia.erfinv_approx-104"><a href="#Trivia.erfinv_approx-104"><span class="linenos">104</span></a>            <span class="p">)</span>
-</span><span id="Trivia.erfinv_approx-105"><a href="#Trivia.erfinv_approx-105"><span class="linenos">105</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.erfinv_approx-95"><a href="#Trivia.erfinv_approx-95"><span class="linenos"> 95</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.erfinv_approx-96"><a href="#Trivia.erfinv_approx-96"><span class="linenos"> 96</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">erfinv_approx</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="Trivia.erfinv_approx-97"><a href="#Trivia.erfinv_approx-97"><span class="linenos"> 97</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="Trivia.erfinv_approx-98"><a href="#Trivia.erfinv_approx-98"><span class="linenos"> 98</span></a>            <span class="mi">2</span>
+</span><span id="Trivia.erfinv_approx-99"><a href="#Trivia.erfinv_approx-99"><span class="linenos"> 99</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-100"><a href="#Trivia.erfinv_approx-100"><span class="linenos">100</span></a>            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sinh</span><span class="p">(</span>
+</span><span id="Trivia.erfinv_approx-101"><a href="#Trivia.erfinv_approx-101"><span class="linenos">101</span></a>                <span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span>
+</span><span id="Trivia.erfinv_approx-102"><a href="#Trivia.erfinv_approx-102"><span class="linenos">102</span></a>                    <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-103"><a href="#Trivia.erfinv_approx-103"><span class="linenos">103</span></a>                    <span class="o">/</span> <span class="mi">2</span>
+</span><span id="Trivia.erfinv_approx-104"><a href="#Trivia.erfinv_approx-104"><span class="linenos">104</span></a>                    <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_b</span>
+</span><span id="Trivia.erfinv_approx-105"><a href="#Trivia.erfinv_approx-105"><span class="linenos">105</span></a>                    <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">VEDDER_1987_A</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_AND_A_HALF</span><span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-106"><a href="#Trivia.erfinv_approx-106"><span class="linenos">106</span></a>                <span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-107"><a href="#Trivia.erfinv_approx-107"><span class="linenos">107</span></a>                <span class="o">/</span> <span class="mi">3</span>
+</span><span id="Trivia.erfinv_approx-108"><a href="#Trivia.erfinv_approx-108"><span class="linenos">108</span></a>            <span class="p">)</span>
+</span><span id="Trivia.erfinv_approx-109"><a href="#Trivia.erfinv_approx-109"><span class="linenos">109</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -983,9 +1015,9 @@
 
     </div>
     <a class="headerlink" href="#Trivia.isotopic_delta_2_ratio"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_delta_2_ratio-107"><a href="#Trivia.isotopic_delta_2_ratio-107"><span class="linenos">107</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.isotopic_delta_2_ratio-108"><a href="#Trivia.isotopic_delta_2_ratio-108"><span class="linenos">108</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
-</span><span id="Trivia.isotopic_delta_2_ratio-109"><a href="#Trivia.isotopic_delta_2_ratio-109"><span class="linenos">109</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_delta_2_ratio-111"><a href="#Trivia.isotopic_delta_2_ratio-111"><span class="linenos">111</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.isotopic_delta_2_ratio-112"><a href="#Trivia.isotopic_delta_2_ratio-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_delta_2_ratio</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia.isotopic_delta_2_ratio-113"><a href="#Trivia.isotopic_delta_2_ratio-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">delta</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">reference_ratio</span>
 </span></pre></div>
 
 
@@ -1004,9 +1036,9 @@
 
     </div>
     <a class="headerlink" href="#Trivia.isotopic_ratio_2_delta"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_ratio_2_delta-111"><a href="#Trivia.isotopic_ratio_2_delta-111"><span class="linenos">111</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.isotopic_ratio_2_delta-112"><a href="#Trivia.isotopic_ratio_2_delta-112"><span class="linenos">112</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
-</span><span id="Trivia.isotopic_ratio_2_delta-113"><a href="#Trivia.isotopic_ratio_2_delta-113"><span class="linenos">113</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_ratio_2_delta-115"><a href="#Trivia.isotopic_ratio_2_delta-115"><span class="linenos">115</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.isotopic_ratio_2_delta-116"><a href="#Trivia.isotopic_ratio_2_delta-116"><span class="linenos">116</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_ratio_2_delta</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="n">reference_ratio</span><span class="p">):</span>
+</span><span id="Trivia.isotopic_ratio_2_delta-117"><a href="#Trivia.isotopic_ratio_2_delta-117"><span class="linenos">117</span></a>        <span class="k">return</span> <span class="n">ratio</span> <span class="o">/</span> <span class="n">reference_ratio</span> <span class="o">-</span> <span class="mi">1</span>
 </span></pre></div>
 
 
@@ -1025,20 +1057,20 @@
 
     </div>
     <a class="headerlink" href="#Trivia.isotopic_enrichment_to_delta_SMOW"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-115"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-115"><span class="linenos">115</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-116"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-116"><span class="linenos">116</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-117"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-117"><span class="linenos">117</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-118"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-118"><span class="linenos">118</span></a>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-119"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-119"><span class="linenos">119</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-120"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-120"><span class="linenos">120</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-121"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-121"><span class="linenos">121</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-122"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-122"><span class="linenos">122</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-123"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-123"><span class="linenos">123</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-124"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-124"><span class="linenos">124</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-125"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-125"><span class="linenos">125</span></a><span class="sd">        where:</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-126"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-126"><span class="linenos">126</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-127"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-127"><span class="linenos">127</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-128"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-128"><span class="linenos">128</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-119"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-119"><span class="linenos">119</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-120"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-120"><span class="linenos">120</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">isotopic_enrichment_to_delta_SMOW</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">delta_0_SMOW</span><span class="p">):</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-121"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-121"><span class="linenos">121</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;(see also eq. 10 in Pierchala et al. 2022)</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-122"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-122"><span class="linenos">122</span></a>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-123"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-123"><span class="linenos">123</span></a><span class="sd">        conversion from E to delta_R_SMOW with:</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-124"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-124"><span class="linenos">124</span></a><span class="sd">          δ_R/SMOW = R / R_SMOW - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-125"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-125"><span class="linenos">125</span></a><span class="sd">          E = δ_R/R0 = R / R0 - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-126"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-126"><span class="linenos">126</span></a><span class="sd">        and the sought formula (the quantity used to define d-excess, etc.) is:</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-127"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-127"><span class="linenos">127</span></a><span class="sd">          δ_R/SMOW(E) = (E + 1) * R_0 / R_SMOW - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-128"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-128"><span class="linenos">128</span></a><span class="sd">                      = (E + 1) * (δ_R0/SMOW + 1) - 1</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-129"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-129"><span class="linenos">129</span></a><span class="sd">        where:</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-130"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-130"><span class="linenos">130</span></a><span class="sd">          δ_R0/SMOW is the initial SMOW-delta in the experiment</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-131"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-131"><span class="linenos">131</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.isotopic_enrichment_to_delta_SMOW-132"><a href="#Trivia.isotopic_enrichment_to_delta_SMOW-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">delta_0_SMOW</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 </span></pre></div>
 
 
@@ -1068,9 +1100,9 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.mixing_ratio_to_specific_content"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.mixing_ratio_to_specific_content-130"><a href="#Trivia.mixing_ratio_to_specific_content-130"><span class="linenos">130</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.mixing_ratio_to_specific_content-131"><a href="#Trivia.mixing_ratio_to_specific_content-131"><span class="linenos">131</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
-</span><span id="Trivia.mixing_ratio_to_specific_content-132"><a href="#Trivia.mixing_ratio_to_specific_content-132"><span class="linenos">132</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.mixing_ratio_to_specific_content-134"><a href="#Trivia.mixing_ratio_to_specific_content-134"><span class="linenos">134</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.mixing_ratio_to_specific_content-135"><a href="#Trivia.mixing_ratio_to_specific_content-135"><span class="linenos">135</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">mixing_ratio_to_specific_content</span><span class="p">(</span><span class="n">mixing_ratio</span><span class="p">):</span>
+</span><span id="Trivia.mixing_ratio_to_specific_content-136"><a href="#Trivia.mixing_ratio_to_specific_content-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="n">mixing_ratio</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">mixing_ratio</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1089,9 +1121,9 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.dn_dlogr"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.dn_dlogr-134"><a href="#Trivia.dn_dlogr-134"><span class="linenos">134</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.dn_dlogr-135"><a href="#Trivia.dn_dlogr-135"><span class="linenos">135</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
-</span><span id="Trivia.dn_dlogr-136"><a href="#Trivia.dn_dlogr-136"><span class="linenos">136</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.dn_dlogr-138"><a href="#Trivia.dn_dlogr-138"><span class="linenos">138</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.dn_dlogr-139"><a href="#Trivia.dn_dlogr-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">dn_dlogr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dn_dr</span><span class="p">):</span>
+</span><span id="Trivia.dn_dlogr-140"><a href="#Trivia.dn_dlogr-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">dn_dr</span>
 </span></pre></div>
 
 
@@ -1110,9 +1142,9 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.air_schmidt_number"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.air_schmidt_number-138"><a href="#Trivia.air_schmidt_number-138"><span class="linenos">138</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.air_schmidt_number-139"><a href="#Trivia.air_schmidt_number-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
-</span><span id="Trivia.air_schmidt_number-140"><a href="#Trivia.air_schmidt_number-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.air_schmidt_number-142"><a href="#Trivia.air_schmidt_number-142"><span class="linenos">142</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.air_schmidt_number-143"><a href="#Trivia.air_schmidt_number-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">air_schmidt_number</span><span class="p">(</span><span class="n">dynamic_viscosity</span><span class="p">,</span> <span class="n">diffusivity</span><span class="p">,</span> <span class="n">density</span><span class="p">):</span>
+</span><span id="Trivia.air_schmidt_number-144"><a href="#Trivia.air_schmidt_number-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">dynamic_viscosity</span> <span class="o">/</span> <span class="n">diffusivity</span> <span class="o">/</span> <span class="n">density</span>
 </span></pre></div>
 
 
@@ -1131,9 +1163,9 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.sqrt_re_times_cbrt_sc"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.sqrt_re_times_cbrt_sc-142"><a href="#Trivia.sqrt_re_times_cbrt_sc-142"><span class="linenos">142</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.sqrt_re_times_cbrt_sc-143"><a href="#Trivia.sqrt_re_times_cbrt_sc-143"><span class="linenos">143</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
-</span><span id="Trivia.sqrt_re_times_cbrt_sc-144"><a href="#Trivia.sqrt_re_times_cbrt_sc-144"><span class="linenos">144</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.sqrt_re_times_cbrt_sc-146"><a href="#Trivia.sqrt_re_times_cbrt_sc-146"><span class="linenos">146</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.sqrt_re_times_cbrt_sc-147"><a href="#Trivia.sqrt_re_times_cbrt_sc-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sqrt_re_times_cbrt_sc</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">Re</span><span class="p">,</span> <span class="n">Sc</span><span class="p">):</span>
+</span><span id="Trivia.sqrt_re_times_cbrt_sc-148"><a href="#Trivia.sqrt_re_times_cbrt_sc-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Re</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Sc</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1152,9 +1184,9 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.K2C"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.K2C-146"><a href="#Trivia.K2C-146"><span class="linenos">146</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.K2C-147"><a href="#Trivia.K2C-147"><span class="linenos">147</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
-</span><span id="Trivia.K2C-148"><a href="#Trivia.K2C-148"><span class="linenos">148</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.K2C-150"><a href="#Trivia.K2C-150"><span class="linenos">150</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.K2C-151"><a href="#Trivia.K2C-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">K2C</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TK</span><span class="p">):</span>
+</span><span id="Trivia.K2C-152"><a href="#Trivia.K2C-152"><span class="linenos">152</span></a>        <span class="k">return</span> <span class="n">TK</span> <span class="o">-</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
 </span></pre></div>
 
 
@@ -1173,9 +1205,9 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.C2K"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.C2K-150"><a href="#Trivia.C2K-150"><span class="linenos">150</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.C2K-151"><a href="#Trivia.C2K-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
-</span><span id="Trivia.C2K-152"><a href="#Trivia.C2K-152"><span class="linenos">152</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.C2K-154"><a href="#Trivia.C2K-154"><span class="linenos">154</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.C2K-155"><a href="#Trivia.C2K-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">C2K</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">TC</span><span class="p">):</span>
+</span><span id="Trivia.C2K-156"><a href="#Trivia.C2K-156"><span class="linenos">156</span></a>        <span class="k">return</span> <span class="n">TC</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">T0</span>
 </span></pre></div>
 
 
@@ -1194,13 +1226,13 @@ where:
 
     </div>
     <a class="headerlink" href="#Trivia.poissonian_avoidance_function"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.poissonian_avoidance_function-154"><a href="#Trivia.poissonian_avoidance_function-154"><span class="linenos">154</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Trivia.poissonian_avoidance_function-155"><a href="#Trivia.poissonian_avoidance_function-155"><span class="linenos">155</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-</span><span id="Trivia.poissonian_avoidance_function-156"><a href="#Trivia.poissonian_avoidance_function-156"><span class="linenos">156</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
-</span><span id="Trivia.poissonian_avoidance_function-157"><a href="#Trivia.poissonian_avoidance_function-157"><span class="linenos">157</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
-</span><span id="Trivia.poissonian_avoidance_function-158"><a href="#Trivia.poissonian_avoidance_function-158"><span class="linenos">158</span></a><span class="sd">        process with a constant rate `r`</span>
-</span><span id="Trivia.poissonian_avoidance_function-159"><a href="#Trivia.poissonian_avoidance_function-159"><span class="linenos">159</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Trivia.poissonian_avoidance_function-160"><a href="#Trivia.poissonian_avoidance_function-160"><span class="linenos">160</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.poissonian_avoidance_function-158"><a href="#Trivia.poissonian_avoidance_function-158"><span class="linenos">158</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.poissonian_avoidance_function-159"><a href="#Trivia.poissonian_avoidance_function-159"><span class="linenos">159</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">poissonian_avoidance_function</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
+</span><span id="Trivia.poissonian_avoidance_function-160"><a href="#Trivia.poissonian_avoidance_function-160"><span class="linenos">160</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;cumulative probability of zero events occurring within time `dt`</span>
+</span><span id="Trivia.poissonian_avoidance_function-161"><a href="#Trivia.poissonian_avoidance_function-161"><span class="linenos">161</span></a><span class="sd">        (or void probability, or avoidance function) in a Poisson counting</span>
+</span><span id="Trivia.poissonian_avoidance_function-162"><a href="#Trivia.poissonian_avoidance_function-162"><span class="linenos">162</span></a><span class="sd">        process with a constant rate `r`</span>
+</span><span id="Trivia.poissonian_avoidance_function-163"><a href="#Trivia.poissonian_avoidance_function-163"><span class="linenos">163</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.poissonian_avoidance_function-164"><a href="#Trivia.poissonian_avoidance_function-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
 </span></pre></div>
 
 

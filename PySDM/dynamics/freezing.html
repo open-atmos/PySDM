@@ -78,6 +78,12 @@
                                 <a class="variable" href="#Freezing.singular">singular</a>
                         </li>
                         <li>
+                                <a class="variable" href="#Freezing.homogeneous_freezing">homogeneous_freezing</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Freezing.immersion_freezing">immersion_freezing</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#Freezing.thaw">thaw</a>
                         </li>
                         <li>
@@ -117,7 +123,9 @@
                     <h1 class="modulename">
 <a href="./../../PySDM.html">PySDM</a><wbr>.<a href="./../dynamics.html">dynamics</a><wbr>.freezing    </h1>
 
-                        <div class="docstring"><p>immersion freezing using either singular or time-dependent formulation</p>
+                        <div class="docstring"><p>droplet freezing using either singular or
+time-dependent formulation for immersion freezing
+and homogeneous freezing and thaw</p>
 </div>
 
                         <input id="mod-freezing-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -125,64 +133,92 @@
                         <label class="view-source-button" for="mod-freezing-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">immersion freezing using either singular or time-dependent formulation</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.dynamics.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_dynamic</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">droplet freezing using either singular or</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">time-dependent formulation for immersion freezing</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">and homogeneous freezing and thaw</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Freezing</span><span class="p">:</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">singular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">thaw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="o">=</span> <span class="n">singular</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">thaw</span> <span class="o">=</span> <span class="n">thaw</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="k">assert</span> <span class="p">(</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="p">)</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;freezing temperature&quot;</span><span class="p">)</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.dynamics.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_dynamic</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Freezing</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="n">singular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="n">homogeneous_freezing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="n">immersion_freezing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">thaw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="o">=</span> <span class="n">singular</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span> <span class="o">=</span> <span class="n">homogeneous_freezing</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span> <span class="o">=</span> <span class="n">immersion_freezing</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">thaw</span> <span class="o">=</span> <span class="n">thaw</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>            <span class="k">assert</span> <span class="p">(</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">heterogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="p">)</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;immersed surface area&quot;</span><span class="p">)</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>            <span class="p">)</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">seed</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>            <span class="p">)</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>        <span class="k">if</span> <span class="s2">&quot;Coalescence&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dynamics</span><span class="p">:</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>            <span class="c1"># TODO #594</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                <span class="s2">&quot;handling T_fz during collisions not implemented yet&quot;</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>            <span class="p">)</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">:</span>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>            <span class="k">return</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_singular</span><span class="p">(</span><span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">)</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="o">.</span><span class="n">urand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_time_dependent</span><span class="p">(</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>                <span class="n">rand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="p">,</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>                <span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">,</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>            <span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="k">assert</span> <span class="p">(</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>        <span class="p">)</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;freezing temperature&quot;</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span><span class="p">:</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>            <span class="k">assert</span> <span class="p">(</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">heterogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>            <span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;immersed surface area&quot;</span><span class="p">)</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span><span class="p">:</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>            <span class="k">assert</span> <span class="p">(</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">homogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
+</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a>            <span class="p">)</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>
+</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>            <span class="p">)</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">seed</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>            <span class="p">)</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos">63</span></a>        <span class="k">if</span> <span class="s2">&quot;Coalescence&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dynamics</span><span class="p">:</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos">64</span></a>            <span class="c1"># TODO #594</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos">65</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos">66</span></a>                <span class="s2">&quot;handling T_fz during collisions not implemented yet&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos">67</span></a>            <span class="p">)</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos">68</span></a>
+</span><span id="L-69"><a href="#L-69"><span class="linenos">69</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">:</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos">70</span></a>            <span class="k">return</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos">71</span></a>
+</span><span id="L-72"><a href="#L-72"><span class="linenos">72</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span><span class="p">:</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos">73</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos">74</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_singular</span><span class="p">(</span><span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">)</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos">75</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos">76</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="o">.</span><span class="n">urand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos">77</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_time_dependent</span><span class="p">(</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos">78</span></a>                    <span class="n">rand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="p">,</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos">79</span></a>                    <span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">,</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos">80</span></a>                <span class="p">)</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos">81</span></a>
+</span><span id="L-82"><a href="#L-82"><span class="linenos">82</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span><span class="p">:</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos">83</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="o">.</span><span class="n">urand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos">84</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">homogeneous_freezing_time_dependent</span><span class="p">(</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos">85</span></a>                <span class="n">rand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos">86</span></a>                <span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">,</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos">87</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -199,58 +235,84 @@
 
     </div>
     <a class="headerlink" href="#Freezing"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Freezing-9"><a href="#Freezing-9"><span class="linenos"> 9</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
-</span><span id="Freezing-10"><a href="#Freezing-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Freezing</span><span class="p">:</span>
-</span><span id="Freezing-11"><a href="#Freezing-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">singular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">thaw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-</span><span id="Freezing-12"><a href="#Freezing-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="o">=</span> <span class="n">singular</span>
-</span><span id="Freezing-13"><a href="#Freezing-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">thaw</span> <span class="o">=</span> <span class="n">thaw</span>
-</span><span id="Freezing-14"><a href="#Freezing-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Freezing-15"><a href="#Freezing-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="Freezing-16"><a href="#Freezing-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="Freezing-17"><a href="#Freezing-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="Freezing-18"><a href="#Freezing-18"><span class="linenos">18</span></a>
-</span><span id="Freezing-19"><a href="#Freezing-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="Freezing-20"><a href="#Freezing-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="Freezing-21"><a href="#Freezing-21"><span class="linenos">21</span></a>
-</span><span id="Freezing-22"><a href="#Freezing-22"><span class="linenos">22</span></a>        <span class="k">assert</span> <span class="p">(</span>
-</span><span id="Freezing-23"><a href="#Freezing-23"><span class="linenos">23</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
-</span><span id="Freezing-24"><a href="#Freezing-24"><span class="linenos">24</span></a>        <span class="p">)</span>
-</span><span id="Freezing-25"><a href="#Freezing-25"><span class="linenos">25</span></a>
-</span><span id="Freezing-26"><a href="#Freezing-26"><span class="linenos">26</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
-</span><span id="Freezing-27"><a href="#Freezing-27"><span class="linenos">27</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="Freezing-28"><a href="#Freezing-28"><span class="linenos">28</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;freezing temperature&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Freezing-11"><a href="#Freezing-11"><span class="linenos">11</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
+</span><span id="Freezing-12"><a href="#Freezing-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Freezing</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+</span><span id="Freezing-13"><a href="#Freezing-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Freezing-14"><a href="#Freezing-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Freezing-15"><a href="#Freezing-15"><span class="linenos">15</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="Freezing-16"><a href="#Freezing-16"><span class="linenos">16</span></a>        <span class="n">singular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Freezing-17"><a href="#Freezing-17"><span class="linenos">17</span></a>        <span class="n">homogeneous_freezing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="Freezing-18"><a href="#Freezing-18"><span class="linenos">18</span></a>        <span class="n">immersion_freezing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Freezing-19"><a href="#Freezing-19"><span class="linenos">19</span></a>        <span class="n">thaw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="Freezing-20"><a href="#Freezing-20"><span class="linenos">20</span></a>    <span class="p">):</span>
+</span><span id="Freezing-21"><a href="#Freezing-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="o">=</span> <span class="n">singular</span>
+</span><span id="Freezing-22"><a href="#Freezing-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span> <span class="o">=</span> <span class="n">homogeneous_freezing</span>
+</span><span id="Freezing-23"><a href="#Freezing-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span> <span class="o">=</span> <span class="n">immersion_freezing</span>
+</span><span id="Freezing-24"><a href="#Freezing-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">thaw</span> <span class="o">=</span> <span class="n">thaw</span>
+</span><span id="Freezing-25"><a href="#Freezing-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="Freezing-26"><a href="#Freezing-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="Freezing-27"><a href="#Freezing-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="Freezing-28"><a href="#Freezing-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Freezing-29"><a href="#Freezing-29"><span class="linenos">29</span></a>
-</span><span id="Freezing-30"><a href="#Freezing-30"><span class="linenos">30</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="Freezing-31"><a href="#Freezing-31"><span class="linenos">31</span></a>            <span class="k">assert</span> <span class="p">(</span>
-</span><span id="Freezing-32"><a href="#Freezing-32"><span class="linenos">32</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">heterogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
-</span><span id="Freezing-33"><a href="#Freezing-33"><span class="linenos">33</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
-</span><span id="Freezing-34"><a href="#Freezing-34"><span class="linenos">34</span></a>            <span class="p">)</span>
-</span><span id="Freezing-35"><a href="#Freezing-35"><span class="linenos">35</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;immersed surface area&quot;</span><span class="p">)</span>
-</span><span id="Freezing-36"><a href="#Freezing-36"><span class="linenos">36</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
-</span><span id="Freezing-37"><a href="#Freezing-37"><span class="linenos">37</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
-</span><span id="Freezing-38"><a href="#Freezing-38"><span class="linenos">38</span></a>            <span class="p">)</span>
-</span><span id="Freezing-39"><a href="#Freezing-39"><span class="linenos">39</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span>
-</span><span id="Freezing-40"><a href="#Freezing-40"><span class="linenos">40</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">seed</span>
-</span><span id="Freezing-41"><a href="#Freezing-41"><span class="linenos">41</span></a>            <span class="p">)</span>
-</span><span id="Freezing-42"><a href="#Freezing-42"><span class="linenos">42</span></a>
-</span><span id="Freezing-43"><a href="#Freezing-43"><span class="linenos">43</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="Freezing-44"><a href="#Freezing-44"><span class="linenos">44</span></a>        <span class="k">if</span> <span class="s2">&quot;Coalescence&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dynamics</span><span class="p">:</span>
-</span><span id="Freezing-45"><a href="#Freezing-45"><span class="linenos">45</span></a>            <span class="c1"># TODO #594</span>
-</span><span id="Freezing-46"><a href="#Freezing-46"><span class="linenos">46</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-</span><span id="Freezing-47"><a href="#Freezing-47"><span class="linenos">47</span></a>                <span class="s2">&quot;handling T_fz during collisions not implemented yet&quot;</span>
-</span><span id="Freezing-48"><a href="#Freezing-48"><span class="linenos">48</span></a>            <span class="p">)</span>
-</span><span id="Freezing-49"><a href="#Freezing-49"><span class="linenos">49</span></a>
-</span><span id="Freezing-50"><a href="#Freezing-50"><span class="linenos">50</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">:</span>
-</span><span id="Freezing-51"><a href="#Freezing-51"><span class="linenos">51</span></a>            <span class="k">return</span>
-</span><span id="Freezing-52"><a href="#Freezing-52"><span class="linenos">52</span></a>
-</span><span id="Freezing-53"><a href="#Freezing-53"><span class="linenos">53</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="Freezing-54"><a href="#Freezing-54"><span class="linenos">54</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_singular</span><span class="p">(</span><span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">)</span>
-</span><span id="Freezing-55"><a href="#Freezing-55"><span class="linenos">55</span></a>        <span class="k">else</span><span class="p">:</span>
-</span><span id="Freezing-56"><a href="#Freezing-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="o">.</span><span class="n">urand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
-</span><span id="Freezing-57"><a href="#Freezing-57"><span class="linenos">57</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_time_dependent</span><span class="p">(</span>
-</span><span id="Freezing-58"><a href="#Freezing-58"><span class="linenos">58</span></a>                <span class="n">rand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="p">,</span>
-</span><span id="Freezing-59"><a href="#Freezing-59"><span class="linenos">59</span></a>                <span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">,</span>
-</span><span id="Freezing-60"><a href="#Freezing-60"><span class="linenos">60</span></a>            <span class="p">)</span>
+</span><span id="Freezing-30"><a href="#Freezing-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="Freezing-31"><a href="#Freezing-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="Freezing-32"><a href="#Freezing-32"><span class="linenos">32</span></a>
+</span><span id="Freezing-33"><a href="#Freezing-33"><span class="linenos">33</span></a>        <span class="k">assert</span> <span class="p">(</span>
+</span><span id="Freezing-34"><a href="#Freezing-34"><span class="linenos">34</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
+</span><span id="Freezing-35"><a href="#Freezing-35"><span class="linenos">35</span></a>        <span class="p">)</span>
+</span><span id="Freezing-36"><a href="#Freezing-36"><span class="linenos">36</span></a>
+</span><span id="Freezing-37"><a href="#Freezing-37"><span class="linenos">37</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="Freezing-38"><a href="#Freezing-38"><span class="linenos">38</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="Freezing-39"><a href="#Freezing-39"><span class="linenos">39</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;freezing temperature&quot;</span><span class="p">)</span>
+</span><span id="Freezing-40"><a href="#Freezing-40"><span class="linenos">40</span></a>
+</span><span id="Freezing-41"><a href="#Freezing-41"><span class="linenos">41</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span><span class="p">:</span>
+</span><span id="Freezing-42"><a href="#Freezing-42"><span class="linenos">42</span></a>            <span class="k">assert</span> <span class="p">(</span>
+</span><span id="Freezing-43"><a href="#Freezing-43"><span class="linenos">43</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">heterogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span id="Freezing-44"><a href="#Freezing-44"><span class="linenos">44</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
+</span><span id="Freezing-45"><a href="#Freezing-45"><span class="linenos">45</span></a>            <span class="p">)</span>
+</span><span id="Freezing-46"><a href="#Freezing-46"><span class="linenos">46</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;immersed surface area&quot;</span><span class="p">)</span>
+</span><span id="Freezing-47"><a href="#Freezing-47"><span class="linenos">47</span></a>
+</span><span id="Freezing-48"><a href="#Freezing-48"><span class="linenos">48</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span><span class="p">:</span>
+</span><span id="Freezing-49"><a href="#Freezing-49"><span class="linenos">49</span></a>            <span class="k">assert</span> <span class="p">(</span>
+</span><span id="Freezing-50"><a href="#Freezing-50"><span class="linenos">50</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">homogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span id="Freezing-51"><a href="#Freezing-51"><span class="linenos">51</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
+</span><span id="Freezing-52"><a href="#Freezing-52"><span class="linenos">52</span></a>            <span class="p">)</span>
+</span><span id="Freezing-53"><a href="#Freezing-53"><span class="linenos">53</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="Freezing-54"><a href="#Freezing-54"><span class="linenos">54</span></a>
+</span><span id="Freezing-55"><a href="#Freezing-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="Freezing-56"><a href="#Freezing-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+</span><span id="Freezing-57"><a href="#Freezing-57"><span class="linenos">57</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+</span><span id="Freezing-58"><a href="#Freezing-58"><span class="linenos">58</span></a>            <span class="p">)</span>
+</span><span id="Freezing-59"><a href="#Freezing-59"><span class="linenos">59</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span>
+</span><span id="Freezing-60"><a href="#Freezing-60"><span class="linenos">60</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">seed</span>
+</span><span id="Freezing-61"><a href="#Freezing-61"><span class="linenos">61</span></a>            <span class="p">)</span>
+</span><span id="Freezing-62"><a href="#Freezing-62"><span class="linenos">62</span></a>
+</span><span id="Freezing-63"><a href="#Freezing-63"><span class="linenos">63</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="Freezing-64"><a href="#Freezing-64"><span class="linenos">64</span></a>        <span class="k">if</span> <span class="s2">&quot;Coalescence&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">dynamics</span><span class="p">:</span>
+</span><span id="Freezing-65"><a href="#Freezing-65"><span class="linenos">65</span></a>            <span class="c1"># TODO #594</span>
+</span><span id="Freezing-66"><a href="#Freezing-66"><span class="linenos">66</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+</span><span id="Freezing-67"><a href="#Freezing-67"><span class="linenos">67</span></a>                <span class="s2">&quot;handling T_fz during collisions not implemented yet&quot;</span>
+</span><span id="Freezing-68"><a href="#Freezing-68"><span class="linenos">68</span></a>            <span class="p">)</span>
+</span><span id="Freezing-69"><a href="#Freezing-69"><span class="linenos">69</span></a>
+</span><span id="Freezing-70"><a href="#Freezing-70"><span class="linenos">70</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="p">:</span>
+</span><span id="Freezing-71"><a href="#Freezing-71"><span class="linenos">71</span></a>            <span class="k">return</span>
+</span><span id="Freezing-72"><a href="#Freezing-72"><span class="linenos">72</span></a>
+</span><span id="Freezing-73"><a href="#Freezing-73"><span class="linenos">73</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span><span class="p">:</span>
+</span><span id="Freezing-74"><a href="#Freezing-74"><span class="linenos">74</span></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="Freezing-75"><a href="#Freezing-75"><span class="linenos">75</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_singular</span><span class="p">(</span><span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">)</span>
+</span><span id="Freezing-76"><a href="#Freezing-76"><span class="linenos">76</span></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="Freezing-77"><a href="#Freezing-77"><span class="linenos">77</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="o">.</span><span class="n">urand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+</span><span id="Freezing-78"><a href="#Freezing-78"><span class="linenos">78</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">immersion_freezing_time_dependent</span><span class="p">(</span>
+</span><span id="Freezing-79"><a href="#Freezing-79"><span class="linenos">79</span></a>                    <span class="n">rand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="p">,</span>
+</span><span id="Freezing-80"><a href="#Freezing-80"><span class="linenos">80</span></a>                    <span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">,</span>
+</span><span id="Freezing-81"><a href="#Freezing-81"><span class="linenos">81</span></a>                <span class="p">)</span>
+</span><span id="Freezing-82"><a href="#Freezing-82"><span class="linenos">82</span></a>
+</span><span id="Freezing-83"><a href="#Freezing-83"><span class="linenos">83</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span><span class="p">:</span>
+</span><span id="Freezing-84"><a href="#Freezing-84"><span class="linenos">84</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="o">.</span><span class="n">urand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rng</span><span class="p">)</span>
+</span><span id="Freezing-85"><a href="#Freezing-85"><span class="linenos">85</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">homogeneous_freezing_time_dependent</span><span class="p">(</span>
+</span><span id="Freezing-86"><a href="#Freezing-86"><span class="linenos">86</span></a>                <span class="n">rand</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rand</span><span class="p">,</span>
+</span><span id="Freezing-87"><a href="#Freezing-87"><span class="linenos">87</span></a>                <span class="n">thaw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thaw</span><span class="p">,</span>
+</span><span id="Freezing-88"><a href="#Freezing-88"><span class="linenos">88</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -260,19 +322,28 @@
                                         <input id="Freezing.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">Freezing</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">singular</span><span class="o">=</span><span class="kc">True</span>, </span><span class="param"><span class="n">thaw</span><span class="o">=</span><span class="kc">False</span></span>)</span>
+        <span class="name">Freezing</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">singular</span><span class="o">=</span><span class="kc">True</span>,</span><span class="param">	<span class="n">homogeneous_freezing</span><span class="o">=</span><span class="kc">False</span>,</span><span class="param">	<span class="n">immersion_freezing</span><span class="o">=</span><span class="kc">True</span>,</span><span class="param">	<span class="n">thaw</span><span class="o">=</span><span class="kc">False</span></span>)</span>
 
                 <label class="view-source-button" for="Freezing.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Freezing.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Freezing.__init__-11"><a href="#Freezing.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">singular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">thaw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-</span><span id="Freezing.__init__-12"><a href="#Freezing.__init__-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="o">=</span> <span class="n">singular</span>
-</span><span id="Freezing.__init__-13"><a href="#Freezing.__init__-13"><span class="linenos">13</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">thaw</span> <span class="o">=</span> <span class="n">thaw</span>
-</span><span id="Freezing.__init__-14"><a href="#Freezing.__init__-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Freezing.__init__-15"><a href="#Freezing.__init__-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="Freezing.__init__-16"><a href="#Freezing.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="Freezing.__init__-17"><a href="#Freezing.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Freezing.__init__-13"><a href="#Freezing.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="Freezing.__init__-14"><a href="#Freezing.__init__-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="Freezing.__init__-15"><a href="#Freezing.__init__-15"><span class="linenos">15</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="Freezing.__init__-16"><a href="#Freezing.__init__-16"><span class="linenos">16</span></a>        <span class="n">singular</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Freezing.__init__-17"><a href="#Freezing.__init__-17"><span class="linenos">17</span></a>        <span class="n">homogeneous_freezing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="Freezing.__init__-18"><a href="#Freezing.__init__-18"><span class="linenos">18</span></a>        <span class="n">immersion_freezing</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="Freezing.__init__-19"><a href="#Freezing.__init__-19"><span class="linenos">19</span></a>        <span class="n">thaw</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="Freezing.__init__-20"><a href="#Freezing.__init__-20"><span class="linenos">20</span></a>    <span class="p">):</span>
+</span><span id="Freezing.__init__-21"><a href="#Freezing.__init__-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="o">=</span> <span class="n">singular</span>
+</span><span id="Freezing.__init__-22"><a href="#Freezing.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span> <span class="o">=</span> <span class="n">homogeneous_freezing</span>
+</span><span id="Freezing.__init__-23"><a href="#Freezing.__init__-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span> <span class="o">=</span> <span class="n">immersion_freezing</span>
+</span><span id="Freezing.__init__-24"><a href="#Freezing.__init__-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">thaw</span> <span class="o">=</span> <span class="n">thaw</span>
+</span><span id="Freezing.__init__-25"><a href="#Freezing.__init__-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">enable</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="Freezing.__init__-26"><a href="#Freezing.__init__-26"><span class="linenos">26</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="Freezing.__init__-27"><a href="#Freezing.__init__-27"><span class="linenos">27</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="Freezing.__init__-28"><a href="#Freezing.__init__-28"><span class="linenos">28</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
 </span></pre></div>
 
 
@@ -286,6 +357,28 @@
         
     </div>
     <a class="headerlink" href="#Freezing.singular"></a>
+    
+    
+
+                            </div>
+                            <div id="Freezing.homogeneous_freezing" class="classattr">
+                                <div class="attr variable">
+            <span class="name">homogeneous_freezing</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Freezing.homogeneous_freezing"></a>
+    
+    
+
+                            </div>
+                            <div id="Freezing.immersion_freezing" class="classattr">
+                                <div class="attr variable">
+            <span class="name">immersion_freezing</span>
+
+        
+    </div>
+    <a class="headerlink" href="#Freezing.immersion_freezing"></a>
     
     
 
@@ -356,29 +449,38 @@
 
     </div>
     <a class="headerlink" href="#Freezing.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Freezing.register-19"><a href="#Freezing.register-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="Freezing.register-20"><a href="#Freezing.register-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="Freezing.register-21"><a href="#Freezing.register-21"><span class="linenos">21</span></a>
-</span><span id="Freezing.register-22"><a href="#Freezing.register-22"><span class="linenos">22</span></a>        <span class="k">assert</span> <span class="p">(</span>
-</span><span id="Freezing.register-23"><a href="#Freezing.register-23"><span class="linenos">23</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
-</span><span id="Freezing.register-24"><a href="#Freezing.register-24"><span class="linenos">24</span></a>        <span class="p">)</span>
-</span><span id="Freezing.register-25"><a href="#Freezing.register-25"><span class="linenos">25</span></a>
-</span><span id="Freezing.register-26"><a href="#Freezing.register-26"><span class="linenos">26</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
-</span><span id="Freezing.register-27"><a href="#Freezing.register-27"><span class="linenos">27</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="Freezing.register-28"><a href="#Freezing.register-28"><span class="linenos">28</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;freezing temperature&quot;</span><span class="p">)</span>
-</span><span id="Freezing.register-29"><a href="#Freezing.register-29"><span class="linenos">29</span></a>
-</span><span id="Freezing.register-30"><a href="#Freezing.register-30"><span class="linenos">30</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
-</span><span id="Freezing.register-31"><a href="#Freezing.register-31"><span class="linenos">31</span></a>            <span class="k">assert</span> <span class="p">(</span>
-</span><span id="Freezing.register-32"><a href="#Freezing.register-32"><span class="linenos">32</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">heterogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
-</span><span id="Freezing.register-33"><a href="#Freezing.register-33"><span class="linenos">33</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
-</span><span id="Freezing.register-34"><a href="#Freezing.register-34"><span class="linenos">34</span></a>            <span class="p">)</span>
-</span><span id="Freezing.register-35"><a href="#Freezing.register-35"><span class="linenos">35</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;immersed surface area&quot;</span><span class="p">)</span>
-</span><span id="Freezing.register-36"><a href="#Freezing.register-36"><span class="linenos">36</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
-</span><span id="Freezing.register-37"><a href="#Freezing.register-37"><span class="linenos">37</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
-</span><span id="Freezing.register-38"><a href="#Freezing.register-38"><span class="linenos">38</span></a>            <span class="p">)</span>
-</span><span id="Freezing.register-39"><a href="#Freezing.register-39"><span class="linenos">39</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span>
-</span><span id="Freezing.register-40"><a href="#Freezing.register-40"><span class="linenos">40</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">seed</span>
-</span><span id="Freezing.register-41"><a href="#Freezing.register-41"><span class="linenos">41</span></a>            <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Freezing.register-30"><a href="#Freezing.register-30"><span class="linenos">30</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="Freezing.register-31"><a href="#Freezing.register-31"><span class="linenos">31</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="Freezing.register-32"><a href="#Freezing.register-32"><span class="linenos">32</span></a>
+</span><span id="Freezing.register-33"><a href="#Freezing.register-33"><span class="linenos">33</span></a>        <span class="k">assert</span> <span class="p">(</span>
+</span><span id="Freezing.register-34"><a href="#Freezing.register-34"><span class="linenos">34</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
+</span><span id="Freezing.register-35"><a href="#Freezing.register-35"><span class="linenos">35</span></a>        <span class="p">)</span>
+</span><span id="Freezing.register-36"><a href="#Freezing.register-36"><span class="linenos">36</span></a>
+</span><span id="Freezing.register-37"><a href="#Freezing.register-37"><span class="linenos">37</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="Freezing.register-38"><a href="#Freezing.register-38"><span class="linenos">38</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="Freezing.register-39"><a href="#Freezing.register-39"><span class="linenos">39</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;freezing temperature&quot;</span><span class="p">)</span>
+</span><span id="Freezing.register-40"><a href="#Freezing.register-40"><span class="linenos">40</span></a>
+</span><span id="Freezing.register-41"><a href="#Freezing.register-41"><span class="linenos">41</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">immersion_freezing</span><span class="p">:</span>
+</span><span id="Freezing.register-42"><a href="#Freezing.register-42"><span class="linenos">42</span></a>            <span class="k">assert</span> <span class="p">(</span>
+</span><span id="Freezing.register-43"><a href="#Freezing.register-43"><span class="linenos">43</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">heterogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span id="Freezing.register-44"><a href="#Freezing.register-44"><span class="linenos">44</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
+</span><span id="Freezing.register-45"><a href="#Freezing.register-45"><span class="linenos">45</span></a>            <span class="p">)</span>
+</span><span id="Freezing.register-46"><a href="#Freezing.register-46"><span class="linenos">46</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;immersed surface area&quot;</span><span class="p">)</span>
+</span><span id="Freezing.register-47"><a href="#Freezing.register-47"><span class="linenos">47</span></a>
+</span><span id="Freezing.register-48"><a href="#Freezing.register-48"><span class="linenos">48</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span><span class="p">:</span>
+</span><span id="Freezing.register-49"><a href="#Freezing.register-49"><span class="linenos">49</span></a>            <span class="k">assert</span> <span class="p">(</span>
+</span><span id="Freezing.register-50"><a href="#Freezing.register-50"><span class="linenos">50</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">homogeneous_ice_nucleation_rate</span><span class="o">.</span><span class="vm">__name__</span>
+</span><span id="Freezing.register-51"><a href="#Freezing.register-51"><span class="linenos">51</span></a>                <span class="o">!=</span> <span class="s2">&quot;Null&quot;</span>
+</span><span id="Freezing.register-52"><a href="#Freezing.register-52"><span class="linenos">52</span></a>            <span class="p">)</span>
+</span><span id="Freezing.register-53"><a href="#Freezing.register-53"><span class="linenos">53</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">)</span>
+</span><span id="Freezing.register-54"><a href="#Freezing.register-54"><span class="linenos">54</span></a>
+</span><span id="Freezing.register-55"><a href="#Freezing.register-55"><span class="linenos">55</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">homogeneous_freezing</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">singular</span><span class="p">:</span>
+</span><span id="Freezing.register-56"><a href="#Freezing.register-56"><span class="linenos">56</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Storage</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+</span><span id="Freezing.register-57"><a href="#Freezing.register-57"><span class="linenos">57</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+</span><span id="Freezing.register-58"><a href="#Freezing.register-58"><span class="linenos">58</span></a>            <span class="p">)</span>
+</span><span id="Freezing.register-59"><a href="#Freezing.register-59"><span class="linenos">59</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">rng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span>
+</span><span id="Freezing.register-60"><a href="#Freezing.register-60"><span class="linenos">60</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">n_sd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">seed</span>
+</span><span id="Freezing.register-61"><a href="#Freezing.register-61"><span class="linenos">61</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 

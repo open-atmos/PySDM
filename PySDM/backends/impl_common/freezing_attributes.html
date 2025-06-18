@@ -98,6 +98,21 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#TimeDependentHomogeneousAttributes">TimeDependentHomogeneousAttributes</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#TimeDependentHomogeneousAttributes.__init__">TimeDependentHomogeneousAttributes</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TimeDependentHomogeneousAttributes.volume">volume</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TimeDependentHomogeneousAttributes.signed_water_mass">signed_water_mass</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -148,6 +163,17 @@
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in time-dependent regime&quot;&quot;&quot;</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TimeDependentHomogeneousAttributes</span><span class="p">(</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="n">namedtuple</span><span class="p">(</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;TimeDependentHomogeneousAttributes&quot;</span><span class="p">,</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">),</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>    <span class="p">)</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="p">):</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in time-dependent regime for homogeneous freezing&quot;&quot;&quot;</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
 </span></pre></div>
 
 
@@ -281,6 +307,74 @@
         
     </div>
     <a class="headerlink" href="#TimeDependentAttributes.signed_water_mass"></a>
+    
+            <div class="docstring"><p>Alias for field number 1</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="TimeDependentHomogeneousAttributes">
+                            <input id="TimeDependentHomogeneousAttributes-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr class">
+            
+    <span class="def">class</span>
+    <span class="name">TimeDependentHomogeneousAttributes</span><wbr>(<span class="base"><a href="#TimeDependentHomogeneousAttributes">TimeDependentHomogeneousAttributes</a></span>):
+
+                <label class="view-source-button" for="TimeDependentHomogeneousAttributes-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#TimeDependentHomogeneousAttributes"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TimeDependentHomogeneousAttributes-31"><a href="#TimeDependentHomogeneousAttributes-31"><span class="linenos">31</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TimeDependentHomogeneousAttributes</span><span class="p">(</span>
+</span><span id="TimeDependentHomogeneousAttributes-32"><a href="#TimeDependentHomogeneousAttributes-32"><span class="linenos">32</span></a>    <span class="n">namedtuple</span><span class="p">(</span>
+</span><span id="TimeDependentHomogeneousAttributes-33"><a href="#TimeDependentHomogeneousAttributes-33"><span class="linenos">33</span></a>        <span class="n">typename</span><span class="o">=</span><span class="s2">&quot;TimeDependentHomogeneousAttributes&quot;</span><span class="p">,</span>
+</span><span id="TimeDependentHomogeneousAttributes-34"><a href="#TimeDependentHomogeneousAttributes-34"><span class="linenos">34</span></a>        <span class="n">field_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;volume&quot;</span><span class="p">,</span> <span class="s2">&quot;signed_water_mass&quot;</span><span class="p">),</span>
+</span><span id="TimeDependentHomogeneousAttributes-35"><a href="#TimeDependentHomogeneousAttributes-35"><span class="linenos">35</span></a>    <span class="p">)</span>
+</span><span id="TimeDependentHomogeneousAttributes-36"><a href="#TimeDependentHomogeneousAttributes-36"><span class="linenos">36</span></a><span class="p">):</span>
+</span><span id="TimeDependentHomogeneousAttributes-37"><a href="#TimeDependentHomogeneousAttributes-37"><span class="linenos">37</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;groups attributes required in time-dependent regime for homogeneous freezing&quot;&quot;&quot;</span>
+</span><span id="TimeDependentHomogeneousAttributes-38"><a href="#TimeDependentHomogeneousAttributes-38"><span class="linenos">38</span></a>
+</span><span id="TimeDependentHomogeneousAttributes-39"><a href="#TimeDependentHomogeneousAttributes-39"><span class="linenos">39</span></a>    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>groups attributes required in time-dependent regime for homogeneous freezing</p>
+</div>
+
+
+                            <div id="TimeDependentHomogeneousAttributes.__init__" class="classattr">
+                                <div class="attr function">
+            
+        <span class="name">TimeDependentHomogeneousAttributes</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">volume</span>, </span><span class="param"><span class="n">signed_water_mass</span></span>)</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimeDependentHomogeneousAttributes.__init__"></a>
+    
+            <div class="docstring"><p>Create new instance of TimeDependentHomogeneousAttributes(volume, signed_water_mass)</p>
+</div>
+
+
+                            </div>
+                            <div id="TimeDependentHomogeneousAttributes.volume" class="classattr">
+                                <div class="attr variable">
+            <span class="name">volume</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimeDependentHomogeneousAttributes.volume"></a>
+    
+            <div class="docstring"><p>Alias for field number 0</p>
+</div>
+
+
+                            </div>
+                            <div id="TimeDependentHomogeneousAttributes.signed_water_mass" class="classattr">
+                                <div class="attr variable">
+            <span class="name">signed_water_mass</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TimeDependentHomogeneousAttributes.signed_water_mass"></a>
     
             <div class="docstring"><p>Alias for field number 1</p>
 </div>
