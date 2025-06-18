@@ -121,7 +121,8 @@
       "examples/PySDM_examples/Shima_et_al_2009/__init__.py",
       "PySDM/dynamics/collisions/collision.py",
       "tutorials/collisions/collisions_playground.ipynb",
-      "tutorials/wikipedia/sdm.ipynb"
+      "tutorials/wikipedia/sdm.ipynb",
+      "tests/smoke_tests/box/shima_et_al_2009/test_convergence.py"
     ],
     "label": "Shima et al. 2009 (Q. J. R. Meteorol. Soc. 135)",
     "title": "The super-droplet method for the numerical simulation of clouds and precipitation: a particle-based and probabilistic microphysics model coupled with a non-hydrostatic model"
@@ -898,5 +899,33 @@
     ],
     "title": "Remarks on the deuterium excess in precipitation in cold regions",
     "label": "Fisher 1991 (Tellus B)"
+  },
+  "https://doi.org/10.5194/acp-23-2035-2023": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
+      "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
+      "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",
+      "examples/PySDM_examples/Spichtinger_et_al_2023/fig_B1.ipynb",
+      "tests/unit_tests/physics/test_homogeneous_nucleation_rates.py"
+    ],
+    "title": "Impact of formulations of the homogeneous nucleation rate on ice nucleation events in cirrus",
+    "label": "Spichtinger et al. 2023 (Atmos. Chem. Phys. 23)"
+  },
+  "https://doi.org/10.1038/35020537": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/homogeneous_ice_nucleation_rate/koop.py"
+    ],
+    "title": "Water activity as the determinant for homogeneous ice nucleation in aqueous solutions",
+    "label": "Koop et al. 2000 (Nature 406)"
+  },
+  "https://doi.org/10.1063/1.4962355": {
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/homogeneous_ice_nucleation_rate/koop_murray.py"
+    ],
+    "title": "A physically constrained classical description of the homogeneous nucleation of ice in water",
+    "label": "Koop and Murray 2016 (J. Chem. Phys. 145)"
   }
 }

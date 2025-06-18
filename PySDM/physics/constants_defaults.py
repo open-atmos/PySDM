@@ -299,7 +299,7 @@ T_STP = (sci.zero_Celsius + 15) * si.kelvin
 p_STP = 101325 * si.pascal
 """ ... and pressure """
 
-ROOM_TEMP = T_tri + 25 * si.K
+ROOM_TEMP = T0 + 25 * si.K
 """ room temperature """
 
 dT_u = si.K
@@ -326,8 +326,44 @@ ABIFM_M = np.inf
 ABIFM_C = np.inf
 """ 〃 """
 
+KOOP_2000_C1 = -906.7
+""" homogeneous ice nucleation rate
+([Koop et al. 2000](https://doi.org/10.1038/35020537)) """
+KOOP_2000_C2 = 8502
+""" 〃 """
+KOOP_2000_C3 = -26924
+""" 〃 """
+KOOP_2000_C4 = 29180
+""" 〃 """
+KOOP_UNIT = 1 / si.cm**3 / si.s
+""" 〃 """
+KOOP_MIN_DA_W_ICE = 0.26
+""" 〃 """
+KOOP_MAX_DA_W_ICE = 0.34
+
+KOOP_CORR = -1.522
+""" homogeneous ice nucleation rate correction factor
+([Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)) """
+
+KOOP_MURRAY_C0 = -3020.684
+""" homogeneous ice nucleation rate for pure water droplets
+([Koop & Murray 20016](https://doi.org/10.1063/1.4962355)) """
+KOOP_MURRAY_C1 = -425.921 / si.K
+""" 〃 """
+KOOP_MURRAY_C2 = -25.9779 / si.K**2
+""" 〃 """
+KOOP_MURRAY_C3 = -0.868451 / si.K**3
+""" 〃 """
+KOOP_MURRAY_C4 = -1.66203e-2 / si.K**4
+""" 〃 """
+KOOP_MURRAY_C5 = -1.71736e-4 / si.K**5
+""" 〃 """
+KOOP_MURRAY_C6 = -7.46953e-7 / si.K**6
+""" 〃 """
+
 J_HET = np.nan
-""" constant ice nucleation rate """
+J_HOM = np.nan
+""" constant ice nucleation rates """
 
 STRAUB_E_D1 = 0.04 * si.cm
 """ [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1) """

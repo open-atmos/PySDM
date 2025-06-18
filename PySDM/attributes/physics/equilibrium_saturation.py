@@ -1,12 +1,12 @@
 """
-kappa-Koehler equilibrium supersaturation calculated for actual environment temperature
+kappa-Koehler equilibrium saturation calculated for actual environment temperature
 """
 
 from PySDM.attributes.impl import DerivedAttribute, register_attribute
 
 
 @register_attribute()
-class EquilibriumSupersaturation(DerivedAttribute):
+class EquilibriumSaturation(DerivedAttribute):
     def __init__(self, builder):
         self.r_wet = builder.get_attribute("radius")
         self.v_wet = builder.get_attribute("volume")
@@ -16,7 +16,7 @@ class EquilibriumSupersaturation(DerivedAttribute):
 
         super().__init__(
             builder=builder,
-            name="equilibrium supersaturation",
+            name="equilibrium saturation",
             dependencies=(self.kappa, self.v_dry, self.f_org, self.r_wet),
         )
 
