@@ -11,3 +11,4 @@ from .extensive_attribute import ExtensiveAttribute
 from .maximum_attribute import MaximumAttribute
 from .attribute_registry import register_attribute, get_attribute_class
 from .intensive_attribute import IntensiveAttribute
+from .temperature_variation_option_attribute import TemperatureVariationOptionAttribute
