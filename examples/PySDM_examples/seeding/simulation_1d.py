@@ -120,12 +120,6 @@ class Simulation:
             n_sd=settings.n_sd_seeding
         )  # TODO #1387: does not have to be the same?
         v_dry = settings.formulae.trivia.volume(radius=r_dry)
-        self.seeded_particle_extensive_attributes = {
-            "signed water mass": np.array([0.0001 * si.ng] * settings.n_sd_seeding),
-            "dry volume": v_dry,
-            "kappa times dry volume": settings.seed_kappa
-            * v_dry,  # include kappa argument for seeds
-        }
         self.seeded_particle_multiplicity = n_in_dv * np.prod(np.array(self.mesh.size))
 
         positions = spatial_sampling.Pseudorandom().sample(
@@ -134,9 +128,6 @@ class Simulation:
             n_sd=settings.n_sd_seeding,
         )
         cell_id, cell_origin, pos_cell = self.mesh.cellular_attributes(positions)
-        self.seeded_particle_cell_id = cell_id
-        self.seeded_particle_cell_origin = cell_origin
-        self.seeded_particle_pos_cell = pos_cell
 
         r_wet = equilibrate_wet_radii(
             r_dry=settings.formulae.trivia.radius(volume=v_dry),
@@ -145,21 +136,20 @@ class Simulation:
             kappa_times_dry_volume=settings.seed_kappa
             * v_dry,  # include kappa argument for seeds
         )
-        self.seeded_particle_volume = settings.formulae.trivia.volume(radius=r_wet)
-        # self.builder.particulator.backend.mass_of_water_volume(
-        #    self.seeded_particle_extensive_attributes["signed water mass"],
-        #    self.seeded_particle_volume,
-        # )
+        wet_volume = settings.formulae.trivia.volume(radius=r_wet)
+
+        self.seeded_particle_extensive_attributes = {
+            "signed water mass": np.array([0.0001 * si.ng] * settings.n_sd_seeding),
+            "dry volume": v_dry,
+            "kappa times dry volume": settings.seed_kappa
+            * v_dry,  # include kappa argument for seeds
+        }
 
         self.builder.add_dynamic(
             Seeding(
                 super_droplet_injection_rate=settings.super_droplet_injection_rate,
                 seeded_particle_multiplicity=self.seeded_particle_multiplicity,
                 seeded_particle_extensive_attributes=self.seeded_particle_extensive_attributes,
-                seeded_particle_cell_id=self.seeded_particle_cell_id,
-                seeded_particle_cell_origin=self.seeded_particle_cell_origin,
-                seeded_particle_pos_cell=self.seeded_particle_pos_cell,
-                seeded_particle_volume=self.seeded_particle_volume,
             )
         )
 
@@ -210,7 +200,7 @@ class Simulation:
                     PySDM_products.RipeningRate(name="ripening"),
                     PySDM_products.ActivatingRate(name="activating"),
                     PySDM_products.DeactivatingRate(name="deactivating"),
-                    PySDM_products.PeakSupersaturation(unit="%"),
+                    PySDM_products.PeakSaturation(unit="%"),
                     PySDM_products.ParticleSizeSpectrumPerVolume(
                         name="dry spectrum",
                         radius_bins_edges=settings.r_bins_edges_dry,

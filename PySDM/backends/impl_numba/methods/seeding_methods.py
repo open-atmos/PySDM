@@ -19,14 +19,6 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             seeded_particle_multiplicity,
             seeded_particle_extensive_attributes,
             number_of_super_particles_to_inject: int,
-            seeded_particle_cell_id,
-            seeded_particle_cell_origin,
-            seeded_particle_pos_cell,
-            seeded_particle_volume,
-            cell_id,
-            cell_origin,
-            pos_cell,
-            volume,
         ):
             number_of_super_particles_already_injected = 0
             # TODO #1387 start enumerating from the end of valid particle set
@@ -47,14 +39,6 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
                         extensive_attributes[a, i] = (
                             seeded_particle_extensive_attributes[a, s]
                         )
-
-                    if cell_id is not None:
-                        cell_id[i] = seeded_particle_cell_id[s]
-                        volume[i] = seeded_particle_volume[s]
-                        for dim in range(len(cell_origin)):
-                            cell_origin[dim][i] = seeded_particle_cell_origin[dim][s]
-                            pos_cell[dim][i] = seeded_particle_pos_cell[dim][s]
-
             assert (
                 number_of_super_particles_to_inject
                 == number_of_super_particles_already_injected
@@ -72,14 +56,6 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
         seeded_particle_multiplicity,
         seeded_particle_extensive_attributes,
         number_of_super_particles_to_inject: int,
-        seeded_particle_cell_id,
-        seeded_particle_cell_origin,
-        seeded_particle_pos_cell,
-        seeded_particle_volume,
-        cell_id,
-        cell_origin,
-        pos_cell,
-        volume,
     ):
         self._seeding(
             idx=idx.data,
@@ -89,12 +65,4 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
             seeded_particle_multiplicity=seeded_particle_multiplicity.data,
             seeded_particle_extensive_attributes=seeded_particle_extensive_attributes.data,
             number_of_super_particles_to_inject=number_of_super_particles_to_inject,
-            seeded_particle_cell_id=seeded_particle_cell_id,
-            seeded_particle_cell_origin=seeded_particle_cell_origin,
-            seeded_particle_pos_cell=seeded_particle_pos_cell,
-            seeded_particle_volume=seeded_particle_volume,
-            cell_id=cell_id,
-            cell_origin=cell_origin,
-            pos_cell=pos_cell,
-            volume=volume,
         )

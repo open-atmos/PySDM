@@ -18,21 +18,13 @@ class Seeding:
         super_droplet_injection_rate: callable,
         seeded_particle_extensive_attributes: dict,
         seeded_particle_multiplicity: Sized,
-        seeded_particle_cell_id=None,
-        seeded_particle_cell_origin=None,
-        seeded_particle_pos_cell=None,
-        seeded_particle_volume=None,
     ):
-        for attr in seeded_particle_extensive_attributes.values():
-            assert len(seeded_particle_multiplicity) == len(attr)
+        # for attr in seeded_particle_extensive_attributes.values():
+        #    assert len(seeded_particle_multiplicity) == len(attr)
         self.particulator = None
         self.super_droplet_injection_rate = super_droplet_injection_rate
         self.seeded_particle_extensive_attributes = seeded_particle_extensive_attributes
         self.seeded_particle_multiplicity = seeded_particle_multiplicity
-        self.seeded_particle_cell_id = seeded_particle_cell_id
-        self.seeded_particle_cell_origin = seeded_particle_cell_origin
-        self.seeded_particle_pos_cell = seeded_particle_pos_cell
-        self.seeded_particle_volume = seeded_particle_volume
         self.rnd = None
         self.u01 = None
         self.index = None
@@ -75,30 +67,6 @@ class Seeding:
             )
         )
 
-        if self.particulator.environment.mesh.n_dims > 0:
-            self.seeded_particle_cell_id = (
-                self.particulator.IndexedStorage.from_ndarray(
-                    self.index,
-                    np.asarray(self.seeded_particle_cell_id),
-                )
-            )
-            self.seeded_particle_cell_origin = (
-                self.particulator.IndexedStorage.from_ndarray(
-                    self.index,
-                    np.asarray(self.seeded_particle_cell_origin),
-                )
-            )
-            self.seeded_particle_pos_cell = (
-                self.particulator.IndexedStorage.from_ndarray(
-                    self.index,
-                    np.asarray(self.seeded_particle_pos_cell),
-                )
-            )
-            self.seeded_particle_volume = self.particulator.IndexedStorage.from_ndarray(
-                self.index,
-                np.asarray(self.seeded_particle_volume),
-            )
-
     def __call__(self):
         if self.particulator.n_steps == 0:
             self.post_register_setup_when_attributes_are_known()
@@ -123,8 +91,4 @@ class Seeding:
                 number_of_super_particles_to_inject=number_of_super_particles_to_inject,
                 seeded_particle_multiplicity=self.seeded_particle_multiplicity,
                 seeded_particle_extensive_attributes=self.seeded_particle_extensive_attributes,
-                seeded_particle_cell_id=self.seeded_particle_cell_id,
-                seeded_particle_cell_origin=self.seeded_particle_cell_origin,
-                seeded_particle_pos_cell=self.seeded_particle_pos_cell,
-                seeded_particle_volume=self.seeded_particle_volume,
             )
