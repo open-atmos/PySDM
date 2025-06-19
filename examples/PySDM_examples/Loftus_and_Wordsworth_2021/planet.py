@@ -1,3 +1,10 @@
+"""
+Planetary properties used in calculations.
+
+Values are primarily taken from Table 1 of Loftus & Wordsworth (2021), unless otherwise noted.
+Each variable represents a physical property or atmospheric composition relevant for cloud microphysics modeling.
+"""
+
 from PySDM.physics.constants import si
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
@@ -24,7 +31,7 @@ class Planet:
 class EarthLike(Planet):
     g_std: float = 9.82 * si.metre / si.second**2
     T_STP: float = 300 * si.kelvin
-    p_STP: float = 1.01325 * 1e6 * si.pascal
+    p_STP: float = 1.01325 * 1e5 * si.Pa
     RH_zref: float = 0.75
     dry_molar_conc_H2: float = 0
     dry_molar_conc_He: float = 0
@@ -38,7 +45,7 @@ class EarthLike(Planet):
 class Earth(Planet):
     g_std: float = 9.82 * si.metre / si.second**2
     T_STP: float = 290 * si.kelvin
-    p_STP: float = 1.01325 * 1e6 * si.pascal
+    p_STP: float = 1.01325 * 1e5 * si.Pa
     RH_zref: float = 0.75
     dry_molar_conc_H2: float = 0
     dry_molar_conc_He: float = 0
@@ -52,7 +59,7 @@ class Earth(Planet):
 class EarlyMars(Planet):
     g_std: float = 3.71 * si.metre / si.second**2
     T_STP: float = 290 * si.kelvin
-    p_STP: float = 2 * 1e6 * si.pascal
+    p_STP: float = 2 * 1e5 * si.Pa
     RH_zref: float = 0.75
     dry_molar_conc_H2: float = 0
     dry_molar_conc_He: float = 0
@@ -66,7 +73,7 @@ class EarlyMars(Planet):
 class Jupiter(Planet):
     g_std: float = 24.84 * si.metre / si.second**2
     T_STP: float = 274 * si.kelvin
-    p_STP: float = 4.85 * 1e6 * si.pascal
+    p_STP: float = 4.85 * 1e5 * si.Pa
     RH_zref: float = 1
     dry_molar_conc_H2: float = 0.864
     dry_molar_conc_He: float = 0.136
@@ -80,7 +87,7 @@ class Jupiter(Planet):
 class Saturn(Planet):
     g_std: float = 10.47 * si.metre / si.second**2
     T_STP: float = 284 * si.kelvin
-    p_STP: float = 10.4 * 1e6 * si.pascal
+    p_STP: float = 10.4 * 1e5 * si.Pa
     RH_zref: float = 1
     dry_molar_conc_H2: float = 0.88
     dry_molar_conc_He: float = 0.12
@@ -94,7 +101,7 @@ class Saturn(Planet):
 class K2_18B(Planet):
     g_std: float = 12.44 * si.metre / si.second**2
     T_STP: float = 275 * si.kelvin
-    p_STP: float = 0.1 * 1e6 * si.pascal
+    p_STP: float = 0.1 * 1e5 * si.Pa
     RH_zref: float = 1
     dry_molar_conc_H2: float = 0.9
     dry_molar_conc_He: float = 0.1
@@ -108,7 +115,7 @@ class K2_18B(Planet):
 class CompositeTest(Planet):
     g_std: float = 9.82 * si.metre / si.second**2
     T_STP: float = 275 * si.kelvin
-    p_STP: float = 0.75 * 1e6 * si.pascal
+    p_STP: float = 0.75 * 1e5 * si.Pa
     RH_zref: float = 1
     dry_molar_conc_H2: float = 0.1
     dry_molar_conc_He: float = 0.1
