@@ -14,7 +14,7 @@ from ...impl_common.backend_methods import BackendMethods
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 # pylint: disable=too-many-arguments
 def calculate_displacement_body_common(
-    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, cell_id, n_substeps, enable_monte_carlo, rng
+    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, cell_id, n_substeps, enable_monte_carlo, u01
 ):
     displacement[dim, droplet] = scheme(
         position_in_cell[dim, droplet],
@@ -22,7 +22,7 @@ def calculate_displacement_body_common(
         courant[_l] / n_substeps,
         courant[_r] / n_substeps,
         enable_monte_carlo,
-        rng.uniform(0.,1.)
+        u01
     )
 
 
@@ -38,6 +38,7 @@ class DisplacementMethods(BackendMethods):
             # Arakawa-C grid
             _l = cell_origin[0, droplet]
             _r = cell_origin[0, droplet] + 1
+            u01 = rng[droplet]
             calculate_displacement_body_common(
                 dim,
                 droplet,
@@ -50,7 +51,7 @@ class DisplacementMethods(BackendMethods):
                 cell_id,
                 n_substeps,
                 enable_monte_carlo,
-                rng,
+                u01,
             )
 
     @staticmethod
@@ -70,6 +71,7 @@ class DisplacementMethods(BackendMethods):
                 cell_origin[0, droplet] + 1 * (dim == 0),
                 cell_origin[1, droplet] + 1 * (dim == 1),
             )
+            u01 = rng[droplet]
             calculate_displacement_body_common(
                 dim,
                 droplet,
@@ -82,7 +84,7 @@ class DisplacementMethods(BackendMethods):
                 cell_id,
                 n_substeps,
                 enable_monte_carlo,
-                rng,
+                u01,
             )
 
     @staticmethod
@@ -104,6 +106,7 @@ class DisplacementMethods(BackendMethods):
                 cell_origin[1, droplet] + 1 * (dim == 1),
                 cell_origin[2, droplet] + 1 * (dim == 2),
             )
+            u01 = rng[droplet]
             calculate_displacement_body_common(
                 dim,
                 droplet,
@@ -116,7 +119,7 @@ class DisplacementMethods(BackendMethods):
                 cell_id,
                 n_substeps,
                 enable_monte_carlo,
-                rng,
+                u01,
             )
 
     def calculate_displacement(
@@ -135,7 +138,7 @@ class DisplacementMethods(BackendMethods):
                 cell_id.data,
                 n_substeps,
                 enable_monte_carlo,
-                rng,
+                rng.uniform(0., 1., displacement.data.shape[1]),
             )
         elif n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
@@ -148,7 +151,7 @@ class DisplacementMethods(BackendMethods):
                 cell_id.data,
                 n_substeps,
                 enable_monte_carlo,
-                rng,
+                rng.uniform(0., 1., displacement.data.shape[1]),
             )
         elif n_dims == 3:
             DisplacementMethods.calculate_displacement_body_3d(
@@ -161,7 +164,7 @@ class DisplacementMethods(BackendMethods):
                 cell_id.data,
                 n_substeps,
                 enable_monte_carlo,
-                rng,
+                rng.uniform(0., 1., displacement.data.shape[1]),
             )
         else:
             raise NotImplementedError()

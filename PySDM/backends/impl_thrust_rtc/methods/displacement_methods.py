@@ -120,7 +120,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 position_in_cell.data,
                 trtc.DVInt64(n_substeps),
                 trtc.DVBool(enable_monte_carlo),
-                trtc.DVDouble(1.0) # TODO
+                trtc.DVDouble(rng.uniform(0., 1.))
             ),
         )
 
