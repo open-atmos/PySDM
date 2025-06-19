@@ -1,5 +1,4 @@
 import numba
-import numpy
 import numpy as np  # pylint: disable=reimported
 import PyMPDATA
 import scipy
@@ -103,7 +102,7 @@ class Common:
         self.mpdata_fct = True
         self.mpdata_tot = True
 
-        key_packages = [PySDM, PyMPDATA, numba, numpy, scipy]
+        key_packages = [PySDM, PyMPDATA, numba, np, scipy]
         try:
             import ThrustRTC  # pylint: disable=import-outside-toplevel
 
