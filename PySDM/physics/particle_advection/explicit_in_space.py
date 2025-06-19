@@ -27,9 +27,7 @@ class ExplicitInSpace:  # pylint: disable=too-few-public-methods
                 np.abs(max(c_l, c_r))
                 / max(c_l, c_r)
             )
-        ) \
-        if enable_monte_carlo \
-        else (
+        ) if enable_monte_carlo else (
             c_l
             * (1 - position_in_cell)
             + c_r * position_in_cell
