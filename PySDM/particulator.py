@@ -72,9 +72,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def n_sd(self) -> int:
         return self.__n_sd
 
-    def n_sd_setter(self, value):
-        self.__n_sd += value
-
     @property
     def dt(self) -> float:
         if self.environment is not None:
