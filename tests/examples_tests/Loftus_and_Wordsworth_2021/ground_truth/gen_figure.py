@@ -67,9 +67,15 @@ c_10 = axs[1, 0].contour(
     levels=[0.1],
 )
 cb.add_lines(c_10)
-axs[1, 0].clabel(c_10, c_10.levels, fmt={0.1: "10% mass evaporated"}, fontsize="smaller")
-axs[1, 0].fill_betweenx(RHs, 1e-2, (r_mins - 1e-6) * 1e3, edgecolor="k", facecolor="w", hatch="//")
-axs[1, 0].annotate(text="TOTAL \\n EVAPORATION", xy=(0.04, 0.55), c="k", backgroundcolor="w")
+axs[1, 0].clabel(
+    c_10, c_10.levels, fmt={0.1: "10% mass evaporated"}, fontsize="smaller"
+)
+axs[1, 0].fill_betweenx(
+    RHs, 1e-2, (r_mins - 1e-6) * 1e3, edgecolor="k", facecolor="w", hatch="//"
+)
+axs[1, 0].annotate(
+    text="TOTAL \\n EVAPORATION", xy=(0.04, 0.55), c="k", backgroundcolor="w"
+)
 axs[1, 0].annotate(
     text=r"$r_\mathrm{min}$",
     xy=(0.35, 0.27),
