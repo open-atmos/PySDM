@@ -7,6 +7,8 @@ from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.physics import constants as const
 from PySDM_examples.Loftus_and_Wordsworth_2021.parcel import AlienParcel
 
+MIN_DROPLET_RADIUS = 1e-6
+
 
 class Simulation:
     def __init__(self, settings, backend=CPU):
@@ -75,7 +77,10 @@ class Simulation:
         }
 
         self.save(output)
-        while self.particulator.environment["z"][0] > 0 and output["r"][-1] > 1e-6:
+        while (
+            self.particulator.environment["z"][0] > 0
+            and output["r"][-1] > MIN_DROPLET_RADIUS
+        ):
             self.particulator.run(1)
             self.save(output)
 
