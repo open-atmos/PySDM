@@ -106,7 +106,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         T = self["T"][0]
         p = self["p"][0]
 
-        dz_dt = self.w((self.particulator.n_steps + 1 / 2) * dt)  # "mid-point"
+        dz_dt = self._compute_dz_dt(dt)
         water_vapour_mixing_ratio = (
             self["water_vapour_mixing_ratio"][0]
             - self.delta_liquid_water_mixing_ratio / 2
@@ -132,6 +132,9 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self.mesh.dv = formulae.trivia.volume_of_density_mass(
             (self._tmp["rhod"][0] + self["rhod"][0]) / 2, self.mass_of_dry_air
         )
+
+    def _compute_dz_dt(self, dt):
+        self.w((self.particulator.n_steps + 1 / 2) * dt)  # "mid-point"
 
     def get_thd(self):
         return self["thd"]
