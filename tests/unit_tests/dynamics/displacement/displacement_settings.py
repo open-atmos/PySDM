@@ -21,7 +21,7 @@ class DisplacementSettings:  # pylint: disable=too-few-public-methods
         self.sedimentation = False
         self.dt = None
 
-    def get_displacement(self, backend, scheme, adaptive=True):
+    def get_displacement(self, backend, scheme, adaptive=True, enable_monte_carlo=False):
         formulae = Formulae(particle_advection=scheme)
         particulator = DummyParticulator(backend, n_sd=len(self.n), formulae=formulae)
         particulator.environment = DummyEnvironment(
@@ -39,7 +39,7 @@ class DisplacementSettings:  # pylint: disable=too-few-public-methods
             "position in cell": position_in_cell,
         }
         particulator.build(attributes)
-        sut = Displacement(enable_sedimentation=self.sedimentation, adaptive=adaptive)
+        sut = Displacement(enable_sedimentation=self.sedimentation, adaptive=adaptive, enable_monte_carlo=enable_monte_carlo)
         sut.register(particulator)
         sut.upload_courant_field(self.courant_field_data)
 
