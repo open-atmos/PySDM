@@ -43,7 +43,7 @@ cmesh = axs[1, 0].contourf(
     r0grid * 1e3,
     RHgrid,
     m_frac_evap,
-    cmap=plt.cm.binary,
+    cmap=plt.cm.binary,  # pylint: disable=no-member
     vmin=0,
     vmax=1,
     levels=levels_smooth,
@@ -95,7 +95,10 @@ axs[0, 0].annotate(text="surface RH = 0.75", xy=(0.8, 0.85), c="plum", size=8)
 axs[0, 0].annotate(text=r"$r_\mathrm{min}$", xy=(0.13, 0.05), c="darkviolet", size=8)
 
 figs_path = os.path.join(dir, "figs")
-os.mkdir(figs_path) if not os.path.exists(figs_path) else None
+
+if not os.path.exists(figs_path):
+    os.mkdir(figs_path)
+
 plt.savefig(
     os.path.join(figs_path, "fig02.pdf"),
     transparent=True,
