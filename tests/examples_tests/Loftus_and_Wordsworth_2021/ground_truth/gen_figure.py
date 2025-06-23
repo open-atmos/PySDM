@@ -1,10 +1,12 @@
+# pylint: disable=missing-module-docstring
+
 ################################################################
 # make LoWo21 Figure 2
 # r_min, fraction raindrop mass evaporated as functions of RH
 ################################################################
+import os
 import numpy as np
 import matplotlib.pyplot as plt
-import os
 
 # load results
 root_dir = os.path.dirname(os.path.abspath(__file__))

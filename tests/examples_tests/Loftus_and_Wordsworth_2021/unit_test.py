@@ -3,8 +3,6 @@
 from collections import namedtuple
 from functools import partial
 from contextlib import contextmanager
-from PySDM import Formulae
-from PySDM.physics import si
 import pytest
 import numpy as np
 from scipy.optimize import fsolve
@@ -20,6 +18,9 @@ from PySDM_examples.Loftus_and_Wordsworth_2021.planet import (
 from PySDM_examples.Loftus_and_Wordsworth_2021.simulation import Simulation
 from PySDM_examples.Loftus_and_Wordsworth_2021.parcel import AlienParcel
 from PySDM_examples.Loftus_and_Wordsworth_2021 import Settings
+
+from PySDM import Formulae
+from PySDM.physics import si
 
 
 class TestLoftusWordsworth2021:
@@ -57,9 +58,10 @@ class TestLoftusWordsworth2021:
                 + planet.dry_molar_conc_O2
                 + planet.dry_molar_conc_CO2
             )
-            assert (
-                total_conc <= 1.01
-            ), f"Total molar concentration {total_conc} exceeds 1.01 for {planet.__class__.__name__}"
+            assert total_conc <= 1.01, (
+                f"Total molar concentration {total_conc} "
+                + f"exceeds 1.01 for {planet.__class__.__name__}"
+            )
 
     def test_water_vapour_mixing_ratio_calculation(self):
         """Test water vapour mixing ratio calculation."""
@@ -88,7 +90,7 @@ class TestLoftusWordsworth2021:
         )
         assert parcel is not None
 
-    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-arguments
     @pytest.mark.parametrize(
         "r_wet_val, mass_of_dry_air_val, iwvmr_val, pcloud_val, Zcloud_val, Tcloud_val",
         [
@@ -134,7 +136,7 @@ class TestLoftusWordsworth2021:
             for product in required_products:
                 assert product in products
 
-    # pylint: disable=too-many-arguments,too-many-positional-arguments
+    # pylint: disable=too-many-arguments
     @pytest.mark.parametrize(
         "r_wet_val, mass_of_dry_air_val, iwvmr_val, pcloud_val, Zcloud_val, Tcloud_val",
         [
@@ -185,7 +187,7 @@ class TestLoftusWordsworth2021:
             assert len(output["z"]) > 0, "Output array 'z' is empty"
             assert len(output["t"]) > 0, "Output array 't' is empty"
 
-            lengths = [len(output[key]) for key in output.keys()]
+            lengths = [len(one_output) for one_output in output.values()]
             assert all(
                 length == lengths[0] for length in lengths
             ), "Not all output arrays have the same length"
@@ -243,11 +245,16 @@ class TestLoftusWordsworth2021:
                 [150, 300],
             )
             Tcloud = np.max(tdews)
-            Zcloud = (new_Earth.T_STP - Tcloud) * c_p / new_Earth.g_std
             thstd = formulae.trivia.th_std(new_Earth.p_STP, new_Earth.T_STP)
 
-            pcloud = formulae.hydrostatics.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
-                new_Earth.p_STP, thstd, initial_water_vapour_mixing_ratio, Zcloud
+            hydro = formulae.hydrostatics
+            pcloud = (
+                hydro.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+                    new_Earth.p_STP,
+                    thstd,
+                    initial_water_vapour_mixing_ratio,
+                    (new_Earth.T_STP - Tcloud) * c_p / new_Earth.g_std,
+                )
             )
 
             np.testing.assert_approx_equal(

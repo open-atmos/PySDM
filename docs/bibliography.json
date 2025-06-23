@@ -925,5 +925,12 @@
     ],
     "title": "A physically constrained classical description of the homogeneous nucleation of ice in water",
     "label": "Koop and Murray 2016 (J. Chem. Phys. 145)"
+  },
+  "https://doi.org/10.1029/2020JE006653": {
+    "usages": [
+      "PySDM/examples/PySDM_examples/Loftus_and_Wordsworth_2021/__init__.py"
+    ],
+    "title": "The Physics of Falling Raindrops in Diverse Planetary Atmospheres",
+    "label": "Kaitlyn Loftus, Robin D. Wordsworth (JGR Planets 2021)"
   }
 }

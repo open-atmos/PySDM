@@ -9,10 +9,11 @@ import pytest
 import numpy as np
 from scipy.optimize import fsolve
 
-from PySDM import Formulae
-from PySDM.physics import si
 from PySDM_examples.Loftus_and_Wordsworth_2021 import Settings, Simulation
 from PySDM_examples.Loftus_and_Wordsworth_2021.planet import EarthLike
+
+from PySDM import Formulae
+from PySDM.physics import si
 
 
 class GroundTruthLoader:
@@ -122,14 +123,14 @@ class TestNPYComparison:
             pvs_tc = formulae_instance.saturation_vapour_pressure.pvs_water(T_candidate)
             return pv_ad - pvs_tc
 
-        Tcloud_solutions = fsolve(solve_Tcloud, [150.0, 300.0])
-        Tcloud = np.max(Tcloud_solutions)
+        Tcloud = np.max(fsolve(solve_Tcloud, [150.0, 300.0]))
 
         Zcloud = (planet.T_STP - Tcloud) * cp_mix / planet.g_std
 
         th_std = formulae_instance.trivia.th_std(planet.p_STP, planet.T_STP)
 
-        pcloud = formulae_instance.hydrostatics.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+        hydro = formulae_instance.hydrostatics
+        pcloud = hydro.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
             planet.p_STP, th_std, initial_water_vapour_mixing_ratio, Zcloud
         )
         return initial_water_vapour_mixing_ratio, Tcloud, Zcloud, pcloud
