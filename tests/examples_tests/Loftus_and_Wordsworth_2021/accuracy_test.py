@@ -164,7 +164,7 @@ class TestNPYComparison:
                     Zcloud,
                     pcloud,
                 )
-            except Exception as e:
+            except Exception as e: # pylint: disable=broad-except
                 pytest.fail(
                     f"Error in _calculate_cloud_properties for RH={rh} " +
                     f"(sample idx {i_rh},{j_r}): {e}."
@@ -238,7 +238,7 @@ class TestNPYComparison:
                     frac_evap = 1.0 - (final_radius_m / r_m) ** 3
                 return np.clip(frac_evap, 0.0, 1.0)
             return np.nan
-        except Exception as e:
+        except Exception as e: # pylint: disable=broad-except
             warnings.warn(
                 f"Simulation run failed for RH={rh:.4f}, r={r_m:.3e} " +\
                 f"(sample idx {i_rh},{j_r}): {type(e).__name__}: {e}"
