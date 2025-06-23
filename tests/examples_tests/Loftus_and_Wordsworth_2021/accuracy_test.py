@@ -42,6 +42,7 @@ class GroundTruthLoader:
         pass
 
 
+# pylint: disable=redefined-outer-name
 @pytest.fixture(scope="module")
 def ground_truth_data(request) -> Generator[GroundTruthLoader, None, None]:
     current_dir = os.path.dirname(os.path.abspath(request.fspath))
@@ -52,6 +53,7 @@ def ground_truth_data(request) -> Generator[GroundTruthLoader, None, None]:
         yield gt
 
 
+# pylint: disable=redefined-outer-name
 @pytest.fixture
 def ground_truth_sample(ground_truth_data: GroundTruthLoader) -> List[dict]:
     gt = ground_truth_data
@@ -78,6 +80,7 @@ def ground_truth_sample(ground_truth_data: GroundTruthLoader) -> List[dict]:
     ]
 
 
+# pylint: disable=redefined-outer-name
 @pytest.fixture(scope="module")
 def static_arrays() -> Tuple[np.ndarray, np.ndarray, np.ndarray, object]:
     formulae = Formulae(
@@ -141,80 +144,76 @@ class TestNPYComparison:
         )
         for sample in ground_truth_sample:
             planet = EarthLike()
-            rh = sample["rh"]
-            r_m = sample["r_m"]
-            expected = sample["expected_m_frac_evap"]
-            i_rh = sample["i_rh"]
-            j_r = sample["j_r"]
             try:
                 iwvmr, Tcloud, Zcloud, pcloud = \
                 self._calculate_cloud_properties(
-                    planet, rh, formulae
+                    planet, sample["rh"], formulae
                 )
-                simulated = self.calc_simulated_m_frac_evap_point(
-                    planet,
-                    formulae,
-                    i_rh,
-                    j_r,
-                    rh,
-                    r_m,
-                    expected,
-                    iwvmr,
-                    Tcloud,
-                    Zcloud,
-                    pcloud,
+                settings = Settings(
+                    planet=planet,
+                    r_wet=sample["r_m"],
+                    mass_of_dry_air=1e5 * si.kg,
+                    initial_water_vapour_mixing_ratio=iwvmr,
+                    pcloud=pcloud,
+                    Zcloud=Zcloud,
+                    Tcloud=Tcloud,
+                    formulae=formulae,
                 )
+                simulated = TestNPYComparison.calc_simulated_m_frac_evap_point(
+                    sample["i_rh"],
+                    sample["j_r"],
+                    sample["rh"],
+                    sample["expected_m_frac_evap"],
+                    settings
+                )
+                expected = sample["expected_m_frac_evap"]
+                error_context = (
+                    f"Sample (RH_idx={sample['i_rh']}, R_idx={sample['j_r']}), " +
+                    f"RH={sample['rh']:.4f}, R_m={sample['r_m']:.3e}. "
+                    f"Expected: {expected}, Got: {simulated}"
+                )
+                if np.isnan(expected):
+                    assert np.isnan(
+                        simulated
+                    ), f"NaN Mismatch. {error_context} (Expected NaN, got non-NaN)"
+                else:
+                    assert not np.isnan(
+                        simulated
+                    ), f"NaN Mismatch. {error_context} (Expected non-NaN, got NaN)"
+                    np.testing.assert_allclose(
+                        simulated,
+                        expected,
+                        rtol=1e-1,
+                        atol=1e-1,
+                        err_msg=f"Value Mismatch. {error_context}",
+                    )
             except Exception as e: # pylint: disable=broad-except
                 pytest.fail(
-                    f"Error in _calculate_cloud_properties for RH={rh} " +
-                    f"(sample idx {i_rh},{j_r}): {e}."
-                )
-            error_context = (
-                f"Sample (RH_idx={i_rh}, R_idx={j_r}), RH={rh:.4f}, R_m={r_m:.3e}. "
-                f"Expected: {expected}, Got: {simulated}"
-            )
-            if np.isnan(expected):
-                assert np.isnan(
-                    simulated
-                ), f"NaN Mismatch. {error_context} (Expected NaN, got non-NaN)"
-            else:
-                assert not np.isnan(
-                    simulated
-                ), f"NaN Mismatch. {error_context} (Expected non-NaN, got NaN)"
-                np.testing.assert_allclose(
-                    simulated,
-                    expected,
-                    rtol=1e-1,
-                    atol=1e-1,
-                    err_msg=f"Value Mismatch. {error_context}",
+                    f"Error in _calculate_cloud_properties for RH={sample['rh']} " +
+                    f"(sample idx {sample['i_rh']},{sample['j_r']}): {e}."
                 )
 
+    @staticmethod
     def calc_simulated_m_frac_evap_point(
-        self,
-        planet,
-        formulae,
         i_rh,
         j_r,
         rh,
-        r_m,
         expected,
-        iwvmr,
-        Tcloud,
-        Zcloud,
-        pcloud,
+        settings
     ):
-        if np.isnan(r_m) or r_m <= 0:
-            pytest.fail(f"Invalid radius r_m={r_m} for sample idx {i_rh},{j_r}.")
-        settings = Settings(
-            planet=planet,
-            r_wet=r_m,
-            mass_of_dry_air=1e5 * si.kg,
-            initial_water_vapour_mixing_ratio=iwvmr,
-            pcloud=pcloud,
-            Zcloud=Zcloud,
-            Tcloud=Tcloud,
-            formulae=formulae,
-        )
+        # settings = Settings(
+        #     planet=planet,
+        #     r_wet=sample["r_m"],
+        #     mass_of_dry_air=1e5 * si.kg,
+        #     initial_water_vapour_mixing_ratio=iwvmr,
+        #     pcloud=pcloud,
+        #     Zcloud=Zcloud,
+        #     Tcloud=Tcloud,
+        #     formulae=formulae,
+        # )
+
+        if np.isnan(settings.r_wet) or settings.r_wet <= 0:
+            pytest.fail(f"Invalid radius r_m={settings.r_wet} for sample idx {i_rh},{j_r}.")
         simulation = Simulation(settings)
         try:
             output = simulation.run()
@@ -232,15 +231,15 @@ class TestNPYComparison:
                         return 1.0
                     return np.nan
                 final_radius_m = final_radius_um * 1e-6
-                if r_m == 0:
+                if settings.r_wet == 0:
                     frac_evap = 1.0
                 else:
-                    frac_evap = 1.0 - (final_radius_m / r_m) ** 3
+                    frac_evap = 1.0 - (final_radius_m / settings.r_wet) ** 3
                 return np.clip(frac_evap, 0.0, 1.0)
             return np.nan
         except Exception as e: # pylint: disable=broad-except
             warnings.warn(
-                f"Simulation run failed for RH={rh:.4f}, r={r_m:.3e} " +\
+                f"Simulation run failed for RH={rh:.4f}, r={settings.r_wet:.3e} " +\
                 f"(sample idx {i_rh},{j_r}): {type(e).__name__}: {e}"
             )
             if np.isclose(expected, 1.0, atol=1e-6):
