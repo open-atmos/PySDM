@@ -1,3 +1,5 @@
+# pylint: disable=missing-module-docstring
+from functools import partial
 from contextlib import contextmanager
 from PySDM import Formulae
 from PySDM.physics import si
@@ -54,7 +56,8 @@ class TestLoftusWordsworth2021:
             )
             assert (
                 total_conc <= 1.01
-            ), f"Total molar concentration {total_conc} exceeds 1.01 for {planet.__class__.__name__}"
+            ), \
+            f"Total molar concentration {total_conc} exceeds 1.01 for {planet.__class__.__name__}"
 
     def test_water_vapour_mixing_ratio_calculation(self):
         """Test water vapour mixing ratio calculation."""
@@ -100,7 +103,9 @@ class TestLoftusWordsworth2021:
         Zcloud_val,
         Tcloud_val,
     ):
-        """Test Simulation class initialization and basic functionality with parametrized settings."""
+        """
+        Test Simulation class initialization and basic functionality with parametrized settings.
+        """
         with self._get_test_resources() as (formulae, earth_like):
             planet = earth_like
 
@@ -178,7 +183,7 @@ class TestLoftusWordsworth2021:
 
             lengths = [len(output[key]) for key in output.keys()]
             assert all(
-                l == lengths[0] for l in lengths
+                length == lengths[0] for length in lengths
             ), "Not all output arrays have the same length"
 
     def test_saturation_at_cloud_base(self):
@@ -189,7 +194,6 @@ class TestLoftusWordsworth2021:
         )
 
         new_Earth = EarthLike()
-        new_Earth.T_STP
 
         RH_array = np.linspace(0.25, 0.99, 50)
         const = formulae.constants
@@ -197,7 +201,16 @@ class TestLoftusWordsworth2021:
         def mix(dry, vap, ratio):
             return (dry + ratio * vap) / (1 + ratio)
 
-        for i, RH in enumerate(RH_array[::-1]):
+        def f(x, water_mixing_ratio, p_stp, t_stp, c_p, Rair):
+            return water_mixing_ratio / (
+                water_mixing_ratio + const.eps
+            ) * p_stp * (x / t_stp) ** (
+                c_p / Rair
+            ) - formulae.saturation_vapour_pressure.pvs_water(
+                x
+            )
+
+        for RH in RH_array[::-1]:
             new_Earth.RH_zref = RH
 
             pvs = formulae.saturation_vapour_pressure.pvs_water(new_Earth.T_STP)
@@ -208,21 +221,23 @@ class TestLoftusWordsworth2021:
             Rair = mix(const.Rd, const.Rv, initial_water_vapour_mixing_ratio)
             c_p = mix(const.c_pd, const.c_pv, initial_water_vapour_mixing_ratio)
 
-            def f(x):
-                return initial_water_vapour_mixing_ratio / (
-                    initial_water_vapour_mixing_ratio + const.eps
-                ) * new_Earth.p_STP * (x / new_Earth.T_STP) ** (
-                    c_p / Rair
-                ) - formulae.saturation_vapour_pressure.pvs_water(
-                    x
-                )
-
-            tdews = fsolve(f, [150, 300])
+            tdews = fsolve(
+                partial(
+                    f,
+                    water_mixing_ratio=initial_water_vapour_mixing_ratio,
+                    p_stp=new_Earth.p_STP,
+                    t_stp=new_Earth.T_STP,
+                    c_p=c_p,
+                    Rair=Rair,
+                ),
+                [150, 300]
+            )
             Tcloud = np.max(tdews)
             Zcloud = (new_Earth.T_STP - Tcloud) * c_p / new_Earth.g_std
             thstd = formulae.trivia.th_std(new_Earth.p_STP, new_Earth.T_STP)
 
-            pcloud = formulae.hydrostatics.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+            pcloud = formulae.hydrostatics\
+                .p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
                 new_Earth.p_STP, thstd, initial_water_vapour_mixing_ratio, Zcloud
             )
 

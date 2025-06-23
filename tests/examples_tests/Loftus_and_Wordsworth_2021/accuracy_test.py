@@ -1,11 +1,13 @@
+# pylint: disable=missing-module-docstring
 from __future__ import annotations
 
-import pytest
 import os
-import numpy as np
-from scipy.optimize import fsolve
 import warnings
 from typing import Tuple, List, Generator
+
+import pytest
+import numpy as np
+from scipy.optimize import fsolve
 
 from PySDM import Formulae
 from PySDM.physics import si
@@ -32,8 +34,9 @@ class GroundTruthLoader:
             return self
         except FileNotFoundError as e:
             pytest.fail(f"Error loading ground truth files: {e}")
-        except Exception as e:
-            pytest.fail(f"Unexpected error loading ground truth data: {e}")
+        pytest.fail("Ground truth data not loaded successfully.")
+
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
@@ -123,12 +126,14 @@ class TestNPYComparison:
 
         th_std = formulae_instance.trivia.th_std(planet.p_STP, planet.T_STP)
 
-        pcloud = formulae_instance.hydrostatics.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+        pcloud = \
+        formulae_instance.hydrostatics\
+            .p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
             planet.p_STP, th_std, initial_water_vapour_mixing_ratio, Zcloud
         )
         return initial_water_vapour_mixing_ratio, Tcloud, Zcloud, pcloud
 
-    def test_figure_2_replication_accuracy(self, ground_truth_sample, static_arrays):
+    def test_figure_2_replication_accuracy(self, ground_truth_sample):
         formulae = Formulae(
             ventilation="PruppacherAndRasmussen1979",
             saturation_vapour_pressure="AugustRocheMagnus",
@@ -142,7 +147,8 @@ class TestNPYComparison:
             i_rh = sample["i_rh"]
             j_r = sample["j_r"]
             try:
-                iwvmr, Tcloud, Zcloud, pcloud = self._calculate_cloud_properties(
+                iwvmr, Tcloud, Zcloud, pcloud = \
+                self._calculate_cloud_properties(
                     planet, rh, formulae
                 )
                 simulated = self.calc_simulated_m_frac_evap_point(
@@ -160,7 +166,8 @@ class TestNPYComparison:
                 )
             except Exception as e:
                 pytest.fail(
-                    f"Error in _calculate_cloud_properties for RH={rh} (sample idx {i_rh},{j_r}): {e}."
+                    f"Error in _calculate_cloud_properties for RH={rh} " +
+                    f"(sample idx {i_rh},{j_r}): {e}."
                 )
             error_context = (
                 f"Sample (RH_idx={i_rh}, R_idx={j_r}), RH={rh:.4f}, R_m={r_m:.3e}. "
@@ -233,7 +240,8 @@ class TestNPYComparison:
             return np.nan
         except Exception as e:
             warnings.warn(
-                f"Simulation run failed for RH={rh:.4f}, r={r_m:.3e} (sample idx {i_rh},{j_r}): {type(e).__name__}: {e}"
+                f"Simulation run failed for RH={rh:.4f}, r={r_m:.3e} " +\
+                f"(sample idx {i_rh},{j_r}): {type(e).__name__}: {e}"
             )
             if np.isclose(expected, 1.0, atol=1e-6):
                 return 1.0
