@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring
+
+from collections import namedtuple
 from functools import partial
 from contextlib import contextmanager
 from PySDM import Formulae
@@ -23,7 +25,8 @@ from PySDM_examples.Loftus_and_Wordsworth_2021 import Settings
 class TestLoftusWordsworth2021:
 
     @contextmanager
-    def _get_test_resources(self):
+    @staticmethod
+    def _get_test_resources():
         formulae = Formulae(
             ventilation="PruppacherAndRasmussen1979",
             saturation_vapour_pressure="AugustRocheMagnus",
@@ -61,7 +64,7 @@ class TestLoftusWordsworth2021:
 
     def test_water_vapour_mixing_ratio_calculation(self):
         """Test water vapour mixing ratio calculation."""
-        with self._get_test_resources() as (formulae, earth_like):
+        with TestLoftusWordsworth2021._get_test_resources() as (formulae, earth_like):
             const = formulae.constants
             planet = earth_like
 
@@ -86,6 +89,7 @@ class TestLoftusWordsworth2021:
         )
         assert parcel is not None
 
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     @pytest.mark.parametrize(
         "r_wet_val, mass_of_dry_air_val, iwvmr_val, pcloud_val, Zcloud_val, Tcloud_val",
         [
@@ -106,7 +110,7 @@ class TestLoftusWordsworth2021:
         """
         Test Simulation class initialization and basic functionality with parametrized settings.
         """
-        with self._get_test_resources() as (formulae, earth_like):
+        with TestLoftusWordsworth2021._get_test_resources() as (formulae, earth_like):
             planet = earth_like
 
             settings = Settings(
@@ -131,6 +135,7 @@ class TestLoftusWordsworth2021:
             for product in required_products:
                 assert product in products
 
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     @pytest.mark.parametrize(
         "r_wet_val, mass_of_dry_air_val, iwvmr_val, pcloud_val, Zcloud_val, Tcloud_val",
         [
@@ -149,7 +154,7 @@ class TestLoftusWordsworth2021:
         Tcloud_val,
     ):
         """Test basic simulation run functionality."""
-        with self._get_test_resources() as (formulae, earth_like):
+        with TestLoftusWordsworth2021._get_test_resources() as (formulae, earth_like):
             planet = earth_like
 
             settings = Settings(
@@ -201,11 +206,11 @@ class TestLoftusWordsworth2021:
         def mix(dry, vap, ratio):
             return (dry + ratio * vap) / (1 + ratio)
 
-        def f(x, water_mixing_ratio, p_stp, t_stp, c_p, Rair):
+        def f(x, water_mixing_ratio, params):
             return water_mixing_ratio / (
                 water_mixing_ratio + const.eps
-            ) * p_stp * (x / t_stp) ** (
-                c_p / Rair
+            ) * params.p_stp * (x / params.t_stp) ** (
+                params.c_p / params.Rair
             ) - formulae.saturation_vapour_pressure.pvs_water(
                 x
             )
@@ -213,22 +218,26 @@ class TestLoftusWordsworth2021:
         for RH in RH_array[::-1]:
             new_Earth.RH_zref = RH
 
-            pvs = formulae.saturation_vapour_pressure.pvs_water(new_Earth.T_STP)
             initial_water_vapour_mixing_ratio = const.eps / (
-                new_Earth.p_STP / new_Earth.RH_zref / pvs - 1
+                new_Earth.p_STP / new_Earth.RH_zref / \
+                formulae.saturation_vapour_pressure.pvs_water(new_Earth.T_STP) - 1
             )
 
-            Rair = mix(const.Rd, const.Rv, initial_water_vapour_mixing_ratio)
             c_p = mix(const.c_pd, const.c_pv, initial_water_vapour_mixing_ratio)
 
             tdews = fsolve(
                 partial(
                     f,
                     water_mixing_ratio=initial_water_vapour_mixing_ratio,
-                    p_stp=new_Earth.p_STP,
-                    t_stp=new_Earth.T_STP,
-                    c_p=c_p,
-                    Rair=Rair,
+                    params=namedtuple(
+                        "params",
+                        ["p_stp", "t_stp", "c_p", "Rair"],
+                    )(
+                        p_stp=new_Earth.p_STP,
+                        t_stp=new_Earth.T_STP,
+                        c_p=c_p,
+                        Rair=mix(const.Rd, const.Rv, initial_water_vapour_mixing_ratio),
+                    )
                 ),
                 [150, 300]
             )

@@ -187,7 +187,7 @@ class TestNPYComparison:
                         atol=1e-1,
                         err_msg=f"Value Mismatch. {error_context}",
                     )
-            except Exception as e: # pylint: disable=broad-except
+            except ValueError as e:
                 pytest.fail(
                     f"Error in _calculate_cloud_properties for RH={sample['rh']} " +
                     f"(sample idx {sample['i_rh']},{sample['j_r']}): {e}."
@@ -201,17 +201,6 @@ class TestNPYComparison:
         expected,
         settings
     ):
-        # settings = Settings(
-        #     planet=planet,
-        #     r_wet=sample["r_m"],
-        #     mass_of_dry_air=1e5 * si.kg,
-        #     initial_water_vapour_mixing_ratio=iwvmr,
-        #     pcloud=pcloud,
-        #     Zcloud=Zcloud,
-        #     Tcloud=Tcloud,
-        #     formulae=formulae,
-        # )
-
         if np.isnan(settings.r_wet) or settings.r_wet <= 0:
             pytest.fail(f"Invalid radius r_m={settings.r_wet} for sample idx {i_rh},{j_r}.")
         simulation = Simulation(settings)
