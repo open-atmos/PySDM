@@ -59,8 +59,7 @@ class TestLoftusWordsworth2021:
             )
             assert (
                 total_conc <= 1.01
-            ), \
-            f"Total molar concentration {total_conc} exceeds 1.01 for {planet.__class__.__name__}"
+            ), f"Total molar concentration {total_conc} exceeds 1.01 for {planet.__class__.__name__}"
 
     def test_water_vapour_mixing_ratio_calculation(self):
         """Test water vapour mixing ratio calculation."""
@@ -219,8 +218,10 @@ class TestLoftusWordsworth2021:
             new_Earth.RH_zref = RH
 
             initial_water_vapour_mixing_ratio = const.eps / (
-                new_Earth.p_STP / new_Earth.RH_zref / \
-                formulae.saturation_vapour_pressure.pvs_water(new_Earth.T_STP) - 1
+                new_Earth.p_STP
+                / new_Earth.RH_zref
+                / formulae.saturation_vapour_pressure.pvs_water(new_Earth.T_STP)
+                - 1
             )
 
             c_p = mix(const.c_pd, const.c_pv, initial_water_vapour_mixing_ratio)
@@ -237,16 +238,15 @@ class TestLoftusWordsworth2021:
                         t_stp=new_Earth.T_STP,
                         c_p=c_p,
                         Rair=mix(const.Rd, const.Rv, initial_water_vapour_mixing_ratio),
-                    )
+                    ),
                 ),
-                [150, 300]
+                [150, 300],
             )
             Tcloud = np.max(tdews)
             Zcloud = (new_Earth.T_STP - Tcloud) * c_p / new_Earth.g_std
             thstd = formulae.trivia.th_std(new_Earth.p_STP, new_Earth.T_STP)
 
-            pcloud = formulae.hydrostatics\
-                .p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+            pcloud = formulae.hydrostatics.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
                 new_Earth.p_STP, thstd, initial_water_vapour_mixing_ratio, Zcloud
             )
 

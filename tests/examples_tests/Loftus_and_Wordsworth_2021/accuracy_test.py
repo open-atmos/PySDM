@@ -129,9 +129,7 @@ class TestNPYComparison:
 
         th_std = formulae_instance.trivia.th_std(planet.p_STP, planet.T_STP)
 
-        pcloud = \
-        formulae_instance.hydrostatics\
-            .p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
+        pcloud = formulae_instance.hydrostatics.p_of_z_assuming_const_th_and_initial_water_vapour_mixing_ratio(
             planet.p_STP, th_std, initial_water_vapour_mixing_ratio, Zcloud
         )
         return initial_water_vapour_mixing_ratio, Tcloud, Zcloud, pcloud
@@ -145,8 +143,7 @@ class TestNPYComparison:
         for sample in ground_truth_sample:
             planet = EarthLike()
             try:
-                iwvmr, Tcloud, Zcloud, pcloud = \
-                self._calculate_cloud_properties(
+                iwvmr, Tcloud, Zcloud, pcloud = self._calculate_cloud_properties(
                     planet, sample["rh"], formulae
                 )
                 settings = Settings(
@@ -164,12 +161,12 @@ class TestNPYComparison:
                     sample["j_r"],
                     sample["rh"],
                     sample["expected_m_frac_evap"],
-                    settings
+                    settings,
                 )
                 expected = sample["expected_m_frac_evap"]
                 error_context = (
-                    f"Sample (RH_idx={sample['i_rh']}, R_idx={sample['j_r']}), " +
-                    f"RH={sample['rh']:.4f}, R_m={sample['r_m']:.3e}. "
+                    f"Sample (RH_idx={sample['i_rh']}, R_idx={sample['j_r']}), "
+                    + f"RH={sample['rh']:.4f}, R_m={sample['r_m']:.3e}. "
                     f"Expected: {expected}, Got: {simulated}"
                 )
                 if np.isnan(expected):
@@ -189,20 +186,16 @@ class TestNPYComparison:
                     )
             except ValueError as e:
                 pytest.fail(
-                    f"Error in _calculate_cloud_properties for RH={sample['rh']} " +
-                    f"(sample idx {sample['i_rh']},{sample['j_r']}): {e}."
+                    f"Error in _calculate_cloud_properties for RH={sample['rh']} "
+                    + f"(sample idx {sample['i_rh']},{sample['j_r']}): {e}."
                 )
 
     @staticmethod
-    def calc_simulated_m_frac_evap_point(
-        i_rh,
-        j_r,
-        rh,
-        expected,
-        settings
-    ):
+    def calc_simulated_m_frac_evap_point(i_rh, j_r, rh, expected, settings):
         if np.isnan(settings.r_wet) or settings.r_wet <= 0:
-            pytest.fail(f"Invalid radius r_m={settings.r_wet} for sample idx {i_rh},{j_r}.")
+            pytest.fail(
+                f"Invalid radius r_m={settings.r_wet} for sample idx {i_rh},{j_r}."
+            )
         simulation = Simulation(settings)
         try:
             output = simulation.run()
@@ -226,10 +219,10 @@ class TestNPYComparison:
                     frac_evap = 1.0 - (final_radius_m / settings.r_wet) ** 3
                 return np.clip(frac_evap, 0.0, 1.0)
             return np.nan
-        except Exception as e: # pylint: disable=broad-except
+        except Exception as e:  # pylint: disable=broad-except
             warnings.warn(
-                f"Simulation run failed for RH={rh:.4f}, r={settings.r_wet:.3e} " +\
-                f"(sample idx {i_rh},{j_r}): {type(e).__name__}: {e}"
+                f"Simulation run failed for RH={rh:.4f}, r={settings.r_wet:.3e} "
+                + f"(sample idx {i_rh},{j_r}): {type(e).__name__}: {e}"
             )
             if np.isclose(expected, 1.0, atol=1e-6):
                 return 1.0
