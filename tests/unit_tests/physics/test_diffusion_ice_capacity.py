@@ -65,15 +65,47 @@ class TestDiffusionIceCapacity:
             assert value.check("[length]")
 
     @staticmethod
-    def test_capacity_equals_radius_for_spherical():
-        pass
+    @pytest.mark.parametrize(
+        "mass", (44 * physics.si.ng, 666 * physics.si.ug, 123 * physics.si.mg)
+    )
+    def test_capacity_equals_radius_for_spherical(mass):
+        # arrange
+        formulae = Formulae(
+            diffusion_ice_capacity="Spherical",
+            particle_shape_and_density="MixedPhaseSpheres",
+        )
+        sut = formulae.diffusion_ice_capacity
+
+        # act
+        capacity = sut.capacity(mass)
+
+        # assert
+        np.testing.assert_approx_equal(
+            desired=mass,
+            actual=-formulae.particle_shape_and_density.radius_to_mass(-capacity),
+            significant=15,
+        )
 
     @staticmethod
-    def test_columnar_capacity_difference_from_spherical_capacity():
-        # ma 5%
-        pass
+    @pytest.mark.parametrize("mass", (44 * physics.si.ng, 0.666 * physics.si.ug))
+    def test_columnar_capacity_difference_from_spherical_capacity(mass):
+        # arrange
+        sut = {
+            key: Formulae(diffusion_ice_capacity=key).diffusion_ice_capacity
+            for key in ("Spherical", "Columnar")
+        }
+
+        # act
+        values = {key: sut[key].capacity(mass) for key in sut.keys()}
+
+        # assert
+        assert values["Spherical"] != values["Columnar"]
+        np.testing.assert_allclose(
+            values["Spherical"],
+            values["Columnar"],
+            rtol=0.2,
+        )
 
     @staticmethod
     def test_prolate_ellipsoid_formula():
-        # ????
-        pass
+        """TODO #1643"""
