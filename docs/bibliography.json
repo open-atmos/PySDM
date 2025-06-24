@@ -843,7 +843,11 @@
   },
   "https://doi.org/10.5194/acp-9-685-2009": {
     "usages": [
-      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
+      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py",
+      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py",
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/terminal_velocity_ice/columnar_ice_crystal.py",
+      "tests/unit_tests/dynamics/test_terminal_velocity.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
     "label": "Spichtinger & Gierens 2009 (Atmos. Chem. Phys. 9)"
@@ -928,14 +932,16 @@
   },
   "https://doi.org/10.1175/1520-0469(2000)057%3C0916:CCTV%3E2.0.CO;2": {
     "usages": [
-      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py"
+      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py",
+      "PySDM/physics/terminal_velocity_ice/columnar_ice_crystal.py"
     ],
     "label": "Heymsfield & Iaquinta 2000 (J. Atmos. Sci. 57)",
     "title": "Cirrus Crystal Terminal Velocities"
   },
   "https://doi.org/10.1016/j.atmosres.2005.12.009": {
     "usages": [
-      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py"
+      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py",
+      "PySDM/physics/terminal_velocity_ice/columnar_ice_crystal.py"
     ],
     "label": "Barthazy and Schefold 2006 (Atmos. Res. 82)",
     "title": "Fall velocity of snowflakes of different riming degree and crystal types"
