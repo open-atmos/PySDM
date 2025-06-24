@@ -90,7 +90,6 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
-# mass and heat accommodation coefficients for condensation
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
@@ -98,7 +97,6 @@ HAC = 1.0
 """ thermal accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
 
-# mass and heat accommodation coefficients for vapour deposition on ice
 MAC_ice = 0.5
 """ mass accommodation coefficient for vapour deposition as recommended in
 [Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
@@ -109,13 +107,6 @@ HAC_ice = 1.0
 C_cunn = 0.7
 """ Cunningham correction factor as used in
 [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
-
-p1000 = 1000 * si.hectopascals
-c_pd = 1005 * si.joule / si.kilogram / si.kelvin
-c_pv = 1850 * si.joule / si.kilogram / si.kelvin
-g_std = sci.g * si.metre / si.second**2
-
-c_pw = 4218 * si.joule / si.kilogram / si.kelvin
 
 ARM_C1 = 6.1094 * si.hectopascal
 """ [August](https://doi.org/10.1002/andp.18280890511) Roche Magnus formula coefficients
