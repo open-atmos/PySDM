@@ -55,7 +55,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
                     capacity = formulae.diffusion_ice_capacity__capacity(ice_mass)
 
-                    mass_ventilation_factor = 1 # TODO #1655
+                    mass_ventilation_factor = 1  # TODO #1655
                     heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
 
                     Dv_const = formulae.diffusion_thermics__D(temperature, pressure)
