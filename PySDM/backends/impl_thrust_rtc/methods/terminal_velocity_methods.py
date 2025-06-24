@@ -69,7 +69,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def __interpolation_body(self):
+    def __gunn_and_kinzer_interpolation_body(self):
         # TODO #599 r<0
         return trtc.For(
             ("output", "radius", "factor", "a", "b"),
@@ -126,9 +126,9 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def interpolation(self, *, output, radius, factor, b, c):
+    def gunn_and_kinzer_interpolation(self, *, output, radius, factor, b, c):
         factor_device = trtc.DVInt64(factor)
-        self.__interpolation_body.launch_n(
+        self.__gunn_and_kinzer_interpolation_body.launch_n(
             len(radius), (output.data, radius.data, factor_device, b.data, c.data)
         )
 
@@ -157,7 +157,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def __terminal_velocity_body(self):
+    def __rogers_and_yau_terminal_velocity_body(self):
         return trtc.For(
             param_names=("values", "radius"),
             name_iter="i",
@@ -171,5 +171,5 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def terminal_velocity(self, *, values, radius):
-        self.__terminal_velocity_body.launch_n(n=values.size(), args=[values, radius])
+    def rogers_and_yau_terminal_velocity(self, *, values, radius):
+        self.__rogers_and_yau_terminal_velocity_body.launch_n(n=values.size(), args=[values, radius])

@@ -10,9 +10,9 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
 class TerminalVelocityMethods(BackendMethods):
-    # TODO #1603 give terminal velocity functions name of the parametrisation
+
     @cached_property
-    def _interpolation_body(self):
+    def _gunn_and_kinzer_interpolation_body(self):
         @numba.njit(**self.default_jit_flags)
         def body(output, radius, factor, b, c):
             for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
@@ -25,15 +25,13 @@ class TerminalVelocityMethods(BackendMethods):
 
         return body
 
-    # TODO #1603 give terminal velocity functions name of the parametrisation
-    def interpolation(self, *, output, radius, factor, b, c):
-        return self._interpolation_body(
+    def gunn_and_kinzer_interpolation(self, *, output, radius, factor, b, c):
+        return self._gunn_and_kinzer_interpolation_body(
             output.data, radius.data, factor, b.data, c.data
         )
 
-    # TODO #1603 give terminal velocity functions name of the parametrisation
     @cached_property
-    def _terminal_velocity_body(self):
+    def _rogers_and_yau_terminal_velocity_body(self):
         v_term = self.formulae.terminal_velocity.v_term
 
         @numba.njit(**self.default_jit_flags)
@@ -44,9 +42,8 @@ class TerminalVelocityMethods(BackendMethods):
 
         return body
 
-    # TODO #1603 give terminal velocity functions name of the parametrisation
-    def terminal_velocity(self, *, values, radius):
-        self._terminal_velocity_body(values=values, radius=radius)
+    def rogers_and_yau_terminal_velocity(self, *, values, radius):
+        self._rogers_and_yau_terminal_velocity_body(values=values, radius=radius)
 
     @cached_property
     def _power_series_body(self):
