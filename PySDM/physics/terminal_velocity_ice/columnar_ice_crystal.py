@@ -1,7 +1,7 @@
 """
 [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)
 Eq. (18) and (19) Assumed shape is columnar based on empirical parameterizations of
-[Heymsfield & Iaquinta (2000)](https://doi.org/10.1175/1520-0469(2000)057<0916:CCTV>2.0.CO;2)
+[Heymsfield & Iaquinta (2000)](https://doi.org/10.1175/1520-0469(2000)057%3C0916:CCTV%3E2.0.CO;2)
 [Barthazy & Schefold (2006)](https://doi.org/10.1016/j.atmosres.2005.12.009)
 """
 
