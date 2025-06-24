@@ -553,3 +553,17 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             relative_humidity_ice=self.environment["RH_ice"],
             thaw=thaw,
         )
+
+    def homogeneous_freezing_singular(self, *, thaw: bool, rand: Storage):
+        self.backend.freeze_time_dependent_homogeneous(
+            rand=rand,
+            attributes=TimeDependentHomogeneousAttributes(
+                volume=self.attributes["volume"],
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            timestep=self.dt,
+            cell=self.attributes["cell id"],
+            temperature=self.environment["T"],
+            relative_humidity_ice=self.environment["RH_ice"],
+            thaw=thaw,
+        )

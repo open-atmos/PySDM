@@ -167,6 +167,31 @@ class FreezingMethods(BackendMethods):
 
         return body
 
+    @cached_property
+    def _freeze_singular_homogeneous_body(self):
+        _thaw = self._thaw
+        _freeze = self._freeze
+        frozen_and_above_freezing_point = (
+            self.formulae.trivia.frozen_and_above_freezing_point
+        )
+        unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
+
+        @numba.njit(**self.default_jit_flags)
+        def body(attributes, temperature, relative_humidity_ice, cell, thaw):
+            n_sd = len(attributes.signed_water_mass)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+                cell_id = cell[i]
+                if thaw and frozen_and_above_freezing_point(
+                        attributes.signed_water_mass[i], temperature[cell_id]
+                ):
+                    _thaw(attributes.signed_water_mass, i)
+                elif unfrozen_and_ice_saturated(
+                        attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
+                ):
+                    if temperature[cell_id] <= 238.:
+                        _freeze(attributes.signed_water_mass, i)
+        return body
+
     def freeze_singular(
         self, *, attributes, temperature, relative_humidity, cell, thaw: bool
     ):
@@ -206,6 +231,32 @@ class FreezingMethods(BackendMethods):
             relative_humidity.data,
             thaw=thaw,
         )
+
+
+    def freeze_singular_homogeneous(
+        self,
+        *,
+        rand,
+        attributes,
+        timestep,
+        cell,
+        temperature,
+        relative_humidity_ice,
+        thaw: bool,
+    ):
+        self._freeze_singular_homogeneous_body(
+            rand.data,
+            TimeDependentHomogeneousAttributes(
+                volume=attributes.volume.data,
+                signed_water_mass=attributes.signed_water_mass.data,
+            ),
+            timestep,
+            cell.data,
+            temperature.data,
+            relative_humidity_ice.data,
+            thaw=thaw,
+        )
+
 
     def freeze_time_dependent_homogeneous(
         self,

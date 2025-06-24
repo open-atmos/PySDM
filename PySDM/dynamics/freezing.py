@@ -34,7 +34,7 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
         )
 
         builder.request_attribute("signed water mass")
-        if self.singular:
+        if self.singular and self.immersion_freezing:
             builder.request_attribute("freezing temperature")
 
         if not self.singular and self.immersion_freezing:
@@ -80,8 +80,11 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
                 )
 
         if self.homogeneous_freezing:
-            self.rand.urand(self.rng)
-            self.particulator.homogeneous_freezing_time_dependent(
-                rand=self.rand,
-                thaw=self.thaw,
-            )
+            if self.singular:
+                self.particulator.homogeneous_freezing_singular(thaw=self.thaw)
+            else:
+                self.rand.urand(self.rng)
+                self.particulator.homogeneous_freezing_time_dependent(
+                    rand=self.rand,
+                    thaw=self.thaw,
+                )
