@@ -146,16 +146,26 @@ def test_ice_particle_terminal_velocities_basics(backend_class, ice_variant):
         {"temperature": 233 * si.kelvin, "pressure": 300 * si.hectopascal},
         {"temperature": 270 * si.kelvin, "pressure": 1000 * si.hectopascal},
     ]
+    terminal_velocity = None
     for setting in atmospheric_settings:
 
         particulator.environment["T"] = setting["temperature"]
         particulator.environment["p"] = setting["pressure"]
 
+        # TODO #1606 the line below should not be needed (auto update when env variables change)
+        particulator.attributes.mark_updated("signed water mass")
+
         # act
         particulator.run(steps=1)
+
+        # assert
+        if terminal_velocity is not None:
+            assert all(
+                terminal_velocity
+                != particulator.attributes["terminal velocity"].to_ndarray()
+            )
+
         terminal_velocity = particulator.attributes["terminal velocity"].to_ndarray()
-        # TODO #1606 update terminal velocity attribute when environment variables change
-        print(terminal_velocity)
 
         # assert
         assert all(~np.isnan(terminal_velocity))
