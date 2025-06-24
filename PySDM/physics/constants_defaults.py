@@ -644,7 +644,7 @@ bulk_phase_partitioning_T_warm = 273 * si.K
 bulk_phase_partitioning_exponent = np.nan
 """ 〃 """
 
-BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 = 1.63 * si.dimensionless
+BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 = np.nan
 """
 Coefficient c1 used in [Bolin 1958](https://https://digitallibrary.un.org/record/3892725)
 for the falling drop evaporation timescale of equilibration with ambient air void of a given
