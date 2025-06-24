@@ -63,3 +63,17 @@ class TestDiffusionIceCapacity:
 
             # assert
             assert value.check("[length]")
+
+    @staticmethod
+    def test_capacity_equals_radius_for_spherical():
+        pass
+
+    @staticmethod
+    def test_columnar_capacity_difference_from_spherical_capacity():
+        # ma 5%
+        pass
+
+    @staticmethod
+    def test_prolate_ellipsoid_formula():
+        # ????
+        pass
