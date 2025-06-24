@@ -1,3 +1,7 @@
+"""
+Modified Parcel class for the Loftus and Wordsworth 2021 example.
+"""
+
 from PySDM.environments.parcel import Parcel
 
 
@@ -25,5 +29,6 @@ class AlienParcel(Parcel):
             variables=None,
         )
 
+    # pylint: disable=unused-argument
     def _compute_dz_dt(self, dt):
         return -self.particulator.attributes["terminal velocity"].to_ndarray()[0]

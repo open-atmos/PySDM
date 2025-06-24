@@ -1,13 +1,16 @@
 """
 Planetary properties used in calculations.
 
-Values are primarily taken from Table 1 of Loftus & Wordsworth (2021), unless otherwise noted.
-Each variable represents a physical property or atmospheric composition relevant for cloud microphysics modeling.
+Values are primarily taken from Table 1 of Loftus & Wordsworth (2021),
+unless otherwise noted.
+Each variable represents a physical property or atmospheric
+composition relevant for cloud microphysics modeling.
 """
 
-from PySDM.physics.constants import si
 from dataclasses import dataclass
 from typing import Optional, Dict, Any
+
+from PySDM.physics.constants import si
 
 
 @dataclass

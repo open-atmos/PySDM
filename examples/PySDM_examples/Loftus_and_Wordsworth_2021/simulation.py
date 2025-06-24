@@ -1,11 +1,16 @@
+"""
+Simulation for the Loftus and Wordsworth (2021) example.
+"""
+
 import numpy as np
+
+from PySDM_examples.Loftus_and_Wordsworth_2021.parcel import AlienParcel
 
 import PySDM.products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.physics import constants as const
-from PySDM_examples.Loftus_and_Wordsworth_2021.parcel import AlienParcel
 
 MIN_DROPLET_RADIUS = 1e-6
 

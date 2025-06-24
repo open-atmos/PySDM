@@ -1,15 +1,19 @@
-# Planetary Properties, Loftus and Wordsworth 2021 Table 1
+"""
+Planetary Properties, Loftus and Wordsworth 2021 Table 1
+"""
 
 from pystrict import strict
+
+from PySDM_examples.Loftus_and_Wordsworth_2021.planet import Planet
 
 from PySDM import Formulae
 from PySDM.dynamics import condensation
 from PySDM.physics.constants import si
-from PySDM_examples.Loftus_and_Wordsworth_2021.planet import Planet
 
 
 @strict
 class Settings:
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         r_wet: float,
