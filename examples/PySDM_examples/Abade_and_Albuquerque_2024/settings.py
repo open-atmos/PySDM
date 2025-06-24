@@ -3,6 +3,7 @@ from pystrict import strict
 from PySDM import Formulae
 from PySDM.physics import si
 from PySDM.initialisation.spectra import Lognormal
+from PySDM_examples.Arabas_et_al_2025.commons import FREEZING_CONSTANTS
 
 
 @strict
@@ -12,28 +13,34 @@ class Settings:
         *,
         n_sd: int,
         timestep: float,
+        # default values correspond to paper settings
+        singular: bool = True,
         enable_immersion_freezing: bool = True,
         enable_vapour_deposition_on_ice: bool = True,
         inp_frac: float = 0.1,
+        kappa: float = 0.6,
     ):
         self.n_sd = n_sd
         self.timestep = timestep
         self.enable_immersion_freezing = enable_immersion_freezing
         self.enable_vapour_deposition_on_ice = enable_vapour_deposition_on_ice
-
+        self.singular = singular
         self.initial_total_pressure = 1000 * si.hPa  # note: not given in the paper
 
         # parameters from the paper
         self.formulae = Formulae(
             constants={
                 "bulk_phase_partitioning_exponent": 0.1,
-                "NIEMAND_A": -0.517,
-                "NIEMAND_B": 8.934,
+                **FREEZING_CONSTANTS["dust"],
             },
             bulk_phase_partitioning="KaulEtAl2015",
             particle_shape_and_density="MixedPhaseSpheres",
             diffusion_coordinate="WaterMassLogarithm",
-            freezing_temperature_spectrum="Niemand_et_al_2012",
+            **(
+                {"freezing_temperature_spectrum": "Niemand_et_al_2012"}
+                if singular
+                else {"heterogeneous_ice_nucleation_rate": "ABIFM"}
+            ),
         )
         self.initial_water_vapour_mixing_ratio = 1.5 * si.g / si.kg
         self.parcel_linear_extent = 100 * si.m
@@ -61,7 +68,7 @@ class Settings:
             m_mode=75 * si.nm,
             s_geom=1.6,
         )
-        self.kappa = 0.6
+        self.kappa = kappa
         self.initial_temperature = self.formulae.state_variable_triplet.T(
             rhod=rhod_0, thd=thd_0
         )

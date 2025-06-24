@@ -40,7 +40,7 @@ class Simulation(BasicSimulation):
         builder.add_dynamic(Condensation())
 
         if settings.enable_immersion_freezing:
-            builder.add_dynamic(Freezing())
+            builder.add_dynamic(Freezing(singular=settings.singular))
         if settings.enable_vapour_deposition_on_ice:
             builder.add_dynamic(VapourDepositionOnIce())
 
@@ -62,18 +62,28 @@ class Simulation(BasicSimulation):
             n_inp = int(settings.n_sd * settings.freezing_inp_frac)
 
             rng = np.random.default_rng(seed=builder.particulator.formulae.seed)
-
-            attributes["freezing temperature"] = rng.permutation(
+            insoluble_surface_area = trivia.sphere_surface(
+                diameter=2 * settings.freezing_inp_dry_radius
+            )
+            attributes[
+                "freezing temperature" if settings.singular else "immersed surface area"
+            ] = rng.permutation(
                 np.pad(
-                    builder.particulator.formulae.freezing_temperature_spectrum.invcdf(
-                        cdf=rng.uniform(low=0, high=1, size=n_inp),
-                        A_insol=trivia.sphere_surface(
-                            diameter=2 * settings.freezing_inp_dry_radius
-                        ),
+                    (
+                        builder.particulator.formulae.freezing_temperature_spectrum.invcdf(
+                            cdf=rng.uniform(low=0, high=1, size=n_inp),
+                            A_insol=insoluble_surface_area,
+                        )
+                        if settings.singular
+                        else np.full(n_inp, insoluble_surface_area)
                     ),
                     (0, settings.n_sd - n_inp),
                     mode="constant",
-                    constant_values=(trivia.C2K(-38)),
+                    constant_values=(
+                        builder.particulator.formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
+                        if settings.singular
+                        else 0
+                    ),
                 )
             )
 
