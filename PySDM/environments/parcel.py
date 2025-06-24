@@ -134,7 +134,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         )
 
     def _compute_dz_dt(self, dt):
-        self.w((self.particulator.n_steps + 1 / 2) * dt)  # "mid-point"
+        return self.w((self.particulator.n_steps + 1 / 2) * dt)  # "mid-point"
 
     def get_thd(self):
         return self["thd"]
