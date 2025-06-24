@@ -80,7 +80,7 @@ class Simulation(BasicSimulation):
                     (0, settings.n_sd - n_inp),
                     mode="constant",
                     constant_values=(
-                        builder.particulator.formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
+                        settings.formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
                         if settings.singular
                         else 0
                     ),

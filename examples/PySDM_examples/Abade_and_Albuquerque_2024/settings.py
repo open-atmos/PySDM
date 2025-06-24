@@ -1,9 +1,10 @@
 from pystrict import strict
 
+from PySDM_examples.Arabas_et_al_2025.commons import FREEZING_CONSTANTS
+
 from PySDM import Formulae
 from PySDM.physics import si
 from PySDM.initialisation.spectra import Lognormal
-from PySDM_examples.Arabas_et_al_2025.commons import FREEZING_CONSTANTS
 
 
 @strict
