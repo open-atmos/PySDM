@@ -97,7 +97,7 @@ class TerminalVelocityMethods(BackendMethods):
 
     def terminal_velocity_ice_spheres(
         self, *, values, signed_water_mass, cell_id, temperature, pressure
-    ): # pylint: disable=unused-argument
+    ):  # pylint: disable=unused-argument
         self._terminal_velocity_ice_spheres_body(
             values=values,
             signed_water_mass=signed_water_mass,

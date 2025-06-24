@@ -172,4 +172,6 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def rogers_and_yau_terminal_velocity(self, *, values, radius):
-        self.__rogers_and_yau_terminal_velocity_body.launch_n(n=values.size(), args=[values, radius])
+        self.__rogers_and_yau_terminal_velocity_body.launch_n(
+            n=values.size(), args=[values, radius]
+        )
