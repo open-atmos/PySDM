@@ -108,7 +108,7 @@ class TestDiffusionIceCapacity:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "mass", (1e-13 * physics.si.kg, 1e-10 * physics.si.kg, 1e-8 * physics.si.kg)
+        "mass", (5e-13 * physics.si.kg, 1e-10 * physics.si.kg, 1e-8 * physics.si.kg)
     )
     def test_prolate_ellipsoid_formula(mass):
         """TODO #1643"""
@@ -118,12 +118,18 @@ class TestDiffusionIceCapacity:
             particle_shape_and_density="ColumnarIce",
         )
         sut = formulae.diffusion_ice_capacity
-        polar_radius_relation = formulae.particle_shape_and_density.polar_radius
-        aspect_ratio_relation = formulae.particle_shape_and_density.aspect_ratio
-
+        columnar_shape = formulae.particle_shape_and_density
 
         # act
-        polar_radius = polar_radius_relation(mass)
-        aspect_ratio = aspect_ratio_relation(mass)
-
+        polar_diameter = 2 * columnar_shape.polar_radius(mass)
+        aspect_ratio = columnar_shape.aspect_ratio(mass)
+        eccentricity = columnar_shape.eccentricity(aspect_ratio)
         capacity = sut.capacity(mass)
+        reference_capacity = sut.reference_capacity(polar_diameter, eccentricity)
+
+        # assert
+        np.testing.assert_allclose(
+            capacity,
+            reference_capacity,
+            rtol=0.05,
+        )

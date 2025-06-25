@@ -11,7 +11,9 @@ class ColumnarIce(PorousSpheroid):
 
     @staticmethod
     def polar_radius(const, mass):
-        """Sec. 3.1.2 in [Spichtinger & Gierens 2009]"""
+        """Sec. 3.1.2 in [Spichtinger & Gierens 2009]. Note that notation in the paper is incorrect. We also divide here by
+        2 as we are interested in the radius and not the diameter.
+        """
         return (  np.where(  mass < const.columnar_ice_mass_transition,
                              (mass / const.columnar_ice_length_alpha_1)**( 1 / const.columnar_ice_length_beta_1)  / 2,
                              (mass / const.columnar_ice_length_alpha_2)**( 1 / const.columnar_ice_length_beta_2)  / 2
@@ -27,3 +29,4 @@ class ColumnarIce(PorousSpheroid):
                                    * mass**( ( 3 - const.columnar_ice_length_beta_2) / 2 / const.columnar_ice_length_beta_2 )
                          )
                 )
+

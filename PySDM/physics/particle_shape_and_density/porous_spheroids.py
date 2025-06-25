@@ -27,4 +27,4 @@ class PorousSpheroid:  # pylint: disable=too-few-public-methods
     @staticmethod
     def eccentricity(aspect_ratio):
         """Eq. 32 in [Spichtinger & Gierens 2009]"""
-        return ( np.sqrt( 1 - aspect_ratio**2. )  )
+        return ( np.sqrt( 1 - aspect_ratio**-2. )  )
