@@ -16,10 +16,6 @@ class PorousSpheroid:  # pylint: disable=too-few-public-methods
         return True
 
     @staticmethod
-    def polar_radius(const, mass):
-        pass
-
-    @staticmethod
     def aspect_ratio(polar_radius, equatorial_radius):
         """Sec. 2.5 in [Shima et al. 2020]"""
         return (polar_radius / equatorial_radius)

@@ -21,6 +21,12 @@ class ColumnarIce(PorousSpheroid):
                   )
 
     @staticmethod
+    def equatorial_radius(const, polar_radius, aspect_ratio):
+        return (
+            polar_radius / aspect_ratio
+        )
+
+    @staticmethod
     def aspect_ratio(const, mass):
         """Eq. 17 in [Spichtinger & Gierens 2009]"""
         return (np.where(mass < const.columnar_ice_mass_transition,

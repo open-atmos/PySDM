@@ -59,7 +59,6 @@ class TestParticleShapeAndDensity:
             # Assert
             assert re.check(si.dimensionless)
 
-
     @staticmethod
     @pytest.mark.parametrize("variant", ("ColumnarIce",))
     def test_spheroid_shape_units(variant):
@@ -74,8 +73,14 @@ class TestParticleShapeAndDensity:
             polar_radius = columnar_shape.polar_radius(mass)
             aspect_ratio = columnar_shape.aspect_ratio(mass)
             eccentricity = columnar_shape.eccentricity(aspect_ratio)
+            equatorial_radius = columnar_shape.equatorial_radius(polar_radius, aspect_ratio)
 
             # Assert
             assert polar_radius.check("[length]")
+            assert equatorial_radius.check("[length]")
             assert aspect_ratio.check(si.dimensionless)
             assert eccentricity.check(si.dimensionless)
+
+    @staticmethod
+    def test_columnar_ice_geometric_values():
+        pass
