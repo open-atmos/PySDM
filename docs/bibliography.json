@@ -905,10 +905,11 @@
   "https://doi.org/10.1029/JC080i036p05015": {
     "usages": [
       "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
-    "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
+      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
     ],
     "title": "Isotopic study of hail",
     "label": "Jouzel et al. 1975 (J. Geophys. Res. 80)"
+  },
   "https://doi.org/10.5194/acp-23-2035-2023": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
