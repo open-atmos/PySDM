@@ -844,7 +844,6 @@
   "https://doi.org/10.5194/acp-9-685-2009": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
@@ -903,6 +902,7 @@
   "https://doi.org/10.5194/acp-23-2035-2023": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",

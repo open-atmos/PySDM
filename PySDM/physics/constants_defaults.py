@@ -530,7 +530,7 @@ CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 """ 〃 """
 
 capacity_columnar_ice_B1 = 0.3
-""" [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
+""" eq. A11 & A12 in [Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)  """
 capacity_columnar_ice_B2 = 0.43
 """ 〃 """
 capacity_columnar_ice_A1 = 0.015755 * si.m / si.kg**capacity_columnar_ice_B1

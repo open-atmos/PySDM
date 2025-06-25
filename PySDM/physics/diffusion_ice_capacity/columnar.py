@@ -1,6 +1,6 @@
 """
 capacity for columnar ice crystals approximated as prolate ellipsoids
-fit for Eq. 32 in Spichtinger & Gierens 2009 (https://doi.org/10.5194/acp-9-685-2009)
+eq. A11 & A12 in Spichtinger et al. 2023 (https://doi.org/10.5194/acp-23-2035-2023)
 """
 
 
