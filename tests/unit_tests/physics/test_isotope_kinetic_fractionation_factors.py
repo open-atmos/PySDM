@@ -48,21 +48,6 @@ class TestIsotopeKineticFractionationFactors:
             assert sut.check("[]")
 
     @staticmethod
-    def test_units_eff_saturation():
-        with DimensionalAnalysis():
-            # arrange
-            transfer_coeff = 1 * physics.si.dimensionless
-            relative_humidity = 1 * physics.si.dimensionless
-
-            # act
-            sut = JouzelAndMerlivat1984.effective_saturation(
-                transfer_coefficient=transfer_coeff, RH=relative_humidity
-            )
-
-            # assert
-            assert sut.check("[]")
-
-    @staticmethod
     def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
         """[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)"""
         # arrange

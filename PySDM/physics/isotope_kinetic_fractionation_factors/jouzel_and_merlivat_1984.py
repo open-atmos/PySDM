@@ -49,20 +49,3 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
         Thermal transfer coefficient between water vapour and condensate.
         """
         return 1 / (1 + D * Fk)
-
-    @staticmethod
-    def effective_saturation(transfer_coefficient, RH):
-        """
-
-        Parameters
-        ----------
-        transfer_coefficient
-            Thermal transfer coefficient between water vapour and condensate (liquid water or ice).
-        RH
-            Relative humidity.
-
-        Returns
-        ----------
-        Effective vapour saturation over liquid water or ice.
-        """
-        return 1 / (1 - transfer_coefficient * (1 - 1 / RH))
