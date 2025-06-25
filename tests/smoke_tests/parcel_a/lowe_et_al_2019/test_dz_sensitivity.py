@@ -1,4 +1,4 @@
-"""checks how parcel equilibrium supersaturation depends on dz"""
+"""checks how parcel equilibrium saturation depends on dz"""
 
 import numpy as np
 from matplotlib import pyplot
@@ -44,7 +44,10 @@ def test_dz_sensitivity(
     for idx, var in enumerate(vlist):
         for key, out_item in output.items():
             Y = np.asarray(out_item["z"])
-            X = out_item[var]
+            if var == "S_max":
+                X = (np.asarray(out_item[var]) - 1) * 100
+            else:
+                X = out_item[var]
             axs[idx].plot(
                 X, Y, label=f"dz={key} m", color=out_item["color"], linestyle="-"
             )
