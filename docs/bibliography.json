@@ -161,7 +161,7 @@
     "usages": [
       "examples/PySDM_examples/Miyake_et_al_1968/fig_19.ipynb",
       "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
-      "examples/PySDM_examples/Bolin_1958/timescales_comparison.ipynb"
+      "examples/PySDM_examples/Zaba_et_al_2025/timescales_comparison.ipynb"
     ],
     "label": "Miyake et al. 1968 (Pap. Meteorol. Geophys. 19)",
     "title": "An Isotopic Study on Meteoric Precipitation"
