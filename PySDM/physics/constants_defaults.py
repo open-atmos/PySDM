@@ -538,6 +538,18 @@ capacity_columnar_ice_A1 = 0.015755 * si.m / si.kg**capacity_columnar_ice_B1
 capacity_columnar_ice_A2 = 0.33565 * si.m / si.kg**capacity_columnar_ice_B2
 """ 〃 """
 
+columnar_ice_mass_transition = 2.146e-13 * si.kg
+""" tab. 1 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
+columnar_ice_length_alpha_1 = 526.1
+""" 〃 """
+columnar_ice_length_alpha_2 = 0.04142
+""" 〃 """
+columnar_ice_length_beta_1 = 3.0
+""" 〃 """
+columnar_ice_length_beta_2 = 2.2
+""" 〃 """
+columnar_bulk_ice_density = 0.81e3 * si.kg
+""" 〃 """
 
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 """ [Bohren 1987](https://doi.org/10.1119/1.15109) """
