@@ -1,7 +1,5 @@
 """isotope e-folding timescale based on Fick's first law and Fourier's law"""
 
-import numpy as np
-
 
 class ZabaAndArabas2025:
     def __init__(self, _):
@@ -9,7 +7,8 @@ class ZabaAndArabas2025:
 
     @staticmethod
     def tau(dm_dt_over_m):
-        """e-fold timescale with alpha and water vapour pressures heavy and light water
+        """
+        e-fold timescale with alpha and water vapour pressures heavy and light water
         calculated in the temperature of environment:
         """
         return 1 / dm_dt_over_m
