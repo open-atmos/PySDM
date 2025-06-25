@@ -440,9 +440,23 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 n_substeps=n_substeps,
             )
 
-    def isotopic_fractionation(self, heavy_isotopes: tuple):
-        self.backend.isotopic_fractionation()
+    def isotopic_fractionation(
+        self, heavy_isotopes: tuple, ambient_isotope_mixing_ratios
+    ):
         for isotope in heavy_isotopes:
+            self.backend.isotopic_fractionation(
+                isotope=isotope,
+                multiplicity=self.attributes["multiplicity"],
+                signed_timescale=self.attributes[f"isotope_timescale_{isotope}"],
+                moles=self.attributes[f"moles_{isotope}"],
+                dt=self.dt,
+                dry_air_density=self.environment[f"dry_air_density"],
+                cell_volume=self.environment.mesh.dv,
+                cell_id=self.attributes["cell id"],
+                ambient_isotope_mixing_ratio=self.environment[
+                    f"mixing_ratio_{isotope}"
+                ],
+            )
             self.attributes.mark_updated(f"moles_{isotope}")
 
     def seeding(
