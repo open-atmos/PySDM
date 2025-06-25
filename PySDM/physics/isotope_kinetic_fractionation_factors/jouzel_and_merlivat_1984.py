@@ -30,22 +30,3 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
         return saturation / (
             alpha_equilibrium / D_ratio_heavy_to_light * (saturation - 1) + 1
         )
-
-    @staticmethod
-    def transfer_coefficient(D, Fk):
-        """
-        eq. (A4) in Jouzel & Merlivat 1984,
-        eq. (A6) in Bolot 2013.
-
-        Parameters
-        ----------
-        D
-            Diffusion coefficient for light isotope.
-        Fk
-            Term associated with heat transfer.
-
-        Returns
-        ----------
-        Thermal transfer coefficient between water vapour and condensate.
-        """
-        return 1 / (1 + D * Fk)
