@@ -43,3 +43,7 @@ class LiquidSpheres:
     @staticmethod
     def dm_dt_over_m(r, r_dr_dt):
         return 3 / r**2 * r_dr_dt
+
+    @staticmethod
+    def r_dr_dt(r, dm_dt_over_m):
+        return r**2 / 3 * dm_dt_over_m

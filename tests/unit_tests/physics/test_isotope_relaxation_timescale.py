@@ -14,7 +14,7 @@ from PySDM.physics import constants_defaults, isotope_relaxation_timescale
     [
         choice
         for choice in _choices(isotope_relaxation_timescale)
-        if choice not in ("Null", "Bolin1958", "MiyakeEtAl1968")
+        if choice not in ("Null", "Bolin1958")
     ],
 )
 @pytest.mark.parametrize("iso", ("2H", "18O"))
@@ -36,8 +36,8 @@ def test_unit_and_magnitude(paper, iso):
             )
             * D
         )
-        vent_coeff = 1.01
-        m_dm_dt = formulae.isotope_relaxation_timescale.isotope_m_dm_dt(
+        vent_coeff = 1
+        dm_dt_over_m = formulae.isotope_relaxation_timescale.isotope_dm_dt_over_m(
             rho_s=const.rho_w,
             radius=0.1 * si.mm,
             D_iso=vent_coeff * D_iso,
@@ -53,11 +53,11 @@ def test_unit_and_magnitude(paper, iso):
         sut = formulae.isotope_relaxation_timescale.tau
 
         # act
-        result = sut(m_dm_dt)
+        result = sut(dm_dt_over_m)
 
         # assert
         assert result.check("[time]")
-        assert 0 * si.s < result < 10 * si.s
+        assert 0 * si.s < result.to_base_units() < 10 * si.s
 
 
 def test_bolin_tritium_formula_unit():
@@ -68,10 +68,14 @@ def test_bolin_tritium_formula_unit():
             isotope_relaxation_timescale="Bolin1958",
             constants={"BOLIN_ISOTOPE_TIMESCALE_COEFF_C1": 1 * si.dimensionless},
         )
-        sut = formulae.isotope_relaxation_timescale.tau_of_rdrdt
+        tau = formulae.isotope_relaxation_timescale.tau
 
         # act
-        result = sut(radius=1 * si.um, r_dr_dt=1 * si.um**2 / si.s)
+        sut = tau(
+            formulae.isotope_relaxation_timescale.isotope_dm_dt_over_m(
+                dm_dt_over_m=1 / si.s
+            )
+        )
 
         # assert
-        assert result.check("[time]")
+        assert sut.check("[time]")
