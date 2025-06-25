@@ -4,6 +4,7 @@ from PySDM_examples.Arabas_et_al_2025.commons import FREEZING_CONSTANTS
 
 from PySDM import Formulae
 from PySDM.physics import si
+from PySDM.physics.constants import default_random_seed
 from PySDM.initialisation.spectra import Lognormal
 
 
@@ -20,6 +21,8 @@ class Settings:
         enable_vapour_deposition_on_ice: bool = True,
         inp_frac: float = 0.1,
         kappa: float = 0.6,
+        seed: int = default_random_seed,
+        updraft: float = 0.5 * si.m / si.s,
     ):
         self.n_sd = n_sd
         self.timestep = timestep
@@ -30,6 +33,7 @@ class Settings:
 
         # parameters from the paper
         self.formulae = Formulae(
+            seed=seed,
             constants={
                 "bulk_phase_partitioning_exponent": 0.1,
                 **FREEZING_CONSTANTS["dust"],
@@ -45,7 +49,7 @@ class Settings:
         )
         self.initial_water_vapour_mixing_ratio = 1.5 * si.g / si.kg
         self.parcel_linear_extent = 100 * si.m
-        self.updraft = 0.5 * si.m / si.s
+        self.updraft = updraft
         self.freezing_inp_frac = inp_frac
         self.freezing_inp_dry_radius = 0.5 * si.um
 
