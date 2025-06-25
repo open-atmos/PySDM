@@ -14,7 +14,17 @@ class Howell1949(Fick):  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def Fk(const, T, K, lv):
-        """thermodynamic term associated with heat conduction"""
+        """Thermodynamic term associated with heat conduction.
+
+        Parameters
+        ----------
+        T
+            Temperature.
+        K
+            Thermal diffusivity with heat ventilation factor.
+        lv
+            Latent heat of evaporation or sublimation.
+        """
         return const.rho_w * lv / T / K * (lv / T / const.Rv)
 
     @staticmethod
