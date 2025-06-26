@@ -10,10 +10,9 @@ from .porous_spheroids import PorousSpheroid
 class ColumnarIce(PorousSpheroid):
 
     @staticmethod
-    def polar_radius(const, mass):
+    def polar_radius_empirical_parametrisation(const, mass):
         """Sec. 3.1.2 in [Spichtinger & Gierens 2009].
-        Note that notation in the paper is incorrect. We divide here by
-        2 as we are interested in the radius and not the diameter.
+        Note that the notation in the paper is incorrect.
         """
         return np.where(
             mass < const.columnar_ice_mass_transition,
@@ -26,13 +25,7 @@ class ColumnarIce(PorousSpheroid):
         )
 
     @staticmethod
-    def equatorial_radius(
-        polar_radius, aspect_ratio
-    ):  # pylint: disable=unused-argument
-        return polar_radius / aspect_ratio
-
-    @staticmethod
-    def aspect_ratio(const, mass):
+    def aspect_ratio_empirical_parametrisation(const, mass):
         """Eq. 17 in [Spichtinger & Gierens 2009]"""
         return np.where(
             mass < const.columnar_ice_mass_transition,

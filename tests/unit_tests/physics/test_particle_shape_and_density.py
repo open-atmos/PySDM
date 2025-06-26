@@ -73,8 +73,8 @@ class TestParticleShapeAndDensity:
             columnar_shape = formulae.particle_shape_and_density
 
             # Act
-            polar_radius = columnar_shape.polar_radius(mass)
-            aspect_ratio = columnar_shape.aspect_ratio(mass)
+            polar_radius = columnar_shape.polar_radius_empirical_parametrisation(mass)
+            aspect_ratio = columnar_shape.aspect_ratio_empirical_parametrisation(mass)
             eccentricity = columnar_shape.eccentricity(aspect_ratio)
             equatorial_radius = columnar_shape.equatorial_radius(
                 polar_radius, aspect_ratio
@@ -130,8 +130,8 @@ class TestParticleShapeAndDensity:
         )
 
         # Act
-        polar_radius = columnar_shape.polar_radius(mass)
-        aspect_ratio = columnar_shape.aspect_ratio(mass)
+        polar_radius = columnar_shape.polar_radius_empirical_parametrisation(mass)
+        aspect_ratio = columnar_shape.aspect_ratio_empirical_parametrisation(mass)
         equatorial_radius = columnar_shape.equatorial_radius(polar_radius, aspect_ratio)
 
         polar_diameter = polar_radius * 2

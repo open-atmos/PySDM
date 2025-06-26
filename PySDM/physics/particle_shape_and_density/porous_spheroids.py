@@ -18,10 +18,20 @@ class PorousSpheroid:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def aspect_ratio(polar_radius, equatorial_radius):
-        """Sec. 2.5 in [Shima et al. 2020]"""
         return polar_radius / equatorial_radius
 
     @staticmethod
+    def equatorial_radius(
+        polar_radius, aspect_ratio
+    ):
+        return polar_radius / aspect_ratio
+
+    @staticmethod
+    def polar_radius(
+        equatorial_radius, aspect_ratio
+    ):
+        return equatorial_radius * aspect_ratio
+
+    @staticmethod
     def eccentricity(aspect_ratio):
-        """Eq. 32 in [Spichtinger & Gierens 2009]"""
         return np.sqrt(1 - aspect_ratio**-2.0)
