@@ -76,7 +76,9 @@ class TestParticleShapeAndDensity:
             polar_radius = columnar_shape.polar_radius(mass)
             aspect_ratio = columnar_shape.aspect_ratio(mass)
             eccentricity = columnar_shape.eccentricity(aspect_ratio)
-            equatorial_radius = columnar_shape.equatorial_radius(polar_radius, aspect_ratio)
+            equatorial_radius = columnar_shape.equatorial_radius(
+                polar_radius, aspect_ratio
+            )
 
             # Assert
             assert polar_radius.check("[length]")
@@ -85,45 +87,46 @@ class TestParticleShapeAndDensity:
             assert eccentricity.check(si.dimensionless)
 
     @staticmethod
-    def test_columnar_ice_geometric_values_against_spichtinger_and_gierens_2009_fig_1_and_2(plot=False):
+    def test_columnar_ice_geometric_values_against_spichtinger_and_gierens_2009_fig_1_and_2(
+        plot=False,
+    ):
+        """Fig. 1 & 2 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
         # arrange
         si = constants_defaults.si
-        mass = np.logspace(base=10, start=-16, stop=-7, num=10)  * si.kg
+        mass = np.logspace(base=10, start=-16, stop=-7, num=10) * si.kg
         formulae = Formulae(particle_shape_and_density="ColumnarIce")
         columnar_shape = formulae.particle_shape_and_density
 
         polar_diameter_reference = (
-                np.array(
-                    [
-                        0.57,
-                        1.24,
-                        2.67,
-                        5.74,
-                        14.92,
-                        42.51,
-                        121.08,
-                        344.85,
-                        982.14,
-                        2797.16,
-                    ]
-                )
-                * si.micrometer
+            np.array(
+                [
+                    0.57,
+                    1.24,
+                    2.67,
+                    5.74,
+                    14.92,
+                    42.51,
+                    121.08,
+                    344.85,
+                    982.14,
+                    2797.16,
+                ]
+            )
+            * si.micrometer
         )
-        aspect_ratio_reference = (
-                np.array(
-                    [
-                        1,
-                        1,
-                        1,
-                        1,
-                        1.32,
-                        2.01,
-                        3.05,
-                        4.64,
-                        7.05,
-                        10.73,
-                    ]
-                )
+        aspect_ratio_reference = np.array(
+            [
+                1,
+                1,
+                1,
+                1,
+                1.32,
+                2.01,
+                3.05,
+                4.64,
+                7.05,
+                10.73,
+            ]
         )
 
         # Act
@@ -155,6 +158,4 @@ class TestParticleShapeAndDensity:
         np.testing.assert_almost_equal(
             polar_diameter, polar_diameter_reference, decimal=1
         )
-        np.testing.assert_almost_equal(
-            aspect_ratio, aspect_ratio_reference, decimal=1
-        )
+        np.testing.assert_almost_equal(aspect_ratio, aspect_ratio_reference, decimal=1)

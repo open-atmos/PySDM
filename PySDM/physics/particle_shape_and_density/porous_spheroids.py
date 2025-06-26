@@ -7,6 +7,7 @@ and prolate spheriods as in
 
 import numpy as np
 
+
 class PorousSpheroid:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
@@ -18,9 +19,9 @@ class PorousSpheroid:  # pylint: disable=too-few-public-methods
     @staticmethod
     def aspect_ratio(polar_radius, equatorial_radius):
         """Sec. 2.5 in [Shima et al. 2020]"""
-        return (polar_radius / equatorial_radius)
+        return polar_radius / equatorial_radius
 
     @staticmethod
     def eccentricity(aspect_ratio):
         """Eq. 32 in [Spichtinger & Gierens 2009]"""
-        return ( np.sqrt( 1 - aspect_ratio**-2. )  )
+        return np.sqrt(1 - aspect_ratio**-2.0)

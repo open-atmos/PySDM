@@ -544,7 +544,7 @@ columnar_ice_length_beta_1 = 3.0
 """ 〃 """
 columnar_ice_length_beta_2 = 2.2
 """ 〃 """
-columnar_ice_length_alpha_1 = 526.1  * si.kg  / si.m**columnar_ice_length_beta_1
+columnar_ice_length_alpha_1 = 526.1 * si.kg / si.m**columnar_ice_length_beta_1
 """ 〃 """
 columnar_ice_length_alpha_2 = 0.04142 * si.kg / si.m**columnar_ice_length_beta_2
 """ 〃 """

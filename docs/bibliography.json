@@ -844,6 +844,9 @@
   "https://doi.org/10.5194/acp-9-685-2009": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/particle_shape_and_density/columnar_ice.py",
+      "PySDM/physics/particle_shape_and_density/porous_spheroids.py",
+      "tests/unit_tests/physics/test_particle_shape_and_density.py",
       "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",

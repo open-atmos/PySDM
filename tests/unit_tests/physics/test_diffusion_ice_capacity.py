@@ -108,7 +108,13 @@ class TestDiffusionIceCapacity:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "mass", ( pytest.param(1e-14 * physics.si.kg, marks=pytest.mark.xfail(strict=True)), 5e-13 * physics.si.kg, 1e-10 * physics.si.kg, 1e-8 * physics.si.kg)
+        "mass",
+        (
+            pytest.param(1e-14 * physics.si.kg, marks=pytest.mark.xfail(strict=True)),
+            5e-13 * physics.si.kg,
+            1e-10 * physics.si.kg,
+            1e-8 * physics.si.kg,
+        ),
     )
     def test_prolate_ellipsoid_formula(mass):
         """TODO #1643"""
