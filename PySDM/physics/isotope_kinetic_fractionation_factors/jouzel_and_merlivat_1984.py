@@ -34,7 +34,7 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
     @staticmethod
     def transfer_coefficient(D, Fk):
         """
-        eq. (A4) in Jouzel & Merlivat 1984,
+        eq. (A4) in Jouzel & Merlivat 1975,
         eq. (A6) in Bolot 2013.
 
         Parameters
