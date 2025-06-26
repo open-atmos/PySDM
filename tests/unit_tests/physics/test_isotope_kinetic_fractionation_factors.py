@@ -35,6 +35,19 @@ class TestIsotopeKineticFractionationFactors:
             assert sut.check("[]")
 
     @staticmethod
+    def test_units_transfer_coefficient():
+        with DimensionalAnalysis():
+            # arrange
+            D = 1 * physics.si.m**2 / physics.si.s
+            Fk = 1 * physics.si.s / physics.si.m**2
+
+            # act
+            sut = JouzelAndMerlivat1984.transfer_coefficient(D=D, Fk=Fk)
+
+            # assert
+            assert sut.check("[]")
+
+    @staticmethod
     def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
         """[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)"""
         # arrange
