@@ -1,6 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 
+import matplotlib.pyplot as plt
+import numpy as np
+
 from PySDM.formulae import Formulae
 from PySDM.physics import constants_defaults
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
@@ -82,5 +85,76 @@ class TestParticleShapeAndDensity:
             assert eccentricity.check(si.dimensionless)
 
     @staticmethod
-    def test_columnar_ice_geometric_values():
-        pass
+    def test_columnar_ice_geometric_values_against_spichtinger_and_gierens_2009_fig_1_and_2(plot=False):
+        # arrange
+        si = constants_defaults.si
+        mass = np.logspace(base=10, start=-16, stop=-7, num=10)  * si.kg
+        formulae = Formulae(particle_shape_and_density="ColumnarIce")
+        columnar_shape = formulae.particle_shape_and_density
+
+        polar_diameter_reference = (
+                np.array(
+                    [
+                        0.57,
+                        1.24,
+                        2.67,
+                        5.74,
+                        14.92,
+                        42.51,
+                        121.08,
+                        344.85,
+                        982.14,
+                        2797.16,
+                    ]
+                )
+                * si.micrometer
+        )
+        aspect_ratio_reference = (
+                np.array(
+                    [
+                        1,
+                        1,
+                        1,
+                        1,
+                        1.32,
+                        2.01,
+                        3.05,
+                        4.64,
+                        7.05,
+                        10.73,
+                    ]
+                )
+        )
+
+        # Act
+        polar_radius = columnar_shape.polar_radius(mass)
+        aspect_ratio = columnar_shape.aspect_ratio(mass)
+        equatorial_radius = columnar_shape.equatorial_radius(polar_radius, aspect_ratio)
+
+        polar_diameter = polar_radius * 2
+        equatorial_diameter = equatorial_radius * 2
+
+        # plot
+        plt.xlabel("mass (kg)")
+        plt.ylabel("length (m)")
+        plt.xlim(mass[0], mass[-1])
+        plt.xscale("log")
+        plt.yscale("log")
+        plt.grid()
+
+        plt.title("ColumnarIce length")
+        plt.plot(mass, polar_diameter * 2, color="red")
+        plt.plot(mass, equatorial_diameter * 2, color="blue")
+
+        if plot:
+            plt.show()
+        else:
+            plt.clf()
+
+        # Assert
+        np.testing.assert_almost_equal(
+            polar_diameter, polar_diameter_reference, decimal=1
+        )
+        np.testing.assert_almost_equal(
+            aspect_ratio, aspect_ratio_reference, decimal=1
+        )
