@@ -21,15 +21,11 @@ class PorousSpheroid:  # pylint: disable=too-few-public-methods
         return polar_radius / equatorial_radius
 
     @staticmethod
-    def equatorial_radius(
-        polar_radius, aspect_ratio
-    ):
+    def equatorial_radius(polar_radius, aspect_ratio):
         return polar_radius / aspect_ratio
 
     @staticmethod
-    def polar_radius(
-        equatorial_radius, aspect_ratio
-    ):
+    def polar_radius(equatorial_radius, aspect_ratio):
         return equatorial_radius * aspect_ratio
 
     @staticmethod
