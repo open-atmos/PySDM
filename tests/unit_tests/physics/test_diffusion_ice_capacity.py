@@ -127,8 +127,8 @@ class TestDiffusionIceCapacity:
         columnar_shape = formulae.particle_shape_and_density
 
         # act
-        polar_diameter = 2 * columnar_shape.polar_radius(mass)
-        aspect_ratio = columnar_shape.aspect_ratio(mass)
+        polar_diameter = 2 * columnar_shape.polar_radius_empirical_parametrisation(mass)
+        aspect_ratio = columnar_shape.aspect_ratio_empirical_parametrisation(mass)
         eccentricity = columnar_shape.eccentricity(aspect_ratio)
         capacity = sut.capacity(mass)
         reference_capacity = sut.reference_capacity(polar_diameter, eccentricity)
