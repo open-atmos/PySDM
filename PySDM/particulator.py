@@ -444,7 +444,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     ):
         for isotope in heavy_isotopes:
             self.backend.isotopic_fractionation(
-                isotope=isotope,
+                molar_mass=getattr(self.formulae.constants, f"M_{isotope}"),
                 multiplicity=self.attributes["multiplicity"],
                 signed_timescale=self.attributes[f"isotope_timescale_{isotope}"],
                 moles=self.attributes[f"moles_{isotope}"],
@@ -457,6 +457,15 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 ],
             )
             self.attributes.mark_updated(f"moles_{isotope}")
+
+    def bolins_number(self, *, output, molar_mass, moles_heavy_isotope):
+        self.backend.bolins_number(
+            output=output,
+            molar_mass=molar_mass,
+            cell_id=self.attributes["cell id"],
+            moles_heavy_isotope=moles_heavy_isotope,
+            relative_humidity=self.environment["RH"],
+        )
 
     def seeding(
         self,
