@@ -175,6 +175,7 @@ class FreezingMethods(BackendMethods):
             self.formulae.trivia.frozen_and_above_freezing_point
         )
         unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
+        const = self.formulae.constants
 
         @numba.njit(**self.default_jit_flags)
         def body(attributes, temperature, relative_humidity_ice, cell, thaw):
@@ -182,14 +183,18 @@ class FreezingMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 cell_id = cell[i]
                 if thaw and frozen_and_above_freezing_point(
-                        attributes.signed_water_mass[i], temperature[cell_id]
+                    attributes.signed_water_mass[i], temperature[cell_id]
                 ):
                     _thaw(attributes.signed_water_mass, i)
                 elif unfrozen_and_ice_saturated(
-                        attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
+                    attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
                 ):
-                    if temperature[cell_id] <= 238.:
+                    if (
+                        temperature[cell_id]
+                        <= const.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
+                    ):
                         _freeze(attributes.signed_water_mass, i)
+
         return body
 
     def freeze_singular(
@@ -232,7 +237,6 @@ class FreezingMethods(BackendMethods):
             thaw=thaw,
         )
 
-
     def freeze_singular_homogeneous(
         self,
         *,
@@ -256,7 +260,6 @@ class FreezingMethods(BackendMethods):
             relative_humidity_ice.data,
             thaw=thaw,
         )
-
 
     def freeze_time_dependent_homogeneous(
         self,
