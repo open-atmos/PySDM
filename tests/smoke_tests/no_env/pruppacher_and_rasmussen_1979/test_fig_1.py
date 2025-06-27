@@ -33,7 +33,7 @@ class TestFig1:
     )
     def test_values_match(notebook_local_variables, sqrt_re_times_cbrt_sc, vent_coeff):
         plot_x = notebook_local_variables["sqrt_re_times_cbrt_sc"]
-        plot_y = notebook_local_variables["vent_coef"]
+        plot_y = notebook_local_variables["vent_coeff"]
         eps = 0.1
         ((index,),) = np.where(abs(plot_x - sqrt_re_times_cbrt_sc) < eps)
         np.testing.assert_approx_equal(
@@ -47,5 +47,5 @@ class TestFig1:
 
     @staticmethod
     def test_monotonic_y(notebook_local_variables):
-        plot_y = notebook_local_variables["vent_coef"]
+        plot_y = notebook_local_variables["vent_coeff"]
         assert (np.diff(plot_y) > 0).all()
