@@ -11,3 +11,7 @@ class MiyakeEtAl1968:  # pylint: disable=too-few-public-methods
         return (radius**2 * alpha * const.rho_w * const.R_str * temperature) / (
             3 * e_s * D * M * vent_coeff
         )
+
+    @staticmethod
+    def bolins_number(const, moles_heavy_isotope, relative_humidity, molar_mass):
+        return 44.0

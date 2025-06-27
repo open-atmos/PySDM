@@ -80,7 +80,6 @@ class TestIsotopicFractionation:
         particulator.dynamics["IsotopicFractionation"]()
 
         # assert
-
         for isotope in HEAVY_ISOTOPES:
             # pylint:disable=protected-access
             assert (
