@@ -13,7 +13,6 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
-        # singular=True,
         homogeneous_freezing: Optional[str] = None,
         immersion_freezing: Optional[str] = None,
         thaw=False,
@@ -22,7 +21,6 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
         for flag in (homogeneous_freezing, immersion_freezing):
             assert flag is None or flag in ("time-dependent", "singular"), ""
 
-        # self.singular = singular
         self.homogeneous_freezing = homogeneous_freezing
         self.immersion_freezing = immersion_freezing
         self.thaw = thaw

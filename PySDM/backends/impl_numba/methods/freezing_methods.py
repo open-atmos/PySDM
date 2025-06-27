@@ -179,7 +179,7 @@ class FreezingMethods(BackendMethods):
         const = self.formulae.constants
 
         @numba.njit(**self.default_jit_flags)
-        def body(attributes, temperature, relative_humidity_ice, cell, thaw):
+        def body(attributes, cell, temperature, relative_humidity_ice, thaw):
             n_sd = len(attributes.signed_water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 cell_id = cell[i]

@@ -7,7 +7,11 @@ from PySDM import Builder, Formulae
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.products import IceWaterContent, WaterMixingRatio
+from PySDM.products import (
+    IceWaterContent,
+    LiquidWaterContent,
+    SpecificLiquidWaterContent,
+)
 from PySDM.backends import GPU
 
 VERY_BIG_J_HET = 1e20
@@ -86,7 +90,7 @@ class TestDropletFreezing:
         pass
 
     @staticmethod
-    @pytest.mark.parametrize("hom_freezing_type", ("time-dependent", None))
+    @pytest.mark.parametrize("hom_freezing_type", ("singular", "time-dependent", None))
     @pytest.mark.parametrize("het_freezing_type", ("singular", "time-dependent", None))
     @pytest.mark.parametrize("thaw", (True, False))
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
@@ -209,19 +213,20 @@ class TestDropletFreezing:
             "signed water mass": np.full(n_sd, water_mass),
         }
         products = (
-            WaterMixingRatio(name="qc"),
+            LiquidWaterContent(name="qc"),
             IceWaterContent(name="qi"),
         )
         particulator = builder.build(attributes=attributes, products=products)
         particulator.environment["T"] = temperature
-        particulator.environment["RH_ice"] = 1.000001
+        particulator.environment["RH"] = 1.0001
+        particulator.environment["RH_ice"] = 1.5
         T_hom = formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
 
         # act
         particulator.run(steps=steps)
 
         # assert
-        (qc,) = particulator.products["qi"].get()
+        (qc,) = particulator.products["qc"].get()
         (qi,) = particulator.products["qi"].get()
 
         if temperature > T_hom:
