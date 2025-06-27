@@ -7,7 +7,7 @@ from PySDM import Builder, Formulae
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.products import IceWaterContent
+from PySDM.products import IceWaterContent, WaterMixingRatio
 from PySDM.backends import GPU
 
 VERY_BIG_J_HET = 1e20
@@ -184,6 +184,57 @@ class TestDropletFreezing:
             desired=n_sd * multiplicity * water_mass / dv,
             significant=7,
         )
+
+    @staticmethod
+    @pytest.mark.parametrize("temperature", (238 * si.kelvin, 232 * si.kelvin))
+    def test_homogeneous_freezing_singular(backend_class, temperature):
+        if backend_class.__name__ == "ThrustRTC":
+            pytest.skip()
+        # arrange
+        n_sd = 44
+        dt = 1 * si.s
+        dv = 1 * si.m**3
+        water_mass = 1 * si.mg
+        multiplicity = 1e10
+        steps = 1
+
+        formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
+        env = Box(dt=dt, dv=dv)
+        builder = Builder(
+            n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+        )
+        builder.add_dynamic(Freezing(homogeneous_freezing="singular"))
+        attributes = {
+            "multiplicity": np.full(n_sd, multiplicity),
+            "signed water mass": np.full(n_sd, water_mass),
+        }
+        products = (
+            WaterMixingRatio(name="qc"),
+            IceWaterContent(name="qi"),
+        )
+        particulator = builder.build(attributes=attributes, products=products)
+        particulator.environment["T"] = temperature
+        particulator.environment["RH_ice"] = 1.000001
+        T_hom = formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
+
+        # act
+        particulator.run(steps=steps)
+
+        # assert
+        (qc,) = particulator.products["qi"].get()
+        (qi,) = particulator.products["qi"].get()
+
+        if temperature > T_hom:
+            assert qc > 0
+            assert qi == 0
+        else:
+            assert qc == 0
+            assert qi > 0
+            np.testing.assert_approx_equal(
+                actual=qi,
+                desired=n_sd * multiplicity * water_mass / dv,
+                significant=7,
+            )
 
     @staticmethod
     @pytest.mark.parametrize("double_precision", (True, False))

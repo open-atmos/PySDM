@@ -14,6 +14,7 @@ from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
     TimeDependentHomogeneousAttributes,
+    SingularHomogeneousAttributes,
 )
 
 
@@ -240,21 +241,16 @@ class FreezingMethods(BackendMethods):
     def freeze_singular_homogeneous(
         self,
         *,
-        rand,
         attributes,
-        timestep,
         cell,
         temperature,
         relative_humidity_ice,
         thaw: bool,
     ):
         self._freeze_singular_homogeneous_body(
-            rand.data,
-            TimeDependentHomogeneousAttributes(
-                volume=attributes.volume.data,
+            SingularHomogeneousAttributes(
                 signed_water_mass=attributes.signed_water_mass.data,
             ),
-            timestep,
             cell.data,
             temperature.data,
             relative_humidity_ice.data,

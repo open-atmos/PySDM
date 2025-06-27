@@ -36,3 +36,14 @@ class TimeDependentHomogeneousAttributes(
     """groups attributes required in time-dependent regime for homogeneous freezing"""
 
     __slots__ = ()
+
+
+class SingularHomogeneousAttributes(
+    namedtuple(
+        typename="SingularHomogeneousAttributes",
+        field_names=("signed_water_mass"),
+    )
+):
+    """groups attributes required in time-dependent regime for homogeneous freezing"""
+
+    __slots__ = ()

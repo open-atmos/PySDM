@@ -9,6 +9,7 @@ from PySDM.backends.impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
     TimeDependentHomogeneousAttributes,
+    SingularHomogeneousAttributes,
 )
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
@@ -554,14 +555,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             thaw=thaw,
         )
 
-    def homogeneous_freezing_singular(self, *, thaw: bool, rand: Storage):
-        self.backend.freeze_time_dependent_homogeneous(
-            rand=rand,
-            attributes=TimeDependentHomogeneousAttributes(
-                volume=self.attributes["volume"],
+    def homogeneous_freezing_singular(self, *, thaw: bool):
+        self.backend.freeze_singular_homogeneous(
+            attributes=SingularHomogeneousAttributes(
                 signed_water_mass=self.attributes["signed water mass"],
             ),
-            timestep=self.dt,
             cell=self.attributes["cell id"],
             temperature=self.environment["T"],
             relative_humidity_ice=self.environment["RH_ice"],
