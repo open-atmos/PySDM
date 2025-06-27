@@ -834,8 +834,7 @@
       "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
       "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
       "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py",
-      "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py",
-      "examples/PySDM_examples/Zaba_et_al_2025/timescales_comparison.ipynb"
+      "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py"
     ],
     "title": "The Evaporation, Temperature and Thermal Relaxation-Time of Freely Falling Waterdrops",
     "label": "Kinzer & Gunn 1951 (J. Meteor.)"
