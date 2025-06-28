@@ -3,7 +3,6 @@ import numpy as np
 from PySDM_examples.utils import BasicSimulation
 
 from PySDM import Builder
-from PySDM.backends import CPU
 from PySDM.dynamics import (
     Condensation,
     AmbientThermodynamics,
@@ -24,7 +23,7 @@ from PySDM.environments import Parcel
 class Simulation(BasicSimulation):
     def __init__(self, settings):
         builder = Builder(
-            backend=CPU(settings.formulae, override_jit_flags={"parallel": False}),
+            backend=settings.backend,
             n_sd=settings.n_sd,
             environment=Parcel(
                 dt=settings.timestep,
@@ -80,7 +79,7 @@ class Simulation(BasicSimulation):
                     (0, settings.n_sd - n_inp),
                     mode="constant",
                     constant_values=(
-                        settings.formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
+                        builder.particulator.formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
                         if settings.singular
                         else 0
                     ),
