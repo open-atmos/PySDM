@@ -139,7 +139,7 @@ jobs:
           NUMBA_OPT: 1
         run: |
           shopt -s extglob
-          pytest ${{ env.pytest_options }} --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 600 }} --timeout_method=thread tests/${{ matrix.test-suite }}
+          pytest ${{ env.pytest_options }} --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
     needs: [nojit_and_codecov]
@@ -245,7 +245,7 @@ jobs:
         run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest tests/examples_tests/test_run* --suite ${{ matrix.test-suite }} --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 600 }}
         
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
