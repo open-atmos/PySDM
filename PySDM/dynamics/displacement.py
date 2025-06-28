@@ -21,12 +21,14 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         enable_sedimentation=False,
+        enable_monte_carlo=False,
         precipitation_counting_level_index: int = 0,
         adaptive=DEFAULTS.adaptive,
         rtol=DEFAULTS.rtol,
     ):  # pylint: disable=too-many-arguments
         self.particulator = None
         self.enable_sedimentation = enable_sedimentation
+        self.enable_monte_carlo = enable_monte_carlo
         self.dimension = None
         self.grid = None
         self.courant = None
@@ -101,11 +103,12 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
         # TIP: not need all array only [idx[:sd_num]]
         cell_origin = self.particulator.attributes["cell origin"]
         position_in_cell = self.particulator.attributes["position in cell"]
+        cell_id = self.particulator.attributes["cell id"]
 
         self.precipitation_mass_in_last_step = 0.0
         for _ in range(self._n_substeps):
             self.calculate_displacement(
-                self.displacement, self.courant, cell_origin, position_in_cell
+                self.displacement, self.courant, cell_origin, position_in_cell, cell_id
             )
             self.update_position(position_in_cell, self.displacement)
             if self.enable_sedimentation:
@@ -122,16 +125,23 @@ class Displacement:  # pylint: disable=too-many-instance-attributes
             self.particulator.attributes.mark_updated(key)
 
     def calculate_displacement(
-        self, displacement, courant, cell_origin, position_in_cell
+        self, displacement, courant, cell_origin, position_in_cell, cell_id
     ):
+        if self.enable_sedimentation and self.enable_monte_carlo:
+            dt = self.particulator.dt / self._n_substeps
+            dt_over_dz = dt / self.particulator.mesh.dz
+            courant += self.particulator.attributes["relative fall velocity"] / dt_over_dz
+
         self.particulator.calculate_displacement(
             displacement=displacement,
             courant=courant,
             cell_origin=cell_origin,
+            cell_id=cell_id,
             position_in_cell=position_in_cell,
             n_substeps=self._n_substeps,
+            enable_monte_carlo=self.enable_monte_carlo,
         )
-        if self.enable_sedimentation:
+        if self.enable_sedimentation and not self.enable_monte_carlo: 
             displacement_z = displacement[self.dimension - 1, :]
             dt = self.particulator.dt / self._n_substeps
             dt_over_dz = dt / self.particulator.mesh.dz
