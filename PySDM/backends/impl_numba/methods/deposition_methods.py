@@ -16,7 +16,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         formulae = self.formulae_flattened
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
-        def body(  # pylint: disable=too-many-arguments
+        def body(  # pylint: disable=too-many-arguments,unused-argument
             *,
             multiplicity,
             signed_water_mass,
@@ -47,22 +47,15 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         signed_water_mass[i]
                     )
 
-                    diameter = radius * 2.0
-
                     temperature = current_temperature[cid]
                     pressure = current_total_pressure[cid]
                     rho = current_dry_air_density[cid]
                     pvs_ice = formulae.saturation_vapour_pressure__pvs_ice(temperature)
                     latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
 
-                    capacity = formulae.diffusion_ice_capacity__capacity(diameter)
+                    capacity = formulae.diffusion_ice_capacity__capacity(ice_mass)
 
-                    mass_ventilation_factor = formulae.ventilation__ventilation_coefficient(
-                        sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
-                            Re=reynolds_number[i],
-                            Sc=schmidt_number[cid],
-                        )
-                    )
+                    mass_ventilation_factor = 1  # TODO #1655
                     heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
 
                     Dv_const = formulae.diffusion_thermics__D(temperature, pressure)
@@ -95,6 +88,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         D=diffusion_coefficient * mass_ventilation_factor,
                         pvs=pvs_ice,
                     )
+
                     howell_factor_x_diffcoef_x_rhovsice_x_icess = (
                         formulae.drop_growth__r_dr_dt(
                             RH_eq=1,
