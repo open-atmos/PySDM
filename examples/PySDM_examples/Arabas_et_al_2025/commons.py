@@ -5,6 +5,7 @@ from PySDM.physics import si
 
 FREEZING_CONSTANTS = {
     "dust": {
+        # [Alpert and Knopf (2016, Table 2)](https://doi.org/10.5194/acp-16-2083-2016)
         "NIEMAND_A": -0.517,
         "NIEMAND_B": 8.934,
         "ABIFM_M": 22.62,

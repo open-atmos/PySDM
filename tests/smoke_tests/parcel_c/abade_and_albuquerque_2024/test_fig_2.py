@@ -30,7 +30,8 @@ class TestFig2:
         (
             ("Bulk", "total"),
             ("Bulk", "water"),
-            ("Homogeneous", "total"),
+            ("Homogeneous-INAS", "total"),
+            ("Homogeneous-ABIFM", "total"),
         ),
     )
     def test_cloud_base(variables, key, model):
@@ -49,12 +50,15 @@ class TestFig2:
             ("Bulk", "total", 1.1 * si.g / si.kg),
             ("Bulk", "ice", 0.16 * si.g / si.kg),
             ("Bulk", "water", 0.90 * si.g / si.kg),
-            ("Homogeneous", "total", 1.1 * si.g / si.kg),
-            ("Homogeneous", "ice", 1.1 * si.g / si.kg),
-            ("Homogeneous", "water", 2.9e-9),
+            ("Homogeneous-INAS", "total", 1.1 * si.g / si.kg),
+            ("Homogeneous-INAS", "ice", 1.1 * si.g / si.kg),
+            ("Homogeneous-INAS", "water", 2.9e-9),
+            ("Homogeneous-ABIFM", "total", 1.1 * si.g / si.kg),
+            ("Homogeneous-ABIFM", "ice", 1.1 * si.g / si.kg),
+            ("Homogeneous-ABIFM", "water", 2.6e-9),
         ),
     )
-    def test_values_at_cloud_top_for(variables, model, var_name, desired_value):
+    def test_values_at_cloud_top(variables, model, var_name, desired_value):
         np.testing.assert_approx_equal(
             desired=desired_value,
             actual=variables["values"][model][var_name][-1],
@@ -65,8 +69,10 @@ class TestFig2:
     @pytest.mark.parametrize(
         "model, key",
         (
-            ("Homogeneous", "total"),
-            ("Homogeneous", "ice"),
+            ("Homogeneous-INAS", "total"),
+            ("Homogeneous-INAS", "ice"),
+            ("Homogeneous-ABIFM", "total"),
+            ("Homogeneous-ABIFM", "ice"),
             ("Bulk", "total"),
             ("Bulk", "ice"),
             ("Bulk", "water"),
