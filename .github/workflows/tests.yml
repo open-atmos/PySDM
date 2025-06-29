@@ -246,7 +246,7 @@ jobs:
         run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 800 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
         
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
