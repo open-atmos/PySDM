@@ -124,21 +124,31 @@ same as in <a href="https://doi.org/10.1088/0370-1301/64/9/307">Mason 1951</a></
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span><span class="p">)</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">RH_eq</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Fd</span><span class="p">):</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop growth equation with radius r.</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">        Parameters</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">        ----------</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">        Fk</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">            Thermodynamic term associated with heat conduction from Rogers &amp; Yau 1989.</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">        Fd</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">            Term associated with vapour diffusion.</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fk</span> <span class="o">+</span> <span class="n">Fd</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Thermodynamic term associated with heat conduction.</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        Parameters</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">        ----------</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        T</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">            Temperature.</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        K</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">            Thermal diffusivity with heat ventilation factor.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">        lv</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">            Latent heat of evaporation or sublimation.</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span><span class="p">)</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">RH_eq</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Fd</span><span class="p">):</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop growth equation with radius r.</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">        Parameters</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">        ----------</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">        Fk</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">            Thermodynamic term associated with heat conduction from Rogers &amp; Yau 1989.</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">        Fd</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a><span class="sd">            Term associated with vapour diffusion.</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fk</span> <span class="o">+</span> <span class="n">Fd</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -158,21 +168,31 @@ same as in <a href="https://doi.org/10.1088/0370-1301/64/9/307">Mason 1951</a></
 </span><span id="Howell1949-15"><a href="#Howell1949-15"><span class="linenos">15</span></a>
 </span><span id="Howell1949-16"><a href="#Howell1949-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Howell1949-17"><a href="#Howell1949-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
-</span><span id="Howell1949-18"><a href="#Howell1949-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
-</span><span id="Howell1949-19"><a href="#Howell1949-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span><span class="p">)</span>
-</span><span id="Howell1949-20"><a href="#Howell1949-20"><span class="linenos">20</span></a>
-</span><span id="Howell1949-21"><a href="#Howell1949-21"><span class="linenos">21</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Howell1949-22"><a href="#Howell1949-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">RH_eq</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Fd</span><span class="p">):</span>
-</span><span id="Howell1949-23"><a href="#Howell1949-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop growth equation with radius r.</span>
-</span><span id="Howell1949-24"><a href="#Howell1949-24"><span class="linenos">24</span></a>
-</span><span id="Howell1949-25"><a href="#Howell1949-25"><span class="linenos">25</span></a><span class="sd">        Parameters</span>
-</span><span id="Howell1949-26"><a href="#Howell1949-26"><span class="linenos">26</span></a><span class="sd">        ----------</span>
-</span><span id="Howell1949-27"><a href="#Howell1949-27"><span class="linenos">27</span></a><span class="sd">        Fk</span>
-</span><span id="Howell1949-28"><a href="#Howell1949-28"><span class="linenos">28</span></a><span class="sd">            Thermodynamic term associated with heat conduction from Rogers &amp; Yau 1989.</span>
-</span><span id="Howell1949-29"><a href="#Howell1949-29"><span class="linenos">29</span></a><span class="sd">        Fd</span>
-</span><span id="Howell1949-30"><a href="#Howell1949-30"><span class="linenos">30</span></a><span class="sd">            Term associated with vapour diffusion.</span>
-</span><span id="Howell1949-31"><a href="#Howell1949-31"><span class="linenos">31</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Howell1949-32"><a href="#Howell1949-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fk</span> <span class="o">+</span> <span class="n">Fd</span><span class="p">)</span>
+</span><span id="Howell1949-18"><a href="#Howell1949-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Thermodynamic term associated with heat conduction.</span>
+</span><span id="Howell1949-19"><a href="#Howell1949-19"><span class="linenos">19</span></a>
+</span><span id="Howell1949-20"><a href="#Howell1949-20"><span class="linenos">20</span></a><span class="sd">        Parameters</span>
+</span><span id="Howell1949-21"><a href="#Howell1949-21"><span class="linenos">21</span></a><span class="sd">        ----------</span>
+</span><span id="Howell1949-22"><a href="#Howell1949-22"><span class="linenos">22</span></a><span class="sd">        T</span>
+</span><span id="Howell1949-23"><a href="#Howell1949-23"><span class="linenos">23</span></a><span class="sd">            Temperature.</span>
+</span><span id="Howell1949-24"><a href="#Howell1949-24"><span class="linenos">24</span></a><span class="sd">        K</span>
+</span><span id="Howell1949-25"><a href="#Howell1949-25"><span class="linenos">25</span></a><span class="sd">            Thermal diffusivity with heat ventilation factor.</span>
+</span><span id="Howell1949-26"><a href="#Howell1949-26"><span class="linenos">26</span></a><span class="sd">        lv</span>
+</span><span id="Howell1949-27"><a href="#Howell1949-27"><span class="linenos">27</span></a><span class="sd">            Latent heat of evaporation or sublimation.</span>
+</span><span id="Howell1949-28"><a href="#Howell1949-28"><span class="linenos">28</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Howell1949-29"><a href="#Howell1949-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span><span class="p">)</span>
+</span><span id="Howell1949-30"><a href="#Howell1949-30"><span class="linenos">30</span></a>
+</span><span id="Howell1949-31"><a href="#Howell1949-31"><span class="linenos">31</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Howell1949-32"><a href="#Howell1949-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">RH_eq</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Fd</span><span class="p">):</span>
+</span><span id="Howell1949-33"><a href="#Howell1949-33"><span class="linenos">33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop growth equation with radius r.</span>
+</span><span id="Howell1949-34"><a href="#Howell1949-34"><span class="linenos">34</span></a>
+</span><span id="Howell1949-35"><a href="#Howell1949-35"><span class="linenos">35</span></a><span class="sd">        Parameters</span>
+</span><span id="Howell1949-36"><a href="#Howell1949-36"><span class="linenos">36</span></a><span class="sd">        ----------</span>
+</span><span id="Howell1949-37"><a href="#Howell1949-37"><span class="linenos">37</span></a><span class="sd">        Fk</span>
+</span><span id="Howell1949-38"><a href="#Howell1949-38"><span class="linenos">38</span></a><span class="sd">            Thermodynamic term associated with heat conduction from Rogers &amp; Yau 1989.</span>
+</span><span id="Howell1949-39"><a href="#Howell1949-39"><span class="linenos">39</span></a><span class="sd">        Fd</span>
+</span><span id="Howell1949-40"><a href="#Howell1949-40"><span class="linenos">40</span></a><span class="sd">            Term associated with vapour diffusion.</span>
+</span><span id="Howell1949-41"><a href="#Howell1949-41"><span class="linenos">41</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Howell1949-42"><a href="#Howell1949-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fk</span> <span class="o">+</span> <span class="n">Fd</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -192,12 +212,31 @@ same as in <a href="https://doi.org/10.1088/0370-1301/64/9/307">Mason 1951</a></
     <a class="headerlink" href="#Howell1949.Fk"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Howell1949.Fk-16"><a href="#Howell1949.Fk-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="Howell1949.Fk-17"><a href="#Howell1949.Fk-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">Fk</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">K</span><span class="p">,</span> <span class="n">lv</span><span class="p">):</span>
-</span><span id="Howell1949.Fk-18"><a href="#Howell1949.Fk-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;thermodynamic term associated with heat conduction&quot;&quot;&quot;</span>
-</span><span id="Howell1949.Fk-19"><a href="#Howell1949.Fk-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span><span class="p">)</span>
+</span><span id="Howell1949.Fk-18"><a href="#Howell1949.Fk-18"><span class="linenos">18</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Thermodynamic term associated with heat conduction.</span>
+</span><span id="Howell1949.Fk-19"><a href="#Howell1949.Fk-19"><span class="linenos">19</span></a>
+</span><span id="Howell1949.Fk-20"><a href="#Howell1949.Fk-20"><span class="linenos">20</span></a><span class="sd">        Parameters</span>
+</span><span id="Howell1949.Fk-21"><a href="#Howell1949.Fk-21"><span class="linenos">21</span></a><span class="sd">        ----------</span>
+</span><span id="Howell1949.Fk-22"><a href="#Howell1949.Fk-22"><span class="linenos">22</span></a><span class="sd">        T</span>
+</span><span id="Howell1949.Fk-23"><a href="#Howell1949.Fk-23"><span class="linenos">23</span></a><span class="sd">            Temperature.</span>
+</span><span id="Howell1949.Fk-24"><a href="#Howell1949.Fk-24"><span class="linenos">24</span></a><span class="sd">        K</span>
+</span><span id="Howell1949.Fk-25"><a href="#Howell1949.Fk-25"><span class="linenos">25</span></a><span class="sd">            Thermal diffusivity with heat ventilation factor.</span>
+</span><span id="Howell1949.Fk-26"><a href="#Howell1949.Fk-26"><span class="linenos">26</span></a><span class="sd">        lv</span>
+</span><span id="Howell1949.Fk-27"><a href="#Howell1949.Fk-27"><span class="linenos">27</span></a><span class="sd">            Latent heat of evaporation or sublimation.</span>
+</span><span id="Howell1949.Fk-28"><a href="#Howell1949.Fk-28"><span class="linenos">28</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Howell1949.Fk-29"><a href="#Howell1949.Fk-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">K</span> <span class="o">*</span> <span class="p">(</span><span class="n">lv</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Rv</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>thermodynamic term associated with heat conduction</p>
+            <div class="docstring"><p>Thermodynamic term associated with heat conduction.</p>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>T
+    Temperature.
+K
+    Thermal diffusivity with heat ventilation factor.
+lv
+    Latent heat of evaporation or sublimation.</p>
 </div>
 
 
@@ -214,18 +253,18 @@ same as in <a href="https://doi.org/10.1088/0370-1301/64/9/307">Mason 1951</a></
 
     </div>
     <a class="headerlink" href="#Howell1949.r_dr_dt"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Howell1949.r_dr_dt-21"><a href="#Howell1949.r_dr_dt-21"><span class="linenos">21</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Howell1949.r_dr_dt-22"><a href="#Howell1949.r_dr_dt-22"><span class="linenos">22</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">RH_eq</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Fd</span><span class="p">):</span>
-</span><span id="Howell1949.r_dr_dt-23"><a href="#Howell1949.r_dr_dt-23"><span class="linenos">23</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop growth equation with radius r.</span>
-</span><span id="Howell1949.r_dr_dt-24"><a href="#Howell1949.r_dr_dt-24"><span class="linenos">24</span></a>
-</span><span id="Howell1949.r_dr_dt-25"><a href="#Howell1949.r_dr_dt-25"><span class="linenos">25</span></a><span class="sd">        Parameters</span>
-</span><span id="Howell1949.r_dr_dt-26"><a href="#Howell1949.r_dr_dt-26"><span class="linenos">26</span></a><span class="sd">        ----------</span>
-</span><span id="Howell1949.r_dr_dt-27"><a href="#Howell1949.r_dr_dt-27"><span class="linenos">27</span></a><span class="sd">        Fk</span>
-</span><span id="Howell1949.r_dr_dt-28"><a href="#Howell1949.r_dr_dt-28"><span class="linenos">28</span></a><span class="sd">            Thermodynamic term associated with heat conduction from Rogers &amp; Yau 1989.</span>
-</span><span id="Howell1949.r_dr_dt-29"><a href="#Howell1949.r_dr_dt-29"><span class="linenos">29</span></a><span class="sd">        Fd</span>
-</span><span id="Howell1949.r_dr_dt-30"><a href="#Howell1949.r_dr_dt-30"><span class="linenos">30</span></a><span class="sd">            Term associated with vapour diffusion.</span>
-</span><span id="Howell1949.r_dr_dt-31"><a href="#Howell1949.r_dr_dt-31"><span class="linenos">31</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="Howell1949.r_dr_dt-32"><a href="#Howell1949.r_dr_dt-32"><span class="linenos">32</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fk</span> <span class="o">+</span> <span class="n">Fd</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Howell1949.r_dr_dt-31"><a href="#Howell1949.r_dr_dt-31"><span class="linenos">31</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Howell1949.r_dr_dt-32"><a href="#Howell1949.r_dr_dt-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">r_dr_dt</span><span class="p">(</span><span class="n">RH_eq</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Fd</span><span class="p">):</span>
+</span><span id="Howell1949.r_dr_dt-33"><a href="#Howell1949.r_dr_dt-33"><span class="linenos">33</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Drop growth equation with radius r.</span>
+</span><span id="Howell1949.r_dr_dt-34"><a href="#Howell1949.r_dr_dt-34"><span class="linenos">34</span></a>
+</span><span id="Howell1949.r_dr_dt-35"><a href="#Howell1949.r_dr_dt-35"><span class="linenos">35</span></a><span class="sd">        Parameters</span>
+</span><span id="Howell1949.r_dr_dt-36"><a href="#Howell1949.r_dr_dt-36"><span class="linenos">36</span></a><span class="sd">        ----------</span>
+</span><span id="Howell1949.r_dr_dt-37"><a href="#Howell1949.r_dr_dt-37"><span class="linenos">37</span></a><span class="sd">        Fk</span>
+</span><span id="Howell1949.r_dr_dt-38"><a href="#Howell1949.r_dr_dt-38"><span class="linenos">38</span></a><span class="sd">            Thermodynamic term associated with heat conduction from Rogers &amp; Yau 1989.</span>
+</span><span id="Howell1949.r_dr_dt-39"><a href="#Howell1949.r_dr_dt-39"><span class="linenos">39</span></a><span class="sd">        Fd</span>
+</span><span id="Howell1949.r_dr_dt-40"><a href="#Howell1949.r_dr_dt-40"><span class="linenos">40</span></a><span class="sd">            Term associated with vapour diffusion.</span>
+</span><span id="Howell1949.r_dr_dt-41"><a href="#Howell1949.r_dr_dt-41"><span class="linenos">41</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Howell1949.r_dr_dt-42"><a href="#Howell1949.r_dr_dt-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">RH</span> <span class="o">-</span> <span class="n">RH_eq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Fk</span> <span class="o">+</span> <span class="n">Fd</span><span class="p">)</span>
 </span></pre></div>
 
 

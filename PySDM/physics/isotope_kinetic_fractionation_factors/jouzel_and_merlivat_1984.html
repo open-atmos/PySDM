@@ -96,8 +96,10 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../physics.html">physics</a><wbr>.<a href="./../isotope_kinetic_fractionation_factors.html">isotope_kinetic_fractionation_factors</a><wbr>.jouzel_and_merlivat_1984    </h1>
 
-                        <div class="docstring"><p>kinetic fractionation factor from <a href="https://doi.org/10.1029/JD089iD07p11749">Jouzel &amp; Merlivat 1984</a>
-(as eq. 3e for n=1 in <a href="https://doi.org/10.1029/JC080i009p01133">Stewart 1975</a>)</p>
+                        <div class="docstring"><p>kinetic fractionation factor <a href="https://doi.org/10.1029/JD089iD07p11749">Jouzel &amp; Merlivat 1984</a>,
+as eq. 3e for n=1 in <a href="https://doi.org/10.1029/JC080i009p01133">Stewart 1975</a>
+and eq. 1 in <a href="https://doi.org/10.5194/acp-13-7903-2013">Bolot 2013</a>,
+where alpha_kinetic is multiplied by alpha equilibrium (eq. 1 defines effective alpha).</p>
 </div>
 
                         <input id="mod-jouzel_and_merlivat_1984-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -105,26 +107,37 @@
                         <label class="view-source-button" for="mod-jouzel_and_merlivat_1984-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">kinetic fractionation factor from [Jouzel &amp; Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">(as eq. 3e for n=1 in [Stewart 1975](https://doi.org/10.1029/JC080i009p01133))</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">JouzelAndMerlivat1984</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="p">):</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)&quot;&quot;&quot;</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">saturation_over_ice</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>            <span class="n">alpha_equilibrium</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>            <span class="o">/</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">saturation_over_ice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="o">+</span> <span class="mi">1</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="p">)</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">kinetic fractionation factor [Jouzel &amp; Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749),</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">as eq. 3e for n=1 in [Stewart 1975](https://doi.org/10.1029/JC080i009p01133)</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">and eq. 1 in [Bolot 2013](https://doi.org/10.5194/acp-13-7903-2013),</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">where alpha_kinetic is multiplied by alpha equilibrium (eq. 1 defines effective alpha).</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">JouzelAndMerlivat1984</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span><span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation</span><span class="p">,</span> <span class="n">D_ratio_heavy_to_light</span><span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        Parameters</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">        ----------</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        alpha_equilibrium</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">            Equilibrium fractionation factor.</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        saturation</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">            Over liquid water or ice.</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        D_ratio_heavy_to_light</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">            Diffusivity ratio for heavy to light isotope.</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">        Returns</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">        ----------</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">        alpha_kinetic</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="sd">            Kinetic fractionation factor for liquid water or ice.&quot;&quot;&quot;</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">saturation</span> <span class="o">/</span> <span class="p">(</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="n">alpha_equilibrium</span> <span class="o">/</span> <span class="n">D_ratio_heavy_to_light</span> <span class="o">*</span> <span class="p">(</span><span class="n">saturation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -140,21 +153,30 @@
 
     </div>
     <a class="headerlink" href="#JouzelAndMerlivat1984"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JouzelAndMerlivat1984-8"><a href="#JouzelAndMerlivat1984-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">JouzelAndMerlivat1984</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="JouzelAndMerlivat1984-9"><a href="#JouzelAndMerlivat1984-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="JouzelAndMerlivat1984-10"><a href="#JouzelAndMerlivat1984-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
-</span><span id="JouzelAndMerlivat1984-11"><a href="#JouzelAndMerlivat1984-11"><span class="linenos">11</span></a>
-</span><span id="JouzelAndMerlivat1984-12"><a href="#JouzelAndMerlivat1984-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="JouzelAndMerlivat1984-13"><a href="#JouzelAndMerlivat1984-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span>
-</span><span id="JouzelAndMerlivat1984-14"><a href="#JouzelAndMerlivat1984-14"><span class="linenos">14</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
-</span><span id="JouzelAndMerlivat1984-15"><a href="#JouzelAndMerlivat1984-15"><span class="linenos">15</span></a>    <span class="p">):</span>
-</span><span id="JouzelAndMerlivat1984-16"><a href="#JouzelAndMerlivat1984-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)&quot;&quot;&quot;</span>
-</span><span id="JouzelAndMerlivat1984-17"><a href="#JouzelAndMerlivat1984-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">saturation_over_ice</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="JouzelAndMerlivat1984-18"><a href="#JouzelAndMerlivat1984-18"><span class="linenos">18</span></a>            <span class="n">alpha_equilibrium</span>
-</span><span id="JouzelAndMerlivat1984-19"><a href="#JouzelAndMerlivat1984-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
-</span><span id="JouzelAndMerlivat1984-20"><a href="#JouzelAndMerlivat1984-20"><span class="linenos">20</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">saturation_over_ice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="JouzelAndMerlivat1984-21"><a href="#JouzelAndMerlivat1984-21"><span class="linenos">21</span></a>            <span class="o">+</span> <span class="mi">1</span>
-</span><span id="JouzelAndMerlivat1984-22"><a href="#JouzelAndMerlivat1984-22"><span class="linenos">22</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JouzelAndMerlivat1984-10"><a href="#JouzelAndMerlivat1984-10"><span class="linenos">10</span></a><span class="k">class</span><span class="w"> </span><span class="nc">JouzelAndMerlivat1984</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="JouzelAndMerlivat1984-11"><a href="#JouzelAndMerlivat1984-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="JouzelAndMerlivat1984-12"><a href="#JouzelAndMerlivat1984-12"><span class="linenos">12</span></a>        <span class="k">pass</span>
+</span><span id="JouzelAndMerlivat1984-13"><a href="#JouzelAndMerlivat1984-13"><span class="linenos">13</span></a>
+</span><span id="JouzelAndMerlivat1984-14"><a href="#JouzelAndMerlivat1984-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="JouzelAndMerlivat1984-15"><a href="#JouzelAndMerlivat1984-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span><span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation</span><span class="p">,</span> <span class="n">D_ratio_heavy_to_light</span><span class="p">):</span>
+</span><span id="JouzelAndMerlivat1984-16"><a href="#JouzelAndMerlivat1984-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)</span>
+</span><span id="JouzelAndMerlivat1984-17"><a href="#JouzelAndMerlivat1984-17"><span class="linenos">17</span></a>
+</span><span id="JouzelAndMerlivat1984-18"><a href="#JouzelAndMerlivat1984-18"><span class="linenos">18</span></a><span class="sd">        Parameters</span>
+</span><span id="JouzelAndMerlivat1984-19"><a href="#JouzelAndMerlivat1984-19"><span class="linenos">19</span></a><span class="sd">        ----------</span>
+</span><span id="JouzelAndMerlivat1984-20"><a href="#JouzelAndMerlivat1984-20"><span class="linenos">20</span></a><span class="sd">        alpha_equilibrium</span>
+</span><span id="JouzelAndMerlivat1984-21"><a href="#JouzelAndMerlivat1984-21"><span class="linenos">21</span></a><span class="sd">            Equilibrium fractionation factor.</span>
+</span><span id="JouzelAndMerlivat1984-22"><a href="#JouzelAndMerlivat1984-22"><span class="linenos">22</span></a><span class="sd">        saturation</span>
+</span><span id="JouzelAndMerlivat1984-23"><a href="#JouzelAndMerlivat1984-23"><span class="linenos">23</span></a><span class="sd">            Over liquid water or ice.</span>
+</span><span id="JouzelAndMerlivat1984-24"><a href="#JouzelAndMerlivat1984-24"><span class="linenos">24</span></a><span class="sd">        D_ratio_heavy_to_light</span>
+</span><span id="JouzelAndMerlivat1984-25"><a href="#JouzelAndMerlivat1984-25"><span class="linenos">25</span></a><span class="sd">            Diffusivity ratio for heavy to light isotope.</span>
+</span><span id="JouzelAndMerlivat1984-26"><a href="#JouzelAndMerlivat1984-26"><span class="linenos">26</span></a>
+</span><span id="JouzelAndMerlivat1984-27"><a href="#JouzelAndMerlivat1984-27"><span class="linenos">27</span></a><span class="sd">        Returns</span>
+</span><span id="JouzelAndMerlivat1984-28"><a href="#JouzelAndMerlivat1984-28"><span class="linenos">28</span></a><span class="sd">        ----------</span>
+</span><span id="JouzelAndMerlivat1984-29"><a href="#JouzelAndMerlivat1984-29"><span class="linenos">29</span></a><span class="sd">        alpha_kinetic</span>
+</span><span id="JouzelAndMerlivat1984-30"><a href="#JouzelAndMerlivat1984-30"><span class="linenos">30</span></a><span class="sd">            Kinetic fractionation factor for liquid water or ice.&quot;&quot;&quot;</span>
+</span><span id="JouzelAndMerlivat1984-31"><a href="#JouzelAndMerlivat1984-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="n">saturation</span> <span class="o">/</span> <span class="p">(</span>
+</span><span id="JouzelAndMerlivat1984-32"><a href="#JouzelAndMerlivat1984-32"><span class="linenos">32</span></a>            <span class="n">alpha_equilibrium</span> <span class="o">/</span> <span class="n">D_ratio_heavy_to_light</span> <span class="o">*</span> <span class="p">(</span><span class="n">saturation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span id="JouzelAndMerlivat1984-33"><a href="#JouzelAndMerlivat1984-33"><span class="linenos">33</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -170,8 +192,8 @@
 
     </div>
     <a class="headerlink" href="#JouzelAndMerlivat1984.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JouzelAndMerlivat1984.__init__-9"><a href="#JouzelAndMerlivat1984.__init__-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="JouzelAndMerlivat1984.__init__-10"><a href="#JouzelAndMerlivat1984.__init__-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JouzelAndMerlivat1984.__init__-11"><a href="#JouzelAndMerlivat1984.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="JouzelAndMerlivat1984.__init__-12"><a href="#JouzelAndMerlivat1984.__init__-12"><span class="linenos">12</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -184,27 +206,50 @@
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">alpha_kinetic</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">alpha_equilibrium</span>,</span><span class="param">	<span class="n">saturation_over_ice</span>,</span><span class="param">	<span class="n">diffusivity_ratio_heavy_to_light</span></span><span class="return-annotation">):</span></span>
+        <span class="name">alpha_kinetic</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">alpha_equilibrium</span>, </span><span class="param"><span class="n">saturation</span>, </span><span class="param"><span class="n">D_ratio_heavy_to_light</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="JouzelAndMerlivat1984.alpha_kinetic-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#JouzelAndMerlivat1984.alpha_kinetic"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="JouzelAndMerlivat1984.alpha_kinetic-12"><a href="#JouzelAndMerlivat1984.alpha_kinetic-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-13"><a href="#JouzelAndMerlivat1984.alpha_kinetic-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-14"><a href="#JouzelAndMerlivat1984.alpha_kinetic-14"><span class="linenos">14</span></a>        <span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation_over_ice</span><span class="p">,</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-15"><a href="#JouzelAndMerlivat1984.alpha_kinetic-15"><span class="linenos">15</span></a>    <span class="p">):</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-16"><a href="#JouzelAndMerlivat1984.alpha_kinetic-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)&quot;&quot;&quot;</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-17"><a href="#JouzelAndMerlivat1984.alpha_kinetic-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">saturation_over_ice</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-18"><a href="#JouzelAndMerlivat1984.alpha_kinetic-18"><span class="linenos">18</span></a>            <span class="n">alpha_equilibrium</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-19"><a href="#JouzelAndMerlivat1984.alpha_kinetic-19"><span class="linenos">19</span></a>            <span class="o">/</span> <span class="n">diffusivity_ratio_heavy_to_light</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-20"><a href="#JouzelAndMerlivat1984.alpha_kinetic-20"><span class="linenos">20</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">saturation_over_ice</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-21"><a href="#JouzelAndMerlivat1984.alpha_kinetic-21"><span class="linenos">21</span></a>            <span class="o">+</span> <span class="mi">1</span>
-</span><span id="JouzelAndMerlivat1984.alpha_kinetic-22"><a href="#JouzelAndMerlivat1984.alpha_kinetic-22"><span class="linenos">22</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="JouzelAndMerlivat1984.alpha_kinetic-14"><a href="#JouzelAndMerlivat1984.alpha_kinetic-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-15"><a href="#JouzelAndMerlivat1984.alpha_kinetic-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">alpha_kinetic</span><span class="p">(</span><span class="n">alpha_equilibrium</span><span class="p">,</span> <span class="n">saturation</span><span class="p">,</span> <span class="n">D_ratio_heavy_to_light</span><span class="p">):</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-16"><a href="#JouzelAndMerlivat1984.alpha_kinetic-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;eq. (11)</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-17"><a href="#JouzelAndMerlivat1984.alpha_kinetic-17"><span class="linenos">17</span></a>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-18"><a href="#JouzelAndMerlivat1984.alpha_kinetic-18"><span class="linenos">18</span></a><span class="sd">        Parameters</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-19"><a href="#JouzelAndMerlivat1984.alpha_kinetic-19"><span class="linenos">19</span></a><span class="sd">        ----------</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-20"><a href="#JouzelAndMerlivat1984.alpha_kinetic-20"><span class="linenos">20</span></a><span class="sd">        alpha_equilibrium</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-21"><a href="#JouzelAndMerlivat1984.alpha_kinetic-21"><span class="linenos">21</span></a><span class="sd">            Equilibrium fractionation factor.</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-22"><a href="#JouzelAndMerlivat1984.alpha_kinetic-22"><span class="linenos">22</span></a><span class="sd">        saturation</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-23"><a href="#JouzelAndMerlivat1984.alpha_kinetic-23"><span class="linenos">23</span></a><span class="sd">            Over liquid water or ice.</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-24"><a href="#JouzelAndMerlivat1984.alpha_kinetic-24"><span class="linenos">24</span></a><span class="sd">        D_ratio_heavy_to_light</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-25"><a href="#JouzelAndMerlivat1984.alpha_kinetic-25"><span class="linenos">25</span></a><span class="sd">            Diffusivity ratio for heavy to light isotope.</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-26"><a href="#JouzelAndMerlivat1984.alpha_kinetic-26"><span class="linenos">26</span></a>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-27"><a href="#JouzelAndMerlivat1984.alpha_kinetic-27"><span class="linenos">27</span></a><span class="sd">        Returns</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-28"><a href="#JouzelAndMerlivat1984.alpha_kinetic-28"><span class="linenos">28</span></a><span class="sd">        ----------</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-29"><a href="#JouzelAndMerlivat1984.alpha_kinetic-29"><span class="linenos">29</span></a><span class="sd">        alpha_kinetic</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-30"><a href="#JouzelAndMerlivat1984.alpha_kinetic-30"><span class="linenos">30</span></a><span class="sd">            Kinetic fractionation factor for liquid water or ice.&quot;&quot;&quot;</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-31"><a href="#JouzelAndMerlivat1984.alpha_kinetic-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="n">saturation</span> <span class="o">/</span> <span class="p">(</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-32"><a href="#JouzelAndMerlivat1984.alpha_kinetic-32"><span class="linenos">32</span></a>            <span class="n">alpha_equilibrium</span> <span class="o">/</span> <span class="n">D_ratio_heavy_to_light</span> <span class="o">*</span> <span class="p">(</span><span class="n">saturation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span id="JouzelAndMerlivat1984.alpha_kinetic-33"><a href="#JouzelAndMerlivat1984.alpha_kinetic-33"><span class="linenos">33</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>eq. (11)</p>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>alpha_equilibrium
+    Equilibrium fractionation factor.
+saturation
+    Over liquid water or ice.
+D_ratio_heavy_to_light
+    Diffusivity ratio for heavy to light isotope.</p>
+
+<h2 id="returns">Returns</h2>
+
+<p>alpha_kinetic
+    Kinetic fractionation factor for liquid water or ice.</p>
 </div>
 
 
