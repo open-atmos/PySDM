@@ -440,16 +440,25 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 n_substeps=n_substeps,
             )
 
-    def isotopic_fractionation(
-        self, heavy_isotopes: tuple, ambient_isotope_mixing_ratios
-    ):
+    def isotopic_fractionation(self, heavy_isotopes: tuple):
         for isotope in heavy_isotopes:
             self.backend.isotopic_fractionation(
-                molar_mass=getattr(self.formulae.constants, f"M_{isotope}"),
+                molar_mass_heavy=getattr(
+                    self.formulae.constants,
+                    {
+                        "2H": "M_2H_1H_16O",
+                        "3H": "M_3H_1H_16O",
+                        "17O": "M_1H2_17O",
+                        "18O": "M_1H2_18O",
+                    }[isotope],
+                ),
+                dm_total=self.attributes[
+                    f"diffusional growth mass change"
+                ],  # TODO: total vs. heavy
+                bolin_number=self.attributes[f"Bolin number for {isotope}"],
+                signed_water_mass=self.attributes["signed water mass"],
                 multiplicity=self.attributes["multiplicity"],
-                signed_timescale=self.attributes[f"isotope_timescale_{isotope}"],
-                moles=self.attributes[f"moles_{isotope}"],
-                dt=self.dt,
+                moles_heavy=self.attributes[f"moles_{isotope}"],
                 dry_air_density=self.environment[f"dry_air_density"],
                 cell_volume=self.environment.mesh.dv,
                 cell_id=self.attributes["cell id"],

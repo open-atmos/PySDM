@@ -7,7 +7,7 @@ from contextlib import nullcontext
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
@@ -90,3 +90,48 @@ class TestIsotopicFractionation:
                     "multiplicity"
                 ].timestamp
             )
+
+    @staticmethod
+    def test_no_isotope_fractionation_if_droplet_size_unchanged(backend_class):
+        """neither a bug nor a feature :) - just a simplification (?)"""
+        # arrange
+        ambient_initial_isotope_mixing_ratio = 44.0
+        particle_initial_isotope_content = 666.0 * si.moles
+        cell_volume = 1 * si.m**3
+
+        attributes = DUMMY_ATTRIBUTES.copy()
+        attributes["moles_2H"] = particle_initial_isotope_content
+        attributes["water mass"] = 1 * si.ng
+        attributes["multiplicity"] = np.ones(1)
+
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(
+                formulae=Formulae(isotope_relaxation_timescale="MiyakeEtAl1968"),
+            ),
+            environment=Box(dv=cell_volume, dt=-1 * si.s),
+        )
+        builder.add_dynamic(Condensation())
+        builder.add_dynamic(IsotopicFractionation(isotopes=("2H",)))
+        particulator = builder.build(attributes=attributes, products=())
+        particulator.environment["RH"] = 1
+        particulator.environment["dry_air_density"] = 1 * si.kg / si.m**3
+        particulator.environment["mixing_ratio_2H"] = (
+            ambient_initial_isotope_mixing_ratio
+        )
+        assert (
+            particulator.attributes["moles_2H"][0] == particle_initial_isotope_content
+        )
+
+        # act
+        particulator.attributes["diffusional growth mass change"].data[:] = 0
+        particulator.dynamics["IsotopicFractionation"]()
+
+        # assert
+        assert (
+            particulator.environment["mixing_ratio_2H"][0]
+            == ambient_initial_isotope_mixing_ratio
+        )
+        assert (
+            particulator.attributes["moles_2H"][0] == particle_initial_isotope_content
+        )
