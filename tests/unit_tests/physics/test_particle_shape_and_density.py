@@ -1,6 +1,5 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
-from mpmath.libmp.backend import sage_utils
 
 from PySDM.formulae import Formulae
 from PySDM.physics import constants_defaults
