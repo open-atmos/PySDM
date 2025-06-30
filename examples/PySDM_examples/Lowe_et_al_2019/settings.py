@@ -1,7 +1,8 @@
+from functools import lru_cache
+
 import numpy as np
 from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 from pystrict import strict
-from functools import lru_cache
 
 from PySDM import Formulae
 from PySDM.backends import CPU
