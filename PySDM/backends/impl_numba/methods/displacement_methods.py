@@ -197,7 +197,8 @@ class DisplacementMethods(BackendMethods):
                     # and crossed precip-counting level
                     position_within_column < precipitation_counting_level_index
                 ):
-                    rainfall_mass += abs(water_mass[idx[i]]) * multiplicity[idx[i]]
+                    rainfall_mass += abs(water_mass[idx[i]]) * \
+                        multiplicity[idx[i]]
                     idx[i] = flag
                     healthy[0] = 0
             return rainfall_mass
