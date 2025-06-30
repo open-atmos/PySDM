@@ -15,11 +15,12 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
         *,
         homogeneous_freezing: Optional[str] = None,
         immersion_freezing: Optional[str] = None,
-        thaw=False,
+        thaw: Optional[str] = None,
+        # thaw=False,
     ):
-        assert homogeneous_freezing or immersion_freezing
-        for flag in (homogeneous_freezing, immersion_freezing):
-            assert flag is None or flag in ("time-dependent", "singular"), ""
+        assert homogeneous_freezing or immersion_freezing or thaw
+        for flag in (homogeneous_freezing, immersion_freezing, thaw):
+            assert flag is None or flag in ("time-dependent", "singular", "instantaneous"), ""
 
         self.homogeneous_freezing = homogeneous_freezing
         self.immersion_freezing = immersion_freezing
@@ -76,19 +77,21 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
             return
 
         if self.immersion_freezing == "singular":
-            self.particulator.immersion_freezing_singular(thaw=self.thaw)
+            self.particulator.immersion_freezing_singular()
         if self.immersion_freezing == "time-dependent":
             self.rand.urand(self.rng)
             self.particulator.immersion_freezing_time_dependent(
                 rand=self.rand,
-                thaw=self.thaw,
             )
 
         if self.homogeneous_freezing == "singular":
-            self.particulator.homogeneous_freezing_singular(thaw=self.thaw)
+            self.particulator.homogeneous_freezing_singular()
         if self.homogeneous_freezing == "time-dependent":
             self.rand.urand(self.rng)
             self.particulator.homogeneous_freezing_time_dependent(
                 rand=self.rand,
-                thaw=self.thaw,
             )
+
+        if self.thaw == "instantaneous":
+            self.particulator.thaw_instantaneous()
+
