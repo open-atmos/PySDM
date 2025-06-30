@@ -529,6 +529,7 @@
   "https://doi.org/10.5194/acp-13-7903-2013": {
     "usages": [
       "examples/PySDM_examples/Bolot_et_al_2013/__init__.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
       "tests/unit_tests/physics/test_isotope_equilibrium_fractionation_factors.py"
     ],
     "label": "Bolot et al. 2013 (Atmos. Chem. Phys. 13)",
