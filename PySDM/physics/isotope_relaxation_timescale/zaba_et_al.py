@@ -1,24 +1,16 @@
 """isotope e-folding timescale based on Fick's first law and Fourier's law"""
 
 
-class ZabaAndArabas2025:
+class ZabaEtAl:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
     @staticmethod
-    def tau(dm_dt_over_m):
-        """
-        e-fold timescale with alpha and water vapour pressures heavy and light water
-        calculated in the temperature of environment:
-        """
-        return 1 / dm_dt_over_m
-
-    @staticmethod
-    def isotope_dm_dt_over_m(
+    def tau(
         const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
     ):  # pylint: disable=too-many-arguments, unused-argument
         """relative growth of heavy isotope as a function of mass"""
-        return (
+        return 1 / (
             3
             * rho_s
             / radius**2

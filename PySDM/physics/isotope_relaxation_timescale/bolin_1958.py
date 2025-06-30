@@ -11,12 +11,5 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
         assert np.isfinite(const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1)
 
     @staticmethod
-    def tau(dm_dt_over_m):
-        """e-fold timescale with alpha and water vapour pressures heavy and light water
-        calculated in the temperature of environment:
-        """
-        return 1 / dm_dt_over_m
-
-    @staticmethod
-    def isotope_dm_dt_over_m(const, dm_dt_over_m):
-        return const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 * dm_dt_over_m
+    def tau(const, dm_dt_over_m):
+        return 1 / (const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 * dm_dt_over_m)

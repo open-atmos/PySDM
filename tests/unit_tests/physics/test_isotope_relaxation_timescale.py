@@ -37,7 +37,9 @@ def test_unit_and_magnitude(paper, iso):
             * D
         )
         vent_coeff = 1
-        dm_dt_over_m = formulae.isotope_relaxation_timescale.isotope_dm_dt_over_m(
+
+        # act
+        result = formulae.isotope_relaxation_timescale.tau(
             rho_s=const.rho_w,
             radius=0.1 * si.mm,
             D_iso=vent_coeff * D_iso,
@@ -50,10 +52,6 @@ def test_unit_and_magnitude(paper, iso):
             R_vap=getattr(const, f"VSMOW_R_{iso}"),
             Fk=formulae.drop_growth.Fk(T=const.T_tri, K=const.K0, lv=const.l_tri),
         )
-        sut = formulae.isotope_relaxation_timescale.tau
-
-        # act
-        result = sut(dm_dt_over_m)
 
         # assert
         assert result.check("[time]")
@@ -71,11 +69,7 @@ def test_bolin_tritium_formula_unit():
         tau = formulae.isotope_relaxation_timescale.tau
 
         # act
-        sut = tau(
-            formulae.isotope_relaxation_timescale.isotope_dm_dt_over_m(
-                dm_dt_over_m=1 / si.s
-            )
-        )
+        sut = tau(dm_dt_over_m=1 / si.s)
 
         # assert
         assert sut.check("[time]")
