@@ -20,3 +20,29 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
     @staticmethod
     def isotope_dm_dt_over_m(const, dm_dt_over_m):
         return const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 * dm_dt_over_m
+
+    @staticmethod
+    def bolin_number(
+        const,
+        diffusivity_ratio_heavy_to_light,
+        alpha,
+        rho_s,
+        Fd,
+        Fk,
+        saturation,
+        R_vap,
+        R_liq,
+    ):
+        """
+        Bolin's number (Bo) - c1 in Bolin 1958
+        """
+        return (
+            alpha
+            / diffusivity_ratio_heavy_to_light
+            / (
+                (1 + const.rho_w / rho_s * Fk / Fd)
+                * saturation
+                * (alpha * R_vap / R_liq - 1)
+                + (saturation - 1)
+            )
+        )
