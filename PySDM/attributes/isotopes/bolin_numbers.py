@@ -8,7 +8,7 @@ from PySDM.attributes.impl import DerivedAttribute, register_attribute
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
 
-class BolinsNumberImpl(DerivedAttribute):
+class BolinNumberImpl(DerivedAttribute):
     def __init__(self, builder, *, heavy_isotope: str):
         self.moles_heavy_isotope = builder.get_attribute("moles_" + heavy_isotope)
         self.molar_mass = getattr(
@@ -16,12 +16,12 @@ class BolinsNumberImpl(DerivedAttribute):
         )
         super().__init__(
             builder,
-            name="Bolin's number for " + heavy_isotope,
+            name="Bolin number for " + heavy_isotope,
             dependencies=(self.moles_heavy_isotope,),
         )
 
     def recalculate(self):
-        self.particulator.bolins_number(
+        self.particulator.bolin_number(
             output=self.data,
             molar_mass=self.molar_mass,
             moles_heavy_isotope=self.moles_heavy_isotope.data,
