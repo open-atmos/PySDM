@@ -6,7 +6,7 @@ do-nothing null formulation (needed as other formulations require parameters
 import numpy as np
 
 
-class Null:  # pylint: unused-argument
+class Null:  # pylint: disable=unused-argument
     def __init__(self, _):
         pass
 
