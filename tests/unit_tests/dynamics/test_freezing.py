@@ -94,8 +94,6 @@ class TestDropletFreezing:
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
     def test_thaw(backend_class, thaw, epsilon):
         # arrange
-        # if backend_class.__name__ == "ThrustRTC":
-        #     pytest.skip()
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
         )
@@ -170,8 +168,6 @@ class TestDropletFreezing:
     @staticmethod
     @pytest.mark.parametrize("temperature", (238 * si.kelvin, 232 * si.kelvin))
     def test_homogeneous_freezing_singular(backend_class, temperature):
-        if backend_class.__name__ == "ThrustRTC":
-            pytest.skip()
         # arrange
         n_sd = 44
         dt = 1 * si.s
@@ -231,9 +227,6 @@ class TestDropletFreezing:
         if backend_class.__name__ == "Numba" and not double_precision:
             pytest.skip()
 
-        # if backend_class.__name__ == "ThrustRTC":
-        #     pytest.skip()
-
         # Arrange
         seed = 44
         cases = (
@@ -277,8 +270,8 @@ class TestDropletFreezing:
                 "constants": {"J_HOM": rate / droplet_volume},
             }
             homogeneous_freezing = "time-dependent"
-            if backend_class.__name__ == "ThrustRTC":
-                pytest.skip()
+            # if backend_class.__name__ == "ThrustRTC":
+            #     pytest.skip()
 
         # Act
         output = {}
