@@ -90,27 +90,14 @@ class TestDropletFreezing:
         pass
 
     @staticmethod
-    # @pytest.mark.parametrize("hom_freezing_type", ("singular", "time-dependent", None))
-    # @pytest.mark.parametrize("het_freezing_type", ("singular", "time-dependent", None))
     @pytest.mark.parametrize("thaw", ("instantaneous",))
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
-    # def test_thaw(backend_class, hom_freezing_type, het_freezing_type, thaw, epsilon):
     def test_thaw(backend_class, thaw, epsilon):
         # arrange
-        # if hom_freezing_type is not None:
         if backend_class.__name__ == "ThrustRTC":
             pytest.skip()
-        # if hom_freezing_type is None and het_freezing_type is None:
-        #     pytest.skip()
-
-        # freezing_parameter = {
-        #     "heterogeneous_ice_nucleation_rate": "Constant",
-        #     "homogeneous_ice_nucleation_rate": "Constant",
-        #     "constants": {"J_HOM": 0, "J_HET": 0},
-        # }
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
-            # **(freezing_parameter),
         )
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder = Builder(
@@ -118,8 +105,6 @@ class TestDropletFreezing:
         )
         builder.add_dynamic(
             Freezing(
-                # homogeneous_freezing=hom_freezing_type,
-                # immersion_freezing=het_freezing_type,
                 thaw=thaw,
             )
         )
@@ -128,26 +113,16 @@ class TestDropletFreezing:
             attributes={
                 "multiplicity": np.ones(builder.particulator.n_sd),
                 "signed water mass": -1 * np.ones(builder.particulator.n_sd) * si.ug,
-                # **(
-                #     {"freezing temperature": np.full(builder.particulator.n_sd, -1)}
-                #     if het_freezing_type == "singular"
-                #     else {
-                #         "immersed surface area": np.full(builder.particulator.n_sd, -1)
-                #     }
-                # ),
             },
         )
         particulator.environment["T"] = formulae.constants.T0 + epsilon
-        # particulator.environment["RH"] = np.nan
-        # particulator.environment["RH_ice"] = np.nan
-        # particulator.environment["a_w_ice"] = np.nan
         assert particulator.products["ice water content"].get() > 0
 
         # act
         particulator.run(steps=1)
 
         # assert
-        if thaw is not None and epsilon > 0:
+        if epsilon > 0:
             assert particulator.products["ice water content"].get() == 0
         else:
             assert particulator.products["ice water content"].get() > 0

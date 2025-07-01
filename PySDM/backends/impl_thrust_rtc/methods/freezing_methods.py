@@ -23,8 +23,6 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 "cell",
                 "a_w_ice",
                 "relative_humidity",
-
-                "temperature",
             ),
             name_iter="i",
             body=f"""
@@ -92,7 +90,6 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 temperature.data,
                 relative_humidity.data,
                 cell.data,
-                # trtc.DVBool(thaw),
             ),
         )
 
@@ -105,9 +102,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         timestep,
         cell,
         a_w_ice,
-        temperature,
         relative_humidity,
-        # thaw,
     ):
         n_sd = len(attributes.immersed_surface_area)
         self.freeze_time_dependent_body.launch_n(
@@ -120,7 +115,5 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 cell.data,
                 a_w_ice.data,
                 relative_humidity.data,
-                # trtc.DVBool(thaw),
-                temperature.data,
             ),
         )

@@ -521,7 +521,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             timestep=self.dt,
             cell=self.attributes["cell id"],
             a_w_ice=self.environment["a_w_ice"],
-            temperature=self.environment["T"],
             relative_humidity=self.environment["RH"],
         )
         self.attributes.mark_updated("signed water mass")
