@@ -14,7 +14,7 @@ from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
     TimeDependentHomogeneousAttributes,
-    SingularHomogeneousAttributes,
+    SingularHomogeneousAndThawAttributes,
 )
 
 
@@ -188,7 +188,7 @@ class FreezingMethods(BackendMethods):
         temperature,
     ):
         self._thaw_instantaneous_body(
-            SingularHomogeneousAttributes(
+            SingularHomogeneousAndThawAttributes(
                 signed_water_mass=attributes.signed_water_mass.data,
             ),
             cell.data,
@@ -240,7 +240,7 @@ class FreezingMethods(BackendMethods):
         relative_humidity_ice,
     ):
         self._freeze_singular_homogeneous_body(
-            SingularHomogeneousAttributes(
+            SingularHomogeneousAndThawAttributes(
                 signed_water_mass=attributes.signed_water_mass.data,
             ),
             cell.data,

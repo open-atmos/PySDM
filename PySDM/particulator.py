@@ -9,7 +9,7 @@ from PySDM.backends.impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
     TimeDependentHomogeneousAttributes,
-    SingularHomogeneousAttributes,
+    SingularHomogeneousAndThawAttributes,
 )
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
@@ -553,7 +553,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
     def homogeneous_freezing_singular(self, *args):
         self.backend.freeze_singular_homogeneous(
-            attributes=SingularHomogeneousAttributes(
+            attributes=SingularHomogeneousAndThawAttributes(
                 signed_water_mass=self.attributes["signed water mass"],
             ),
             cell=self.attributes["cell id"],
@@ -563,7 +563,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
     def thaw_instantaneous(self, *args):
         self.backend.thaw_instantaneous(
-            attributes=SingularHomogeneousAttributes(
+            attributes=SingularHomogeneousAndThawAttributes(
                 signed_water_mass=self.attributes["signed water mass"],
             ),
             cell=self.attributes["cell id"],

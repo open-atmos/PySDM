@@ -38,7 +38,7 @@ class TimeDependentHomogeneousAttributes(
     __slots__ = ()
 
 
-class SingularHomogeneousAttributes(
+class SingularHomogeneousAndThawAttributes(
     namedtuple(
         typename="SingularHomogeneousAttributes",
         field_names=("signed_water_mass"),

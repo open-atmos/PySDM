@@ -127,8 +127,6 @@ class TestDropletFreezing:
 
     @staticmethod
     def test_immersion_freezing_singular(backend_class):
-        # if backend_class.__name__ == "ThrustRTC":
-        #     pytest.skip()
         # arrange
         n_sd = 44
         dt = 1 * si.s
@@ -270,8 +268,6 @@ class TestDropletFreezing:
                 "constants": {"J_HOM": rate / droplet_volume},
             }
             homogeneous_freezing = "time-dependent"
-            # if backend_class.__name__ == "ThrustRTC":
-            #     pytest.skip()
 
         # Act
         output = {}
