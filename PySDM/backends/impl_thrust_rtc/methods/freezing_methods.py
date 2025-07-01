@@ -166,11 +166,8 @@ class FreezingMethods(ThrustRTCBackendMethods):
             ),
         )
 
-
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def freeze_singular(
-        self, *, attributes, temperature, relative_humidity, cell
-    ):
+    def freeze_singular(self, *, attributes, temperature, relative_humidity, cell):
         n_sd = len(attributes.freezing_temperature)
         self.freeze_singular_body.launch_n(
             n=n_sd,
@@ -210,7 +207,11 @@ class FreezingMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def thaw_instantaneous(
-        self, *, attributes, cell, temperature,
+        self,
+        *,
+        attributes,
+        cell,
+        temperature,
     ):
         n_sd = len(attributes.signed_water_mass)
         self.thaw_instantaneous_body.launch_n(
@@ -224,7 +225,12 @@ class FreezingMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def freeze_singular_homogeneous(
-        self, *, attributes, cell, temperature, relative_humidity_ice,
+        self,
+        *,
+        attributes,
+        cell,
+        temperature,
+        relative_humidity_ice,
     ):
         n_sd = len(attributes.signed_water_mass)
         self.freeze_singular_homogeneous_body.launch_n(

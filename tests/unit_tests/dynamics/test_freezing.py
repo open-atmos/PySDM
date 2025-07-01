@@ -10,7 +10,6 @@ from PySDM.physics import si
 from PySDM.products import (
     IceWaterContent,
     LiquidWaterContent,
-    SpecificLiquidWaterContent,
 )
 from PySDM.backends import GPU
 
@@ -41,7 +40,9 @@ class TestDropletFreezing:
             backend=backend_class(formulae=formulae),
             environment=Box(dt=1 * si.s, dv=1 * si.m**3),
         )
-        builder.add_dynamic(Freezing(immersion_freezing="time-dependent", thaw="instantaneous"))
+        builder.add_dynamic(
+            Freezing(immersion_freezing="time-dependent", thaw="instantaneous")
+        )
         if record_freezing_temperature:
             builder.request_attribute("temperature of last freezing")
         particulator = builder.build(

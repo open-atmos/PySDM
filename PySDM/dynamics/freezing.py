@@ -20,7 +20,11 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
     ):
         assert homogeneous_freezing or immersion_freezing or thaw
         for flag in (homogeneous_freezing, immersion_freezing, thaw):
-            assert flag is None or flag in ("time-dependent", "singular", "instantaneous"), ""
+            assert flag is None or flag in (
+                "time-dependent",
+                "singular",
+                "instantaneous",
+            ), ""
 
         self.homogeneous_freezing = homogeneous_freezing
         self.immersion_freezing = immersion_freezing
@@ -94,4 +98,3 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
 
         if self.thaw == "instantaneous":
             self.particulator.thaw_instantaneous()
-

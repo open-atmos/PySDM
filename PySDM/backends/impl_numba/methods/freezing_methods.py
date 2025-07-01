@@ -49,9 +49,10 @@ class FreezingMethods(BackendMethods):
             n_sd = len(attributes.signed_water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if frozen_and_above_freezing_point(
-                        attributes.signed_water_mass[i], temperature[cell[i]]
+                    attributes.signed_water_mass[i], temperature[cell[i]]
                 ):
                     _thaw(attributes.signed_water_mass, i)
+
         return body
 
     @cached_property
@@ -60,7 +61,12 @@ class FreezingMethods(BackendMethods):
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
 
         @numba.njit(**self.default_jit_flags)
-        def body(attributes, temperature, relative_humidity, cell,):
+        def body(
+            attributes,
+            temperature,
+            relative_humidity,
+            cell,
+        ):
             n_sd = len(attributes.freezing_temperature)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.freezing_temperature[i] == 0:
@@ -195,10 +201,7 @@ class FreezingMethods(BackendMethods):
             temperature.data,
         )
 
-
-    def freeze_singular(
-        self, *, attributes, temperature, relative_humidity, cell
-    ):
+    def freeze_singular(self, *, attributes, temperature, relative_humidity, cell):
         self._freeze_singular_body(
             SingularAttributes(
                 freezing_temperature=attributes.freezing_temperature.data,
