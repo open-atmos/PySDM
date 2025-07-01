@@ -94,8 +94,8 @@ class TestDropletFreezing:
     @pytest.mark.parametrize("epsilon", (0, 1e-5))
     def test_thaw(backend_class, thaw, epsilon):
         # arrange
-        if backend_class.__name__ == "ThrustRTC":
-            pytest.skip()
+        # if backend_class.__name__ == "ThrustRTC":
+        #     pytest.skip()
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
         )

@@ -77,6 +77,28 @@ class FreezingMethods(ThrustRTCBackendMethods):
             ),
         )
 
+    @cached_property
+    def thaw_instantaneous_body(self):
+        return trtc.For(
+            param_names=(
+                "signed_water_mass",
+                "cell",
+                "temperature",
+            ),
+            name_iter="i",
+            body=f"""
+                if ({self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
+                    signed_water_mass="signed_water_mass[i]",
+                    temperature="temperature[cell[i]]"
+                )}) {{
+                    signed_water_mass[i] = -1 * signed_water_mass[i];
+                    }}
+                }}
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
     @nice_thrust(**NICE_THRUST_FLAGS)
     def freeze_singular(
         self, *, attributes, temperature, relative_humidity, cell
@@ -115,5 +137,19 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 cell.data,
                 a_w_ice.data,
                 relative_humidity.data,
+            ),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def thaw_instantaneous(
+        self, *, attributes, cell, temperature,
+    ):
+        n_sd = len(attributes.signed_water_mass)
+        self.thaw_instantaneous_body.launch_n(
+            n=n_sd,
+            args=(
+                attributes.signed_water_mass.data,
+                cell.data,
+                temperature.data,
             ),
         )
