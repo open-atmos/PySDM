@@ -1,5 +1,11 @@
 """basic water vapor deposition on ice test"""
 
+import os
+
+os.environ["NUMBA_DISABLE_JIT"] = "1"
+
+from typing import Iterable
+from functools import lru_cache
 import numpy as np
 from matplotlib import pyplot
 
@@ -43,7 +49,6 @@ class MoistBox(Box, Moist):
 
 DIFFUSION_COORDINATES = ("WaterMass", "WaterMassLogarithm")
 COMMON = {
-    "environment": MoistBox(dt=0.01 * si.s, dv=1 * si.m**3),
     "products": (IceWaterContent(),),
     "formulae": {
         f"{diffusion_coordinate}": Formulae(
@@ -55,30 +60,37 @@ COMMON = {
 }
 
 
+@lru_cache
+def backend(diffusion_coordinate: str):
+    return CPU(
+        formulae=COMMON["formulae"][diffusion_coordinate],
+        override_jit_flags={"parallel": False},
+    )
+
+
 def make_particulator(
     *,
-    diffusion_coordinate,
-    signed_water_masses,
-    temperature,
-    pressure,
-    RH_ice=None,
-    RH_water=None,
+    dt: float,
+    diffusion_coordinate: str,
+    signed_water_masses: Iterable,
+    temperature: float,
+    pressure: float,
+    RH_ice: float = None,
+    RH_water: float = None,
+    adaptive: bool = False,
 ):
     """instantiates a particulator with minimal components for testing ice depositional growth"""
     assert RH_water is None or RH_ice is None
     builder = Builder(
         n_sd=len(signed_water_masses),
-        environment=COMMON["environment"],
-        backend=CPU(
-            formulae=COMMON["formulae"][diffusion_coordinate],
-            override_jit_flags={"parallel": False},
-        ),
+        environment=MoistBox(dt=dt, dv=1 * si.m**3),
+        backend=backend(diffusion_coordinate),
     )
     builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(VapourDepositionOnIce())
+    builder.add_dynamic(VapourDepositionOnIce(adaptive=adaptive))
     particulator = builder.build(
         attributes={
-            "multiplicity": np.full(shape=(builder.particulator.n_sd,), fill_value=1e4),
+            "multiplicity": np.full(shape=(builder.particulator.n_sd,), fill_value=1e8),
             "signed water mass": np.asarray(signed_water_masses),
         },
         products=COMMON["products"],
@@ -130,6 +142,7 @@ class TestVapourDepositionOnIce:
             diffusion_coordinate=diffusion_coordinate,
             signed_water_masses=[water_mass],
             RH_ice=RHi,
+            dt=0.1 * si.s,
         )
         rv0 = particulator.environment["water_vapour_mixing_ratio"][0]
         thd0 = particulator.environment["thd"][0]
@@ -149,14 +162,24 @@ class TestVapourDepositionOnIce:
                 assert particulator.environment["thd"][0] < thd0
                 assert particulator.products["ice water content"].get()[0] < iwc_old
         else:
-            assert particulator.products["ice water content"].get()[0] == iwc_old
+            np.testing.assert_approx_equal(
+                particulator.products["ice water content"].get()[0], iwc_old
+            )
             assert particulator.environment["water_vapour_mixing_ratio"][0] == rv0
             assert particulator.environment["thd"][0] == thd0
 
     @staticmethod
+    @pytest.mark.parametrize(
+        "dt, adaptive",
+        (
+            (0.01 * si.s, False),
+            pytest.param(10.0 * si.s, False, marks=pytest.mark.xfail(strict=True)),
+            (10.0 * si.s, True),
+        ),
+    )
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
     def test_growth_rates_against_spichtinger_and_gierens_2009_fig_5(
-        diffusion_coordinate, plot=False
+        diffusion_coordinate, dt, adaptive, plot=False
     ):
         """Fig. 5 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)"""
         # arrange
@@ -173,6 +196,8 @@ class TestVapourDepositionOnIce:
                 signed_water_masses=-initial_water_masses,
                 RH_water=1,
                 temperature=temperature,
+                dt=dt,
+                adaptive=adaptive,
             )
             particulator.run(steps=1)
             dm_dt[temperature] = (
@@ -222,6 +247,7 @@ class TestVapourDepositionOnIce:
             RH_ice=1.1,
             signed_water_masses=-water_mass_init,
             diffusion_coordinate=diffusion_coordinate,
+            dt=0.1 * si.s,
         )
 
         # act
