@@ -31,7 +31,7 @@ class Simulation(BasicSimulation):
 
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation())
-        builder.add_dynamic(Freezing(singular=False))
+        builder.add_dynamic(Freezing(immersion_freezing="time-dependent"))
 
         air_volume = settings.mass_of_dry_air / settings.rhod0
         (

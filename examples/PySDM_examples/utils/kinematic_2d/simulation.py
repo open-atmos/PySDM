@@ -140,7 +140,7 @@ class Simulation:
         if self.settings.processes["freezing"]:
             builder.add_dynamic(
                 Freezing(
-                    singular=self.settings.freezing_singular,
+                    immersion_freezing=self.settings.freezing_singular,
                     thaw=self.settings.freezing_thaw,
                 )
             )

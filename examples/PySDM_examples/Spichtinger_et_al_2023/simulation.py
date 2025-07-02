@@ -50,7 +50,7 @@ class Simulation(BasicSimulation):
         builder.add_dynamic(VapourDepositionOnIce())
         builder.add_dynamic(
             Freezing(
-                singular=False, homogeneous_freezing=True, immersion_freezing=False
+                homogeneous_freezing="time-dependent", immersion_freezing=None
             )
         )
 

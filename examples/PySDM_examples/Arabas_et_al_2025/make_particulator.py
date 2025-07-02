@@ -18,14 +18,14 @@ def make_particulator(
     n_sd,
     dt,
     initial_temperature,
-    singular,
+    immersion_freezing,
     seed,
     shima_T_fz,
     ABIFM_spec,
     droplet_volume,
     total_particle_number,
     volume,
-    thaw=False,
+    thaw="None",
 ):
     formulae_ctor_args = {
         "seed": seed,
@@ -66,7 +66,7 @@ def make_particulator(
     env["RH"] = A_VALUE_LARGER_THAN_ONE
     env["rhod"] = 1.0
 
-    builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
+    builder.add_dynamic(Freezing(immersion_freezing=immersion_freezing, thaw=thaw))
     builder.request_attribute("volume")
 
     return builder.build(
