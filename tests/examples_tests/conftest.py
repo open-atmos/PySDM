@@ -82,7 +82,7 @@ TEST_SUITES = {
         "Shipway_and_Hill_2012",
         "seeding",
         "utils",
-        "Zaba_et_al_2025",
+        "Zaba_et_al",
         "Gonfiantini_1986",
     ],
 }
