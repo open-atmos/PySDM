@@ -88,17 +88,20 @@ class TestIsotopeDiffusivityRatios:
         )
 
     @staticmethod
-    def test_grahams_law():
+    @pytest.mark.parametrize(
+        "isotope_name, expected_value", (("2H", 0.973), ("3H", 0.949))
+    )
+    def test_grahams_law(isotope_name, expected_value):
         # arrange
         formulae = Formulae(isotope_diffusivity_ratios="GrahamsLaw")
 
         # act
-        sut = formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(
-            temperature=np.nan
-        )
+        sut = getattr(
+            formulae.isotope_diffusivity_ratios, f"ratio_{isotope_name}_heavy_to_light"
+        )(temperature=np.nan)
 
         # assert
-        np.testing.assert_approx_equal(sut, 0.973, significant=3)
+        np.testing.assert_approx_equal(sut, expected_value, significant=3)
 
     @staticmethod
     @pytest.mark.parametrize("paper", _choices(isotope_diffusivity_ratios))
