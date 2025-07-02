@@ -525,7 +525,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         )
         self.attributes.mark_updated("signed water mass")
 
-    def immersion_freezing_singular(self, *args):
+    def immersion_freezing_singular(self):
         self.backend.freeze_singular(
             attributes=SingularAttributes(
                 freezing_temperature=self.attributes["freezing temperature"],
@@ -551,7 +551,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             relative_humidity_ice=self.environment["RH_ice"],
         )
 
-    def homogeneous_freezing_singular(self, *args):
+    def homogeneous_freezing_singular(self):
         self.backend.freeze_singular_homogeneous(
             attributes=SingularHomogeneousAndThawAttributes(
                 signed_water_mass=self.attributes["signed water mass"],
@@ -561,7 +561,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             relative_humidity_ice=self.environment["RH_ice"],
         )
 
-    def thaw_instantaneous(self, *args):
+    def thaw_instantaneous(self):
         self.backend.thaw_instantaneous(
             attributes=SingularHomogeneousAndThawAttributes(
                 signed_water_mass=self.attributes["signed water mass"],

@@ -169,16 +169,14 @@ class TestDropletFreezing:
     def test_homogeneous_freezing_singular(backend_class, temperature):
         # arrange
         n_sd = 44
-        dt = 1 * si.s
-        dv = 1 * si.m**3
         water_mass = 1 * si.mg
         multiplicity = 1e10
-        steps = 1
 
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        env = Box(dt=dt, dv=dv)
         builder = Builder(
-            n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+            n_sd=n_sd,
+            backend=backend_class(formulae=formulae),
+            environment=Box(dt=1 * si.s, dv=1 * si.m**3),
         )
         builder.add_dynamic(Freezing(homogeneous_freezing="singular"))
         attributes = {
@@ -196,7 +194,7 @@ class TestDropletFreezing:
         T_hom = formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
 
         # act
-        particulator.run(steps=steps)
+        particulator.run(steps=1)
 
         # assert
         (qc,) = particulator.products["qc"].get()
