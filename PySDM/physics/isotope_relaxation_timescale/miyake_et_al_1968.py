@@ -3,20 +3,12 @@ theta is as discussed in [Kinzer & Gunn 1951 (J. Meteor.)](https://doi.org/10.11
 """  # pylint: disable=line-too-long
 
 
-class MiyakeEtAl1968:
+class MiyakeEtAl1968:  # pylint:disable=too-few-public-methods
     def __init__(self, _):
         pass
 
     @staticmethod
-    def tau(dm_dt_over_m):
-        """
-        e-fold timescale with alpha and water vapour pressures heavy and light water
-        calculated in the temperature of environment:
-        """
-        return 1 / dm_dt_over_m
-
-    @staticmethod
-    def isotope_dm_dt_over_m(
+    def tau(
         const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
     ):  # pylint: disable=too-many-arguments, unused-argument
         """
@@ -29,4 +21,4 @@ class MiyakeEtAl1968:
         D
             diffusivity * theta, where theta from eq. (25) is ventilation_coefficient
         """
-        return 3 * rho_s * D / (radius**2 * alpha * const.rho_w)
+        return (radius**2 * alpha * const.rho_w) / (3 * rho_s * D)
