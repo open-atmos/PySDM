@@ -485,14 +485,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
-    def deposition(self):
+    def deposition(self, adaptive: bool):
         self.backend.deposition(
+            adaptive=adaptive,
             multiplicity=self.attributes["multiplicity"],
             signed_water_mass=self.attributes["signed water mass"],
-            current_temperature=self.environment["T"],
             current_total_pressure=self.environment["p"],
-            current_relative_humidity=self.environment["RH"],
-            current_water_activity=self.environment["a_w_ice"],
             current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
             current_dry_air_density=self.environment["rhod"],
             current_dry_potential_temperature=self.environment["thd"],
