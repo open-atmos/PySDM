@@ -127,18 +127,18 @@ class TestDropletFreezing:
             assert particulator.products["ice water content"].get() > 0
 
     @staticmethod
-    def test_immersion_freezing_singular(backend_class):
+    def test_immersion_freezing_singular(
+        backend_class,
+    ):  # pylint disable=too-many-locals
         # arrange
         n_sd = 44
-        dt = 1 * si.s
         dv = 1 * si.m**3
         T_fz = 250 * si.K
         water_mass = 1 * si.mg
         multiplicity = 1e10
-        steps = 1
 
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
-        env = Box(dt=dt, dv=dv)
+        env = Box(dt=1 * si.s, dv=dv)
         builder = Builder(
             n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
         )
@@ -154,7 +154,7 @@ class TestDropletFreezing:
         particulator.environment["RH"] = 1.000001
 
         # act
-        particulator.run(steps=steps)
+        particulator.run(steps=1)
 
         # assert
         (qi,) = particulator.products["qi"].get()
@@ -166,17 +166,20 @@ class TestDropletFreezing:
 
     @staticmethod
     @pytest.mark.parametrize("temperature", (238 * si.kelvin, 232 * si.kelvin))
-    def test_homogeneous_freezing_singular(backend_class, temperature):
+    def test_homogeneous_freezing_singular(
+        backend_class, temperature
+    ):  # pylint disable=too-many-locals
         # arrange
         n_sd = 44
         water_mass = 1 * si.mg
         multiplicity = 1e10
+        dv = 1 * si.m**3
 
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         builder = Builder(
             n_sd=n_sd,
             backend=backend_class(formulae=formulae),
-            environment=Box(dt=1 * si.s, dv=1 * si.m**3),
+            environment=Box(dt=1 * si.s, dv=dv),
         )
         builder.add_dynamic(Freezing(homogeneous_freezing="singular"))
         attributes = {
