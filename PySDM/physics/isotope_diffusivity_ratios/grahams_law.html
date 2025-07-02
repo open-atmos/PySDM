@@ -77,6 +77,9 @@
                         <li>
                                 <a class="function" href="#GrahamsLaw.ratio_2H_heavy_to_light">ratio_2H_heavy_to_light</a>
                         </li>
+                        <li>
+                                <a class="function" href="#GrahamsLaw.ratio_3H_heavy_to_light">ratio_3H_heavy_to_light</a>
+                        </li>
                 </ul>
 
             </li>
@@ -118,6 +121,12 @@ see also eq. (21) in <a href="https://doi.org/10.1080/10256010801887174">Horita 
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_2H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_3H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_3H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
 </span></pre></div>
 
 
@@ -142,6 +151,12 @@ see also eq. (21) in <a href="https://doi.org/10.1080/10256010801887174">Horita 
 </span><span id="GrahamsLaw-13"><a href="#GrahamsLaw-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="GrahamsLaw-14"><a href="#GrahamsLaw-14"><span class="linenos">14</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_2H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
 </span><span id="GrahamsLaw-15"><a href="#GrahamsLaw-15"><span class="linenos">15</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
+</span><span id="GrahamsLaw-16"><a href="#GrahamsLaw-16"><span class="linenos">16</span></a>
+</span><span id="GrahamsLaw-17"><a href="#GrahamsLaw-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="GrahamsLaw-18"><a href="#GrahamsLaw-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_3H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="GrahamsLaw-19"><a href="#GrahamsLaw-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="GrahamsLaw-20"><a href="#GrahamsLaw-20"><span class="linenos">20</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_3H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
+</span><span id="GrahamsLaw-21"><a href="#GrahamsLaw-21"><span class="linenos">21</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
 </span></pre></div>
 
 
@@ -182,6 +197,29 @@ see also eq. (21) in <a href="https://doi.org/10.1080/10256010801887174">Horita 
 </span><span id="GrahamsLaw.ratio_2H_heavy_to_light-13"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="p">(</span>
 </span><span id="GrahamsLaw.ratio_2H_heavy_to_light-14"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-14"><span class="linenos">14</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_2H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
 </span><span id="GrahamsLaw.ratio_2H_heavy_to_light-15"><a href="#GrahamsLaw.ratio_2H_heavy_to_light-15"><span class="linenos">15</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="GrahamsLaw.ratio_3H_heavy_to_light" class="classattr">
+                                        <input id="GrahamsLaw.ratio_3H_heavy_to_light-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">ratio_3H_heavy_to_light</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="GrahamsLaw.ratio_3H_heavy_to_light-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#GrahamsLaw.ratio_3H_heavy_to_light"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="GrahamsLaw.ratio_3H_heavy_to_light-17"><a href="#GrahamsLaw.ratio_3H_heavy_to_light-17"><span class="linenos">17</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="GrahamsLaw.ratio_3H_heavy_to_light-18"><a href="#GrahamsLaw.ratio_3H_heavy_to_light-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ratio_3H_heavy_to_light</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="GrahamsLaw.ratio_3H_heavy_to_light-19"><a href="#GrahamsLaw.ratio_3H_heavy_to_light-19"><span class="linenos">19</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="GrahamsLaw.ratio_3H_heavy_to_light-20"><a href="#GrahamsLaw.ratio_3H_heavy_to_light-20"><span class="linenos">20</span></a>            <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">M_3H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_1H</span> <span class="o">+</span> <span class="n">const</span><span class="o">.</span><span class="n">M_16O</span><span class="p">)</span>
+</span><span id="GrahamsLaw.ratio_3H_heavy_to_light-21"><a href="#GrahamsLaw.ratio_3H_heavy_to_light-21"><span class="linenos">21</span></a>        <span class="p">)</span> <span class="o">**</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_HALF</span>
 </span></pre></div>
 
 

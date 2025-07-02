@@ -96,26 +96,38 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../physics.html">physics</a><wbr>.<a href="./../isotope_relaxation_timescale.html">isotope_relaxation_timescale</a><wbr>.miyake_et_al_1968    </h1>
 
-                        <div class="docstring"><p>eq. 28 in <a href="https://doi.org/10.2467/mripapers1950.19.2_243">Miyake et al. 1968</a></p>
+                        <div class="docstring"><p>eq. 28 in <a href="https://doi.org/10.2467/mripapers1950.19.2_243">Miyake et al. 1968</a>
+theta is as discussed in <a href="https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2">Kinzer &amp; Gunn 1951 (J. Meteor.)</a></p>
 </div>
 
                         <input id="mod-miyake_et_al_1968-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-miyake_et_al_1968-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;eq. 28 in [Miyake et al. 1968](https://doi.org/10.2467/mripapers1950.19.2_243)&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MiyakeEtAl1968</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>        <span class="k">pass</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">e_s</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">vent_coeff</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="n">temperature</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>            <span class="mi">3</span> <span class="o">*</span> <span class="n">e_s</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">M</span> <span class="o">*</span> <span class="n">vent_coeff</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="p">)</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;eq. 28 in [Miyake et al. 1968](https://doi.org/10.2467/mripapers1950.19.2_243)</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">theta is as discussed in [Kinzer &amp; Gunn 1951 (J. Meteor.)](https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2)</span>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>  <span class="c1"># pylint: disable=line-too-long</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MiyakeEtAl1968</span><span class="p">:</span>  <span class="c1"># pylint:disable=too-few-public-methods</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>        <span class="k">pass</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>        <span class="n">const</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments, unused-argument</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">        relative growth of heavy isotope as a function of mass from eq. (28)</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">        Parameters</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="sd">        ----------</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="sd">        rho_s</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="sd">            is equal to (e_s * M / R_str / T) in eq. (28)</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="sd">        D</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="sd">            diffusivity * theta, where theta from eq. (25) is ventilation_coefficient</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho_s</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -131,16 +143,25 @@
 
     </div>
     <a class="headerlink" href="#MiyakeEtAl1968"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MiyakeEtAl1968-5"><a href="#MiyakeEtAl1968-5"><span class="linenos"> 5</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MiyakeEtAl1968</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="MiyakeEtAl1968-6"><a href="#MiyakeEtAl1968-6"><span class="linenos"> 6</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="MiyakeEtAl1968-7"><a href="#MiyakeEtAl1968-7"><span class="linenos"> 7</span></a>        <span class="k">pass</span>
-</span><span id="MiyakeEtAl1968-8"><a href="#MiyakeEtAl1968-8"><span class="linenos"> 8</span></a>
-</span><span id="MiyakeEtAl1968-9"><a href="#MiyakeEtAl1968-9"><span class="linenos"> 9</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MiyakeEtAl1968-10"><a href="#MiyakeEtAl1968-10"><span class="linenos">10</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="MiyakeEtAl1968-11"><a href="#MiyakeEtAl1968-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">e_s</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">vent_coeff</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="MiyakeEtAl1968-12"><a href="#MiyakeEtAl1968-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="n">temperature</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="MiyakeEtAl1968-13"><a href="#MiyakeEtAl1968-13"><span class="linenos">13</span></a>            <span class="mi">3</span> <span class="o">*</span> <span class="n">e_s</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">M</span> <span class="o">*</span> <span class="n">vent_coeff</span>
-</span><span id="MiyakeEtAl1968-14"><a href="#MiyakeEtAl1968-14"><span class="linenos">14</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MiyakeEtAl1968-7"><a href="#MiyakeEtAl1968-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">MiyakeEtAl1968</span><span class="p">:</span>  <span class="c1"># pylint:disable=too-few-public-methods</span>
+</span><span id="MiyakeEtAl1968-8"><a href="#MiyakeEtAl1968-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="MiyakeEtAl1968-9"><a href="#MiyakeEtAl1968-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
+</span><span id="MiyakeEtAl1968-10"><a href="#MiyakeEtAl1968-10"><span class="linenos">10</span></a>
+</span><span id="MiyakeEtAl1968-11"><a href="#MiyakeEtAl1968-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="MiyakeEtAl1968-12"><a href="#MiyakeEtAl1968-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
+</span><span id="MiyakeEtAl1968-13"><a href="#MiyakeEtAl1968-13"><span class="linenos">13</span></a>        <span class="n">const</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
+</span><span id="MiyakeEtAl1968-14"><a href="#MiyakeEtAl1968-14"><span class="linenos">14</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments, unused-argument</span>
+</span><span id="MiyakeEtAl1968-15"><a href="#MiyakeEtAl1968-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968-16"><a href="#MiyakeEtAl1968-16"><span class="linenos">16</span></a><span class="sd">        relative growth of heavy isotope as a function of mass from eq. (28)</span>
+</span><span id="MiyakeEtAl1968-17"><a href="#MiyakeEtAl1968-17"><span class="linenos">17</span></a>
+</span><span id="MiyakeEtAl1968-18"><a href="#MiyakeEtAl1968-18"><span class="linenos">18</span></a><span class="sd">        Parameters</span>
+</span><span id="MiyakeEtAl1968-19"><a href="#MiyakeEtAl1968-19"><span class="linenos">19</span></a><span class="sd">        ----------</span>
+</span><span id="MiyakeEtAl1968-20"><a href="#MiyakeEtAl1968-20"><span class="linenos">20</span></a><span class="sd">        rho_s</span>
+</span><span id="MiyakeEtAl1968-21"><a href="#MiyakeEtAl1968-21"><span class="linenos">21</span></a><span class="sd">            is equal to (e_s * M / R_str / T) in eq. (28)</span>
+</span><span id="MiyakeEtAl1968-22"><a href="#MiyakeEtAl1968-22"><span class="linenos">22</span></a><span class="sd">        D</span>
+</span><span id="MiyakeEtAl1968-23"><a href="#MiyakeEtAl1968-23"><span class="linenos">23</span></a><span class="sd">            diffusivity * theta, where theta from eq. (25) is ventilation_coefficient</span>
+</span><span id="MiyakeEtAl1968-24"><a href="#MiyakeEtAl1968-24"><span class="linenos">24</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968-25"><a href="#MiyakeEtAl1968-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho_s</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -156,8 +177,8 @@
 
     </div>
     <a class="headerlink" href="#MiyakeEtAl1968.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MiyakeEtAl1968.__init__-6"><a href="#MiyakeEtAl1968.__init__-6"><span class="linenos">6</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="MiyakeEtAl1968.__init__-7"><a href="#MiyakeEtAl1968.__init__-7"><span class="linenos">7</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MiyakeEtAl1968.__init__-8"><a href="#MiyakeEtAl1968.__init__-8"><span class="linenos">8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="MiyakeEtAl1968.__init__-9"><a href="#MiyakeEtAl1968.__init__-9"><span class="linenos">9</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -170,22 +191,40 @@
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">e_s</span>, </span><span class="param"><span class="n">D</span>, </span><span class="param"><span class="n">M</span>, </span><span class="param"><span class="n">vent_coeff</span>, </span><span class="param"><span class="n">radius</span>, </span><span class="param"><span class="n">alpha</span>, </span><span class="param"><span class="n">temperature</span></span><span class="return-annotation">):</span></span>
+        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">rho_s</span>, </span><span class="param"><span class="n">radius</span>, </span><span class="param"><span class="n">D_iso</span>, </span><span class="param"><span class="n">D</span>, </span><span class="param"><span class="n">S</span>, </span><span class="param"><span class="n">R_liq</span>, </span><span class="param"><span class="n">alpha</span>, </span><span class="param"><span class="n">R_vap</span>, </span><span class="param"><span class="n">Fk</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="MiyakeEtAl1968.tau-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#MiyakeEtAl1968.tau"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MiyakeEtAl1968.tau-9"><a href="#MiyakeEtAl1968.tau-9"><span class="linenos"> 9</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MiyakeEtAl1968.tau-10"><a href="#MiyakeEtAl1968.tau-10"><span class="linenos">10</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="MiyakeEtAl1968.tau-11"><a href="#MiyakeEtAl1968.tau-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">e_s</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">vent_coeff</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">temperature</span><span class="p">):</span>
-</span><span id="MiyakeEtAl1968.tau-12"><a href="#MiyakeEtAl1968.tau-12"><span class="linenos">12</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">R_str</span> <span class="o">*</span> <span class="n">temperature</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
-</span><span id="MiyakeEtAl1968.tau-13"><a href="#MiyakeEtAl1968.tau-13"><span class="linenos">13</span></a>            <span class="mi">3</span> <span class="o">*</span> <span class="n">e_s</span> <span class="o">*</span> <span class="n">D</span> <span class="o">*</span> <span class="n">M</span> <span class="o">*</span> <span class="n">vent_coeff</span>
-</span><span id="MiyakeEtAl1968.tau-14"><a href="#MiyakeEtAl1968.tau-14"><span class="linenos">14</span></a>        <span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MiyakeEtAl1968.tau-11"><a href="#MiyakeEtAl1968.tau-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="MiyakeEtAl1968.tau-12"><a href="#MiyakeEtAl1968.tau-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
+</span><span id="MiyakeEtAl1968.tau-13"><a href="#MiyakeEtAl1968.tau-13"><span class="linenos">13</span></a>        <span class="n">const</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
+</span><span id="MiyakeEtAl1968.tau-14"><a href="#MiyakeEtAl1968.tau-14"><span class="linenos">14</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments, unused-argument</span>
+</span><span id="MiyakeEtAl1968.tau-15"><a href="#MiyakeEtAl1968.tau-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968.tau-16"><a href="#MiyakeEtAl1968.tau-16"><span class="linenos">16</span></a><span class="sd">        relative growth of heavy isotope as a function of mass from eq. (28)</span>
+</span><span id="MiyakeEtAl1968.tau-17"><a href="#MiyakeEtAl1968.tau-17"><span class="linenos">17</span></a>
+</span><span id="MiyakeEtAl1968.tau-18"><a href="#MiyakeEtAl1968.tau-18"><span class="linenos">18</span></a><span class="sd">        Parameters</span>
+</span><span id="MiyakeEtAl1968.tau-19"><a href="#MiyakeEtAl1968.tau-19"><span class="linenos">19</span></a><span class="sd">        ----------</span>
+</span><span id="MiyakeEtAl1968.tau-20"><a href="#MiyakeEtAl1968.tau-20"><span class="linenos">20</span></a><span class="sd">        rho_s</span>
+</span><span id="MiyakeEtAl1968.tau-21"><a href="#MiyakeEtAl1968.tau-21"><span class="linenos">21</span></a><span class="sd">            is equal to (e_s * M / R_str / T) in eq. (28)</span>
+</span><span id="MiyakeEtAl1968.tau-22"><a href="#MiyakeEtAl1968.tau-22"><span class="linenos">22</span></a><span class="sd">        D</span>
+</span><span id="MiyakeEtAl1968.tau-23"><a href="#MiyakeEtAl1968.tau-23"><span class="linenos">23</span></a><span class="sd">            diffusivity * theta, where theta from eq. (25) is ventilation_coefficient</span>
+</span><span id="MiyakeEtAl1968.tau-24"><a href="#MiyakeEtAl1968.tau-24"><span class="linenos">24</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="MiyakeEtAl1968.tau-25"><a href="#MiyakeEtAl1968.tau-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="p">(</span><span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho_s</span> <span class="o">*</span> <span class="n">D</span><span class="p">)</span>
 </span></pre></div>
 
 
-    
+            <div class="docstring"><p>relative growth of heavy isotope as a function of mass from eq. (28)</p>
+
+<h2 id="parameters">Parameters</h2>
+
+<p>rho_s
+    is equal to (e_s * M / R_str / T) in eq. (28)
+D
+    diffusivity * theta, where theta from eq. (25) is ventilation_coefficient</p>
+</div>
+
 
                             </div>
                 </section>

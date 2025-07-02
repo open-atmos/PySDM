@@ -117,10 +117,8 @@ Table 1 <a href="https://digitallibrary.un.org/record/3892725">Bolin 1958</a></p
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;timescale for evaporation of a falling drop with tritium&quot;&quot;&quot;</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span> <span class="o">/</span> <span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r_dr_dt</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span> <span class="o">*</span> <span class="n">dm_dt_over_m</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -143,10 +141,8 @@ Table 1 <a href="https://digitallibrary.un.org/record/3892725">Bolin 1958</a></p
 </span><span id="Bolin1958-12"><a href="#Bolin1958-12"><span class="linenos">12</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
 </span><span id="Bolin1958-13"><a href="#Bolin1958-13"><span class="linenos">13</span></a>
 </span><span id="Bolin1958-14"><a href="#Bolin1958-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolin1958-15"><a href="#Bolin1958-15"><span class="linenos">15</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="Bolin1958-16"><a href="#Bolin1958-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
-</span><span id="Bolin1958-17"><a href="#Bolin1958-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;timescale for evaporation of a falling drop with tritium&quot;&quot;&quot;</span>
-</span><span id="Bolin1958-18"><a href="#Bolin1958-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span> <span class="o">/</span> <span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r_dr_dt</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="Bolin1958-15"><a href="#Bolin1958-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
+</span><span id="Bolin1958-16"><a href="#Bolin1958-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span> <span class="o">*</span> <span class="n">dm_dt_over_m</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -178,23 +174,19 @@ Table 1 <a href="https://digitallibrary.un.org/record/3892725">Bolin 1958</a></p
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">radius</span>, </span><span class="param"><span class="n">r_dr_dt</span></span><span class="return-annotation">):</span></span>
+        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">dm_dt_over_m</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Bolin1958.tau-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Bolin1958.tau"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Bolin1958.tau-14"><a href="#Bolin1958.tau-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolin1958.tau-15"><a href="#Bolin1958.tau-15"><span class="linenos">15</span></a>    <span class="c1"># pylint: disable=too-many-arguments</span>
-</span><span id="Bolin1958.tau-16"><a href="#Bolin1958.tau-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">r_dr_dt</span><span class="p">):</span>
-</span><span id="Bolin1958.tau-17"><a href="#Bolin1958.tau-17"><span class="linenos">17</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;timescale for evaporation of a falling drop with tritium&quot;&quot;&quot;</span>
-</span><span id="Bolin1958.tau-18"><a href="#Bolin1958.tau-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span> <span class="o">/</span> <span class="n">radius</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">r_dr_dt</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+</span><span id="Bolin1958.tau-15"><a href="#Bolin1958.tau-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
+</span><span id="Bolin1958.tau-16"><a href="#Bolin1958.tau-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span> <span class="o">*</span> <span class="n">dm_dt_over_m</span><span class="p">)</span>
 </span></pre></div>
 
 
-            <div class="docstring"><p>timescale for evaporation of a falling drop with tritium</p>
-</div>
-
+    
 
                             </div>
                 </section>
