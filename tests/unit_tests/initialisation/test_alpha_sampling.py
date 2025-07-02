@@ -2,23 +2,18 @@
 import numpy as np
 import pytest
 
-from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra.exponential import Exponential
 from PySDM.physics import si
 
-formulae = Formulae()
-n_sd = 2**13
-spectrum = Exponential(
-                norm_factor=2**23 / si.metre**3,
-            scale=0.03 * si.micrometre,
-        )
-formulae = Formulae()
 
-class AliasLinear(spectral_sampling.DeterministicSpectralSampling):  # pylint: disable=too-few-public-methods
+class AliasLinear(
+    spectral_sampling.DeterministicSpectralSampling
+):  # pylint: disable=too-few-public-methods
     def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)
+
 
 class AliasConstantMultiplicity(
     spectral_sampling.DeterministicSpectralSampling
@@ -41,17 +36,27 @@ class AliasConstantMultiplicity(
 
         return self._sample(percentiles, self.spectrum)
 
+
 @pytest.mark.parametrize(
     "alpha_class, alias_class",
     (
         pytest.param((spectral_sampling.Linear), (AliasLinear), id="full range"),
-        pytest.param((spectral_sampling.ConstantMultiplicity), (AliasConstantMultiplicity), id="partial range"),
+        pytest.param(
+            (spectral_sampling.ConstantMultiplicity),
+            (AliasConstantMultiplicity),
+            id="partial range",
+        ),
     ),
 )
 def test_spectral_discretisation(alpha_class, alias_class, backend_instance):
     # Arrange
     n_sd = 100
     backend = backend_instance
+
+    spectrum = Exponential(
+        norm_factor=2**23 / si.metre**3,
+        scale=0.03 * si.micrometre,
+    )
 
     alpha = alpha_class(spectrum)
     alias = alias_class(spectrum)

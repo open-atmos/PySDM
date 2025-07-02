@@ -63,12 +63,6 @@ class DeterministicSpectralSampling(
         return x, y_float
 
 
-# class Linear(DeterministicSpectralSampling):  # pylint: disable=too-few-public-methods
-#     def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
-#         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
-#         return self._sample(grid, self.spectrum)
-
-
 class Logarithmic(
     DeterministicSpectralSampling
 ):  # pylint: disable=too-few-public-methods
@@ -87,28 +81,6 @@ class Logarithmic(
         return self._sample(grid, self.spectrum)
 
 
-# class ConstantMultiplicity(
-#     DeterministicSpectralSampling
-# ):  # pylint: disable=too-few-public-methods
-#     def __init__(self, spectrum, size_range=None):
-#         super().__init__(spectrum, size_range)
-
-#         self.cdf_range = (
-#             spectrum.cumulative(self.size_range[0]),
-#             spectrum.cumulative(self.size_range[1]),
-#         )
-#         assert 0 < self.cdf_range[0] < self.cdf_range[1]
-
-#     def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
-#         cdf_arg = np.linspace(self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1)
-#         cdf_arg /= self.spectrum.norm_factor
-#         percentiles = self.spectrum.percentiles(cdf_arg)
-
-#         assert np.isfinite(percentiles).all()
-
-#         return self._sample(percentiles, self.spectrum)
-
-
 class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
     def sample(self, n_sd, *, backend):
         n_elements = n_sd
@@ -121,29 +93,42 @@ class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
         # TODO #1031 - should also handle error_threshold check
         return pdf_arg, dr * self.spectrum.size_distribution(pdf_arg)
 
-class AlphaSampling(DeterministicSpectralSampling):
+
+class AlphaSampling(
+    DeterministicSpectralSampling
+):  # pylint: disable=too-few-public-methods
+    """as in [Matsushima et al. 2023](https://doi.org/10.5194/gmd-16-6211-2023)"""
+
     def __init__(self, spectrum, alpha, size_range=None):
         super().__init__(spectrum, size_range)
         self.alpha = alpha
 
     def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
-        x_prime = np.linspace(self.size_range[0], self.size_range[1], num=n_sd + 1) # maybe doesnt need to be so many, just for interpolation 
+        x_prime = np.linspace(
+            self.size_range[0], self.size_range[1], num=n_sd + 1
+        )  # maybe doesnt need to be so many, just for interpolation
         sd_cdf = self.spectrum.cdf(x_prime)
+
         def Fb2_inv(y):
             return (x_prime[-1] - x_prime[0]) * y
-        x_sd_cdf = (1-self.alpha) * x_prime + self.alpha * Fb2_inv(sd_cdf)
 
-        inv_cdf = interp1d(sd_cdf,x_sd_cdf)
+        x_sd_cdf = (1 - self.alpha) * x_prime + self.alpha * Fb2_inv(sd_cdf)
 
-        percent_values = np.linspace(default_cdf_range[0],default_cdf_range[1], num=2 * n_sd + 1)
+        inv_cdf = interp1d(sd_cdf, x_sd_cdf)
+
+        percent_values = np.linspace(
+            default_cdf_range[0], default_cdf_range[1], num=2 * n_sd + 1
+        )
         percentiles = inv_cdf(percent_values)
 
         return self._sample(percentiles, self.spectrum)
-    
-class ConstantMultiplicity(AlphaSampling):
+
+
+class ConstantMultiplicity(AlphaSampling):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, 0, size_range)
 
-class Linear(AlphaSampling):
+
+class Linear(AlphaSampling):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, 1, size_range)
