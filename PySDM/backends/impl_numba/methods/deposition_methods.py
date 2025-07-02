@@ -18,9 +18,26 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         formulae = self.formulae_flattened
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
-        def calc_saturation_ratio_ice_and_temperature():
-            temperature = ...
-            saturation_ratio_ice = ...
+        def calc_saturation_ratio_ice_and_temperature(
+            vapour_mixing_ratio, dry_air_potential_temperature, dry_air_density
+        ):
+            temperature = formulae.state_variable_triplet__T(
+                rhod=dry_air_density,
+                thd=dry_air_potential_temperature,
+            )
+            total_pressure = formulae.state_variable_triplet__p(
+                rhod=dry_air_density,
+                T=temperature,
+                water_vapour_mixing_ratio=vapour_mixing_ratio,
+            )
+            vapour_partial_pressure = formulae.state_variable_triplet__pv(
+                p=total_pressure,
+                water_vapour_mixing_ratio=vapour_mixing_ratio,
+            )
+            saturation_ratio_ice = (
+                vapour_partial_pressure
+                / formulae.saturation_vapour_pressure__pvs_ice(temperature)
+            )
             return saturation_ratio_ice, temperature
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
@@ -96,10 +113,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             adaptive,
             multiplicity,
             signed_water_mass,
-            # current_temperature,
             current_total_pressure,
-            # current_relative_humidity,
-            # current_water_activity,
             current_vapour_mixing_ratio,
             current_dry_air_density,
             current_dry_potential_temperature,
@@ -117,39 +131,47 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             - global dt - no cell-wise logic (we don't have any test/example for it!)
             - no mechanism to retain shorter dt over timesteps (and hence cannot make it adapt towards longer)
             - explicit Euler mass integration (vs. implicit in condensation)
-
+            - no safeguards for infinite loop in substep number search
             note: condensation uses theta for tolerance, we could use RH here (and later also in cond)
             """
             # pylint: disable=too-many-locals
-            n_sd = len(signed_water_mass)
-            multiplier = 2
+            multiplier = 10
+            midpoint = True
+            rel_tol_rh = 1e-6
 
+            cid = 0  # TODO
+
+            n_sd = len(signed_water_mass)
             n_substeps = 1
 
             rv_tendency = (
-                predicted_vapour_mixing_ratio[0] - current_vapour_mixing_ratio[0]
+                predicted_vapour_mixing_ratio[cid] - current_vapour_mixing_ratio[cid]
             ) / time_step
             thd_tendency = (
-                predicted_dry_potential_temperature[0]
-                - current_dry_potential_temperature[0]
+                predicted_dry_potential_temperature[cid]
+                - current_dry_potential_temperature[cid]
             ) / time_step
-            rho_d = current_dry_air_density[0]
+            rho_d = current_dry_air_density[cid]
 
             if adaptive:
+                n_substeps = 1 / multiplier
+                delta_rh_long = np.nan
                 while True:
                     sub_time_step = time_step / n_substeps
                     saturation_ratio_ice, temperature = (
                         calc_saturation_ratio_ice_and_temperature(
-                            rv=current_vapour_mixing_ratio[0]
+                            vapour_mixing_ratio=current_vapour_mixing_ratio[cid]
                             + rv_tendency * sub_time_step,
-                            thd=current_dry_potential_temperature[0]
+                            dry_air_potential_temperature=current_dry_potential_temperature[
+                                cid
+                            ]
                             + thd_tendency * sub_time_step,
-                            rho_d=rho_d,
+                            dry_air_density=rho_d,
                         )
                     )
+                    rv = current_vapour_mixing_ratio[cid]
                     for i in range(n_sd):
                         if not formulae.trivia__unfrozen(signed_water_mass[i]):
-                            cid = cell_id[i]
 
                             latent_heat_sub = formulae.latent_heat_sublimation__ls(
                                 temperature
@@ -166,31 +188,59 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                                 schmidt_number=schmidt_number[cid],
                             )
 
-                            delta_rv_i = (
+                            rv += (
                                 -mass_deposition_rate
                                 * multiplicity[i]
                                 * sub_time_step
                                 / (cell_volume * rho_d)
                             )
-                            if -delta_rv_i > current_vapour_mixing_ratio[cid]:
-                                n_substeps *= multiplier
-                                rv_tendency /= multiplier
-                                thd_tendency /= multiplier
-
-                                break
-                    break
+                    delta_thd = formulae.state_variable_triplet__dthd_dt(
+                        rhod=rho_d,
+                        thd=current_dry_potential_temperature[cid],
+                        T=temperature,
+                        d_water_vapour_mixing_ratio__dt=(
+                            rv - current_vapour_mixing_ratio[cid]
+                        )
+                        / sub_time_step,
+                        lv=latent_heat_sub,
+                    )
+                    delta_rh_short = (
+                        calc_saturation_ratio_ice_and_temperature(
+                            vapour_mixing_ratio=rv,
+                            dry_air_potential_temperature=current_dry_potential_temperature[
+                                cid
+                            ]
+                            + thd_tendency * sub_time_step
+                            + delta_thd,
+                            dry_air_density=rho_d,
+                        )[0]
+                        - saturation_ratio_ice
+                    )
+                    if (
+                        n_substeps < 1
+                        or rv < 0
+                        or abs(delta_rh_long - multiplier * delta_rh_short)
+                        / saturation_ratio_ice
+                        > rel_tol_rh
+                    ):
+                        delta_rh_long = delta_rh_short
+                        n_substeps *= multiplier
+                        rv_tendency /= multiplier
+                        thd_tendency /= multiplier
+                    else:
+                        break
             sub_time_step = time_step / n_substeps
-            rv = current_vapour_mixing_ratio[0]
-            thd = current_dry_potential_temperature[0]
-            for _ in range(n_substeps):
+            rv = current_vapour_mixing_ratio[cid]
+            thd = current_dry_potential_temperature[cid]
+            for _ in range(int(n_substeps)):
                 # midpoint -> computer the sink with midpoint source
-                rv += sub_time_step * rv_tendency / 2
-                thd += sub_time_step * thd_tendency / 2
+                rv += sub_time_step * rv_tendency * (0.5 if midpoint else 1)
+                thd += sub_time_step * thd_tendency * (0.5 if midpoint else 1)
                 saturation_ratio_ice, temperature = (
                     calc_saturation_ratio_ice_and_temperature(
-                        rv=rv,
-                        thd=thd,
-                        rho_d=rho_d,
+                        vapour_mixing_ratio=rv,
+                        dry_air_potential_temperature=thd,
+                        dry_air_density=rho_d,
                     )
                 )
                 for i in range(n_sd):
@@ -219,11 +269,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                             * sub_time_step
                             / (cell_volume * rho_d)
                         )
-                        if -delta_rv_i > current_vapour_mixing_ratio[cid]:
-                            assert False
-
-                        # predicted_vapour_mixing_ratio[cid] += delta_rv_i
                         rv += delta_rv_i
+                        assert rv >= 0
 
                         thd += (
                             formulae.state_variable_triplet__dthd_dt(
@@ -247,10 +294,11 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         signed_water_mass[i] = -formulae.diffusion_coordinate__mass(
                             x_new
                         )
-                thd += sub_time_step * thd_tendency / 2
-                rv += sub_time_step * rv_tendency / 2
-            predicted_dry_potential_temperature[0] = thd
-            predicted_vapour_mixing_ratio[0] = rv
+                if midpoint:
+                    thd += sub_time_step * thd_tendency / 2
+                    rv += sub_time_step * rv_tendency / 2
+            predicted_dry_potential_temperature[cid] = thd
+            predicted_vapour_mixing_ratio[cid] = rv
 
         return body
 
@@ -260,10 +308,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         adaptive,
         multiplicity,
         signed_water_mass,
-        current_temperature,
-        current_total_pressure,
-        current_relative_humidity,
-        current_water_activity,
+        current_total_pressure,  # TODO: do we need it ?
         current_vapour_mixing_ratio,
         current_dry_air_density,
         current_dry_potential_temperature,
@@ -279,10 +324,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             adaptive=adaptive,
             multiplicity=multiplicity.data,
             signed_water_mass=signed_water_mass.data,
-            current_temperature=current_temperature.data,
             current_total_pressure=current_total_pressure.data,
-            current_relative_humidity=current_relative_humidity.data,
-            current_water_activity=current_water_activity.data,
             current_vapour_mixing_ratio=current_vapour_mixing_ratio.data,
             current_dry_air_density=current_dry_air_density.data,
             current_dry_potential_temperature=current_dry_potential_temperature.data,

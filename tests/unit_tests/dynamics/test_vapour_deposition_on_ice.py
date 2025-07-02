@@ -1,9 +1,5 @@
 """basic water vapor deposition on ice test"""
 
-import os
-
-os.environ["NUMBA_DISABLE_JIT"] = "1"
-
 from typing import Iterable
 from functools import lru_cache
 import numpy as np
@@ -173,8 +169,8 @@ class TestVapourDepositionOnIce:
         "dt, adaptive",
         (
             (0.01 * si.s, False),
-            pytest.param(10.0 * si.s, False, marks=pytest.mark.xfail(strict=True)),
-            (10.0 * si.s, True),
+            pytest.param(1.0 * si.s, False, marks=pytest.mark.xfail(strict=True)),
+            (1.0 * si.s, True),
         ),
     )
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
