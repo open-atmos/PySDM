@@ -58,3 +58,33 @@ class TestParticleShapeAndDensity:
 
             # Assert
             assert re.check(si.dimensionless)
+
+    @staticmethod
+    @pytest.mark.parametrize("variant", ("LiquidSpheres",))
+    def test_dm_dt_over_m_units(variant):
+        with DimensionalAnalysis():
+            # arrange
+            formulae = Formulae(particle_shape_and_density=variant)
+            si = constants_defaults.si
+            sut = formulae.particle_shape_and_density.dm_dt_over_m
+
+            # act
+            re = sut(r=1 * si.um, r_dr_dt=1 * si.um**2 / si.s)
+
+            # assert
+            assert re.check("1/[time]")
+
+    @staticmethod
+    @pytest.mark.parametrize("variant", ("LiquidSpheres",))
+    def test_r_dr_dt_units(variant):
+        with DimensionalAnalysis():
+            # arrange
+            formulae = Formulae(particle_shape_and_density=variant)
+            si = constants_defaults.si
+            sut = formulae.particle_shape_and_density.r_dr_dt
+
+            # act
+            re = sut(r=1 * si.um, dm_dt_over_m=1 / si.s)
+
+            # assert
+            assert re.check("[area]/[time]")

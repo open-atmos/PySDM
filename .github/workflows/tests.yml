@@ -17,6 +17,7 @@ on:
     paths-ignore: ['docs/**', '**.md']
   pull_request:
     branches: [ main ]
+    paths-ignore: ['docs/**', '**.md']
   schedule:
     - cron: '0 13 * * 4'
 
@@ -185,7 +186,7 @@ jobs:
         test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 35
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
