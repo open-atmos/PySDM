@@ -19,3 +19,29 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
             * D_iso
             * (S * (alpha * R_vap / R_liq - 1) + (S - 1) / (1 + D * Fk))
         )
+
+    @staticmethod
+    def bolin_number(
+        const,
+        diffusivity_ratio_heavy_to_light,
+        alpha,
+        rho_s,
+        Fd,
+        Fk,
+        saturation,
+        R_vap,
+        R_liq,
+    ):  # pylint: disable=too-many-arguments
+        """
+        Bolin number (Bo) - c1 in Bolin 1958
+        """
+        return (
+            alpha
+            / diffusivity_ratio_heavy_to_light
+            / (
+                (1 + const.rho_w / rho_s * Fk / Fd)
+                * saturation
+                * (alpha * R_vap / R_liq - 1)
+                + (saturation - 1)
+            )
+        )
