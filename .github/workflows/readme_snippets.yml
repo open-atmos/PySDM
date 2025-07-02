@@ -26,6 +26,7 @@ jobs:
       - run: python -m pip install $PIP_INSTALL_ARGS -e .
       - run: python -m pip install $PIP_INSTALL_ARGS pytest-codeblocks pytest
       - run: python -m pip install $PIP_INSTALL_ARGS "pyparsing<3.0.0"  # https://github.com/matplotlib/matplotlib/issues/25204
+      - run: python -m pip install $PIP_INSTALL_ARGS "pillow<11.3.0"  # matplotlib triggers deprecation warnings in 11.3.0
       - run: |
           python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
       - run: cat -n readme.py
