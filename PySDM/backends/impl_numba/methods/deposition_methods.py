@@ -42,7 +42,6 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def mass_deposition_rate_per_droplet(
-            *,
             temperature: float,
             rho_d: float,
             signed_mass_old: float,
@@ -219,9 +218,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     if (
                         n_substeps < 1
                         or rv < 0
-                        or abs(delta_rh_long - multiplier * delta_rh_short)
-                        / saturation_ratio_ice
-                        > rel_tol_rh
+                        # or abs(delta_rh_long - multiplier * delta_rh_short)
+                        # / saturation_ratio_ice
+                        # > rel_tol_rh
                     ):
                         delta_rh_long = delta_rh_short
                         n_substeps *= multiplier
@@ -232,6 +231,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             sub_time_step = time_step / n_substeps
             rv = current_vapour_mixing_ratio[cid]
             thd = current_dry_potential_temperature[cid]
+            print("n", n_substeps)
             for _ in range(int(n_substeps)):
                 # midpoint -> computer the sink with midpoint source
                 rv += sub_time_step * rv_tendency * (0.5 if midpoint else 1)

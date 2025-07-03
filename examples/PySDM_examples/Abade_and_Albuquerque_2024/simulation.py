@@ -41,7 +41,7 @@ class Simulation(BasicSimulation):
         if settings.enable_immersion_freezing:
             builder.add_dynamic(Freezing(singular=settings.singular))
         if settings.enable_vapour_deposition_on_ice:
-            builder.add_dynamic(VapourDepositionOnIce())
+            builder.add_dynamic(VapourDepositionOnIce(adaptive=True))
 
         r_dry, n_in_dv = ConstantMultiplicity(settings.soluble_aerosol).sample(
             n_sd=settings.n_sd
