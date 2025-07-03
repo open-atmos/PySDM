@@ -18,14 +18,14 @@ def make_particulator(
     n_sd,
     dt,
     initial_temperature,
-    immersion_freezing,
+    singular,
     seed,
     shima_T_fz,
     ABIFM_spec,
     droplet_volume,
     total_particle_number,
     volume,
-    thaw="None",
+    thaw=False,
 ):
     formulae_ctor_args = {
         "seed": seed,
@@ -51,12 +51,18 @@ def make_particulator(
             _,
             attributes["multiplicity"],
         ) = sampling.sample(backend=backend, n_sd=n_sd)
+        immersion_freezing_flag = "singular"
     else:
         (
             _,
             attributes["immersed surface area"],
             attributes["multiplicity"],
         ) = sampling.sample(backend=backend, n_sd=n_sd)
+        immersion_freezing_flag = "time-dependent"
+    if thaw:
+        thaw_flag = "instantaneous"
+    else:
+        thaw_flag = None
     attributes["multiplicity"] *= total_particle_number
 
     builder = Builder(n_sd=n_sd, backend=backend, environment=Box(dt, volume))
@@ -66,7 +72,7 @@ def make_particulator(
     env["RH"] = A_VALUE_LARGER_THAN_ONE
     env["rhod"] = 1.0
 
-    builder.add_dynamic(Freezing(immersion_freezing=immersion_freezing, thaw=thaw))
+    builder.add_dynamic(Freezing(immersion_freezing=immersion_freezing_flag, thaw=thaw_flag))
     builder.request_attribute("volume")
 
     return builder.build(
