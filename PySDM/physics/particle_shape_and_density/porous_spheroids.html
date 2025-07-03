@@ -72,7 +72,22 @@
                     <a class="class" href="#PorousSpheroid">PorousSpheroid</a>
                             <ul class="memberlist">
                         <li>
+                                <a class="function" href="#PorousSpheroid.__init__">PorousSpheroid</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#PorousSpheroid.supports_mixed_phase">supports_mixed_phase</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PorousSpheroid.aspect_ratio">aspect_ratio</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PorousSpheroid.equatorial_radius">equatorial_radius</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PorousSpheroid.polar_radius">polar_radius</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#PorousSpheroid.eccentricity">eccentricity</a>
                         </li>
                 </ul>
 
@@ -93,8 +108,10 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../physics.html">physics</a><wbr>.<a href="./../particle_shape_and_density.html">particle_shape_and_density</a><wbr>.porous_spheroids    </h1>
 
-                        <div class="docstring"><p>for mixed-phase microphysics as in
-<a href="https://doi.org/10.5194/gmd-13-4107-2020">Shima et al. 2020</a></p>
+                        <div class="docstring"><p>for porous spheriods  as in
+<a href="https://doi.org/10.5194/gmd-13-4107-2020">Shima et al. 2020</a>
+and prolate spheriods as in
+<a href="https://doi.org/10.5194/acp-9-685-2009">Spichtinger &amp; Gierens 2009</a></p>
 </div>
 
                         <input id="mod-porous_spheroids-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -102,15 +119,38 @@
                         <label class="view-source-button" for="mod-porous_spheroids-view-source"><span>View Source</span></label>
 
                         <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">for mixed-phase microphysics as in</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">for porous spheriods  as in</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">[Shima et al. 2020](https://doi.org/10.5194/gmd-13-4107-2020)</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PorousSpheroid</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">supports_mixed_phase</span><span class="p">(</span><span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">and prolate spheriods as in</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="sd">[Spichtinger &amp; Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PorousSpheroid</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">pass</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">supports_mixed_phase</span><span class="p">(</span><span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">aspect_ratio</span><span class="p">(</span><span class="n">polar_radius</span><span class="p">,</span> <span class="n">equatorial_radius</span><span class="p">):</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="k">return</span> <span class="n">polar_radius</span> <span class="o">/</span> <span class="n">equatorial_radius</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equatorial_radius</span><span class="p">(</span><span class="n">polar_radius</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="k">return</span> <span class="n">polar_radius</span> <span class="o">/</span> <span class="n">aspect_ratio</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">polar_radius</span><span class="p">(</span><span class="n">equatorial_radius</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="k">return</span> <span class="n">equatorial_radius</span> <span class="o">*</span> <span class="n">aspect_ratio</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">eccentricity</span><span class="p">(</span><span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">aspect_ratio</span><span class="o">**-</span><span class="mf">2.0</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -126,15 +166,52 @@
 
     </div>
     <a class="headerlink" href="#PorousSpheroid"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid-8"><a href="#PorousSpheroid-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PorousSpheroid</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="PorousSpheroid-9"><a href="#PorousSpheroid-9"><span class="linenos"> 9</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="PorousSpheroid-10"><a href="#PorousSpheroid-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">supports_mixed_phase</span><span class="p">(</span><span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="PorousSpheroid-11"><a href="#PorousSpheroid-11"><span class="linenos">11</span></a>        <span class="k">return</span> <span class="kc">True</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid-12"><a href="#PorousSpheroid-12"><span class="linenos">12</span></a><span class="k">class</span><span class="w"> </span><span class="nc">PorousSpheroid</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="PorousSpheroid-13"><a href="#PorousSpheroid-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="PorousSpheroid-14"><a href="#PorousSpheroid-14"><span class="linenos">14</span></a>        <span class="k">pass</span>
+</span><span id="PorousSpheroid-15"><a href="#PorousSpheroid-15"><span class="linenos">15</span></a>
+</span><span id="PorousSpheroid-16"><a href="#PorousSpheroid-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid-17"><a href="#PorousSpheroid-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">supports_mixed_phase</span><span class="p">(</span><span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="PorousSpheroid-18"><a href="#PorousSpheroid-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span><span id="PorousSpheroid-19"><a href="#PorousSpheroid-19"><span class="linenos">19</span></a>
+</span><span id="PorousSpheroid-20"><a href="#PorousSpheroid-20"><span class="linenos">20</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid-21"><a href="#PorousSpheroid-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">aspect_ratio</span><span class="p">(</span><span class="n">polar_radius</span><span class="p">,</span> <span class="n">equatorial_radius</span><span class="p">):</span>
+</span><span id="PorousSpheroid-22"><a href="#PorousSpheroid-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="n">polar_radius</span> <span class="o">/</span> <span class="n">equatorial_radius</span>
+</span><span id="PorousSpheroid-23"><a href="#PorousSpheroid-23"><span class="linenos">23</span></a>
+</span><span id="PorousSpheroid-24"><a href="#PorousSpheroid-24"><span class="linenos">24</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid-25"><a href="#PorousSpheroid-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equatorial_radius</span><span class="p">(</span><span class="n">polar_radius</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="PorousSpheroid-26"><a href="#PorousSpheroid-26"><span class="linenos">26</span></a>        <span class="k">return</span> <span class="n">polar_radius</span> <span class="o">/</span> <span class="n">aspect_ratio</span>
+</span><span id="PorousSpheroid-27"><a href="#PorousSpheroid-27"><span class="linenos">27</span></a>
+</span><span id="PorousSpheroid-28"><a href="#PorousSpheroid-28"><span class="linenos">28</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid-29"><a href="#PorousSpheroid-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">polar_radius</span><span class="p">(</span><span class="n">equatorial_radius</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="PorousSpheroid-30"><a href="#PorousSpheroid-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">equatorial_radius</span> <span class="o">*</span> <span class="n">aspect_ratio</span>
+</span><span id="PorousSpheroid-31"><a href="#PorousSpheroid-31"><span class="linenos">31</span></a>
+</span><span id="PorousSpheroid-32"><a href="#PorousSpheroid-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid-33"><a href="#PorousSpheroid-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">eccentricity</span><span class="p">(</span><span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="PorousSpheroid-34"><a href="#PorousSpheroid-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">aspect_ratio</span><span class="o">**-</span><span class="mf">2.0</span><span class="p">)</span>
 </span></pre></div>
 
 
     
 
+                            <div id="PorousSpheroid.__init__" class="classattr">
+                                        <input id="PorousSpheroid.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="name">PorousSpheroid</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">_</span></span>)</span>
+
+                <label class="view-source-button" for="PorousSpheroid.__init__-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#PorousSpheroid.__init__"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid.__init__-13"><a href="#PorousSpheroid.__init__-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="PorousSpheroid.__init__-14"><a href="#PorousSpheroid.__init__-14"><span class="linenos">14</span></a>        <span class="k">pass</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
                             <div id="PorousSpheroid.supports_mixed_phase" class="classattr">
                                         <input id="PorousSpheroid.supports_mixed_phase-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -147,9 +224,93 @@
 
     </div>
     <a class="headerlink" href="#PorousSpheroid.supports_mixed_phase"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid.supports_mixed_phase-9"><a href="#PorousSpheroid.supports_mixed_phase-9"><span class="linenos"> 9</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="PorousSpheroid.supports_mixed_phase-10"><a href="#PorousSpheroid.supports_mixed_phase-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">supports_mixed_phase</span><span class="p">(</span><span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</span><span id="PorousSpheroid.supports_mixed_phase-11"><a href="#PorousSpheroid.supports_mixed_phase-11"><span class="linenos">11</span></a>        <span class="k">return</span> <span class="kc">True</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid.supports_mixed_phase-16"><a href="#PorousSpheroid.supports_mixed_phase-16"><span class="linenos">16</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid.supports_mixed_phase-17"><a href="#PorousSpheroid.supports_mixed_phase-17"><span class="linenos">17</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">supports_mixed_phase</span><span class="p">(</span><span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="PorousSpheroid.supports_mixed_phase-18"><a href="#PorousSpheroid.supports_mixed_phase-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="kc">True</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="PorousSpheroid.aspect_ratio" class="classattr">
+                                        <input id="PorousSpheroid.aspect_ratio-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">aspect_ratio</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">polar_radius</span>, </span><span class="param"><span class="n">equatorial_radius</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="PorousSpheroid.aspect_ratio-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#PorousSpheroid.aspect_ratio"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid.aspect_ratio-20"><a href="#PorousSpheroid.aspect_ratio-20"><span class="linenos">20</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid.aspect_ratio-21"><a href="#PorousSpheroid.aspect_ratio-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">aspect_ratio</span><span class="p">(</span><span class="n">polar_radius</span><span class="p">,</span> <span class="n">equatorial_radius</span><span class="p">):</span>
+</span><span id="PorousSpheroid.aspect_ratio-22"><a href="#PorousSpheroid.aspect_ratio-22"><span class="linenos">22</span></a>        <span class="k">return</span> <span class="n">polar_radius</span> <span class="o">/</span> <span class="n">equatorial_radius</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="PorousSpheroid.equatorial_radius" class="classattr">
+                                        <input id="PorousSpheroid.equatorial_radius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">equatorial_radius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">polar_radius</span>, </span><span class="param"><span class="n">aspect_ratio</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="PorousSpheroid.equatorial_radius-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#PorousSpheroid.equatorial_radius"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid.equatorial_radius-24"><a href="#PorousSpheroid.equatorial_radius-24"><span class="linenos">24</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid.equatorial_radius-25"><a href="#PorousSpheroid.equatorial_radius-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">equatorial_radius</span><span class="p">(</span><span class="n">polar_radius</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="PorousSpheroid.equatorial_radius-26"><a href="#PorousSpheroid.equatorial_radius-26"><span class="linenos">26</span></a>        <span class="k">return</span> <span class="n">polar_radius</span> <span class="o">/</span> <span class="n">aspect_ratio</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="PorousSpheroid.polar_radius" class="classattr">
+                                        <input id="PorousSpheroid.polar_radius-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">polar_radius</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">equatorial_radius</span>, </span><span class="param"><span class="n">aspect_ratio</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="PorousSpheroid.polar_radius-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#PorousSpheroid.polar_radius"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid.polar_radius-28"><a href="#PorousSpheroid.polar_radius-28"><span class="linenos">28</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid.polar_radius-29"><a href="#PorousSpheroid.polar_radius-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">polar_radius</span><span class="p">(</span><span class="n">equatorial_radius</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="PorousSpheroid.polar_radius-30"><a href="#PorousSpheroid.polar_radius-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">equatorial_radius</span> <span class="o">*</span> <span class="n">aspect_ratio</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="PorousSpheroid.eccentricity" class="classattr">
+                                        <input id="PorousSpheroid.eccentricity-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">eccentricity</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">aspect_ratio</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="PorousSpheroid.eccentricity-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#PorousSpheroid.eccentricity"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="PorousSpheroid.eccentricity-32"><a href="#PorousSpheroid.eccentricity-32"><span class="linenos">32</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="PorousSpheroid.eccentricity-33"><a href="#PorousSpheroid.eccentricity-33"><span class="linenos">33</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">eccentricity</span><span class="p">(</span><span class="n">aspect_ratio</span><span class="p">):</span>
+</span><span id="PorousSpheroid.eccentricity-34"><a href="#PorousSpheroid.eccentricity-34"><span class="linenos">34</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">aspect_ratio</span><span class="o">**-</span><span class="mf">2.0</span><span class="p">)</span>
 </span></pre></div>
 
 

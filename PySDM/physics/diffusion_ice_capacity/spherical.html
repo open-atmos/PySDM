@@ -107,15 +107,17 @@
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">capacity for approximation of ice crystals as spheres</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Spherical</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>        <span class="k">pass</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">capacity</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">diameter</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="n">diameter</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Spherical</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="k">pass</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">capacity</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">mass</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_i</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -131,14 +133,14 @@
 
     </div>
     <a class="headerlink" href="#Spherical"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Spherical-7"><a href="#Spherical-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Spherical</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="Spherical-8"><a href="#Spherical-8"><span class="linenos"> 8</span></a>
-</span><span id="Spherical-9"><a href="#Spherical-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="Spherical-10"><a href="#Spherical-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
-</span><span id="Spherical-11"><a href="#Spherical-11"><span class="linenos">11</span></a>
-</span><span id="Spherical-12"><a href="#Spherical-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Spherical-13"><a href="#Spherical-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">capacity</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">diameter</span><span class="p">):</span>
-</span><span id="Spherical-14"><a href="#Spherical-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">diameter</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Spherical-9"><a href="#Spherical-9"><span class="linenos"> 9</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Spherical</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="Spherical-10"><a href="#Spherical-10"><span class="linenos">10</span></a>
+</span><span id="Spherical-11"><a href="#Spherical-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="Spherical-12"><a href="#Spherical-12"><span class="linenos">12</span></a>        <span class="k">pass</span>
+</span><span id="Spherical-13"><a href="#Spherical-13"><span class="linenos">13</span></a>
+</span><span id="Spherical-14"><a href="#Spherical-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Spherical-15"><a href="#Spherical-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">capacity</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
+</span><span id="Spherical-16"><a href="#Spherical-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">mass</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_i</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -154,8 +156,8 @@
 
     </div>
     <a class="headerlink" href="#Spherical.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Spherical.__init__-9"><a href="#Spherical.__init__-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
-</span><span id="Spherical.__init__-10"><a href="#Spherical.__init__-10"><span class="linenos">10</span></a>        <span class="k">pass</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Spherical.__init__-11"><a href="#Spherical.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+</span><span id="Spherical.__init__-12"><a href="#Spherical.__init__-12"><span class="linenos">12</span></a>        <span class="k">pass</span>
 </span></pre></div>
 
 
@@ -168,15 +170,15 @@
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">capacity</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">diameter</span></span><span class="return-annotation">):</span></span>
+        <span class="name">capacity</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">mass</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="Spherical.capacity-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Spherical.capacity"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Spherical.capacity-12"><a href="#Spherical.capacity-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Spherical.capacity-13"><a href="#Spherical.capacity-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">capacity</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">diameter</span><span class="p">):</span>
-</span><span id="Spherical.capacity-14"><a href="#Spherical.capacity-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">diameter</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">TWO</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Spherical.capacity-14"><a href="#Spherical.capacity-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Spherical.capacity-15"><a href="#Spherical.capacity-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">capacity</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
+</span><span id="Spherical.capacity-16"><a href="#Spherical.capacity-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">mass</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">PI_4_3</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">rho_i</span><span class="p">,</span> <span class="n">const</span><span class="o">.</span><span class="n">ONE_THIRD</span><span class="p">)</span>
 </span></pre></div>
 
 
