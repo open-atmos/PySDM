@@ -15,7 +15,7 @@ PLOT = False
 @pytest.fixture(scope="session", name="notebook_variables")
 def notebook_variables_fixture():
     return notebook_vars(
-        file=Path(Jouzel_and_Merlivat_1984.__file__).parent / "fig_8.ipynb",
+        file=Path(Jouzel_and_Merlivat_1984.__file__).parent / "fig_8_9.ipynb",
         plot=PLOT,
     )
 
@@ -41,7 +41,7 @@ class TestFig8:
         notebook_variables, if_effective, temp_C, value
     ):
         # arrange
-        temperature_C = notebook_variables["temperature"] - T0
+        temperature_C = notebook_variables["T_0_50"] - T0
         if if_effective:
             Si = notebook_variables["eff_saturation_wrt_ice"]
         else:
@@ -63,7 +63,7 @@ class TestFig8:
         """  # pylint: disable=line-too-long
         # arrange
         saturation_difference = notebook_variables["saturation_difference"]
-        temp = notebook_variables["temperature"]
+        temp = notebook_variables["T_0_50"]
         temp_C = temp - T0
         temp_C_tolerance = 0.01
 
@@ -82,16 +82,14 @@ class TestFig8:
         )
 
     @staticmethod
-    def test_alpha_kinetic_of_temperature_values(notebook_variables):
+    def test_alpha_less_then_eff_alpha(notebook_variables):
         # arrange
-        temperature = notebook_variables["temperature"]
         alpha_eff = notebook_variables["eff_alpha_kinetic"]
         alpha = notebook_variables["alpha_kinetic"]
-        temp_below_0C = temperature <= T0
 
         # act
-        sut = alpha_eff[temp_below_0C]
+        sut = alpha_eff
 
         # assert
         np.testing.assert_array_less(sut, 1)
-        np.testing.assert_array_less(alpha[temp_below_0C], alpha_eff[temp_below_0C])
+        np.testing.assert_array_less(alpha, alpha_eff)
