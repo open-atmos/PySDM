@@ -6,8 +6,9 @@ from pathlib import Path
 import pytest
 import numpy as np
 from open_atmos_jupyter_utils import notebook_vars
-from PySDM.physics.constants import T0
+
 from PySDM_examples import Jouzel_and_Merlivat_1984
+from PySDM.physics.constants import T0
 
 PLOT = False
 
