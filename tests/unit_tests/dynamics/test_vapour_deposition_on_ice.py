@@ -42,35 +42,32 @@ class MoistBox(Box, Moist):
 
 
 DIFFUSION_COORDINATES = ("WaterMass", "WaterMassLogarithm")
-COMMON = {
-    "environment": MoistBox(dt=0.01 * si.s, dv=1 * si.m**3),
-    "products": (IceWaterContent(),),
-    "formulae": {
-        f"{diffusion_coordinate}": Formulae(
-            particle_shape_and_density="MixedPhaseSpheres",
-            diffusion_coordinate=diffusion_coordinate,
-        )
-        for diffusion_coordinate in DIFFUSION_COORDINATES
-    },
-}
+DIFFUSION_ICE_CAPACITIES = ("Spherical", "Columnar")
 
 
 def make_particulator(
     *,
     diffusion_coordinate,
+    diffusion_ice_capacity,
     signed_water_masses,
     temperature,
     pressure,
     RH_ice=None,
     RH_water=None,
+    diffusion_ice_kinetics="Standard",
 ):
     """instantiates a particulator with minimal components for testing ice depositional growth"""
     assert RH_water is None or RH_ice is None
     builder = Builder(
         n_sd=len(signed_water_masses),
-        environment=COMMON["environment"],
+        environment=MoistBox(dt=0.01 * si.s, dv=1 * si.m**3),
         backend=CPU(
-            formulae=COMMON["formulae"][diffusion_coordinate],
+            formulae=Formulae(
+                particle_shape_and_density="MixedPhaseSpheres",
+                diffusion_coordinate=diffusion_coordinate,
+                diffusion_ice_capacity=diffusion_ice_capacity,
+                diffusion_ice_kinetics=diffusion_ice_kinetics,
+            ),
             override_jit_flags={"parallel": False},
         ),
     )
@@ -81,7 +78,7 @@ def make_particulator(
             "multiplicity": np.full(shape=(builder.particulator.n_sd,), fill_value=1e4),
             "signed water mass": np.asarray(signed_water_masses),
         },
-        products=COMMON["products"],
+        products=(IceWaterContent(),),
     )
     particulator.environment["T"] = temperature
     particulator.environment["p"] = pressure
@@ -121,13 +118,17 @@ class TestVapourDepositionOnIce:
     @pytest.mark.parametrize("water_mass", (-si.ng, -si.mg, si.mg))
     @pytest.mark.parametrize("RHi", (1.1, 1.0, 0.9))
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
-    def test_iwc_differs_after_one_timestep(*, water_mass, RHi, diffusion_coordinate):
+    @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
+    def test_iwc_differs_after_one_timestep(
+        *, water_mass, RHi, diffusion_coordinate, diffusion_ice_capacity
+    ):
         """sanity checks for sign of changes in IWC and ambient thermodynamics"""
         # arrange
         particulator = make_particulator(
             temperature=250 * si.K,
             pressure=500 * si.hPa,
             diffusion_coordinate=diffusion_coordinate,
+            diffusion_ice_capacity=diffusion_ice_capacity,
             signed_water_masses=[water_mass],
             RH_ice=RHi,
         )
@@ -170,9 +171,11 @@ class TestVapourDepositionOnIce:
             particulator = make_particulator(
                 pressure=300 * si.hPa,
                 diffusion_coordinate=diffusion_coordinate,
+                diffusion_ice_capacity="Columnar",
                 signed_water_masses=-initial_water_masses,
                 RH_water=1,
                 temperature=temperature,
+                diffusion_ice_kinetics="Standard",
             )
             particulator.run(steps=1)
             dm_dt[temperature] = (
@@ -204,16 +207,18 @@ class TestVapourDepositionOnIce:
         assert (dm_dt[200 * si.K] < dm_dt[210 * si.K]).all()
         assert (dm_dt[210 * si.K] < dm_dt[220 * si.K]).all()
         assert (dm_dt[220 * si.K] < dm_dt[230 * si.K]).all()
+
         for mass_rate in dm_dt.values():
             assert (np.diff(mass_rate) > 0).all()
-        assert 0.2e-14 * si.kg / si.s < dm_dt[230 * si.K][0] < 0.3e-14 * si.kg / si.s
-        assert 0.8e-16 * si.kg / si.s < dm_dt[200 * si.K][0] < 0.9e-16 * si.kg / si.s
-        assert 1.1e-12 * si.kg / si.s < dm_dt[230 * si.K][-1] < 1.2e-12 * si.kg / si.s
-        assert 4.8e-14 * si.kg / si.s < dm_dt[200 * si.K][-1] < 4.9e-14 * si.kg / si.s
+        assert 1.8e-15 * si.kg / si.s < dm_dt[230 * si.K][0] < 4.0e-15 * si.kg / si.s
+        assert 7.0e-17 * si.kg / si.s < dm_dt[200 * si.K][0] < 1.0e-16 * si.kg / si.s
+        assert 1.3e-12 * si.kg / si.s < dm_dt[230 * si.K][-1] < 1.5e-12 * si.kg / si.s
+        assert 6.0e-14 * si.kg / si.s < dm_dt[200 * si.K][-1] < 1.2e-13 * si.kg / si.s
 
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
-    def test_relative_mass_rates(*, diffusion_coordinate):
+    @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
+    def test_relative_mass_rates(*, diffusion_coordinate, diffusion_ice_capacity):
         # arrange
         water_mass_init = np.logspace(-16, -6, num=11) * si.kg
         particulator = make_particulator(
@@ -222,6 +227,7 @@ class TestVapourDepositionOnIce:
             RH_ice=1.1,
             signed_water_masses=-water_mass_init,
             diffusion_coordinate=diffusion_coordinate,
+            diffusion_ice_capacity=diffusion_ice_capacity,
         )
 
         # act
