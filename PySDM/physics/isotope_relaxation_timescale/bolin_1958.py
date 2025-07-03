@@ -13,3 +13,7 @@ class Bolin1958:  # pylint: disable=too-few-public-methods
     @staticmethod
     def tau(const, dm_dt_over_m):
         return 1 / (const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 * dm_dt_over_m)
+
+    @staticmethod
+    def bolin_number(const):
+        return const.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
