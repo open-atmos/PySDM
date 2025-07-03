@@ -117,7 +117,7 @@ class TestDiffusionIceCapacity:
         ),
     )
     def test_prolate_ellipsoid_formula(mass):
-        """TODO #1643"""
+        """TODO #1670"""
         # arrange
         formulae = Formulae(
             diffusion_ice_capacity="Columnar",
