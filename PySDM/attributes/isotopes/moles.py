@@ -45,24 +45,15 @@ class Helper(DerivedAttribute):
 class MolesLightWater(Helper):
     def __init__(self, builder):
         const = builder.formulae.constants
-        M_H2O = 2 * const.M_1H + const.M_16O
         super().__init__(
             builder=builder,
             name="moles light water",
             attrs_to_multiplier={
-                builder.get_attribute("moles_2H"): -(
-                    const.M_1H * const.M_2H + const.M_16O
-                )
-                / M_H2O,
-                builder.get_attribute("moles_3H"): -(
-                    const.M_1H * const.M_3H + const.M_16O
-                )
-                / M_H2O,
-                builder.get_attribute("moles_17O"): -(2 * const.M_1H + const.M_17O)
-                / M_H2O,
-                builder.get_attribute("moles_18O"): -(2 * const.M_1H + const.M_18O)
-                / M_H2O,
-                builder.get_attribute("signed water mass"): 1 / M_H2O,
+                builder.get_attribute("moles_2H"): -const.M_2H_1H_16O / const.M_1H2_16O,
+                builder.get_attribute("moles_3H"): -const.M_3H_1H_16O / const.M_1H2_16O,
+                builder.get_attribute("moles_17O"): -const.M_1H2_17O / const.M_1H2_16O,
+                builder.get_attribute("moles_18O"): -const.M_1H2_18O / const.M_1H2_16O,
+                builder.get_attribute("signed water mass"): 1 / const.M_1H2_16O,
             },
         )
 

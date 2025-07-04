@@ -125,7 +125,9 @@ class TestIsotopicFractionation:
 
         # act
         particulator.attributes["diffusional growth mass change"].data[:] = 0
-        particulator.dynamics["IsotopicFractionation"]()
+        particulator.dynamics[
+            "IsotopicFractionation"
+        ]()  # TODO: call condensation as well!
 
         # assert
         assert (

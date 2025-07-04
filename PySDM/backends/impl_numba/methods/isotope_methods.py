@@ -26,7 +26,6 @@ class IsotopeMethods(BackendMethods):
 
     @cached_property
     def _isotopic_fractionation_body(self):
-        molar_mass_light = self.formulae.constants.M_1H2_16O
 
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
         def body(
@@ -34,7 +33,7 @@ class IsotopeMethods(BackendMethods):
             multiplicity,
             dm_total,
             bolin_number,
-            moles_light,
+            signed_water_mass,
             moles_heavy,
             molar_mass_heavy,
             ambient_isotope_mixing_ratio,
@@ -42,33 +41,28 @@ class IsotopeMethods(BackendMethods):
             cell_volume,
             dry_air_density,
         ):
-            # input:
-            #   tau_heavy (ignoring population/curvature effects)
-            #   tau_light (ditto!)
+            # assume Bo = tau' / tau_total
+            #           = (m'/dm') / (m/dm)
+            #           = m'/m * dm/dm'
+            # input (per droplet:
+            #   Bo (discarding curvature/population effects)
             #   dm_total (actual - incl. population/curvature effects)
             # output:
-            #   dm_heavy = dm_total * tau_light / tau_heavy
-
-            # tau' = m'/dm' * dt
-            # tau = m/dm * dt
-            # dm'/dm = tau/tau' * m'/m
-
-            # dm' = dm * tau/tau' * m'/m
-            #            ^^^^^^^
-            #            Bolin's 1/c1
+            #   dm_heavy = dm_total / Bo * m'/m
 
             for sd_id in range(multiplicity.shape[0]):
-                moles_light = signed_water_mass[sd_id] / molar_mass_light
-                mass_ratio_heavy_to_light = (moles_heavy[sd_id] * molar_mass_heavy) / (
-                    moles_light * molar_mass_light
+                mass_ratio_heavy_to_total = (
+                    moles_heavy[sd_id] * molar_mass_heavy
+                ) / signed_water_mass[sd_id]
+                dm_heavy = (
+                    dm_total[sd_id] / bolin_number[sd_id] * mass_ratio_heavy_to_total
                 )
-                dm_heavy_approx = (
-                    dm_total[sd_id] / bolin_number * mass_ratio_heavy_to_light
-                )
-                moles_heavy[sd_id] += dm_heavy_approx / molar_mass_heavy
-                mass_of_dry_air = dry_air_density[cell_id[sd_id]] * cell_volume
+                moles_heavy[sd_id] += dm_heavy / molar_mass_heavy
+                mass_of_dry_air = (
+                    dry_air_density[cell_id[sd_id]] * cell_volume
+                )  # TODO: pass from outside
                 ambient_isotope_mixing_ratio[cell_id[sd_id]] -= (
-                    dm_heavy_approx * multiplicity[sd_id] / mass_of_dry_air
+                    dm_heavy * multiplicity[sd_id] / mass_of_dry_air
                 )
 
         return body

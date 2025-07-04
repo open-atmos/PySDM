@@ -451,9 +451,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                         "18O": "M_1H2_18O",
                     }[isotope],
                 ),
-                dm_total=self.attributes[
-                    f"diffusional growth mass change"
-                ],  # TODO: total vs. heavy
+                dm_total=self.attributes["diffusional growth mass change"],
                 bolin_number=self.attributes[f"Bolin number for {isotope}"],
                 signed_water_mass=self.attributes["signed water mass"],
                 multiplicity=self.attributes["multiplicity"],
