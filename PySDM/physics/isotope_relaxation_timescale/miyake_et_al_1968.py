@@ -24,5 +24,7 @@ class MiyakeEtAl1968:  # pylint:disable=too-few-public-methods
         return (radius**2 * alpha * const.rho_w) / (3 * rho_s * D)
 
     @staticmethod
-    def bolin_number(const, moles_heavy_isotope, relative_humidity, molar_mass):
+    def bolin_number(
+        const, moles_heavy_isotope, relative_humidity, molar_mass
+    ):  # pylint: disable=unused-argument
         return 44.0
