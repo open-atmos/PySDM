@@ -33,7 +33,7 @@ class IsotopeMethods(BackendMethods):
             *,
             multiplicity,
             dm_total,
-            bolins_number,
+            bolin_number,
             moles_light,
             moles_heavy,
             molar_mass_heavy,
@@ -63,7 +63,7 @@ class IsotopeMethods(BackendMethods):
                     moles_light * molar_mass_light
                 )
                 dm_heavy_approx = (
-                    dm_total[sd_id] / bolins_number * mass_ratio_heavy_to_light
+                    dm_total[sd_id] / bolin_number * mass_ratio_heavy_to_light
                 )
                 moles_heavy[sd_id] += dm_heavy_approx / molar_mass_heavy
                 mass_of_dry_air = dry_air_density[cell_id[sd_id]] * cell_volume
@@ -101,13 +101,13 @@ class IsotopeMethods(BackendMethods):
         )
 
     @cached_property
-    def _bolins_number_body(self):
+    def _bolin_number_body(self):
         ff = self.formulae_flattened
 
         @numba.njit(**self.default_jit_flags)
         def body(output, molar_mass, cell_id, moles_heavy_isotope, relative_humidity):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-                output[i] = ff.isotope_relaxation_timescale__bolins_number(
+                output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     moles_heavy_isotope=moles_heavy_isotope[i],
                     relative_humidity=relative_humidity[cell_id[i]],
                     molar_mass=molar_mass,

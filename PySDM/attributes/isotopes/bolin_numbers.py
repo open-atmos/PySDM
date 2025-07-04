@@ -1,5 +1,5 @@
 """
-# TODO: define Bolin's number
+# TODO: define Bolin number
 # TODO: consider positive/negative values?
 # TODO: comment on total vs. light approximation
 """
@@ -28,14 +28,14 @@ class BolinNumberImpl(DerivedAttribute):
         )
 
 
-def make_bolins_number_factory(heavy_isotope: str):
+def make_bolin_number_factory(heavy_isotope: str):
     def _factory(builder):
-        return BolinsNumberImpl(builder, heavy_isotope=heavy_isotope)
+        return BolinNumberImpl(builder, heavy_isotope=heavy_isotope)
 
     return _factory
 
 
 for heavy_isotope in HEAVY_ISOTOPES:
-    register_attribute(name=f"Bolin's number for {heavy_isotope}")(
-        make_bolins_number_factory(heavy_isotope)
+    register_attribute(name=f"Bolin number for {heavy_isotope}")(
+        make_bolin_number_factory(heavy_isotope)
     )

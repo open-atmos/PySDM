@@ -467,8 +467,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             )
             self.attributes.mark_updated(f"moles_{isotope}")
 
-    def bolins_number(self, *, output, molar_mass, moles_heavy_isotope):
-        self.backend.bolins_number(
+    def bolin_number(self, *, output, molar_mass, moles_heavy_isotope):
+        self.backend.bolin_number(
             output=output,
             molar_mass=molar_mass,
             cell_id=self.attributes["cell id"],

@@ -120,7 +120,7 @@ class TestIsotopes:
         ),
     )  # TODO: check sign!
     @pytest.mark.parametrize("variant", ("MiyakeEtAl1968",))
-    def test_bolins_number_attribute(
+    def test_bolin_number_attribute(
         backend_class,
         heavy_isotope: str,
         moles_heavy_isotope: float,
@@ -140,7 +140,7 @@ class TestIsotopes:
             ),
             environment=Box(dt=np.nan, dv=np.nan),
         )
-        attribute_name = f"Bolin's number for {heavy_isotope}"
+        attribute_name = f"Bolin number for {heavy_isotope}"
         builder.request_attribute(attribute_name)
         particulator = builder.build(
             attributes={
