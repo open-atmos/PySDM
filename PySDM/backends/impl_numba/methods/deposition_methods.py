@@ -5,7 +5,6 @@
 from functools import cached_property
 import numba
 import numpy as np
-from PyMPDATA_examples.Shipway_and_Hill_2012.formulae import rho_d
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
@@ -18,7 +17,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         formulae = self.formulae_flattened
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
-        def calc_saturation_ratio_ice_and_temperature(
+        def calc_saturation_ratio_ice_temperature_and_pressure(
             vapour_mixing_ratio, dry_air_potential_temperature, dry_air_density
         ):
             temperature = formulae.state_variable_triplet__T(
@@ -38,7 +37,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 vapour_partial_pressure
                 / formulae.saturation_vapour_pressure__pvs_ice(temperature)
             )
-            return saturation_ratio_ice, temperature
+            return saturation_ratio_ice, temperature, total_pressure
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def mass_deposition_rate_per_droplet(
@@ -124,6 +123,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             # to be modified
             predicted_vapour_mixing_ratio,
             predicted_dry_potential_temperature,
+            predicted_dry_air_density,
         ):
             """simplest adaptivity:
             - no physical tolerance - just checking if ambient vapour is positive
@@ -143,6 +143,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             n_sd = len(signed_water_mass)
             n_substeps = 1
 
+            # 1/dt * (post-ambient-thermodynamics & post-condensation rv/thd - previous end-of-timestep rv/thd)
             rv_tendency = (
                 predicted_vapour_mixing_ratio[cid] - current_vapour_mixing_ratio[cid]
             ) / time_step
@@ -150,25 +151,36 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 predicted_dry_potential_temperature[cid]
                 - current_dry_potential_temperature[cid]
             ) / time_step
-            rho_d = current_dry_air_density[cid]
+            rhod_tendency = (
+                predicted_dry_air_density[cid] - current_dry_air_density[cid]
+            ) / time_step
 
             if adaptive:
                 n_substeps = 1 / multiplier
                 delta_rh_long = np.nan
                 while True:
                     sub_time_step = time_step / n_substeps
-                    saturation_ratio_ice, temperature = (
-                        calc_saturation_ratio_ice_and_temperature(
-                            vapour_mixing_ratio=current_vapour_mixing_ratio[cid]
-                            + rv_tendency * sub_time_step,
-                            dry_air_potential_temperature=current_dry_potential_temperature[
-                                cid
-                            ]
-                            + thd_tendency * sub_time_step,
-                            dry_air_density=rho_d,
+
+                    rhod = (
+                        current_dry_air_density[cid]
+                        + rhod_tendency * (0.5 if midpoint else 1) * sub_time_step
+                    )
+                    rv = (
+                        current_vapour_mixing_ratio[cid]
+                        + rv_tendency * (0.5 if midpoint else 1) * sub_time_step
+                    )
+                    thd = (
+                        current_dry_potential_temperature[cid]
+                        + thd_tendency * (0.5 if midpoint else 1) * sub_time_step
+                    )
+
+                    saturation_ratio_ice, temperature, total_pressure = (
+                        calc_saturation_ratio_ice_temperature_and_pressure(
+                            vapour_mixing_ratio=rv,
+                            dry_air_potential_temperature=thd,
+                            dry_air_density=rhod,
                         )
                     )
-                    rv = current_vapour_mixing_ratio[cid]
                     for i in range(n_sd):
                         if not formulae.trivia__unfrozen(signed_water_mass[i]):
 
@@ -178,11 +190,11 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
                             mass_deposition_rate = mass_deposition_rate_per_droplet(
                                 temperature=temperature,
-                                rho_d=rho_d,
+                                rho_d=rhod,
                                 signed_mass_old=signed_water_mass[i],
                                 latent_heat_sub=latent_heat_sub,
                                 saturation_ratio_ice=saturation_ratio_ice,
-                                pressure=current_total_pressure[cid],
+                                pressure=total_pressure,
                                 reynolds_number=reynolds_number[i],
                                 schmidt_number=schmidt_number[cid],
                             )
@@ -191,10 +203,10 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                                 -mass_deposition_rate
                                 * multiplicity[i]
                                 * sub_time_step
-                                / (cell_volume * rho_d)
+                                / (cell_volume * rhod)
                             )
                     delta_thd = formulae.state_variable_triplet__dthd_dt(
-                        rhod=rho_d,
+                        rhod=rhod,
                         thd=current_dry_potential_temperature[cid],
                         T=temperature,
                         d_water_vapour_mixing_ratio__dt=(
@@ -204,14 +216,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         lv=latent_heat_sub,
                     )
                     delta_rh_short = (
-                        calc_saturation_ratio_ice_and_temperature(
+                        calc_saturation_ratio_ice_temperature_and_pressure(
                             vapour_mixing_ratio=rv,
                             dry_air_potential_temperature=current_dry_potential_temperature[
                                 cid
                             ]
                             + thd_tendency * sub_time_step
                             + delta_thd,
-                            dry_air_density=rho_d,
+                            dry_air_density=rhod,
                         )[0]
                         - saturation_ratio_ice
                     )
@@ -229,18 +241,23 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     else:
                         break
             sub_time_step = time_step / n_substeps
+
             rv = current_vapour_mixing_ratio[cid]
             thd = current_dry_potential_temperature[cid]
+            rhod = current_dry_air_density[cid]
+
             print("n", n_substeps)
             for _ in range(int(n_substeps)):
                 # midpoint -> computer the sink with midpoint source
                 rv += sub_time_step * rv_tendency * (0.5 if midpoint else 1)
                 thd += sub_time_step * thd_tendency * (0.5 if midpoint else 1)
-                saturation_ratio_ice, temperature = (
-                    calc_saturation_ratio_ice_and_temperature(
+                rhod += sub_time_step * rhod_tendency * (0.5 if midpoint else 1)
+
+                saturation_ratio_ice, temperature, total_pressure = (
+                    calc_saturation_ratio_ice_temperature_and_pressure(
                         vapour_mixing_ratio=rv,
                         dry_air_potential_temperature=thd,
-                        dry_air_density=rho_d,
+                        dry_air_density=rhod,
                     )
                 )
                 for i in range(n_sd):
@@ -250,15 +267,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         latent_heat_sub = formulae.latent_heat_sublimation__ls(
                             temperature
                         )
-                        rho_d = current_dry_air_density[cid]
 
                         mass_deposition_rate = mass_deposition_rate_per_droplet(
                             temperature=temperature,
-                            rho_d=rho_d,
+                            rho_d=rhod,
                             signed_mass_old=signed_water_mass[i],
                             latent_heat_sub=latent_heat_sub,
                             saturation_ratio_ice=saturation_ratio_ice,
-                            pressure=current_total_pressure[cid],
+                            pressure=total_pressure,
                             reynolds_number=reynolds_number[i],
                             schmidt_number=schmidt_number[cid],
                         )
@@ -267,15 +283,17 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                             -mass_deposition_rate
                             * multiplicity[i]
                             * sub_time_step
-                            / (cell_volume * rho_d)
+                            / (
+                                cell_volume * rhod
+                            )  # TODO: mass of dry air should not change within timestep!
                         )
                         rv += delta_rv_i
                         assert rv >= 0
 
                         thd += (
                             formulae.state_variable_triplet__dthd_dt(
-                                rhod=current_dry_air_density[cid],
-                                thd=current_dry_potential_temperature[cid],
+                                rhod=rhod,
+                                thd=thd,
                                 T=temperature,
                                 d_water_vapour_mixing_ratio__dt=delta_rv_i
                                 / sub_time_step,
@@ -297,6 +315,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 if midpoint:
                     thd += sub_time_step * thd_tendency / 2
                     rv += sub_time_step * rv_tendency / 2
+                    rhod += sub_time_step * rhod_tendency / 2
             predicted_dry_potential_temperature[cid] = thd
             predicted_vapour_mixing_ratio[cid] = rv
 
@@ -319,6 +338,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         schmidt_number,
         predicted_vapour_mixing_ratio,
         predicted_dry_potential_temperature,
+        predicted_dry_air_density,
     ):
         self._deposition(
             adaptive=adaptive,
@@ -335,4 +355,5 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             schmidt_number=schmidt_number.data,
             predicted_vapour_mixing_ratio=predicted_vapour_mixing_ratio.data,
             predicted_dry_potential_temperature=predicted_dry_potential_temperature.data,
+            predicted_dry_air_density=predicted_dry_air_density.data,
         )

@@ -503,6 +503,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 "water_vapour_mixing_ratio"
             ),
             predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
+            predicted_dry_air_density=self.environment.get_predicted("rhod"),
         )
         self.attributes.mark_updated("signed water mass")
         # TODO #1524 - should we update here?
