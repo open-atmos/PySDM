@@ -72,7 +72,9 @@ def make_particulator(
     env["RH"] = A_VALUE_LARGER_THAN_ONE
     env["rhod"] = 1.0
 
-    builder.add_dynamic(Freezing(immersion_freezing=immersion_freezing_flag, thaw=thaw_flag))
+    builder.add_dynamic(
+        Freezing(immersion_freezing=immersion_freezing_flag, thaw=thaw_flag)
+    )
     builder.request_attribute("volume")
 
     return builder.build(
