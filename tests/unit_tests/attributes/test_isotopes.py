@@ -127,7 +127,7 @@ class TestIsotopes:
         relative_humidity: float,
         expected_tau: float,
         variant: str,
-    ):
+    ):  # pylint: disable=too-many-arguments
         if backend_class.__name__ != "Numba":
             pytest.skip("# TODO - isotopes on GPU")
 
