@@ -440,9 +440,39 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             )
 
     def isotopic_fractionation(self, heavy_isotopes: tuple):
-        self.backend.isotopic_fractionation()
         for isotope in heavy_isotopes:
+            self.backend.isotopic_fractionation(
+                molar_mass_heavy=getattr(
+                    self.formulae.constants,
+                    {
+                        "2H": "M_2H_1H_16O",
+                        "3H": "M_3H_1H_16O",
+                        "17O": "M_1H2_17O",
+                        "18O": "M_1H2_18O",
+                    }[isotope],
+                ),
+                dm_total=self.attributes["diffusional growth mass change"],
+                bolin_number=self.attributes[f"Bolin number for {isotope}"],
+                signed_water_mass=self.attributes["signed water mass"],
+                multiplicity=self.attributes["multiplicity"],
+                moles_heavy=self.attributes[f"moles_{isotope}"],
+                dry_air_density=self.environment["dry_air_density"],
+                cell_volume=self.environment.mesh.dv,
+                cell_id=self.attributes["cell id"],
+                ambient_isotope_mixing_ratio=self.environment[
+                    f"mixing_ratio_{isotope}"
+                ],
+            )
             self.attributes.mark_updated(f"moles_{isotope}")
+
+    def bolin_number(self, *, output, molar_mass, moles_heavy_isotope):
+        self.backend.bolin_number(
+            output=output,
+            molar_mass=molar_mass,
+            cell_id=self.attributes["cell id"],
+            moles_heavy_isotope=moles_heavy_isotope,
+            relative_humidity=self.environment["RH"],
+        )
 
     def seeding(
         self,
