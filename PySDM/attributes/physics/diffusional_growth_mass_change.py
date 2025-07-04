@@ -4,10 +4,18 @@ from PySDM.attributes.impl import register_attribute, DerivedAttribute
 @register_attribute()
 class DiffusionalGrowthMassChange(DerivedAttribute):
     def __init__(self, builder):
-        attr = builder.get_attribute("water mass")
+        self.water_mass = builder.get_attribute("water mass")
         super().__init__(
-            builder, name="diffusional growth mass change", dependencies=(attr,)
+            builder,
+            name="diffusional growth mass change",
+            dependencies=(self.water_mass,),
         )
+        builder.particulator.observers.append(self)
+        assert "Collision" not in builder.particulator.dynamics
+        self.notify()
+
+    def notify(self):
+        self.data[:] = -self.water_mass.data
 
     def recalculate(self):
-        pass  # TODO
+        self.data[:] += self.water_mass.data
