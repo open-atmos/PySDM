@@ -55,47 +55,45 @@ jobs:
         run: pytest  ${{ env.pytest_options }} -k "not test_run_notebooks" tests/devops_tests
 
 
-  url-check:
+  build:
     runs-on: ubuntu-24.04
     steps:
-    - name: URLs-checker
-      uses: urlstechie/urlchecker-action@master
-      with:
-        # A project to clone. If not provided, assumes already cloned in the present working directory.
-        git_path: https://github.com/urlstechie/URLs-checker-test-repo
+      - uses: actions/checkout@v4.1.6
+      - name: URLs-checker
+        uses: urlstechie/urlchecker-action@master
+        with:
+          # A subfolder or path to navigate to in the present or cloned repository
+          subfolder: docs
 
-        # A subfolder or path to navigate to in the present or cloned repository
-        subfolder: docs
+          # Delete the cloned repository after running URLchecked (default is false)
+          cleanup: true
 
-        # Delete the cloned repository after running URLchecked (default is false)
-        cleanup: true
+          # A comma-separated list of file types to cover in the URL checks
+          # file_types: .md,.py,.json
 
-        # A comma-separated list of file types to cover in the URL checks
-        # file_types: .md,.py,.json
+          # Choose whether to include file with no URLs in the prints.
+          print_all: false
 
-        # Choose whether to include file with no URLs in the prints.
-        print_all: false
+          # Choose whether to print a more verbose end summary with files and broken URLs.
+          verbose: true
 
-        # Choose whether to print a more verbose end summary with files and broken URLs.
-        verbose: true
+          # The timeout seconds to provide to requests, defaults to 5 seconds
+          timeout: 5
 
-        # The timeout seconds to provide to requests, defaults to 5 seconds
-        timeout: 5
+          # How many times to retry a failed request (each is logged, defaults to 1)
+          retry_count: 3
 
-        # How many times to retry a failed request (each is logged, defaults to 1)
-        retry_count: 3
+          # A comma separated links to exclude during URL checks
+          exclude_urls: https://github.com/SuperKogito/URLs-checker/issues/1,https://github.com/SuperKogito/URLs-checker/issues/2
 
-        # A comma separated links to exclude during URL checks
-        exclude_urls: https://github.com/SuperKogito/URLs-checker/issues/1,https://github.com/SuperKogito/URLs-checker/issues/2
+          # A comma separated patterns to exclude during URL checks
+          exclude_patterns: https://github.com/SuperKogito/Voice-based-gender-recognition/issues
 
-        # A comma separated patterns to exclude during URL checks
-        exclude_patterns: https://github.com/SuperKogito/Voice-based-gender-recognition/issues
+          # A comma separated list of file patterns (direct paths work as well) to exclude
+          # exclude_files: README.md,/github/workspace/_config.yml
 
-        # A comma separated list of file patterns (direct paths work as well) to exclude
-        # exclude_files: README.md,/github/workspace/_config.yml
+          # numbers of workers to run in parallel (defaults to 9 if unset)
+          # workers: 4
 
-        # numbers of workers to run in parallel (defaults to 9 if unset)
-        # workers: 4
-
-        # choose if the force pass or not
-        force_pass: true
+          # choose if the force pass or not
+          force_pass: true
