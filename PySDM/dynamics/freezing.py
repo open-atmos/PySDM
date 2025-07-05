@@ -16,15 +16,13 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
         homogeneous_freezing: Optional[str] = None,
         immersion_freezing: Optional[str] = None,
         thaw: Optional[str] = None,
-        # thaw=False,
     ):
-        assert homogeneous_freezing or immersion_freezing or thaw
-        for flag in (homogeneous_freezing, immersion_freezing, thaw):
-            assert flag is None or flag in (
-                "time-dependent",
-                "singular",
-                "instantaneous",
-            ), ""
+        assert (
+            homogeneous_freezing or immersion_freezing or thaw
+        ), "please enable one or more modes of operation"
+        for flag in (homogeneous_freezing, immersion_freezing):
+            assert flag is None or flag in ("time-dependent", "singular")
+        assert thaw is None or thaw is "instantaneous"
 
         self.homogeneous_freezing = homogeneous_freezing
         self.immersion_freezing = immersion_freezing
