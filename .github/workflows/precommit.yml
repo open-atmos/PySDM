@@ -72,10 +72,10 @@ jobs:
           retry_count: 3
 
           # A comma separated links to exclude during URL checks
-          exclude_urls: http://www.w3.org/1999/02/22-rdf-syntax-ns#, http://www.w3.org/2000/01/rdf-schema#, http://www.w3.org/2002/07/owl#, http://purl.org/dc/elements/1.1/> .
+          # exclude_urls: http://www.w3.org/1999/02/22-rdf-syntax-ns,http://www.w3.org/2000/01/rdf-schema#, http://www.w3.org/2002/07/owl#, http://purl.org/dc/elements/1.1/> .
 
           # A comma separated patterns to exclude during URL checks
-          # exclude_patterns: http://purl.org, http://www.w3.org
+          exclude_patterns: http://purl.org,http://www.w3.org
 
           # A comma separated list of file patterns (direct paths work as well) to exclude
           exclude_files: docs/generate_html.py
