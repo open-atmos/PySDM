@@ -17,7 +17,7 @@ on:
     paths-ignore: ['docs/**', '**.md', '**.yaml']
   pull_request:
     branches: [ main ]
-    paths-ignore: ['docs/**', '**.md']
+    paths-ignore: ['docs/**', '**.md', '**.yaml']
   schedule:
     - cron: '0 13 * * 4'
 
