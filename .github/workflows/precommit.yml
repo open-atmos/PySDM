@@ -64,9 +64,6 @@ jobs:
         # A project to clone. If not provided, assumes already cloned in the present working directory.
         git_path: https://github.com/urlstechie/URLs-checker-test-repo
 
-        # If a git_path is defined to clone, clone this branch (defaults to master)
-        branch: devel
-
         # A subfolder or path to navigate to in the present or cloned repository
         subfolder: docs
 
