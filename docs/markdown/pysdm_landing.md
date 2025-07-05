@@ -18,10 +18,11 @@ notebooks are maintained in the
 
 ## Note on physical units and dimensional analysis
 
-Throughout all PySDM codebase, all values are stored in SI units, and all physics formulae expect SI values as arguments.
+Throughout the entire PySDM codebase, all values are stored in **SI units**, and all physics formulae expect **SI values as arguments**.
 Otherwise, it is a bug - please report.
 
-Physical constants are initialised using the ``PySDH.physics.si`` object as follows:
+### Initialisation of physical constants
+Physical constants are initialised using the ``PySDM.physics.si`` object as follows:
 <details>
 <summary>Julia (click to expand)</summary>
 
@@ -58,15 +59,21 @@ pressure = 1000 * si.hPa
 vapour_mixing_ratio = 10 * si.g / si.kg
 ```
 </details>
-(note: the values of the above variables are 300, 100000 and .01, respectively)
 
-The one exception to the only-SI rule is when outputting simulation product data and plotting.
-This should then be always indicated in variable names,
-  e.g., `temperature_C` to use Celsius or `RH_percent` for percent values,
-  or `pressure_hPa` to use hectopascals.
+_Note: The actual numerical values of the above variables are `300`, `100000` and `.01`, respectively._
+
+### Output and plotting
+The one exception to the **only-SI** rule is when outputting simulation product data or plotting.
+In these cases, non-SI units should be always indicated in variable names,
+  e.g.:
+  - `temperature_C` for Celsius,
+  - `RH_percent` for percent values,
+  - `pressure_hPa` to use hectopascals.
+
 However, such conversions are best to be done
   on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`.
 
+### Dimensional Analysis
 By default, the `si` object contains bare multipliers corresponding to SI prefixes.
 For testing purposes, the [``DimensionalAnalysis``](https://open-atmos.github.io/PySDM/PySDM/physics/dimensional_analysis.html#DimensionalAnalysis)
 context manager can be used to inject an instance of [Pint](https://pint.readthedocs.io/)
