@@ -143,7 +143,7 @@ The `.pre-commit-config.yaml` file can be modified in case new hooks are to be a
   existing ones need to be altered.  
 
 Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki)
-  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOS).
+  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOs).
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).
