@@ -68,7 +68,10 @@
 
             <h2>Contents</h2>
             <ul>
-  <li><a href="#introduction">Introduction</a></li>
+  <li><a href="#introduction">Introduction</a>
+  <ul>
+    <li><a href="#note-on-physical-units-and-dimensional-analysis">Note on physical units and dimensional analysis</a></li>
+  </ul></li>
   <li><a href="#tutorials">Tutorials</a>
   <ul>
     <li><a href="#hello-world-coalescence-example-in-python-julia-and-matlab">Hello-world coalescence example in Python, Julia and Matlab</a></li>
@@ -129,6 +132,82 @@ More elaborate examples reproducing results from literature, engineered in Pytho
 notebooks are maintained in the
 <a href="https://open-atmos.github.io/PySDM/PySDM_examples">PySDM-examples package</a>.</p>
 
+<h2 id="note-on-physical-units-and-dimensional-analysis">Note on physical units and dimensional analysis</h2>
+
+<p>Throughout the entire PySDM codebase, all values are stored in <strong>SI units</strong>, and all physics formulae expect <strong>SI values as arguments</strong>.
+Otherwise, it is a bug - please report.</p>
+
+<h3 id="initialisation-of-physical-constants">Initialisation of physical constants</h3>
+
+<p>Physical constants are initialised using the <code>PySDM.physics.si</code> object as follows:
+<details>
+<summary>Julia (click to expand)</summary></p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span>
+<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;PyCall&quot;</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">PyCall</span>
+<span class="n">si</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/physics.html">PySDM.physics</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">si</span>
+
+<span class="n">temperature</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">300</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">.</span><span class="n">K</span>
+<span class="n">pressure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">.</span><span class="n">hPa</span>
+<span class="n">vapour_mixing_ratio</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="o">.</span><span class="n">g</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="o">.</span><span class="n">kg</span>
+</code></pre>
+</div>
+
+<p></details>
+<details>
+<summary>Matlab (click to expand)</summary></p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">si</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">py</span><span class="p">.</span><span class="n">importlib</span><span class="p">.</span><span class="n">import_module</span><span class="p">(</span><span class="s">&#39;<a href="PySDM/physics.html">PySDM.physics</a>&#39;</span><span class="p">).</span><span class="n">si</span><span class="p">;</span>
+
+<span class="n">temperature</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">300</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="p">.</span><span class="n">K</span><span class="p">;</span>
+<span class="n">pressure</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="p">.</span><span class="n">hPa</span><span class="p">;</span>
+<span class="n">vapour_mixing_ratio</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">si</span><span class="p">.</span><span class="n">g</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">si</span><span class="p">.</span><span class="n">kg</span><span class="p">;</span>
+</code></pre>
+</div>
+
+<p></details>
+<details open>
+<summary>Python (click to expand)</summary></p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="PySDM/physics.html">PySDM.physics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
+
+<span class="n">temperature</span> <span class="o">=</span> <span class="mi">300</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">K</span>
+<span class="n">pressure</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">hPa</span>
+<span class="n">vapour_mixing_ratio</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">si</span><span class="o">.</span><span class="n">g</span> <span class="o">/</span> <span class="n">si</span><span class="o">.</span><span class="n">kg</span>
+</code></pre>
+</div>
+
+<p></details></p>
+
+<p>_Note: The actual numerical values of the above variables are <code>300</code>, <code>100000</code> and <code>.01</code>, respectively._</p>
+
+<h3 id="output-and-plotting">Output and plotting</h3>
+
+<p>The one exception to the <strong>only-SI</strong> rule is when outputting simulation product data or plotting.
+In these cases, non-SI units should be always indicated in variable names,
+  e.g.:</p>
+
+<ul>
+<li><code>temperature_C</code> for Celsius,</li>
+<li><code>RH_percent</code> for percent values,</li>
+<li><code>pressure_hPa</code> to use hectopascals.</li>
+</ul>
+
+<p>However, such conversions are best to be done
+  on-the-fly avoiding storage of non-SI values in variables (e.g., <code>plot(pressure / si.hPa)</code>.</p>
+
+<h3 id="dimensional-analysis">Dimensional Analysis</h3>
+
+<p>By default, the <code>si</code> object contains bare multipliers corresponding to SI prefixes.
+For testing purposes, the <a href="https://open-atmos.github.io/PySDM/PySDM/physics/dimensional_analysis.html#DimensionalAnalysis"><code>DimensionalAnalysis</code></a>
+context manager can be used to inject an instance of <a href="https://pint.readthedocs.io/">Pint</a>
+unit registry as <code>si</code>, thus enabling dimensional analysis of PySDM codebase.
+For an example, see the <a href="https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/_HOWTOs/dimensional_analysis.ipynb">dimensional analysis HOWTO</a>.</p>
+
 <h1 id="tutorials">Tutorials</h1>
 
 <h2 id="hello-world-coalescence-example-in-python-julia-and-matlab">Hello-world coalescence example in Python, Julia and Matlab</h2>
@@ -144,13 +223,9 @@ It is a <a href="https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/co
 <summary>Julia (click to expand)</summary></p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;PyCall&quot;</span><span class="p">)</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;Plots&quot;</span><span class="p">)</span>
+<pre><span></span><code><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;Plots&quot;</span><span class="p">)</span>
 <span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;PlotlyJS&quot;</span><span class="p">)</span>
 
-<span class="k">using</span><span class="w"> </span><span class="n">PyCall</span>
-<span class="n">si</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/physics.html">PySDM.physics</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">si</span>
 <span class="n">ConstantMultiplicity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/initialisation/sampling/spectral_sampling.html">PySDM.initialisation.sampling.spectral_sampling</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ConstantMultiplicity</span>
 <span class="n">Exponential</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/initialisation/spectra.html">PySDM.initialisation.spectra</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">Exponential</span>
 
@@ -185,8 +260,7 @@ It is a <a href="https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/co
 <summary>Python (click to expand)</summary></p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="PySDM/physics.html">PySDM.physics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">si</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="PySDM/initialisation/sampling/spectral_sampling.html">PySDM.initialisation.sampling.spectral_sampling</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstantMultiplicity</span>
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="PySDM/initialisation/sampling/spectral_sampling.html">PySDM.initialisation.sampling.spectral_sampling</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstantMultiplicity</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn"><a href="PySDM/initialisation/spectra/exponential.html">PySDM.initialisation.spectra.exponential</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">Exponential</span>
 
 <span class="n">n_sd</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">**</span> <span class="mi">15</span>
