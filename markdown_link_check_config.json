@@ -1,7 +1,0 @@
-{
-  "ignorePatterns": [
-    { "pattern": "^https?://doi\\.org/10\\.1002/qj\\.441$" },
-    { "pattern": "^https?://doi\\.org/10\\.1002/qj\\.1913$" },
-    { "pattern": "^https?://doi\\.org/10\\.1002/fld\\.1071" }
-  ]
-}

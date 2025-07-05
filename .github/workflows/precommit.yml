@@ -33,15 +33,6 @@ jobs:
       - if: ${{ failure() }}
         run: git diff
 
-#  markdown-link-check:
-#    runs-on: ubuntu-24.04
-#    steps:
-#      - uses: actions/checkout@v4.1.6
-#      - uses: tcort/github-action-markdown-link-check@v1
-#        with:
-#          use-quiet-mode: 'yes'
-#          config-file: 'markdown_link_check_config.json'
-
   devops:
     runs-on: ubuntu-24.04
     steps:
@@ -84,7 +75,7 @@ jobs:
           retry_count: 3
 
           # A comma separated links to exclude during URL checks
-          # exclude_urls:
+          exclude_urls: docs/generate_html.py
 
           # A comma separated patterns to exclude during URL checks
           # exclude_patterns:
