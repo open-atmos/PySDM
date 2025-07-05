@@ -36,8 +36,8 @@ jobs:
   markdown-link-check:
     runs-on: ubuntu-24.04
     steps:
-    - uses: actions/checkout@v4.1.6
-    - uses: https://github.com/tcort/markdown-link-check@v3.13.7
+      - uses: actions/checkout@v4.1.6
+      - uses: tcort/github-action-markdown-link-check@v1
 
   devops:
     runs-on: ubuntu-24.04
