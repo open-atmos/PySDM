@@ -14,10 +14,10 @@ env:
 on:
   push:
     branches: [ main ]
-    paths-ignore: ['docs/**', '**.md', '**.yaml', '**.yml']
+    paths-ignore: ['docs/**', '**.md']
   pull_request:
     branches: [ main ]
-    paths-ignore: ['docs/**', '**.md', '**.yaml', '**.yml']
+    paths-ignore: ['docs/**', '**.md']
   schedule:
     - cron: '0 13 * * 4'
 
