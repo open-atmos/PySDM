@@ -301,7 +301,7 @@ The SDM algorithm implementations are part of the following open-source packages
    - `Pencil Code` in Fortran, [@Pencil_2021];
    - `NTLP` in Fortran, [@Richter_et_al_2021].
    - `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia    
-      (\url{https://github.com/darothen/superdroplet});
+      (https://github.com/darothen/superdroplet);
 
 A list of links directing to SDM-related files within the above projects' repositories
   is included in the `PySDM` README file.

@@ -1,5 +1,5 @@
 """
-https://github.com/KatanaGraph/katana/blob/master/python/katana/numba_support/numpy_atomic.py
+https://github.com/KatanaGraph/katana/blob/master/python/katana/native_interfacing/numpy_atomic.py
 """
 
 from numba import types
