@@ -75,13 +75,10 @@ jobs:
           retry_count: 3
 
           # A comma separated links to exclude during URL checks
-          exclude_urls: docs/generate_html.py
+          # exclude_urls:
 
           # A comma separated patterns to exclude during URL checks
           # exclude_patterns:
 
           # A comma separated list of file patterns (direct paths work as well) to exclude
-          # exclude_files: README.md,/github/workspace/_config.yml
-
-          # numbers of workers to run in parallel (defaults to 9 if unset)
-          # workers: 4
+          exclude_files: docs/generate_html.py
