@@ -1,4 +1,4 @@
-name: precommit and devops tests
+name: precommit, url-check and devops tests
 
 defaults:
   run:
@@ -38,6 +38,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: tcort/github-action-markdown-link-check@v1
+        with:
+          config-file: 'markdown_link_check_config.json'
 
   devops:
     runs-on: ubuntu-24.04
