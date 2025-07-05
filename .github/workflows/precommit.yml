@@ -69,7 +69,7 @@ jobs:
           cleanup: true
 
           # A comma-separated list of file types to cover in the URL checks
-          # file_types: .md,.py,.json
+          file_types: .md,.py,.json,.ipynb,.yaml,.yml
 
           # Choose whether to include file with no URLs in the prints.
           print_all: false
