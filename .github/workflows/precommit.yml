@@ -78,4 +78,4 @@ jobs:
           exclude_patterns: http://purl.org,http://www.w3.org
 
           # A comma separated list of file patterns (direct paths work as well) to exclude
-          exclude_files: docs/generate_html.py
+          exclude_files: docs/generate_html.py,.github/workflows/precommit.yml
