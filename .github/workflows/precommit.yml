@@ -72,7 +72,7 @@ jobs:
           retry_count: 3
 
           # A comma separated links to exclude during URL checks
-          exclude_urls: https://open-atmos.github.io/PySDM/\2/\3.html
+          exclude_urls: https://www.gnu.org/licenses/gpl-3.0.html,https://open-atmos.github.io/PySDM/\2/\3.html
 
           # A comma separated patterns to exclude during URL checks
           exclude_patterns: http://purl.org,http://www.w3.org
