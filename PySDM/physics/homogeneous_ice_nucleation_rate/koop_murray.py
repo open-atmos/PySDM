@@ -7,7 +7,7 @@ at water saturation
 import numpy as np
 
 
-class KoopMurray2016:  # pylint: disable=too-few-public-methods
+class KoopMurray2016:
     def __init__(self, const):
         pass
 

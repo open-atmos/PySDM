@@ -90,7 +90,6 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
-# mass and heat accommodation coefficients for condensation
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
@@ -98,13 +97,16 @@ HAC = 1.0
 """ thermal accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
 
-# mass and heat accommodation coefficients for vapour deposition on ice
 MAC_ice = 0.5
 """ mass accommodation coefficient for vapour deposition as recommended in
 [Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
-HAC_ice = 0.7
+HAC_ice = 1.0
 """ thermal accommodation coefficient for vapour deposition as recommended in
 [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
+
+C_cunn = 0.7
+""" Cunningham correction factor as used in
+[Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
 
 ARM_C1 = 6.1094 * si.hectopascal
 """ [August](https://doi.org/10.1002/andp.18280890511) Roche Magnus formula coefficients
@@ -527,6 +529,28 @@ CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 """ 〃 """
 
+capacity_columnar_ice_B1 = 0.3
+""" eq. A11 & A12 in [Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)  """
+capacity_columnar_ice_B2 = 0.43
+""" 〃 """
+capacity_columnar_ice_A1 = 0.015755 * si.m / si.kg**capacity_columnar_ice_B1
+""" 〃 """
+capacity_columnar_ice_A2 = 0.33565 * si.m / si.kg**capacity_columnar_ice_B2
+""" 〃 """
+
+columnar_ice_mass_transition = 2.146e-13 * si.kg
+""" tab. 1 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
+columnar_ice_length_beta_1 = 3.0
+""" 〃 """
+columnar_ice_length_beta_2 = 2.2
+""" 〃 """
+columnar_ice_length_alpha_1 = 526.1 * si.kg / si.m**columnar_ice_length_beta_1
+""" 〃 """
+columnar_ice_length_alpha_2 = 0.04142 * si.kg / si.m**columnar_ice_length_beta_2
+""" 〃 """
+columnar_bulk_ice_density = 0.81e3 * si.kg / si.m**3
+""" 〃 """
+
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 """ [Bohren 1987](https://doi.org/10.1119/1.15109) """
 
@@ -675,7 +699,7 @@ bulk_phase_partitioning_exponent = np.nan
 
 BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 = np.nan * si.dimensionless
 """
-Coefficient c1 used in [Bolin 1958](https://https://digitallibrary.un.org/record/3892725)
+Coefficient c1 used in [Bolin 1958](https://digitallibrary.un.org/record/3892725)
 for the falling drop evaporation timescale of equilibration with ambient air void of a given
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).
