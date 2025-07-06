@@ -58,14 +58,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
 
             pvs_ice = formulae.saturation_vapour_pressure__pvs_ice(temperature)
 
-            capacity = formulae.diffusion_ice_capacity__capacity(diameter)
+            capacity = formulae.diffusion_ice_capacity__capacity(abs(signed_mass_old))
 
-            mass_ventilation_factor = formulae.ventilation__ventilation_coefficient(
-                sqrt_re_times_cbrt_sc=formulae.trivia__sqrt_re_times_cbrt_sc(
-                    Re=reynolds_number,
-                    Sc=schmidt_number,
-                )
-            )
+            mass_ventilation_factor = 1  # TODO #1655
             heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
 
             Dv_const = formulae.diffusion_thermics__D(temperature, pressure)

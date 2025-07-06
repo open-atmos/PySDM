@@ -25,28 +25,37 @@ def test_unit_and_magnitude(paper, iso):
         formulae = Formulae(
             isotope_relaxation_timescale=paper,
             isotope_equilibrium_fractionation_factors="HoritaAndWesolowski1994",
+            isotope_diffusivity_ratios="HellmannAndHarvey2020",
         )
         const = formulae.constants
         temperature = 300 * si.K
-        M_iso = (
-            getattr(const, f"M_{iso}")
-            + const.M_1H
-            + (const.M_1H if iso[-1] == "O" else const.M_16O)
+        D = const.D0
+        D_iso = (
+            getattr(formulae.isotope_diffusivity_ratios, f"ratio_{iso}_heavy_to_light")(
+                temperature
+            )
+            * D
         )
-        sut = formulae.isotope_relaxation_timescale.tau
-        alpha_iso = getattr(
-            formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{iso}"
-        )(temperature)
-        e_s = formulae.saturation_vapour_pressure.pvs_water(temperature)
-        radius = 0.1 * si.mm
-        vent_coeff = 1.01
+        vent_coeff = 1
 
         # act
-        result = sut(e_s, const.D0, M_iso, vent_coeff, radius, alpha_iso, temperature)
+        result = formulae.isotope_relaxation_timescale.tau(
+            rho_s=const.rho_w,
+            radius=0.1 * si.mm,
+            D_iso=vent_coeff * D_iso,
+            D=D,
+            S=1.01,
+            R_liq=getattr(const, f"VSMOW_R_{iso}"),
+            alpha=getattr(
+                formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{iso}"
+            )(temperature),
+            R_vap=getattr(const, f"VSMOW_R_{iso}"),
+            Fk=formulae.drop_growth.Fk(T=const.T_tri, K=const.K0, lv=const.l_tri),
+        )
 
         # assert
         assert result.check("[time]")
-        assert 1 * si.s < result < 10 * si.s
+        assert 0 * si.s < result.to_base_units() < 10 * si.s
 
 
 def test_bolin_tritium_formula_unit():
@@ -57,10 +66,10 @@ def test_bolin_tritium_formula_unit():
             isotope_relaxation_timescale="Bolin1958",
             constants={"BOLIN_ISOTOPE_TIMESCALE_COEFF_C1": 1 * si.dimensionless},
         )
-        sut = formulae.isotope_relaxation_timescale.tau
+        tau = formulae.isotope_relaxation_timescale.tau
 
         # act
-        result = sut(radius=si.um, r_dr_dt=si.um**2 / si.s)
+        sut = tau(dm_dt_over_m=1 / si.s)
 
         # assert
-        assert result.check("[time]")
+        assert sut.check("[time]")
