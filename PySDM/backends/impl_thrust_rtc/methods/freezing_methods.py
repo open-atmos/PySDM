@@ -258,7 +258,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         relative_humidity_ice,
     ):
         n_sd = len(attributes.signed_water_mass)
-        self.homogeneous_reezing_time_dependent_body.launch_n(
+        self.homogeneous_freezing_time_dependent_body.launch_n(
             n=n_sd,
             args=(
                 rand.data,
