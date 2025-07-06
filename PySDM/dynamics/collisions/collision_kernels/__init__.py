@@ -1,9 +1,9 @@
 """
 Collision kernels including
-[Golovin](https://open-atmos.github.io/PySDM/physics/collisions/kernels/golovin.html),
-[Geometric](https://open-atmos.github.io/PySDM/physics/collisions/kernels/geometric.html)
+[Golovin](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/golovin.html),
+[Geometric](https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels/geometric.html)
 and other...
-"""
+"""  # pylint: disable=line-too-long
 
 from .constantK import ConstantK
 from .electric import Electric

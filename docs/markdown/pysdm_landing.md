@@ -368,7 +368,7 @@ initial humidity.
 Subsequent particle growth due to [`Condensation`](https://open-atmos.github.io/PySDM/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
 causes a subset of particles to activate into cloud droplets.
 Results of the simulation are plotted against vertical
-[`ParcelDisplacement`](https://open-atmos.github.io/PySDM/PySDM/products/housekeeping/parcel_displacement.html)
+[`ParcelDisplacement`](https://open-atmos.github.io/PySDM/PySDM/products/parcel/parcel_displacement.html)
 and depict the evolution of
 [`PeakSaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_saturation.html),
 [`EffectiveRadius`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/effective_radius.html),
@@ -724,7 +724,7 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - Pencil Code (Fortran):
   https://github.com/pencil-code/pencil-code/blob/master/src/particles_coagulation.f90
 - PALM LES (Fortran):
-  https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90
+  https://gitlab.palm-model.org/releases/palm_model_system/-/blob/master/packages/palm/model/src/lagrangian_particle_model_mod.f90
 - libcloudph++ (C++):
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
 - LCM1D (Python)
