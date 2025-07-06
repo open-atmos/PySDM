@@ -170,6 +170,7 @@ jobs:
         run: |
           python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
           python -m pip install -e . -e ./examples
+          python -m pip install pytest-timeout
           python -m pip install -r tests/devops_tests/requirements.txt
       - if: steps.cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -186,7 +187,7 @@ jobs:
         test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 35
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -245,7 +246,7 @@ jobs:
         run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
         
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
