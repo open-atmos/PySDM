@@ -166,7 +166,7 @@ class TestDropletFreezing:
 
     @staticmethod
     @pytest.mark.parametrize("temperature", (238 * si.kelvin, 232 * si.kelvin))
-    def test_homogeneous_freezing_singular(
+    def test_homogeneous_freezing_threshold(
         backend_class, temperature
     ):  # pylint disable=too-many-locals
         # arrange
@@ -181,7 +181,7 @@ class TestDropletFreezing:
             backend=backend_class(formulae=formulae),
             environment=Box(dt=1 * si.s, dv=dv),
         )
-        builder.add_dynamic(Freezing(homogeneous_freezing="singular"))
+        builder.add_dynamic(Freezing(homogeneous_freezing="threshold"))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
             "signed water mass": np.full(n_sd, water_mass),
@@ -194,7 +194,7 @@ class TestDropletFreezing:
         particulator.environment["T"] = temperature
         particulator.environment["RH"] = 1.0001
         particulator.environment["RH_ice"] = 1.5
-        T_hom = formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
+        T_hom = formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD
 
         # act
         particulator.run(steps=1)

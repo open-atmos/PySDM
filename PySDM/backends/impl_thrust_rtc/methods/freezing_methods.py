@@ -13,7 +13,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class FreezingMethods(ThrustRTCBackendMethods):
     @cached_property
-    def freeze_time_dependent_body(self):
+    def immersion_freezing_time_dependent_body(self):
         return trtc.For(
             param_names=(
                 "rand",
@@ -50,7 +50,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def freeze_singular_body(self):
+    def immersion_freezing_singular_body(self):
         return trtc.For(
             param_names=(
                 "freezing_temperature",
@@ -99,7 +99,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def freeze_singular_homogeneous_body(self):
+    def homogeneous_freezing_threshold_body(self):
         return trtc.For(
             param_names=(
                 "signed_water_mass",
@@ -113,7 +113,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     {self.formulae.trivia.unfrozen_and_ice_saturated.c_inline(
                         signed_water_mass="signed_water_mass[i]",
                         relative_humidity_ice="relative_humidity_ice[cell[i]]"
-                    )} && temperature[cell[i]] <= {self.formulae.constants.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD}
+                    )} && temperature[cell[i]] <= {self.formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD}
                 ) {{
                     signed_water_mass[i] = -1 * signed_water_mass[i];
                 }}
@@ -123,7 +123,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @cached_property
-    def freeze_time_dependent_homogeneous_body(self):
+    def homogeneous_freezing_time_dependent_body(self):
         return trtc.For(
             param_names=(
                 "rand",
@@ -167,9 +167,11 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def freeze_singular(self, *, attributes, temperature, relative_humidity, cell):
+    def immersion_freezing_singular(
+        self, *, attributes, temperature, relative_humidity, cell
+    ):
         n_sd = len(attributes.freezing_temperature)
-        self.freeze_singular_body.launch_n(
+        self.immersion_freezing_singular_body.launch_n(
             n=n_sd,
             args=(
                 attributes.freezing_temperature.data,
@@ -181,7 +183,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def freeze_time_dependent(  # pylint: disable=unused-argument
+    def immersion_freezing_time_dependent(  # pylint: disable=unused-argument
         self,
         *,
         rand,
@@ -192,7 +194,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         relative_humidity,
     ):
         n_sd = len(attributes.immersed_surface_area)
-        self.freeze_time_dependent_body.launch_n(
+        self.immersion_freezing_time_dependent_body.launch_n(
             n=n_sd,
             args=(
                 rand.data,
@@ -224,7 +226,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def freeze_singular_homogeneous(
+    def homogeneous_freezing_threshold(
         self,
         *,
         attributes,
@@ -233,7 +235,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         relative_humidity_ice,
     ):
         n_sd = len(attributes.signed_water_mass)
-        self.freeze_singular_homogeneous_body.launch_n(
+        self.homogeneous_freezing_threshold_body.launch_n(
             n=n_sd,
             args=(
                 attributes.signed_water_mass.data,
@@ -244,7 +246,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def freeze_time_dependent_homogeneous(  # pylint: disable=unused-argument
+    def homogeneous_freezing_time_dependent(  # pylint: disable=unused-argument
         self,
         *,
         rand,
@@ -256,7 +258,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         relative_humidity_ice,
     ):
         n_sd = len(attributes.signed_water_mass)
-        self.freeze_time_dependent_homogeneous_body.launch_n(
+        self.homogeneous_reezing_time_dependent_body.launch_n(
             n=n_sd,
             args=(
                 rand.data,

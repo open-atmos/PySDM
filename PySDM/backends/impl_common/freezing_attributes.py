@@ -1,5 +1,6 @@
 """
-groups of attributes used in either singular or time-dependent immersion freezing regimes
+groups of attributes used in either singular or time-dependent immersion freezing regimes,
+in threshold or time-dependent homogeneous freezing and for thaw routines
 """
 
 from collections import namedtuple
@@ -38,9 +39,9 @@ class TimeDependentHomogeneousAttributes(
     __slots__ = ()
 
 
-class SingularHomogeneousAndThawAttributes(
+class ThresholdHomogeneousAndThawAttributes(
     namedtuple(
-        typename="SingularHomogeneousAttributes",
+        typename="ThresholdHomogeneousAttributes",
         field_names=("signed_water_mass"),
     )
 ):

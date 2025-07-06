@@ -309,7 +309,7 @@ BIGG_DT_MEDIAN = np.nan
 NIEMAND_A = np.nan
 NIEMAND_B = np.nan
 
-SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD = T0 - 38 * si.K
+HOMOGENEOUS_FREEZING_THRESHOLD = T0 - 38 * si.K
 """ value from [Shima et al. 2020](https://doi.org/10.5194/gmd-13-4107-2020) """
 
 ABIFM_UNIT = 1 / si.cm**2 / si.s

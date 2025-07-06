@@ -20,8 +20,14 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
         assert (
             homogeneous_freezing or immersion_freezing or thaw
         ), "please enable one or more modes of operation"
-        for flag in (homogeneous_freezing, immersion_freezing):
-            assert flag is None or flag in ("time-dependent", "singular")
+        assert immersion_freezing is None or immersion_freezing in (
+            "time-dependent",
+            "singular",
+        )
+        assert homogeneous_freezing is None or homogeneous_freezing in (
+            "time-dependent",
+            "threshold",
+        )
         assert thaw is None or thaw == "instantaneous"
 
         self.homogeneous_freezing = homogeneous_freezing
@@ -80,15 +86,15 @@ class Freezing:  # pylint: disable=too-many-instance-attributes
 
         if self.immersion_freezing == "singular":
             self.particulator.immersion_freezing_singular()
-        if self.immersion_freezing == "time-dependent":
+        elif self.immersion_freezing == "time-dependent":
             self.rand.urand(self.rng)
             self.particulator.immersion_freezing_time_dependent(
                 rand=self.rand,
             )
 
-        if self.homogeneous_freezing == "singular":
-            self.particulator.homogeneous_freezing_singular()
-        if self.homogeneous_freezing == "time-dependent":
+        if self.homogeneous_freezing == "threshold":
+            self.particulator.homogeneous_freezing_threshold()
+        elif self.homogeneous_freezing == "time-dependent":
             self.rand.urand(self.rng)
             self.particulator.homogeneous_freezing_time_dependent(
                 rand=self.rand,

@@ -14,7 +14,7 @@ from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
     TimeDependentHomogeneousAttributes,
-    SingularHomogeneousAndThawAttributes,
+    ThresholdHomogeneousAndThawAttributes,
 )
 
 
@@ -56,7 +56,7 @@ class FreezingMethods(BackendMethods):
         return body
 
     @cached_property
-    def _freeze_singular_body(self):
+    def _immersion_freezing_singular_body(self):
         _freeze = self._freeze
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
 
@@ -82,7 +82,7 @@ class FreezingMethods(BackendMethods):
         return body
 
     @cached_property
-    def _freeze_time_dependent_body(self):
+    def _immersion_freezing_time_dependent_body(self):
         _freeze = self._freeze
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
         j_het = self.formulae.heterogeneous_ice_nucleation_rate.j_het
@@ -117,7 +117,7 @@ class FreezingMethods(BackendMethods):
         return body
 
     @cached_property
-    def _freeze_time_dependent_homogeneous_body(self):
+    def _homogeneous_freezing_time_dependent_body(self):
         _freeze = self._freeze
         unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
         j_hom = self.formulae.homogeneous_ice_nucleation_rate.j_hom
@@ -165,7 +165,7 @@ class FreezingMethods(BackendMethods):
         return body
 
     @cached_property
-    def _freeze_singular_homogeneous_body(self):
+    def _homogeneous_freezing_threshold_body(self):
         _freeze = self._freeze
         unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
         const = self.formulae.constants
@@ -178,10 +178,7 @@ class FreezingMethods(BackendMethods):
                 if unfrozen_and_ice_saturated(
                     attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
                 ):
-                    if (
-                        temperature[cell_id]
-                        <= const.SINGULAR_HOMOGENEOUS_FREEZING_THRESHOLD
-                    ):
+                    if temperature[cell_id] <= const.HOMOGENEOUS_FREEZING_THRESHOLD:
                         _freeze(attributes.signed_water_mass, i)
 
         return body
@@ -194,15 +191,17 @@ class FreezingMethods(BackendMethods):
         temperature,
     ):
         self._thaw_instantaneous_body(
-            SingularHomogeneousAndThawAttributes(
+            ThresholdHomogeneousAndThawAttributes(
                 signed_water_mass=attributes.signed_water_mass.data,
             ),
             cell.data,
             temperature.data,
         )
 
-    def freeze_singular(self, *, attributes, temperature, relative_humidity, cell):
-        self._freeze_singular_body(
+    def immersion_freezing_singular(
+        self, *, attributes, temperature, relative_humidity, cell
+    ):
+        self._immersion_freezing_singular_body(
             SingularAttributes(
                 freezing_temperature=attributes.freezing_temperature.data,
                 signed_water_mass=attributes.signed_water_mass.data,
@@ -212,7 +211,7 @@ class FreezingMethods(BackendMethods):
             cell.data,
         )
 
-    def freeze_time_dependent(
+    def immersion_freezing_time_dependent(
         self,
         *,
         rand,
@@ -222,7 +221,7 @@ class FreezingMethods(BackendMethods):
         a_w_ice,
         relative_humidity,
     ):
-        self._freeze_time_dependent_body(
+        self._immersion_freezing_time_dependent_body(
             rand.data,
             TimeDependentAttributes(
                 immersed_surface_area=attributes.immersed_surface_area.data,
@@ -234,7 +233,7 @@ class FreezingMethods(BackendMethods):
             relative_humidity.data,
         )
 
-    def freeze_singular_homogeneous(
+    def homogeneous_freezing_threshold(
         self,
         *,
         attributes,
@@ -242,8 +241,8 @@ class FreezingMethods(BackendMethods):
         temperature,
         relative_humidity_ice,
     ):
-        self._freeze_singular_homogeneous_body(
-            SingularHomogeneousAndThawAttributes(
+        self._homogeneous_freezing_threshold_body(
+            ThresholdHomogeneousAndThawAttributes(
                 signed_water_mass=attributes.signed_water_mass.data,
             ),
             cell.data,
@@ -251,7 +250,7 @@ class FreezingMethods(BackendMethods):
             relative_humidity_ice.data,
         )
 
-    def freeze_time_dependent_homogeneous(
+    def homogeneous_freezing_time_dependent(
         self,
         *,
         rand,
@@ -262,7 +261,7 @@ class FreezingMethods(BackendMethods):
         temperature,
         relative_humidity_ice,
     ):
-        self._freeze_time_dependent_homogeneous_body(
+        self._homogeneous_freezing_time_dependent_body(
             rand.data,
             TimeDependentHomogeneousAttributes(
                 volume=attributes.volume.data,
