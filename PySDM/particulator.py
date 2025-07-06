@@ -490,15 +490,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             adaptive=adaptive,
             multiplicity=self.attributes["multiplicity"],
             signed_water_mass=self.attributes["signed water mass"],
-            current_total_pressure=self.environment["p"],
             current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
             current_dry_air_density=self.environment["rhod"],
             current_dry_potential_temperature=self.environment["thd"],
             cell_volume=self.environment.mesh.dv,
             time_step=self.dt,
             cell_id=self.attributes["cell id"],
-            reynolds_number=self.attributes["Reynolds number"],
-            schmidt_number=self.environment["Schmidt number"],
             predicted_vapour_mixing_ratio=self.environment.get_predicted(
                 "water_vapour_mixing_ratio"
             ),

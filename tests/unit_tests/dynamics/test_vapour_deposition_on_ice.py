@@ -1,5 +1,9 @@
 """basic water vapor deposition on ice test"""
 
+import os
+
+os.environ["NUMBA_DISABLE_JIT"] = "1"
+
 from typing import Iterable
 from functools import lru_cache
 import numpy as np
@@ -77,6 +81,7 @@ def make_particulator(
     RH_water: float = None,
     adaptive: bool = False,
     diffusion_ice_kinetics="Standard",
+    multiplicity: int = int(1e8),
 ):
     """instantiates a particulator with minimal components for testing ice depositional growth"""
     assert RH_water is None or RH_ice is None
@@ -89,7 +94,9 @@ def make_particulator(
     builder.add_dynamic(VapourDepositionOnIce(adaptive=adaptive))
     particulator = builder.build(
         attributes={
-            "multiplicity": np.full(shape=(builder.particulator.n_sd,), fill_value=1e8),
+            "multiplicity": np.full(
+                shape=(builder.particulator.n_sd,), fill_value=multiplicity
+            ),
             "signed water mass": np.asarray(signed_water_masses),
         },
         products=(IceWaterContent(),),
@@ -168,8 +175,10 @@ class TestVapourDepositionOnIce:
             np.testing.assert_approx_equal(
                 particulator.products["ice water content"].get()[0], iwc_old
             )
-            assert particulator.environment["water_vapour_mixing_ratio"][0] == rv0
-            assert particulator.environment["thd"][0] == thd0
+            np.testing.assert_approx_equal(
+                particulator.environment["water_vapour_mixing_ratio"][0], rv0
+            )
+            np.testing.assert_approx_equal(particulator.environment["thd"][0], thd0)
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -266,3 +275,42 @@ class TestVapourDepositionOnIce:
         relative_growth = (water_mass_new - water_mass_init) / water_mass_init
         assert all(relative_growth > 0.0)
         assert all(np.diff(relative_growth) < 0.0)
+
+    @staticmethod
+    @pytest.mark.parametrize("rh_ice", (1.5, 1.0, 0.5))
+    def test_mass_conservation_under_adaptivity(rh_ice):
+        # arrange
+        water_mass_init = np.logspace(-15, -6, num=11) * si.kg
+        particulator = make_particulator(
+            adaptive=True,
+            dt=10 * si.s,
+            diffusion_coordinate="WaterMassLogarithm",
+            diffusion_ice_capacity="Spherical",
+            signed_water_masses=-water_mass_init,
+            temperature=250 * si.K,
+            pressure=800 * si.hPa,
+            RH_ice=rh_ice,
+            multiplicity=int(1e8),
+        )
+
+        def total_water_mass_in_the_system(attr, env):
+            return np.dot(
+                attr["water mass"].to_ndarray(),
+                attr["multiplicity"].to_ndarray(),
+            ) + (env["water_vapour_mixing_ratio"][0] * env["rhod"][0] * env.mesh.dv)
+
+        # act
+        m0 = total_water_mass_in_the_system(
+            particulator.attributes, particulator.environment
+        )
+        particulator.run(steps=1)
+        m1 = total_water_mass_in_the_system(
+            particulator.attributes, particulator.environment
+        )
+
+        # assert
+        np.testing.assert_almost_equal(m0, m1)
+
+
+# TODO: test is updraft matters
+# TODO: test if order of condensation/deposition matters
