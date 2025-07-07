@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 
 from setuptools import find_packages, setup
 
@@ -39,7 +40,11 @@ setup(
         "numdifftools",
         "vtk",
     ]
-    + (["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]),
+    + (
+        ["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]
+        if sys.platform != "darwin"
+        else []
+    ),
     extras_require={
         "tests": [
             "pytest",
