@@ -1,6 +1,6 @@
 import os
+import platform
 import re
-import sys
 
 from setuptools import find_packages, setup
 
@@ -42,7 +42,7 @@ setup(
     ]
     + (
         ["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]
-        if sys.platform != "darwin"
+        if platform.system() != "Darwin"
         else []
     ),
     extras_require={
