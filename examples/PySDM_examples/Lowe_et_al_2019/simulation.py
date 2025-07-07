@@ -5,7 +5,7 @@ import PySDM.products as PySDM_products
 from PySDM import Builder
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Sum
 
 

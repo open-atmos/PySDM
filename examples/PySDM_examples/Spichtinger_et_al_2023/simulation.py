@@ -12,7 +12,8 @@ from PySDM.dynamics import (
     VapourDepositionOnIce,
 )
 from PySDM.environments import Parcel
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 
 
 class Simulation(BasicSimulation):
