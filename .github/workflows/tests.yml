@@ -243,7 +243,7 @@ jobs:
 
       # TODO #1207
       - if: startsWith(matrix.platform, 'macos-13')
-        run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not Rozanski_and_Sonntag_1982" --suite ${{ matrix.test-suite }}
+        run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not (Rozanski_and_Sonntag_1982 or copula_hello)" --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'macos-13') )
         run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
