@@ -30,6 +30,10 @@ setup(
         "pystrict",
         # https://github.com/matplotlib/matplotlib/issues/28551
         "matplotlib" + ("!=3.9.1" if CI else ""),
+        "Pillow"
+        + (
+            "<11.3.0" if CI else ""
+        ),  # matplotlib triggers deprecation warnings in 11.3.0
         "joblib",
         "ipywidgets",
         "seaborn",

@@ -80,7 +80,8 @@
       "examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb",
       "examples/PySDM_examples/Gedzelman_and_Arnold_1994/__init__.py",
       "PySDM/physics/isotope_ratio_evolution/gedzelman_and_arnold_1994.py",
-      "PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py"
+      "PySDM/physics/isotope_ratio_evolution/merlivat_and_jouzel_1979.py",
+      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
     ],
     "label": "Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99)",
     "title": "Modeling the isotopic composition of precipitation"
@@ -160,7 +161,8 @@
   "https://doi.org/10.2467/mripapers1950.19.2_243": {
     "usages": [
       "examples/PySDM_examples/Miyake_et_al_1968/fig_19.ipynb",
-      "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py"
+      "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
+      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
     ],
     "label": "Miyake et al. 1968 (Pap. Meteorol. Geophys. 19)",
     "title": "An Isotopic Study on Meteoric Precipitation"
@@ -533,6 +535,7 @@
   "https://doi.org/10.5194/acp-13-7903-2013": {
     "usages": [
       "examples/PySDM_examples/Bolot_et_al_2013/__init__.py",
+      "PySDM/physics/isotope_kinetic_fractionation_factors/jouzel_and_merlivat_1984.py",
       "tests/unit_tests/physics/test_isotope_equilibrium_fractionation_factors.py"
     ],
     "label": "Bolot et al. 2013 (Atmos. Chem. Phys. 13)",
@@ -629,8 +632,8 @@
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/ventilation/pruppacher_rasmussen_1979.py",
-      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/fig_1.ipynb",
       "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/__init__.py",
+      "examples/PySDM_examples/Pruppacher_and_Rasmussen_1979/fig_1.ipynb",
       "tests/smoke_tests/no_env/pruppacher_and_rasmussen_1979/test_fig_1.py"
     ],
     "label": "Pruppacher & Rasmussen 1979 (J. Atmos. Sci. 36)",
@@ -638,7 +641,7 @@
   },
   "https://doi.org/10.1126/science.133.3465.1702": {
     "usages": [
-      "examples/PySDM_examples/Zaba_et_al_2025/global_meteoric_water_line.ipynb",
+      "examples/PySDM_examples/Zaba_et_al/global_meteoric_water_line.ipynb",
       "tests/unit_tests/physics/test_isotope_meteoric_water_line.py",
       "PySDM/physics/constants_defaults.py"
     ],
@@ -686,7 +689,8 @@
       "PySDM/physics/isotope_relaxation_timescale/bolin_1958.py",
       "PySDM/physics/constants_defaults.py",
       "examples/PySDM_examples/Bolin_1958/table_1.ipynb",
-      "examples/PySDM_examples/Bolin_1958/__init__.py"
+      "examples/PySDM_examples/Bolin_1958/__init__.py",
+      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
     ],
     "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
     "title": "On the Use of Tritium as a Tracer for Water in Nature"
@@ -834,6 +838,8 @@
   },
   "https://doi.org/10.1175/1520-0469(1951)008%3C0071:TETATR%3E2.0.CO;2": {
     "usages": [
+      "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
+      "PySDM/physics/isotope_relaxation_timescale/miyake_et_al_1968.py",
       "examples/PySDM_examples/Kinzer_And_Gunn_1951/table_1_and_2.py",
       "examples/PySDM_examples/Kinzer_And_Gunn_1951/__init__.py"
     ],
@@ -849,6 +855,10 @@
   },
   "https://doi.org/10.5194/acp-9-685-2009": {
     "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/particle_shape_and_density/columnar_ice.py",
+      "PySDM/physics/particle_shape_and_density/porous_spheroids.py",
+      "tests/unit_tests/physics/test_particle_shape_and_density.py",
       "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
@@ -904,9 +914,18 @@
     "title": "Remarks on the deuterium excess in precipitation in cold regions",
     "label": "Fisher 1991 (Tellus B)"
   },
+  "https://doi.org/10.1029/JC080i036p05015": {
+    "usages": [
+      "PySDM/physics/isotope_relaxation_timescale/jouzel_et_al_1975.py",
+      "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
+    ],
+    "title": "Isotopic study of hail",
+    "label": "Jouzel et al. 1975 (J. Geophys. Res. 80)"
+  },
   "https://doi.org/10.5194/acp-23-2035-2023": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",

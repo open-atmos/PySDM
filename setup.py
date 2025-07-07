@@ -57,6 +57,10 @@ dependencies = [
 optional_dependencies = {
     "tests": [
         "matplotlib",
+        "Pillow"
+        + (
+            "<11.3.0" if CI else ""
+        ),  # matplotlib triggers deprecation warnings in 11.3.0
         "pytest",
         "pytest-timeout",
         "PySDM-examples",

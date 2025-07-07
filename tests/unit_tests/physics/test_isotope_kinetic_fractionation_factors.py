@@ -11,10 +11,12 @@ from PySDM import physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics.isotope_kinetic_fractionation_factors import JouzelAndMerlivat1984
 
+PLOT = False
+
 
 class TestIsotopeKineticFractionationFactors:
     @staticmethod
-    def test_units():
+    def test_units_alpha_kinetic():
         """checks that alphas are dimensionless"""
         with DimensionalAnalysis():
             # arrange
@@ -25,8 +27,8 @@ class TestIsotopeKineticFractionationFactors:
             # act
             sut = JouzelAndMerlivat1984.alpha_kinetic(
                 alpha_equilibrium=alpha_eq,
-                diffusivity_ratio_heavy_to_light=D_ratio,
-                saturation_over_ice=saturation_over_ice,
+                D_ratio_heavy_to_light=D_ratio,
+                saturation=saturation_over_ice,
             )
 
             # assert
@@ -54,10 +56,8 @@ class TestIsotopeKineticFractionationFactors:
         alpha_k = {
             temperature: sut(
                 alpha_equilibrium=alpha_s[temperature],
-                saturation_over_ice=saturation,
-                diffusivity_ratio_heavy_to_light=diffusivity_ratio_heavy_to_light(
-                    temperature
-                ),
+                saturation=saturation,
+                D_ratio_heavy_to_light=diffusivity_ratio_heavy_to_light(temperature),
             )
             for temperature in temperatures
         }
@@ -105,8 +105,8 @@ class TestIsotopeKineticFractionationFactors:
         alpha_s = formulae.isotope_equilibrium_fractionation_factors.alpha_i_18O(T)
         alpha_k = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
             alpha_equilibrium=alpha_s,
-            saturation_over_ice=saturation,
-            diffusivity_ratio_heavy_to_light=diffusivity_ratio_18O(T),
+            saturation=saturation,
+            D_ratio_heavy_to_light=diffusivity_ratio_18O(T),
         )
 
         # act
@@ -114,3 +114,59 @@ class TestIsotopeKineticFractionationFactors:
 
         # assert
         np.testing.assert_approx_equal(actual=sut, desired=alpha, significant=3)
+
+    @staticmethod
+    @pytest.mark.parametrize("isotope", ("2H", "18O", "17O"))
+    @pytest.mark.parametrize("temperature_C", (-30, -20, -1))
+    def test_alpha_kinetic_jouzel_merlivat_vs_craig_gordon(
+        isotope, temperature_C, plot=PLOT
+    ):
+        # arrange
+        T = Formulae().trivia.C2K(temperature_C)
+        RH = np.linspace(0.3, 1)
+        formulae = Formulae(
+            isotope_equilibrium_fractionation_factors="VanHook1968",
+            isotope_diffusivity_ratios="HellmannAndHarvey2020",
+            isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
+        )
+        Si = formulae.saturation_vapour_pressure.pvs_ice(T)
+        alpha_eq = getattr(
+            formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{isotope}"
+        )(T)
+        D_heavy_to_light = getattr(
+            formulae.isotope_diffusivity_ratios, f"ratio_{isotope}_heavy_to_light"
+        )(T)
+        alpha_kin_jm = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
+            alpha_equilibrium=alpha_eq,
+            saturation=Si,
+            D_ratio_heavy_to_light=D_heavy_to_light,
+        )
+        formulae = Formulae(
+            isotope_kinetic_fractionation_factors="CraigGordon",
+        )
+        alpha_kin_cg = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
+            relative_humidity=RH,
+            turbulence_parameter_n=1,
+            delta_diff=alpha_eq - 1,
+            theta=1,
+        )
+
+        # act
+        n = (alpha_kin_jm + 1) / (alpha_kin_cg + 1)
+
+        # plot
+        pyplot.plot(1 - RH, n)
+        pyplot.gca().set(
+            xlabel="1-RH",
+            ylabel="turbulence parameter n",
+        )
+        pyplot.grid()
+
+        if plot:
+            pyplot.show()
+        else:
+            pyplot.clf()
+
+        # assert
+        np.testing.assert_equal(n > 0.5, True)
+        np.testing.assert_equal(n < 1, True)
