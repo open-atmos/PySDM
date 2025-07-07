@@ -21,8 +21,7 @@ class TemperatureOfLastFreezing(DerivedAttribute):
     def __init__(self, builder):
         assert "Freezing" in builder.particulator.dynamics
         assert (
-            not builder.particulator.dynamics["Freezing"].immersion_freezing
-            == "singular"
+            builder.particulator.dynamics["Freezing"].immersion_freezing != "singular"
         )
         self.signed_water_mass = builder.get_attribute("signed water mass")
         self.cell_id = builder.get_attribute("cell id")
