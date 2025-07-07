@@ -3,18 +3,19 @@ import numpy as np
 import pytest
 from matplotlib import pyplot
 
-from PySDM import Formulae
+from PySDM import Formulae, Builder
 from PySDM.backends import CPU
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation import equilibrate_wet_radii, equilibrate_dry_radii
 from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
+from PySDM.environments import Box
 
 
 @pytest.mark.parametrize("r_dry", (pytest.param(2.4e-09), pytest.param(2.5e-09)))
 @pytest.mark.parametrize(
     "surface_tension", ("Constant", "CompressedFilmOvadnevaite", "SzyszkowskiLangmuir")
 )
-def test_equilibrate_wet_radii(r_dry, surface_tension, plot=False):
+def test_equilibrate_wet_radii(r_dry, surface_tension, plot=True):
     # Arrange
     T = 280.0
     RH = 0.9
@@ -75,7 +76,7 @@ def test_equilibrate_wet_radii(r_dry, surface_tension, plot=False):
     if plot:
         pyplot.show()
 
-    # Act & Assert
+    # Act
     equilibrate_wet_radii(
         r_dry=r_dry_arr,
         environment=Env(),
@@ -83,3 +84,60 @@ def test_equilibrate_wet_radii(r_dry, surface_tension, plot=False):
         * kappa,
         f_org=np.full(1, f_org),
     )
+
+    # Assert
+    # # TODO: test checking that: dry2wet(wet2dry(x)) == x +/- eps !
+
+
+@pytest.mark.parametrize(
+    "kappas, temperature, relative_humidity",
+    (
+        pytest.param([0.0], 300 * si.K, 0.95, marks=pytest.mark.xfail(strict=True)),
+        ([0.5, 1.0, 1.5], 300 * si.K, 0.95),
+        ([0.5, 1.0, 1.5], 250 * si.K, 0.75),
+    ),
+)
+def test_equilibrate_dry_radii(
+    kappas, temperature, relative_humidity, backend_instance, plot=True
+):
+    # arrange
+    r_wet = np.logspace(-8, -3, num=10)
+    builder = Builder(
+        environment=Box(dv=np.nan, dt=np.nan), backend=backend_instance, n_sd=len(r_wet)
+    )
+    builder.particulator.environment["T"] = temperature
+    builder.particulator.environment["RH"] = relative_humidity
+
+    # act
+    r_dry = {}
+    for kappa in kappas:
+        r_dry[kappa] = equilibrate_dry_radii(
+            r_wet=r_wet,
+            environment=builder.particulator.environment,
+            kappa=kappa if kappa is np.ndarray else np.full_like(r_wet, kappa),
+        )
+
+    # plot
+    for kappa in kappas:
+        pyplot.loglog(r_wet, r_dry[kappa], label=f"{kappa=}")
+    pyplot.gca().set(
+        ylim=(r_wet[0], r_wet[-1]),
+        xlabel="wet radius [m]",
+        ylabel="dry radius [m]",
+        title=f"{temperature=} {relative_humidity=}",
+    )
+    pyplot.grid()
+    pyplot.legend()
+    if plot:
+        pyplot.show()
+    else:
+        pyplot.clf()
+
+    # assert
+    assert (np.diff(kappas) > 0).all()
+    kappa_prev = None
+    for i, kappa in enumerate(kappas):
+        assert (r_dry[kappa] < r_wet).all()
+        if kappa_prev is not None:
+            assert (r_dry[kappa] < r_dry[kappa_prev]).all()
+        kappa_prev = kappa
