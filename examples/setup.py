@@ -42,7 +42,7 @@ setup(
     ]
     + (
         ["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]
-        if sys.platform == "darwin"
+        if sys.platform != "darwin"
         else []
     ),
     extras_require={
