@@ -26,7 +26,12 @@ class Simulation(BasicSimulation):
             mixed_phase=True,
         )
         builder = Builder(
-            n_sd=n_particles, backend=CPU(settings.formulae), environment=env
+            n_sd=n_particles,
+            backend=CPU(
+                settings.formulae,
+                override_jit_flags={"parallel": False},
+            ),
+            environment=env,
         )
 
         builder.add_dynamic(AmbientThermodynamics())
