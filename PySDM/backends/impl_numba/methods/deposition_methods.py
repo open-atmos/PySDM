@@ -163,7 +163,10 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 )
                 * sub_time_step
             )
-
+            if delta_rv == 0:
+                assert delta_thd == 0
+            else:
+                assert (delta_rv < 0 < delta_thd) or (delta_rv > 0 > delta_thd)
             return delta_rv, delta_thd
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
@@ -195,6 +198,8 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             n_substeps = 1
             cid = cell_id[0]  # TODO: add support for multi-cell environments
 
+            old_mass = signed_water_mass.copy()
+
             # 1/dt * (post-ambient-thermodynamics & post-condensation rv/thd - previous end-of-timestep rv/thd)
             rv_tendency = (
                 predicted_vapour_mixing_ratio[cid] - current_vapour_mixing_ratio[cid]
@@ -219,7 +224,6 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     if burnout == fuse:
                         assert False
                     sub_time_step = time_step / n_substeps
-
                     rhod = (
                         current_dry_air_density[cid]
                         + rhod_tendency * (0.5 if midpoint else 1) * sub_time_step
@@ -271,8 +275,6 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     ):
                         delta_rh_long = delta_rh_short
                         n_substeps *= multiplier
-                        rv_tendency /= multiplier
-                        thd_tendency /= multiplier
                     else:
                         break
             sub_time_step = time_step / n_substeps
@@ -281,6 +283,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             thd = current_dry_potential_temperature[cid]
             rhod = current_dry_air_density[cid]
 
+            assert n_substeps == int(n_substeps)
             for _ in range(int(n_substeps)):
                 rv += sub_time_step * rv_tendency * (0.5 if midpoint else 1)
                 thd += sub_time_step * thd_tendency * (0.5 if midpoint else 1)
@@ -313,10 +316,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     thd += sub_time_step * thd_tendency / 2
                     rv += sub_time_step * rv_tendency / 2
                     rhod += sub_time_step * rhod_tendency / 2
-            predicted_dry_potential_temperature[cid] += (
-                thd - current_dry_potential_temperature[cid]
-            )
-            predicted_vapour_mixing_ratio[cid] += rv - current_vapour_mixing_ratio[cid]
+
+            # a = rv - predicted_vapour_mixing_ratio[cid]
+            # b = np.dot(
+            #     signed_water_mass - old_mass, multiplicity
+            # ) / dry_air_mass_mean
+            # assert a == b
+            predicted_dry_potential_temperature[cid] = thd
+            predicted_vapour_mixing_ratio[cid] = rv
 
         return body
 
