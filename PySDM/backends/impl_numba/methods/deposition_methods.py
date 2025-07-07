@@ -313,8 +313,10 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     thd += sub_time_step * thd_tendency / 2
                     rv += sub_time_step * rv_tendency / 2
                     rhod += sub_time_step * rhod_tendency / 2
-            predicted_dry_potential_temperature[cid] = thd
-            predicted_vapour_mixing_ratio[cid] = rv
+            predicted_dry_potential_temperature[cid] += (
+                thd - current_dry_potential_temperature[cid]
+            )
+            predicted_vapour_mixing_ratio[cid] += rv - current_vapour_mixing_ratio[cid]
 
         return body
 
