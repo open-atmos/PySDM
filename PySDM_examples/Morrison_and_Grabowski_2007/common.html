@@ -120,7 +120,7 @@
                                 <a class="variable" href="#Common.breakup_fragmentation">breakup_fragmentation</a>
                         </li>
                         <li>
-                                <a class="variable" href="#Common.freezing_singular">freezing_singular</a>
+                                <a class="variable" href="#Common.freezing_immersion">freezing_immersion</a>
                         </li>
                         <li>
                                 <a class="variable" href="#Common.freezing_thaw">freezing_thaw</a>
@@ -295,8 +295,8 @@
 </span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">breakup_efficiency</span> <span class="o">=</span> <span class="n">ConstEb</span><span class="p">(</span><span class="n">Eb</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 </span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">breakup_fragmentation</span> <span class="o">=</span> <span class="n">AlwaysN</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_singular</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_thaw</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_immersion</span> <span class="o">=</span> <span class="s2">&quot;singular&quot;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_thaw</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_inp_spec</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">displacement_adaptive</span> <span class="o">=</span> <span class="n">displacement</span><span class="o">.</span><span class="n">DEFAULTS</span><span class="o">.</span><span class="n">adaptive</span>
@@ -450,8 +450,8 @@
 </span><span id="Common-37"><a href="#Common-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">breakup_efficiency</span> <span class="o">=</span> <span class="n">ConstEb</span><span class="p">(</span><span class="n">Eb</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 </span><span id="Common-38"><a href="#Common-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">breakup_fragmentation</span> <span class="o">=</span> <span class="n">AlwaysN</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span><span id="Common-39"><a href="#Common-39"><span class="linenos"> 39</span></a>
-</span><span id="Common-40"><a href="#Common-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_singular</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Common-41"><a href="#Common-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_thaw</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="Common-40"><a href="#Common-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_immersion</span> <span class="o">=</span> <span class="s2">&quot;singular&quot;</span>
+</span><span id="Common-41"><a href="#Common-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_thaw</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Common-42"><a href="#Common-42"><span class="linenos"> 42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_inp_spec</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Common-43"><a href="#Common-43"><span class="linenos"> 43</span></a>
 </span><span id="Common-44"><a href="#Common-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">displacement_adaptive</span> <span class="o">=</span> <span class="n">displacement</span><span class="o">.</span><span class="n">DEFAULTS</span><span class="o">.</span><span class="n">adaptive</span>
@@ -604,8 +604,8 @@
 </span><span id="Common.__init__-37"><a href="#Common.__init__-37"><span class="linenos"> 37</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">breakup_efficiency</span> <span class="o">=</span> <span class="n">ConstEb</span><span class="p">(</span><span class="n">Eb</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 </span><span id="Common.__init__-38"><a href="#Common.__init__-38"><span class="linenos"> 38</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">breakup_fragmentation</span> <span class="o">=</span> <span class="n">AlwaysN</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </span><span id="Common.__init__-39"><a href="#Common.__init__-39"><span class="linenos"> 39</span></a>
-</span><span id="Common.__init__-40"><a href="#Common.__init__-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_singular</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="Common.__init__-41"><a href="#Common.__init__-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_thaw</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="Common.__init__-40"><a href="#Common.__init__-40"><span class="linenos"> 40</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_immersion</span> <span class="o">=</span> <span class="s2">&quot;singular&quot;</span>
+</span><span id="Common.__init__-41"><a href="#Common.__init__-41"><span class="linenos"> 41</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_thaw</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Common.__init__-42"><a href="#Common.__init__-42"><span class="linenos"> 42</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">freezing_inp_spec</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span id="Common.__init__-43"><a href="#Common.__init__-43"><span class="linenos"> 43</span></a>
 </span><span id="Common.__init__-44"><a href="#Common.__init__-44"><span class="linenos"> 44</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">displacement_adaptive</span> <span class="o">=</span> <span class="n">displacement</span><span class="o">.</span><span class="n">DEFAULTS</span><span class="o">.</span><span class="n">adaptive</span>
@@ -861,13 +861,13 @@
     
 
                             </div>
-                            <div id="Common.freezing_singular" class="classattr">
+                            <div id="Common.freezing_immersion" class="classattr">
                                 <div class="attr variable">
-            <span class="name">freezing_singular</span>
+            <span class="name">freezing_immersion</span>
 
         
     </div>
-    <a class="headerlink" href="#Common.freezing_singular"></a>
+    <a class="headerlink" href="#Common.freezing_immersion"></a>
     
     
 
