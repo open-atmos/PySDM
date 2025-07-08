@@ -20,6 +20,16 @@ from PySDM.environments import Kinematic2D
 from PySDM.initialisation.sampling import spatial_sampling
 
 
+_BACKEND_CACHE = {}
+
+
+def backend_factory(backend_class, formulae):
+    key = backend_class.__name__ + ":" + str(formulae)
+    if key not in _BACKEND_CACHE:
+        _BACKEND_CACHE[key] = backend_class(formulae=formulae)
+    return _BACKEND_CACHE[key]
+
+
 class Simulation:
     def __init__(self, settings, storage, SpinUp, backend_class=CPU):
         self.settings = settings
@@ -34,7 +44,7 @@ class Simulation:
 
     def reinit(self, products=None):
         formulae = self.settings.formulae
-        backend = self.backend_class(formulae=formulae)
+        backend = backend_factory(self.backend_class, formulae=formulae)
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
@@ -140,7 +150,7 @@ class Simulation:
         if self.settings.processes["freezing"]:
             builder.add_dynamic(
                 Freezing(
-                    singular=self.settings.freezing_singular,
+                    immersion_freezing=self.settings.freezing_immersion,
                     thaw=self.settings.freezing_thaw,
                 )
             )
@@ -165,7 +175,7 @@ class Simulation:
                     np.random.random(attributes["dry volume"].size),  # TODO #599: seed
                 )
 
-            if self.settings.freezing_singular:
+            if self.settings.freezing_immersion == "singular":
                 attributes["freezing temperature"] = (
                     formulae.freezing_temperature_spectrum.invcdf(
                         np.random.random(immersed_surface_area.size),  # TODO #599: seed
@@ -179,9 +189,9 @@ class Simulation:
                 assert self.settings.n_sd % 2 == 0
                 assert 0 < self.settings.freezing_inp_frac < 1
                 freezing_attribute = {
-                    True: "freezing temperature",
-                    False: "immersed surface area",
-                }[self.settings.freezing_singular]
+                    "singular": "freezing temperature",
+                    "time-dependent": "immersed surface area",
+                }[self.settings.freezing_immersion]
                 for name, array in attributes.items():
                     if array.shape[-1] != self.settings.n_sd // 2:
                         raise AssertionError(f"attribute >>{name}<< has wrong size")
