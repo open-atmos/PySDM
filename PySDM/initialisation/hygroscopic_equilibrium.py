@@ -12,6 +12,8 @@ from ..backends.impl_numba.warnings import warn
 default_rtol = 1e-5
 default_max_iters = 64
 
+# pylint: disable=too-many-locals,too-many-arguments
+
 
 def _solve_equilibrium_radii(
     *,
@@ -39,13 +41,13 @@ def _solve_equilibrium_radii(
         f_org = np.zeros_like(radii_in, dtype=float)
 
     @numba.njit(**jit_flags)
-    def impl(radii_in, iters, T, RH, cell_id, kappa, f_org, skip_fa_lt_zero):
+    def impl(radii_in, iters, T, RH, cell_id, kappa, f_org):
         radii_out = np.empty_like(radii_in)
-        for i in numba.prange(len(radii_in)):
+        for i in numba.prange(len(radii_in)):  # pylint: disable=not-an-iterable
             cid = cell_id[i]
             RH_i = np.maximum(0.0, np.minimum(1.0, RH[cid]))
-            args = get_args(i, T[cid], RH_i, kappa, radii_in, f_org)
-            a, b = get_bounds(i, T[cid], kappa, radii_in)
+            args = get_args(T[cid], RH_i, kappa[i], radii_in[i], f_org[i])
+            a, b = get_bounds(radii_in[i], T[cid], kappa[i])
             fa, fb = minfun(a, *args), minfun(b, *args)
 
             if skip_fa_lt_zero and fa < 0:
@@ -86,7 +88,7 @@ def _solve_equilibrium_radii(
         return radii_out
 
     iters = np.empty_like(radii_in, dtype=int)
-    radii_out = impl(radii_in, iters, T, RH, cell_id, kappa, f_org, skip_fa_lt_zero)
+    radii_out = impl(radii_in, iters, T, RH, cell_id, kappa, f_org)
     assert (iters != max_iters).all() and (iters != -1).all()
     return radii_out
 
@@ -109,12 +111,12 @@ def equilibrate_dry_radii(
     jit_flags = {**JIT_FLAGS, **{"fastmath": formulae.fastmath}}
 
     @numba.njit(**{**jit_flags, "parallel": False})
-    def get_args(i, T_i, RH_i, kappa, r_wet, f_org):
-        return (T_i, RH_i, kappa[i], r_wet[i], f_org[i])
+    def get_args(T_i, RH_i, kappa, r_wet, f_org):
+        return T_i, RH_i, kappa, r_wet, f_org
 
     @numba.njit(**{**jit_flags, "parallel": False})
-    def get_bounds(i, T_i, kappa, r_wet):
-        return 0.0, r_wet[i]
+    def get_bounds(r_wet, _, __):
+        return 0.0, r_wet
 
     @numba.njit(**{**jit_flags, "parallel": False})
     def minfun_dry(r_dry, temperature, relative_humidity, kappa, r_wet, f_org):
@@ -158,13 +160,13 @@ def equilibrate_wet_radii(
     jit_flags = {**JIT_FLAGS, **{"fastmath": formulae.fastmath}}
 
     @numba.njit(**{**jit_flags, "parallel": False})
-    def get_args(i, T_i, RH_i, kappa, r_dry, f_org):
-        return T_i, RH_i, kappa[i], r_dry[i] ** 3, f_org[i]
+    def get_args(T_i, RH_i, kappa, r_dry, f_org):
+        return T_i, RH_i, kappa, r_dry**3, f_org
 
     @numba.njit(**{**jit_flags, "parallel": False})
-    def get_bounds(i, T_i, kappa, r_dry):
-        a = r_dry[i]
-        b = r_cr(kappa[i], r_dry[i] ** 3, T_i, const.sgm_w)
+    def get_bounds(r_dry, T_i, kappa):
+        a = r_dry
+        b = r_cr(kappa, r_dry**3, T_i, const.sgm_w)
         return a, b
 
     @numba.njit(**{**jit_flags, "parallel": False})

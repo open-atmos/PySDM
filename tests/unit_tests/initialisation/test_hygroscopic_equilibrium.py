@@ -150,7 +150,7 @@ class TestHygroscopicEquilibrium:
         # assert
         assert (np.diff(kappas) > 0).all()
         kappa_prev = None
-        for i, kappa in enumerate(kappas):
+        for kappa in kappas:
             assert (r_dry[kappa] < r_wet).all()
 
             if kappa_prev is not None:
