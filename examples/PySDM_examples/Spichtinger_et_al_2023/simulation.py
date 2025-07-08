@@ -49,9 +49,7 @@ class Simulation(BasicSimulation):
         builder.add_dynamic(Condensation())
         builder.add_dynamic(VapourDepositionOnIce())
         builder.add_dynamic(
-            Freezing(
-                singular=False, homogeneous_freezing=True, immersion_freezing=False
-            )
+            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None)
         )
 
         self.n_sd = settings.n_sd

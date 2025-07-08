@@ -40,7 +40,7 @@ class Simulation(BasicSimulation):
         builder.add_dynamic(Condensation())
 
         if settings.enable_immersion_freezing:
-            builder.add_dynamic(Freezing())
+            builder.add_dynamic(Freezing(immersion_freezing="singular"))
         if settings.enable_vapour_deposition_on_ice:
             builder.add_dynamic(VapourDepositionOnIce())
 
