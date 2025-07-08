@@ -5,7 +5,7 @@ from PySDM.dynamics.impl import register_dynamic
 
 @register_dynamic()
 class VapourDepositionOnIce:
-    def __init__(self, adaptive: bool):
+    def __init__(self, adaptive: bool = True):
         """called by the user while building a particulator"""
         self.particulator = None
         self.adaptive = adaptive
