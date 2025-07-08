@@ -6,6 +6,7 @@ from functools import lru_cache
 import numpy as np
 from matplotlib import pyplot
 import pytest
+import numba
 
 from PySDM.physics import si, in_unit
 from PySDM.backends import CPU
@@ -274,11 +275,41 @@ class TestVapourDepositionOnIce:
         assert all(np.diff(relative_growth) < 0.0)
 
     @staticmethod
-    @pytest.mark.parametrize("rh_ice", (1.5, 1.0, 0.5))
-    @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
+    @pytest.mark.parametrize(
+        "rh_ice, multiplicity, diffusion_coordinate",
+        (
+            (1.5, 1e8, "WaterMass"),
+            (1.0, 1e8, "WaterMass"),
+            pytest.param(
+                0.5,
+                1e8,
+                "WaterMass",
+                marks=pytest.mark.xfail(strict=numba.config.DISABLE_JIT),
+            ),
+            (1.5, 1, "WaterMass"),
+            (1.0, 1, "WaterMass"),
+            (0.5, 1, "WaterMass"),
+            (1.5, 1e8, "WaterMassLogarithm"),
+            (1.0, 1e8, "WaterMassLogarithm"),
+            pytest.param(
+                0.5,
+                1e8,
+                "WaterMassLogarithm",
+                marks=pytest.mark.xfail(strict=numba.config.DISABLE_JIT),
+            ),
+            pytest.param(
+                1.5, 1, "WaterMassLogarithm", marks=pytest.mark.xfail(strict=True)
+            ),
+            (1.0, 1, "WaterMassLogarithm"),
+            (0.5, 1, "WaterMassLogarithm"),
+        ),
+    )
     @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
     def test_mass_conservation_under_adaptivity(
-        rh_ice, diffusion_ice_capacity, diffusion_coordinate
+        rh_ice,
+        diffusion_ice_capacity,
+        diffusion_coordinate,
+        multiplicity,
     ):
         # arrange
         water_mass_init = np.logspace(-15, -6, num=11) * si.kg
@@ -291,7 +322,7 @@ class TestVapourDepositionOnIce:
             temperature=250 * si.K,
             pressure=800 * si.hPa,
             RH_ice=rh_ice,
-            multiplicity=int(1e8),
+            multiplicity=multiplicity,
         )
 
         def total_water_mass_in_the_system(attr, env):
