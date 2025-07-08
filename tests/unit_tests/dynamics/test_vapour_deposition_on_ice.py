@@ -109,12 +109,11 @@ def make_particulator(
     particulator.environment["RH"] = vapour_pressure / pvs_water
     particulator.environment["a_w_ice"] = pvs_ice / pvs_water
     particulator.environment["Schmidt number"] = 1
-    rv0 = (
+    particulator.environment["water_vapour_mixing_ratio"] = (
         particulator.formulae.constants.eps
         * vapour_pressure
         / (particulator.environment["p"][0] - vapour_pressure)
     )
-    particulator.environment["water_vapour_mixing_ratio"] = rv0
     particulator.environment["rhod"] = (
         particulator.environment["p"][0] - vapour_pressure
     ) / (particulator.environment["T"][0] * particulator.formulae.constants.Rd)
@@ -123,7 +122,9 @@ def make_particulator(
             th_std=particulator.formulae.trivia.th_std(
                 p=particulator.environment["p"][0], T=particulator.environment["T"][0]
             ),
-            water_vapour_mixing_ratio=rv0,
+            water_vapour_mixing_ratio=particulator.environment[
+                "water_vapour_mixing_ratio"
+            ][0],
         )
     )
     return particulator
