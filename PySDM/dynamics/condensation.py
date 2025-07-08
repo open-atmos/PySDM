@@ -120,7 +120,6 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
             self.particulator.update_TpRH()
 
             if self.adaptive:
-                # TODO: check
                 self.counters["n_substeps"][:] = np.maximum(
                     self.counters["n_substeps"][:],
                     int(self.particulator.dt / self.dt_cond_range[1]),
