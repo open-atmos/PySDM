@@ -9,6 +9,10 @@ import numpy as np
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
+# TODO #1524
+# pylint: disable=too-many-arguments,too-many-locals,too-many-statements
+
+
 class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-methods
     @cached_property
     def _deposition(self):
@@ -124,7 +128,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         ):
             latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
             delta_rv = 0
-            for i in range(len(multiplicity)):
+            for i, ksi in enumerate(multiplicity):
                 if not formulae.trivia__unfrozen(signed_water_mass[i]):
                     mass_deposition_rate = mass_deposition_rate_per_droplet(
                         temperature=temperature,
@@ -135,10 +139,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         pressure=total_pressure,
                     )
                     delta_rv += (
-                        -mass_deposition_rate
-                        * multiplicity[i]
-                        * sub_time_step
-                        / mass_of_dry_air
+                        -mass_deposition_rate * ksi * sub_time_step / mass_of_dry_air
                     )
                     if not fake:
                         x_old = formulae.diffusion_coordinate__x(-signed_water_mass[i])
@@ -153,6 +154,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                         )
                         if x_new > 1:
                             print(x_old, dx_dt_old, x_new, signed_water_mass[i])
+                            assert False
             delta_thd = (
                 formulae.state_variable_triplet__dthd_dt(
                     rhod=rhod,
@@ -187,20 +189,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             predicted_dry_air_density,
         ):
             """simplest adaptivity:
-            - no physical tolerance - just checking if ambient vapour is positive
             - global dt - no cell-wise logic (we don't have any test/example for it!)
-            - no mechanism to retain shorter dt over timesteps (and hence cannot make it adapt towards longer)
+            - no mechanism to retain dt value over timesteps
             - explicit Euler mass integration (vs. implicit in condensation)
-            - no safeguards for infinite loop in substep number search
-            note: condensation uses theta for tolerance, we could use RH here (and later also in cond)
             """
             # pylint: disable=too-many-locals
             n_substeps = 1
             cid = cell_id[0]  # TODO #1524: add support for multi-cell environments
 
-            old_mass = signed_water_mass.copy()
-
-            # 1/dt * (post-ambient-thermodynamics & post-condensation rv/thd - previous end-of-timestep rv/thd)
             rv_tendency = (
                 predicted_vapour_mixing_ratio[cid] - current_vapour_mixing_ratio[cid]
             ) / time_step
@@ -317,11 +313,6 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     rv += sub_time_step * rv_tendency / 2
                     rhod += sub_time_step * rhod_tendency / 2
 
-            # a = rv - predicted_vapour_mixing_ratio[cid]
-            # b = np.dot(
-            #     signed_water_mass - old_mass, multiplicity
-            # ) / dry_air_mass_mean
-            # assert a == b
             predicted_dry_potential_temperature[cid] = thd
             predicted_vapour_mixing_ratio[cid] = rv
 
