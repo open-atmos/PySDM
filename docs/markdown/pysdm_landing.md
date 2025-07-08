@@ -386,7 +386,7 @@ si = pyimport("PySDM.physics").si
 spectral_sampling = pyimport("PySDM.initialisation.sampling").spectral_sampling
 discretise_multiplicities = pyimport("PySDM.initialisation").discretise_multiplicities
 Lognormal = pyimport("PySDM.initialisation.spectra").Lognormal
-equilibrate_wet_radii = pyimport("PySDM.initialisation").equilibrate_wet_radii
+equilibrate_wet_radii = pyimport("PySDM.initialisation.hygroscopic_equilibrium").equilibrate_wet_radii
 CPU = pyimport("PySDM.backends").CPU
 AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
 Condensation = pyimport("PySDM.dynamics").Condensation
@@ -467,7 +467,7 @@ si = py.importlib.import_module('PySDM.physics').si;
 spectral_sampling = py.importlib.import_module('PySDM.initialisation.sampling').spectral_sampling;
 discretise_multiplicities = py.importlib.import_module('PySDM.initialisation').discretise_multiplicities;
 Lognormal = py.importlib.import_module('PySDM.initialisation.spectra').Lognormal;
-equilibrate_wet_radii = py.importlib.import_module('PySDM.initialisation').equilibrate_wet_radii;
+equilibrate_wet_radii = py.importlib.import_module('PySDM.initialisation.hygroscopic_equilibrium').equilibrate_wet_radii;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 AmbientThermodynamics = py.importlib.import_module('PySDM.dynamics').AmbientThermodynamics;
 Condensation = py.importlib.import_module('PySDM.dynamics').Condensation;
@@ -568,7 +568,8 @@ saveas(gcf, "parcel.png");
 ```Python
 from matplotlib import pyplot
 from PySDM.physics import si
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.backends import CPU
