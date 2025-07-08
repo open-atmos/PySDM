@@ -271,7 +271,7 @@ class CondensationMethods(BackendMethods):
             n_substeps,
             fake,
         ):
-            sub_timestep = timestep / n_substeps
+            timestep /= n_substeps
             ml_old = calculate_ml_old(
                 attributes.signed_water_mass, attributes.multiplicity, cell_idx
             )
@@ -280,11 +280,11 @@ class CondensationMethods(BackendMethods):
             success = True
             for _ in range(n_substeps):
                 # note: no example yet showing that the trapezoidal scheme brings any improvement
-                thd += sub_timestep * dthd_dt_pred / 2
+                thd += timestep * dthd_dt_pred / 2
                 water_vapour_mixing_ratio += (
-                    sub_timestep * d_water_vapour_mixing_ratio__dt_predicted / 2
+                    timestep * d_water_vapour_mixing_ratio__dt_predicted / 2
                 )
-                rhod += sub_timestep * drhod_dt / 2
+                rhod += timestep * drhod_dt / 2
                 T = formulae.state_variable_triplet__T(rhod, thd)
                 p = formulae.state_variable_triplet__p(
                     rhod, T, water_vapour_mixing_ratio
@@ -321,7 +321,7 @@ class CondensationMethods(BackendMethods):
                     KTp,
                     rtol_x,
                 )
-                dml_dt = (ml_new - ml_old) / sub_timestep
+                dml_dt = (ml_new - ml_old) / timestep
                 d_water_vapour_mixing_ratio__dt_corrected = -dml_dt / m_d
                 dthd_dt_corr = formulae.state_variable_triplet__dthd_dt(
                     rhod=rhod,
@@ -331,12 +331,12 @@ class CondensationMethods(BackendMethods):
                     lv=lv,
                 )
 
-                thd += sub_timestep * (dthd_dt_pred / 2 + dthd_dt_corr)
-                water_vapour_mixing_ratio += sub_timestep * (
+                thd += timestep * (dthd_dt_pred / 2 + dthd_dt_corr)
+                water_vapour_mixing_ratio += timestep * (
                     d_water_vapour_mixing_ratio__dt_predicted / 2
                     + d_water_vapour_mixing_ratio__dt_corrected
                 )
-                rhod += sub_timestep * drhod_dt / 2
+                rhod += timestep * drhod_dt / 2
                 ml_old = ml_new
                 count_activating += n_activating
                 count_deactivating += n_deactivating
