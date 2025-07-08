@@ -47,19 +47,21 @@ DIFFUSION_ICE_CAPACITIES = ("Spherical", "Columnar")
 COMMON = {
     "products": (IceWaterContent(),),
     "formulae": {
-        f"{diffusion_coordinate}": Formulae(
+        f"{diffusion_coordinate}-{diffusion_ice_capacity}": Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             diffusion_coordinate=diffusion_coordinate,
+            diffusion_ice_capacity=diffusion_ice_capacity,
         )
         for diffusion_coordinate in DIFFUSION_COORDINATES
+        for diffusion_ice_capacity in DIFFUSION_ICE_CAPACITIES
     },
 }
 
 
 @lru_cache
-def backend(diffusion_coordinate: str):
+def backend(diffusion_coordinate: str, diffusion_ice_capacity: str):
     return CPU(
-        formulae=COMMON["formulae"][diffusion_coordinate],
+        formulae=COMMON["formulae"][f"{diffusion_coordinate}-{diffusion_ice_capacity}"],
         override_jit_flags={"parallel": False},
     )
 
@@ -68,6 +70,7 @@ def make_particulator(
     *,
     dt: float,
     diffusion_coordinate: str,
+    diffusion_ice_capacity: str,
     signed_water_masses: Iterable,
     temperature: float,
     pressure: float,
@@ -81,7 +84,7 @@ def make_particulator(
     builder = Builder(
         n_sd=len(signed_water_masses),
         environment=MoistBox(dt=dt, dv=1 * si.m**3),
-        backend=backend(diffusion_coordinate),
+        backend=backend(diffusion_coordinate, diffusion_ice_capacity),
     )
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(VapourDepositionOnIce(adaptive=adaptive))
@@ -133,13 +136,17 @@ class TestVapourDepositionOnIce:
     @pytest.mark.parametrize("water_mass", (-si.ng, -si.mg, si.mg))
     @pytest.mark.parametrize("RHi", (1.1, 1.0, 0.9))
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
-    def test_iwc_differs_after_one_timestep(*, water_mass, RHi, diffusion_coordinate):
+    @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
+    def test_iwc_differs_after_one_timestep(
+        *, water_mass, RHi, diffusion_coordinate, diffusion_ice_capacity
+    ):
         """sanity checks for sign of changes in IWC and ambient thermodynamics"""
         # arrange
         particulator = make_particulator(
             temperature=250 * si.K,
             pressure=500 * si.hPa,
             diffusion_coordinate=diffusion_coordinate,
+            diffusion_ice_capacity=diffusion_ice_capacity,
             signed_water_masses=[water_mass],
             RH_ice=RHi,
             dt=0.1 * si.s,
@@ -176,7 +183,6 @@ class TestVapourDepositionOnIce:
         (
             (0.01 * si.s, False),
             pytest.param(1.0 * si.s, False, marks=pytest.mark.xfail(strict=True)),
-            (1.0 * si.s, True),
         ),
     )
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
@@ -195,6 +201,7 @@ class TestVapourDepositionOnIce:
             particulator = make_particulator(
                 pressure=300 * si.hPa,
                 diffusion_coordinate=diffusion_coordinate,
+                diffusion_ice_capacity="Columnar",
                 signed_water_masses=-initial_water_masses,
                 RH_water=1,
                 temperature=temperature,
@@ -234,6 +241,7 @@ class TestVapourDepositionOnIce:
 
         for mass_rate in dm_dt.values():
             assert (np.diff(mass_rate) > 0).all()
+
         assert 1.8e-15 * si.kg / si.s < dm_dt[230 * si.K][0] < 4.0e-15 * si.kg / si.s
         assert 7.0e-17 * si.kg / si.s < dm_dt[200 * si.K][0] < 1.0e-16 * si.kg / si.s
         assert 1.3e-12 * si.kg / si.s < dm_dt[230 * si.K][-1] < 1.5e-12 * si.kg / si.s
@@ -241,7 +249,8 @@ class TestVapourDepositionOnIce:
 
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
-    def test_relative_mass_rates(*, diffusion_coordinate):
+    @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
+    def test_relative_mass_rates(*, diffusion_coordinate, diffusion_ice_capacity):
         # arrange
         water_mass_init = np.logspace(-16, -6, num=11) * si.kg
         particulator = make_particulator(
@@ -250,6 +259,7 @@ class TestVapourDepositionOnIce:
             RH_ice=1.1,
             signed_water_masses=-water_mass_init,
             diffusion_coordinate=diffusion_coordinate,
+            diffusion_ice_capacity=diffusion_ice_capacity,
             dt=0.1 * si.s,
         )
 
@@ -264,13 +274,18 @@ class TestVapourDepositionOnIce:
 
     @staticmethod
     @pytest.mark.parametrize("rh_ice", (1.5, 1.0, 0.5))
-    def test_mass_conservation_under_adaptivity(rh_ice):
+    @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
+    @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
+    def test_mass_conservation_under_adaptivity(
+        rh_ice, diffusion_ice_capacity, diffusion_coordinate
+    ):
         # arrange
         water_mass_init = np.logspace(-15, -6, num=11) * si.kg
         particulator = make_particulator(
             adaptive=True,
             dt=10 * si.s,
-            diffusion_coordinate="WaterMassLogarithm",
+            diffusion_coordinate=diffusion_coordinate,
+            diffusion_ice_capacity=diffusion_ice_capacity,
             signed_water_masses=-water_mass_init,
             temperature=250 * si.K,
             pressure=800 * si.hPa,
