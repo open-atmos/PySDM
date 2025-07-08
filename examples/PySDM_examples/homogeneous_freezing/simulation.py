@@ -44,7 +44,7 @@ class Simulation:
             builder.add_dynamic(Condensation())
         if settings.deposition_enable:
             builder.add_dynamic(VapourDepositionOnIce())
-        builder.add_dynamic(Freezing(singular=False, homogeneous_freezing=True, immersion_freezing=False))
+        builder.add_dynamic(Freezing(homogeneous_freezing=settings.hom_freezing, immersion_freezing=None))
 
         self.n_sd = settings.n_sd
         self.multiplicities = discretise_multiplicities(settings.specific_concentration * env.mass_of_dry_air)

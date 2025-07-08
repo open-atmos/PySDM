@@ -23,6 +23,7 @@ class Settings:
         r_mean_droplet_distribution: float,
         sigma_droplet_distribution: float = None,
         type_droplet_distribution: str = "monodisperse",
+        hom_freezing: str = "threshold",
         p0: float =  200 * si.hectopascals,
         RH_0: float=1.0,
         kappa: float=0.64,
@@ -46,6 +47,7 @@ class Settings:
 
         self.condensation_enable = condensation_enable
         self.deposition_enable = deposition_enable
+        self.hom_freezing = hom_freezing
 
         self.formulae = formulae
 
