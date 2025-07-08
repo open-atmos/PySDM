@@ -13,7 +13,7 @@ from PySDM.products import (
 )
 from PySDM.backends import GPU
 
-VERY_BIG_J_HET = 1e20
+VERY_BIG_RATE = 1e20
 EPSILON_RH = 1e-3
 
 
@@ -25,8 +25,11 @@ class TestDropletFreezing:
     )
     @pytest.mark.parametrize(
         "freezing_mode",
-        ( {"immersion_freezing": "time-dependent", "homogeneous_freezing": None},
-          {"immersion_freezing": None, "homogeneous_freezing": "threshold"}, ),
+        (
+            {"immersion_freezing": "time-dependent", "homogeneous_freezing": None},
+            {"immersion_freezing": None, "homogeneous_freezing": "threshold"},
+            {"immersion_freezing": None, "homogeneous_freezing": "time-dependent"},
+        ),
     )
     def test_record_freezing_temperature_on_time_dependent_freeze(
         backend_class, record_freezing_temperature, freezing_mode
@@ -38,7 +41,11 @@ class TestDropletFreezing:
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             heterogeneous_ice_nucleation_rate="Constant",
-            constants={"J_HET": VERY_BIG_J_HET},
+            homogeneous_ice_nucleation_rate="Constant",
+            constants={
+                "J_HET": VERY_BIG_RATE,
+                "J_HOM": VERY_BIG_RATE,
+            },
         )
         builder = Builder(
             n_sd=1,
@@ -50,7 +57,7 @@ class TestDropletFreezing:
             Freezing(
                 immersion_freezing=freezing_mode["immersion_freezing"],
                 homogeneous_freezing=freezing_mode["homogeneous_freezing"],
-                thaw="instantaneous"
+                thaw="instantaneous",
             )
         )
         if record_freezing_temperature:
