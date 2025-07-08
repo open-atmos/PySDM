@@ -64,7 +64,7 @@ class Settings:
                             / const.Rd )
 
         if self.type_droplet_distribution == ("monodisperse"):
-            self.droplet_radius = np.ones( self.n_sd ) * r_mean_droplet_distribution
+            self.r_dry = np.ones( self.n_sd ) * r_mean_droplet_distribution
             self.specific_concentration = np.ones( self.n_sd ) * N_dv_droplet_distribution / self.n_sd / dry_air_density
 
         elif self.type_droplet_distribution == ("lognormal"):

@@ -42,26 +42,24 @@ class Simulation:
         builder.add_dynamic(AmbientThermodynamics())
         if settings.condensation_enable:
             builder.add_dynamic(Condensation())
+            print("Condensation enabled")
         if settings.deposition_enable:
             builder.add_dynamic(VapourDepositionOnIce())
         builder.add_dynamic(Freezing(homogeneous_freezing=settings.hom_freezing, immersion_freezing=None))
 
         self.n_sd = settings.n_sd
         self.multiplicities = discretise_multiplicities(settings.specific_concentration * env.mass_of_dry_air)
-        # self.r_dry = settings.r_dry
-        # v_dry = settings.formulae.trivia.volume(radius=self.r_dry)
-        # kappa = settings.kappa
-        #
-        # self.r_wet = equilibrate_wet_radii(r_dry=self.r_dry, environment=builder.particulator.environment,
-        #                                    kappa_times_dry_volume=kappa * v_dry)
-        # print( self.r_wet, self.r_dry )
+        self.r_dry = settings.r_dry
+        v_dry = settings.formulae.trivia.volume(radius=self.r_dry)
+        kappa = settings.kappa
+
+        self.r_wet = equilibrate_wet_radii(r_dry=self.r_dry, environment=builder.particulator.environment,
+                                           kappa_times_dry_volume=kappa * v_dry)
         attributes = {
             "multiplicity": self.multiplicities,
-            # "radius":  settings.droplet_radius,
-            # 'dry volume': v_dry,
-            # 'kappa times dry volume': kappa * v_dry,
-            # 'volume': formulae.trivia.volume(radius=self.r_wet),
-            "signed water mass": formulae.particle_shape_and_density.radius_to_mass(settings.droplet_radius),
+            'dry volume': v_dry,
+            'kappa times dry volume': kappa * v_dry,
+            "signed water mass": formulae.particle_shape_and_density.radius_to_mass(self.r_wet),
         }
         builder.request_attribute("temperature of last freezing")
 
@@ -144,7 +142,7 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            print( output["t"][-1], output["T"][-1], output["LWC"][-1],  output["IWC"][-1] )
+            # print( output["t"][-1], output["T"][-1], output["LWC"][-1],  output["IWC"][-1] )
 
             if output["LWC"][-1] == 0:
                 print( "break due to LWC")
