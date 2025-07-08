@@ -28,6 +28,7 @@ def _solve_equilibrium_radii(
     rtol: float,
     max_iters: int,
     skip_fa_lt_zero: bool,
+    RH_range: tuple = (0, 1),
 ):
     T = environment["T"].to_ndarray()
     RH = environment["RH"].to_ndarray()
@@ -45,9 +46,15 @@ def _solve_equilibrium_radii(
         radii_out = np.empty_like(radii_in)
         for i in numba.prange(len(radii_in)):  # pylint: disable=not-an-iterable
             cid = cell_id[i]
-            RH_i = np.maximum(0.0, np.minimum(1.0, RH[cid]))
-            args = get_args(T[cid], RH_i, kappa[i], radii_in[i], f_org[i])
             a, b = get_bounds(radii_in[i], T[cid], kappa[i])
+
+            if not a < b:
+                radii_out[i] = radii_in[i]
+                iters[i] = 0
+                continue
+
+            RH_i = np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid]))
+            args = get_args(T[cid], RH_i, kappa[i], radii_in[i], f_org[i])
             fa, fb = minfun(a, *args), minfun(b, *args)
 
             if skip_fa_lt_zero and fa < 0:
