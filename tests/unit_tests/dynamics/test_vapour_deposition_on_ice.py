@@ -284,7 +284,9 @@ class TestVapourDepositionOnIce:
                 0.5,
                 1e8,
                 "WaterMass",
-                marks=pytest.mark.xfail(strict=numba.config.DISABLE_JIT),
+                marks=pytest.mark.xfail(
+                    strict=numba.config.DISABLE_JIT
+                ),  # pylint:disable=no-member
             ),
             (1.5, 1, "WaterMass"),
             (1.0, 1, "WaterMass"),
@@ -295,7 +297,9 @@ class TestVapourDepositionOnIce:
                 0.5,
                 1e8,
                 "WaterMassLogarithm",
-                marks=pytest.mark.xfail(strict=numba.config.DISABLE_JIT),
+                marks=pytest.mark.xfail(
+                    strict=numba.config.DISABLE_JIT
+                ),  # pylint:disable=no-member
             ),
             pytest.param(
                 1.5, 1, "WaterMassLogarithm", marks=pytest.mark.xfail(strict=True)
