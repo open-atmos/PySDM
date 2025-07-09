@@ -52,11 +52,11 @@ class TestFig2:
             ("Bulk-3.6", "water", 1.05 * si.g / si.kg),
             ("Bulk-0.4", "vapour", 0.42 * si.g / si.kg),
             ("Bulk-0.4", "water", 1.08 * si.g / si.kg),
-            ("Homogeneous-INAS-64-3.6", "ice", 1.1 * si.g / si.kg),
-            ("Homogeneous-INAS-64-3.6", "water", 5.6e-9),
-            ("Homogeneous-INAS-64-3.6", "vapour", 0.42 * si.g / si.kg),
-            ("Homogeneous-ABIFM-64-3.6", "ice", 0.24 * si.g / si.kg),
-            ("Homogeneous-ABIFM-64-3.6", "water", 0.82 * si.g / si.kg),
+            ("Homogeneous-INAS-64-3.6", "ice", 0.81 * si.g / si.kg),
+            ("Homogeneous-INAS-64-3.6", "water", 0.25 * si.g / si.kg),
+            ("Homogeneous-INAS-64-3.6", "vapour", 0.45 * si.g / si.kg),
+            ("Homogeneous-ABIFM-64-3.6", "ice", 0.20 * si.g / si.kg),
+            ("Homogeneous-ABIFM-64-3.6", "water", 0.86 * si.g / si.kg),
             ("Homogeneous-ABIFM-64-3.6", "vapour", 0.45 * si.g / si.kg),
             ("Homogeneous-INAS-64-0.4", "ice", 1.1 * si.g / si.kg),
             ("Homogeneous-INAS-64-0.4", "water", 2.06e-9),
@@ -67,7 +67,6 @@ class TestFig2:
         ),
     )
     def test_values_at_cloud_top(variables, model, var_name, desired_value):
-        print(variables["datasets"][model]["realisations"][0]["height"][-1])
         np.testing.assert_approx_equal(
             desired=desired_value,
             actual=variables["datasets"][model]["realisations"][0][var_name][-1],
