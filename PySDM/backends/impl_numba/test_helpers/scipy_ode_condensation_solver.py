@@ -42,7 +42,7 @@ def _condensation(
         n_cell=particulator.mesh.n_cell,
         cell_start_arg=particulator.attributes.cell_start.data,
         attributes=_Attributes(
-            water_mass=particulator.attributes["water mass"].data,
+            signed_water_mass=particulator.attributes["signed water mass"].data,
             v_cr=None,
             multiplicity=particulator.attributes["multiplicity"].data,
             vdry=particulator.attributes["dry volume"].data,
@@ -242,7 +242,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         y0 = np.empty(n_sd_in_cell + idx_x)
         y0[idx_thd] = thd
         y0[idx_x:] = jit_formulae.diffusion_coordinate__x(
-            attributes.water_mass[cell_idx]
+            attributes.signed_water_mass[cell_idx]
         )
         total_water_mixing_ratio = (
             water_vapour_mixing_ratio
@@ -288,12 +288,12 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 
         m_new = 0
         for i in range(n_sd_in_cell):
-            attributes.water_mass[cell_idx[i]] = (
+            attributes.signed_water_mass[cell_idx[i]] = (
                 jit_formulae.diffusion_coordinate__mass(y1[idx_x + i])
             )
             m_new += (
                 attributes.multiplicity[cell_idx[i]]
-                * attributes.water_mass[cell_idx[i]]
+                * attributes.signed_water_mass[cell_idx[i]]
             )
 
         return (

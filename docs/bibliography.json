@@ -313,7 +313,8 @@
       "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb",
       "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb",
       "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb",
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/__init__.py"
+      "examples/PySDM_examples/Alpert_and_Knopf_2016/__init__.py",
+      "examples/PySDM_examples/Arabas_et_al_2025/commons.py"
     ],
     "label": "Alpert & Knopf 16 (Atmos. Chem. Phys. 16)",
     "title": "Analysis of isothermal and cooling-rate-dependent immersion freezing by a unifying stochastic ice nucleation model"
