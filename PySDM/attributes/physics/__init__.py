@@ -18,3 +18,7 @@ from .temperature import Temperature
 from .terminal_velocity import TerminalVelocity
 from .volume import Volume
 from .reynolds_number import ReynoldsNumber
+from .local_thermodynamics import (
+    LocalVapourMixingRatioRelaxed,
+    LocalVapourMixingEqualToAmbientOne,
+)

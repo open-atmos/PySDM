@@ -106,6 +106,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
         self.bulk_phase_partitioning = bulk_phase_partitioning
+        self.turbulent_relaxation_timescale = turbulent_relaxation_timescale
 
         self._components = tuple(
             i

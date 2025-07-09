@@ -565,3 +565,16 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             cell=self.attributes["cell id"],
             temperature=self.environment["T"],
         )
+
+    def drop_local_thermodynamics(self):
+        # TODO: move the logic to backend[s]
+        Qk = self.attributes["drop-local water vapour mixing ratio"].data
+        q_mean = self.environment["water_vapour_mixing_ratio"]
+        tau = self.formulae.turbulent_relaxation_timescale.tau(np.nan, np.nan)
+        dt = self.dt
+        cell_id = self.attributes["cell id"].data
+
+        for drop_id in range(Qk.shape[0]):
+            Qk[drop_id] -= (Qk[drop_id] - q_mean[cell_id[drop_id]]) / tau * dt
+
+        self.attributes.mark_updated("drop-local water vapour mixing ratio")
