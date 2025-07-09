@@ -78,6 +78,9 @@
                                 <a class="variable" href="#VapourDepositionOnIce.particulator">particulator</a>
                         </li>
                         <li>
+                                <a class="variable" href="#VapourDepositionOnIce.adaptive">adaptive</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#VapourDepositionOnIce.register">register</a>
                         </li>
                         <li>
@@ -116,19 +119,20 @@
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VapourDepositionOnIce</span><span class="p">:</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adaptive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the user while building a particulator&quot;&quot;&quot;</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the builder&quot;&quot;&quot;</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">assert</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;Reynolds number&quot;</span><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the particulator during simulation&quot;&quot;&quot;</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">deposition</span><span class="p">()</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span> <span class="o">=</span> <span class="n">adaptive</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the builder&quot;&quot;&quot;</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="k">assert</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;Reynolds number&quot;</span><span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the particulator during simulation&quot;&quot;&quot;</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">deposition</span><span class="p">(</span><span class="n">adaptive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -147,19 +151,20 @@
     <a class="headerlink" href="#VapourDepositionOnIce"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="VapourDepositionOnIce-7"><a href="#VapourDepositionOnIce-7"><span class="linenos"> 7</span></a><span class="nd">@register_dynamic</span><span class="p">()</span>
 </span><span id="VapourDepositionOnIce-8"><a href="#VapourDepositionOnIce-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">VapourDepositionOnIce</span><span class="p">:</span>
-</span><span id="VapourDepositionOnIce-9"><a href="#VapourDepositionOnIce-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="VapourDepositionOnIce-9"><a href="#VapourDepositionOnIce-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adaptive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 </span><span id="VapourDepositionOnIce-10"><a href="#VapourDepositionOnIce-10"><span class="linenos">10</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the user while building a particulator&quot;&quot;&quot;</span>
 </span><span id="VapourDepositionOnIce-11"><a href="#VapourDepositionOnIce-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span id="VapourDepositionOnIce-12"><a href="#VapourDepositionOnIce-12"><span class="linenos">12</span></a>
-</span><span id="VapourDepositionOnIce-13"><a href="#VapourDepositionOnIce-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="VapourDepositionOnIce-14"><a href="#VapourDepositionOnIce-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the builder&quot;&quot;&quot;</span>
-</span><span id="VapourDepositionOnIce-15"><a href="#VapourDepositionOnIce-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="VapourDepositionOnIce-16"><a href="#VapourDepositionOnIce-16"><span class="linenos">16</span></a>        <span class="k">assert</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
-</span><span id="VapourDepositionOnIce-17"><a href="#VapourDepositionOnIce-17"><span class="linenos">17</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;Reynolds number&quot;</span><span class="p">)</span>
-</span><span id="VapourDepositionOnIce-18"><a href="#VapourDepositionOnIce-18"><span class="linenos">18</span></a>
-</span><span id="VapourDepositionOnIce-19"><a href="#VapourDepositionOnIce-19"><span class="linenos">19</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="VapourDepositionOnIce-20"><a href="#VapourDepositionOnIce-20"><span class="linenos">20</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the particulator during simulation&quot;&quot;&quot;</span>
-</span><span id="VapourDepositionOnIce-21"><a href="#VapourDepositionOnIce-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">deposition</span><span class="p">()</span>
+</span><span id="VapourDepositionOnIce-12"><a href="#VapourDepositionOnIce-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span> <span class="o">=</span> <span class="n">adaptive</span>
+</span><span id="VapourDepositionOnIce-13"><a href="#VapourDepositionOnIce-13"><span class="linenos">13</span></a>
+</span><span id="VapourDepositionOnIce-14"><a href="#VapourDepositionOnIce-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="VapourDepositionOnIce-15"><a href="#VapourDepositionOnIce-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the builder&quot;&quot;&quot;</span>
+</span><span id="VapourDepositionOnIce-16"><a href="#VapourDepositionOnIce-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="VapourDepositionOnIce-17"><a href="#VapourDepositionOnIce-17"><span class="linenos">17</span></a>        <span class="k">assert</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
+</span><span id="VapourDepositionOnIce-18"><a href="#VapourDepositionOnIce-18"><span class="linenos">18</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;Reynolds number&quot;</span><span class="p">)</span>
+</span><span id="VapourDepositionOnIce-19"><a href="#VapourDepositionOnIce-19"><span class="linenos">19</span></a>
+</span><span id="VapourDepositionOnIce-20"><a href="#VapourDepositionOnIce-20"><span class="linenos">20</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="VapourDepositionOnIce-21"><a href="#VapourDepositionOnIce-21"><span class="linenos">21</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the particulator during simulation&quot;&quot;&quot;</span>
+</span><span id="VapourDepositionOnIce-22"><a href="#VapourDepositionOnIce-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">deposition</span><span class="p">(</span><span class="n">adaptive</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -169,15 +174,16 @@
                                         <input id="VapourDepositionOnIce.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">VapourDepositionOnIce</span><span class="signature pdoc-code condensed">()</span>
+        <span class="name">VapourDepositionOnIce</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">adaptive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span>)</span>
 
                 <label class="view-source-button" for="VapourDepositionOnIce.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#VapourDepositionOnIce.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VapourDepositionOnIce.__init__-9"><a href="#VapourDepositionOnIce.__init__-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VapourDepositionOnIce.__init__-9"><a href="#VapourDepositionOnIce.__init__-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adaptive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
 </span><span id="VapourDepositionOnIce.__init__-10"><a href="#VapourDepositionOnIce.__init__-10"><span class="linenos">10</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the user while building a particulator&quot;&quot;&quot;</span>
 </span><span id="VapourDepositionOnIce.__init__-11"><a href="#VapourDepositionOnIce.__init__-11"><span class="linenos">11</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="VapourDepositionOnIce.__init__-12"><a href="#VapourDepositionOnIce.__init__-12"><span class="linenos">12</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">adaptive</span> <span class="o">=</span> <span class="n">adaptive</span>
 </span></pre></div>
 
 
@@ -197,6 +203,17 @@
     
 
                             </div>
+                            <div id="VapourDepositionOnIce.adaptive" class="classattr">
+                                <div class="attr variable">
+            <span class="name">adaptive</span>
+
+        
+    </div>
+    <a class="headerlink" href="#VapourDepositionOnIce.adaptive"></a>
+    
+    
+
+                            </div>
                             <div id="VapourDepositionOnIce.register" class="classattr">
                                         <input id="VapourDepositionOnIce.register-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -208,11 +225,11 @@
 
     </div>
     <a class="headerlink" href="#VapourDepositionOnIce.register"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="VapourDepositionOnIce.register-13"><a href="#VapourDepositionOnIce.register-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
-</span><span id="VapourDepositionOnIce.register-14"><a href="#VapourDepositionOnIce.register-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the builder&quot;&quot;&quot;</span>
-</span><span id="VapourDepositionOnIce.register-15"><a href="#VapourDepositionOnIce.register-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="VapourDepositionOnIce.register-16"><a href="#VapourDepositionOnIce.register-16"><span class="linenos">16</span></a>        <span class="k">assert</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
-</span><span id="VapourDepositionOnIce.register-17"><a href="#VapourDepositionOnIce.register-17"><span class="linenos">17</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;Reynolds number&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="VapourDepositionOnIce.register-14"><a href="#VapourDepositionOnIce.register-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
+</span><span id="VapourDepositionOnIce.register-15"><a href="#VapourDepositionOnIce.register-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;called by the builder&quot;&quot;&quot;</span>
+</span><span id="VapourDepositionOnIce.register-16"><a href="#VapourDepositionOnIce.register-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="VapourDepositionOnIce.register-17"><a href="#VapourDepositionOnIce.register-17"><span class="linenos">17</span></a>        <span class="k">assert</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">()</span>
+</span><span id="VapourDepositionOnIce.register-18"><a href="#VapourDepositionOnIce.register-18"><span class="linenos">18</span></a>        <span class="n">builder</span><span class="o">.</span><span class="n">request_attribute</span><span class="p">(</span><span class="s2">&quot;Reynolds number&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
