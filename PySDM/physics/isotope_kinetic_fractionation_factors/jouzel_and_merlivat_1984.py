@@ -32,7 +32,7 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def transfer_coefficient(D, Fk):
+    def transfer_coefficient(const, rho_s, D, Fk):
         """
         eq. (A4) in Jouzel & Merlivat 1975,
         eq. (A6) in Bolot 2013.
@@ -48,7 +48,7 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
         ----------
         Thermal transfer coefficient between water vapour and condensate.
         """
-        return 1 / (1 + D * Fk)
+        return 1 / (1 + D * rho_s / const.rho_w * Fk)
 
     @staticmethod
     def effective_saturation(transfer_coefficient, RH):
