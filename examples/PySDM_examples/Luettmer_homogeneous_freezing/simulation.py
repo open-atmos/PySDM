@@ -68,6 +68,7 @@ class Simulation:
             environment=builder.particulator.environment,
             kappa_times_dry_volume=kappa * v_dry,
         )
+
         attributes = {
             "multiplicity": self.multiplicities,
             "dry volume": v_dry,
@@ -77,6 +78,7 @@ class Simulation:
             ),
         }
         builder.request_attribute("temperature of last freezing")
+        builder.request_attribute("radius")
 
         products = [
             PySDM_products.ParcelDisplacement(name="z"),
@@ -120,7 +122,6 @@ class Simulation:
         output["P"].append(self.particulator.products["p"].get()[cell_id])
         output["LWC"].append(self.particulator.products["water"].get()[cell_id])
         output["IWC"].append(self.particulator.products["ice"].get()[cell_id])
-        #   output["TWC"].append(self.particulator.products["total"].get()[cell_id])
         output["qv"].append(self.particulator.products["vapour"].get()[cell_id])
         output["ns"].append(self.particulator.products["n_s"].get()[cell_id])
         output["ni"].append(self.particulator.products["n_i"].get()[cell_id])
@@ -162,10 +163,8 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            # print( output["t"][-1], output["T"][-1], output["LWC"][-1],  output["IWC"][-1] )
-
             if output["LWC"][-1] == 0:
-                print("break due to LWC")
+                print("all particles frozen")
                 break
             if output["t"][-1] >= self.t_max_duration:
                 print("time exceeded")
