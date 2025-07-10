@@ -192,10 +192,7 @@ class TestIsotopeKineticFractionationFactors:
     @pytest.mark.parametrize("T", np.linspace(240, 300, 11))
     def test_effective_saturation(T):
         # arrange
-        formulae = Formulae(
-            isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
-            drop_growth="Mason1971",
-        )
+        formulae = Formulae(drop_growth="Mason1971")
         const = formulae.constants
         saturation = np.linspace(0.8, 1.2, 21)
         rho_s = formulae.saturation_vapour_pressure.pvs_ice(T) / const.Rv / T
@@ -204,12 +201,12 @@ class TestIsotopeKineticFractionationFactors:
             K=const.K0,
             lv=formulae.latent_heat_vapourisation.lv(T),
         )
-        A_li = formulae.isotope_kinetic_fractionation_factors.transfer_coefficient(
-            rho_s=rho_s, D=const.D0, Fk=Fk
+        A_li = JouzelAndMerlivat1984.transfer_coefficient(
+            const=const, rho_s=rho_s, D=const.D0, Fk=Fk
         )
 
         # act
-        sut = formulae.isotope_kinetic_fractionation_factors.effective_saturation(
+        sut = JouzelAndMerlivat1984.effective_saturation(
             transfer_coefficient=A_li,
             RH=saturation,
         )
