@@ -44,9 +44,9 @@ class TestFig8:
         # arrange
         temperature_C = notebook_variables["T_0_50"] - T0
         if if_effective:
-            Si = notebook_variables["eff_saturation_wrt_ice"]
+            Si = notebook_variables["eff_saturation_wrt_ice_at_RH100"]
         else:
-            Si = notebook_variables["saturation_wrt_ice"]
+            Si = notebook_variables["saturation_wrt_ice_at_RH100"]
 
         # act
         sut = Si[np.argmin(np.abs(temperature_C - temp_C))]
