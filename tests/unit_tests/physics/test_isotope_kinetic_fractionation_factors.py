@@ -4,6 +4,7 @@ test for isotope kinetic fractionation factors based on plot
 
 import numpy as np
 import pytest
+from _pytest import mark
 from matplotlib import pyplot
 
 from PySDM import Formulae
@@ -183,3 +184,38 @@ class TestIsotopeKineticFractionationFactors:
         # assert
         np.testing.assert_equal(n > 0.5, True)
         np.testing.assert_equal(n < 1, True)
+
+    @staticmethod
+    def test_effective_saturation():
+        # arrange
+        formulae = Formulae(
+            isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
+            drop_growth="Mason1971",
+        )
+        const = formulae.constants
+        saturation = np.linspace(0.8, 1.2)
+        T = 263.15
+        rho_s = formulae.saturation_vapour_pressure.pvs_ice(T) / const.Rv / T
+        Fk = formulae.drop_growth.Fk(
+            T=T,
+            K=const.K0,
+            lv=formulae.latent_heat_vapourisation.lv(T),
+        )
+        A_li = formulae.isotope_kinetic_fractionation_factors.transfer_coefficient(
+            rho_s=rho_s, D=const.D0, Fk=Fk
+        )
+
+        # act
+        sut = formulae.isotope_kinetic_fractionation_factors.effective_saturation(
+            transfer_coefficient=A_li,
+            RH=saturation,
+        )
+        idx_subsaturation = np.where(saturation < 1)
+
+        # assert
+        np.testing.assert_array_less(
+            saturation[idx_subsaturation], sut[idx_subsaturation]
+        )
+        np.testing.assert_array_less(
+            sut[~idx_subsaturation[0]], saturation[~idx_subsaturation[0]]
+        )
