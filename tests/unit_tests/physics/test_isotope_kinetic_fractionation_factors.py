@@ -4,7 +4,6 @@ test for isotope kinetic fractionation factors based on plot
 
 import numpy as np
 import pytest
-from _pytest import mark
 from matplotlib import pyplot
 
 from PySDM import Formulae
@@ -39,11 +38,15 @@ class TestIsotopeKineticFractionationFactors:
     def test_units_transfer_coefficient():
         with DimensionalAnalysis():
             # arrange
+            const = Formulae().constants
+            rho_s = 1 * physics.si.g / physics.si.m**3
             D = 1 * physics.si.m**2 / physics.si.s
             Fk = 1 * physics.si.s / physics.si.m**2
 
             # act
-            sut = JouzelAndMerlivat1984.transfer_coefficient(D=D, Fk=Fk)
+            sut = JouzelAndMerlivat1984.transfer_coefficient(
+                const=const, D=D, Fk=Fk, rho_s=rho_s
+            )
 
             # assert
             assert sut.check("[]")
@@ -186,15 +189,15 @@ class TestIsotopeKineticFractionationFactors:
         np.testing.assert_equal(n < 1, True)
 
     @staticmethod
-    def test_effective_saturation():
+    @pytest.mark.parametrize("T", np.linspace(240, 300, 11))
+    def test_effective_saturation(T):
         # arrange
         formulae = Formulae(
             isotope_kinetic_fractionation_factors="JouzelAndMerlivat1984",
             drop_growth="Mason1971",
         )
         const = formulae.constants
-        saturation = np.linspace(0.8, 1.2)
-        T = 263.15
+        saturation = np.linspace(0.8, 1.2, 21)
         rho_s = formulae.saturation_vapour_pressure.pvs_ice(T) / const.Rv / T
         Fk = formulae.drop_growth.Fk(
             T=T,
