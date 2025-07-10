@@ -7,6 +7,12 @@ formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
         )
 
+# general plot settings
+ax_lab_fsize = 15
+tick_fsize = 15
+# title_fsize = 15
+# line_width = 2.5
+
 def plot_thermodynamics_and_bulk(simulation):
 
     output = simulation["output"]
@@ -17,7 +23,6 @@ def plot_thermodynamics_and_bulk(simulation):
     qc = np.asarray(output["LWC"])
     qi = np.asarray(output["IWC"])
     qv = np.asarray(output["qv"])
-    # T_frz = np.asarray(output["T_frz"][-1])
     qt = qc + qv + qi
     rc = np.asarray(output["rs"])
     ri = np.asarray(output["ri"])
@@ -32,12 +37,6 @@ def plot_thermodynamics_and_bulk(simulation):
     koop_murray_2016 = j_hom_rate.j_hom(T, d_a_w_ice)
     j_hom_rate = Formulae(homogeneous_ice_nucleation_rate='Koop_Correction').homogeneous_ice_nucleation_rate
     spichtinger_2023 = j_hom_rate.j_hom(T, d_a_w_ice)
-
-    # general plot settings
-    ax_lab_fsize = 15
-    tick_fsize = 15
-    # title_fsize = 15
-    # line_width = 2.5
 
     fig, axs = pyplot.subplots(2, 2, figsize=(10, 10), sharex=False, constrained_layout=True)
 
@@ -129,9 +128,24 @@ def plot_thermodynamics_and_bulk(simulation):
     ax.legend(fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
 
+
+
+
+def plot_freezing_temperatures(ax, simulation):
+
+    output = simulation["output"]
+    T_frz = np.asarray(output["T_frz"][-1])
+
+
+    title = ("Freezing method=" + simulation["settings"]["hom_freezing"])
+
     # """ Freezing temperatures """
-    # ax = axs[1, 1]
-    # T_frz_bins = np.linspace(-39, -33, num=70, endpoint=True)
-    # plt.hist(formulae.trivia.K2C(T_frz), bins=T_frz_bins, density=False)
-    # ax.set_xlabel("freezing temperature [°C]")
-    # ax.set_ylabel("number of super droplets")
+    T_frz_bins = np.linspace(-38.5, -33, num=70, endpoint=True)
+    ax.set_title(title, fontsize=ax_lab_fsize)
+    ax.hist(formulae.trivia.K2C(T_frz), bins=T_frz_bins, density=False, cumulative=-1, alpha=.8,)
+    ax.set_xlabel("freezing temperature [°C]", fontsize=ax_lab_fsize)
+    ax.set_ylabel("number of super droplets", fontsize=ax_lab_fsize)
+    ax.tick_params(labelsize=tick_fsize)
+
+
+    return ax
