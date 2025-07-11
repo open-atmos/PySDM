@@ -14,6 +14,7 @@ class Settings:
     def __init__(
         self,
         *,
+        hom_freezing: str,
         n_sd: int,
         w_updraft: float,
         T0: float,
@@ -25,11 +26,11 @@ class Settings:
         p0: float = 200 * si.hectopascals,
         RH_0: float = 1.0,
         kappa: float = 0.64,
-        condensation_enable: bool=True,
-        deposition_enable: bool=True,
-        hom_freezing: str=None,
+        condensation_enable: bool = True,
+        deposition_enable: bool = True,
+        backend=None,
     ):
-
+        self.backend = backend
         print("Setting up simulation with " + hom_freezing)
         self.n_sd = n_sd
         self.w_updraft = w_updraft
@@ -48,25 +49,15 @@ class Settings:
         self.condensation_enable = condensation_enable
         self.deposition_enable = deposition_enable
 
-
-
         if hom_freezing == "threshold":
-            hom_nucleation_rate = "Null"
             self.hom_freezing_type = "threshold"
         else:
-            hom_nucleation_rate = hom_freezing
             self.hom_freezing_type = "time-dependent"
 
-        formulae = Formulae(
-            particle_shape_and_density="MixedPhaseSpheres",
-            homogeneous_ice_nucleation_rate=hom_nucleation_rate,
-            seed=time.time_ns()
-        )
-
-        self.formulae = formulae
+        print(time.time_ns())
+        self.formulae = backend.formulae
 
         const = self.formulae.constants
-        # pvs_i = self.formulae.saturation_vapour_pressure.pvs_ice(self.initial_temperature)
         pvs_w = self.formulae.saturation_vapour_pressure.pvs_water(
             self.initial_temperature
         )
@@ -97,7 +88,6 @@ class Settings:
                 m_mode=r_mean_droplet_distribution,
                 s_geom=sigma_droplet_distribution,
             )
-
             self.r_dry, self.specific_concentration = spectral_sampling.Linear(
                 spectrum
             ).sample(n_sd)

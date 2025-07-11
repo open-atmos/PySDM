@@ -32,14 +32,7 @@ class Simulation:
         )
 
         builder = Builder(
-            backend=backend(
-                formulae=settings.formulae,
-                **(
-                    {"override_jit_flags": {"parallel": False}}
-                    if backend == CPU
-                    else {}
-                ),
-            ),
+            backend=settings.backend,
             n_sd=settings.n_sd,
             environment=env,
         )
@@ -95,14 +88,10 @@ class Simulation:
             PySDM_products.AmbientWaterVapourMixingRatio(
                 name="vapour", var="water_vapour_mixing_ratio"
             ),
-            PySDM_products.ParticleConcentration(
-                name="n_s", unit="1/cm**3", radius_range=(0, np.inf)
-            ),
-            PySDM_products.ParticleConcentration(
-                name="n_i", unit="1/cm**3", radius_range=(-np.inf, 0)
-            ),
-            PySDM_products.MeanRadius(name="r_s", unit="µm", radius_range=(0, np.inf)),
-            PySDM_products.MeanRadius(name="r_i", unit="µm", radius_range=(-np.inf, 0)),
+            PySDM_products.ParticleConcentration(name="n_s", radius_range=(0, np.inf)),
+            PySDM_products.ParticleConcentration(name="n_i", radius_range=(-np.inf, 0)),
+            PySDM_products.MeanRadius(name="r_s", radius_range=(0, np.inf)),
+            PySDM_products.MeanRadius(name="r_i", radius_range=(-np.inf, 0)),
         ]
 
         self.particulator = builder.build(attributes, products)
@@ -136,7 +125,7 @@ class Simulation:
 
     def run(self):
 
-        print( "Starting simulation..." )
+        print("Starting simulation...")
 
         output = {
             "t": [],
