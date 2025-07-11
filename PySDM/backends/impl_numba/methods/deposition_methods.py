@@ -282,6 +282,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 rhod = current_dry_air_density[cid]
 
                 assert n_substeps == int(n_substeps)
+                print(f"{n_substeps=}")
                 for _ in range(int(n_substeps)):
                     rv += sub_time_step * drv_dt_forcing * (0.5 if midpoint else 1)
                     thd += sub_time_step * dthd_dt_forcing * (0.5 if midpoint else 1)
