@@ -128,7 +128,6 @@ def plot_freezing_temperatures(ax, simulation):
     T_frz_bins = np.linspace(-38.5, -33, num=70, endpoint=True)
 
     number_of_ensemble_runs = simulation["number_of_ensemble_runs"]
-    histograms = []
 
     for i in range(number_of_ensemble_runs):
 
@@ -138,7 +137,6 @@ def plot_freezing_temperatures(ax, simulation):
         title = "Freezing method=" + simulation["settings"]["hom_freezing"]
 
         """ Freezing temperatures """
-
         hist = ax.hist(
             formulae.trivia.K2C(T_frz),
             bins=T_frz_bins,
@@ -148,7 +146,6 @@ def plot_freezing_temperatures(ax, simulation):
             histtype="step",
             linewidth=1.5,
         )
-        histograms.append(hist)
 
     ax.set_title(title, fontsize=ax_lab_fsize)
     ax.set_xlabel("freezing temperature [°C]", fontsize=ax_lab_fsize)
