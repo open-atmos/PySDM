@@ -1,13 +1,15 @@
 import numpy as np
 import pytest
 
-from PySDM.dynamics import DropLocalThermodynamics, VapourDepositionOnIce
+from PySDM.dynamics import (
+    DropLocalThermodynamics,
+    VapourDepositionOnIce,
+    AmbientThermodynamics,
+)
 from PySDM import Builder, Formulae
 from PySDM.physics import si
 
 from tests.unit_tests.dynamics.test_vapour_deposition_on_ice import MoistBox
-
-# TODO: hello-world scenario: constant timescale, no diffusional growth, pure relaxation, assert that local temp relaxes to ambient according to the tau value
 
 
 @pytest.mark.parametrize(
@@ -20,7 +22,7 @@ from tests.unit_tests.dynamics.test_vapour_deposition_on_ice import MoistBox
         (44 * si.s, 1.1),
     ),
 )
-def test_drop_local_thermodynamics_e_folding(tau, fraction_at_t0, backend_class):
+def test_drop_local_thermodynamics_for_constant_tau(tau, fraction_at_t0, backend_class):
     if backend_class.__name__ == "ThrustRTC":
         pytest.skip()  # TODO
 
@@ -38,24 +40,33 @@ def test_drop_local_thermodynamics_e_folding(tau, fraction_at_t0, backend_class)
         backend=backend_class(formulae),
         environment=MoistBox(dt=dt, dv=np.nan),
     )
+    builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(DropLocalThermodynamics())
     particulator = builder.build(
         products=(),
         attributes={
             "multiplicity": np.asarray([1, 2, 3]),
             "signed water mass": np.asarray([1, 2, 3]) * si.ng,
-            "drop-local water vapour mixing ratio": np.full(n_sd, fraction_at_t0 * r0),
         },
     )
-    particulator.environment["water_vapour_mixing_ratio"] = r0
+    particulator.environment["water_vapour_mixing_ratio"] = np.nan
+    particulator.environment["thd"] = np.nan
 
     # act
+    particulator.run(steps=0)
+    particulator.environment["water_vapour_mixing_ratio"] = r0
+    particulator.attributes["dropwise water vapour mixing ratio"].data[:] = (
+        fraction_at_t0 * r0
+    )
     particulator.run(steps=1)
 
     # assert
-    r1 = particulator.attributes["drop-local water vapour mixing ratio"].to_ndarray()
+    r1 = particulator.attributes["dropwise water vapour mixing ratio"].to_ndarray()
     if fraction_at_t0 == 1:
         assert (r1 == r0).all()
     else:
         assert (r1 != r0).all()
-    assert ((r1 - r0) / dt == -r0 * (fraction_at_t0 - 1) / tau).all()
+    np.testing.assert_allclose(
+        actual=(r1 - fraction_at_t0 * r0) / dt,
+        desired=-r0 * (fraction_at_t0 - 1) / tau,
+    )

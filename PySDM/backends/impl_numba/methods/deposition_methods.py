@@ -114,57 +114,57 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             return mass_deposition_rate
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
-        def _loop(
+        def _step(
             fake,
+            drop_id,
             temperature,
             rhod,
             thd,
             signed_water_mass,
             saturation_ratio_ice,
             total_pressure,
-            multiplicity,
             sub_time_step,
             mass_of_dry_air,
         ):
             latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
             delta_rv = 0
-            for i, ksi in enumerate(multiplicity):
-                if not formulae.trivia__unfrozen(signed_water_mass[i]):
-                    mass_deposition_rate = mass_deposition_rate_per_droplet(
-                        temperature=temperature,
-                        rho_d=rhod,
-                        signed_mass_old=signed_water_mass[i],
-                        latent_heat_sub=latent_heat_sub,
-                        saturation_ratio_ice=saturation_ratio_ice,
-                        pressure=total_pressure,
-                    )
-                    delta_rv += (
-                        -mass_deposition_rate * ksi * sub_time_step / mass_of_dry_air
-                    )
-                    if not fake:
-                        x_old = formulae.diffusion_coordinate__x(-signed_water_mass[i])
-                        dx_dt_old = formulae.diffusion_coordinate__dx_dt(
-                            -signed_water_mass[i], mass_deposition_rate
-                        )
-                        x_new = formulae.trivia__explicit_euler(
-                            x_old, sub_time_step, dx_dt_old
-                        )
-                        signed_water_mass[i] = -formulae.diffusion_coordinate__mass(
-                            x_new
-                        )
-                        if x_new > 1:
-                            print(x_old, dx_dt_old, x_new, signed_water_mass[i])
-                            assert False
-            delta_thd = (
-                formulae.state_variable_triplet__dthd_dt(
-                    rhod=rhod,
-                    thd=thd,
-                    T=temperature,
-                    d_water_vapour_mixing_ratio__dt=delta_rv / sub_time_step,
-                    lv=latent_heat_sub,
+            delta_thd = 0
+            if not formulae.trivia__unfrozen(signed_water_mass[drop_id]):
+                mass_deposition_rate = mass_deposition_rate_per_droplet(
+                    temperature=temperature,
+                    rho_d=rhod,
+                    signed_mass_old=signed_water_mass[drop_id],
+                    latent_heat_sub=latent_heat_sub,
+                    saturation_ratio_ice=saturation_ratio_ice,
+                    pressure=total_pressure,
                 )
-                * sub_time_step
-            )
+                delta_rv = -mass_deposition_rate * sub_time_step / mass_of_dry_air
+                delta_thd = (
+                    formulae.state_variable_triplet__dthd_dt(
+                        rhod=rhod,
+                        thd=thd,
+                        T=temperature,
+                        d_water_vapour_mixing_ratio__dt=delta_rv / sub_time_step,
+                        lv=latent_heat_sub,
+                    )
+                    * sub_time_step
+                )
+                if not fake:
+                    x_old = formulae.diffusion_coordinate__x(
+                        -signed_water_mass[drop_id]
+                    )
+                    dx_dt_old = formulae.diffusion_coordinate__dx_dt(
+                        -signed_water_mass[drop_id], mass_deposition_rate
+                    )
+                    x_new = formulae.trivia__explicit_euler(
+                        x_old, sub_time_step, dx_dt_old
+                    )
+                    signed_water_mass[drop_id] = -formulae.diffusion_coordinate__mass(
+                        x_new
+                    )
+                    if x_new > 1:
+                        print(x_old, dx_dt_old, x_new, signed_water_mass[drop_id])
+                        assert False
             if delta_rv == 0:
                 assert delta_thd == 0
             else:
@@ -177,15 +177,14 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             adaptive,
             multiplicity,
             signed_water_mass,
-            current_vapour_mixing_ratio,
+            dropwise_vapour_mixing_ratio,
+            dropwise_dry_air_potential_temperature,
             current_dry_air_density,
-            current_dry_potential_temperature,
             cell_volume,
             time_step,
             cell_id,
-            # to be modified
-            predicted_vapour_mixing_ratio,
-            predicted_dry_potential_temperature,
+            dropwise_vapour_mixing_ratio_tendency,
+            dropwise_dry_air_potential_temperature_tendency,
             predicted_dry_air_density,
         ):
             """simplest adaptivity:
@@ -193,17 +192,9 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             - no mechanism to retain dt value over timesteps
             - explicit Euler mass integration (vs. implicit in condensation)
             """
-            # pylint: disable=too-many-locals
             n_substeps = 1
             cid = cell_id[0]  # TODO #1524: add support for multi-cell environments
 
-            rv_tendency = (
-                predicted_vapour_mixing_ratio[cid] - current_vapour_mixing_ratio[cid]
-            ) / time_step
-            thd_tendency = (
-                predicted_dry_potential_temperature[cid]
-                - current_dry_potential_temperature[cid]
-            ) / time_step
             rhod_tendency = (
                 predicted_dry_air_density[cid] - current_dry_air_density[cid]
             ) / time_step
@@ -213,25 +204,88 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 / 2
             )
 
-            if adaptive:
-                n_substeps = 1 / multiplier
-                delta_rh_long = np.nan
-                for burnout in range(fuse + 1):
-                    if burnout == fuse:
-                        assert False
-                    sub_time_step = time_step / n_substeps
-                    rhod = (
-                        current_dry_air_density[cid]
-                        + rhod_tendency * (0.5 if midpoint else 1) * sub_time_step
-                    )
-                    rv = (
-                        current_vapour_mixing_ratio[cid]
-                        + rv_tendency * (0.5 if midpoint else 1) * sub_time_step
-                    )
-                    thd = (
-                        current_dry_potential_temperature[cid]
-                        + thd_tendency * (0.5 if midpoint else 1) * sub_time_step
-                    )
+            for drop_id, ksi in enumerate(multiplicity):
+                if adaptive:
+                    n_substeps = 1 / multiplier
+                    delta_rh_long = np.nan
+                    for burnout in range(fuse + 1):
+                        if burnout == fuse:
+                            assert False
+                        sub_time_step = time_step / n_substeps
+                        rhod = (
+                            current_dry_air_density[cid]
+                            + rhod_tendency * (0.5 if midpoint else 1) * sub_time_step
+                        )
+                        rv = (
+                            dropwise_vapour_mixing_ratio[drop_id]
+                            + dropwise_vapour_mixing_ratio_tendency[drop_id]
+                            * (0.5 if midpoint else 1)
+                            * sub_time_step
+                        )
+                        thd = (
+                            dropwise_dry_air_potential_temperature[drop_id]
+                            + dropwise_dry_air_potential_temperature_tendency[drop_id]
+                            * (0.5 if midpoint else 1)
+                            * sub_time_step
+                        )
+
+                        saturation_ratio_ice, temperature, total_pressure = (
+                            calc_saturation_ratio_ice_temperature_and_pressure(
+                                vapour_mixing_ratio=rv,
+                                dry_air_potential_temperature=thd,
+                                dry_air_density=rhod,
+                            )
+                        )
+                        delta_rv, delta_thd = _step(
+                            fake=True,
+                            drop_id=drop_id,
+                            temperature=temperature,
+                            rhod=rhod,
+                            thd=thd,
+                            signed_water_mass=signed_water_mass,
+                            saturation_ratio_ice=saturation_ratio_ice,
+                            total_pressure=total_pressure,
+                            sub_time_step=sub_time_step,
+                            mass_of_dry_air=dry_air_mass_mean,
+                        )
+                        delta_rh_short = (
+                            calc_saturation_ratio_ice_temperature_and_pressure(
+                                vapour_mixing_ratio=rv + delta_rv * ksi,
+                                dry_air_potential_temperature=thd + delta_thd * ksi,
+                                dry_air_density=rhod,
+                            )[0]
+                            - saturation_ratio_ice
+                        )
+                        if (
+                            n_substeps < 1
+                            or rv < -delta_rv
+                            or not formulae.trivia__within_tolerance(
+                                abs(delta_rh_long - multiplier * delta_rh_short),
+                                saturation_ratio_ice,
+                                rel_tol_rh,
+                            )
+                        ):
+                            delta_rh_long = delta_rh_short
+                            n_substeps *= multiplier
+                        else:
+                            break
+                sub_time_step = time_step / n_substeps
+
+                rv = dropwise_vapour_mixing_ratio[drop_id]
+                drv_dt_forcing = dropwise_vapour_mixing_ratio_tendency[drop_id]
+
+                thd = dropwise_dry_air_potential_temperature[drop_id]
+                dthd_dt_forcing = dropwise_dry_air_potential_temperature_tendency[
+                    drop_id
+                ]
+
+                rhod = current_dry_air_density[cid]
+
+                assert n_substeps == int(n_substeps)
+                for _ in range(int(n_substeps)):
+                    rv += sub_time_step * drv_dt_forcing * (0.5 if midpoint else 1)
+                    thd += sub_time_step * dthd_dt_forcing * (0.5 if midpoint else 1)
+                    rhod += sub_time_step * rhod_tendency * (0.5 if midpoint else 1)
 
                     saturation_ratio_ice, temperature, total_pressure = (
                         calc_saturation_ratio_ice_temperature_and_pressure(
@@ -240,81 +294,33 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                             dry_air_density=rhod,
                         )
                     )
-                    delta_rv, delta_thd = _loop(
-                        fake=True,
+                    dropwise_delta_rv, dropwise_delta_thd = _step(
+                        fake=False,
+                        drop_id=drop_id,
                         temperature=temperature,
                         rhod=rhod,
                         thd=thd,
                         signed_water_mass=signed_water_mass,
                         saturation_ratio_ice=saturation_ratio_ice,
                         total_pressure=total_pressure,
-                        multiplicity=multiplicity,
                         sub_time_step=sub_time_step,
                         mass_of_dry_air=dry_air_mass_mean,
                     )
-                    delta_rh_short = (
-                        calc_saturation_ratio_ice_temperature_and_pressure(
-                            vapour_mixing_ratio=rv + delta_rv,
-                            dry_air_potential_temperature=thd + delta_thd,
-                            dry_air_density=rhod,
-                        )[0]
-                        - saturation_ratio_ice
+                    thd += dropwise_delta_thd * ksi
+                    rv += dropwise_delta_rv * ksi
+                    assert rv >= 0
+
+                    dropwise_vapour_mixing_ratio_tendency[drop_id] += (
+                        dropwise_delta_rv / time_step
                     )
-                    if (
-                        n_substeps < 1
-                        or rv < -delta_rv
-                        or not formulae.trivia__within_tolerance(
-                            abs(delta_rh_long - multiplier * delta_rh_short),
-                            saturation_ratio_ice,
-                            rel_tol_rh,
-                        )
-                    ):
-                        delta_rh_long = delta_rh_short
-                        n_substeps *= multiplier
-                    else:
-                        break
-            sub_time_step = time_step / n_substeps
-
-            rv = current_vapour_mixing_ratio[cid]
-            thd = current_dry_potential_temperature[cid]
-            rhod = current_dry_air_density[cid]
-
-            assert n_substeps == int(n_substeps)
-            for _ in range(int(n_substeps)):
-                rv += sub_time_step * rv_tendency * (0.5 if midpoint else 1)
-                thd += sub_time_step * thd_tendency * (0.5 if midpoint else 1)
-                rhod += sub_time_step * rhod_tendency * (0.5 if midpoint else 1)
-
-                saturation_ratio_ice, temperature, total_pressure = (
-                    calc_saturation_ratio_ice_temperature_and_pressure(
-                        vapour_mixing_ratio=rv,
-                        dry_air_potential_temperature=thd,
-                        dry_air_density=rhod,
+                    dropwise_dry_air_potential_temperature_tendency[drop_id] += (
+                        dropwise_delta_thd / time_step
                     )
-                )
-                delta_rv, delta_thd = _loop(
-                    fake=False,
-                    temperature=temperature,
-                    rhod=rhod,
-                    thd=thd,
-                    signed_water_mass=signed_water_mass,
-                    saturation_ratio_ice=saturation_ratio_ice,
-                    total_pressure=total_pressure,
-                    multiplicity=multiplicity,
-                    sub_time_step=sub_time_step,
-                    mass_of_dry_air=dry_air_mass_mean,
-                )
-                thd += delta_thd
-                rv += delta_rv
-                assert rv >= 0
 
-                if midpoint:
-                    thd += sub_time_step * thd_tendency / 2
-                    rv += sub_time_step * rv_tendency / 2
-                    rhod += sub_time_step * rhod_tendency / 2
-
-            predicted_dry_potential_temperature[cid] = thd
-            predicted_vapour_mixing_ratio[cid] = rv
+                    if midpoint:
+                        thd += sub_time_step * dthd_dt_forcing / 2
+                        rv += sub_time_step * drv_dt_forcing / 2
+                        rhod += sub_time_step * rhod_tendency / 2
 
         return body
 
@@ -324,27 +330,29 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
         adaptive,
         multiplicity,
         signed_water_mass,
-        current_vapour_mixing_ratio,
+        dropwise_vapour_mixing_ratio,
+        dropwise_dry_air_potential_temperature,
         current_dry_air_density,
-        current_dry_potential_temperature,
         cell_volume,
         time_step,
         cell_id,
-        predicted_vapour_mixing_ratio,
-        predicted_dry_potential_temperature,
+        dropwise_vapour_mixing_ratio_tendency,
+        dropwise_dry_air_potential_temperature_tendency,
         predicted_dry_air_density,
     ):
         self._deposition(
             adaptive=adaptive,
             multiplicity=multiplicity.data,
             signed_water_mass=signed_water_mass.data,
-            current_vapour_mixing_ratio=current_vapour_mixing_ratio.data,
+            dropwise_vapour_mixing_ratio=dropwise_vapour_mixing_ratio.data,
+            dropwise_dry_air_potential_temperature=dropwise_dry_air_potential_temperature.data,
             current_dry_air_density=current_dry_air_density.data,
-            current_dry_potential_temperature=current_dry_potential_temperature.data,
             cell_volume=cell_volume,
             time_step=time_step,
             cell_id=cell_id.data,
-            predicted_vapour_mixing_ratio=predicted_vapour_mixing_ratio.data,
-            predicted_dry_potential_temperature=predicted_dry_potential_temperature.data,
+            # after relaxation and Eulerian transport
+            dropwise_vapour_mixing_ratio_tendency=dropwise_vapour_mixing_ratio_tendency.data,
+            dropwise_dry_air_potential_temperature_tendency=dropwise_dry_air_potential_temperature_tendency.data,
+            # this is where the <w>-caused change to thermodynamics is for the parcel model
             predicted_dry_air_density=predicted_dry_air_density.data,
         )

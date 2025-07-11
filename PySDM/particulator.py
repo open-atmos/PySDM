@@ -30,8 +30,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.dynamics = {}
         self.products = {}
         self.observers = []
+        self.initialisers = []
 
-        self.n_steps = 0
+        self.n_steps = -1
 
         self.sorting_scheme = "default"
         self.condensation_solver = None
@@ -49,6 +50,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.null = self.Storage.empty(0, dtype=float)
 
     def run(self, steps):
+        if self.n_steps == -1:
+            self._notify_initialisers()
+            self.n_steps = 0
         for _ in range(steps):
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
@@ -60,6 +64,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         reversed_order_so_that_environment_is_last = reversed(self.observers)
         for observer in reversed_order_so_that_environment_is_last:
             observer.notify()
+
+    def _notify_initialisers(self):
+        for initialiser in self.initialisers:
+            initialiser.setup()
 
     @property
     def Storage(self):
@@ -491,19 +499,28 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             adaptive=adaptive,
             multiplicity=self.attributes["multiplicity"],
             signed_water_mass=self.attributes["signed water mass"],
-            current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
+            dropwise_vapour_mixing_ratio=self.attributes[
+                "dropwise water vapour mixing ratio"
+            ],
+            dropwise_dry_air_potential_temperature=self.attributes[
+                "dropwise dry air potential temperature"
+            ],
             current_dry_air_density=self.environment["rhod"],
-            current_dry_potential_temperature=self.environment["thd"],
             cell_volume=self.environment.mesh.dv,
             time_step=self.dt,
             cell_id=self.attributes["cell id"],
-            predicted_vapour_mixing_ratio=self.environment.get_predicted(
-                "water_vapour_mixing_ratio"
-            ),
-            predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
+            dropwise_vapour_mixing_ratio_tendency=self.attributes[
+                "dropwise water vapour mixing ratio tendency"
+            ],
+            dropwise_dry_air_potential_temperature_tendency=self.attributes[
+                "dropwise dry air potential temperature tendency"
+            ],
             predicted_dry_air_density=self.environment.get_predicted("rhod"),
         )
         self.attributes.mark_updated("signed water mass")
+        self.attributes.mark_updated("dropwise dry air potential temperature tendency")
+        self.attributes.mark_updated("dropwise water vapour mixing ratio tendency")
+
         # TODO #1524 - should we update here?
         # self.update_TpRH(only_if_not_last='VapourDepositionOnIce')
 
@@ -566,15 +583,43 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
         )
 
-    def drop_local_thermodynamics(self):
+    def drop_local_thermodynamics(self):  # TODO: rename to feature "relaxation"
         # TODO: move the logic to backend[s]
-        Qk = self.attributes["drop-local water vapour mixing ratio"].data
+        Qk_dot = self.attributes["dropwise water vapour mixing ratio tendency"].data
+        Qk = self.attributes["dropwise water vapour mixing ratio"].data
         q_mean = self.environment["water_vapour_mixing_ratio"]
         tau = self.formulae.turbulent_relaxation_timescale.tau(np.nan, np.nan)
-        dt = self.dt
         cell_id = self.attributes["cell id"].data
 
         for drop_id in range(Qk.shape[0]):
-            Qk[drop_id] -= (Qk[drop_id] - q_mean[cell_id[drop_id]]) / tau * dt
+            Qk_dot[drop_id] = -(Qk[drop_id] - q_mean[cell_id[drop_id]]) / tau
 
-        self.attributes.mark_updated("drop-local water vapour mixing ratio")
+        self.attributes.mark_updated("dropwise water vapour mixing ratio tendency")
+
+    def apply_drop_and_cell_wise_tendencies_to_the_environment_and_zero_input_arrays(
+        self,
+        dropwise_tendency,  # input + gets zeroed
+        cellwise_tendency,  # input + gets zeroed
+        environment_state,  # ouput
+    ):
+        cell_id = self.attributes["cell id"].data
+        multiplicity = self.attributes["multiplicity"].data
+
+        """ effectively implements eq. C.2 from Abade & Albuquerque """
+
+        for drop_id in range(dropwise_tendency.data.shape[0]):
+            cid = cell_id[drop_id]
+            cellwise_tendency.data[cid] += (
+                multiplicity[drop_id] * dropwise_tendency.data[drop_id]
+            )  # TODO: will only work with extensive attribute
+            dropwise_tendency.data[drop_id] = 0  # TODO: double check why here
+        for cid in range(cellwise_tendency.data.shape[0]):
+            environment_state.data[cid] += self.dt * cellwise_tendency.data[cid]
+            cellwise_tendency.data[cid] = 0
+
+        self.attributes.mark_updated("dropwise water vapour mixing ratio tendency")
+
+    def apply_dropwise_thermodynamic_tendency(self):
+        Qk = self.attributes["dropwise water vapour mixing ratio"].data
+        Qk_dot = self.attributes["dropwise water vapour mixing ratio tendency"].data
+        Qk += self.dt * Qk_dot
