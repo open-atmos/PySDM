@@ -125,7 +125,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            water_mass=self.attributes["signed water mass"],
+            signed_water_mass=self.attributes["signed water mass"],
             multiplicity=self.attributes["multiplicity"],
             vdry=self.attributes["dry volume"],
             idx=self.attributes._ParticleAttributes__idx,
@@ -486,26 +486,22 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
-    def deposition(self):
+    def deposition(self, adaptive: bool):
         self.backend.deposition(
+            adaptive=adaptive,
             multiplicity=self.attributes["multiplicity"],
             signed_water_mass=self.attributes["signed water mass"],
-            current_temperature=self.environment["T"],
-            current_total_pressure=self.environment["p"],
-            current_relative_humidity=self.environment["RH"],
-            current_water_activity=self.environment["a_w_ice"],
             current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
             current_dry_air_density=self.environment["rhod"],
             current_dry_potential_temperature=self.environment["thd"],
             cell_volume=self.environment.mesh.dv,
             time_step=self.dt,
             cell_id=self.attributes["cell id"],
-            reynolds_number=self.attributes["Reynolds number"],
-            schmidt_number=self.environment["Schmidt number"],
             predicted_vapour_mixing_ratio=self.environment.get_predicted(
                 "water_vapour_mixing_ratio"
             ),
             predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
+            predicted_dry_air_density=self.environment.get_predicted("rhod"),
         )
         self.attributes.mark_updated("signed water mass")
         # TODO #1524 - should we update here?
