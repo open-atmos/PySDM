@@ -18,7 +18,8 @@ class Settings:
         n_sd: int,
         w_updraft: float,
         T0: float,
-        dt: float,
+        # dt: float,
+        dz: float,
         N_dv_droplet_distribution: float,
         r_mean_droplet_distribution: float,
         sigma_droplet_distribution: float = None,
@@ -29,9 +30,12 @@ class Settings:
         condensation_enable: bool = True,
         deposition_enable: bool = True,
         backend=None,
+        number_of_ensemble_runs: None,
     ):
         self.backend = backend
-        print("Setting up simulation with " + hom_freezing)
+        print("Setting up simulation for " + hom_freezing
+              +  " with wpdraft=" + str(w_updraft)
+              + " and n_sd=" + str(n_sd))
         self.n_sd = n_sd
         self.w_updraft = w_updraft
         self.N_dv_droplet_distribution = N_dv_droplet_distribution
@@ -54,7 +58,6 @@ class Settings:
         else:
             self.hom_freezing_type = "time-dependent"
 
-        print(time.time_ns())
         self.formulae = backend.formulae
 
         const = self.formulae.constants
@@ -92,6 +95,8 @@ class Settings:
                 spectrum
             ).sample(n_sd)
 
-        self.t_max_duration = 7200  # 3600 * 1.5 # total duration of simulation
-        self.dt = dt
+
+        self.dz = dz
+        self.t_max_duration = 10000  # 3600 * 1.5 # total duration of simulation
+        self.dt = dz / self.w_updraft
         self.n_output = 10  # int(self.t_duration / 100) #100 # number of output steps

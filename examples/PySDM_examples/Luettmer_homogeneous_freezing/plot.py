@@ -14,6 +14,8 @@ ax_lab_fsize = 15
 tick_fsize = 15
 # title_fsize = 15
 # line_width = 2.5
+T_frz_bins = np.linspace(-38.5, -33, num=70, endpoint=True)
+
 
 
 def plot_thermodynamics_and_bulk(simulation):
@@ -123,14 +125,13 @@ def plot_thermodynamics_and_bulk(simulation):
     ax.tick_params(labelsize=tick_fsize)
 
 
-def plot_freezing_temperatures(ax, simulation):
+def plot_freezing_temperatures_histogram(ax, simulation):
 
-    T_frz_bins = np.linspace(-38.5, -33, num=70, endpoint=True)
+    # T_frz_bins = np.linspace(-38.5, -33, num=70, endpoint=True)
 
-    number_of_ensemble_runs = simulation["number_of_ensemble_runs"]
+    number_of_ensemble_runs = simulation["settings"]["number_of_ensemble_runs"]
 
     for i in range(number_of_ensemble_runs):
-
         output = simulation["ensemble_member_outputs"][i]
         T_frz = np.asarray(output["T_frz"][-1])
 
@@ -153,3 +154,37 @@ def plot_freezing_temperatures(ax, simulation):
     ax.tick_params(labelsize=tick_fsize)
 
     return ax
+
+
+def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
+
+    vertical_updrafts_bins = np.geomspace( 0.05, 15, num=6, endpoint=True  )
+
+    hom_freezing_types = histogram_data_dict.keys()
+
+    fig, axs = pyplot.subplots(2, 2, figsize=(10, 10), constrained_layout=True)
+    axs = axs.ravel()
+    i = 0
+    for hom_freezing_type in hom_freezing_types:
+
+        title = "Freezing method=" + hom_freezing_type
+
+        ax = axs[i]
+        T_frz = formulae.trivia.K2C( np.asarray(histogram_data_dict[hom_freezing_type]["T_frz_histogram_list"]) )
+
+        hist, x, y =  np.histogram2d(T_frz,
+                                     histogram_data_dict[hom_freezing_type]["w_updraft_histogram_list"],
+                                     bins=(T_frz_bins,vertical_updrafts_bins) )
+        y = np.log10(y)
+        X, Y = np.meshgrid(x, y)
+
+        hist = hist.T / sum(hist.flatten())
+
+        c = ax.pcolor(X, Y, hist)
+        fig.colorbar(c, ax=ax)
+
+        ax.set_title(title, fontsize=ax_lab_fsize)
+        ax.set_xlabel("freezing temperature [°C]", fontsize=ax_lab_fsize)
+        ax.set_ylabel("vertical updraft [m/s]", fontsize=ax_lab_fsize)
+
+        i += 1
