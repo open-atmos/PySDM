@@ -282,8 +282,10 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                 rhod = current_dry_air_density[cid]
 
                 assert n_substeps == int(n_substeps)
-                print(f"{n_substeps=}")
+                if n_substeps > 1:
+                    print("n_sub", n_substeps)
                 for _ in range(int(n_substeps)):
+                    # TODO: loop
                     rv += sub_time_step * drv_dt_forcing * (0.5 if midpoint else 1)
                     thd += sub_time_step * dthd_dt_forcing * (0.5 if midpoint else 1)
                     rhod += sub_time_step * rhod_tendency * (0.5 if midpoint else 1)
@@ -311,14 +313,18 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
                     rv += dropwise_delta_rv * ksi
                     assert rv >= 0
 
+                    # TODO: test what if there are collisions in between here and application of the tendencies?
+                    #       (which should support the choice of per-real-drop tendency rather than per-SD tendency)
                     dropwise_vapour_mixing_ratio_tendency[drop_id] += (
                         dropwise_delta_rv / time_step
                     )
+                    # TODO: loop (thanks to storing the thermodynamic vars in a triplet/vector
                     dropwise_dry_air_potential_temperature_tendency[drop_id] += (
                         dropwise_delta_thd / time_step
                     )
 
                     if midpoint:
+                        # TODO: loop
                         thd += sub_time_step * dthd_dt_forcing / 2
                         rv += sub_time_step * drv_dt_forcing / 2
                         rhod += sub_time_step * rhod_tendency / 2
