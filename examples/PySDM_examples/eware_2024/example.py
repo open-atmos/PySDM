@@ -35,7 +35,7 @@ _matplotlib_version_actual = version.parse(matplotlib.__version__)
 
 # @strict
 class Settings:
-    def __init__(self, seed:int,steps: Optional[list] = None):
+    def __init__(self:int,steps: Optional[list] = None):
         steps = steps or [0, 1200, 2400, 3600]
         self.formulae = Formulae()
         self.n_sd = 2**13
@@ -46,7 +46,6 @@ class Settings:
         self.rho = 1000 * si.kilogram / si.metre**3
         self.dt = 1 * si.seconds
         self.adaptive = False
-        self.seed = seed
         self.steps = steps
         self.kernel = Golovin(b=1.5e3 / si.second)
         self.spectrum = spectra.Exponential(norm_factor=self.norm_factor, scale=self.X0)
@@ -214,10 +213,10 @@ class SpectrumPlotter:
             )
 
 
-def run(settings, backend=CPU, observers=()):
+def run(settings, backend, observers=()):
     env = Box(dv=settings.dv, dt=settings.dt)
     builder = Builder(
-        n_sd=settings.n_sd, backend=backend(formulae=settings.formulae), environment=env
+        n_sd=settings.n_sd, backend=backend, environment=env
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}

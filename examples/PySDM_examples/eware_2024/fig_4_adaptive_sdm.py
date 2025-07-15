@@ -7,16 +7,18 @@ from PySDM_examples.eware_2024.example import run,Settings,SpectrumPlotter
 # from PySDM_examples.Shima_et_al_2009.settings import Settings
 # from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity,Logarithmic,Linear
+from PySDM.backends import CPU
 
 
 def main(plot: bool = True, save: str = None):
+    backend = CPU()
     n_sds = [13,14,15,16,17,18,19]
     dts = [20,10,5]#, "adaptive"]
     sampling_strat = [ConstantMultiplicity,Logarithmic, Linear]
     sampling_strat_names = ["ConstantMultiplicity","Logarithmic", "Linear"]
     regular = {"ConstantMultiplicity":{},"Logarithmic":{}, "Linear":{}}
     adaptive = {"ConstantMultiplicity":{},"Logarithmic":{}, "Linear":{}}
-    iters_without_warmup = 1
+    iters_without_warmup = 5
     base_time = None
     base_error = None
 
@@ -42,7 +44,7 @@ def main(plot: bool = True, save: str = None):
         deficit_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
         mean_time_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
         sanity_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
-        plotter = SpectrumPlotter(Settings(seed=42), legend=False)
+        plotter = SpectrumPlotter(Settings(), legend=False)
         plotter.smooth = False
         for i, dt in enumerate(dts):
             for j, n_sd in enumerate(n_sds):
@@ -53,14 +55,15 @@ def main(plot: bool = True, save: str = None):
                 exec_times = []
                 one_for_warmup = 1
                 for it in range(iters_without_warmup + one_for_warmup):
-                    settings = Settings(seed=it)
+                    settings = Settings()
+                    backend.formulae.seet = it
 
                     settings.n_sd = 2**n_sd
                     settings.dt = dt #if dt != "adaptive" else max(dts[:-1])
                     settings.adaptive = False #dt == "adaptive"
                     settings.sampling = strat(settings.spectrum)
 
-                    states, exec_time, deficit = run(settings)
+                    states, exec_time, deficit = run(settings,backend)
                     deficit *= settings.dv
                     print(f"{dt=}, {n_sd=}, {exec_time=}, {it=}")
                     if it != 0:
