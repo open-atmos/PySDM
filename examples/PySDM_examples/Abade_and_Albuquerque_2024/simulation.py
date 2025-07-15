@@ -8,6 +8,7 @@ from PySDM.dynamics import (
     AmbientThermodynamics,
     VapourDepositionOnIce,
     Freezing,
+    DropLocalThermodynamics,
 )
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import (
@@ -35,8 +36,13 @@ class Simulation(BasicSimulation):
                 mixed_phase=True,
             ),
         )
-        builder.add_dynamic(AmbientThermodynamics())
+        builder.add_dynamic(AmbientThermodynamics(relaxed=settings.relaxed))
         builder.add_dynamic(Condensation())
+
+        if settings.relaxed:
+            builder.add_dynamic(
+                DropLocalThermodynamics()
+            )  # TODO: this is here only to pick correct attribute impls
 
         if settings.enable_immersion_freezing:
             builder.add_dynamic(

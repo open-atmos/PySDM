@@ -53,5 +53,6 @@ from . import (
     air_dynamic_viscosity,
     terminal_velocity,
     bulk_phase_partitioning,
+    turbulent_relaxation_timescale,
 )
 from .constants import convert_to, in_unit, si
