@@ -583,43 +583,69 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
         )
 
-    def drop_local_thermodynamics(self):  # TODO: rename to feature "relaxation"
-        # TODO: move the logic to backend[s]
-        Qk_dot = self.attributes["dropwise water vapour mixing ratio tendency"].data
-        Qk = self.attributes["dropwise water vapour mixing ratio"].data
-        q_mean = self.environment["water_vapour_mixing_ratio"]
-        tau = self.formulae.turbulent_relaxation_timescale.tau(np.nan, np.nan)
+    #############
+
+    # here happens condenstion
+
+    def drop_local_thermodynamics(
+        self, relaxed: bool
+    ):  # TODO: rename to feature "relaxation"
+        tau = (
+            self.formulae.turbulent_relaxation_timescale.tau(np.nan, np.nan)
+            if relaxed
+            else self.dt
+        )
         cell_id = self.attributes["cell id"].data
 
-        for drop_id in range(Qk.shape[0]):
-            Qk_dot[drop_id] = -(Qk[drop_id] - q_mean[cell_id[drop_id]]) / tau
+        self.signed_water_mass_before_ice_depositional_growth = self.attributes[
+            "signed water mass"
+        ].data.copy()
+        for var in ("water vapour mixing ratio", "dry air potential temperature"):
+            var_dot_data = self.attributes[f"dropwise {var} tendency"].data
+            var_data = self.attributes[f"dropwise {var}"].data
+            key = var.replace("dry air potential temperature", "thd").replace(
+                " ", "_"
+            )  # TODO
+            var_env_data = self.environment.get_predicted(key).data
+            for drop_id in range(var_data.shape[0]):
+                var_dot_data[drop_id] = (
+                    -(var_data[drop_id] - var_env_data[cell_id[drop_id]]) / tau
+                )
 
-        self.attributes.mark_updated("dropwise water vapour mixing ratio tendency")
+            self.attributes.mark_updated(f"dropwise {var} tendency")
 
-    def apply_drop_and_cell_wise_tendencies_to_the_environment_and_zero_input_arrays(
-        self,
-        dropwise_tendency,  # input + gets zeroed
-        cellwise_tendency,  # input + gets zeroed
-        environment_state,  # ouput
-    ):
+    # here happens depositional growth -> drop_local_tendencies updated to reflect depositional growth
+
+    # this should compute the change to drop-local q/th from all (relaxed) env-forcing, condensation and deposition
+    def apply_dropwise_thermodynamic_tendency(self):
+        for var in ("water vapour mixing ratio", "dry air potential temperature"):
+            var_dot_data = self.attributes[f"dropwise {var} tendency"].data
+            var_data = self.attributes[f"dropwise {var}"].data
+            var_data += self.dt * var_dot_data
+            self.attributes.mark_updated(f"dropwise {var}")
+
+    def update_ambient_thermodynamics_wrt_ice_growth(self):
+        # called (regardless if drop-local dynamic is enabled) from ambient thermodynamics notify()
         cell_id = self.attributes["cell id"].data
-        multiplicity = self.attributes["multiplicity"].data
 
         """ effectively implements eq. C.2 from Abade & Albuquerque """
 
-        for drop_id in range(dropwise_tendency.data.shape[0]):
-            cid = cell_id[drop_id]
-            cellwise_tendency.data[cid] += (
-                multiplicity[drop_id] * dropwise_tendency.data[drop_id]
-            )  # TODO: will only work with extensive attribute
-            dropwise_tendency.data[drop_id] = 0  # TODO: double check why here
-        for cid in range(cellwise_tendency.data.shape[0]):
-            environment_state.data[cid] += self.dt * cellwise_tendency.data[cid]
-            cellwise_tendency.data[cid] = 0
+        # only deposition-related change! (after merging condensation with deposition, both will be here)
+        cid = 0  # TODO !
+        delta_ice_mass = np.dot(
+            self.attributes["multiplicity"].data,
+            np.abs(self.attributes["signed water mass"].data)
+            - np.abs(self.signed_water_mass_before_ice_depositional_growth.data),
+        )
+        current_dry_air_density = self.environment["rhod"].data
+        predicted_dry_air_density = self.environment.get_predicted("rhod").data
+        mass_of_dry_air = (
+            self.environment.mesh.dv
+            * (predicted_dry_air_density[cid] + current_dry_air_density[cid])
+            / 2
+        )
 
-        self.attributes.mark_updated("dropwise water vapour mixing ratio tendency")
-
-    def apply_dropwise_thermodynamic_tendency(self):
-        Qk = self.attributes["dropwise water vapour mixing ratio"].data
-        Qk_dot = self.attributes["dropwise water vapour mixing ratio tendency"].data
-        Qk += self.dt * Qk_dot
+        self.environment.get_predicted("water_vapour_mixing_ratio").data -= (
+            delta_ice_mass / mass_of_dry_air
+        )
+        # TODO: self.environment.get_predicted("thd") +=
