@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import pyplot
 import numpy as np
 from scipy.ndimage import histogram
+import seaborn as sns
 
 from PySDM import Formulae
 
@@ -14,8 +15,7 @@ ax_lab_fsize = 15
 tick_fsize = 15
 # title_fsize = 15
 # line_width = 2.5
-T_frz_bins = np.linspace(-38.5, -33, num=70, endpoint=True)
-
+T_frz_bins = np.linspace(-38.5, -33, num=7, endpoint=True)
 
 
 def plot_thermodynamics_and_bulk(simulation):
@@ -127,8 +127,6 @@ def plot_thermodynamics_and_bulk(simulation):
 
 def plot_freezing_temperatures_histogram(ax, simulation):
 
-    # T_frz_bins = np.linspace(-38.5, -33, num=70, endpoint=True)
-
     number_of_ensemble_runs = simulation["settings"]["number_of_ensemble_runs"]
 
     for i in range(number_of_ensemble_runs):
@@ -158,7 +156,7 @@ def plot_freezing_temperatures_histogram(ax, simulation):
 
 def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
 
-    vertical_updrafts_bins = np.geomspace( 0.05, 15, num=6, endpoint=True  )
+    vertical_updrafts_bins = np.geomspace(0.05, 15, num=6, endpoint=True)
 
     hom_freezing_types = histogram_data_dict.keys()
 
@@ -170,11 +168,15 @@ def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
         title = "Freezing method=" + hom_freezing_type
 
         ax = axs[i]
-        T_frz = formulae.trivia.K2C( np.asarray(histogram_data_dict[hom_freezing_type]["T_frz_histogram_list"]) )
+        T_frz = formulae.trivia.K2C(
+            np.asarray(histogram_data_dict[hom_freezing_type]["T_frz_histogram_list"])
+        )
 
-        hist, x, y =  np.histogram2d(T_frz,
-                                     histogram_data_dict[hom_freezing_type]["w_updraft_histogram_list"],
-                                     bins=(T_frz_bins,vertical_updrafts_bins) )
+        hist, x, y = np.histogram2d(
+            T_frz,
+            histogram_data_dict[hom_freezing_type]["w_updraft_histogram_list"],
+            bins=(T_frz_bins, vertical_updrafts_bins),
+        )
         y = np.log10(y)
         X, Y = np.meshgrid(x, y)
 
@@ -188,3 +190,46 @@ def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
         ax.set_ylabel("vertical updraft [m/s]", fontsize=ax_lab_fsize)
 
         i += 1
+
+
+def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict):
+
+    hom_freezing_types = ["KoopMurray2016", "Koop_Correction", "Koop2000"]
+    sns.set_theme(style="ticks")
+
+    for i, hom_freezing_type in enumerate(hom_freezing_types):
+
+        T_frz = formulae.trivia.K2C(
+            (np.asarray(histogram_data_dict[hom_freezing_type]["T_frz_histogram_list"]))
+        )
+        w = histogram_data_dict[hom_freezing_type]["w_updraft_histogram_list"]
+
+        h = sns.JointGrid(
+            x=T_frz,
+            y=w,
+            xlim=(-38.5, -33.5),
+        )
+        h.ax_joint.set(yscale="log")
+        if hom_freezing_type == "KoopMurray2016":
+            x_pos_cbar = 0.75
+        else:
+            x_pos_cbar = 0.15
+        cax = h.figure.add_axes([x_pos_cbar, 0.55, 0.02, 0.2])
+        h.plot_joint(
+            sns.histplot,
+            stat="density",
+            binwidth=0.25,
+            discrete=(False, False),
+            pmax=0.8,
+            cbar=True,
+            cbar_ax=cax,
+        )
+
+        h.plot_marginals(sns.histplot, element="step")
+        h.set_axis_labels(
+            "freezing temperature [°C]", "vertical updraft [m/s]", fontsize=ax_lab_fsize
+        )
+        h.ax_joint.set_title(
+            "Freezing method=" + hom_freezing_type, pad=70, fontsize=ax_lab_fsize
+        )
+        h.ax_marg_y.remove()

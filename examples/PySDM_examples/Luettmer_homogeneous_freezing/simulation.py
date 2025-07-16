@@ -11,7 +11,8 @@ from PySDM.dynamics import (
 )
 from PySDM.environments import Parcel
 from PySDM.physics import constants as const
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 
 
 class Simulation:
@@ -41,7 +42,7 @@ class Simulation:
         if settings.condensation_enable:
             builder.add_dynamic(Condensation())
         if settings.deposition_enable:
-            builder.add_dynamic(VapourDepositionOnIce())
+            builder.add_dynamic(VapourDepositionOnIce(adaptive=True))
         builder.add_dynamic(
             Freezing(
                 homogeneous_freezing=settings.hom_freezing_type, immersion_freezing=None

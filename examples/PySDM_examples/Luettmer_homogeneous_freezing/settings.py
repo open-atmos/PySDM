@@ -33,9 +33,14 @@ class Settings:
         number_of_ensemble_runs: None,
     ):
         self.backend = backend
-        print("Setting up simulation for " + hom_freezing
-              +  " with wpdraft=" + str(w_updraft)
-              + " and n_sd=" + str(n_sd))
+        print(
+            "Setting up simulation for "
+            + hom_freezing
+            + " with wpdraft="
+            + str(w_updraft)
+            + " and n_sd="
+            + str(n_sd)
+        )
         self.n_sd = n_sd
         self.w_updraft = w_updraft
         self.N_dv_droplet_distribution = N_dv_droplet_distribution
@@ -94,7 +99,6 @@ class Settings:
             self.r_dry, self.specific_concentration = spectral_sampling.Linear(
                 spectrum
             ).sample(n_sd)
-
 
         self.dz = dz
         self.t_max_duration = 10000  # 3600 * 1.5 # total duration of simulation
