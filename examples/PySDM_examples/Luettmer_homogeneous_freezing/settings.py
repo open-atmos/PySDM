@@ -40,6 +40,8 @@ class Settings:
             + str(w_updraft)
             + " and n_sd="
             + str(n_sd)
+            + " and n_dv="
+            + str(N_dv_droplet_distribution)
         )
         self.n_sd = n_sd
         self.w_updraft = w_updraft
