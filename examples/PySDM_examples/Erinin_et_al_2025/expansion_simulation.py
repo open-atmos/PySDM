@@ -9,7 +9,7 @@ from PySDM.dynamics import (
     HomogeneousLiquidNucleation,
 )
 from PySDM.environments import ExpansionChamber
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
 
@@ -52,7 +52,7 @@ def run_expansion(
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(Condensation(adaptive=True))
     builder.add_dynamic(HomogeneousLiquidNucleation())
-    builder.request_attribute("critical supersaturation")
+    builder.request_attribute("critical saturation")
 
     attributes = {
         k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "multiplicity")
@@ -97,7 +97,7 @@ def run_expansion(
             "multiplicity",
             "volume",
             "critical volume",
-            "critical supersaturation",
+            "critical saturation",
         )
     }
 

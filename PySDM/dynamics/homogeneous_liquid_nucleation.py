@@ -41,7 +41,7 @@ class HomogeneousLiquidNucleation(SuperParticleSpawningDynamic):
             )
             v_wet = self.formulae.trivia.volume(radius=r_wet)
             new_sd_extensive_attributes = {
-                "water mass": (v_wet * self.formulae.constants.rho_w,),
+                "signed water mass": (v_wet * self.formulae.constants.rho_w,),
                 "dry volume": (0,),
                 "kappa times dry volume": (0,),
             }
