@@ -359,6 +359,12 @@ J_HET = np.nan
 J_HOM = np.nan
 """ constant ice nucleation rates """
 
+J_LIQ_HOMO = np.nan
+""" constant liquid homogeneous-nucleation rate """
+
+R_LIQ_HOMO = np.nan
+""" constant particle size for liquid homogeneous nucleation """
+
 STRAUB_E_D1 = 0.04 * si.cm
 """ [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1) """
 STRAUB_MU2 = 0.095 * si.cm
@@ -770,8 +776,12 @@ def compute_derived_values(c: dict):
 
     c["Rd_over_c_pd"] = c["Rd"] / c["c_pd"]
 
+    c["c_vd"] = c["c_pd"] - c["Rd"]
+    c["c_vv"] = c["c_pv"] - c["Rv"]
+
     c["water_molar_volume"] = c["Mv"] / c["rho_w"]
     c["rho_STP"] = c["p_STP"] / c["Rd"] / c["T_STP"]
     c["H_u"] = c["M"] / c["p_STP"]
 
+    c["k_B"] = c["R_str"] / c["N_A"]
     c["l_tri"] = c["L_tri"] / c["Mv"]

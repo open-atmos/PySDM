@@ -730,6 +730,23 @@
     "title": "Vapor Pressure Formulation for Water in Range 0 to 100 °C. A Revision",
     "label": "Wexler 1976 (J. Res. NBS A Phys. Ch. 80A)"
   },
+  "https://doi.org/10.48550/arXiv.2501.01467": {
+    "usages": [
+      "examples/PySDM_examples/Erinin_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Erinin_et_al_2025/aerosol.py",
+      "tests/smoke_tests/chamber/erinin_et_al_2025/test_fig_3.py",
+      "examples/PySDM_examples/Erinin_et_al_2025/expansion_experiment.ipynb"],
+    "title": "Droplet Nucleation In a Rapid Expansion Aerosol Chamber",
+    "label": "Erinin et al. 2024 (arXiv:2501.01467)"
+  },
+  "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
+    "usages": [
+      "PySDM/physics/homogeneous_liquid_nucleation_rate/cnt.py",
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "title": "Atmospheric Chemistry and Physics: From Air Pollution to Climate Change, 2nd Edition",
+    "label": "Seinfeld & Pandis 2006 (Wiley)"
+  },
   "https://doi.org/10.1080/10789669.2008.10391032": {
     "usages": ["PySDM/physics/constants_defaults.py"],
     "title": "A Twenty-First Century Molar Mass for Dry Air",
@@ -783,11 +800,6 @@
     "usages": ["PySDM/physics/constants_defaults.py"],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
-  },
-  "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
-    "usages": ["PySDM/physics/constants_defaults.py"],
-    "title": "Microphysics of Clouds and Precipitation",
-    "label": "Seinfeld & Pandis 2006 (Wiley)"
   },
   "https://doi.org/10.1038/187857a0": {
     "usages": [

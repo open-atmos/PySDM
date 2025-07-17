@@ -27,6 +27,7 @@ from . import (
     fragmentation_function,
     freezing_temperature_spectrum,
     heterogeneous_ice_nucleation_rate,
+    homogeneous_liquid_nucleation_rate,
     homogeneous_ice_nucleation_rate,
     hydrostatics,
     hygroscopicity,
@@ -53,5 +54,6 @@ from . import (
     air_dynamic_viscosity,
     terminal_velocity,
     bulk_phase_partitioning,
+    adiabatic_exponent,
 )
 from .constants import convert_to, in_unit, si

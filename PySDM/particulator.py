@@ -445,39 +445,39 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         for isotope in heavy_isotopes:
             self.attributes.mark_updated(f"moles_{isotope}")
 
-    def seeding(
+    def spawn(
         self,
         *,
-        seeded_particle_index,
-        seeded_particle_multiplicity,
-        seeded_particle_extensive_attributes,
-        number_of_super_particles_to_inject,
+        spawned_particle_index,
+        spawned_particle_multiplicity,
+        spawned_particle_extensive_attributes,
+        number_of_super_particles_to_spawn,
     ):
         n_null = self.n_sd - self.attributes.super_droplet_count
         if n_null == 0:
             raise ValueError(
-                "No available seeds to inject. Please provide particles with nan filled attributes."
+                "No available null SDs to spawn. Please provide SDs with nan filled attributes."
             )
 
-        if number_of_super_particles_to_inject > n_null:
+        if number_of_super_particles_to_spawn > n_null:
             raise ValueError(
-                "Trying to inject more super particles than space available."
+                "Trying to spawn more super particles than space available."
             )
 
-        if number_of_super_particles_to_inject > len(seeded_particle_multiplicity):
+        if number_of_super_particles_to_spawn > len(spawned_particle_multiplicity):
             raise ValueError(
-                "Trying to inject multiple super particles with the same attributes. \
-                Instead increase multiplicity of injected particles."
+                "Trying to spawn multiple super particles with the same attributes. \
+                Instead increase multiplicity of spawned particles."
             )
 
-        self.backend.seeding(
+        self.backend.spawning(
             idx=self.attributes._ParticleAttributes__idx,
             multiplicity=self.attributes["multiplicity"],
             extensive_attributes=self.attributes.get_extensive_attribute_storage(),
-            seeded_particle_index=seeded_particle_index,
-            seeded_particle_multiplicity=seeded_particle_multiplicity,
-            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
-            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+            spawned_particle_index=spawned_particle_index,
+            spawned_particle_multiplicity=spawned_particle_multiplicity,
+            spawned_particle_extensive_attributes=spawned_particle_extensive_attributes,
+            number_of_super_particles_to_spawn=number_of_super_particles_to_spawn,
         )
         self.attributes.reset_idx()
         self.attributes.sanitize()
