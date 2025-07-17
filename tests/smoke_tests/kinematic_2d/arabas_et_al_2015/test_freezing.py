@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation
 
 from PySDM import Formulae
 from PySDM.backends import CPU
@@ -10,20 +10,14 @@ from PySDM.physics import si
 from .dummy_storage import DummyStorage
 
 
-@pytest.mark.parametrize(
-    "singular",
-    (
-        pytest.param(False, id="singular: False"),
-        pytest.param(True, id="singular: True"),
-    ),
-)
-def test_freezing(singular):
+@pytest.mark.parametrize("freezing_immersion", ("singular", "time-dependent"))
+def test_freezing(freezing_immersion):
     # Arrange
     settings = Settings(
         Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             seed=44,
-            condensation_coordinate="VolumeLogarithm",
+            diffusion_coordinate="WaterMassLogarithm",
             fastmath=True,
             freezing_temperature_spectrum="Niemand_et_al_2012",
             heterogeneous_ice_nucleation_rate="ABIFM",
@@ -47,7 +41,7 @@ def test_freezing(singular):
     settings.processes["freezing"] = True
     settings.processes["coalescence"] = False
 
-    settings.freezing_singular = singular
+    settings.freezing_immersion = freezing_immersion
     settings.th_std0 -= 35 * si.K
     settings.initial_water_vapour_mixing_ratio -= 7.15 * si.g / si.kg
 

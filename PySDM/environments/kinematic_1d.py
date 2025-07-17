@@ -8,7 +8,7 @@ import numpy as np
 from PySDM.environments.impl.moist import Moist
 
 from PySDM.impl import arakawa_c
-from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.environments.impl import register_environment
 
 
@@ -40,7 +40,7 @@ class Kinematic1D(Moist):
         spectral_discretisation,
         kappa,
         z_part=None,
-        collisions_only=False
+        collisions_only=False,
     ):
         super().sync()
         self.notify()

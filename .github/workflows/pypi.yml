@@ -57,7 +57,7 @@ jobs:
   pkg_install_check:
     strategy:
       matrix:
-        platform: [ ubuntu-latest, macos-13, macos-14, windows-latest ]
+        platform: [ ubuntu-latest, macos-latest, windows-latest ]
         python-version: [ "3.9", "3.12" ]
         exclude:
           - platform: macos-14

@@ -76,8 +76,16 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
+    def unfrozen(signed_water_mass):
+        return signed_water_mass > 0
+
+    @staticmethod
     def unfrozen_and_saturated(signed_water_mass, relative_humidity):
         return signed_water_mass > 0 and relative_humidity > 1
+
+    @staticmethod
+    def unfrozen_and_ice_saturated(signed_water_mass, relative_humidity_ice):
+        return signed_water_mass > 0 and relative_humidity_ice > 1
 
     @staticmethod
     def frozen_and_above_freezing_point(const, signed_water_mass, temperature):
@@ -137,6 +145,14 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def sqrt_re_times_cbrt_sc(const, Re, Sc):
         return np.power(Re, const.ONE_HALF) * np.power(Sc, const.ONE_THIRD)
+
+    @staticmethod
+    def K2C(const, TK):
+        return TK - const.T0
+
+    @staticmethod
+    def C2K(const, TC):
+        return TC + const.T0
 
     @staticmethod
     def poissonian_avoidance_function(r, dt):

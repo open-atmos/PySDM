@@ -2,13 +2,13 @@
 Zero-dimensional adiabatic parcel framework
 """
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import numpy as np
 
 from PySDM.environments.impl.moist_lagrangian import MoistLagrangian
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.equilibrate_wet_radii import (
+from PySDM.initialisation.hygroscopic_equilibrium import (
     default_rtol,
     equilibrate_wet_radii,
 )
@@ -25,7 +25,7 @@ class Parcel(MoistLagrangian):  # pylint: disable=too-many-instance-attributes
         p0: float,
         initial_water_vapour_mixing_ratio: float,
         T0: float,
-        w: [float, callable],
+        w: Union[float, callable],
         z0: float = 0,
         mixed_phase=False,
         variables: Optional[List[str]] = None,
@@ -111,11 +111,10 @@ class Parcel(MoistLagrangian):  # pylint: disable=too-many-instance-attributes
 
         # derivative evaluated at p_old, T_old, mixrat_mid, w_mid
         drho_dz = formulae.hydrostatics.drho_dz(
-            g=formulae.constants.g_std,
             p=p,
             T=T,
             water_vapour_mixing_ratio=water_vapour_mixing_ratio,
-            lv=formulae.latent_heat.lv(T),
+            lv=formulae.latent_heat_vapourisation.lv(T),
             d_liquid_water_mixing_ratio__dz=(
                 self.delta_liquid_water_mixing_ratio / dz_dt / dt
             ),

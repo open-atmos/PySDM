@@ -29,3 +29,21 @@ class LiquidSpheres:
     @staticmethod
     def reynolds_number(_, radius, velocity_wrt_air, dynamic_viscosity, density):
         return 2 * radius * velocity_wrt_air * density / dynamic_viscosity
+
+    @staticmethod
+    def dm_dt(const, r, r_dr_dt):
+        """
+        dm_dt = d(4/3 pi r^3 rho_w) / dt
+              = 4 pi r^2 rho_w dr/dt
+              = 4 pi rho_w r(mass) * r_dr_dt
+              = 4 pi rho_w cbrt(mass/rho_w/pi/(4/3)) r_dr_dt
+        """
+        return 4 * const.PI * const.rho_w * r * r_dr_dt
+
+    @staticmethod
+    def dm_dt_over_m(r, r_dr_dt):
+        return 3 / r**2 * r_dr_dt
+
+    @staticmethod
+    def r_dr_dt(r, dm_dt_over_m):
+        return r**2 / 3 * dm_dt_over_m

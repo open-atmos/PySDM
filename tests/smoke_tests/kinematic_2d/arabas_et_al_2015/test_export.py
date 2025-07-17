@@ -5,9 +5,9 @@ from tempfile import TemporaryDirectory
 
 from open_atmos_jupyter_utils import TemporaryFile
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.Szumowski_et_al_1998.gui_settings import GUISettings
-from PySDM_examples.Szumowski_et_al_1998.simulation import Simulation
-from PySDM_examples.Szumowski_et_al_1998.storage import Storage
+from PySDM_examples.utils.kinematic_2d.gui_settings import GUISettings
+from PySDM_examples.utils.kinematic_2d.simulation import Simulation
+from PySDM_examples.utils.kinematic_2d.storage import Storage
 from PySDM_examples.utils import DummyController
 from PySDM_examples.utils.widgets import IntSlider
 from scipy.io import netcdf_file

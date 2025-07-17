@@ -3,12 +3,18 @@ import numpy as np
 import pytest
 from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
+from PySDM.physics import si
 
 
 @pytest.mark.parametrize("w_idx", range(len(w_avgs)))
 def test_displacement(w_idx):
     # Arrange
-    settings = Settings(w_avg=w_avgs[w_idx], N_STP=44, r_dry=1, mass_of_dry_air=1)
+    settings = Settings(
+        w_avg=w_avgs[w_idx],
+        N_STP=44 / si.cm**3,
+        r_dry=0.1 * si.um,
+        mass_of_dry_air=1 * si.kg,
+    )
     settings.n_output = 50
     simulation = Simulation(settings)
 

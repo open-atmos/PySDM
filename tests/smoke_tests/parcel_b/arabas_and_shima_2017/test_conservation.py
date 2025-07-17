@@ -16,65 +16,67 @@ def liquid_water_mixing_ratio(simulation: Simulation):
     return mass_of_all_droplets / env.mass_of_dry_air
 
 
-@pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
-@pytest.mark.parametrize("mass_of_dry_air", (1, 10000))
-@pytest.mark.parametrize("scheme", ("SciPy", "CPU", "GPU"))
-@pytest.mark.parametrize("coord", ("VolumeLogarithm", "Volume"))
-def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
-    # Arrange
-    assert scheme in ("SciPy", "CPU", "GPU")
+class TestConservation:
+    @staticmethod
+    @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
+    @pytest.mark.parametrize("mass_of_dry_air", (1, 10000))
+    @pytest.mark.parametrize("scheme", ("SciPy", "CPU", "GPU"))
+    @pytest.mark.parametrize("coord", ("WaterMassLogarithm", "WaterMass"))
+    def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
+        # Arrange
+        assert scheme in ("SciPy", "CPU", "GPU")
 
-    settings = Settings(
-        w_avg=setups[settings_idx].w_avg,
-        N_STP=setups[settings_idx].N_STP,
-        r_dry=setups[settings_idx].r_dry,
-        mass_of_dry_air=mass_of_dry_air,
-        coord=coord,
-    )
-    settings.n_output = 50
-    settings.coord = coord
-    simulation = Simulation(settings, GPU if scheme == "GPU" else CPU)
-    initial_total_water_mixing_ratio = (
-        settings.initial_water_vapour_mixing_ratio
-        + liquid_water_mixing_ratio(simulation)
-    )
+        settings = Settings(
+            w_avg=setups[settings_idx].w_avg,
+            N_STP=setups[settings_idx].N_STP,
+            r_dry=setups[settings_idx].r_dry,
+            mass_of_dry_air=mass_of_dry_air,
+            coord=coord,
+        )
+        settings.n_output = 50
+        settings.coord = coord
+        simulation = Simulation(settings, GPU if scheme == "GPU" else CPU)
+        initial_total_water_mixing_ratio = (
+            settings.initial_water_vapour_mixing_ratio
+            + liquid_water_mixing_ratio(simulation)
+        )
 
-    if scheme == "SciPy":
-        scipy_ode_condensation_solver.patch_particulator(simulation.particulator)
+        if scheme == "SciPy":
+            scipy_ode_condensation_solver.patch_particulator(simulation.particulator)
 
-    # Act
-    simulation.particulator.products["S_max"].get()
-    output = simulation.run()
+        # Act
+        simulation.particulator.products["S_max"].get()
+        output = simulation.run()
 
-    # Assert
-    (total_water_mixing_ratio,) = simulation.particulator.environment[
-        "water_vapour_mixing_ratio"
-    ].to_ndarray() + liquid_water_mixing_ratio(simulation)
-    np.testing.assert_approx_equal(
-        total_water_mixing_ratio, initial_total_water_mixing_ratio, significant=6
-    )
-    if scheme != "SciPy":
-        assert simulation.particulator.products["S_max"].get() >= output["S"][-1]
+        # Assert
+        (total_water_mixing_ratio,) = simulation.particulator.environment[
+            "water_vapour_mixing_ratio"
+        ].to_ndarray() + liquid_water_mixing_ratio(simulation)
+        np.testing.assert_approx_equal(
+            total_water_mixing_ratio, initial_total_water_mixing_ratio, significant=6
+        )
+        if scheme != "SciPy":  # TODO #1608
+            assert simulation.particulator.products["S_max"].get() >= output["RH"][-1]
 
+    @staticmethod
+    @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
+    @pytest.mark.parametrize("mass_of_dry_air", [1, 10000])
+    @pytest.mark.parametrize("coord", ("WaterMassLogarithm", "WaterMass"))
+    def test_energy_conservation(settings_idx, mass_of_dry_air, coord):
+        # Arrange
+        settings = Settings(
+            w_avg=setups[settings_idx].w_avg,
+            N_STP=setups[settings_idx].N_STP,
+            r_dry=setups[settings_idx].r_dry,
+            mass_of_dry_air=mass_of_dry_air,
+            coord=coord,
+        )
+        simulation = Simulation(settings)
+        env = simulation.particulator.environment
+        thd0 = env["thd"]
 
-@pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
-@pytest.mark.parametrize("mass_of_dry_air", [1, 10000])
-@pytest.mark.parametrize("coord", ("VolumeLogarithm", "Volume"))
-def test_energy_conservation(settings_idx, mass_of_dry_air, coord):
-    # Arrange
-    settings = Settings(
-        w_avg=setups[settings_idx].w_avg,
-        N_STP=setups[settings_idx].N_STP,
-        r_dry=setups[settings_idx].r_dry,
-        mass_of_dry_air=mass_of_dry_air,
-        coord=coord,
-    )
-    simulation = Simulation(settings)
-    env = simulation.particulator.environment
-    thd0 = env["thd"]
+        # Act
+        simulation.run()
 
-    # Act
-    simulation.run()
-
-    # Assert
-    np.testing.assert_array_almost_equal(thd0.to_ndarray(), env["thd"].to_ndarray())
+        # Assert
+        np.testing.assert_array_almost_equal(thd0.to_ndarray(), env["thd"].to_ndarray())

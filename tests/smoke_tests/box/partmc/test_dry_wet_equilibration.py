@@ -2,23 +2,19 @@
 (based on PyPartMC-examples notebook by Zach D'Aquino)"""
 
 # pylint: disable=missing-function-docstring,no-member
-import platform
-import sys
 from collections import namedtuple
 
 import numpy as np
 import pytest
 from matplotlib import pyplot
+import PyPartMC
 
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
-
-if platform.architecture()[0] == "64bit" and sys.version_info < (3, 12):  # TODO #1410
-    import PyPartMC
 
 linestyles = {"PyPartMC": "dashed", "PySDM": "dotted"}
 x_unit = si.um
@@ -74,10 +70,6 @@ def pypartmc(dry_diam, temp, rel_humid, kpa):
     return wet_diameters
 
 
-@pytest.mark.skipif(
-    platform.architecture()[0] != "64bit" or sys.version_info >= (3, 12),
-    reason="binary package availability",  # TODO #1410
-)
 @pytest.mark.parametrize("kappa", (0.1, 1))
 @pytest.mark.parametrize("temperature", (300 * si.K,))
 @pytest.mark.parametrize("relative_humidity", (0.5, 0.75, 0.99))

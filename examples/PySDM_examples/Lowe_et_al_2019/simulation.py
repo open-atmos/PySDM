@@ -3,10 +3,9 @@ from PySDM_examples.utils import BasicSimulation
 
 import PySDM.products as PySDM_products
 from PySDM import Builder
-from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Sum
 
 
@@ -15,9 +14,7 @@ class Simulation(BasicSimulation):
         n_sd = settings.n_sd_per_mode * len(settings.aerosol.modes)
         builder = Builder(
             n_sd=n_sd,
-            backend=CPU(
-                formulae=settings.formulae, override_jit_flags={"parallel": False}
-            ),
+            backend=settings.backend,
             environment=Parcel(
                 dt=settings.dt,
                 mass_of_dry_air=settings.mass_of_dry_air,
@@ -81,8 +78,8 @@ class Simulation(BasicSimulation):
         products = products or (
             PySDM_products.ParcelDisplacement(name="z"),
             PySDM_products.Time(name="t"),
-            PySDM_products.PeakSupersaturation(unit="%", name="S_max"),
-            PySDM_products.AmbientRelativeHumidity(unit="%", name="RH"),
+            PySDM_products.PeakSaturation(name="S_max"),
+            PySDM_products.AmbientRelativeHumidity(name="RH"),
             PySDM_products.ActivatedParticleConcentration(
                 name="CDNC_cm3",
                 unit="cm^-3",

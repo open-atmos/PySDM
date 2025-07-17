@@ -1,6 +1,6 @@
 import os
 import re
-import platform
+import sys
 
 from setuptools import find_packages, setup
 
@@ -20,7 +20,7 @@ def get_long_description():
 CI = "CI" in os.environ
 
 setup(
-    name="PySDM-examples",
+    name="pysdm-examples",
     description="PySDM usage examples reproducing results from literature "
     "and depicting how to use PySDM from Python Jupyter notebooks",
     install_requires=[
@@ -30,14 +30,19 @@ setup(
         "pystrict",
         # https://github.com/matplotlib/matplotlib/issues/28551
         "matplotlib" + ("!=3.9.1" if CI else ""),
+        "Pillow"
+        + (
+            "<11.3.0" if CI else ""
+        ),  # matplotlib triggers deprecation warnings in 11.3.0
         "joblib",
         "ipywidgets",
         "seaborn",
         "numdifftools",
+        "vtk",
     ]
     + (
-        ["pyvinecopulib" + "==0.6.4" if CI else "", "vtk"]
-        if platform.architecture()[0] != "32bit"
+        ["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]
+        if sys.platform != "darwin"
         else []
     ),
     extras_require={

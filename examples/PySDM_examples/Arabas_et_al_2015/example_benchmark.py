@@ -2,7 +2,7 @@ import importlib
 
 from matplotlib import pyplot as plt
 from PySDM_examples.Arabas_et_al_2015 import Settings
-from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
+from PySDM_examples.utils.kinematic_2d import Simulation, Storage
 
 import PySDM.backends.impl_numba.conf
 from PySDM import Formulae
