@@ -111,9 +111,9 @@ class Settings:
             water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
                 z_above_reservoir
             )
-            d_water_vapour_mixing_ratio__dz = Derivative(
-                self.water_vapour_mixing_ratio
-            )(z_above_reservoir)
+            d_water_vapour_mixing_ratio__dz = 0#Derivative(
+            #     self.water_vapour_mixing_ratio
+            # )(z_above_reservoir)
             T = self.formulae.state_variable_triplet.T(
                 rhod[0], self.thd(z_above_reservoir)
             )
