@@ -232,10 +232,11 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict):
             cbar_ax=cax,
         )
 
-        h.plot_marginals(sns.histplot, element="step",)
-        h.set_axis_labels(
-            "freezing temperature [°C]", y_label, fontsize=ax_lab_fsize
+        h.plot_marginals(
+            sns.histplot,
+            element="step",
         )
+        h.set_axis_labels("freezing temperature [°C]", y_label, fontsize=ax_lab_fsize)
         h.ax_joint.set_title(
             "Freezing method=" + hom_freezing_type, pad=70, fontsize=ax_lab_fsize
         )
@@ -245,16 +246,16 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict):
 
         if "rc_max_histogram_list" in histogram_data_dict[hom_freezing_type]:
 
-            w = np.asarray(histogram_data_dict[hom_freezing_type]["rc_max_histogram_list"]) * 1e6
+            w = (
+                np.asarray(
+                    histogram_data_dict[hom_freezing_type]["rc_max_histogram_list"]
+                )
+                * 1e6
+            )
             y_label = "(maximum) radius [µm]"
             xlim = (-38.5, -25.5)
 
-            h = sns.JointGrid(
-                x=T_frz,
-                y=w,
-                xlim=xlim,
-                ylim=(1e0,1e2)
-            )
+            h = sns.JointGrid(x=T_frz, y=w, xlim=xlim, ylim=(1e0, 1e2))
             h.ax_joint.set(yscale="log")
             if hom_freezing_type == "KoopMurray2016":
                 x_pos_cbar = 0.75
@@ -271,7 +272,10 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict):
                 cbar_ax=cax,
             )
 
-            h.plot_marginals(sns.histplot, element="step",)
+            h.plot_marginals(
+                sns.histplot,
+                element="step",
+            )
             h.set_axis_labels(
                 "freezing temperature [°C]", y_label, fontsize=ax_lab_fsize
             )

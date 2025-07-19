@@ -51,6 +51,7 @@ class TestHomogeneousIceNucleationRate:
         # arrange
         formulae = Formulae(
             homogeneous_ice_nucleation_rate=parametrisation,
+            saturation_vapour_pressure="MurphyKoop2005",
         )
 
         # act
@@ -91,6 +92,120 @@ class TestHomogeneousIceNucleationRate:
                 actual=jhom_log10[index],
                 desired=SPICHTINGER_ET_AL_2023_FIG2_DATA["jhom_log10"][index],
                 significant=2,
+            )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "pvs_parametrisation, context",
+        (
+            (
+                "FlatauWalkoCotton",
+                pytest.raises(
+                    AssertionError, match="Not equal to tolerance rtol=0.05, atol=0"
+                ),
+            ),
+            ("MurphyKoop2005", nullcontext()),
+        ),
+    )
+    def test_fig_1_in_spichtinger_et_al_2023(pvs_parametrisation, context, plot=False):
+        # arrange
+        formulae = Formulae(
+            homogeneous_ice_nucleation_rate="KoopMurray2016",
+            saturation_vapour_pressure=pvs_parametrisation,
+        )
+        formulae_koop2000 = Formulae(
+            homogeneous_ice_nucleation_rate="Koop2000",
+        )
+        formulae_Koop_Correction = Formulae(
+            homogeneous_ice_nucleation_rate="Koop_Correction",
+        )
+
+        si = physics.si
+
+        pv_water_parametrisation = formulae.saturation_vapour_pressure.pvs_water
+        pv_ice_parametrisation = formulae.saturation_vapour_pressure.pvs_ice
+
+        J_hom_KoopMurray2016_parametrisation = (
+            formulae.homogeneous_ice_nucleation_rate.j_hom
+        )
+        J_hom_Koop2000_parametrisation = (
+            formulae_koop2000.homogeneous_ice_nucleation_rate.j_hom
+        )
+        J_hom_Koop_Correction_parametrisation = (
+            formulae_Koop_Correction.homogeneous_ice_nucleation_rate.j_hom
+        )
+
+        temperature = np.linspace(230, 245, num=16) * si.K
+        RH_water = 1.0
+
+        with context:
+            # act
+            pv_sat_water = pv_water_parametrisation(temperature) * si.Pa
+            pv_sat_ice = pv_ice_parametrisation(temperature) * si.Pa
+
+            pv = pv_sat_water * RH_water
+            RH_ice = pv / pv_sat_ice
+
+            a_w_ice = pv_sat_ice / pv_sat_water
+            d_aw_ice = (RH_ice - 1) * a_w_ice
+
+            J_hom_parametrisations = {
+                "KoopMurray2016": np.log10(
+                    J_hom_KoopMurray2016_parametrisation(temperature, d_aw_ice)
+                ),
+                "Koop2000": np.log10(
+                    J_hom_Koop2000_parametrisation(temperature, d_aw_ice)
+                ),
+                "Koop_Correction": np.log10(
+                    J_hom_Koop_Correction_parametrisation(temperature, d_aw_ice)
+                ),
+            }
+
+            # plot
+            J_hom_range = (-10, 25)
+            for parametrisation in J_hom_parametrisations.keys():
+                pyplot.plot(
+                    temperature,
+                    J_hom_parametrisations[parametrisation],
+                    label=parametrisation,
+                )
+            pyplot.grid()
+            pyplot.gca().set(
+                xlabel=r"temperature (K)",
+                ylabel="log$_{10}(J)$",
+                title="saturation_vapour_pressure: " + pvs_parametrisation,
+                xlim=(np.amin(temperature), np.amax(temperature)),
+                ylim=J_hom_range,
+            )
+            pyplot.xticks(ticks=temperature, minor=True)
+            pyplot.xticks(ticks=np.arange(230, 250, 5), minor=False)
+            pyplot.yticks(
+                ticks=np.arange(J_hom_range[0], J_hom_range[1] + 1, 1), minor=True
+            )
+            pyplot.legend()
+
+            if plot:
+                pyplot.show()
+            else:
+                pyplot.clf()
+
+            # Assert
+            assert all(
+                J_hom_parametrisations["Koop2000"]
+                >= J_hom_parametrisations["KoopMurray2016"]
+            )
+            assert all(
+                J_hom_parametrisations["Koop2000"]
+                >= J_hom_parametrisations["Koop_Correction"]
+            )
+            index = range(
+                np.where(temperature == 235)[0][0],
+                np.where(temperature == 240)[0][0] + 1,
+            )
+            np.testing.assert_allclose(
+                J_hom_parametrisations["Koop_Correction"][index],
+                J_hom_parametrisations["KoopMurray2016"][index],
+                rtol=0.05,
             )
 
     @staticmethod
