@@ -113,10 +113,10 @@ class AlphaSampling(
         self.dist_1_inv = dist_1_inv
 
     def sample(self, n_sd, *, backend=None,xprime=None):  # pylint: disable=unused-argument
+        
         if xprime is None:
-            x_prime = np.linspace(
-                self.size_range[0], self.size_range[1], num=2*n_sd
-            )  # maybe doesnt need to be so many, just for interpolation
+            even_spec = np.linspace(default_cdf_range[0],default_cdf_range[1],num=2 * n_sd + 3)
+            x_prime = self.spectrum.percentiles(even_spec)
         sd_cdf = self.dist_0_cdf(x_prime)
 
         x_sd_cdf = (1 - self.alpha) * x_prime + self.alpha * self.dist_1_inv(sd_cdf)
