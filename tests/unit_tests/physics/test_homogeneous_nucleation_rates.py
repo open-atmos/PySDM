@@ -11,6 +11,7 @@ from PySDM.formulae import Formulae, _choices
 from PySDM.physics import homogeneous_ice_nucleation_rate
 from PySDM import physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.physics import si
 
 SPICHTINGER_ET_AL_2023_FIG2_DATA = {
     "da_w_ice": [0.27, 0.29, 0.31, 0.33],
@@ -119,54 +120,33 @@ class TestHomogeneousIceNucleationRate:
         formulae_Koop_Correction = Formulae(
             homogeneous_ice_nucleation_rate="Koop_Correction",
         )
-
-        si = physics.si
-
-        pv_water_parametrisation = formulae.saturation_vapour_pressure.pvs_water
-        pv_ice_parametrisation = formulae.saturation_vapour_pressure.pvs_ice
-
-        J_hom_KoopMurray2016_parametrisation = (
-            formulae.homogeneous_ice_nucleation_rate.j_hom
-        )
-        J_hom_Koop2000_parametrisation = (
-            formulae_koop2000.homogeneous_ice_nucleation_rate.j_hom
-        )
-        J_hom_Koop_Correction_parametrisation = (
-            formulae_Koop_Correction.homogeneous_ice_nucleation_rate.j_hom
-        )
-
         temperature = np.linspace(230, 245, num=16) * si.K
-        RH_water = 1.0
 
         with context:
             # act
-            pv_sat_water = pv_water_parametrisation(temperature) * si.Pa
-            pv_sat_ice = pv_ice_parametrisation(temperature) * si.Pa
+            pv_sat_water = formulae.saturation_vapour_pressure.pvs_water(temperature) * si.Pa
+            pv_sat_ice = formulae.saturation_vapour_pressure.pvs_ice(temperature) * si.Pa
 
-            pv = pv_sat_water * RH_water
-            RH_ice = pv / pv_sat_ice
-
-            a_w_ice = pv_sat_ice / pv_sat_water
-            d_aw_ice = (RH_ice - 1) * a_w_ice
+            d_aw_ice = (pv_sat_water * 1. / pv_sat_ice - 1) *  pv_sat_ice / pv_sat_water
 
             J_hom_parametrisations = {
                 "KoopMurray2016": np.log10(
-                    J_hom_KoopMurray2016_parametrisation(temperature, d_aw_ice)
+                    formulae.homogeneous_ice_nucleation_rate.j_hom(temperature, d_aw_ice)
                 ),
                 "Koop2000": np.log10(
-                    J_hom_Koop2000_parametrisation(temperature, d_aw_ice)
+                    formulae_koop2000.homogeneous_ice_nucleation_rate.j_hom(temperature, d_aw_ice)
                 ),
                 "Koop_Correction": np.log10(
-                    J_hom_Koop_Correction_parametrisation(temperature, d_aw_ice)
+                    formulae_Koop_Correction.homogeneous_ice_nucleation_rate.j_hom(temperature, d_aw_ice)
                 ),
             }
 
             # plot
             J_hom_range = (-10, 25)
-            for parametrisation in J_hom_parametrisations.keys():
+            for parametrisation, data in J_hom_parametrisations.items():
                 pyplot.plot(
                     temperature,
-                    J_hom_parametrisations[parametrisation],
+                    data,
                     label=parametrisation,
                 )
             pyplot.grid()

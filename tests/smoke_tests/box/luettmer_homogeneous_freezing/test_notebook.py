@@ -1,3 +1,5 @@
+"""basic tests for threshold freezing temperatures"""
+
 from pathlib import Path
 
 import pytest
@@ -5,7 +7,7 @@ import pytest
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Luettmer_homogeneous_freezing
 
-PLOT = False  # this will be needed and useful if open_atmos_jupyter_utils.show_plot() is used in the notebook
+PLOT = False
 
 
 @pytest.fixture(scope="session", name="variables")
