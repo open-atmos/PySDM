@@ -309,6 +309,9 @@ BIGG_DT_MEDIAN = np.nan
 NIEMAND_A = np.nan
 NIEMAND_B = np.nan
 
+HOMOGENEOUS_FREEZING_THRESHOLD = T0 - 38 * si.K
+""" value from [Shima et al. 2020](https://doi.org/10.5194/gmd-13-4107-2020) """
+
 ABIFM_UNIT = 1 / si.cm**2 / si.s
 """ ice nucleation rate using ABIFM
 ([Knopf & Alpert 2013](https://doi.org/10.1039/C3FD00035D)) """

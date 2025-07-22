@@ -10,7 +10,8 @@ from PySDM import Builder, Formulae, products
 from PySDM.backends import CPU, GPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si

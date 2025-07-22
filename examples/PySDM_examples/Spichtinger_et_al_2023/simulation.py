@@ -12,7 +12,8 @@ from PySDM.dynamics import (
     VapourDepositionOnIce,
 )
 from PySDM.environments import Parcel
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 
 
 class Simulation(BasicSimulation):
@@ -49,9 +50,7 @@ class Simulation(BasicSimulation):
         builder.add_dynamic(Condensation())
         builder.add_dynamic(VapourDepositionOnIce())
         builder.add_dynamic(
-            Freezing(
-                singular=False, homogeneous_freezing=True, immersion_freezing=False
-            )
+            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None)
         )
 
         self.n_sd = settings.n_sd

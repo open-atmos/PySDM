@@ -1,6 +1,6 @@
 import os
 import re
-import platform
+import sys
 
 from setuptools import find_packages, setup
 
@@ -38,10 +38,11 @@ setup(
         "ipywidgets",
         "seaborn",
         "numdifftools",
+        "vtk",
     ]
     + (
-        ["pyvinecopulib" + "==0.6.4" if CI else "", "vtk"]
-        if platform.architecture()[0] != "32bit"
+        ["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]
+        if sys.platform != "darwin"
         else []
     ),
     extras_require={
