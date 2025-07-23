@@ -42,7 +42,9 @@ class Simulation:
         if settings.condensation_enable:
             builder.add_dynamic(Condensation())
         if settings.deposition_enable:
-            builder.add_dynamic(VapourDepositionOnIce(adaptive=True))
+            builder.add_dynamic(
+                VapourDepositionOnIce(adaptive=settings.deposition_adaptive)
+            )
         builder.add_dynamic(
             Freezing(
                 homogeneous_freezing=settings.hom_freezing_type, immersion_freezing=None
@@ -62,14 +64,15 @@ class Simulation:
             environment=builder.particulator.environment,
             kappa_times_dry_volume=kappa * v_dry,
         )
+        self.initial_mass = formulae.particle_shape_and_density.radius_to_mass(
+            self.r_wet
+        )
 
         attributes = {
             "multiplicity": self.multiplicities,
             "dry volume": v_dry,
             "kappa times dry volume": kappa * v_dry,
-            "signed water mass": formulae.particle_shape_and_density.radius_to_mass(
-                self.r_wet
-            ),
+            "signed water mass": self.initial_mass,
         }
         builder.request_attribute("temperature of last freezing")
         builder.request_attribute("radius")
@@ -153,8 +156,17 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            if output["LWC"][-1] == 0:
-                print("all particles frozen")
+            # if output["IWC"][-1] > 0:
+            #     print(output["t"][-1],
+            #           output["T"][-1],
+            #           output["LWC"][-1],
+            #           output["IWC"][-1],
+            #           output["RH"][-1],
+            #           output["RHi"][-1]
+            #           )
+
+            if output["LWC"][-1] <= output["LWC"][0]:
+                print("all particles frozen or evaporated")
                 break
             if output["t"][-1] >= self.t_max_duration:
                 print("time exceeded")

@@ -124,20 +124,30 @@ class TestHomogeneousIceNucleationRate:
 
         with context:
             # act
-            pv_sat_water = formulae.saturation_vapour_pressure.pvs_water(temperature) * si.Pa
-            pv_sat_ice = formulae.saturation_vapour_pressure.pvs_ice(temperature) * si.Pa
+            pv_sat_water = (
+                formulae.saturation_vapour_pressure.pvs_water(temperature) * si.Pa
+            )
+            pv_sat_ice = (
+                formulae.saturation_vapour_pressure.pvs_ice(temperature) * si.Pa
+            )
 
-            d_aw_ice = (pv_sat_water * 1. / pv_sat_ice - 1) *  pv_sat_ice / pv_sat_water
+            d_aw_ice = (pv_sat_water * 1.0 / pv_sat_ice - 1) * pv_sat_ice / pv_sat_water
 
             J_hom_parametrisations = {
                 "KoopMurray2016": np.log10(
-                    formulae.homogeneous_ice_nucleation_rate.j_hom(temperature, d_aw_ice)
+                    formulae.homogeneous_ice_nucleation_rate.j_hom(
+                        temperature, d_aw_ice
+                    )
                 ),
                 "Koop2000": np.log10(
-                    formulae_koop2000.homogeneous_ice_nucleation_rate.j_hom(temperature, d_aw_ice)
+                    formulae_koop2000.homogeneous_ice_nucleation_rate.j_hom(
+                        temperature, d_aw_ice
+                    )
                 ),
                 "Koop_Correction": np.log10(
-                    formulae_Koop_Correction.homogeneous_ice_nucleation_rate.j_hom(temperature, d_aw_ice)
+                    formulae_Koop_Correction.homogeneous_ice_nucleation_rate.j_hom(
+                        temperature, d_aw_ice
+                    )
                 ),
             }
 

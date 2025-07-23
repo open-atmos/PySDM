@@ -18,7 +18,7 @@ tick_fsize = 15
 T_frz_bins = np.linspace(-38.5, -33, num=7, endpoint=True)
 
 
-def plot_thermodynamics_and_bulk(simulation):
+def plot_thermodynamics_and_bulk(simulation, title_add=""):
 
     output = simulation["ensemble_member_outputs"][0]
     time = output["t"]
@@ -62,6 +62,7 @@ def plot_thermodynamics_and_bulk(simulation):
         + str(simulation["settings"]["n_sd"])
         + " w="
         + str(simulation["settings"]["w_updraft"])
+        + title_add
     )
     fig.suptitle(title, fontsize=16)
 

@@ -29,6 +29,7 @@ class Settings:
         kappa: float = 0.64,
         condensation_enable: bool = True,
         deposition_enable: bool = True,
+        deposition_adaptive: bool = False,
         backend=None,
         number_of_ensemble_runs: None,
     ):
@@ -59,6 +60,7 @@ class Settings:
 
         self.condensation_enable = condensation_enable
         self.deposition_enable = deposition_enable
+        self.deposition_adaptive = deposition_adaptive
 
         if hom_freezing == "threshold":
             self.hom_freezing_type = "threshold"
@@ -103,6 +105,6 @@ class Settings:
             ).sample(n_sd)
 
         self.dz = dz
-        self.t_max_duration = 10000  # 3600 * 1.5 # total duration of simulation
+        self.t_max_duration = 20000  # 3600 * 1.5 # total duration of simulation
         self.dt = dz / self.w_updraft
         self.n_output = 10  # int(self.t_duration / 100) #100 # number of output steps
