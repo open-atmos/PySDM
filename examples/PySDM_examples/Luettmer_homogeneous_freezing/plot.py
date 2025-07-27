@@ -193,94 +193,62 @@ def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
         i += 1
 
 
-def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict):
+def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_add=""):
 
-    hom_freezing_types = ["KoopMurray2016", "Koop_Correction", "Koop2000"]
+    # hom_freezing_types = ["KoopMurray2016", "Koop_Correction", "Koop2000"]
     sns.set_theme(style="ticks")
 
-    for i, hom_freezing_type in enumerate(hom_freezing_types):
+    hom_freezing_type = histogram_data_dict["hom_freezing_type"]
+    # for i, hom_freezing_type in enumerate(hom_freezing_types):
 
-        T_frz = formulae.trivia.K2C(
-            (np.asarray(histogram_data_dict[hom_freezing_type]["T_frz_histogram_list"]))
-        )
-        if "w_updraft_histogram_list" in histogram_data_dict[hom_freezing_type]:
-            w = histogram_data_dict[hom_freezing_type]["w_updraft_histogram_list"]
-            y_label = "vertical updraft [m/s]"
-            xlim = (-38.5, -33.5)
-        elif "n_ccn_histogram_list" in histogram_data_dict[hom_freezing_type]:
-            w = histogram_data_dict[hom_freezing_type]["n_ccn_histogram_list"]
-            y_label = "ccn concentration [1/m^³]"
-            xlim = (-38.5, -25.5)
-
-        h = sns.JointGrid(
-            x=T_frz,
-            y=w,
-            xlim=xlim,
-        )
-        h.ax_joint.set(yscale="log")
-        if hom_freezing_type == "KoopMurray2016":
-            x_pos_cbar = 0.75
-        else:
-            x_pos_cbar = 0.15
-        cax = h.figure.add_axes([x_pos_cbar, 0.55, 0.02, 0.2])
-        h.plot_joint(
-            sns.histplot,
-            stat="density",
-            binwidth=0.25,
-            discrete=(False, False),
-            pmax=0.8,
-            cbar=True,
-            cbar_ax=cax,
-        )
-
-        h.plot_marginals(
-            sns.histplot,
-            element="step",
-        )
-        h.set_axis_labels("freezing temperature [°C]", y_label, fontsize=ax_lab_fsize)
-        h.ax_joint.set_title(
-            "Freezing method=" + hom_freezing_type, pad=70, fontsize=ax_lab_fsize
-        )
-        h.ax_marg_y.remove()
-
-        del h
-
-        if "rc_max_histogram_list" in histogram_data_dict[hom_freezing_type]:
-
-            w = (
-                np.asarray(
-                    histogram_data_dict[hom_freezing_type]["rc_max_histogram_list"]
-                )
-                * 1e6
+    T_frz = formulae.trivia.K2C(
+        (np.asarray(histogram_data_dict["T_frz_histogram_list"]))
+    )
+    if "w_updraft_histogram_list" in histogram_data_dict:
+        w = histogram_data_dict["w_updraft_histogram_list"]
+        y_label = "vertical updraft [m/s]"
+    elif "n_ccn_histogram_list" in histogram_data_dict:
+        w = histogram_data_dict["n_ccn_histogram_list"]
+        y_label = "ccn concentration [1/m^³]"
+    elif "rc_max_histogram_list" in histogram_data_dict:
+        w = (
+            np.asarray(
+                histogram_data_dict["rc_max_histogram_list"]
             )
-            y_label = "(maximum) radius [µm]"
-            xlim = (-38.5, -25.5)
+            * 1e6
+        )
+        y_label = "(maximum) radius [µm]"
 
-            h = sns.JointGrid(x=T_frz, y=w, xlim=xlim, ylim=(1e0, 1e2))
-            h.ax_joint.set(yscale="log")
-            if hom_freezing_type == "KoopMurray2016":
-                x_pos_cbar = 0.75
-            else:
-                x_pos_cbar = 0.15
-            cax = h.figure.add_axes([x_pos_cbar, 0.55, 0.02, 0.2])
-            h.plot_joint(
-                sns.histplot,
-                stat="density",
-                binwidth=0.25,
-                discrete=(False, False),
-                pmax=0.8,
-                cbar=True,
-                cbar_ax=cax,
-            )
+    xlim = (-38.5, -32)
+    h = sns.JointGrid(
+        x=T_frz,
+        y=w,
+        xlim=xlim,
+    )
+    h.ax_joint.set(yscale="log")
+    if hom_freezing_type == "KoopMurray2016":
+        x_pos_cbar = 0.75
+    else:
+        x_pos_cbar = 0.15
+    cax = h.figure.add_axes([x_pos_cbar, 0.55, 0.02, 0.2])
+    h.plot_joint(
+        sns.histplot,
+        stat="density",
+        binwidth=0.25,
+        discrete=(False, False),
+        pmax=0.8,
+        cbar=True,
+        cbar_ax=cax,
+    )
 
-            h.plot_marginals(
-                sns.histplot,
-                element="step",
-            )
-            h.set_axis_labels(
-                "freezing temperature [°C]", y_label, fontsize=ax_lab_fsize
-            )
-            h.ax_joint.set_title(
-                "Freezing method=" + hom_freezing_type, pad=70, fontsize=ax_lab_fsize
-            )
-            h.ax_marg_y.remove()
+    h.plot_marginals(
+        sns.histplot,
+        element="step",
+    )
+    h.set_axis_labels("freezing temperature [°C]", y_label, fontsize=ax_lab_fsize)
+    h.ax_joint.set_title(
+        "Freezing method=" + hom_freezing_type + title_add, pad=70, fontsize=ax_lab_fsize
+    )
+    h.ax_marg_y.remove()
+
+    return h

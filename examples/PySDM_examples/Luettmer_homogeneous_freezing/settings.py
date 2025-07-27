@@ -105,6 +105,7 @@ class Settings:
             ).sample(n_sd)
 
         self.dz = dz
-        self.t_max_duration = 20000  # 3600 * 1.5 # total duration of simulation
+        self.t_max_duration = 20000
         self.dt = dz / self.w_updraft
-        self.n_output = 10  # int(self.t_duration / 100) #100 # number of output steps
+        print( self.dt, dz, self.w_updraft)
+        self.n_output = 1

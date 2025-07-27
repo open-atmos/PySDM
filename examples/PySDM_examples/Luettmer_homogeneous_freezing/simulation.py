@@ -1,5 +1,5 @@
 import numpy as np
-
+import warnings
 import PySDM.products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.builder import Builder
@@ -101,7 +101,10 @@ class Simulation:
         self.particulator = builder.build(attributes, products)
 
         self.n_output = settings.n_output
-        self.n_substeps = int(self.n_output / dt)
+        if settings.n_output == 1:
+            self.n_substeps = 1
+        else:
+            self.n_substeps = int(self.n_output / dt)
         self.t_max_duration = settings.t_max_duration
 
     def save(self, output):
@@ -156,17 +159,18 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            # if output["IWC"][-1] > 0:
-            #     print(output["t"][-1],
-            #           output["T"][-1],
-            #           output["LWC"][-1],
-            #           output["IWC"][-1],
-            #           output["RH"][-1],
-            #           output["RHi"][-1]
-            #           )
+            # print( output["t"][-1], output["T"][-1], output["RH"][-1], output["LWC"][-1], output["IWC"][-1] )
 
-            if output["LWC"][-1] <= output["LWC"][0]:
+            if output["LWC"][-1] < output["LWC"][0]:
                 print("all particles frozen or evaporated")
+                # Assert for water saturation
+                test_water_saturation = np.asarray( output["RH"] )
+                # Sort out times before CCN activation & after first occurence of ice
+                test_water_saturation = np.where( np.asarray(output["rs"]) < 1e-6, 100., test_water_saturation )
+                test_water_saturation = np.where( np.asarray(output["IWC"]) > 0., 100., test_water_saturation  )
+                if np.allclose(test_water_saturation, 100., rtol=5e-2) == False:
+                    warnings.warn( "Water saturation is too high outside of activation and mixed-phase environment" )
+
                 break
             if output["t"][-1] >= self.t_max_duration:
                 print("time exceeded")
