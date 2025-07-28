@@ -127,7 +127,7 @@ class Settings:
                 1 + water_vapour_mixing_ratio
             ) - rhod * d_water_vapour_mixing_ratio__dz / (
                 1 + water_vapour_mixing_ratio
-            )
+            )**2
 
         z_span = (-self.particle_reservoir_depth, self.z_max)
         z_points = np.linspace(*z_span, 2 * self.nz + 1)
