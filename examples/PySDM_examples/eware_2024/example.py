@@ -220,7 +220,7 @@ def run(settings, backend, observers=()):
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
-    sampling = ConstantMultiplicity(settings.spectrum)
+    sampling = settings.sampling
     attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
