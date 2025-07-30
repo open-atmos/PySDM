@@ -247,6 +247,7 @@ def run(settings, backend, observers=()):
         vals[step][:] *= settings.rho
         deficit += particulator.products["deficit"].get()
         # deficit[step][:] *= settings.rho / settings.dv
+    deficit = deficit / len(settings.output_steps)
 
     exec_time = particulator.products["wall time"].get()
     return vals, exec_time, deficit
