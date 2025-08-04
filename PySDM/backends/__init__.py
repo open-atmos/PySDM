@@ -4,6 +4,7 @@ and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
 """
 
 import ctypes
+from functools import partial
 import os
 import sys
 import warnings
@@ -72,12 +73,15 @@ else:
 
     ThrustRTC.Random = Random
 
-CPU = Numba
-"""
-alias for Numba
-"""
+_BACKEND_CACHE = {}
 
-GPU = ThrustRTC
-"""
-alias for ThrustRTC
-"""
+
+def make_backend(backend_class, formulae=None, **kwargs):
+    key = backend_class.__name__ + ":" + str(formulae) + ":" + str(kwargs)
+    if key not in _BACKEND_CACHE:
+        _BACKEND_CACHE[key] = backend_class(formulae=formulae, **kwargs)
+    return _BACKEND_CACHE[key]
+
+
+CPU = partial(make_backend, backend_class=Numba)
+GPU = partial(make_backend, backend_class=ThrustRTC)
