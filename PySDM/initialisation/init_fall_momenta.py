@@ -32,7 +32,7 @@ def init_fall_momenta(
 
     from PySDM.backends import CPU  # pylint: disable=import-outside-toplevel
 
-    particulator = Particulator(0, CPU(Formulae()))  # TODO #1155
+    particulator = Particulator(0, CPU())  # TODO #1155
 
     approximation = terminal_velocity_approx(particulator=particulator)
 
