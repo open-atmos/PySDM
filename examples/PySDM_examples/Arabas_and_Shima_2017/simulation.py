@@ -1,7 +1,7 @@
 import numpy as np
 
 import PySDM.products as PySDM_products
-from PySDM.backends import CPU
+from PySDM.backends import Numba
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
@@ -10,7 +10,7 @@ from PySDM.physics import constants as const
 
 
 class Simulation:
-    def __init__(self, settings, backend=CPU):
+    def __init__(self, settings, backend=Numba):
         t_half = settings.z_half / settings.w_avg
 
         dt_output = (2 * t_half) / settings.n_output
@@ -23,7 +23,7 @@ class Simulation:
                 formulae=settings.formulae,
                 **(
                     {"override_jit_flags": {"parallel": False}}
-                    if backend == CPU
+                    if backend is Numba
                     else {}
                 ),
             ),
