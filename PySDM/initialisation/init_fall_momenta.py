@@ -6,7 +6,6 @@ of droplets
 import numpy as np
 
 from PySDM.dynamics.terminal_velocity import GunnKinzer1949
-from PySDM.formulae import Formulae
 from PySDM.particulator import Particulator
 
 

@@ -76,7 +76,7 @@ else:
 _BACKEND_CACHE = {}
 
 
-def make_backend(backend_class, formulae=None, **kwargs):
+def make_backend(formulae=None, backend_class=None, **kwargs):
     key = backend_class.__name__ + ":" + str(formulae) + ":" + str(kwargs)
     if key not in _BACKEND_CACHE:
         _BACKEND_CACHE[key] = backend_class(formulae=formulae, **kwargs)
