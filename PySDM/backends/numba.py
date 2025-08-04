@@ -7,6 +7,7 @@ import platform
 import warnings
 
 import numba
+import numpy as np
 
 from PySDM.backends.impl_numba import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
@@ -58,6 +59,26 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
                     "Numba version used does not support parallel for (32 bits?)"
                 )
             parallel_default = False
+
+        if (
+            parallel_default
+            and not numba.config.DISABLE_JIT  # pylint: disable=no-member
+        ):
+
+            @numba.jit(parallel=True, nopython=True)
+            def fill_array_with_thread_id(arr):
+                """writes thread id to corresponding array element"""
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    numba.get_num_threads()
+                ):
+                    arr[i] = numba.get_thread_id()
+
+            fill_array_with_thread_id(arr := np.full(numba.get_num_threads(), -1))
+            if not max(arr) > 0:
+                raise ValueError(
+                    "Numba threading enabled but does not work"
+                    " (try other setting of the NUMBA_THREADING_LAYER env var?)"
+                )
 
         assert "fastmath" not in (override_jit_flags or {})
         self.default_jit_flags = {
