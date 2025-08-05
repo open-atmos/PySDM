@@ -14,7 +14,6 @@ on:
 
 jobs:
   python:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip docs]') }}
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-13, macos-14, windows-latest]
@@ -45,7 +44,6 @@ jobs:
             readme.png
 
   julia:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip docs]') }}
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4.1.6
@@ -63,7 +61,6 @@ jobs:
       - run: julia readme.jl
 
   matlab:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip docs]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.6

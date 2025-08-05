@@ -54,7 +54,6 @@ jobs:
   
 
   nojit_and_codecov:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip tests]') }}
     needs: [pylint]
     runs-on: ubuntu-24.04
     env:
@@ -80,7 +79,6 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
   tests:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip tests]') }}
     needs: [nojit_and_codecov]
     strategy:
       matrix:
@@ -144,7 +142,6 @@ jobs:
           pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip examples]') }}
     needs: [nojit_and_codecov]
     strategy:
       matrix:
@@ -182,7 +179,6 @@ jobs:
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
   examples:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip examples]') }}
     needs: [examples-setup]
     strategy:
       matrix:

@@ -14,7 +14,6 @@ on:
 
 jobs:
   pdoc:
-    if: ${{ !contains(github.event.head_commit.message, '[CI skip docs]') }}
     strategy:
       matrix:
         platform: [ ubuntu-latest, macos-latest, windows-latest ]
