@@ -223,6 +223,7 @@ jobs:
           
       - if: startsWith(matrix.platform, 'macos-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
+          brew update
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
           brew install ghostscript ffmpeg
