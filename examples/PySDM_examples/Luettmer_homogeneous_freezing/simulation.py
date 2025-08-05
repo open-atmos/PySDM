@@ -40,7 +40,7 @@ class Simulation:
 
         builder.add_dynamic(AmbientThermodynamics())
         if settings.condensation_enable:
-            builder.add_dynamic(Condensation())
+            builder.add_dynamic(Condensation(adaptive=True))
         if settings.deposition_enable:
             builder.add_dynamic(
                 VapourDepositionOnIce(adaptive=settings.deposition_adaptive)
@@ -169,7 +169,7 @@ class Simulation:
                 test_water_saturation = np.where( np.asarray(output["rs"]) < 1e-6, 100., test_water_saturation )
                 test_water_saturation = np.where( np.asarray(output["IWC"]) > 0., 100., test_water_saturation  )
                 if np.allclose(test_water_saturation, 100., rtol=5e-2) == False:
-                    warnings.warn( "Water saturation is too high outside of activation and mixed-phase environment" )
+                    print( "Warning: water saturation is too high outside of activation and mixed-phase environment" )
 
                 break
             if output["t"][-1] >= self.t_max_duration:

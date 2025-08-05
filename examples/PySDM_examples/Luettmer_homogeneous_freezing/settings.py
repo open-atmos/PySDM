@@ -107,5 +107,4 @@ class Settings:
         self.dz = dz
         self.t_max_duration = 20000
         self.dt = dz / self.w_updraft
-        print( self.dt, dz, self.w_updraft)
         self.n_output = 1
