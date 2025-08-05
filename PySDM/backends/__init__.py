@@ -1,6 +1,5 @@
 """
-Backend classes: CPU=`PySDM.backends.numba.Numba`
-and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
+Number-crunching backends
 """
 
 import ctypes
@@ -11,7 +10,13 @@ import warnings
 
 from numba import cuda
 
-from .numba import Numba
+from . import numba as _numba
+
+# for pdoc
+CPU = None
+GPU = None
+Numba = _numba.Numba
+ThrustRTC = None
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
@@ -76,12 +81,15 @@ else:
 _BACKEND_CACHE = {}
 
 
-def make_backend(formulae=None, backend_class=None, **kwargs):
+def _cached_backend(formulae=None, backend_class=None, **kwargs):
     key = backend_class.__name__ + ":" + str(formulae) + ":" + str(kwargs)
     if key not in _BACKEND_CACHE:
         _BACKEND_CACHE[key] = backend_class(formulae=formulae, **kwargs)
     return _BACKEND_CACHE[key]
 
 
-CPU = partial(make_backend, backend_class=Numba)
-GPU = partial(make_backend, backend_class=ThrustRTC)
+CPU = partial(_cached_backend, backend_class=Numba)
+""" returns a cached instance of the Numba backend (cache key including formulae parameters) """
+
+GPU = partial(_cached_backend, backend_class=ThrustRTC)
+""" returns a cached instance of the ThrustRTC backend (cache key including formulae parameters) """
