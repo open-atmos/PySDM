@@ -54,9 +54,9 @@ jobs:
   
 
   nojit_and_codecov:
+    if: ${{ !contains(github.event.head_commit.message, '[CI skip tests]') }}
     needs: [pylint]
     runs-on: ubuntu-24.04
-    if: ${{ !contains(github.event.head_commit.message, '[CI: skip tests]') }}
     env:
       NUMBA_DISABLE_JIT: 1
     steps:
@@ -80,6 +80,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
   tests:
+    if: ${{ !contains(github.event.head_commit.message, '[CI skip tests]') }}
     needs: [nojit_and_codecov]
     strategy:
       matrix:
@@ -104,7 +105,6 @@ jobs:
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    if: ${{ !contains(github.event.head_commit.message, '[CI: skip tests]') }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -144,13 +144,13 @@ jobs:
           pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
+    if: ${{ !contains(github.event.head_commit.message, '[CI skip examples]') }}
     needs: [nojit_and_codecov]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-13, windows-latest]
         python-version: ["3.9", "3.12"]
     runs-on: ${{ matrix.platform }}
-    if: ${{ !contains(github.event.head_commit.message, '[CI: skip examples]') }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -182,6 +182,7 @@ jobs:
           key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
   examples:
+    if: ${{ !contains(github.event.head_commit.message, '[CI skip examples]') }}
     needs: [examples-setup]
     strategy:
       matrix:
@@ -190,7 +191,6 @@ jobs:
         test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    if: ${{ !contains(github.event.head_commit.message, '[CI: skip examples]') }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
     steps:
       - uses: actions/checkout@v4.1.6
