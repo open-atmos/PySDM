@@ -77,12 +77,7 @@ To install PySDM using ``pip``, use: ``pip install PySDM``
 (or ``pip install git+https://github.com/open-atmos/PySDM.git`` to get updates
 beyond the latest release).
 
-Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. Dependencies of PySDM are available at the following conda channels:
-- numba: [numba](https://anaconda.org/numba/numba)
-- conda-forge: [pyevtk](https://anaconda.org/conda-forge/pyevtk), [pint](https://anaconda.org/conda-forge/pint) and []()
-- fyplus: [ThrustRTC](https://anaconda.org/fyplus/thrustrtc), [CURandRTC](https://anaconda.org/fyplus/curandrtc)
-- bjodah: [chempy](https://anaconda.org/bjodah/chempy)
-- nvidia: [cudatoolkit](https://anaconda.org/nvidia/cudatoolkit)
+Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. 
 
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies can be installed with ``pip -e .[tests]``.
