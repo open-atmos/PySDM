@@ -16,18 +16,7 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "chemistry_extraterrestrial": [
-        "Jaruga_and_Pawlowska_2018",
-        "Kreidenweis_et_al_2003",
-        "Toon_et_al_1980",
-    ],
-    "freezing": [
-        "Alpert_and_Knopf_2016",
-        "Ervens_and_Feingold_2012",
-        "Niedermeier_et_al_2014",
-        "Spichtinger_et_al_2023",
-    ],
-    "isotopes": [
+    "isotopes_chemistry_extraterrestrial": [
         "Bolot_et_al_2013",
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
@@ -43,6 +32,9 @@ TEST_SUITES = {
         "Pruppacher_and_Rasmussen_1979",
         "Fisher_1991",
         "Jouzel_and_Merlivat_1984",
+        "Jaruga_and_Pawlowska_2018",
+        "Kreidenweis_et_al_2003",
+        "Toon_et_al_1980",
     ],
     "condensation_a": [
         "Lowe_et_al_2019",
@@ -60,8 +52,14 @@ TEST_SUITES = {
         "Jensen_and_Nugent_2017",
         "Abade_and_Albuquerque_2024",
     ],
-    "coagulation": ["Berry_1967", "Shima_et_al_2009"],
-    "breakup": ["Bieli_et_al_2022", "deJong_Mackay_et_al_2023", "Srivastava_1982"],
+    "coagulation_freezing": [
+        "Berry_1967",
+        "Shima_et_al_2009",
+        "Alpert_and_Knopf_2016",
+        "Ervens_and_Feingold_2012",
+        "Niedermeier_et_al_2014",
+        "Spichtinger_et_al_2023",
+    ],
     "multi-process_a": [
         "Arabas_et_al_2015",
         "_HOWTOs",
@@ -69,8 +67,11 @@ TEST_SUITES = {
     "multi-process_b": [
         "Arabas_et_al_2025",
     ],
-    "multi-process_c": [
+    "multi-process_c_breakup": [
         "Bartman_2020_MasterThesis",
+        "Bieli_et_al_2022",
+        "deJong_Mackay_et_al_2023",
+        "Srivastava_1982",
     ],
     "multi-process_d": [
         "Bartman_et_al_2021",
