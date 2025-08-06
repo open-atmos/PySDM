@@ -127,7 +127,7 @@
 </span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM_examples.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicSimulation</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">PySDM.products</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">PySDM_products</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">CPU</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.backends</span><span class="w"> </span><span class="kn">import</span> <span class="n">Numba</span>
 </span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.builder</span><span class="w"> </span><span class="kn">import</span> <span class="n">Builder</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">PySDM.dynamics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>    <span class="n">AmbientThermodynamics</span><span class="p">,</span>
@@ -141,7 +141,7 @@
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Simulation</span><span class="p">(</span><span class="n">BasicSimulation</span><span class="p">):</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">CPU</span><span class="p">):</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">Numba</span><span class="p">):</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
@@ -162,7 +162,7 @@
 </span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a>                <span class="n">formulae</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">formulae</span><span class="p">,</span>
 </span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a>                <span class="o">**</span><span class="p">(</span>
 </span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>                    <span class="p">{</span><span class="s2">&quot;override_jit_flags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>                    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="n">CPU</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>                    <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="n">Numba</span>
 </span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a>                    <span class="k">else</span> <span class="p">{}</span>
 </span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a>                <span class="p">),</span>
 </span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a>            <span class="p">),</span>
@@ -258,7 +258,7 @@
     </div>
     <a class="headerlink" href="#Simulation"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Simulation-20"><a href="#Simulation-20"><span class="linenos"> 20</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Simulation</span><span class="p">(</span><span class="n">BasicSimulation</span><span class="p">):</span>
-</span><span id="Simulation-21"><a href="#Simulation-21"><span class="linenos"> 21</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">CPU</span><span class="p">):</span>
+</span><span id="Simulation-21"><a href="#Simulation-21"><span class="linenos"> 21</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">Numba</span><span class="p">):</span>
 </span><span id="Simulation-22"><a href="#Simulation-22"><span class="linenos"> 22</span></a>
 </span><span id="Simulation-23"><a href="#Simulation-23"><span class="linenos"> 23</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="Simulation-24"><a href="#Simulation-24"><span class="linenos"> 24</span></a>
@@ -279,7 +279,7 @@
 </span><span id="Simulation-39"><a href="#Simulation-39"><span class="linenos"> 39</span></a>                <span class="n">formulae</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">formulae</span><span class="p">,</span>
 </span><span id="Simulation-40"><a href="#Simulation-40"><span class="linenos"> 40</span></a>                <span class="o">**</span><span class="p">(</span>
 </span><span id="Simulation-41"><a href="#Simulation-41"><span class="linenos"> 41</span></a>                    <span class="p">{</span><span class="s2">&quot;override_jit_flags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
-</span><span id="Simulation-42"><a href="#Simulation-42"><span class="linenos"> 42</span></a>                    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="n">CPU</span>
+</span><span id="Simulation-42"><a href="#Simulation-42"><span class="linenos"> 42</span></a>                    <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="n">Numba</span>
 </span><span id="Simulation-43"><a href="#Simulation-43"><span class="linenos"> 43</span></a>                    <span class="k">else</span> <span class="p">{}</span>
 </span><span id="Simulation-44"><a href="#Simulation-44"><span class="linenos"> 44</span></a>                <span class="p">),</span>
 </span><span id="Simulation-45"><a href="#Simulation-45"><span class="linenos"> 45</span></a>            <span class="p">),</span>
@@ -368,13 +368,13 @@
                                         <input id="Simulation.__init__-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
-        <span class="name">Simulation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">settings</span>, </span><span class="param">backend=&lt;class &#x27;<a href="../../PySDM/backends/numba.html#Numba">PySDM.backends.numba.Numba</a>&#x27;&gt;</span>)</span>
+        <span class="name">Simulation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">settings</span>, </span><span class="param">backend=&lt;class &#x27;<a href="../../PySDM/backends.html#Numba">PySDM.backends.Numba</a>&#x27;&gt;</span>)</span>
 
                 <label class="view-source-button" for="Simulation.__init__-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#Simulation.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Simulation.__init__-21"><a href="#Simulation.__init__-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">CPU</span><span class="p">):</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Simulation.__init__-21"><a href="#Simulation.__init__-21"><span class="linenos">21</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">Numba</span><span class="p">):</span>
 </span><span id="Simulation.__init__-22"><a href="#Simulation.__init__-22"><span class="linenos">22</span></a>
 </span><span id="Simulation.__init__-23"><a href="#Simulation.__init__-23"><span class="linenos">23</span></a>        <span class="n">dt</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">dt</span>
 </span><span id="Simulation.__init__-24"><a href="#Simulation.__init__-24"><span class="linenos">24</span></a>
@@ -395,7 +395,7 @@
 </span><span id="Simulation.__init__-39"><a href="#Simulation.__init__-39"><span class="linenos">39</span></a>                <span class="n">formulae</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">formulae</span><span class="p">,</span>
 </span><span id="Simulation.__init__-40"><a href="#Simulation.__init__-40"><span class="linenos">40</span></a>                <span class="o">**</span><span class="p">(</span>
 </span><span id="Simulation.__init__-41"><a href="#Simulation.__init__-41"><span class="linenos">41</span></a>                    <span class="p">{</span><span class="s2">&quot;override_jit_flags&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
-</span><span id="Simulation.__init__-42"><a href="#Simulation.__init__-42"><span class="linenos">42</span></a>                    <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="n">CPU</span>
+</span><span id="Simulation.__init__-42"><a href="#Simulation.__init__-42"><span class="linenos">42</span></a>                    <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="n">Numba</span>
 </span><span id="Simulation.__init__-43"><a href="#Simulation.__init__-43"><span class="linenos">43</span></a>                    <span class="k">else</span> <span class="p">{}</span>
 </span><span id="Simulation.__init__-44"><a href="#Simulation.__init__-44"><span class="linenos">44</span></a>                <span class="p">),</span>
 </span><span id="Simulation.__init__-45"><a href="#Simulation.__init__-45"><span class="linenos">45</span></a>            <span class="p">),</span>
