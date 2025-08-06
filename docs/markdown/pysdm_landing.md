@@ -663,8 +663,8 @@ mindmap
         ...
       (...)
     ((backends))
-      CPU
-      GPU
+      Numba
+      ThrustRTC
     ((dynamics))
       AqueousChemistry
       Collision
