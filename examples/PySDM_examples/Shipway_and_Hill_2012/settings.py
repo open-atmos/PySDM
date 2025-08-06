@@ -49,6 +49,7 @@ class Settings:
         formulae: Formulae = None,
         save_spec_and_attr_times=(),
         collision_kernel=None,
+        old_buggy_density_formula=False,
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
@@ -127,7 +128,9 @@ class Settings:
                 1 + water_vapour_mixing_ratio
             ) - rhod * d_water_vapour_mixing_ratio__dz / (
                 1 + water_vapour_mixing_ratio
-            )**2
+            ) ** (
+                2 if not old_buggy_density_formula else 1
+            )
 
         z_span = (-self.particle_reservoir_depth, self.z_max)
         z_points = np.linspace(*z_span, 2 * self.nz + 1)
