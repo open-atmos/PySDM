@@ -95,7 +95,7 @@ def go_benchmark(
         backend_configs.append((GPU, None))
 
     for backend_class, n_threads in backend_configs:
-        backend_name = backend_class.__name__
+        backend_name = backend_class().__class__.__name__
         if n_threads:
             numba.set_num_threads(n_threads)
             backend_name += "_" + str(numba.get_num_threads())
