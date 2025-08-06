@@ -4,7 +4,7 @@ import pytest
 import numpy as np
 
 from PySDM import Builder
-from PySDM.backends import GPU
+from PySDM.backends import ThrustRTC
 from PySDM.physics import si
 from PySDM.impl.mesh import Mesh
 from PySDM.environments import Box, Kinematic1D
@@ -58,7 +58,7 @@ class TestSurfacePrecipitation:
         so any downward movement triggers counting as precip
         """
 
-        if isinstance(backend_instance, GPU):
+        if isinstance(backend_instance, ThrustRTC):
             pytest.skip("TODO #1418")
 
         # arrange

@@ -103,7 +103,7 @@ jobs:
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -187,7 +187,7 @@ jobs:
         test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 40 || 30 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 20 || 35 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -223,6 +223,7 @@ jobs:
           
       - if: startsWith(matrix.platform, 'macos-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
+          brew update
           brew install --cask paraview
           echo `dirname /Applications/ParaView-*.app/Contents/bin/pvpython | head -1` >> $GITHUB_PATH
           brew install ghostscript ffmpeg

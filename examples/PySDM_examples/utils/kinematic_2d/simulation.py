@@ -20,16 +20,6 @@ from PySDM.environments import Kinematic2D
 from PySDM.initialisation.sampling import spatial_sampling
 
 
-_BACKEND_CACHE = {}
-
-
-def backend_factory(backend_class, formulae):
-    key = backend_class.__name__ + ":" + str(formulae)
-    if key not in _BACKEND_CACHE:
-        _BACKEND_CACHE[key] = backend_class(formulae=formulae)
-    return _BACKEND_CACHE[key]
-
-
 class Simulation:
     def __init__(self, settings, storage, SpinUp, backend_class=CPU):
         self.settings = settings
@@ -44,7 +34,7 @@ class Simulation:
 
     def reinit(self, products=None):
         formulae = self.settings.formulae
-        backend = backend_factory(self.backend_class, formulae=formulae)
+        backend = self.backend_class(formulae=formulae)
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
