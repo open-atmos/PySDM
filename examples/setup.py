@@ -1,4 +1,5 @@
 import os
+import platform
 import re
 import sys
 
@@ -42,7 +43,7 @@ setup(
     ]
     + (
         ["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]
-        if sys.platform != "darwin"
+        if not (sys.platform == "darwin" and platform.machine() == "x86_64")
         else []
     ),
     extras_require={
