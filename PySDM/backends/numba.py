@@ -7,6 +7,7 @@ import platform
 import warnings
 
 import numba
+from numba import prange
 import numpy as np
 
 from PySDM.backends.impl_numba import methods
@@ -72,13 +73,13 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
                 @numba.jit(parallel=True, nopython=True)
                 def fill_array_with_thread_id(arr):
                     """writes thread id to corresponding array element"""
-                    for i in numba.prange(  # pylint: disable=not-an-iterable
+                    for i in prange(  # pylint: disable=not-an-iterable
                         numba.get_num_threads()
                     ):
                         arr[i] = numba.get_thread_id()
 
                 fill_array_with_thread_id(arr := np.full(numba.get_num_threads(), -1))
-                if not max(arr) > 0:
+                if not max(arr) == arr[-1] == numba.get_num_threads() - 1:
                     raise ValueError(
                         "Numba threading enabled but does not work"
                         " (try other setting of the NUMBA_THREADING_LAYER env var?)"
