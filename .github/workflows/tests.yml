@@ -145,7 +145,7 @@ jobs:
     needs: [nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
+        platform: [ubuntu-24.04, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -182,7 +182,7 @@ jobs:
     needs: [examples-setup]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
+        platform: [ubuntu-24.04, macos-14, windows-latest]
         python-version: ["3.9", "3.12"]
         test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
       fail-fast: false
