@@ -92,7 +92,7 @@ jobs:
             python-version: "3.9"
           # TODO #1406
           - platform: "macos-14"
-            test-suite: "smoke_tests/box"
+            test-suite: "smoke_tests/{no_env|box}"
           - platform: "macos-14"
             test-suite: "smoke_tests/parcel_a"
           - platform: "macos-14"
