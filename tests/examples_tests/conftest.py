@@ -2,14 +2,13 @@
 import os
 import pathlib
 import re
-
-from .. import smoke_tests
-
 import ast
 import importlib
 import inspect
 import pkgutil
-from pathlib import Path
+
+
+from .. import smoke_tests
 
 
 def iter_submodules(module):
@@ -17,10 +16,7 @@ def iter_submodules(module):
     if not hasattr(module, "__path__"):
         return
     for _, name, _ in pkgutil.walk_packages(module.__path__, module.__name__ + "."):
-        try:
-            yield name, importlib.import_module(name)
-        except Exception as e:
-            print(f"Could not import {name}: {e}")
+        yield name, importlib.import_module(name)
 
 
 class NotebookVarExtractor(ast.NodeVisitor):
@@ -36,13 +32,10 @@ class NotebookVarExtractor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _maybe_add_path_expr(self, expr):
-        """Try to extract a path-like expression string from AST."""
-        try:
-            expr_str = ast.unparse(expr)
-            if "Path(" in expr_str:
-                self.paths.append(expr_str)
-        except Exception:
-            self.paths.append("<unparsable>")
+        """Extract a path-like expression string from AST."""
+        expr_str = ast.unparse(expr)
+        if "Path(" in expr_str:
+            self.paths.append(expr_str)
 
 
 def extract_path_expressions_from_module(mod):
@@ -59,21 +52,21 @@ def extract_path_expressions_from_module(mod):
 
 
 def evaluate_path_expr(expr_str, module_globals):
-    """Safely evaluate the path expression using the module's globals."""
-    try:
-        local_ctx = {"Path": Path}
-        value = eval(expr_str, {**module_globals, **local_ctx})
-        return value.resolve() if isinstance(value, Path) else None
-    except Exception as e:
-        print(f"Could not evaluate path expression: {expr_str} -> {e}")
-        return None
+    """Evaluate the path expression using the module's globals."""
+    local_ctx = {"Path": pathlib.Path}
+    value = eval(expr_str, {**module_globals, **local_ctx})  # pylint: disable=eval-used
+    return value.resolve() if isinstance(value, pathlib.Path) else None
 
 
-SMOKE_TEST_COVERED_PATHS = []
-for _, mod in iter_submodules(smoke_tests):
-    exprs = extract_path_expressions_from_module(mod)
-    paths = [evaluate_path_expr(expr, vars(mod)) for expr in exprs]
-    SMOKE_TEST_COVERED_PATHS.extend(p for p in paths if p is not None)
+SMOKE_TEST_COVERED_PATHS = [
+    notebook_path
+    for _, submodule in iter_submodules(smoke_tests)
+    for notebook_path in (
+        evaluate_path_expr(expr, vars(submodule))
+        for expr in extract_path_expressions_from_module(submodule)
+    )
+    if notebook_path is not None
+]
 
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
