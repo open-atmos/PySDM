@@ -89,6 +89,7 @@ jobs:
         python-version: [ "3.12" ]
     runs-on: ${{ matrix.platform }}
     steps:
+      - uses: actions/checkout@v4.1.6
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
@@ -156,6 +157,7 @@ jobs:
         python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
+      - uses: actions/checkout@v4.1.6
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
