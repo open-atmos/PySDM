@@ -188,7 +188,7 @@ jobs:
         test-suite: [ "isotopes_chemistry_extraterrestrial", "coagulation_freezing", "condensation_a", "condensation_b", "condensation_c", "multi-process_a", "multi-process_b", "multi-process_c_breakup", "multi-process_d", "multi-process_e"]
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 27 || 17 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
