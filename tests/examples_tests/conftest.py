@@ -61,25 +61,22 @@ def iter_submodule_names(module):
 def find_modules_using_notebook_vars(module):
     names = []
     for name in iter_submodule_names(module):
-        try:
-            filepath = importlib.util.find_spec(name).origin
-            with open(filepath, "r", encoding="utf-8") as f:
-                source = f.read()
-            if "notebook_vars" in source:
-                names.append(name)
-        except Exception:
-            pass
+        filepath = importlib.util.find_spec(name).origin
+        with open(filepath, "r", encoding="utf-8") as f:
+            source = f.read()
+        if "notebook_vars" in source:
+            names.append(name)
     return names
 
 
 SMOKE_TEST_COVERED_PATHS = []
 for mod_name in find_modules_using_notebook_vars(smoke_tests):
-    mod = importlib.import_module(mod_name)
-    exprs = extract_path_expressions_from_module(mod)
-    for expr in exprs:
-        path = evaluate_path_expr(expr, vars(mod))
-        if path:
-            SMOKE_TEST_COVERED_PATHS.append(path)
+    submodule = importlib.import_module(mod_name)
+    exprs = extract_path_expressions_from_module(submodule)
+    for path_expr in exprs:
+        submodule_path = evaluate_path_expr(path_expr, vars(submodule))
+        if submodule_path:
+            SMOKE_TEST_COVERED_PATHS.append(submodule_path)
 
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
