@@ -54,7 +54,11 @@ jobs:
   
 
   nojit_and_codecov:
-    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
+        python-version: [ "3.9", "3.12" ]
+    runs-on: ${{ matrix.platform }}
     env:
       NUMBA_DISABLE_JIT: 1
     steps:
@@ -64,7 +68,7 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-python@v5.0.0
       with:
-        python-version: 3.9
+        python-version: ${{ matrix.python-version }}
     - name: Generate coverage report
       run: |
         pip install -e .[tests]
@@ -81,14 +85,10 @@ jobs:
     needs: [pylint,nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
-        python-version: ["3.9", "3.12"]
+        platform: [ubuntu-24.04, macos-14, windows-latest]
+        python-version: ["3.12"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions","smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
-          - platform: "macos-14"
-            python-version: "3.9"
-          - test-suite: "devops_tests"
-            python-version: "3.9"
           # TODO #1406
           - platform: "macos-14"
             test-suite: "smoke_tests/box"
@@ -145,7 +145,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
-        python-version: ["3.9", "3.12"]
+        python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
