@@ -54,10 +54,14 @@ jobs:
   
 
   nojit_and_codecov:
-    needs: [pylint]
-    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
+        python-version: [ "3.9", "3.12" ]
+    runs-on: ${{ matrix.platform }}
     env:
       NUMBA_DISABLE_JIT: 1
+      PYTHON: ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v4.1.6
       with:
@@ -65,7 +69,7 @@ jobs:
         fetch-depth: 0
     - uses: actions/setup-python@v5.0.0
       with:
-        python-version: 3.9
+        python-version: ${{ matrix.python-version }}
     - name: Generate coverage report
       run: |
         pip install -e .[tests]
@@ -77,19 +81,16 @@ jobs:
         fail_ci_if_error: true
         verbose: true
         token: ${{ secrets.CODECOV_TOKEN }}
+        env_vars: PYTHON,RUNNER_OS
 
   tests:
-    needs: [nojit_and_codecov]
+    needs: [pylint,nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
-        python-version: ["3.9", "3.12"]
+        platform: [ubuntu-24.04, macos-14, windows-latest]
+        python-version: ["3.12"]
         test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions","smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
         exclude:
-          - platform: "macos-14"
-            python-version: "3.9"
-          - test-suite: "devops_tests"
-            python-version: "3.9"
           # TODO #1406
           - platform: "macos-14"
             test-suite: "smoke_tests/box"
@@ -101,7 +102,7 @@ jobs:
             test-suite: "smoke_tests/kinematic_2d"
           - platform: "macos-14"
             test-suite: "unit_tests/!(dynamics)"
-      fail-fast: false
+      fail-fast: true
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
     steps:
@@ -142,11 +143,11 @@ jobs:
           pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
-    needs: [nojit_and_codecov]
+    needs: [pylint,nojit_and_codecov]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
+        platform: [ubuntu-24.04, macos-14, windows-latest]
+        python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -182,12 +183,12 @@ jobs:
     needs: [examples-setup]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
-      fail-fast: false
+        platform: [ubuntu-24.04, macos-14, windows-latest]
+        python-version: ["3.12"]
+        test-suite: [ "isotopes_chemistry_extraterrestrial", "coagulation_freezing", "condensation_a", "condensation_b", "condensation_c", "multi-process_a", "multi-process_b", "multi-process_c_breakup", "multi-process_d", "multi-process_e"]
+      fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 20 || 35 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -242,12 +243,8 @@ jobs:
       - run: |
           python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
 
-      # TODO #1207
-      - if: startsWith(matrix.platform, 'macos-13')
-        run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not (Rozanski_and_Sonntag_1982 or copula_hello)" --suite ${{ matrix.test-suite }}
-
-      - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+      - run: |
+          python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
         
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
