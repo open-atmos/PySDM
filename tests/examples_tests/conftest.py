@@ -3,6 +3,78 @@ import os
 import pathlib
 import re
 
+from .. import smoke_tests
+
+import ast
+import importlib
+import inspect
+import pkgutil
+from pathlib import Path
+
+
+def iter_submodules(module):
+    """Yield (name, module) for all submodules recursively."""
+    if not hasattr(module, "__path__"):
+        return
+    for _, name, _ in pkgutil.walk_packages(module.__path__, module.__name__ + "."):
+        try:
+            yield name, importlib.import_module(name)
+        except Exception as e:
+            print(f"Could not import {name}: {e}")
+
+
+class NotebookVarExtractor(ast.NodeVisitor):
+    def __init__(self):
+        self.paths = []
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id == "notebook_vars":
+            for arg in node.args:
+                self._maybe_add_path_expr(arg)
+            for kw in node.keywords:
+                self._maybe_add_path_expr(kw.value)
+        self.generic_visit(node)
+
+    def _maybe_add_path_expr(self, expr):
+        """Try to extract a path-like expression string from AST."""
+        try:
+            expr_str = ast.unparse(expr)
+            if "Path(" in expr_str:
+                self.paths.append(expr_str)
+        except Exception:
+            self.paths.append("<unparsable>")
+
+
+def extract_path_expressions_from_module(mod):
+    try:
+        source = inspect.getsource(mod)
+    except (OSError, TypeError):
+        return []
+
+    tree = ast.parse(source)
+    extractor = NotebookVarExtractor()
+    extractor.visit(tree)
+
+    return extractor.paths
+
+
+def evaluate_path_expr(expr_str, module_globals):
+    """Safely evaluate the path expression using the module's globals."""
+    try:
+        local_ctx = {"Path": Path}
+        value = eval(expr_str, {**module_globals, **local_ctx})
+        return value.resolve() if isinstance(value, Path) else None
+    except Exception as e:
+        print(f"Could not evaluate path expression: {expr_str} -> {e}")
+        return None
+
+
+SMOKE_TEST_COVERED_PATHS = []
+for _, mod in iter_submodules(smoke_tests):
+    exprs = extract_path_expressions_from_module(mod)
+    paths = [evaluate_path_expr(expr, vars(mod)) for expr in exprs]
+    SMOKE_TEST_COVERED_PATHS.extend(p for p in paths if p is not None)
+
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
 def findfiles(path, regex):
@@ -119,8 +191,14 @@ def pytest_generate_tests(metafunc):
         .joinpath("PySDM_examples")
     )
     if "notebook_filename" in metafunc.fixturenames:
-        notebook_paths = findfiles(pysdm_examples_abs_path, r".*\.(ipynb)$")
-        selected_paths = get_selected_test_paths(suite_name, notebook_paths)
+        notebook_paths = [
+            path
+            for path in findfiles(pysdm_examples_abs_path, r".*\.ipynb$")
+            if ".ipynb_checkpoints" not in str(path)
+        ]
+        selected_paths = set(get_selected_test_paths(suite_name, notebook_paths)) - set(
+            SMOKE_TEST_COVERED_PATHS
+        )
         metafunc.parametrize(
             "notebook_filename",
             selected_paths,
