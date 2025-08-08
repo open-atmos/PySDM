@@ -51,14 +51,6 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-
-  env-setup:
-    strategy:
-      matrix:
-        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
-        python-version: [ "3.9", "3.12" ]
-    runs-on: ${{ matrix.platform }}
-
   nojit_and_codecov:
     strategy:
       matrix:
