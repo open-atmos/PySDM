@@ -89,11 +89,18 @@ jobs:
         python-version: [ "3.12" ]
     runs-on: ${{ matrix.platform }}
     steps:
+      - run: |
+          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+          echo toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
+          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+        shell: bash
+
       - uses: actions/checkout@v4.1.6
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
+          cache-key-prefix: tests_pip_cache-${{ matrix.platform }}
+          cache-suffix: ${{ env.toml_ci_md5 }}
 
 
   tests:
@@ -130,7 +137,7 @@ jobs:
         run: |
           echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
           echo toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
-            | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
       - run: rm -rf $pip_user_site
       - id: cache
         uses: actions/cache/restore@v4
@@ -157,11 +164,18 @@ jobs:
         python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
+      - run: |
+          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+          echo toml_ci_md5_with_examples=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
+          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+        shell: bash
+
       - uses: actions/checkout@v4.1.6
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
           cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
+          cache-suffix: ${{ env.toml_ci_md5_with_examples }}
           extra-commands: |
             python -m pip uninstall -y jupyterlab-server # workaround for pip issue
             python -m pip install -e ./examples
