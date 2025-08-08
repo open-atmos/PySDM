@@ -61,6 +61,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     env:
       NUMBA_DISABLE_JIT: 1
+      PYTHON: ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v4.1.6
       with:
@@ -80,6 +81,7 @@ jobs:
         fail_ci_if_error: true
         verbose: true
         token: ${{ secrets.CODECOV_TOKEN }}
+        env_vars: PYTHON,RUNNER_OS
 
   tests:
     needs: [pylint,nojit_and_codecov]

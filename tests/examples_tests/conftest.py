@@ -11,14 +11,6 @@ import pkgutil
 from .. import smoke_tests
 
 
-def iter_submodules(module):
-    """Yield (name, module) for all submodules recursively."""
-    if not hasattr(module, "__path__"):
-        return
-    for _, name, _ in pkgutil.walk_packages(module.__path__, module.__name__ + "."):
-        yield name, importlib.import_module(name)
-
-
 class NotebookVarExtractor(ast.NodeVisitor):
     def __init__(self):
         self.paths = []
@@ -58,15 +50,36 @@ def evaluate_path_expr(expr_str, module_globals):
     return value.resolve() if isinstance(value, pathlib.Path) else None
 
 
-SMOKE_TEST_COVERED_PATHS = [
-    notebook_path
-    for _, submodule in iter_submodules(smoke_tests)
-    for notebook_path in (
-        evaluate_path_expr(expr, vars(submodule))
-        for expr in extract_path_expressions_from_module(submodule)
-    )
-    if notebook_path is not None
-]
+def iter_submodule_names(module):
+    """Yield names of all submodules recursively without importing."""
+    if not hasattr(module, "__path__"):
+        return
+    for _, name, _ in pkgutil.walk_packages(module.__path__, module.__name__ + "."):
+        yield name
+
+
+def find_modules_using_notebook_vars(module):
+    names = []
+    for name in iter_submodule_names(module):
+        try:
+            filepath = importlib.util.find_spec(name).origin
+            with open(filepath, "r", encoding="utf-8") as f:
+                source = f.read()
+            if "notebook_vars" in source:
+                names.append(name)
+        except Exception:
+            pass
+    return names
+
+
+SMOKE_TEST_COVERED_PATHS = []
+for mod_name in find_modules_using_notebook_vars(smoke_tests):
+    mod = importlib.import_module(mod_name)
+    exprs = extract_path_expressions_from_module(mod)
+    for expr in exprs:
+        path = evaluate_path_expr(expr, vars(mod))
+        if path:
+            SMOKE_TEST_COVERED_PATHS.append(path)
 
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
