@@ -54,7 +54,6 @@ jobs:
   
 
   nojit_and_codecov:
-    needs: [pylint]
     runs-on: ubuntu-24.04
     env:
       NUMBA_DISABLE_JIT: 1
@@ -79,7 +78,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
   tests:
-    needs: [nojit_and_codecov]
+    needs: [pylint,nojit_and_codecov]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
@@ -142,7 +141,7 @@ jobs:
           pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
-    needs: [nojit_and_codecov]
+    needs: [pylint,nojit_and_codecov]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
