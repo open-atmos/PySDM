@@ -2,6 +2,81 @@
 import os
 import pathlib
 import re
+import ast
+import importlib
+import inspect
+import pkgutil
+
+
+from .. import smoke_tests
+
+
+class NotebookVarExtractor(ast.NodeVisitor):
+    def __init__(self):
+        self.paths = []
+
+    def visit_Call(self, node):
+        if isinstance(node.func, ast.Name) and node.func.id == "notebook_vars":
+            for arg in node.args:
+                self._maybe_add_path_expr(arg)
+            for kw in node.keywords:
+                self._maybe_add_path_expr(kw.value)
+        self.generic_visit(node)
+
+    def _maybe_add_path_expr(self, expr):
+        """Extract a path-like expression string from AST."""
+        expr_str = ast.unparse(expr)
+        if "Path(" in expr_str:
+            self.paths.append(expr_str)
+
+
+def extract_path_expressions_from_module(mod):
+    try:
+        source = inspect.getsource(mod)
+    except (OSError, TypeError):
+        return []
+
+    tree = ast.parse(source)
+    extractor = NotebookVarExtractor()
+    extractor.visit(tree)
+
+    return extractor.paths
+
+
+def evaluate_path_expr(expr_str, module_globals):
+    """Evaluate the path expression using the module's globals."""
+    local_ctx = {"Path": pathlib.Path}
+    value = eval(expr_str, {**module_globals, **local_ctx})  # pylint: disable=eval-used
+    return value.resolve() if isinstance(value, pathlib.Path) else None
+
+
+def iter_submodule_names(module):
+    """Yield names of all submodules recursively without importing."""
+    if not hasattr(module, "__path__"):
+        return
+    for _, name, _ in pkgutil.walk_packages(module.__path__, module.__name__ + "."):
+        yield name
+
+
+def find_modules_using_notebook_vars(module):
+    names = []
+    for name in iter_submodule_names(module):
+        filepath = importlib.util.find_spec(name).origin
+        with open(filepath, "r", encoding="utf-8") as f:
+            source = f.read()
+        if "notebook_vars" in source:
+            names.append(name)
+    return names
+
+
+SMOKE_TEST_COVERED_PATHS = []
+for mod_name in find_modules_using_notebook_vars(smoke_tests):
+    submodule = importlib.import_module(mod_name)
+    exprs = extract_path_expressions_from_module(submodule)
+    for path_expr in exprs:
+        submodule_path = evaluate_path_expr(path_expr, vars(submodule))
+        if submodule_path:
+            SMOKE_TEST_COVERED_PATHS.append(submodule_path)
 
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
@@ -119,8 +194,14 @@ def pytest_generate_tests(metafunc):
         .joinpath("PySDM_examples")
     )
     if "notebook_filename" in metafunc.fixturenames:
-        notebook_paths = findfiles(pysdm_examples_abs_path, r".*\.(ipynb)$")
-        selected_paths = get_selected_test_paths(suite_name, notebook_paths)
+        notebook_paths = [
+            path
+            for path in findfiles(pysdm_examples_abs_path, r".*\.ipynb$")
+            if ".ipynb_checkpoints" not in str(path)
+        ]
+        selected_paths = set(get_selected_test_paths(suite_name, notebook_paths)) - set(
+            SMOKE_TEST_COVERED_PATHS
+        )
         metafunc.parametrize(
             "notebook_filename",
             selected_paths,
