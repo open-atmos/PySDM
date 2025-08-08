@@ -1,0 +1,51 @@
+name: "Setup Python"
+description: "Checkout repo, setup Python and dependencies"
+inputs:
+  python-version:
+    required: true
+  cache-key-prefix:
+    required: true
+  extra-commands:
+    required: false
+    description: "Extra shell commands to run after installing base dependencies"
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4.1.6
+      with:
+        submodules: recursive
+        fetch-depth: 0
+
+    - uses: actions/setup-python@v5.0.0
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - run: |
+        echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+        echo toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
+          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+      shell: bash
+
+    - uses: actions/cache@v4
+      id: cache
+      with:
+        path: ${{ env.pip_user_site }}
+        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
+        lookup-only: true
+
+    - if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        pip install -e .
+        pip install -r tests/devops_tests/requirements.txt
+        pip install pytest-timeout
+      shell: bash
+
+    - if: steps.cache.outputs.cache-hit != 'true' && inputs.extra-commands != ''
+      run: ${{ inputs.extra-commands }}
+      shell: bash
+
+    - if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ env.pip_user_site }}
+        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}

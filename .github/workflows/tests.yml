@@ -89,34 +89,10 @@ jobs:
         python-version: [ "3.12" ]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
+      - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Calculate pip path and cache key
-        run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
-            | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.pip_user_site }}
-          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
-          lookup-only: true
-      - if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          pip install -e .
-          pip install -r tests/devops_tests/requirements.txt
-          pip install pytest-timeout
-      - if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.pip_user_site }}
-          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
 
 
   tests:
@@ -180,34 +156,13 @@ jobs:
         python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
+      - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-      - run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
-          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
-          lookup-only: true
-      - if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
-          python -m pip install -e . -e ./examples
-          python -m pip install pytest-timeout
-          python -m pip install -r tests/devops_tests/requirements.txt
-      - if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
+          extra-commands: |
+            python -m pip uninstall -y jupyterlab-server # workaround for pip issue
+            python -m pip install -e ./examples
 
   examples:
     needs: [examples-setup]
