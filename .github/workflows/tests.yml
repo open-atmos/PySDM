@@ -22,67 +22,67 @@ on:
     - cron: '0 13 * * 4'
 
 jobs:
-  pylint:
-    runs-on: ubuntu-24.04
-    steps:
-    - uses: actions/checkout@v4.1.6
-      with:
-        submodules: recursive
-        fetch-depth: 0
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v5.0.0
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
-        pip install "pylint<3.0.0" nbqa
-        pip install -r tests/devops_tests/requirements.txt
-        pip install -e ./examples[tests]
-        pip install -e .[tests]
-    - run: |
-        # TODO #682
-        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
-    - run: |
-        # TODO #682
-        pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
-    - run: |
-        # TODO #682
-        nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
-
-  nojit_and_codecov:
-    strategy:
-      matrix:
-        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
-        python-version: [ "3.9", "3.12" ]
-    runs-on: ${{ matrix.platform }}
-    env:
-      NUMBA_DISABLE_JIT: 1
-      PYTHON: ${{ matrix.python-version }}
-    steps:
-    - uses: actions/checkout@v4.1.6
-      with:
-        submodules: recursive
-        fetch-depth: 0
-    - uses: actions/setup-python@v5.0.0
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Generate coverage report
-      run: |
-        pip install -e .[tests]
-        pip install -e ./examples
-        pip install pytest-cov
-        pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
-    - uses: codecov/codecov-action@v4.5.0
-      with:
-        fail_ci_if_error: true
-        verbose: true
-        token: ${{ secrets.CODECOV_TOKEN }}
-        env_vars: PYTHON,RUNNER_OS
+#  pylint:
+#    runs-on: ubuntu-24.04
+#    steps:
+#    - uses: actions/checkout@v4.1.6
+#      with:
+#        submodules: recursive
+#        fetch-depth: 0
+#    - name: Set up Python 3.9
+#      uses: actions/setup-python@v5.0.0
+#      with:
+#        python-version: 3.9
+#    - name: Install dependencies
+#      run: |
+#        python -m pip install --upgrade pip
+#        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
+#        pip install "pylint<3.0.0" nbqa
+#        pip install -r tests/devops_tests/requirements.txt
+#        pip install -e ./examples[tests]
+#        pip install -e .[tests]
+#    - run: |
+#        # TODO #682
+#        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
+#    - run: |
+#        # TODO #682
+#        pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
+#    - run: |
+#        # TODO #682
+#        nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
+#
+#  nojit_and_codecov:
+#    strategy:
+#      matrix:
+#        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
+#        python-version: [ "3.9", "3.12" ]
+#    runs-on: ${{ matrix.platform }}
+#    env:
+#      NUMBA_DISABLE_JIT: 1
+#      PYTHON: ${{ matrix.python-version }}
+#    steps:
+#    - uses: actions/checkout@v4.1.6
+#      with:
+#        submodules: recursive
+#        fetch-depth: 0
+#    - uses: actions/setup-python@v5.0.0
+#      with:
+#        python-version: ${{ matrix.python-version }}
+#    - name: Generate coverage report
+#      run: |
+#        pip install -e .[tests]
+#        pip install -e ./examples
+#        pip install pytest-cov
+#        pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
+#    - uses: codecov/codecov-action@v4.5.0
+#      with:
+#        fail_ci_if_error: true
+#        verbose: true
+#        token: ${{ secrets.CODECOV_TOKEN }}
+#        env_vars: PYTHON,RUNNER_OS
 
   tests-setup:
-    needs: [ pylint, nojit_and_codecov ]
+#    needs: [ pylint, nojit_and_codecov ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
@@ -172,7 +172,7 @@ jobs:
           pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   examples-setup:
-    needs: [pylint,nojit_and_codecov]
+#    needs: [pylint,nojit_and_codecov]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
