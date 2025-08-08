@@ -51,7 +51,13 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-  
+
+  env-setup:
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
+        python-version: [ "3.9", "3.12" ]
+    runs-on: ${{ matrix.platform }}
 
   nojit_and_codecov:
     strategy:
@@ -83,13 +89,50 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         env_vars: PYTHON,RUNNER_OS
 
-  tests:
-    needs: [pylint,nojit_and_codecov]
+  tests-setup:
+    needs: [ pylint, nojit_and_codecov ]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-14, windows-latest]
-        python-version: ["3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions","smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        platform: [ ubuntu-24.04, macos-14, windows-latest ]
+        python-version: [ "3.12" ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Calculate pip path and cache key
+        run: |
+          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+          echo toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
+            | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        id: cache
+        with:
+          path: ${{ env.pip_user_site }}
+          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          lookup-only: true
+      - if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          python -m pip install -e .
+          python -m pip install pytest-timeout
+      - if: steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.pip_user_site }}
+          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+
+
+  tests:
+    needs: [ tests-setup ]
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-14, windows-latest ]
+        python-version: [ "3.12" ]
+        test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions","smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
         exclude:
           # TODO #1406
           - platform: "macos-14"
@@ -113,27 +156,21 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-
-      - run: pip install -e .
-
-      # sanity check if we do not depend on something from tests extras
+      - name: Calculate pip path and cache key
+        run: |
+          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+          echo toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
+            | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+      - run: rm -rf $pip_user_site
+      - id: cache
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: ${{ env.pip_user_site }}
+          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
       - run: python -We -c "import PySDM"
-
-      - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
-        run: pip install -e ./examples
-
-      # incl. ensuring that the previous pip did not overwrite the package
-      - run: |
-          pip install --only-binary :all: -e .[tests]
-
-      # install devops_tests for tutorials_tests
-      - if: matrix.test-suite == 'tutorials_tests'
-        run: pip install -r tests/devops_tests/requirements.txt
-
-      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
-
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
