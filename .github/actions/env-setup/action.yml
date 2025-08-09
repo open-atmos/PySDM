@@ -49,8 +49,3 @@ runs:
         pip install pytest-timeout
       shell: bash
 
-    - if: steps.cache.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
-      with:
-        path: ${{ env.pip_user_site }}
-        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
