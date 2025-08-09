@@ -107,9 +107,35 @@ jobs:
             tests/devops_tests/requirements.txt
             .github/workflows/tests.yml
 
+  examples-setup:
+#    needs: [pylint,nojit_and_codecov]
+    strategy:
+      matrix:
+        platform: [ubuntu-24.04, macos-14, windows-latest]
+        python-version: ["3.12"]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: ./.github/actions/env-setup
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
+          hash-input-files: >
+            pyproject.toml
+            setup.py
+            examples/pyproject.toml
+            examples/setup.py
+            tests/devops_tests/requirements.txt
+            .github/workflows/tests.yml
+          extra-commands: |
+            python -m pip uninstall -y jupyterlab-server
+            python -m pip install -e ./examples
 
   tests:
-    needs: [ tests-setup ]
+    needs: [ tests-setup, examples-setup ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
@@ -169,32 +195,6 @@ jobs:
           shopt -s extglob
           python -m pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
-  examples-setup:
-#    needs: [pylint,nojit_and_codecov]
-    strategy:
-      matrix:
-        platform: [ubuntu-24.04, macos-14, windows-latest]
-        python-version: ["3.12"]
-    runs-on: ${{ matrix.platform }}
-    steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0
-      - uses: ./.github/actions/env-setup
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
-          hash-input-files: >
-            pyproject.toml
-            setup.py
-            examples/pyproject.toml
-            examples/setup.py
-            tests/devops_tests/requirements.txt
-            .github/workflows/tests.yml
-          extra-commands: |
-            python -m pip uninstall -y jupyterlab-server
-            python -m pip install -e ./examples
 
   examples:
     needs: [examples-setup]
