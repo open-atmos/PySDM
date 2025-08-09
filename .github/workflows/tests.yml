@@ -114,7 +114,7 @@ jobs:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
         python-version: [ "3.12" ]
-        test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions"]#,"smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
+        test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
         exclude:
           # TODO #1406
           - platform: "macos-14"
@@ -138,18 +138,26 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Calculate pip path and cache key
         run: |
           echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-          echo "toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
+          if [[ "${{ matrix.test-suite }}" == smoke_tests* ]]; then
+            echo "cache_prefix=examples_pip_cache" >> $GITHUB_ENV
+            echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
+          else
+            echo "cache_prefix=tests_pip_cache" >> $GITHUB_ENV
+            echo "toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
+          fi
       - run: |
           rm -rf $pip_user_site
+
       - id: cache
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
-          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          key: ${{ env.cache_prefix }}-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
