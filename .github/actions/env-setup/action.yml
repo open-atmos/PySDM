@@ -5,11 +5,12 @@ inputs:
     required: true
   cache-key-prefix:
     required: true
-  cache-suffix:
-    required: true
   extra-commands:
     required: false
     description: "Extra shell commands to run after installing base dependencies"
+  hash-input-files:
+    required: true
+    description: "Space-separated list of files to hash for cache key"
 runs:
   using: "composite"
   steps:
@@ -17,6 +18,13 @@ runs:
       with:
         submodules: recursive
         fetch-depth: 0
+
+    - name: Calculate pip path and cache key
+      run: |
+        echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
+        echo toml_ci_md5=$(cat ${{ inputs.hash-input-files }} \
+          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
+      shell: bash
 
     - uses: actions/setup-python@v5.0.0
       with:
@@ -26,7 +34,7 @@ runs:
       id: cache
       with:
         path: ${{ env.pip_user_site }}
-        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ inputs.cache-suffix }}
+        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
         lookup-only: true
 
     - if: steps.cache.outputs.cache-hit != 'true'
@@ -44,4 +52,4 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: ${{ env.pip_user_site }}
-        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ inputs.cache-suffix }}
+        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}

@@ -10,7 +10,7 @@ env:
   anim_test-suite: 'multi-process_a'
   # common options for pytest
   pytest_options: "--durations=10 -v -s -We -p no:unraisableexception"
-        
+
 on:
   push:
     branches: [ main ]
@@ -92,20 +92,17 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Calculate pip path and cache key
-        run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat $GITHUB_WORKSPACE/pyproject.toml \
-            $GITHUB_WORKSPACE/setup.py tests/devops_tests/requirements.txt \
-            $GITHUB_WORKSPACE/.github/workflows/tests.yml \
-          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
 
       - uses: actions/checkout@v4.1.6
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
           cache-key-prefix: tests_pip_cache-${{ matrix.platform }}
-          cache-suffix: ${{ env.toml_ci_md5 }}
+          hash-input-files: >
+            pyproject.toml
+            setup.py
+            tests/devops_tests/requirements.txt
+            .github/workflows/tests.yml
 
 
   tests:
@@ -138,22 +135,6 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Calculate pip path and cache key
-        run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat $GITHUB_WORKSPACE/pyproject.toml \
-            $GITHUB_WORKSPACE/setup.py \
-            $GITHUB_WORKSPACE/tests/devops_tests/requirements.txt \
-            $GITHUB_WORKSPACE/.github/workflows/tests.yml \
-          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
-      - run: rm -rf $pip_user_site
-      - id: cache
-        uses: actions/cache/restore@v4
-        with:
-          fail-on-cache-miss: true
-          path: ${{ env.pip_user_site }}
-          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
-      - run: python -We -c "import PySDM"
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
       - name: Run pytest
@@ -172,24 +153,20 @@ jobs:
         python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
-      - run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5_with_examples=$(cat $GITHUB_WORKSPACE/pyproject.toml \
-            $GITHUB_WORKSPACE/setup.py \
-            $GITHUB_WORKSPACE/examples/pyproject.toml \
-            $GITHUB_WORKSPACE/examples/setup.py \
-            $GITHUB_WORKSPACE/tests/devops_tests/requirements.txt \
-            $GITHUB_WORKSPACE/.github/workflows/tests.yml \
-          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
-
       - uses: actions/checkout@v4.1.6
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
           cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
-          cache-suffix: ${{ env.toml_ci_md5_with_examples }}
+          hash-input-files: >
+            pyproject.toml
+            setup.py
+            examples/pyproject.toml
+            examples/setup.py
+            tests/devops_tests/requirements.txt
+            .github/workflows/tests.yml
           extra-commands: |
-            python -m pip uninstall -y jupyterlab-server # workaround for pip issue
+            python -m pip uninstall -y jupyterlab-server
             python -m pip install -e ./examples
 
   examples:
@@ -210,23 +187,6 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5_with_examples=$(cat $GITHUB_WORKSPACE/pyproject.toml \
-            $GITHUB_WORKSPACE/setup.py \
-            $GITHUB_WORKSPACE/examples/pyproject.toml \
-            $GITHUB_WORKSPACE/examples/setup.py \
-            $GITHUB_WORKSPACE/tests/devops_tests/requirements.txt \
-            $GITHUB_WORKSPACE/.github/workflows/tests.yml \
-          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
-      - run: |
-          rm -rf $pip_user_site
-      - id: cache
-        uses: actions/cache/restore@v4
-        with:
-          fail-on-cache-miss: true
-          path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
@@ -239,7 +199,7 @@ jobs:
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `pwd`/`dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
-          
+
       - if: startsWith(matrix.platform, 'macos-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           brew update
@@ -263,7 +223,7 @@ jobs:
 
       - run: |
           python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
-        
+
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
           set -x
