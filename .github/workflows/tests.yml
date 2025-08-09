@@ -137,7 +137,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Calculate pip path and cache key
         run: |
-          echo "pip_user_site=$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')" >> $GITHUB_ENV
+          echo "pip_user_site=$(python -c "import site; print(site.getusersitepackages())")" >> $GITHUB_ENV
           echo "toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, \"rb\").read()).hexdigest())')" >> $GITHUB_ENV
       - id: cache
         uses: actions/cache/restore@v4
@@ -200,7 +200,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Calculate pip path and cache key
         run: |
-          echo "pip_user_site=$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')" >> $GITHUB_ENV
+          echo "pip_user_site=$(python -c "import site; print(site.getusersitepackages())")" >> $GITHUB_ENV
           echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, \"rb\").read()).hexdigest())')" >> $GITHUB_ENV
         shell: bash
       - id: cache
