@@ -21,9 +21,9 @@ runs:
 
     - name: Calculate pip path and cache key
       run: |
-        echo "pip_user_site=$(python -c 'import sysconfig; print(sysconfig.get_path(\"purelib\"))')" >> $GITHUB_ENV
+        echo "pip_user_site=$(python -c 'import sysconfig; print(sysconfig.get_path("""purelib"""))')" >> $GITHUB_ENV
         hash_input_files="${{ inputs.hash-input-files }}"
-        echo "toml_ci_md5=$(cat $hash_input_files | python -c 'import hashlib; print(hashlib.md5(open(0, \"rb\").read()).hexdigest())')" >> $GITHUB_ENV
+        echo "toml_ci_md5=$(cat $hash_input_files | python -c 'import hashlib; print(hashlib.md5(open(0, """rb""").read()).hexdigest())')" >> $GITHUB_ENV
       shell: bash
 
     - uses: actions/setup-python@v5.0.0
