@@ -37,11 +37,11 @@ runs:
         key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
         lookup-only: true
 
-    - if: steps.cache.outputs.cache-hit != 'true' && inputs.extra-commands != ''
+    - if: inputs.extra-commands != ''
       run: ${{ inputs.extra-commands }}
       shell: bash
 
-    - if: steps.cache.outputs.cache-hit != 'true'
+    - name: Install dependencies
       run: |
         pip install -e .
         pip install -e .[tests]
