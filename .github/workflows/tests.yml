@@ -138,13 +138,13 @@ jobs:
       - name: Calculate pip path and cache key
         run: |
           echo "pip_user_site=$(python -c "import site; print(site.getusersitepackages())")" >> $GITHUB_ENV
-          echo "toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, \"rb\").read()).hexdigest())')" >> $GITHUB_ENV
+          echo "toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
       - id: cache
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          key: tests_pip_cache--${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
