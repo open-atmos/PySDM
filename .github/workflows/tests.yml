@@ -73,10 +73,9 @@ jobs:
             tests/devops_tests/requirements.txt
             .github/workflows/tests.yml
           commands: >
-            python -m pip install -e .
             python -m pip install -e .[tests]
             python -m pip install -r tests/devops_tests/requirements.txt
-            python -m pip install pytest-timeout
+            pip install pytest-timeout
 
   env-with-examples-setup:
     strategy:
@@ -101,11 +100,11 @@ jobs:
             tests/devops_tests/requirements.txt
             .github/workflows/tests.yml
           commands: |
-            python -m pip uninstall -y jupyterlab-server
             # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
-            python -m pip install "pylint<3.0.0" nbqa
-            python -m pip install -e ./examples
-            python -m pip install -e .
+            pip install "pylint<3.0.0" nbqa
+            python -m pip uninstall -y jupyterlab-server
+            python -m pip install -e ./examples[tests]
+            python -m pip install -e .[tests]
             python -m pip install -r tests/devops_tests/requirements.txt
             python -m pip install pytest-timeout
 
@@ -151,7 +150,7 @@ jobs:
 
 
   nojit_and_codecov:
-    needs: env-with-examples-setup
+    needs: env-for-codecov-setup
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
@@ -180,7 +179,7 @@ jobs:
       with:
         fail-on-cache-miss: true
         path: ${{ env.pip_user_site }}
-        key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+        key: codecov_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
     - name: Generate coverage report
       run: python -m pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
