@@ -18,13 +18,14 @@ def main(plot: bool = True, save: str = None):
     sampling_strat_names = ["ConstantMultiplicity"]
     regular = {"ConstantMultiplicity":{}}
     # adaptive = {"ConstantMultiplicity":{}}
-    iters_without_warmup = 5
+    iters_without_warmup = 50
     base_time = None
     base_error = None
 
     error_heatmaps = {}
     error_std_heatmaps = {}
     deficit_heatmaps = {}
+    meanoutputs ={}
 
     for k,strat in enumerate(sampling_strat):
         error_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
@@ -72,6 +73,7 @@ def main(plot: bool = True, save: str = None):
                     mean_output[key] = sum((output[key] for output in outputs)) / len(
                         outputs
                     )
+
                 # for key in deficits[0].keys():
                 #     mean_deficit[key] = sum((deficit[key] for deficit in deficits)) / len(
                 #         deficits
@@ -109,6 +111,7 @@ def main(plot: bool = True, save: str = None):
                 mean_time_heatmap[i][j] = mean_time
                 plotter.finished = False
                 plotter.finish()
+                meanoutputs[(n_sd,dt)] = mean_output
         regular[sampling_strat_names[k]]["Error"] = error_heatmap
         regular[sampling_strat_names[k]]["Error_std"] = error_std_hm
         regular[sampling_strat_names[k]]["Deficit"] = deficit_heatmap
@@ -132,13 +135,13 @@ def main(plot: bool = True, save: str = None):
             plt.imshow(deficit_heatmaps[sampling_strat_names[k]], cmap='viridis')
         plt.show()
 
-    return regular,sanity_heatmap
+    return meanoutputs,regular,sanity_heatmap
 
 
 if __name__ == "__main__":
-    regular,type_matrix = main(plot=False, save=".")
+    meanoutputs,regular,type_matrix = main(plot=False, save=".")
     
-results = {"regular":regular,"type_matrix":type_matrix}
+# results = {"regular":regular,"type_matrix":type_matrix}
 # with open('test_runs_6_29.json', 'w', encoding='UTF-8') as f:
 #     json.dump(results, f)
 
@@ -146,55 +149,84 @@ results = {"regular":regular,"type_matrix":type_matrix}
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import ScalarFormatter
+from cmcrameri import cm
+from matplotlib.colors import LogNorm
 
+
+formatter = ScalarFormatter(useMathText=True)
 error_matrix = np.array(regular["ConstantMultiplicity"]["Error"])
+error_matrix*= 1e3  # Convert to g/m^3
+error_matrix_flipped = np.flipud(error_matrix)
 deficit_matrix = np.array(regular["ConstantMultiplicity"]["Deficit"])
 
 deficit_matrix_flipped = np.flipud(deficit_matrix)
 deficit_matrix_flipped = deficit_matrix_flipped[:,:,0]
-#replace 0s with np.nan
 deficit_matrix_flipped[deficit_matrix_flipped == 0] = np.nan
 
-# Create the figure and axes
-fig, axes = plt.subplots(2, 1, figsize=(4, 6))
+fig, axes = plt.subplots(3, 1, figsize=(4, 8.3))
 
-# Define the grid for contours
+
+plotter = SpectrumPlotter(Settings(), legend=False)
+plotter.smooth = True
+plotter.ax = axes[0]
+axes[0].set_title(f"$N_{{s}}: 2^{{17}},\Delta t:1$s")
+for step, vals in meanoutputs[(17,1)].items():
+    error = plotter.plot(vals, step * 1)
+
+
+axes[0].set_xscale("log")
+axes[0].set_ylabel("Mass Density \n[g/m$^3$/unit ln(r)]")
+axes[0].set_xlabel(
+                    "particle radius [µm]\n")
+axes[0].legend()#loc='upper left', bbox_to_anchor=(1, 1))
+
 runs = [12, 13, 14, 15, 16, 17, 18, 19]
 dts = [20, 10, 5, 2, 1]
 X, Y = np.meshgrid(np.arange(len(runs)), np.arange(len(dts)))
 
-contour = axes[0].contourf(
-    X, Y, error_matrix, levels=20, cmap="mako")
-contour_lines = axes[0].contour(
-    X, Y, error_matrix, levels=20, colors="lightblue", linewidths=0.8,
+# Plot the deficit heatmap
+sns.heatmap(error_matrix_flipped,
+    ax=axes[1],cmap=cm.oslo_r,cbar=True,
+    cbar_kws={"label": f"RMSE at t=3600 s \n[g/m$^3$/unit ln(r)]",
+              },
 )
-#xticks and y-ticks
+axes[1].set_yticks(np.arange(len(dts)))
+axes[1].set_yticklabels(dts)
 
-axes[0].set_yticks(np.arange(len(dts)))
-axes[0].set_yticklabels(dts)
 
-cbar = fig.colorbar(contour, ax=axes[0], orientation="vertical", label=f"RMSE ($kg/m^3$)")
-cbar.add_lines(contour_lines)  # Add contour lines to the colorbar
-axes[0].set_title("RMSE at t = 3600s")
-axes[0].set_xlabel(f"$N_s$")
-axes[0].set_ylabel("dt(s)")
+axes[1].set_xlabel(f"$N_s$")
+axes[1].set_ylabel("$\Delta t$ [s]")
 
 # Plot the deficit heatmap
 sns.heatmap(deficit_matrix_flipped,
-    ax=axes[1],cmap="mako_r",cbar=True,
-    cbar_kws={"label": f"Deficit ($collisions\ s^{{-1}} m^{{-3}}$)"},
+    ax=axes[2],cmap=cm.oslo_r,cbar=True,
+    norm=LogNorm(vmin=10,vmax=1e6),
+    cbar_kws={"label": f"Deficit \n[collisions s$^{{-1}}$ m$^{{-3}}$]",
+              },
 )
-axes[0].set_xticks(np.arange(len(runs)))
-axes[0].set_xticklabels([f"$2^{{{n}}}$" for n in runs])  # Format as 2^n_sd
-axes[1].set_xticks(np.arange(len(runs)) + 0.5)
+cbar = axes[2].collections[0].colorbar
+# cbar.ax.yaxis.set_major_formatter(formatter)
+
+axes[1].set_xticks(np.arange(len(runs)))
 axes[1].set_xticklabels([f"$2^{{{n}}}$" for n in runs])  # Format as 2^n_sd
+axes[2].set_xticks(np.arange(len(runs)) + 0.5)
+axes[2].set_xticklabels([f"$2^{{{n}}}$" for n in runs])  # Format as 2^n_sd
 
-axes[1].set_yticks(np.arange(len(dts)) + 0.5)
-axes[1].set_yticklabels(dts[::-1])  # Reverse the order of
+axes[2].set_yticks(np.arange(len(dts)) + 0.5)
+axes[2].set_yticklabels(dts[::-1])  # Reverse the order of
+axes[2]
+# axes[2].set_title("Deficit")
+axes[2].set_xlabel(f"$N_s$")
+axes[2].set_ylabel("$\Delta t$ [s]")
 
-axes[1].set_title("Deficit")
-axes[1].set_xlabel(f"$N_s$")
-axes[1].set_ylabel("dt(s)")
+for i, letter in enumerate(["a", "b", "c"]):
+    axes[i].text(
+        -0.14, 1.05, f"({letter})", transform=axes[i].transAxes,
+        fontsize=14, fontweight="bold", va="top", ha="right"
+    )
+
+
 
 plt.tight_layout()
 plt.savefig("Shima_2009_deficit.pdf")

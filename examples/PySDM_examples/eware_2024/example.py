@@ -22,7 +22,7 @@ import matplotlib
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
 from packaging import version
-from PySDM_examples.Shima_et_al_2009.error_measure import error_measure
+# from PySDM_examples.Shima_et_al_2009.error_measure import error_measure
 
 from PySDM.physics.constants import si
 
@@ -30,7 +30,8 @@ _matplotlib_version_3_3_3 = version.parse("3.3.0")
 _matplotlib_version_actual = version.parse(matplotlib.__version__)
 
 
-
+def error_measure(y, y_true, _):
+    return np.sqrt(np.mean(np.square(y - y_true)))
 
 
 # @strict
