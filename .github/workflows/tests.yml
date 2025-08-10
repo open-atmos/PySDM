@@ -22,32 +22,6 @@ on:
     - cron: '0 13 * * 4'
 
 jobs:
-  env-for-codecov-setup:
-    strategy:
-      matrix:
-        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
-        python-version: ["3.9", "3.12"]
-    runs-on: ${{ matrix.platform }}
-    steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0
-      - uses: ./.github/actions/env-setup
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache-key-prefix: codecov_pip_cache-${{ matrix.platform }}
-          hash-input-files: >
-            pyproject.toml
-            setup.py
-            examples/pyproject.toml
-            examples/setup.py
-            .github/workflows/tests.yml
-          commands: |
-            python -m pip install -e ./examples
-            python -m pip install -e .[tests]
-            python -m pip install pytest-cov
-
   env-tests-setup:
     strategy:
       matrix:
@@ -150,7 +124,7 @@ jobs:
 
 
   nojit_and_codecov:
-    needs: env-for-codecov-setup
+    needs: env-with-examples-setup
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
@@ -179,10 +153,12 @@ jobs:
       with:
         fail-on-cache-miss: true
         path: ${{ env.pip_user_site }}
-        key: codecov_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+        key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
     - name: Generate coverage report
-      run: python -m pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
+      run: |
+        python -m pip install pytest-cov
+        python -m pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
     - uses: codecov/codecov-action@v4.5.0
       with:
         fail_ci_if_error: true
