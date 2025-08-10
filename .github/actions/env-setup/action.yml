@@ -1,4 +1,4 @@
-name: "Setup Python"
+name: "Setup environment"
 description: "Checkout repo, setup Python and dependencies"
 inputs:
   python-version:
@@ -7,7 +7,6 @@ inputs:
     required: true
   commands:
     required: true
-    description: "Extra shell commands to run after installing base dependencies"
   hash-input-files:
     required: true
     description: "Space-separated list of files to hash for cache key"
