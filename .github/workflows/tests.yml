@@ -79,6 +79,7 @@ jobs:
             python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
             python -m pip install -e . -e ./examples
             python -m pip install pytest-timeout
+            python -m pip install PyPartMC
             python -m pip install -r tests/devops_tests/requirements.txt
 
   pylint:
