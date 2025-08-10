@@ -80,8 +80,6 @@ jobs:
             python -m pip install -e . -e ./examples
             python -m pip install pytest-timeout
             python -m pip install -r tests/devops_tests/requirements.txt
-            # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
-            python -m pip install "pylint<3.0.0" nbqa
 
   pylint:
     needs: env-with-examples-setup
@@ -112,7 +110,9 @@ jobs:
         fail-on-cache-miss: true
         path: ${{ env.pip_user_site }}
         key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
-
+    - run: |
+        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
+        pip install "pylint<3.0.0" nbqa
     - run: |
         # TODO #682
         pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
