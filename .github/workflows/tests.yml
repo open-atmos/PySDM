@@ -46,7 +46,7 @@ jobs:
             setup.py
             tests/devops_tests/requirements.txt
             .github/workflows/tests.yml
-          commands: >
+          commands: |
             python -m pip install -e .
             # sanity check if we do not depend on something from tests extras
             python -We -c "import PySDM"
