@@ -79,24 +79,27 @@ jobs:
             # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
             pip install "pylint<3.0.0" nbqa
             python -m pip install -e ./examples
-            pip install -e .
-            pip install -e .[tests]
-            pip install -r tests/devops_tests/requirements.txt
-            pip install pytest-timeout
-            pip install pytest-cov
-            pip install "pylint<3.0.0" nbqa
+            python -m pip install -e .
+            python -m pip install -e .[tests]
+            python -m pip install -r tests/devops_tests/requirements.txt
+            python -m pip install pytest-timeout
+            python -m pip install pytest-cov
   pylint:
     needs: env-with-examples-setup
-    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        platform: [ubuntu-24.04]
+        python-version: ["3.9"]
+    runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0
-    - name: Set up Python 3.9
+    - name: Set up Python
       uses: actions/setup-python@v5.0.0
       with:
-        python-version: 3.9
+        python-version: ${{ matrix.python-version }}
 
     - name: Calculate pip path and cache key
       run: |
@@ -155,7 +158,7 @@ jobs:
         key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
     - name: Generate coverage report
-      run: pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
+      run: python -m pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
     - uses: codecov/codecov-action@v4.5.0
       with:
         fail_ci_if_error: true
@@ -164,7 +167,7 @@ jobs:
         env_vars: PYTHON,RUNNER_OS
 
   tests:
-    needs: [ env-tests-setup, env-with-examples-setup ]
+    needs: [ pylint, nojit_and_codecov, env-tests-setup, env-with-examples-setup ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
@@ -226,7 +229,7 @@ jobs:
 
 
   examples:
-    needs: [env-with-examples-setup]
+    needs: [pylint, nojit_and_codecov, env-with-examples-setup]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
