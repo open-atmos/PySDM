@@ -5,8 +5,8 @@ inputs:
     required: true
   cache-key-prefix:
     required: true
-  extra-commands:
-    required: false
+  commands:
+    required: true
     description: "Extra shell commands to run after installing base dependencies"
   hash-input-files:
     required: true
@@ -37,15 +37,8 @@ runs:
         key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
         lookup-only: true
 
-    - if: inputs.extra-commands != ''
-      run: ${{ inputs.extra-commands }}
-      shell: bash
-
-    - name: Install dependencies
-      run: |
-        pip install -e .
-        pip install -e .[tests]
-        pip install -r tests/devops_tests/requirements.txt
-        pip install pytest-timeout
+    - name: Setup environment
+      if: inputs.commands != ''
+      run: ${{ inputs.commands }}
       shell: bash
 
