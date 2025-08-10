@@ -47,10 +47,10 @@ jobs:
             tests/devops_tests/requirements.txt
             .github/workflows/tests.yml
           commands: >
-            pip install -e .
-            pip install -e .[tests]
-            pip install -r tests/devops_tests/requirements.txt
-            pip install pytest-timeout
+            python -m pip install -e .
+            python -m pip install -e .[tests]
+            python -m pip install -r tests/devops_tests/requirements.txt
+            python -m pip install pytest-timeout
 
   env-with-examples-setup:
     strategy:
