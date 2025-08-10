@@ -77,7 +77,7 @@ jobs:
           commands: |
             python -m pip uninstall -y jupyterlab-server
             # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
-            pip install "pylint<3.0.0" nbqa
+            python -m pip install "pylint<3.0.0" nbqa
             python -m pip install -e ./examples
             python -m pip install -e .
             python -m pip install -e .[tests]
