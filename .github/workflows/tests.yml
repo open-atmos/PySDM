@@ -22,6 +22,32 @@ on:
     - cron: '0 13 * * 4'
 
 jobs:
+  env-for-codecov-setup:
+    strategy:
+      matrix:
+        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
+        python-version: ["3.9", "3.12"]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: ./.github/actions/env-setup
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache-key-prefix: codecov_pip_cache-${{ matrix.platform }}
+          hash-input-files: >
+            pyproject.toml
+            setup.py
+            examples/pyproject.toml
+            examples/setup.py
+            .github/workflows/tests.yml
+          commands: |
+            python -m pip install -e ./examples
+            python -m pip install -e .[tests]
+            python -m pip install pytest-cov
+
   env-tests-setup:
     strategy:
       matrix:
@@ -80,10 +106,9 @@ jobs:
             python -m pip install "pylint<3.0.0" nbqa
             python -m pip install -e ./examples
             python -m pip install -e .
-            python -m pip install -e .[tests]
             python -m pip install -r tests/devops_tests/requirements.txt
             python -m pip install pytest-timeout
-            python -m pip install pytest-cov
+
   pylint:
     needs: env-with-examples-setup
     strategy:
@@ -147,7 +172,7 @@ jobs:
     - name: Calculate pip path and cache key
       run: |
         echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-        echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
+        echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
     - run: |
         rm -rf $pip_user_site
     - id: cache
