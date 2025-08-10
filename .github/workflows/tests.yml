@@ -47,11 +47,11 @@ jobs:
             tests/devops_tests/requirements.txt
             .github/workflows/tests.yml
           commands: >
-            pip install -e .
+            python -m pip install -e .
             # sanity check if we do not depend on something from tests extras
             python -We -c "import PySDM"
-            pip install -r tests/devops_tests/requirements.txt
-            pip install pytest-timeout
+            python -m pip install pytest-timeout
+            python -m pip install -r tests/devops_tests/requirements.txt
 
   env-with-examples-setup:
     strategy:
