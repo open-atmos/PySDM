@@ -313,7 +313,8 @@
       "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_3.ipynb",
       "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_4.ipynb",
       "examples/PySDM_examples/Alpert_and_Knopf_2016/fig_5.ipynb",
-      "examples/PySDM_examples/Alpert_and_Knopf_2016/__init__.py"
+      "examples/PySDM_examples/Alpert_and_Knopf_2016/__init__.py",
+      "examples/PySDM_examples/Arabas_et_al_2025/commons.py"
     ],
     "label": "Alpert & Knopf 16 (Atmos. Chem. Phys. 16)",
     "title": "Analysis of isothermal and cooling-rate-dependent immersion freezing by a unifying stochastic ice nucleation model"
@@ -644,7 +645,8 @@
   },
   "https://doi.org/10.5194/gmd-13-4107-2020": {
     "usages": [
-      "PySDM/physics/particle_shape_and_density/porous_spheroids.py"
+      "PySDM/physics/particle_shape_and_density/porous_spheroids.py",
+      "PySDM/physics/constants_defaults.py"
     ],
     "label": "Shima et al. 2020 (Geosci. Model Dev. 13)",
     "title": "Predicting the morphology of ice particles in deep convection using the super-droplet method: development and evaluation of SCALE-SDM 0.2.5-2.2.0, -2.2.1, and -2.2.2"
@@ -849,6 +851,10 @@
   },
   "https://doi.org/10.5194/acp-9-685-2009": {
     "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/particle_shape_and_density/columnar_ice.py",
+      "PySDM/physics/particle_shape_and_density/porous_spheroids.py",
+      "tests/unit_tests/physics/test_particle_shape_and_density.py",
       "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
@@ -915,6 +921,7 @@
   "https://doi.org/10.5194/acp-23-2035-2023": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",

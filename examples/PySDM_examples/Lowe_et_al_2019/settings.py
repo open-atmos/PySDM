@@ -1,11 +1,31 @@
+from functools import lru_cache
+
 import numpy as np
 from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 from pystrict import strict
 
 from PySDM import Formulae
+from PySDM.backends import CPU
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
+
+
+@lru_cache
+def backend(model):
+    return CPU(
+        formulae=Formulae(
+            surface_tension=model,
+            constants=LOWE_CONSTS,
+            diffusion_kinetics="LoweEtAl2019",
+            diffusion_thermics="LoweEtAl2019",
+            latent_heat_vapourisation="Lowe2019",
+            saturation_vapour_pressure="Lowe1977",
+            optical_albedo="Bohren1987",
+            optical_depth="Stephens1978",
+        ),
+        override_jit_flags={"parallel": False},
+    )
 
 
 @strict
@@ -22,16 +42,8 @@ class Settings:
         assert model in ("Constant", "CompressedFilmOvadnevaite")
         self.model = model
         self.n_sd_per_mode = n_sd_per_mode
-        self.formulae = Formulae(
-            surface_tension=model,
-            constants=LOWE_CONSTS,
-            diffusion_kinetics="LoweEtAl2019",
-            diffusion_thermics="LoweEtAl2019",
-            latent_heat_vapourisation="Lowe2019",
-            saturation_vapour_pressure="Lowe1977",
-            optical_albedo="Bohren1987",
-            optical_depth="Stephens1978",
-        )
+        self.backend = backend(model)
+        self.formulae = self.backend.formulae
         const = self.formulae.constants
         self.aerosol = aerosol
         self.spectral_sampling = spectral_sampling
