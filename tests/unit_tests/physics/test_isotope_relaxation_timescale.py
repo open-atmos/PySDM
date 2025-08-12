@@ -56,3 +56,15 @@ def test_unit_and_magnitude(paper, iso):
         # assert
         assert result.check("[time]")
         assert 0 * si.s < result.to_base_units() < 10 * si.s
+
+
+def test_bolin_number_unit():
+    with DimensionalAnalysis():
+        # arrange
+        si = constants_defaults.si
+        formulae = Formulae()
+
+        # act
+        sut = formulae.constants.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
+        # assert
+        assert sut.check(si.dimensionless)
