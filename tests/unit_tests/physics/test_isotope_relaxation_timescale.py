@@ -62,9 +62,11 @@ def test_bolin_number_unit():
     with DimensionalAnalysis():
         # arrange
         si = constants_defaults.si
+        sut = isotope_relaxation_timescale.bolin_1958.Bolin1958.bolin_number
         formulae = Formulae()
-
+        
         # act
-        sut = formulae.constants.BOLIN_ISOTOPE_TIMESCALE_COEFF_C1
+        value = sut(formulae.constants)
+        
         # assert
-        assert sut.check(si.dimensionless)
+        assert value.check(si.dimensionless)
