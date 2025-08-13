@@ -25,14 +25,10 @@ jobs:
   env-tests-setup:
     strategy:
       matrix:
-        platform: [ ubuntu-24.04, macos-14, windows-latest ]
+        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
         python-version: [ "3.9", "3.12" ]
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/setup-python@v5.0.0
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
@@ -48,6 +44,10 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
         python-version: ["3.12"]
+        include:
+          # setup for pylint
+          - platform: ubuntu-24.04
+            python-version: "3.9"
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -72,17 +72,11 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v5.0.0
+    - uses: actions/setup-python@v5.0.0
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Calculate pip path and cache key
-      run: |
-        echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-        echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
-    - run: |
-        rm -rf $pip_user_site
+    - uses: ./.github/actions/set-pip-path-and-cache-key
+    - run: rm -rf $pip_user_site
     - id: cache
       uses: actions/cache/restore@v4
       with:
@@ -117,13 +111,12 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
-    - uses: ./.github/actions/set-pip-cache-key
     - uses: actions/setup-python@v5.0.0
       with:
         python-version: ${{ matrix.python-version }}
-    - run: |
-        echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-        rm -rf $pip_user_site
+    - uses: ./.github/actions/set-pip-path-and-cache-key
+    - run: rm -rf $pip_user_site
+
     - id: cache
       uses: actions/cache/restore@v4
       with:
@@ -169,13 +162,11 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: ./.github/actions/set-pip-cache-key
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: |
-          echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-          rm -rf $pip_user_site
+      - uses: ./.github/actions/set-pip-path-and-cache-key
+      - run: rm -rf $pip_user_site
 
       - name: Set setup name
         run: |
@@ -218,13 +209,11 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: ./.github/actions/set-pip-cache-key
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: |
-          echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-          rm -rf $pip_user_site
+      - uses: ./.github/actions/set-pip-path-and-cache-key
+      - run: rm -rf $pip_user_site
       - id: cache
         uses: actions/cache/restore@v4
         with:

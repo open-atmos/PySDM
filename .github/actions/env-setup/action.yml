@@ -19,11 +19,7 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: Set pip path
-      run: echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-      shell: bash
-
-    - uses: ./.github/actions/set-pip-cache-key
+    - uses: ./.github/actions/set-pip-path-and-cache-key
 
     - uses: actions/cache@v4
       id: cache

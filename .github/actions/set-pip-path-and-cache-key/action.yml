@@ -1,9 +1,9 @@
-name: "Set pip cache key"
-description: Calculate cache key and set as environment variable
+name: "Set pip path and cache key"
 runs:
   using: "composite"
   steps:
     - run: |
+        echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
         hash_input_files="
           pyproject.toml
           setup.py
