@@ -3,9 +3,9 @@ import numpy as np
 import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
-from PySDM import Formulae
+from PySDM import Formulae, physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics import constants_defaults, trivia
+from PySDM.physics import constants_defaults
 
 
 class TestTrivia:
@@ -121,7 +121,7 @@ class TestTrivia:
     )
     def test_tau(bolin_number, dm_dt_over_m, expected_tau):
         # arrange
-        sut = trivia.Trivia.tau
+        sut = physics.trivia.Trivia.tau
 
         # act
         value = sut(Bo=bolin_number, dm_dt_over_m=dm_dt_over_m)
