@@ -21,13 +21,6 @@ runs:
 
     - uses: ./.github/actions/set-pip-path-and-cache-key
 
-    - uses: actions/cache@v4
-      id: cache
-      with:
-        path: ${{ env.pip_user_site }}
-        key: ${{ inputs.setup-name }}-${{ inputs.platform}}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
-        lookup-only: true
-
     - name: Setup environment
       run: |
         # python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
@@ -44,3 +37,8 @@ runs:
         python -m pip install -e ./examples[tests]
         python -m pip install PyPartMC
       shell: bash
+
+    - uses: actions/cache/save@v4
+      with:
+        path: ${{ env.pip_user_site }}
+        key: ${{ inputs.setup-name }}-${{ inputs.platform}}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
