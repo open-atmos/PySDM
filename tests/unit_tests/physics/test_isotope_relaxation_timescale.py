@@ -64,9 +64,9 @@ def test_bolin_number_unit():
         si = constants_defaults.si
         sut = isotope_relaxation_timescale.bolin_1958.Bolin1958.bolin_number
         formulae = Formulae()
-        
+
         # act
         value = sut(formulae.constants)
-        
+
         # assert
         assert value.check(si.dimensionless)
