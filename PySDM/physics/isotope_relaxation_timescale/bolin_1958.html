@@ -75,7 +75,7 @@
                                 <a class="function" href="#Bolin1958.__init__">Bolin1958</a>
                         </li>
                         <li>
-                                <a class="function" href="#Bolin1958.tau">tau</a>
+                                <a class="function" href="#Bolin1958.bolin_number">bolin_number</a>
                         </li>
                 </ul>
 
@@ -96,29 +96,27 @@
                     <h1 class="modulename">
 <a href="./../../../PySDM.html">PySDM</a><wbr>.<a href="./../../physics.html">physics</a><wbr>.<a href="./../isotope_relaxation_timescale.html">isotope_relaxation_timescale</a><wbr>.bolin_1958    </h1>
 
-                        <div class="docstring"><p>Timescale derived for tritium with assumption of zero ambient concentration - see text above
-Table 1 <a href="https://digitallibrary.un.org/record/3892725">Bolin 1958</a></p>
+                        <div class="docstring"><p>Bolin number</p>
 </div>
 
                         <input id="mod-bolin_1958-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 
                         <label class="view-source-button" for="mod-bolin_1958-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Timescale derived for tritium with assumption of zero ambient concentration - see text above</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)&quot;&quot;&quot;</span>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Bolin number&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
+</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
 </span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Bolin1958</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of timescale used by Bolin 1958&quot;&quot;&quot;</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span> <span class="o">*</span> <span class="n">dm_dt_over_m</span><span class="p">)</span>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Bolin1958</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of timescale used by Bolin 1958&quot;&quot;&quot;</span>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bolin_number</span><span class="p">(</span><span class="n">const</span><span class="p">):</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span>
 </span></pre></div>
 
 
@@ -134,15 +132,15 @@ Table 1 <a href="https://digitallibrary.un.org/record/3892725">Bolin 1958</a></p
 
     </div>
     <a class="headerlink" href="#Bolin1958"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolin1958-8"><a href="#Bolin1958-8"><span class="linenos"> 8</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Bolin1958</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
-</span><span id="Bolin1958-9"><a href="#Bolin1958-9"><span class="linenos"> 9</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of timescale used by Bolin 1958&quot;&quot;&quot;</span>
-</span><span id="Bolin1958-10"><a href="#Bolin1958-10"><span class="linenos">10</span></a>
-</span><span id="Bolin1958-11"><a href="#Bolin1958-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
-</span><span id="Bolin1958-12"><a href="#Bolin1958-12"><span class="linenos">12</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
-</span><span id="Bolin1958-13"><a href="#Bolin1958-13"><span class="linenos">13</span></a>
-</span><span id="Bolin1958-14"><a href="#Bolin1958-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolin1958-15"><a href="#Bolin1958-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
-</span><span id="Bolin1958-16"><a href="#Bolin1958-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span> <span class="o">*</span> <span class="n">dm_dt_over_m</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolin1958-7"><a href="#Bolin1958-7"><span class="linenos"> 7</span></a><span class="k">class</span><span class="w"> </span><span class="nc">Bolin1958</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
+</span><span id="Bolin1958-8"><a href="#Bolin1958-8"><span class="linenos"> 8</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Implementation of timescale used by Bolin 1958&quot;&quot;&quot;</span>
+</span><span id="Bolin1958-9"><a href="#Bolin1958-9"><span class="linenos"> 9</span></a>
+</span><span id="Bolin1958-10"><a href="#Bolin1958-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
+</span><span id="Bolin1958-11"><a href="#Bolin1958-11"><span class="linenos">11</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
+</span><span id="Bolin1958-12"><a href="#Bolin1958-12"><span class="linenos">12</span></a>
+</span><span id="Bolin1958-13"><a href="#Bolin1958-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Bolin1958-14"><a href="#Bolin1958-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bolin_number</span><span class="p">(</span><span class="n">const</span><span class="p">):</span>
+</span><span id="Bolin1958-15"><a href="#Bolin1958-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span>
 </span></pre></div>
 
 
@@ -160,29 +158,29 @@ Table 1 <a href="https://digitallibrary.un.org/record/3892725">Bolin 1958</a></p
 
     </div>
     <a class="headerlink" href="#Bolin1958.__init__"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolin1958.__init__-11"><a href="#Bolin1958.__init__-11"><span class="linenos">11</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
-</span><span id="Bolin1958.__init__-12"><a href="#Bolin1958.__init__-12"><span class="linenos">12</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolin1958.__init__-10"><a href="#Bolin1958.__init__-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">const</span><span class="p">):</span>
+</span><span id="Bolin1958.__init__-11"><a href="#Bolin1958.__init__-11"><span class="linenos">11</span></a>        <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span><span class="p">)</span>
 </span></pre></div>
 
 
     
 
                             </div>
-                            <div id="Bolin1958.tau" class="classattr">
-                                        <input id="Bolin1958.tau-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="Bolin1958.bolin_number" class="classattr">
+                                        <input id="Bolin1958.bolin_number-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">dm_dt_over_m</span></span><span class="return-annotation">):</span></span>
+        <span class="name">bolin_number</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="Bolin1958.tau-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="Bolin1958.bolin_number-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#Bolin1958.tau"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolin1958.tau-14"><a href="#Bolin1958.tau-14"><span class="linenos">14</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="Bolin1958.tau-15"><a href="#Bolin1958.tau-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
-</span><span id="Bolin1958.tau-16"><a href="#Bolin1958.tau-16"><span class="linenos">16</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span> <span class="o">*</span> <span class="n">dm_dt_over_m</span><span class="p">)</span>
+    <a class="headerlink" href="#Bolin1958.bolin_number"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Bolin1958.bolin_number-13"><a href="#Bolin1958.bolin_number-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Bolin1958.bolin_number-14"><a href="#Bolin1958.bolin_number-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bolin_number</span><span class="p">(</span><span class="n">const</span><span class="p">):</span>
+</span><span id="Bolin1958.bolin_number-15"><a href="#Bolin1958.bolin_number-15"><span class="linenos">15</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">BOLIN_ISOTOPE_TIMESCALE_COEFF_C1</span>
 </span></pre></div>
 
 

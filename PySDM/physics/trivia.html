@@ -167,6 +167,9 @@
                         <li>
                                 <a class="function" href="#Trivia.poissonian_avoidance_function">poissonian_avoidance_function</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Trivia.tau">tau</a>
+                        </li>
                 </ul>
 
             </li>
@@ -358,6 +361,13 @@
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="sd">        process with a constant rate `r`</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">Bo</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a><span class="sd">        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Bo</span> <span class="o">/</span> <span class="n">dm_dt_over_m</span>
 </span></pre></div>
 
 
@@ -527,6 +537,13 @@
 </span><span id="Trivia-162"><a href="#Trivia-162"><span class="linenos">162</span></a><span class="sd">        process with a constant rate `r`</span>
 </span><span id="Trivia-163"><a href="#Trivia-163"><span class="linenos">163</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Trivia-164"><a href="#Trivia-164"><span class="linenos">164</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+</span><span id="Trivia-165"><a href="#Trivia-165"><span class="linenos">165</span></a>
+</span><span id="Trivia-166"><a href="#Trivia-166"><span class="linenos">166</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-167"><a href="#Trivia-167"><span class="linenos">167</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">Bo</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
+</span><span id="Trivia-168"><a href="#Trivia-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia-169"><a href="#Trivia-169"><span class="linenos">169</span></a><span class="sd">        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)</span>
+</span><span id="Trivia-170"><a href="#Trivia-170"><span class="linenos">170</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia-171"><a href="#Trivia-171"><span class="linenos">171</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Bo</span> <span class="o">/</span> <span class="n">dm_dt_over_m</span>
 </span></pre></div>
 
 
@@ -1239,6 +1256,32 @@ where:
             <div class="docstring"><p>cumulative probability of zero events occurring within time <code>dt</code>
 (or void probability, or avoidance function) in a Poisson counting
 process with a constant rate <code>r</code></p>
+</div>
+
+
+                            </div>
+                            <div id="Trivia.tau" class="classattr">
+                                        <input id="Trivia.tau-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">Bo</span>, </span><span class="param"><span class="n">dm_dt_over_m</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.tau-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.tau"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.tau-166"><a href="#Trivia.tau-166"><span class="linenos">166</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.tau-167"><a href="#Trivia.tau-167"><span class="linenos">167</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span><span class="n">Bo</span><span class="p">,</span> <span class="n">dm_dt_over_m</span><span class="p">):</span>
+</span><span id="Trivia.tau-168"><a href="#Trivia.tau-168"><span class="linenos">168</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="Trivia.tau-169"><a href="#Trivia.tau-169"><span class="linenos">169</span></a><span class="sd">        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)</span>
+</span><span id="Trivia.tau-170"><a href="#Trivia.tau-170"><span class="linenos">170</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="Trivia.tau-171"><a href="#Trivia.tau-171"><span class="linenos">171</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">Bo</span> <span class="o">/</span> <span class="n">dm_dt_over_m</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>see text above Table 1 <a href="https://digitallibrary.un.org/record/3892725">Bolin 1958</a></p>
 </div>
 
 
