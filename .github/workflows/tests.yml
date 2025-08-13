@@ -129,7 +129,7 @@ jobs:
       with:
         fail-on-cache-miss: true
         path: ${{ env.pip_user_site }}
-        key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+        key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
     - name: Generate coverage report
       run: |
