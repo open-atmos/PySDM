@@ -165,6 +165,6 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def tau(Bo, dm_dt_over_m):
         """
-        Timescale derived for tritium with assumption of zero ambient concentration - see text above
-        Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)"""
+        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)
+        """
         return 1 / Bo / dm_dt_over_m
