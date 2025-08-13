@@ -3,13 +3,10 @@ description: "Checkout repo, setup Python and dependencies"
 inputs:
   python-version:
     required: true
-  cache-key-prefix:
+  platform:
     required: true
-  commands:
+  setup-name:
     required: true
-  hash-input-files:
-    required: true
-    description: "Space-separated list of files to hash for cache key"
 runs:
   using: "composite"
   steps:
@@ -22,22 +19,32 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: Calculate pip path and cache key
-      run: |
-        echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-        hash_input_files="${{ inputs.hash-input-files }}"
-        echo "toml_ci_md5=$(cat $hash_input_files | python -c 'import hashlib; print(hashlib.md5(open(0, """rb""").read()).hexdigest())')" >> $GITHUB_ENV
+    - name: Set pip path
+      run: echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
       shell: bash
+
+    - uses: ./.github/actions/set-pip-cache-key
 
     - uses: actions/cache@v4
       id: cache
       with:
         path: ${{ env.pip_user_site }}
-        key: ${{ inputs.cache-key-prefix }}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
+        key: ${{ inputs.setup-name }}-${{ inputs.platform}}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
         lookup-only: true
 
     - name: Setup environment
-      if: inputs.commands != ''
-      run: ${{ inputs.commands }}
+      run: |
+        # python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
+        python -m pip install -e .
+        # sanity check if we do not depend on something from tests extras
+        python -We -c "import PySDM"
+        python -m pip install pytest-timeout
+        python -m pip install -r tests/devops_tests/requirements.txt
       shell: bash
 
+    - name: Install examples and PyPartMC if needed
+      if: StartsWith(inputs.setup-name, 'examples')
+      run: |
+        python -m pip install -e ./examples
+        python -m pip install PyPartMC
+      shell: bash

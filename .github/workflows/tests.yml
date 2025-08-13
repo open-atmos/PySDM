@@ -40,18 +40,8 @@ jobs:
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          cache-key-prefix: tests_pip_cache-${{ matrix.platform }}
-          hash-input-files: >
-            pyproject.toml
-            setup.py
-            tests/devops_tests/requirements.txt
-            .github/workflows/tests.yml
-          commands: |
-            python -m pip install -e .
-            # sanity check if we do not depend on something from tests extras
-            python -We -c "import PySDM"
-            python -m pip install pytest-timeout
-            python -m pip install -r tests/devops_tests/requirements.txt
+          platform: ${{ matrix.platform }}
+          setup-name: tests_pip_cache
 
   env-with-examples-setup:
     strategy:
@@ -67,20 +57,8 @@ jobs:
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          cache-key-prefix: examples_pip_cache-${{ matrix.platform }}
-          hash-input-files: >
-            pyproject.toml
-            setup.py
-            examples/pyproject.toml
-            examples/setup.py
-            tests/devops_tests/requirements.txt
-            .github/workflows/tests.yml
-          commands: |
-            # python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
-            python -m pip install -e . -e ./examples
-            python -m pip install pytest-timeout
-            python -m pip install PyPartMC
-            python -m pip install -r tests/devops_tests/requirements.txt
+          platform: ${{matrix.platform}}
+          setup-name: examples_pip_cache
 
   pylint:
     needs: env-with-examples-setup
@@ -124,9 +102,8 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-
-  nojit_and_codecov:
-    needs: env-with-examples-setup
+  tests_without_jit_plus_codecov:
+    needs: env-tests-setup
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
@@ -140,15 +117,12 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
+    - uses: ./.github/actions/set-pip-cache-key
     - uses: actions/setup-python@v5.0.0
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Calculate pip path and cache key
-      run: |
-        echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-        echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
     - run: |
+        echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
         rm -rf $pip_user_site
     - id: cache
       uses: actions/cache/restore@v4
@@ -168,8 +142,8 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         env_vars: PYTHON,RUNNER_OS
 
-  tests:
-    needs: [ pylint, nojit_and_codecov, env-tests-setup, env-with-examples-setup ]
+  tests_with_jit:
+    needs: [ pylint, tests_without_jit_plus_codecov, env-tests-setup, env-with-examples-setup ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
@@ -195,28 +169,28 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+      - uses: ./.github/actions/set-pip-cache-key
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Calculate pip path and cache key
-        run: |
-          echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-          if [[ "${{ matrix.test-suite }}" == smoke_tests* || "${{ matrix.test-suite }}" == tutorials_tests ]]; then
-            echo "cache_prefix=examples_pip_cache" >> $GITHUB_ENV
-            echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, \"rb\").read()).hexdigest())')" >> $GITHUB_ENV
-          else
-            echo "cache_prefix=tests_pip_cache" >> $GITHUB_ENV
-            echo "toml_ci_md5=$(cat pyproject.toml setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, \"rb\").read()).hexdigest())')" >> $GITHUB_ENV
-          fi
       - run: |
+          echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
           rm -rf $pip_user_site
+
+      - name: Set setup name
+        run: |
+          if [[ "${{ matrix.test-suite }}" == smoke_tests* || "${{ matrix.test-suite }}" == tutorials_tests ]]; then
+            echo "setup-name=examples_pip_cache" >> $GITHUB_ENV
+          else
+            echo "setup-name=tests_pip_cache" >> $GITHUB_ENV
+          fi
 
       - id: cache
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
-          key: ${{ env.cache_prefix }}-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          key: ${{ env.setup-name }}-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
@@ -230,7 +204,7 @@ jobs:
 
 
   examples:
-    needs: [pylint, nojit_and_codecov, env-with-examples-setup]
+    needs: [pylint, tests_without_jit_plus_codecov, env-with-examples-setup]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
@@ -244,14 +218,12 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+      - uses: ./.github/actions/set-pip-cache-key
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Calculate pip path and cache key
-        run: |
-          echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
-          echo "toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml | python -c 'import hashlib; print(hashlib.md5(open(0, "rb").read()).hexdigest())')" >> $GITHUB_ENV
       - run: |
+          echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
           rm -rf $pip_user_site
       - id: cache
         uses: actions/cache/restore@v4

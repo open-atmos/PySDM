@@ -1,0 +1,17 @@
+name: "Set pip cache key"
+description: Calculate cache key and set as environment variable
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        hash_input_files="
+          pyproject.toml
+          setup.py
+          examples/pyproject.toml
+          examples/setup.py
+          tests/devops_tests/requirements.txt
+          .github/workflows/tests.yml
+        "
+        files=($hash_input_files)
+        cat "${files[@]}" | python -c 'import sys, hashlib; print("toml_ci_md5=" + hashlib.md5(sys.stdin.buffer.read()).hexdigest())' >> $GITHUB_ENV
+      shell: bash
