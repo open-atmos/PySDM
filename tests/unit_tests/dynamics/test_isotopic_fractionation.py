@@ -101,7 +101,7 @@ class TestIsotopicFractionation:
 
         attributes = DUMMY_ATTRIBUTES.copy()
         attributes["moles_2H"] = particle_initial_isotope_content
-        attributes["water mass"] = 1 * si.ng
+        attributes["signed water mass"] = 1 * si.ng
         attributes["multiplicity"] = np.ones(1)
 
         builder = Builder(
@@ -137,3 +137,13 @@ class TestIsotopicFractionation:
         assert (
             particulator.attributes["moles_2H"][0] == particle_initial_isotope_content
         )
+
+    # TODO
+    @staticmethod
+    def test_scenario_from_gedzelman_fig_X():
+        pass
+
+    # TODO
+    @staticmethod
+    def test_heavy_isotope_changes_match_bolin_number():
+        pass
