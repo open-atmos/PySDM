@@ -23,7 +23,7 @@ runs:
 
     - name: Setup environment
       run: |
-        # python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
+        python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
         python -m pip install -e .[tests]
         # sanity check if we do not depend on something from tests extras
         python -We -c "import PySDM"
