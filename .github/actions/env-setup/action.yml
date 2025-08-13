@@ -41,6 +41,6 @@ runs:
     - name: Install examples and PyPartMC if needed
       if: StartsWith(inputs.setup-name, 'examples')
       run: |
-        python -m pip install -e ./examples
+        python -m pip install -e ./examples[tests]
         python -m pip install PyPartMC
       shell: bash
