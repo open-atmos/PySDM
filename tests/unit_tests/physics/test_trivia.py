@@ -5,7 +5,7 @@ from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics import constants_defaults
+from PySDM.physics import constants_defaults, trivia
 
 
 class TestTrivia:
@@ -121,8 +121,7 @@ class TestTrivia:
     )
     def test_tau(bolin_number, dm_dt_over_m, expected_tau):
         # arrange
-        formulae = Formulae()
-        sut = formulae.trivia.tau
+        sut = trivia.Trivia.tau
 
         # act
         value = sut(Bo=bolin_number, dm_dt_over_m=dm_dt_over_m)
