@@ -27,15 +27,13 @@ runs:
         python -m pip install -e .[tests]
         # sanity check if we do not depend on something from tests extras
         python -We -c "import PySDM"
-        python -m pip install pytest-timeout
         python -m pip install -r tests/devops_tests/requirements.txt
       shell: bash
 
     - name: Install examples and PyPartMC if needed
-      if: StartsWith(inputs.setup-name, 'examples')
+      if: ( startsWith(inputs.setup-name, 'examples') )
       run: |
-        python -m pip install -e ./examples[tests]
-        python -m pip install PyPartMC
+        python -m pip install -e ./examples
       shell: bash
 
     - uses: actions/cache/save@v4
