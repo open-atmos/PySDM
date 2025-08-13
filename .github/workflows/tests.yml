@@ -154,7 +154,7 @@ jobs:
             test-suite: "smoke_tests/kinematic_2d"
           - platform: "macos-14"
             test-suite: "unit_tests/!(dynamics)"
-      fail-fast: true
+      fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
     steps:
@@ -201,7 +201,7 @@ jobs:
         platform: [ubuntu-24.04, macos-14, windows-latest]
         python-version: ["3.12"]
         test-suite: [ "isotopes_chemistry_extraterrestrial", "coagulation_freezing", "condensation_a", "condensation_b", "condensation_c", "multi-process_a", "multi-process_b", "multi-process_c_breakup", "multi-process_d", "multi-process_e"]
-      fail-fast: true
+      fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
     steps:
