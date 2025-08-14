@@ -160,8 +160,10 @@ jobs:
     steps:
       - name: Debug
         run: |
-          echo "MATRIX: ${{ toJson(matrix) }}"
-          echo "ENV: ${{ toJson(env) }}"
+          echo "MATRIX:"
+          printf '%s\n' "${{ toJson(matrix) }}"
+          echo "ENV:"
+          printf '%s\n' "${{ toJson(env) }}"
           echo "anim_test-suite=${{ env.anim_test_suite }}, anim_python-version=${{ env.anim_python_version }}"
 
       - uses: actions/checkout@v4.1.6
@@ -211,10 +213,12 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
     steps:
-      - name: Debug
+      - name: Debug contexts
         run: |
-          echo "MATRIX: ${{ toJson(matrix) }}"
-          echo "ENV: ${{ toJson(env) }}"
+          echo "MATRIX:"
+          printf '%s\n' "${{ toJson(matrix) }}"
+          echo "ENV:"
+          printf '%s\n' "${{ toJson(env) }}"
           echo "anim_test-suite=${{ env.anim_test_suite }}, anim_python-version=${{ env.anim_python_version }}"
 
       - uses: actions/checkout@v4.1.6
