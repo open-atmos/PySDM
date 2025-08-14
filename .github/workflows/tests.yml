@@ -136,7 +136,7 @@ jobs:
         env_vars: PYTHON,RUNNER_OS
 
   tests_with_jit:
-    needs: env-tests-setup #[ pylint, tests_without_jit_plus_codecov, env-tests-setup, env-with-examples-setup ]
+    needs: [ pylint, tests_without_jit_plus_codecov, env-tests-setup, env-with-examples-setup ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
