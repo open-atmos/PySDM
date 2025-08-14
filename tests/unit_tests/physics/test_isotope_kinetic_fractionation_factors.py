@@ -35,6 +35,23 @@ class TestIsotopeKineticFractionationFactors:
             assert sut.check("[]")
 
     @staticmethod
+    def test_units_transfer_coefficient():
+        with DimensionalAnalysis():
+            # arrange
+            const = Formulae().constants
+            rho_s = 1 * physics.si.g / physics.si.m**3
+            D = 1 * physics.si.m**2 / physics.si.s
+            Fk = 1 * physics.si.s / physics.si.m**2
+
+            # act
+            sut = JouzelAndMerlivat1984.transfer_coefficient(
+                const=const, D=D, Fk=Fk, rho_s=rho_s
+            )
+
+            # assert
+            assert sut.check("[]")
+
+    @staticmethod
     def test_fig_9_from_jouzel_and_merlivat_1984(plot=False):
         """[Jouzel & Merlivat 1984](https://doi.org/10.1029/JD089iD07p11749)"""
         # arrange
@@ -170,3 +187,35 @@ class TestIsotopeKineticFractionationFactors:
         # assert
         np.testing.assert_equal(n > 0.5, True)
         np.testing.assert_equal(n < 1, True)
+
+    @staticmethod
+    @pytest.mark.parametrize("T", np.linspace(240, 300, 11))
+    def test_effective_saturation(T):
+        # arrange
+        formulae = Formulae(drop_growth="Mason1971")
+        const = formulae.constants
+        saturation = np.linspace(0.8, 1.2, 21)
+        rho_s = formulae.saturation_vapour_pressure.pvs_ice(T) / const.Rv / T
+        Fk = formulae.drop_growth.Fk(
+            T=T,
+            K=const.K0,
+            lv=formulae.latent_heat_vapourisation.lv(T),
+        )
+        A_li = JouzelAndMerlivat1984.transfer_coefficient(
+            const=const, rho_s=rho_s, D=const.D0, Fk=Fk
+        )
+
+        # act
+        sut = JouzelAndMerlivat1984.effective_saturation(
+            transfer_coefficient=A_li,
+            RH=saturation,
+        )
+        idx_subsaturation = np.where(saturation < 1)
+
+        # assert
+        np.testing.assert_array_less(
+            saturation[idx_subsaturation], sut[idx_subsaturation]
+        )
+        np.testing.assert_array_less(
+            sut[~idx_subsaturation[0]], saturation[~idx_subsaturation[0]]
+        )
