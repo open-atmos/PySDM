@@ -136,7 +136,7 @@ jobs:
         env_vars: PYTHON,RUNNER_OS
 
   tests_with_jit:
-    needs: [ pylint, tests_without_jit_plus_codecov, env-tests-setup, env-with-examples-setup ]
+    needs: env-tests-setup #[ pylint, tests_without_jit_plus_codecov, env-tests-setup, env-with-examples-setup ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
@@ -158,14 +158,6 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
     steps:
-      - name: Debug
-        run: |
-          echo "MATRIX:"
-          printf '%s\n' "${{ toJson(matrix) }}"
-          echo "ENV:"
-          printf '%s\n' "${{ toJson(env) }}"
-          echo "anim_test-suite=${{ env.anim_test_suite }}, anim_python-version=${{ env.anim_python_version }}"
-
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
