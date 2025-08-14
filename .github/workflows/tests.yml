@@ -158,6 +158,12 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
     steps:
+      - name: Debug
+        run: |
+          echo "MATRIX: ${{ toJson(matrix) }}"
+          echo "ENV: ${{ toJson(env) }}"
+          echo "anim_test-suite=${{ env.anim_test_suite }}, anim_python-version=${{ env.anim_python_version }}"
+
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
@@ -205,6 +211,12 @@ jobs:
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
     steps:
+      - name: Debug
+        run: |
+          echo "MATRIX: ${{ toJson(matrix) }}"
+          echo "ENV: ${{ toJson(env) }}"
+          echo "anim_test-suite=${{ env.anim_test_suite }}, anim_python-version=${{ env.anim_python_version }}"
+
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
