@@ -129,3 +129,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
                         self.counters["n_substeps"][:],
                         int(self.particulator.dt / self.dt_cond_range[0]),
                     )
+            # TODO!
+            self.particulator.drop_local_thermodynamics(
+                self.particulator.dynamics["AmbientThermodynamics"].relaxed
+            )
