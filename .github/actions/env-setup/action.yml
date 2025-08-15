@@ -33,7 +33,7 @@ runs:
     - name: Install examples and PyPartMC if needed
       if: ( startsWith(inputs.setup-name, 'examples') )
       run: |
-        python -m pip install -e ./examples
+        python -m pip install -e ./examples[tests]
       shell: bash
 
     - uses: actions/cache/save@v4
