@@ -55,10 +55,6 @@ setup(
             "jsonschema" + "==3.2.0" if CI else "",
             # https://github.com/jupyter/nbconvert/issues/1568
             "Jinja2" + "<3.0.0" if CI else "",
-            # https://github.com/aws/aws-sam-cli/issues/3661
-            "MarkupSafe" + "<2.1.0" if CI else "",
-            # github.com/python-pillow/Pillow/blob/main/docs/releasenotes/9.1.0.rst#deprecations
-            # "Pillow" + "<9.1.0" if CI else "",
             "ipywidgets" + "<8.0.3" if CI else "",
             # https://github.com/dask/distributed/issues/7688
             "ipykernel" + "<6.22.0" if CI else "",
