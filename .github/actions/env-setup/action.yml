@@ -3,8 +3,6 @@ description: "Checkout repo, setup Python and dependencies"
 inputs:
   python-version:
     required: true
-  platform:
-    required: true
   setup-name:
     required: true
 runs:
@@ -39,4 +37,4 @@ runs:
     - uses: actions/cache/save@v4
       with:
         path: ${{ env.pip_user_site }}
-        key: ${{ inputs.setup-name }}-${{ inputs.platform}}-${{ inputs.python-version }}-${{ env.toml_ci_md5 }}
+        key: ${{ inputs.setup-name }}-${{ env.toml_ci_md5 }}

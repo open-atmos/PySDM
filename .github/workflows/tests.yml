@@ -36,8 +36,8 @@ jobs:
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          platform: ${{ matrix.platform }}
-          setup-name: tests_pip_cache
+          setup-name: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}
+
 
   env-with-examples-setup:
     strategy:
@@ -57,8 +57,7 @@ jobs:
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          platform: ${{matrix.platform}}
-          setup-name: examples_pip_cache
+          setup-name: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}
 
   pylint:
     needs: env-with-examples-setup
