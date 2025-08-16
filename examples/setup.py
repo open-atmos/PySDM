@@ -35,6 +35,7 @@ setup(
         "ipywidgets",
         "seaborn",
         "numdifftools",
+        "vtk",
         "pyvinecopulib",
     ],
     extras_require={
@@ -48,6 +49,7 @@ setup(
             "ipywidgets==8.1.7",
             "seaborn==0.13.2",
             "numdifftools==0.9.41",
+            "vtk==9.5.0",
             "pyvinecopulib==0.7.3",
         ]
     },
