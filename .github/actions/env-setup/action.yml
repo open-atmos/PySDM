@@ -20,18 +20,22 @@ runs:
     - uses: ./.github/actions/set-pip-path-and-cache-key
 
     - name: Setup environment
+      if: ( !startsWith(inputs.setup-name, 'examples') )
       run: |
-        python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
         python -m pip install -e .[tests,CI_version_pins]
-        # sanity check if we do not depend on something from tests extras
         python -We -c "import PySDM"
-        python -m pip install -r tests/devops_tests/requirements.txt
       shell: bash
 
     - name: Install examples if needed
       if: ( startsWith(inputs.setup-name, 'examples') )
       run: |
-        python -m pip install -e ./examples[CI_version_pins]
+        python -m pip install -e .[tessts,CI_version_pins] -e ./examples[CI_version_pins]
+        python -We -c "import PySDM, PySDM_examples"
+      shell: bash
+
+    - name: Install devops-tests requirements
+      run: |
+        python -m pip install -r tests/devops_tests/requirements.txt
       shell: bash
 
     - uses: actions/cache/save@v4
