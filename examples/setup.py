@@ -44,7 +44,7 @@ setup(
             "PyMPDATA==1.6.1",
             "open-atmos-jupyter-utils==1.3.0",
             "pystrict==1.3",
-            "matplotlib==3.10.5",
+            "matplotlib!=3.9.1",
             "Pillow<11.3.0",
             "joblib==1.5.1",
             "ipywidgets==8.1.7",
