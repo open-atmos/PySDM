@@ -40,6 +40,7 @@ setup(
     ],
     extras_require={
         "CI_version_pins": [
+            "PySDM[CI_version_pins]",
             "PyMPDATA==1.6.1",
             "open-atmos-jupyter-utils==1.3.0",
             "pystrict==1.3",
