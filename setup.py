@@ -57,7 +57,8 @@ dependencies = [
 optional_dependencies = {
     "tests": [
         "matplotlib",
-        "Pillow" "pytest",
+        "Pillow",
+        "pytest",
         "pytest-timeout",
         "PySDM-examples",
         "open-atmos-jupyter-utils",
