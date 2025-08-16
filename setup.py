@@ -68,6 +68,7 @@ optional_dependencies = {
         "ipywidgets",
     ],
     "CI_version_pins": [
+        "PySDM-examples[CI_version_pins]",
         "Pillow<11.3.0",
         "PyPartMC==1.7.2",
         "open-atmos-jupyter-utils>=v1.2.0",
