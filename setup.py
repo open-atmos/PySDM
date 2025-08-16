@@ -57,23 +57,22 @@ dependencies = [
 optional_dependencies = {
     "tests": [
         "matplotlib",
-        "Pillow"
-        + (
-            "<11.3.0" if CI else ""
-        ),  # matplotlib triggers deprecation warnings in 11.3.0
-        "pytest",
+        "Pillow" "pytest",
         "pytest-timeout",
         "PySDM-examples",
+        "open-atmos-jupyter-utils",
+        "PyPartMC",
+        "pyrcel",
+        "jupyter-core",
+        "ipywidgets",
+    ],
+    "CI_version_pins": [
+        "Pillow<11.3.0",
+        "PyPartMC==1.7.2",
         "open-atmos-jupyter-utils>=v1.2.0",
-    ]
-    + ["PyPartMC" + ("==1.7.2" if CI else "")]
-    + (
-        [
-            "pyrcel",
-            "jupyter-core<5.0.0",
-            "ipywidgets!=8.0.3",
-        ]
-    )
+        "jupyter-core<5.0.0",
+        "ipywidgets!=8.0.3",
+    ],
 }
 
 setup(
