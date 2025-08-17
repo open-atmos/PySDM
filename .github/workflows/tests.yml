@@ -95,7 +95,7 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-  tests_without_jit_plus_codecov:
+  tests-without-jit-plus-codecov:
     needs: env-tests-setup
     strategy:
       matrix:
@@ -134,23 +134,14 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         env_vars: PYTHON,RUNNER_OS
 
-  tests_with_jit:
-    needs: [ pylint, tests_without_jit_plus_codecov, env-tests-setup, env-with-examples-setup ]
+  unit-tests-with-jit:
+    needs: [ pylint, tests-without-jit-plus-codecov, env-tests-setup ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
         python-version: [ "3.12" ]
-        test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions", "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
+        test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions" ]
         exclude:
-          # TODO #1406
-          - platform: "macos-14"
-            test-suite: "smoke_tests/box"
-          - platform: "macos-14"
-            test-suite: "smoke_tests/parcel_a"
-          - platform: "macos-14"
-            test-suite: "smoke_tests/parcel_d"
-          - platform: "macos-14"
-            test-suite: "smoke_tests/kinematic_2d"
           - platform: "macos-14"
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: true
@@ -167,20 +158,60 @@ jobs:
       - uses: ./.github/actions/set-pip-path-and-cache-key
       - run: rm -rf $pip_user_site
 
-      - name: Set setup name
+      - id: cache
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: true
+          path: ${{ env.pip_user_site }}
+          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+      - name: Run pytest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBA_OPT: 1
         run: |
-          if [[ "${{ matrix.test-suite }}" == smoke_tests* || "${{ matrix.test-suite }}" == tutorials_tests ]]; then
-            echo "setup-name=examples_pip_cache" >> $GITHUB_ENV
-          else
-            echo "setup-name=tests_pip_cache" >> $GITHUB_ENV
-          fi
+          shopt -s extglob
+          python -m pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
+
+  smoke-tests-with-jit:
+    needs: [ pylint, tests-without-jit-plus-codecov, env-with-examples-setup ]
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-14, windows-latest ]
+        python-version: [ "3.12" ]
+        test-suite: [ "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
+        exclude:
+          # TODO #1406
+          - platform: "macos-14"
+            test-suite: "smoke_tests/box"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_a"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/parcel_d"
+          - platform: "macos-14"
+            test-suite: "smoke_tests/kinematic_2d"
+      fail-fast: true
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: actions/setup-python@v5.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: ./.github/actions/set-pip-path-and-cache-key
+      - run: rm -rf $pip_user_site
 
       - id: cache
         uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
-          key: ${{ env.setup-name }}-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
@@ -194,7 +225,7 @@ jobs:
 
 
   examples:
-    needs: [pylint, tests_without_jit_plus_codecov, env-with-examples-setup]
+    needs: [pylint, tests-without-jit-plus-codecov, env-with-examples-setup]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
