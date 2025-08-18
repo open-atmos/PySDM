@@ -12,8 +12,7 @@ from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.physics.constants_defaults import R_str
-from examples.PySDM_examples.Fisher_1991.fig_2 import temperature
+from PySDM.physics.constants_defaults import R_str, PER_MILLE
 
 DUMMY_ATTRIBUTES = {
     attr: np.asarray([np.nan if attr != "multiplicity" else 0])
@@ -25,6 +24,9 @@ DUMMY_ATTRIBUTES = {
         *[f"moles_{isotope}" for isotope in HEAVY_ISOTOPES],
     )
 }
+
+# TODO
+R_SMOW = Formulae().constants.VSMOW_R_2H
 
 
 class TestIsotopicFractionation:
@@ -139,9 +141,6 @@ class TestIsotopicFractionation:
             particulator.attributes["moles_2H"][0] == particle_initial_isotope_content
         )
 
-    # TODO
-    R_SMOW = Formulae().constants.VSMOW_R_2H
-
     @staticmethod
     @pytest.mark.parametrize(
         "RH, R_rain, sign_of_dR_vap, sign_of_dR_rain",
@@ -155,11 +154,15 @@ class TestIsotopicFractionation:
         RH, R_rain, sign_of_dR_vap, sign_of_dR_rain, backend_class
     ):
         # arrange
+        formulae = Formulae(isotope_relaxation_timescale="MiyakeEtAl1968")
+
         particle_initial_isotope_content = 666.0 * si.moles
         cell_volume = 1 * si.m**3
         mass_dry_air = 1 * si.kg
-        temperature = trivia.C2K(10) * si.K
-        vap_isotopic_ratio = trivia.isotopic_delta_2_ratio(-200 * PER_MILLE, R_SMOW)
+        temperature = formulae.trivia.C2K(10) * si.K
+        vap_isotopic_ratio = formulae.trivia.isotopic_delta_2_ratio(
+            -200 * PER_MILLE, R_SMOW
+        )
         vap_moles_light = pressure * cell_volume * M_1H2_16O / R_str / temperature
         vap_mass_heavy_isotope = vap_isotopic_ratio * vap_moles_light * M_2H
 
@@ -172,9 +175,7 @@ class TestIsotopicFractionation:
 
         builder = Builder(
             n_sd=1,
-            backend=backend_class(
-                formulae=Formulae(isotope_relaxation_timescale="MiyakeEtAl1968"),
-            ),
+            backend=backend_class(formulae=formulae),
             environment=Box(dv=cell_volume, dt=-1 * si.s),
         )
         builder.add_dynamic(Condensation())
