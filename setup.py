@@ -24,6 +24,7 @@ dependencies = [
         if CI
         else ""
     ),
+    "Pint",
     "chempy",
     "scipy",
     "pyevtk",
