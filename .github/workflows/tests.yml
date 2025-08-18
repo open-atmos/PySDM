@@ -44,6 +44,9 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
         python-version: ["3.12"]
+        include: # for pylint
+          - platform: ubuntu-24.04
+            python-version: "3.9"
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -60,7 +63,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-24.04]
-        python-version: ["3.12"]
+        python-version: ["3.9"]
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4.1.6
