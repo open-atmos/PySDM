@@ -22,7 +22,7 @@ on:
     - cron: '0 13 * * 4'
 
 jobs:
-  env-tests-setup:
+  env-unit-tests-setup:
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
@@ -36,18 +36,14 @@ jobs:
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          setup-name: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}
+          setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
 
 
-  env-with-examples-setup:
+  env-nonunit-tests-setup:
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
+        platform: [ubuntu-24.04, macos-14, windows-latest]
         python-version: ["3.12"]
-        include:
-          # setup for pylint
-          - platform: ubuntu-24.04
-            python-version: "3.9"
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -57,14 +53,14 @@ jobs:
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          setup-name: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}
+          setup-name: nonunit-${{ matrix.platform }}-${{ matrix.python-version }}
 
   pylint:
-    needs: env-with-examples-setup
+    needs: env-nonunit-tests-setup
     strategy:
       matrix:
         platform: [ubuntu-24.04]
-        python-version: ["3.9"]
+        python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4.1.6
@@ -81,7 +77,7 @@ jobs:
       with:
         fail-on-cache-miss: true
         path: ${{ env.pip_user_site }}
-        key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+        key: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
     - run: |
         # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
         pip install "pylint<3.0.0" nbqa
@@ -95,8 +91,8 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-  tests-without-jit-plus-codecov:
-    needs: env-tests-setup
+  unit-tests-without-jit-plus-codecov:
+    needs: env-unit-tests-setup
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
@@ -121,7 +117,7 @@ jobs:
       with:
         fail-on-cache-miss: true
         path: ${{ env.pip_user_site }}
-        key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+        key: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
     - name: Generate coverage report
       run: |
@@ -135,7 +131,7 @@ jobs:
         env_vars: PYTHON,RUNNER_OS
 
   unit-tests-with-jit:
-    needs: [ pylint, tests-without-jit-plus-codecov, env-tests-setup ]
+    needs: [ pylint, unit-tests-without-jit-plus-codecov ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
@@ -163,7 +159,7 @@ jobs:
         with:
           fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
-          key: tests_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          key: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
@@ -176,7 +172,7 @@ jobs:
           python -m pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   smoke-tests-with-jit:
-    needs: [ pylint, tests-without-jit-plus-codecov, env-with-examples-setup ]
+    needs: [ pylint, env-nonunit-tests-setup ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
@@ -225,7 +221,7 @@ jobs:
 
 
   examples:
-    needs: [pylint, tests-without-jit-plus-codecov, env-with-examples-setup]
+    needs: [pylint, env-nonunit-tests-setup]
     strategy:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
@@ -257,7 +253,7 @@ jobs:
         with:
           fail-on-cache-miss: true
           path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          key: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
