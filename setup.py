@@ -46,7 +46,7 @@ optional_dependencies = {
     "unit-tests": [
         "pytest",
         "pytest-timeout",
-        "matplotlib",
+        "matplotlib!=3.9.1",
     ],
     "nonunit-tests": [
         "matplotlib",
