@@ -33,12 +33,14 @@ dependencies = [
 optional_dependencies = {
     "unit-tests": [
         "pytest",
+        "pytest-timeout",
         "matplotlib",
     ],
     "nonunit-tests": [
         "matplotlib",
         "Pillow",
         "pytest",
+        "pytest-timeout",
         "PySDM-examples",
         "open-atmos-jupyter-utils",
         "PyPartMC",
