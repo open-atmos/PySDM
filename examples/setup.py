@@ -34,6 +34,7 @@ setup(
         "seaborn",
         "numdifftools",
         "vtk",
+        "pyrcel",
         "pyvinecopulib",
     ],
     extras_require={
@@ -49,6 +50,7 @@ setup(
             "seaborn==0.13.2",
             "numdifftools==0.9.41",
             "vtk==9.5.0",
+            "pyrcel==1.3.2",
             "pyvinecopulib==0.7.3",
         ]
     },

@@ -219,6 +219,7 @@ jobs:
           NUMBA_OPT: 1
         run: |
           shopt -s extglob
+          python -m pip install pytest-timeout
           python -m pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
 
