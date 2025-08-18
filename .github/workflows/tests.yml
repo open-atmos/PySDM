@@ -38,7 +38,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
 
-
   env-nonunit-tests-setup:
     strategy:
       matrix:
@@ -241,7 +240,6 @@ jobs:
           echo "ENV:"
           printf '%s\n' "${{ toJson(env) }}"
           echo "anim_test-suite=${{ env.anim_test_suite }}, anim_python-version=${{ env.anim_python_version }}"
-
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
