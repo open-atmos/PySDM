@@ -1,5 +1,6 @@
 # pylint:disable=missing-module-docstring
 import os
+import sys
 
 from setuptools import setup
 
