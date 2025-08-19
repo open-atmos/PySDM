@@ -12,13 +12,13 @@ from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.physics.constants_defaults import R_str, PER_MILLE
+from PySDM.physics.constants_defaults import PER_MILLE
 
 DUMMY_ATTRIBUTES = {
     attr: np.asarray([np.nan if attr != "multiplicity" else 0])
     for attr in (
         "multiplicity",
-        "water mass",
+        "signed water mass",
         "dry volume",
         "kappa times dry volume",
         *[f"moles_{isotope}" for isotope in HEAVY_ISOTOPES],
@@ -155,21 +155,21 @@ class TestIsotopicFractionation:
     ):
         # arrange
         formulae = Formulae(isotope_relaxation_timescale="MiyakeEtAl1968")
+        const = formulae.constants
 
-        particle_initial_isotope_content = 666.0 * si.moles
+        n_2H_liq = 666.0 * si.moles
+        n_liq = n_2H_liq / R_rain
         cell_volume = 1 * si.m**3
         mass_dry_air = 1 * si.kg
         temperature = formulae.trivia.C2K(10) * si.K
-        vap_isotopic_ratio = formulae.trivia.isotopic_delta_2_ratio(
-            -200 * PER_MILLE, R_SMOW
-        )
-        vap_moles_light = pressure * cell_volume * M_1H2_16O / R_str / temperature
-        vap_mass_heavy_isotope = vap_isotopic_ratio * vap_moles_light * M_2H
-
-        ambient_initial_isotope_mixing_ratio = vap_mass_heavy_isotope / mass_dry_air
+        R_vap = formulae.trivia.isotopic_delta_2_ratio(-200 * PER_MILLE, R_SMOW)
+        e = RH * formulae.saturation_vapour_pressure.pvs_water(temperature)
+        n_vap = (e + const.p_STP) * cell_volume / const.R_str / temperature
+        mass_2H_vap = R_vap * n_vap * const.M_2H_1H_16O
+        r_v = mass_2H_vap / mass_dry_air
 
         attributes = DUMMY_ATTRIBUTES.copy()
-        attributes["moles_2H"] = particle_initial_isotope_content
+        attributes["moles_2H"] = n_2H_liq
         attributes["signed water mass"] = 1 * si.ng
         attributes["multiplicity"] = np.ones(1)
 
@@ -183,14 +183,23 @@ class TestIsotopicFractionation:
         particulator = builder.build(attributes=attributes, products=())
         particulator.environment["RH"] = RH
         particulator.environment["dry_air_density"] = mass_dry_air / cell_volume
-        particulator.environment["mixing_ratio_2H"] = (
-            ambient_initial_isotope_mixing_ratio
-        )
+        particulator.environment["mixing_ratio_2H"] = r_v
 
         # act
+        dn_liq_dt = -1
+        dm_dt = dn_liq_dt * const.M_1H2_16O
+        particulator.attributes["diffusional growth mass change"].data[:] = dm_dt
         particulator.dynamics["IsotopicFractionation"]()
-        dR_vap = new_vap_isotope_ratio - vap_isotope_ratio
-        dR_rain = new_R_rain - R_rain
+
+        new_n_liq = dn_liq_dt + n_liq
+        new_r_v = particulator.environment["mixing_ratio_2H"][0]
+        new_n_2H_liq = particulator.attributes["moles_2H"][0]
+
+        new_R_vap = new_r_v * mass_dry_air / n_vap / const.M_2H_1H_16O  # n_vap??
+        new_R_liq = new_n_2H_liq / new_n_liq
+
+        dR_vap = new_R_vap - R_vap
+        dR_rain = new_R_liq - R_rain
 
         # assert
         assert np.sign(dR_vap) == sign_of_dR_vap
