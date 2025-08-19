@@ -24,6 +24,7 @@ runs:
       run: |
         python -m pip install -e .[nonunit-tests,CI_version_pins] -e ./examples[CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
+        python -c "import PySDM_examples" 2>/dev/null || exit 1
       shell: bash
 
     - name: pip-install (-e) PySDM
@@ -31,6 +32,7 @@ runs:
       run: |
         python -m pip install -e .[unit-tests,CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
+        python -c "import PySDM_examples" 2>/dev/null && exit 1
       shell: bash
 
     - uses: actions/cache/save@v4
