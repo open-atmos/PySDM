@@ -32,7 +32,7 @@ runs:
       run: |
         python -m pip install -e .[unit-tests,CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
-        python -c "import PySDM_examples" 2>/dev/null && exit 1
+        python -c "import PySDM_examples; print(PySDM_examples.__path__)" 2>/dev/null && exit 1
       shell: bash
 
     - uses: actions/cache/save@v4
