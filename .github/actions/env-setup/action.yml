@@ -27,13 +27,7 @@ runs:
       run: |
         python -m pip install -e .[nonunit-tests,CI_version_pins] -e ./examples[CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
-        python <<EOF
-        try:
-            import PySDM_examples
-            exit(1)
-        except ImportError:
-            exit(0)
-        EOF
+        python -c "import PySDM_examples"
       shell: bash
 
     - name: pip-install (-e) PySDM
