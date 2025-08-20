@@ -28,12 +28,12 @@ runs:
         python -m pip install -e .[nonunit-tests,CI_version_pins] -e ./examples[CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
         python <<EOF
-          try:
-              import PySDM_examples
-              exit(1)
-          except ImportError:
-              exit(0)
-          EOF
+        try:
+            import PySDM_examples
+            exit(1)
+        except ImportError:
+            exit(0)
+        EOF
       shell: bash
 
     - name: pip-install (-e) PySDM
@@ -42,12 +42,12 @@ runs:
         python -m pip install -e .[unit-tests,CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
         python <<EOF
-          try:
-              import PySDM_examples
-              exit(1)
-          except ImportError:
-              exit(0)
-          EOF
+        try:
+            import PySDM_examples
+            exit(1)
+        except ImportError:
+            exit(0)
+        EOF
       shell: bash
 
     - uses: actions/cache/save@v4
