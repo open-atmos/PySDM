@@ -58,18 +58,15 @@ def test_unit_and_magnitude(paper, iso):
         assert 0 * si.s < result.to_base_units() < 10 * si.s
 
 
-def test_bolin_tritium_formula_unit():
+def test_bolin_number_unit():
     with DimensionalAnalysis():
         # arrange
         si = constants_defaults.si
-        formulae = Formulae(
-            isotope_relaxation_timescale="Bolin1958",
-            constants={"BOLIN_ISOTOPE_TIMESCALE_COEFF_C1": 1 * si.dimensionless},
-        )
-        tau = formulae.isotope_relaxation_timescale.tau
+        sut = isotope_relaxation_timescale.bolin_1958.Bolin1958.bolin_number
+        formulae = Formulae()
 
         # act
-        sut = tau(dm_dt_over_m=1 / si.s)
+        value = sut(formulae.constants)
 
         # assert
-        assert sut.check("[time]")
+        assert value.check(si.dimensionless)
