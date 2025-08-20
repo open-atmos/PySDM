@@ -46,3 +46,13 @@ runs:
       with:
         path: ${{ env.pip_user_site }}
         key: ${{ inputs.setup-name }}-${{ env.toml_ci_md5 }}
+
+    - if: steps.cache.outputs.cache-hit == 'true'
+      run: rm -rf $pip_user_site
+      shell: bash
+    - if: steps.cache.outputs.cache-hit == 'true'
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: true
+        path: ${{ env.pip_user_site }}
+        key: ${{ inputs.setup-name }}-${{ env.toml_ci_md5 }}

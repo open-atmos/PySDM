@@ -69,17 +69,10 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
-    - uses: actions/setup-python@v5.0.0
+    - uses: ./.github/actions/env-setup
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: ./.github/actions/set-pip-path-and-cache-key
-    - run: rm -rf $pip_user_site
-    - id: cache
-      uses: actions/cache/restore@v4
-      with:
-        fail-on-cache-miss: true
-        path: ${{ env.pip_user_site }}
-        key: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+        setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
     - run: |
         # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
         pip install "pylint<3.0.0" nbqa
@@ -108,18 +101,10 @@ jobs:
       with:
         submodules: recursive
         fetch-depth: 0
-    - uses: actions/setup-python@v5.0.0
+    - uses: ./.github/actions/env-setup
       with:
         python-version: ${{ matrix.python-version }}
-    - uses: ./.github/actions/set-pip-path-and-cache-key
-    - run: rm -rf $pip_user_site
-
-    - id: cache
-      uses: actions/cache/restore@v4
-      with:
-        fail-on-cache-miss: true
-        path: ${{ env.pip_user_site }}
-        key: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+        setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
 
     - name: Generate coverage report
       run: |
@@ -150,18 +135,11 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
+      - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ./.github/actions/set-pip-path-and-cache-key
-      - run: rm -rf $pip_user_site
+          setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
 
-      - id: cache
-        uses: actions/cache/restore@v4
-        with:
-          fail-on-cache-miss: true
-          path: ${{ env.pip_user_site }}
-          key: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
@@ -199,18 +177,10 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
+      - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ./.github/actions/set-pip-path-and-cache-key
-      - run: rm -rf $pip_user_site
-
-      - id: cache
-        uses: actions/cache/restore@v4
-        with:
-          fail-on-cache-miss: true
-          path: ${{ env.pip_user_site }}
-          key: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
@@ -246,18 +216,11 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
+      - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ./.github/actions/set-pip-path-and-cache-key
-      - run: rm -rf $pip_user_site
-      - id: cache
-        uses: actions/cache/restore@v4
-        with:
-          fail-on-cache-miss: true
-          path: ${{ env.pip_user_site }}
-          key: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
-      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+          setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
