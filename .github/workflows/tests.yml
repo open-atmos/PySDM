@@ -219,7 +219,7 @@ jobs:
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-          setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
           # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
