@@ -29,6 +29,10 @@ jobs:
         python-version: [ "3.9", "3.12" ]
     runs-on: ${{ matrix.platform }}
     steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
@@ -44,6 +48,10 @@ jobs:
             python-version: "3.9"
     runs-on: ${{ matrix.platform }}
     steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
       - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
