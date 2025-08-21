@@ -13,5 +13,5 @@ class CraigGordon:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def alpha_kinetic(*, relative_humidity, turbulence_parameter_n, delta_diff, theta):
-        """delta_diff = 1 - heavy_to_light_diffusivity_ratio"""
+        """delta_diff = 1 - diffusivity_ratio_heavy_to_light"""
         return 1 + theta * turbulence_parameter_n * delta_diff * (1 - relative_humidity)

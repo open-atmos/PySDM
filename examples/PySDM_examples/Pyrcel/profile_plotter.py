@@ -28,8 +28,12 @@ class ProfilePlotter:
     def plot_data(self, settings, output):
         _, axs = pyplot.subplots(1, 2, sharey=True, figsize=(10, 5))
         axS = axs[0]
+        if output["products"].get("S_max"):
+            SS_percent = (np.asarray(output["products"]["S_max"]) - 1) * 100
+        else:
+            SS_percent = np.asarray(output["products"]["S_max_percent"]) - 100
         axS.plot(
-            np.asarray(output["products"]["S_max"]) - 100,
+            SS_percent,
             output["products"]["z"],
             color="black",
         )
@@ -37,7 +41,7 @@ class ProfilePlotter:
         axS.set_xlabel("Supersaturation [%]")
         axS.set_xlim(0, 0.7)
         axS.set_ylim(0, 250)
-        axS.text(0.3, 52, f"max S = {np.nanmax(output['products']['S_max'])-100:.2f}%")
+        axS.text(0.3, 52, f"max SS = {np.nanmax(SS_percent):.2f}%")
         axS.grid()
 
         axT = axS.twiny()

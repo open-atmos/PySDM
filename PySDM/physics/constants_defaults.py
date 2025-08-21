@@ -90,7 +90,6 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
 """ Avogadro constant (value from SciPy) """
 
-# mass and heat accommodation coefficients for condensation
 MAC = 1.0
 """ mass accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
@@ -98,20 +97,16 @@ HAC = 1.0
 """ thermal accommodation coefficient of unity as recommended in
 [Laaksonen et al. 2005](https://doi.org/10.5194/acp-5-461-2005) """
 
-# mass and heat accommodation coefficients for vapour deposition on ice
 MAC_ice = 0.5
 """ mass accommodation coefficient for vapour deposition as recommended in
 [Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
-HAC_ice = 0.7
+HAC_ice = 1.0
 """ thermal accommodation coefficient for vapour deposition as recommended in
 [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
-p1000 = 1000 * si.hectopascals
-c_pd = 1005 * si.joule / si.kilogram / si.kelvin
-c_pv = 1850 * si.joule / si.kilogram / si.kelvin
-g_std = sci.g * si.metre / si.second**2
-
-c_pw = 4218 * si.joule / si.kilogram / si.kelvin
+C_cunn = 0.7
+""" Cunningham correction factor as used in
+[Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
 
 ARM_C1 = 6.1094 * si.hectopascal
 """ [August](https://doi.org/10.1002/andp.18280890511) Roche Magnus formula coefficients
@@ -295,7 +290,7 @@ T_STP = (sci.zero_Celsius + 15) * si.kelvin
 p_STP = 101325 * si.pascal
 """ ... and pressure """
 
-ROOM_TEMP = T_tri + 25 * si.K
+ROOM_TEMP = T0 + 25 * si.K
 """ room temperature """
 
 dT_u = si.K
@@ -314,6 +309,9 @@ BIGG_DT_MEDIAN = np.nan
 NIEMAND_A = np.nan
 NIEMAND_B = np.nan
 
+HOMOGENEOUS_FREEZING_THRESHOLD = T0 - 38 * si.K
+""" value from [Shima et al. 2020](https://doi.org/10.5194/gmd-13-4107-2020) """
+
 ABIFM_UNIT = 1 / si.cm**2 / si.s
 """ ice nucleation rate using ABIFM
 ([Knopf & Alpert 2013](https://doi.org/10.1039/C3FD00035D)) """
@@ -322,8 +320,44 @@ ABIFM_M = np.inf
 ABIFM_C = np.inf
 """ 〃 """
 
+KOOP_2000_C1 = -906.7
+""" homogeneous ice nucleation rate
+([Koop et al. 2000](https://doi.org/10.1038/35020537)) """
+KOOP_2000_C2 = 8502
+""" 〃 """
+KOOP_2000_C3 = -26924
+""" 〃 """
+KOOP_2000_C4 = 29180
+""" 〃 """
+KOOP_UNIT = 1 / si.cm**3 / si.s
+""" 〃 """
+KOOP_MIN_DA_W_ICE = 0.26
+""" 〃 """
+KOOP_MAX_DA_W_ICE = 0.34
+
+KOOP_CORR = -1.522
+""" homogeneous ice nucleation rate correction factor
+([Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)) """
+
+KOOP_MURRAY_C0 = -3020.684
+""" homogeneous ice nucleation rate for pure water droplets
+([Koop & Murray 20016](https://doi.org/10.1063/1.4962355)) """
+KOOP_MURRAY_C1 = -425.921 / si.K
+""" 〃 """
+KOOP_MURRAY_C2 = -25.9779 / si.K**2
+""" 〃 """
+KOOP_MURRAY_C3 = -0.868451 / si.K**3
+""" 〃 """
+KOOP_MURRAY_C4 = -1.66203e-2 / si.K**4
+""" 〃 """
+KOOP_MURRAY_C5 = -1.71736e-4 / si.K**5
+""" 〃 """
+KOOP_MURRAY_C6 = -7.46953e-7 / si.K**6
+""" 〃 """
+
 J_HET = np.nan
-""" constant ice nucleation rate """
+J_HOM = np.nan
+""" constant ice nucleation rates """
 
 STRAUB_E_D1 = 0.04 * si.cm
 """ [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1) """
@@ -498,6 +532,28 @@ CRAIG_1961_SLOPE_COEFF = 8
 CRAIG_1961_INTERCEPT_COEFF = 10 * PER_MILLE
 """ 〃 """
 
+capacity_columnar_ice_B1 = 0.3
+""" eq. A11 & A12 in [Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)  """
+capacity_columnar_ice_B2 = 0.43
+""" 〃 """
+capacity_columnar_ice_A1 = 0.015755 * si.m / si.kg**capacity_columnar_ice_B1
+""" 〃 """
+capacity_columnar_ice_A2 = 0.33565 * si.m / si.kg**capacity_columnar_ice_B2
+""" 〃 """
+
+columnar_ice_mass_transition = 2.146e-13 * si.kg
+""" tab. 1 in [Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
+columnar_ice_length_beta_1 = 3.0
+""" 〃 """
+columnar_ice_length_beta_2 = 2.2
+""" 〃 """
+columnar_ice_length_alpha_1 = 526.1 * si.kg / si.m**columnar_ice_length_beta_1
+""" 〃 """
+columnar_ice_length_alpha_2 = 0.04142 * si.kg / si.m**columnar_ice_length_beta_2
+""" 〃 """
+columnar_bulk_ice_density = 0.81e3 * si.kg / si.m**3
+""" 〃 """
+
 asymmetry_g = 0.85  # forward scattering from cloud droplets
 """ [Bohren 1987](https://doi.org/10.1119/1.15109) """
 
@@ -518,8 +574,10 @@ diffusion_thermics_K_G11_D = -3.9e-4 * si.W / si.m / si.K
 
 PRUPPACHER_RASMUSSEN_1979_XTHRES = 1.4 * si.dimensionless
 """
-[Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469(1979)036%3C1255:AWTIOT%3E2.0.CO;2)
-"""
+[Pruppacher & Rasmussen 1979](https://doi.org/10.1175/1520-0469%281979%29036%3C1255:AWTIOT%3E2.0.CO;2)
+also in
+[Beard & Pruppacher 1971](https://doi.org/10.1175/1520-0469%281971%29028%3C1455:AWTIOT%3E2.0.CO;2)
+"""  # pylint: disable=line-too-long
 PRUPPACHER_RASMUSSEN_1979_CONSTSMALL = 1.0 * si.dimensionless
 """ 〃 """
 PRUPPACHER_RASMUSSEN_1979_COEFFSMALL = 0.108 * si.dimensionless
@@ -644,7 +702,7 @@ bulk_phase_partitioning_exponent = np.nan
 
 BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 = np.nan * si.dimensionless
 """
-Coefficient c1 used in [Bolin 1958](https://https://digitallibrary.un.org/record/3892725)
+Coefficient c1 used in [Bolin 1958](https://digitallibrary.un.org/record/3892725)
 for the falling drop evaporation timescale of equilibration with ambient air void of a given
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).
@@ -681,6 +739,12 @@ def compute_derived_values(c: dict):
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
     """
 
+    c["M_1H2_16O"] = c["M_1H"] * 2 + c["M_16O"]
+    c["M_2H_1H_16O"] = c["M_2H"] + c["M_1H"] + c["M_16O"]
+    c["M_3H_1H_16O"] = c["M_3H"] + c["M_1H"] + c["M_16O"]
+    c["M_1H2_17O"] = c["M_1H"] * 2 + c["M_17O"]
+    c["M_1H2_18O"] = c["M_1H"] * 2 + c["M_18O"]
+
     c["Mv"] = (
         (
             1
@@ -689,19 +753,15 @@ def compute_derived_values(c: dict):
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
             - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         )
-        * (c["M_1H"] * 2 + c["M_16O"])
+        * c["M_1H2_16O"]
         + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-        * (c["M_2H"] + c["M_1H"] + c["M_16O"])
+        * c["M_2H_1H_16O"]
         + 2
         * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-        * (c["M_3H"] + c["M_1H"] + c["M_16O"])
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-        * (c["M_1H"] * 2 + c["M_17O"])
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
-        * (c["M_1H"] * 2 + c["M_18O"])
+        * c["M_3H_1H_16O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
     )
 
     c["eps"] = c["Mv"] / c["Md"]

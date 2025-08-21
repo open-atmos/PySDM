@@ -7,7 +7,7 @@ import numpy as np
 
 from PySDM.environments.impl.moist import Moist
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.equilibrate_wet_radii import (
+from PySDM.initialisation.hygroscopic_equilibrium import (
     default_rtol,
     equilibrate_wet_radii,
 )
@@ -44,7 +44,7 @@ class Kinematic2D(Moist):
         dry_radius_spectrum,
         rtol=default_rtol,
         n_sd=None,
-        spectral_sampling=ConstantMultiplicity
+        spectral_sampling=ConstantMultiplicity,
     ):
         super().sync()
         self.notify()

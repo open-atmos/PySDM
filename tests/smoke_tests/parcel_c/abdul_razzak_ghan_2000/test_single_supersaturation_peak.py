@@ -11,7 +11,7 @@ from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
@@ -29,13 +29,13 @@ from PySDM.physics import si
 @pytest.mark.parametrize("rtol_x", (1e-7,))
 @pytest.mark.parametrize("adaptive", (True,))
 @pytest.mark.parametrize("scheme", ("PySDM",))
-def test_single_supersaturation_peak(
+def test_single_saturation_peak(
     adaptive, scheme, rtol_x, rtol_thd, plot=False
 ):  # pylint: disable=too-many-locals
     # arrange
     products = (
         PySDM_products.WaterMixingRatio(unit="g/kg", name="liquid water mixing ratio"),
-        PySDM_products.PeakSupersaturation(name="S max"),
+        PySDM_products.PeakSaturation(name="S max"),
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.ParcelDisplacement(name="z"),
     )
@@ -111,7 +111,7 @@ def test_single_supersaturation_peak(
         pyplot.xlabel("radius [um]")
         pyplot.ylabel("z [m]")
     twin = pyplot.twiny()
-    twin.plot(output["S max"], output["z"], label="S max (top axis)")
+    twin.plot(np.asarray(output["S max"]) - 1, output["z"], label="S max (top axis)")
     twin.plot(np.asarray(output["RH"]) - 1, output["z"], label="ambient RH (top axis)")
     twin.legend(loc="upper center")
     twin.set_xlim(-0.001, 0.0015)

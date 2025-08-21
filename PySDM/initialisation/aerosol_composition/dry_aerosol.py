@@ -26,7 +26,7 @@ class DryAerosolMixture:
         densities: Dict[str, float],
         molar_masses: Dict[str, float],
         is_soluble: Dict[str, bool],
-        ionic_dissociation_phi: Dict[str, int]
+        ionic_dissociation_phi: Dict[str, int],
     ):
         self._modes = None
         self.compounds = compounds

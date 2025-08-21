@@ -84,6 +84,10 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return signed_water_mass > 0 and relative_humidity > 1
 
     @staticmethod
+    def unfrozen_and_ice_saturated(signed_water_mass, relative_humidity_ice):
+        return signed_water_mass > 0 and relative_humidity_ice > 1
+
+    @staticmethod
     def frozen_and_above_freezing_point(const, signed_water_mass, temperature):
         return signed_water_mass < 0 and temperature > const.T0
 
@@ -157,3 +161,10 @@ class Trivia:  # pylint: disable=too-many-public-methods
         process with a constant rate `r`
         """
         return np.exp(-r * dt)
+
+    @staticmethod
+    def tau(Bo, dm_dt_over_m):
+        """
+        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)
+        """
+        return 1 / Bo / dm_dt_over_m
