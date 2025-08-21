@@ -9,7 +9,7 @@ version_scheme = "post-release"
 include = ["PySDM", "PySDM*"]
 
 [build-system]
-requires = ['setuptools==80.9.0', 'setuptools-scm==9.0.1']
+requires = ['setuptools==80.9.0', 'setuptools-scm==9.1.1']
 build-backend = "setuptools.build_meta"
 
 [project]
