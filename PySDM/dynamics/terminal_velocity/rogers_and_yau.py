@@ -8,7 +8,7 @@ class RogersYau:  # pylint: disable=too-few-public-methods
         self.particulator = particulator
 
     def __call__(self, output, radius):
-        self.particulator.backend.terminal_velocity(
+        self.particulator.backend.rogers_and_yau_terminal_velocity(
             values=output.data,
             radius=radius.data,
         )
