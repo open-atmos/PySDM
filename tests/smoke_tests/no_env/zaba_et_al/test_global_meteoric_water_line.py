@@ -9,7 +9,7 @@ import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
 
-from PySDM_examples import Zaba_et_al_2025
+from PySDM_examples import Zaba_et_al
 
 PLOT = False
 
@@ -17,7 +17,7 @@ PLOT = False
 @pytest.fixture(scope="session", name="notebook_variables")
 def notebook_variables_fixture():
     return notebook_vars(
-        file=Path(Zaba_et_al_2025.__file__).parent / "global_meteoric_water_line.ipynb",
+        file=Path(Zaba_et_al.__file__).parent / "global_meteoric_water_line.ipynb",
         plot=PLOT,
     )
 

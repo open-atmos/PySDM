@@ -8,7 +8,7 @@ import numpy as np
 
 from PySDM.environments.impl.moist import Moist
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.equilibrate_wet_radii import (
+from PySDM.initialisation.hygroscopic_equilibrium import (
     default_rtol,
     equilibrate_wet_radii,
 )

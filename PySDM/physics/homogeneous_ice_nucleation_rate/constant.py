@@ -5,7 +5,7 @@ constant rate formulation (for tests)
 import numpy as np
 
 
-class Constant:  # pylint: disable=too-few-public-methods
+class Constant:
     def __init__(self, const):
         assert np.isfinite(const.J_HOM)
 
@@ -18,5 +18,5 @@ class Constant:  # pylint: disable=too-few-public-methods
         return da_w_ice
 
     @staticmethod
-    def j_hom(const, T, a_w_ice):  # pylint: disable=unused-argument
+    def j_hom(const, T, da_w_ice):  # pylint: disable=unused-argument
         return const.J_HOM

@@ -21,7 +21,7 @@ _Counters = namedtuple(
 _Attributes = namedtuple(
     typename="_Attributes",
     field_names=(
-        "water_mass",
+        "signed_water_mass",
         "v_cr",
         "multiplicity",
         "vdry",
@@ -60,7 +60,7 @@ class CondensationMethods(BackendMethods):
             n_cell=kwargs["n_cell"],
             cell_start_arg=kwargs["cell_start_arg"].data,
             attributes=_Attributes(
-                water_mass=kwargs["water_mass"].data,
+                signed_water_mass=kwargs["signed_water_mass"].data,
                 v_cr=kwargs["v_cr"].data,
                 multiplicity=kwargs["multiplicity"].data,
                 vdry=kwargs["vdry"].data,
@@ -273,7 +273,7 @@ class CondensationMethods(BackendMethods):
         ):
             timestep /= n_substeps
             ml_old = calculate_ml_old(
-                attributes.water_mass, attributes.multiplicity, cell_idx
+                attributes.signed_water_mass, attributes.multiplicity, cell_idx
             )
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
@@ -358,11 +358,11 @@ class CondensationMethods(BackendMethods):
     @staticmethod
     def make_calculate_ml_old(jit_flags):
         @numba.njit(**jit_flags)
-        def calculate_ml_old(water_mass, multiplicity, cell_idx):
+        def calculate_ml_old(signed_water_mass, multiplicity, cell_idx):
             result = 0
             for drop in cell_idx:
-                if water_mass[drop] > 0:
-                    result += multiplicity[drop] * water_mass[drop]
+                if signed_water_mass[drop] > 0:
+                    result += multiplicity[drop] * signed_water_mass[drop]
             return result
 
         return calculate_ml_old
@@ -429,12 +429,14 @@ class CondensationMethods(BackendMethods):
             lambdaK = formulae.diffusion_kinetics__lambdaK(T, p)
             lambdaD = formulae.diffusion_kinetics__lambdaD(DTp, T)
             for drop in cell_idx:
-                if attributes.water_mass[drop] <= 0:
+                if attributes.signed_water_mass[drop] <= 0:
                     continue
                 v_drop = formulae.particle_shape_and_density__mass_to_volume(
-                    attributes.water_mass[drop]
+                    attributes.signed_water_mass[drop]
                 )
-                x_old = formulae.diffusion_coordinate__x(attributes.water_mass[drop])
+                x_old = formulae.diffusion_coordinate__x(
+                    attributes.signed_water_mass[drop]
+                )
                 r_old = formulae.trivia__radius(v_drop)
                 x_insane = formulae.diffusion_coordinate__x(
                     formulae.particle_shape_and_density__volume_to_mass(
@@ -559,13 +561,16 @@ class CondensationMethods(BackendMethods):
                 )
                 result += attributes.multiplicity[drop] * mass_new
                 if not fake:
-                    if mass_new > mass_cr and mass_new > attributes.water_mass[drop]:
+                    if (
+                        mass_new > mass_cr
+                        and mass_new > attributes.signed_water_mass[drop]
+                    ):
                         n_activated_and_growing += attributes.multiplicity[drop]
-                    if mass_new > mass_cr > attributes.water_mass[drop]:
+                    if mass_new > mass_cr > attributes.signed_water_mass[drop]:
                         n_activating += attributes.multiplicity[drop]
-                    if mass_new < mass_cr < attributes.water_mass[drop]:
+                    if mass_new < mass_cr < attributes.signed_water_mass[drop]:
                         n_deactivating += attributes.multiplicity[drop]
-                    attributes.water_mass[drop] = mass_new
+                    attributes.signed_water_mass[drop] = mass_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
             return result, success, n_activating, n_deactivating, n_ripening
 

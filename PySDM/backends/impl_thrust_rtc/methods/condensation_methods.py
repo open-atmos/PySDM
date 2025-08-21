@@ -40,10 +40,10 @@ class CondensationMethods(
     @cached_property
     def __calculate_m_l(self):
         return trtc.For(
-            param_names=("ml", "water_mass", "multiplicity", "cell_id"),
+            param_names=("ml", "signed_water_mass", "multiplicity", "cell_id"),
             name_iter="i",
             body="""
-            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * water_mass[i]);
+            atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * signed_water_mass[i]);
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -71,7 +71,7 @@ class CondensationMethods(
         const = phys.constants
         return trtc.For(
             param_names=(
-                "water_mass",
+                "signed_water_mass",
                 "vdry",
                 *CondensationMethods.keys,
                 "_kappa",
@@ -135,9 +135,9 @@ class CondensationMethods(
             auto _schmidt_number = schmidt_number[cell_id[i]];
 
             auto v_old = {phys.particle_shape_and_density.mass_to_volume.c_inline(
-                mass="water_mass[i]"
+                mass="signed_water_mass[i]"
             )};
-            auto x_old = {phys.diffusion_coordinate.x.c_inline(mass="water_mass[i]")};
+            auto x_old = {phys.diffusion_coordinate.x.c_inline(mass="signed_water_mass[i]")};
             auto r_old = {phys.trivia.radius.c_inline(volume="v_old")};
             auto m_insane = {phys.particle_shape_and_density.volume_to_mass.c_inline(volume="vdry[i] / 100")};
             auto x_insane = {phys.diffusion_coordinate.x.c_inline(mass="m_insane")};
@@ -187,7 +187,7 @@ class CondensationMethods(
                 )};
                 dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")};
                 dx_old = dt * {phys.diffusion_coordinate.dx_dt.c_inline(
-                    m="water_mass[i]", dm_dt="dm_dt_old"
+                    m="signed_water_mass[i]", dm_dt="dm_dt_old"
                 )};
             }}
             else {{
@@ -241,7 +241,7 @@ class CondensationMethods(
                     x_new = x_old;
                 }}
             }}
-            water_mass[i] = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
+            signed_water_mass[i] = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
         """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -379,11 +379,11 @@ class CondensationMethods(
             ),
         )
 
-    def calculate_m_l(self, ml, water_mass, multiplicity, cell_id):
+    def calculate_m_l(self, ml, signed_water_mass, multiplicity, cell_id):
         ml[:] = 0
         self.__calculate_m_l.launch_n(
             n=len(multiplicity),
-            args=(ml.data, water_mass.data, multiplicity.data, cell_id.data),
+            args=(ml.data, signed_water_mass.data, multiplicity.data, cell_id.data),
         )
 
     # pylint: disable=unused-argument,too-many-locals
@@ -394,7 +394,7 @@ class CondensationMethods(
         solver,
         n_cell,
         cell_start_arg,
-        water_mass,
+        signed_water_mass,
         v_cr,
         multiplicity,
         vdry,
@@ -450,7 +450,7 @@ class CondensationMethods(
             ),
         )
         timestep /= n_substeps
-        self.calculate_m_l(self.ml_old, water_mass, multiplicity, cell_id)
+        self.calculate_m_l(self.ml_old, signed_water_mass, multiplicity, cell_id)
 
         for _ in range(n_substeps):
             self.__pre.launch_n(
@@ -472,7 +472,7 @@ class CondensationMethods(
             self.__update_drop_masses.launch_n(
                 n=len(multiplicity),
                 args=(
-                    water_mass.data,
+                    signed_water_mass.data,
                     vdry.data,
                     *self.vars_data.values(),
                     kappa.data,
@@ -485,7 +485,7 @@ class CondensationMethods(
                     reynolds_number.data,
                 ),
             )
-            self.calculate_m_l(self.ml_new, water_mass, multiplicity, cell_id)
+            self.calculate_m_l(self.ml_new, signed_water_mass, multiplicity, cell_id)
             self.__post.launch_n(
                 n=n_cell,
                 args=(
