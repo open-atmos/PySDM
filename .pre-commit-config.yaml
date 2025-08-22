@@ -1,4 +1,4 @@
-files: '.py|.json'
+files: '.py|.json|.ipynb'
 exclude: '.git'
 default_stages: [pre-commit]
 
@@ -27,4 +27,14 @@ repos:
     hooks:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
+
+  - repo: local
+    hooks: 
+      - id: check_notebooks
+        name: Check notebooks
+        entry: python ./pre_commit_hooks/check_notebooks.py
+        language: system
+        files: '.ipynb'
+        
+    
 
