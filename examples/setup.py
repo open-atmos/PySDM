@@ -45,7 +45,7 @@ setup(
             "pystrict==1.3",
             "matplotlib!=3.9.1",
             "Pillow<11.3.0",
-            "joblib==1.5.1",
+            "joblib==1.5.2",
             "ipywidgets==8.1.7",
             "seaborn==0.13.2",
             "numdifftools==0.9.41",
