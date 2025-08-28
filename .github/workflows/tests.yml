@@ -158,7 +158,7 @@ jobs:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
         python-version: [ "3.12" ]
-        test-suite: [ "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
+        test-suite: [ "smoke_tests/{no_env, box}", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
         exclude:
           # TODO #1406
           - platform: "macos-14"
