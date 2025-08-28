@@ -159,14 +159,14 @@ jobs:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
         python-version: [ "3.12" ]
         test-suite:
-          - "smoke_tests/no_env smoke_tests/box" # combined no_env and box
+          - "smoke_tests/{no_env, box}" # combined no_env and box
           - "smoke_tests/parcel_a"
           - "smoke_tests/parcel_b"
           - "smoke_tests/parcel_c"
           - "smoke_tests/parcel_d"
           - "smoke_tests/kinematic_1d"
           - "smoke_tests/kinematic_2d"
-          - "smoke_tests/kinematic_1d smoke_tests/kinematic_2d}" # combined kinetics
+          - "smoke_tests/kinematic_1d tests/smoke_tests/kinematic_2d" # combined kinetics
           - "tutorials_tests"
         exclude:
           # TODO #1406
@@ -180,14 +180,14 @@ jobs:
             test-suite: "smoke_tests/kinematic_2d"
           # test-suite combined
           - platform: "windows-latest"
-            test-suite: "smoke_tests/kinematic_1d smoke_tests/kinematic_2d}" # combined kinetics
+            test-suite: "smoke_tests/kinematic_1d tests/smoke_tests/kinematic_2d}" # combined kinetics
           - platform: "ubuntu-24.04"
-            test-suite: "smoke_tests/kinematic_1d smoke_tests/kinematic_2d}" # combined kinetics
+            test-suite: "smoke_tests/kinematic_1d tests/smoke_tests/kinematic_2d}" # combined kinetics
           - platform: "macos-14"
             test-suite: "smoke_tests/kinematic_1d"
           - platform: "macos-14"
             test-suite: "smoke_tests/kinematic_2d"
-      fail-fast: true
+      fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
     steps:
