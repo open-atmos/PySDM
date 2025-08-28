@@ -158,17 +158,21 @@ jobs:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
         python-version: [ "3.12" ]
-        test-suite: [ "smoke_tests/{no_env, box}", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
+        test-suite: [ "smoke_tests/{no_env, box}", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "smoke_tests/{kinematic_1d, kinematic_2d}", "tutorials_tests" ]
         exclude:
           # TODO #1406
           - platform: "macos-14"
-            test-suite: "smoke_tests/box"
+            test-suite: "smoke_tests/{no_env, box}"
           - platform: "macos-14"
             test-suite: "smoke_tests/parcel_a"
           - platform: "macos-14"
             test-suite: "smoke_tests/parcel_d"
           - platform: "macos-14"
             test-suite: "smoke_tests/kinematic_2d"
+          - platform: [ "windows-latest", "ubuntu-24.04" ]
+            test-suite: "smoke_tests/{kinematic_1d, kinematic_2d}"
+          - platform: "macos-14"
+            test-suite: [ "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d" ]
       fail-fast: true
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
