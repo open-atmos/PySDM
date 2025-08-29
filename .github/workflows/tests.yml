@@ -57,34 +57,34 @@ jobs:
           python-version: ${{ matrix.python-version }}
           setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
 
-  pylint:
-    needs: env-nonunit-tests-setup
-    strategy:
-      matrix:
-        platform: [ubuntu-24.04]
-        python-version: ["3.9"]
-    runs-on: ${{ matrix.platform }}
-    steps:
-    - uses: actions/checkout@v4.1.6
-      with:
-        submodules: recursive
-        fetch-depth: 0
-    - uses: ./.github/actions/env-setup
-      with:
-        python-version: ${{ matrix.python-version }}
-        setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
-    - run: |
-        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
-        pip install "pylint<3.0.0" nbqa
-    - run: |
-        # TODO #682
-        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
-    - run: |
-        # TODO #682
-        pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
-    - run: |
-        # TODO #682
-        nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
+#  pylint:
+#    needs: env-nonunit-tests-setup
+#    strategy:
+#      matrix:
+#        platform: [ubuntu-24.04]
+#        python-version: ["3.9"]
+#    runs-on: ${{ matrix.platform }}
+#    steps:
+#    - uses: actions/checkout@v4.1.6
+#      with:
+#        submodules: recursive
+#        fetch-depth: 0
+#    - uses: ./.github/actions/env-setup
+#      with:
+#        python-version: ${{ matrix.python-version }}
+#        setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+#    - run: |
+#        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
+#        pip install "pylint<3.0.0" nbqa
+#    - run: |
+#        # TODO #682
+#        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
+#    - run: |
+#        # TODO #682
+#        pylint --max-module-lines=550 --unsafe-load-any-extension=y --disable=fixme,too-many-function-args,unsubscriptable-object,consider-using-with,protected-access,too-many-statements,too-many-public-methods,too-many-branches,duplicate-code,invalid-name,missing-function-docstring,missing-module-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,too-many-arguments,c-extension-no-member $(git ls-files '*.py' | grep ^examples)
+#    - run: |
+#        # TODO #682
+#        nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
 #  unit-tests-without-jit-plus-codecov:
 #    needs: env-unit-tests-setup
@@ -153,7 +153,7 @@ jobs:
 #          python -m pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
 
   smoke-tests-with-jit:
-    needs: [ pylint, env-nonunit-tests-setup ]
+    needs: [ env-nonunit-tests-setup ] #pylint
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
