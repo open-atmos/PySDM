@@ -179,10 +179,6 @@ jobs:
             test-suite: "tests/smoke_tests/no_env tests/smoke_tests/box tests/tutorials_tests"
           - platform: "macos-14"
             test-suite: "tests/smoke_tests/parcel_a"
-#          - platform: "macos-14"
-#            test-suite: "tests/smoke_tests/parcel_d"
-#          - platform: "macos-14"
-#            test-suite: "tests/smoke_tests/kinematic_2d"
           # test-suite combined
           - platform: "macos-14"
             test-suite: "tests/smoke_tests/kinematic_1d"
