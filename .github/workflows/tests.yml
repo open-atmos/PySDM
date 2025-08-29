@@ -192,7 +192,7 @@ jobs:
             test-suite: "tests/smoke_tests/parcel_d"
       fail-fast: false # FIXME changed for debugging
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
