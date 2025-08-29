@@ -168,11 +168,11 @@ jobs:
           - "tests/smoke_tests/kinematic_2d"
         include:
           - platform: "macos-14"
-            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c"
+            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c tests/smoke_tests/parcel_d"
           - platform: "macos-14"
             test-suite: "tests/smoke_tests/no_env tests/tutorials_tests"
           - platform: "macos-14"
-            test-suite: "tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined kinetics
+            test-suite: "tests/smoke_tests/kinematic_1d tests/smoke_tests/kinematic_2d" # combined kinetics
         exclude:
           # TODO #1406
           - platform: "macos-14"
@@ -188,6 +188,8 @@ jobs:
             test-suite: "tests/smoke_tests/parcel_b"
           - platform: "macos-14"
             test-suite: "tests/smoke_tests/parcel_c"
+          - platform: "macos-14"
+            test-suite: "tests/smoke_tests/parcel_d"
       fail-fast: false # FIXME changed for debugging
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
