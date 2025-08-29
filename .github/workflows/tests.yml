@@ -160,38 +160,30 @@ jobs:
         python-version: [ "3.12" ]
         test-suite:
           - "tests/smoke_tests/no_env tests/smoke_tests/box tests/tutorials_tests" # combined no_env, box and tutorial_tests
-          - "tests/smoke_tests/no_env tests/tutorials_tests"
           - "tests/smoke_tests/parcel_a"
-          - "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c"
           - "tests/smoke_tests/parcel_b"
           - "tests/smoke_tests/parcel_c"
           - "tests/smoke_tests/parcel_d"
           - "tests/smoke_tests/kinematic_1d"
           - "tests/smoke_tests/kinematic_2d"
-          - "tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined kinetics
+        include:
+          - platform: "macos-14"
+            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c"
+          - platform: "macos-14"
+            test-suite: "tests/smoke_tests/no_env tests/tutorials_tests"
+          - platform: "macos-14"
+            test-suite: "tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined kinetics
         exclude:
           # TODO #1406
           - platform: "macos-14"
             test-suite: "tests/smoke_tests/no_env tests/smoke_tests/box tests/tutorials_tests"
-#          - platform: "macos-14"
-#            test-suite: "tests/smoke_tests/parcel_a"
+          - platform: "macos-14"
+            test-suite: "tests/smoke_tests/parcel_a"
 #          - platform: "macos-14"
 #            test-suite: "tests/smoke_tests/parcel_d"
 #          - platform: "macos-14"
 #            test-suite: "tests/smoke_tests/kinematic_2d"
           # test-suite combined
-          - platform: "windows-latest"
-            test-suite: "tests/smoke_tests/no_env tests/tutorials_tests"
-          - platform: "ubuntu-24.04"
-            test-suite: "tests/smoke_tests/no_env tests/tutorials_tests"
-          - platform: "windows-latest"
-            test-suite: "tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined kinetics
-          - platform: "ubuntu-24.04"
-            test-suite: "tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined kinetics
-          - platform: "windows-latest"
-            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c"
-          - platform: "ubuntu-24.04"
-            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c"
           - platform: "macos-14"
             test-suite: "tests/smoke_tests/kinematic_1d"
           - platform: "macos-14"
