@@ -13,7 +13,7 @@ from PySDM.environments import Parcel
 from PySDM.physics import constants as const
 from PySDM.initialisation import discretise_multiplicities
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
-
+from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 
 class Simulation:
     def __init__(self, settings, backend=CPU):
@@ -99,6 +99,8 @@ class Simulation:
         ]
 
         self.particulator = builder.build(attributes, products)
+        if settings.scipy_solver:
+            scipy_ode_condensation_solver.patch_particulator(self.particulator)
 
         self.n_output = settings.n_output
         if settings.n_output == 1:

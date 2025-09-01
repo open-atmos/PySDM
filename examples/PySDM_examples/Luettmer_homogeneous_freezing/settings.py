@@ -31,6 +31,7 @@ class Settings:
         deposition_enable: bool = True,
         deposition_adaptive: bool = False,
         backend=None,
+        scipy_solver=False,
         number_of_ensemble_runs: None,
     ):
         self.backend = backend
@@ -61,6 +62,7 @@ class Settings:
         self.condensation_enable = condensation_enable
         self.deposition_enable = deposition_enable
         self.deposition_adaptive = deposition_adaptive
+        self.scipy_solver = scipy_solver
 
         if hom_freezing == "threshold":
             self.hom_freezing_type = "threshold"
