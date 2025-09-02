@@ -11,7 +11,6 @@ from PySDM.formulae import Formulae, _choices
 from PySDM.physics import homogeneous_ice_nucleation_rate
 from PySDM import physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics import si
 
 SPICHTINGER_ET_AL_2023_FIG2_DATA = {
     "da_w_ice": [0.27, 0.29, 0.31, 0.33],
@@ -110,6 +109,8 @@ class TestHomogeneousIceNucleationRate:
     )
     def test_fig_1_in_spichtinger_et_al_2023(pvs_parametrisation, context, plot=False):
         # arrange
+        si = physics.si
+
         formulae = Formulae(
             homogeneous_ice_nucleation_rate="KoopMurray2016",
             saturation_vapour_pressure=pvs_parametrisation,

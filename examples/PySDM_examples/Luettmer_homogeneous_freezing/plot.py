@@ -211,12 +211,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
         w = histogram_data_dict["n_ccn_histogram_list"]
         y_label = "ccn concentration [1/m^³]"
     elif "rc_max_histogram_list" in histogram_data_dict:
-        w = (
-            np.asarray(
-                histogram_data_dict["rc_max_histogram_list"]
-            )
-            * 1e6
-        )
+        w = np.asarray(histogram_data_dict["rc_max_histogram_list"]) * 1e6
         y_label = "(maximum) radius [µm]"
 
     xlim = (-38.5, -32)
@@ -247,7 +242,9 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
     )
     h.set_axis_labels("freezing temperature [°C]", y_label, fontsize=ax_lab_fsize)
     h.ax_joint.set_title(
-        "Freezing method=" + hom_freezing_type + title_add, pad=70, fontsize=ax_lab_fsize
+        "Freezing method=" + hom_freezing_type + title_add,
+        pad=70,
+        fontsize=ax_lab_fsize,
     )
     h.ax_marg_y.remove()
 

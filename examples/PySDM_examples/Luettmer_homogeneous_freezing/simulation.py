@@ -15,6 +15,7 @@ from PySDM.initialisation import discretise_multiplicities
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 
+
 class Simulation:
     def __init__(self, settings, backend=CPU):
 
@@ -166,12 +167,18 @@ class Simulation:
             if output["LWC"][-1] < output["LWC"][0]:
                 print("all particles frozen or evaporated")
                 # Assert for water saturation
-                test_water_saturation = np.asarray( output["RH"] )
+                test_water_saturation = np.asarray(output["RH"])
                 # Sort out times before CCN activation & after first occurence of ice
-                test_water_saturation = np.where( np.asarray(output["rs"]) < 1e-6, 100., test_water_saturation )
-                test_water_saturation = np.where( np.asarray(output["IWC"]) > 0., 100., test_water_saturation  )
-                if np.allclose(test_water_saturation, 100., rtol=5e-2) == False:
-                    print( "Warning: water saturation is too high outside of activation and mixed-phase environment" )
+                test_water_saturation = np.where(
+                    np.asarray(output["rs"]) < 1e-6, 100.0, test_water_saturation
+                )
+                test_water_saturation = np.where(
+                    np.asarray(output["IWC"]) > 0.0, 100.0, test_water_saturation
+                )
+                if np.allclose(test_water_saturation, 100.0, rtol=5e-2) == False:
+                    print(
+                        "Warning: water saturation is too high outside of activation and mixed-phase environment"
+                    )
 
                 break
             if output["t"][-1] >= self.t_max_duration:

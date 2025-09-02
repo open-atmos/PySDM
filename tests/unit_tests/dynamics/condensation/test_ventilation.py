@@ -75,7 +75,8 @@ def test_ventilation(backend_class, var_ventilation, var_drop_growth, scipy_solv
 
     # assert
     mass_ratios = {
-        key: particulator.attributes["signed water mass"].to_ndarray() / INITIAL_DROPLET_MASS
+        key: particulator.attributes["signed water mass"].to_ndarray()
+        / INITIAL_DROPLET_MASS
         for key, particulator in particulators.items()
     }
     assert 0.93 < mass_ratios[var_ventilation] < mass_ratios["Neglect"] < 1
