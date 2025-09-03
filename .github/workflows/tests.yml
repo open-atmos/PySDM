@@ -228,10 +228,19 @@ jobs:
           - "multi-process_c_breakup"
           - "multi-process_d"
           - "multi-process_e"
-#        include:
-#          - platform: "macos-14"
-#            python-version: "3.12"
-#            test-suite: ""
+        include:
+          - platform: "macos-14"
+            python-version: "3.12"
+            test-suite: "multi-process_a,multi-process_b,multi-process_d,multi-process_e"
+        exclude:
+          - platform: "macos-14"
+            test-suite: "multi-process_a"
+          - platform: "macos-14"
+            test-suite: "multi-process_b"
+          - platform: "macos-14"
+            test-suite: "multi-process_d"
+          - platform: "macos-14"
+            test-suite: "multi-process_e"
       fail-fast: false # FIXME for debugging
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 28 || 17 }}
