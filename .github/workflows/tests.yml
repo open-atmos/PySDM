@@ -217,8 +217,18 @@ jobs:
       matrix:
         platform: [ubuntu-24.04, macos-14, windows-latest]
         python-version: ["3.12"]
-        test-suite: [ "isotopes_chemistry_extraterrestrial", "coagulation_freezing", "condensation_a", "condensation_b", "condensation_c", "multi-process_a", "multi-process_b", "multi-process_c_breakup", "multi-process_d", "multi-process_e"]
-      fail-fast: true
+        test-suite:
+          - "isotopes_chemistry_extraterrestrial"
+          - "coagulation_freezing"
+          - "condensation_a"
+          - "condensation_b"
+          - "condensation_c"
+          - "multi-process_a"
+          - "multi-process_b"
+          - "multi-process_c_breakup"
+          - "multi-process_d"
+          - "multi-process_e"
+      fail-fast: false # FIXME for debugging
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 28 || 17 }}
     steps:
