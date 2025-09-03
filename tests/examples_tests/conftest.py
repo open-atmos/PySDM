@@ -185,7 +185,7 @@ def pytest_addoption(parser):
 
 
 def pytest_generate_tests(metafunc):
-    suite_args = metafunc.config.option.suite
+    suite_args = metafunc.config.option.suite or []
 
     # Support both --suite name1 --suite name2 and --suite name1,name2
     suite_names = []
