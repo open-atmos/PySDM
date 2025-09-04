@@ -117,7 +117,7 @@ jobs:
         env_vars: PYTHON,RUNNER_OS
 
   unit-tests-with-jit:
-    needs: [ pylint, unit-tests-without-jit-plus-codecov, smoke-tests-with-jit, examples ]
+    needs: [ pylint, unit-tests-without-jit-plus-codecov ]
     strategy:
       matrix:
         platform: [ ubuntu-24.04, macos-14, windows-latest ]
