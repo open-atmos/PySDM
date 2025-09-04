@@ -187,7 +187,7 @@ jobs:
             test-suite: "tests/smoke_tests/parcel_c"
           - platform: "macos-14"
             test-suite: "tests/smoke_tests/parcel_d"
-      fail-fast: true
+      fail-fast: false # FIXME for debugging
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
     steps:
