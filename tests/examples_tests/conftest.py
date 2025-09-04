@@ -223,7 +223,7 @@ def pytest_generate_tests(metafunc):
             pysdm_examples_abs_path,
             r".*\.(py)$",
         )
-        selected_paths = get_selected_test_paths(suite_name, examples_paths)
+        selected_paths = get_selected_test_paths(suite_name=None, paths=examples_paths)
         metafunc.parametrize(
             "example_filename",
             selected_paths,
