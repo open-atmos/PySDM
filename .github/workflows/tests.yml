@@ -291,7 +291,7 @@ jobs:
           python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
       - run: |
           python -m pip install pytest-timeout
-
+          python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
