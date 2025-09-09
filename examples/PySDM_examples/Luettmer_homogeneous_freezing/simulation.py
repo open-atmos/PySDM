@@ -7,7 +7,7 @@ from PySDM.dynamics import (
     AmbientThermodynamics,
     Condensation,
     Freezing,
-    VapourDepositionOnIce,
+    VapourDepositionOnIce, Coalescence,
 )
 from PySDM.environments import Parcel
 from PySDM.physics import constants as const
@@ -42,6 +42,8 @@ class Simulation:
         builder.add_dynamic(AmbientThermodynamics())
         if settings.condensation_enable:
             builder.add_dynamic(Condensation(adaptive=True))
+        if settings.coalescence_enable:
+            builder.add_dynamic(Coalescence())
         if settings.deposition_enable:
             builder.add_dynamic(
                 VapourDepositionOnIce(adaptive=settings.deposition_adaptive)

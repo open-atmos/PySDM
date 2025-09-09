@@ -15,7 +15,7 @@ ax_lab_fsize = 15
 tick_fsize = 15
 # title_fsize = 15
 # line_width = 2.5
-T_frz_bins = np.linspace(-38.5, -33, num=7, endpoint=True)
+T_frz_bins = np.linspace(-39, -33, num=60, endpoint=True)
 
 
 def plot_thermodynamics_and_bulk(simulation, title_add=""):
@@ -221,10 +221,10 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
         xlim=xlim,
     )
     h.ax_joint.set(yscale="log")
-    if hom_freezing_type == "KoopMurray2016":
-        x_pos_cbar = 0.75
-    else:
-        x_pos_cbar = 0.15
+    # if hom_freezing_type == "KoopMurray2016":
+    #     x_pos_cbar = 0.75
+    # else:
+    x_pos_cbar = 0.75
     cax = h.figure.add_axes([x_pos_cbar, 0.55, 0.02, 0.2])
     h.plot_joint(
         sns.histplot,

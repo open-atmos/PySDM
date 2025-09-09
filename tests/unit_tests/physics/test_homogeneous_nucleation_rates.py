@@ -107,10 +107,11 @@ class TestHomogeneousIceNucleationRate:
             ("MurphyKoop2005", nullcontext()),
         ),
     )
-    def test_fig_1_in_spichtinger_et_al_2023(pvs_parametrisation, context, plot=False):
+    def test_fig_1_in_spichtinger_et_al_2023(
+        pvs_parametrisation, context, plot=False
+    ):  # pylint disable=too-many-locals
         # arrange
         si = physics.si
-
         formulae = Formulae(
             homogeneous_ice_nucleation_rate="KoopMurray2016",
             saturation_vapour_pressure=pvs_parametrisation,

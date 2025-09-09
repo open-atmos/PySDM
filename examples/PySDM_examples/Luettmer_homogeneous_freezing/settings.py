@@ -18,7 +18,6 @@ class Settings:
         n_sd: int,
         w_updraft: float,
         T0: float,
-        # dt: float,
         dz: float,
         N_dv_droplet_distribution: float,
         r_mean_droplet_distribution: float,
@@ -29,7 +28,9 @@ class Settings:
         kappa: float = 0.64,
         condensation_enable: bool = True,
         deposition_enable: bool = True,
-        deposition_adaptive: bool = False,
+        coalescence_enable: bool = False,
+        deposition_adaptive: bool = True,
+        n_output: int = 30,
         backend=None,
         scipy_solver=False,
         number_of_ensemble_runs: None,
@@ -60,6 +61,7 @@ class Settings:
         self.initial_temperature = T0
 
         self.condensation_enable = condensation_enable
+        self.coalescence_enable = coalescence_enable
         self.deposition_enable = deposition_enable
         self.deposition_adaptive = deposition_adaptive
         self.scipy_solver = scipy_solver
@@ -107,6 +109,6 @@ class Settings:
             ).sample(n_sd)
 
         self.dz = dz
-        self.t_max_duration = 20000
+        self.t_max_duration = 10000
         self.dt = dz / self.w_updraft
-        self.n_output = 1
+        self.n_output = n_output
