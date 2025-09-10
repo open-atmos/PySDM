@@ -36,6 +36,7 @@ setup(
         "vtk",
         "pyrcel",
         "pyvinecopulib",
+        "networkx",
     ],
     extras_require={
         "CI_version_pins": [
