@@ -53,7 +53,6 @@ setup(
             "vtk==9.5.0",
             "pyrcel==1.3.2",
             "pyvinecopulib==0.7.3",
-            "networkx==3.5",
         ]
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
