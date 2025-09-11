@@ -15,7 +15,7 @@ ax_lab_fsize = 15
 tick_fsize = 15
 # title_fsize = 15
 # line_width = 2.5
-T_frz_bins = np.linspace(-39, -33, num=60, endpoint=True)
+T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
 
 
 def plot_thermodynamics_and_bulk(simulation, title_add=""):
@@ -56,12 +56,13 @@ def plot_thermodynamics_and_bulk(simulation, title_add=""):
     )
 
     title = (
-        "Freezing method="
+        "Freezing: "
         + simulation["settings"]["hom_freezing"]
-        + " n_sd="
+        + "  n_sd: "
         + str(simulation["settings"]["n_sd"])
-        + " w="
+        + "  w: "
         + str(simulation["settings"]["w_updraft"])
+        + r" $\mathrm{m \, s^{-1}}$"
         + title_add
     )
     fig.suptitle(title, fontsize=16)
@@ -71,35 +72,52 @@ def plot_thermodynamics_and_bulk(simulation, title_add=""):
     ax.plot(time, formulae.trivia.K2C(T), color="black", linestyle="-", label="T")
     ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
     ax.set_ylabel("temperature [°C]", fontsize=ax_lab_fsize)
-    ax.legend(loc="upper right", fontsize=ax_lab_fsize)
+    ax.legend(loc="upper left", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
 
     twin = ax.twinx()
     twin.plot(time, RH, color="red", linestyle="-", label="RH")
     twin.plot(time, RHi, color="blue", linestyle="-", label="RHi")
     twin.set_ylabel("relative humidity [%]", fontsize=ax_lab_fsize)
-    twin.legend(loc="upper left", fontsize=ax_lab_fsize)
+    twin.legend(loc="upper right", fontsize=ax_lab_fsize)
     twin.tick_params(labelsize=tick_fsize)
 
     """ Water activity difference profile """
+    lin_s_SP2023 = "--"
+    lin_s_KM2016 = "-"
+    if simulation["settings"]["hom_freezing"] == "Spichtinger2023":
+        lin_s_SP2023 = "-"
+        lin_s_KM2016 = "--"
     ax = axs[0, 1]
-    ax.plot(time, d_a_w_ice, color="gray", linestyle="-")
+    # ax.plot(time, koop_2000, color="black", linestyle="-", label="Koop2000")
+    ax.plot(
+        time,
+        koop_murray_2016,
+        color="blue",
+        linestyle=lin_s_KM2016,
+        label="KoopMurray2016",
+    )
+    ax.plot(
+        time,
+        spichtinger_2023,
+        color="red",
+        linestyle=lin_s_SP2023,
+        label="Spichtinger2023",
+    )
     ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
-    ax.set_ylabel("water activity difference", fontsize=ax_lab_fsize)
-    ax.set_ylim(0.2, 0.35)
+    ax.set_ylabel(
+        r"nucleation rate [$\mathrm{m^{-3} \, s^{-1}}$]", fontsize=ax_lab_fsize
+    )
+    ax.legend(loc="upper left", fontsize=ax_lab_fsize)
+    ax.set_ylim(1e-30, 1e30)
+    ax.set_yscale("log")
     ax.tick_params(labelsize=tick_fsize)
     twin = ax.twinx()
-    twin.plot(time, koop_2000, color="black", linestyle="-", label="Koop2000")
-    twin.plot(
-        time, koop_murray_2016, color="blue", linestyle="-", label="KoopMurray2016"
-    )
-    twin.plot(
-        time, spichtinger_2023, color="red", linestyle="-", label="Spichtinger2023"
-    )
-    twin.set_yscale("log")
-    twin.set_ylabel("nucleation rate", fontsize=ax_lab_fsize)
+    twin.plot(time, d_a_w_ice, color="gray", linestyle="-", label=r"$\Delta a_{w}$")
+    twin.set_ylim(0.2, 0.35)
+    twin.set_ylabel("water activity difference", fontsize=ax_lab_fsize)
     twin.tick_params(labelsize=tick_fsize)
-    twin.legend(fontsize=ax_lab_fsize)
+    twin.legend(loc="lower right", fontsize=ax_lab_fsize)
 
     """ Mass content """
     ax = axs[1, 0]
@@ -110,7 +128,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add=""):
     ax.set_yscale("log")
     ax.set_ylim(1e-5, 1e-2)
     ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
-    ax.set_ylabel("mass content [kg/kg]", fontsize=ax_lab_fsize)
+    ax.set_ylabel(r"mass content [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize)
     ax.legend(fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
 
@@ -132,7 +150,7 @@ def plot_freezing_temperatures_histogram(ax, simulation):
 
     for i in range(number_of_ensemble_runs):
         output = simulation["ensemble_member_outputs"][i]
-        T_frz = np.asarray(output["T_frz"][-1])
+        T_frz = np.asarray(output["T_frz"])
 
         title = "Freezing method=" + simulation["settings"]["hom_freezing"]
 
@@ -206,15 +224,15 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
     )
     if "w_updraft_histogram_list" in histogram_data_dict:
         w = histogram_data_dict["w_updraft_histogram_list"]
-        y_label = "vertical updraft [m/s]"
+        y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
     elif "n_ccn_histogram_list" in histogram_data_dict:
         w = histogram_data_dict["n_ccn_histogram_list"]
-        y_label = "ccn concentration [1/m^³]"
+        y_label = r"ccn concentration [$\mathrm{m^{-3}}$]"
     elif "rc_max_histogram_list" in histogram_data_dict:
         w = np.asarray(histogram_data_dict["rc_max_histogram_list"]) * 1e6
         y_label = "(maximum) radius [µm]"
 
-    xlim = (-38.5, -32)
+    xlim = (-39.5, -34)
     h = sns.JointGrid(
         x=T_frz,
         y=w,
@@ -242,7 +260,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
     )
     h.set_axis_labels("freezing temperature [°C]", y_label, fontsize=ax_lab_fsize)
     h.ax_joint.set_title(
-        "Freezing method=" + hom_freezing_type + title_add,
+        "Freezing: " + hom_freezing_type + title_add,
         pad=70,
         fontsize=ax_lab_fsize,
     )

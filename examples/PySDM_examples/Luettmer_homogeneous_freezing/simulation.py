@@ -7,7 +7,8 @@ from PySDM.dynamics import (
     AmbientThermodynamics,
     Condensation,
     Freezing,
-    VapourDepositionOnIce, Coalescence,
+    VapourDepositionOnIce,
+    Coalescence,
 )
 from PySDM.environments import Parcel
 from PySDM.physics import constants as const
@@ -128,12 +129,15 @@ class Simulation:
         output["ni"].append(self.particulator.products["n_i"].get()[cell_id])
         output["rs"].append(self.particulator.products["r_s"].get()[cell_id])
         output["ri"].append(self.particulator.products["r_i"].get()[cell_id])
-        output["water_mass"].append(
-            self.particulator.attributes["signed water mass"].data.tolist()
-        )
-        output["T_frz"].append(
-            self.particulator.attributes["temperature of last freezing"].data.tolist()
-        )
+        # output["water_mass"].append(
+        #     self.particulator.attributes["signed water mass"].data.tolist()
+        # )
+        # output["T_frz"].append(
+        #     self.particulator.attributes["temperature of last freezing"].data.tolist()
+        # )
+        output["T_frz"] = self.particulator.attributes[
+            "temperature of last freezing"
+        ].data.tolist()
 
     def run(self):
 
@@ -153,7 +157,7 @@ class Simulation:
             "ni": [],
             "rs": [],
             "ri": [],
-            "water_mass": [],
+            # "water_mass": [],
             "T_frz": [],
         }
 
