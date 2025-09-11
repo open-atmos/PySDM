@@ -41,3 +41,5 @@ dynamic = ["version", "dependencies", "optional-dependencies"]
 Tracker = "https://github.com/open-atmos/PySDM/issues"
 Documentation = "https://open-atmos.github.io/PySDM"
 Source = "https://github.com/open-atmos/PySDM"
+[project.scripts]
+check_notebooks = "pre_commit_hooks.check_notebooks:main"
