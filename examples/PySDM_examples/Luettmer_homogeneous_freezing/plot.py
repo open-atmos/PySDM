@@ -18,7 +18,7 @@ tick_fsize = 15
 T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
 
 
-def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc = False):
+def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
 
     output = simulation["ensemble_member_outputs"][0]
     time = output["t"]
@@ -141,7 +141,9 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc = False):
         twin.plot(time, ni, color="blue", linestyle="--", label="ice")
         twin.set_yscale("log")
         twin.set_xlabel("time [s]", fontsize=ax_lab_fsize)
-        twin.set_ylabel(r"number concentration [$\mathrm{kg^{-1}}$]", fontsize=ax_lab_fsize)
+        twin.set_ylabel(
+            r"number concentration [$\mathrm{kg^{-1}}$]", fontsize=ax_lab_fsize
+        )
         twin.tick_params(labelsize=tick_fsize)
 
     """ Mean radius """

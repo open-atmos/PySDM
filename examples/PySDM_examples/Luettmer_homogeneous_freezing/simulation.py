@@ -96,8 +96,12 @@ class Simulation:
             PySDM_products.AmbientWaterVapourMixingRatio(
                 name="vapour", var="water_vapour_mixing_ratio"
             ),
-            PySDM_products.ParticleSpecificConcentration(name="n_s", radius_range=(0, np.inf), unit="kg^-1"),
-            PySDM_products.ParticleSpecificConcentration(name="n_i", radius_range=(-np.inf, 0), unit="kg^-1"),
+            PySDM_products.ParticleSpecificConcentration(
+                name="n_s", radius_range=(0, np.inf), unit="kg^-1"
+            ),
+            PySDM_products.ParticleSpecificConcentration(
+                name="n_i", radius_range=(-np.inf, 0), unit="kg^-1"
+            ),
             PySDM_products.MeanRadius(name="r_s", radius_range=(0, np.inf)),
             PySDM_products.MeanRadius(name="r_i", radius_range=(-np.inf, 0)),
         ]

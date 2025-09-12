@@ -10,6 +10,7 @@ from PySDM.initialisation.sampling import spectral_sampling
 from tests.unit_tests.backends.test_oxidation import formulae
 from PySDM.dynamics.collisions.collision_kernels import Golovin
 
+
 class Settings:
     def __init__(
         self,
@@ -113,4 +114,3 @@ class Settings:
         self.t_max_duration = 10000
         self.dt = dz / self.w_updraft
         self.n_output = n_output
-        print(  self.dt )
