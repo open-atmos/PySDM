@@ -8,7 +8,7 @@ from PySDM.physics.constants import si
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
 from tests.unit_tests.backends.test_oxidation import formulae
-
+from PySDM.dynamics.collisions.collision_kernels import Golovin
 
 class Settings:
     def __init__(
@@ -65,6 +65,7 @@ class Settings:
         self.deposition_enable = deposition_enable
         self.deposition_adaptive = deposition_adaptive
         self.scipy_solver = scipy_solver
+        self.collision_kernel = Golovin(b=1.5e3 / si.second)
 
         if hom_freezing == "threshold":
             self.hom_freezing_type = "threshold"
@@ -112,3 +113,4 @@ class Settings:
         self.t_max_duration = 10000
         self.dt = dz / self.w_updraft
         self.n_output = n_output
+        print(  self.dt )

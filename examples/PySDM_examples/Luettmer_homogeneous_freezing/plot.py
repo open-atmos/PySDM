@@ -18,7 +18,7 @@ tick_fsize = 15
 T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
 
 
-def plot_thermodynamics_and_bulk(simulation, title_add=""):
+def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc = False):
 
     output = simulation["ensemble_member_outputs"][0]
     time = output["t"]
@@ -31,6 +31,9 @@ def plot_thermodynamics_and_bulk(simulation, title_add=""):
     qt = qc + qv + qi
     rc = np.asarray(output["rs"])
     ri = np.asarray(output["ri"])
+    if show_conc:
+        nc = np.asarray(output["ns"])
+        ni = np.asarray(output["ni"])
 
     svp = Formulae(
         saturation_vapour_pressure="FlatauWalkoCotton"
@@ -119,7 +122,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add=""):
     twin.tick_params(labelsize=tick_fsize)
     twin.legend(loc="lower right", fontsize=ax_lab_fsize)
 
-    """ Mass content """
+    """ Mass content and number concentration"""
     ax = axs[1, 0]
     ax.plot(time, qc, color="red", linestyle="-", label="water")
     ax.plot(time, qi, color="blue", linestyle="-", label="ice")
@@ -131,6 +134,15 @@ def plot_thermodynamics_and_bulk(simulation, title_add=""):
     ax.set_ylabel(r"mass content [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize)
     ax.legend(fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
+
+    if show_conc:
+        twin = ax.twinx()
+        twin.plot(time, nc, color="red", linestyle="--", label="water")
+        twin.plot(time, ni, color="blue", linestyle="--", label="ice")
+        twin.set_yscale("log")
+        twin.set_xlabel("time [s]", fontsize=ax_lab_fsize)
+        twin.set_ylabel(r"number concentration [$\mathrm{kg^{-1}}$]", fontsize=ax_lab_fsize)
+        twin.tick_params(labelsize=tick_fsize)
 
     """ Mean radius """
     ax = axs[1, 1]
