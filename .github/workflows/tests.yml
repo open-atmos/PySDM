@@ -10,7 +10,7 @@ env:
   anim_test-suite: 'multi-process_a'
   # common options for pytest
   pytest_options: "--durations=10 -v -s -We -p no:unraisableexception"
-        
+
 on:
   push:
     branches: [ main ]
@@ -22,25 +22,60 @@ on:
     - cron: '0 13 * * 4'
 
 jobs:
+  env-unit-tests-setup:
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
+        python-version: [ "3.9", "3.12" ]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: ./.github/actions/env-setup
+        with:
+          python-version: ${{ matrix.python-version }}
+          setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+
+  env-nonunit-tests-setup:
+    strategy:
+      matrix:
+        platform: [ubuntu-24.04, macos-14, windows-latest]
+        python-version: ["3.12"]
+        include: # for pylint
+          - platform: ubuntu-24.04
+            python-version: "3.9"
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: ./.github/actions/env-setup
+        with:
+          python-version: ${{ matrix.python-version }}
+          setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+
   pylint:
-    runs-on: ubuntu-24.04
+    needs: env-nonunit-tests-setup
+    strategy:
+      matrix:
+        platform: [ubuntu-24.04]
+        python-version: ["3.9"]
+    runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v5.0.0
+    - uses: ./.github/actions/env-setup
       with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
+        python-version: ${{ matrix.python-version }}
+        setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+    - run: |
         # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
         pip install "pylint<3.0.0" nbqa
-        pip install -r tests/devops_tests/requirements.txt
-        pip install -e ./examples[tests]
-        pip install -e .[tests]
     - run: |
         # TODO #682
         pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
@@ -51,45 +86,80 @@ jobs:
         # TODO #682
         nbqa pylint --unsafe-load-any-extension=y --disable=fixme,duplicate-code,invalid-name,trailing-whitespace,line-too-long,missing-function-docstring,wrong-import-position,missing-module-docstring,wrong-import-order,ungrouped-imports,no-member,too-many-locals,unnecessary-lambda-assignment $(git ls-files '*.ipynb')
 
-  
-
-  nojit_and_codecov:
-    needs: [pylint]
-    runs-on: ubuntu-24.04
+  unit-tests-without-jit-plus-codecov:
+    needs: env-unit-tests-setup
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-13, macos-14, windows-latest ]
+        python-version: [ "3.9", "3.12" ]
+    runs-on: ${{ matrix.platform }}
     env:
       NUMBA_DISABLE_JIT: 1
+      PYTHON: ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v4.1.6
       with:
         submodules: recursive
         fetch-depth: 0
-    - uses: actions/setup-python@v5.0.0
+    - uses: ./.github/actions/env-setup
       with:
-        python-version: 3.9
+        python-version: ${{ matrix.python-version }}
+        setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+
     - name: Generate coverage report
       run: |
-        pip install -e .[tests]
-        pip install -e ./examples
-        pip install pytest-cov
-        pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
+        python -m pip install pytest-cov
+        python -m pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
     - uses: codecov/codecov-action@v4.5.0
       with:
         fail_ci_if_error: true
         verbose: true
         token: ${{ secrets.CODECOV_TOKEN }}
+        env_vars: PYTHON,RUNNER_OS
 
-  tests:
-    needs: [nojit_and_codecov]
+  unit-tests-with-jit:
+    needs: [ pylint, unit-tests-without-jit-plus-codecov ]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, macos-14, windows-latest]
-        python-version: ["3.9", "3.12"]
-        test-suite: ["unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions","smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests"]
+        platform: [ ubuntu-24.04, macos-14, windows-latest ]
+        python-version: [ "3.12" ]
+        test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions" ]
         exclude:
           - platform: "macos-14"
-            python-version: "3.9"
-          - test-suite: "devops_tests"
-            python-version: "3.9"
+            test-suite: "unit_tests/!(dynamics)"
+      fail-fast: true
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
+    steps:
+      - uses: actions/checkout@v4.1.6
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: ./.github/actions/env-setup
+        with:
+          python-version: ${{ matrix.python-version }}
+          setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+
+
+      - if: startsWith(matrix.platform, 'ubuntu-')
+        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+      - name: Run pytest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBA_OPT: 1
+        run: |
+          shopt -s extglob
+          python -m pip install pytest-timeout
+          python -m pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
+
+  smoke-tests-with-jit:
+    needs: [ pylint, env-nonunit-tests-setup ]
+    strategy:
+      matrix:
+        platform: [ ubuntu-24.04, macos-14, windows-latest ]
+        python-version: [ "3.12" ]
+        test-suite: [ "smoke_tests/no_env", "smoke_tests/box", "smoke_tests/parcel_a", "smoke_tests/parcel_b", "smoke_tests/parcel_c", "smoke_tests/parcel_d", "smoke_tests/kinematic_1d", "smoke_tests/kinematic_2d", "tutorials_tests" ]
+        exclude:
           # TODO #1406
           - platform: "macos-14"
             test-suite: "smoke_tests/box"
@@ -99,9 +169,7 @@ jobs:
             test-suite: "smoke_tests/parcel_d"
           - platform: "macos-14"
             test-suite: "smoke_tests/kinematic_2d"
-          - platform: "macos-14"
-            test-suite: "unit_tests/!(dynamics)"
-      fail-fast: false
+      fail-fast: true
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
     steps:
@@ -109,107 +177,50 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
+      - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
+          setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
 
-      - run: pip install -e .
-
-      # sanity check if we do not depend on something from tests extras
-      - run: python -We -c "import PySDM"
-
-      - if: startsWith(matrix.test-suite, 'smoke_tests') || matrix.test-suite == 'tutorials_tests'
-        run: pip install -e ./examples
-
-      # incl. ensuring that the previous pip did not overwrite the package
-      - run: |
-          pip install --only-binary :all: -e .[tests]
-
-      # install devops_tests for tutorials_tests
-      - if: matrix.test-suite == 'tutorials_tests'
-        run: pip install -r tests/devops_tests/requirements.txt
-
-      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
-
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NUMBA_OPT: 1
         run: |
           shopt -s extglob
-          pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
-
-  examples-setup:
-    needs: [nojit_and_codecov]
-    strategy:
-      matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
-    runs-on: ${{ matrix.platform }}
-    steps:
-      - uses: actions/checkout@v4.1.6
-        with:
-          submodules: recursive
-          fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
-        with:
-          python-version: ${{ matrix.python-version }}
-      - run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
-          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
-      - uses: actions/cache@v4
-        id: cache
-        with:
-          path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
-          lookup-only: true
-      - if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          python -m pip uninstall -y jupyterlab-server # https://github.com/pypa/pip/issues/6275
-          python -m pip install -e . -e ./examples
           python -m pip install pytest-timeout
-          python -m pip install -r tests/devops_tests/requirements.txt
-      - if: steps.cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
+          python -m pytest ${{ env.pytest_options }} --timeout=900 --timeout_method=thread tests/${{ matrix.test-suite }}
+
 
   examples:
-    needs: [examples-setup]
+    needs: [pylint, env-nonunit-tests-setup]
     strategy:
       matrix:
-        platform: [ubuntu-24.04, macos-13, windows-latest]
-        python-version: ["3.9", "3.12"]
-        test-suite: [ "chemistry_extraterrestrial", "freezing", "isotopes", "condensation_a", "condensation_b", "condensation_c", "coagulation", "breakup", "multi-process_a", "multi-process_b", "multi-process_c", "multi-process_d", "multi-process_e"]
-      fail-fast: false
+        platform: [ubuntu-24.04, macos-14, windows-latest]
+        python-version: ["3.12"]
+        test-suite: [ "isotopes_chemistry_extraterrestrial", "coagulation_freezing", "condensation_a", "condensation_b", "condensation_c", "multi-process_a", "multi-process_b", "multi-process_c_breakup", "multi-process_d", "multi-process_e"]
+      fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 20 || 35 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 28 || 17 }}
     steps:
+      - name: Debug contexts
+        run: |
+          echo "MATRIX:"
+          printf '%s\n' "${{ toJson(matrix) }}"
+          echo "ENV:"
+          printf '%s\n' "${{ toJson(env) }}"
+          echo "anim_test-suite=${{ env.anim_test_suite }}, anim_python-version=${{ env.anim_python_version }}"
       - uses: actions/checkout@v4.1.6
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: actions/setup-python@v5.0.0
+      - uses: ./.github/actions/env-setup
         with:
           python-version: ${{ matrix.python-version }}
-      - run: |
-          echo pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))") >> $GITHUB_ENV
-          echo toml_ci_md5=$(cat pyproject.toml setup.py examples/pyproject.toml examples/setup.py tests/devops_tests/requirements.txt .github/workflows/tests.yml \
-          | python -c "import hashlib;print(hashlib.md5(open(0,'rb').read()).hexdigest())") >> $GITHUB_ENV
-      - run: |
-          rm -rf $pip_user_site
-      - id: cache
-        uses: actions/cache/restore@v4
-        with:
-          fail-on-cache-miss: true
-          path: ${{ env.pip_user_site }}
-          key: examples_pip_cache-${{ matrix.platform }}-${{ matrix.python-version }}-${{ env.toml_ci_md5 }}
-
-      # https://github.com/numba/numba/issues/6350#issuecomment-728174860
+          setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
@@ -220,7 +231,7 @@ jobs:
           wget -nv "https://paraview.org/paraview-downloads/download.php?submit=Download&version=v5.13&type=binary&os=Linux&downloadFile=ParaView-5.13.1-egl-MPI-Linux-Python3.10-x86_64.tar.gz" -O paraview.tar.gz
           tar xzf paraview.tar.gz
           echo `pwd`/`dirname ParaView*/bin/pvpython` >> $GITHUB_PATH
-          
+
       - if: startsWith(matrix.platform, 'macos-') && (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
         run: |
           brew update
@@ -234,7 +245,7 @@ jobs:
           msiexec //i paraview.msi //quiet //qn //norestart 
           echo "C:\\Program Files\\ParaView 5.13.1\\bin\\" >> $GITHUB_PATH
 
-      - if: matrix.test-suite == (matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b')
+      - if: matrix.test-suite == 'multi-process_a' || matrix.test-suite == 'multi-process_b'
         run: |
           pvpython --version
           pvpython -c "from paraview import simple"
@@ -242,13 +253,10 @@ jobs:
       - run: |
           python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
 
-      # TODO #1207
-      - if: startsWith(matrix.platform, 'macos-13')
-        run: python -m pytest --basetemp=/tmp/pytest ${{ env.pytest_options }} tests/examples_tests/test_run* -k "not (Rozanski_and_Sonntag_1982 or copula_hello)" --suite ${{ matrix.test-suite }}
+      - run: |
+          python -m pip install pytest-timeout
+          python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
 
-      - if: ( ! startsWith(matrix.platform, 'macos-13') )
-        run: python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
-        
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
         run: |
           set -x

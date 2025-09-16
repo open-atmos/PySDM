@@ -161,3 +161,10 @@ class Trivia:  # pylint: disable=too-many-public-methods
         process with a constant rate `r`
         """
         return np.exp(-r * dt)
+
+    @staticmethod
+    def tau(Bo, dm_dt_over_m):
+        """
+        see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)
+        """
+        return 1 / Bo / dm_dt_over_m

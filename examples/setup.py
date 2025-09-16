@@ -1,6 +1,5 @@
 import os
 import re
-import sys
 
 from setuptools import find_packages, setup
 
@@ -25,42 +24,34 @@ setup(
     "and depicting how to use PySDM from Python Jupyter notebooks",
     install_requires=[
         "PySDM",
-        "PyMPDATA" + (">=1.0.15" if CI else ""),
+        "PyMPDATA",
         "open-atmos-jupyter-utils",
         "pystrict",
-        # https://github.com/matplotlib/matplotlib/issues/28551
-        "matplotlib" + ("!=3.9.1" if CI else ""),
-        "Pillow"
-        + (
-            "<11.3.0" if CI else ""
-        ),  # matplotlib triggers deprecation warnings in 11.3.0
+        "matplotlib",
+        "Pillow",
         "joblib",
         "ipywidgets",
         "seaborn",
         "numdifftools",
         "vtk",
-    ]
-    + (
-        ["pyvinecopulib" + ("==0.7.3" if CI else ">=0.7.3")]
-        if sys.platform != "darwin"
-        else []
-    ),
+        "pyrcel",
+        "pyvinecopulib",
+    ],
     extras_require={
-        "tests": [
-            "pytest",
-            "nbconvert",
-            "jupyter-core" + "<5.0.0" if CI else "",
-            # https://github.com/jupyter/nbformat/issues/232
-            "jsonschema" + "==3.2.0" if CI else "",
-            # https://github.com/jupyter/nbconvert/issues/1568
-            "Jinja2" + "<3.0.0" if CI else "",
-            # https://github.com/aws/aws-sam-cli/issues/3661
-            "MarkupSafe" + "<2.1.0" if CI else "",
-            # github.com/python-pillow/Pillow/blob/main/docs/releasenotes/9.1.0.rst#deprecations
-            "Pillow" + "<9.1.0" if CI else "",
-            "ipywidgets" + "<8.0.3" if CI else "",
-            # https://github.com/dask/distributed/issues/7688
-            "ipykernel" + "<6.22.0" if CI else "",
+        "CI_version_pins": [
+            "PySDM[CI_version_pins]",
+            "PyMPDATA==1.6.1",
+            "open-atmos-jupyter-utils==1.3.0",
+            "pystrict==1.3",
+            "matplotlib!=3.9.1",
+            "Pillow<11.3.0",
+            "joblib==1.5.1",
+            "ipywidgets==8.1.7",
+            "seaborn==0.13.2",
+            "numdifftools==0.9.41",
+            "vtk==9.5.0",
+            "pyrcel==1.3.2",
+            "pyvinecopulib==0.7.3",
         ]
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",

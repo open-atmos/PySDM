@@ -1,0 +1,18 @@
+name: "Set pip path and cache key"
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        echo "pip_user_site=$(python -c "import sysconfig; print(sysconfig.get_path('purelib'))")" >> $GITHUB_ENV
+        hash_input_files="
+          pyproject.toml
+          setup.py
+          examples/pyproject.toml
+          examples/setup.py
+          tests/devops_tests/requirements.txt
+          .github/workflows/tests.yml
+          .github/actions/env-setup/action.yml
+        "
+        files=($hash_input_files)
+        cat "${files[@]}" | python -c 'import sys, hashlib; print("toml_ci_md5=" + hashlib.md5(sys.stdin.buffer.read()).hexdigest())' >> $GITHUB_ENV
+      shell: bash
