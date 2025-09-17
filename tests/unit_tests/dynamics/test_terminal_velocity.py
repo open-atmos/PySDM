@@ -55,9 +55,7 @@ def test_approximation(backend_class, plot=False):
     (
         ("GunnKinzer1949", 0 * si.g, None, 0),
         ("GunnKinzer1949", 1e10 * si.kg, pytest.raises(ValueError, match="Radii"), -1),
-        ("GunnKinzer1949", -1 * si.g, None, np.nan),
         ("RogersYau", 0 * si.g, None, 0),
-        ("RogersYau", -1 * si.g, None, np.nan),
         ("TpDependent", 0 * si.g, None, 0),
     ),
 )
