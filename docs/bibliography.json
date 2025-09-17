@@ -856,9 +856,9 @@
       "PySDM/physics/particle_shape_and_density/columnar_ice.py",
       "PySDM/physics/particle_shape_and_density/porous_spheroids.py",
       "PySDM/physics/terminal_velocity_ice/columnar_ice_crystal.py",
-      "tests/unit_tests/dynamics/test_terminal_velocity.py"
-      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
-      "tests/unit_tests/physics/test_particle_shape_and_density.py",
+      "tests/unit_tests/dynamics/test_terminal_velocity.py",
+      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py",
+      "tests/unit_tests/physics/test_particle_shape_and_density.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
     "label": "Spichtinger & Gierens 2009 (Atmos. Chem. Phys. 9)"
