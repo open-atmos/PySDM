@@ -67,7 +67,6 @@ class Settings:
         formulae: Formulae = None,
         save_spec_and_attr_times=(),
         collision_kernel=None,
-        alpha = 0,
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
@@ -83,7 +82,6 @@ class Settings:
         self.z_max = z_max
         self.t_max = t_max
         self.collision_kernel = collision_kernel or Geometric(collection_efficiency=1)
-        self.alpha = alpha
 
         t_1 = 600 * si.s
         self.rho_times_w = lambda t: (
@@ -131,7 +129,7 @@ class Settings:
             water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
                 z_above_reservoir
             )
-            d_water_vapour_mixing_ratio__dz = 0#Derivative(
+            d_water_vapour_mixing_ratio__dz = 0  # Derivative(
             #     self.water_vapour_mixing_ratio
             # )(z_above_reservoir)
             T = self.formulae.state_variable_triplet.T(
@@ -181,7 +179,10 @@ class Settings:
             self.number_of_bins + 1,
             endpoint=True,
         )
-        self.cloud_water_radius_range = [2 * si.um, 50 * si.um] # edited from 1um in 2012 example
+        self.cloud_water_radius_range = [
+            2 * si.um,
+            50 * si.um,
+        ]  # edited from 1um in 2012 example
         self.cloud_water_radius_range_igel = [2 * si.um, 25 * si.um]
         self.rain_water_radius_range = [50 * si.um, np.inf * si.um]
         self.rain_water_radius_range_igel = [25 * si.um, np.inf * si.um]
@@ -206,6 +207,7 @@ class Settings:
         nt = self.t_max / self.dt
         assert nt == int(nt)
         return int(nt)
+
 
 class Simulation:
     def __init__(self, settings, backend):
@@ -283,9 +285,8 @@ class Simulation:
         self.builder.add_dynamic(displacement)
         self.attributes = self.builder.particulator.environment.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
-            spectral_discretisation=spectral_sampling.AlphaSampling(
+            spectral_discretisation=spectral_sampling.ConstantMultiplicity(
                 spectrum=settings.wet_radius_spectrum_per_mass_of_dry_air,
-                alpha=settings.alpha,
             ),
             kappa=settings.kappa,
             collisions_only=not settings.enable_condensation,
@@ -385,7 +386,6 @@ class Simulation:
                 self.output_products[k] = np.zeros(
                     (self.mesh.grid[-1], self.number_of_bins, number_of_time_sections)
                 )
-                
 
     @staticmethod
     def add_collision_dynamic(builder, settings, _):
