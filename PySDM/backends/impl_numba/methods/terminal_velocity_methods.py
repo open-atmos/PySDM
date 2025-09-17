@@ -20,7 +20,7 @@ class TerminalVelocityMethods(BackendMethods):
                     r_id = int(factor * radius[i])
                     r_rest = ((factor * radius[i]) % 1) / factor
                     output[i] = b[r_id] + r_rest * c[r_id]
-                elif radius == 0:
+                elif radius[i] == 0:
                     output[i] = 0
 
         return body
@@ -123,12 +123,5 @@ class TerminalVelocityMethods(BackendMethods):
                     )
                     prefactor = stokes_prefactor(radius, dynamic_viscosity)
                     values[i] = v_base_term(prefactor, radius)
-                    print(
-                        dynamic_viscosity,
-                        signed_water_mass[i],
-                        radius,
-                        prefactor,
-                        values[i],
-                    )
 
         return body
