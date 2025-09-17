@@ -947,13 +947,12 @@
     "title": "A physically constrained classical description of the homogeneous nucleation of ice in water",
     "label": "Koop and Murray 2016 (J. Chem. Phys. 145)"
   },
-  "https://doi.org/10.5194/gmd-16-6211-2023": {
-    "title": "Overcoming computational challenges to realize meter- to submeter-scale resolution in cloud simulations using the super-droplet method",
-    "label": "Matsushima et al. 2023 (Geosci. Model Dev. 16)",
+  "https://doi.org/10.1175/JAS-D-21-0275.1": {
     "usages": [
-      "PySDM/initialisation/sampling/spectral_sampling.py",
-      "examples/PySDM_examples/Matsushima_et_al_2023/figure_1.ipynb",
-      "examples/PySDM_examples/Matsushima_et_al_2023/__init__.py"
-    ]
+      "examples/Hill_et_al_2023/__init__.py",
+      "examples/Hill_et_al_2023/figs_1_2_4.ipynb"
+    ],
+    "title": "Toward a Numerical Benchmark for Warm Rain Processes",
+    "label": "Hill et al. 2023 (JAS 80)"
   }
 }
