@@ -6,8 +6,7 @@ from PySDM.physics import convert_to, si
 
 
 def plot(
-    var, qlabel, fname, output, vmin=None, vmax=None, cmin=None, cmax=None, line=None,
-    ax2_xlims = (None,None)
+    var, qlabel, fname, output, vmin=None, vmax=None, cmin=None, cmax=None, line=None
 ):
     line = line or {15: ":", 20: "--", 25: "-", 30: "-."}
     dt = output["t"][1] - output["t"][0]
