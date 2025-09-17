@@ -77,12 +77,7 @@ To install PySDM using ``pip``, use: ``pip install PySDM``
 (or ``pip install git+https://github.com/open-atmos/PySDM.git`` to get updates
 beyond the latest release).
 
-Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. Dependencies of PySDM are available at the following conda channels:
-- numba: [numba](https://anaconda.org/numba/numba)
-- conda-forge: [pyevtk](https://anaconda.org/conda-forge/pyevtk), [pint](https://anaconda.org/conda-forge/pint) and []()
-- fyplus: [ThrustRTC](https://anaconda.org/fyplus/thrustrtc), [CURandRTC](https://anaconda.org/fyplus/curandrtc)
-- bjodah: [chempy](https://anaconda.org/bjodah/chempy)
-- nvidia: [cudatoolkit](https://anaconda.org/nvidia/cudatoolkit)
+Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. 
 
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies can be installed with ``pip -e .[tests]``.
@@ -130,7 +125,7 @@ the license of the contributed code must be compatible with GPL v3.
 Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
 the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
 The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html)
-and [Pylint](https://pylint.org), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
+and [Pylint](https://pylint.readthedocs.io/en/stable/), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
 code analysis (which are all part of the CI workflows).
 
 We also use [pre-commit hooks](https://pre-commit.com). 

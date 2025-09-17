@@ -1,7 +1,6 @@
 """basic water vapor deposition on ice test"""
 
 from typing import Iterable
-from functools import lru_cache
 
 import numpy as np
 from matplotlib import pyplot
@@ -47,24 +46,7 @@ DIFFUSION_COORDINATES = ("WaterMass", "WaterMassLogarithm")
 DIFFUSION_ICE_CAPACITIES = ("Spherical", "Columnar")
 COMMON = {
     "products": (IceWaterContent(),),
-    "formulae": {
-        f"{diffusion_coordinate}-{diffusion_ice_capacity}": Formulae(
-            particle_shape_and_density="MixedPhaseSpheres",
-            diffusion_coordinate=diffusion_coordinate,
-            diffusion_ice_capacity=diffusion_ice_capacity,
-        )
-        for diffusion_coordinate in DIFFUSION_COORDINATES
-        for diffusion_ice_capacity in DIFFUSION_ICE_CAPACITIES
-    },
 }
-
-
-@lru_cache
-def backend(diffusion_coordinate: str, diffusion_ice_capacity: str):
-    return CPU(
-        formulae=COMMON["formulae"][f"{diffusion_coordinate}-{diffusion_ice_capacity}"],
-        override_jit_flags={"parallel": False},
-    )
 
 
 def make_particulator(
@@ -85,7 +67,14 @@ def make_particulator(
     builder = Builder(
         n_sd=len(signed_water_masses),
         environment=MoistBox(dt=dt, dv=1 * si.m**3),
-        backend=backend(diffusion_coordinate, diffusion_ice_capacity),
+        backend=CPU(
+            override_jit_flags={"parallel": False},
+            formulae=Formulae(
+                particle_shape_and_density="MixedPhaseSpheres",
+                diffusion_coordinate=diffusion_coordinate,
+                diffusion_ice_capacity=diffusion_ice_capacity,
+            ),
+        ),
     )
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(VapourDepositionOnIce(adaptive=adaptive))
