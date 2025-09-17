@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
-from PySDM import Formulae
+from PySDM import Formulae, physics
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics import constants_defaults
 
@@ -113,3 +113,18 @@ class TestTrivia:
 
         # assert
         assert temperature_in_kelvin == temperature_in_celsius + 273.15
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "bolin_number, dm_dt_over_m, expected_tau",
+        ((1, 2, 0.5), (2, 1, 0.5), (2, 2, 0.25)),
+    )
+    def test_tau(bolin_number, dm_dt_over_m, expected_tau):
+        # arrange
+        sut = physics.trivia.Trivia.tau
+
+        # act
+        value = sut(Bo=bolin_number, dm_dt_over_m=dm_dt_over_m)
+
+        # assert
+        np.testing.assert_almost_equal(actual=value, desired=expected_tau)
