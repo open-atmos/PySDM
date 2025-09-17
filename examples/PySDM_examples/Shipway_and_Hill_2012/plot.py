@@ -35,7 +35,6 @@ def plot(
     ax2 = fig.add_subplot(gs[:-1, 4:], sharey=ax1)
     ax2.set_xlabel(qlabel)
     # ax2.set_yticks([], minor=False)
-    ax2.set_xlim(ax2_xlims)
 
     last_t = 0
     for i, t in enumerate(output["t"]):

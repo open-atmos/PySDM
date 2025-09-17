@@ -7,7 +7,6 @@ from typing import Optional, Tuple
 
 import numpy as np
 from scipy import optimize
-from scipy.interpolate import interp1d
 
 default_cdf_range = (0.00001, 0.99999)
 
@@ -63,6 +62,12 @@ class DeterministicSpectralSampling(
         return x, y_float
 
 
+class Linear(DeterministicSpectralSampling):  # pylint: disable=too-few-public-methods
+    def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
+        grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
+        return self._sample(grid, self.spectrum)
+
+
 class Logarithmic(
     DeterministicSpectralSampling
 ):  # pylint: disable=too-few-public-methods
@@ -81,6 +86,28 @@ class Logarithmic(
         return self._sample(grid, self.spectrum)
 
 
+class ConstantMultiplicity(
+    DeterministicSpectralSampling
+):  # pylint: disable=too-few-public-methods
+    def __init__(self, spectrum, size_range=None):
+        super().__init__(spectrum, size_range)
+
+        self.cdf_range = (
+            spectrum.cumulative(self.size_range[0]),
+            spectrum.cumulative(self.size_range[1]),
+        )
+        assert 0 < self.cdf_range[0] < self.cdf_range[1]
+
+    def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
+        cdf_arg = np.linspace(self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1)
+        cdf_arg /= self.spectrum.norm_factor
+        percentiles = self.spectrum.percentiles(cdf_arg)
+
+        assert np.isfinite(percentiles).all()
+
+        return self._sample(percentiles, self.spectrum)
+
+
 class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
     def sample(self, n_sd, *, backend):
         n_elements = n_sd
@@ -92,98 +119,3 @@ class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
         dr = abs(self.size_range[1] - self.size_range[0]) / n_sd
         # TODO #1031 - should also handle error_threshold check
         return pdf_arg, dr * self.spectrum.size_distribution(pdf_arg)
-
-
-class AlphaSampling(
-    DeterministicSpectralSampling
-):  # pylint: disable=too-few-public-methods
-    """as in [Matsushima et al. 2023](https://doi.org/10.5194/gmd-16-6211-2023)"""
-
-    def __init__(self, spectrum, alpha, size_range=None, dist_0=None, dist_1=None):
-        super().__init__(spectrum, size_range)
-        self.alpha = alpha
-        if dist_0 is None:
-            dist_0 = self.spectrum
-        if dist_1 is None:
-
-            def dist_1_inv(y):
-                return (self.size_range[1] - self.size_range[0]) * y
-
-        else:
-            dist_1_inv = dist_1.percentiles
-        self.dist_0_cdf = dist_0.cdf
-        self.dist_1_inv = dist_1_inv
-
-    def sample(
-        self, n_sd, *, backend=None, xprime=None
-    ):  # pylint: disable=unused-argument
-
-        if xprime is None:
-            even_spec = np.linspace(
-                default_cdf_range[0], default_cdf_range[1], num=2 * n_sd + 3
-            )
-            x_prime = self.spectrum.percentiles(even_spec)
-        sd_cdf = self.dist_0_cdf(x_prime)
-
-        x_sd_cdf = (1 - self.alpha) * x_prime + self.alpha * self.dist_1_inv(sd_cdf)
-
-        inv_cdf = interp1d(sd_cdf, x_sd_cdf)
-
-        percent_values = self._find_percentiles(n_sd, backend)
-        percentiles = inv_cdf(percent_values)
-
-        return self._sample(percentiles, self.spectrum)
-
-    def _find_percentiles(self, n_sd, backend):
-        percent_values = np.linspace(
-            default_cdf_range[0], default_cdf_range[1], num=2 * n_sd + 1
-        )
-        return percent_values
-
-
-class AlphaSamplingPseudoRandom(
-    AlphaSampling
-):  # pylint: disable=too-few-public-methods
-    """Alpha sampling with pseudo-random values within deterministic percentile bins"""
-
-    def _find_percentiles(self, n_sd, backend):
-        num_elements = n_sd
-        storage = backend.Storage.empty(num_elements, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=num_elements)(storage)
-        u01 = storage.to_ndarray()
-
-        percent_values = np.linspace(
-            default_cdf_range[0], default_cdf_range[1], num=2 * n_sd + 1
-        )
-
-        for i in range(1, len(percent_values) - 1, 2):
-            percent_values[i] = percent_values[i - 1] + u01[i // 2] * (
-                percent_values[i + 1] - percent_values[i - 1]
-            )
-
-        return percent_values
-
-
-class AlphaSamplingRandom(AlphaSampling):  # pylint: disable=too-few-public-methods
-    """Alpha sampling with uniform random percentile bins"""
-
-    def _find_percentiles(self, n_sd, backend):
-        num_elements = 2 * n_sd + 1
-        storage = backend.Storage.empty(num_elements, dtype=float)
-        backend.Random(seed=backend.formulae.seed, size=num_elements)(storage)
-        u01 = storage.to_ndarray()
-
-        percent_values = np.sort(
-            default_cdf_range[0] + u01 * (default_cdf_range[1] - default_cdf_range[0])
-        )
-        return percent_values
-
-
-class ConstantMultiplicity(AlphaSampling):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range=None):
-        super().__init__(spectrum, 0, size_range)
-
-
-class Linear(AlphaSampling):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range=None):
-        super().__init__(spectrum, 1, size_range)
