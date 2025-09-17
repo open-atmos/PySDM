@@ -6,8 +6,7 @@ from PySDM.physics import convert_to, si
 
 
 def plot(
-    var, qlabel, fname, output, vmin=None, vmax=None, cmin=None, cmax=None, line=None,
-    ax2_xlims = (None,None)
+    var, qlabel, fname, output, vmin=None, vmax=None, cmin=None, cmax=None, line=None
 ):
     line = line or {15: ":", 20: "--", 25: "-", 30: "-."}
     dt = output["t"][1] - output["t"][0]
@@ -36,7 +35,6 @@ def plot(
     ax2 = fig.add_subplot(gs[:-1, 4:], sharey=ax1)
     ax2.set_xlabel(qlabel)
     # ax2.set_yticks([], minor=False)
-    ax2.set_xlim(ax2_xlims)
 
     last_t = 0
     for i, t in enumerate(output["t"]):
