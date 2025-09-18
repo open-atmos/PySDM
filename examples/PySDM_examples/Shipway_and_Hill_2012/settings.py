@@ -50,6 +50,9 @@ class Settings:
         save_spec_and_attr_times=(),
         collision_kernel=None,
         old_buggy_density_formula=False,
+        cloud_water_radius_range=(1 * si.um, 50 * si.um),
+        rain_water_radius_range=(50 * si.um, np.inf),
+        ignore_moisture_profile_in_density_calc=False,
     ):
         self.formulae = formulae or Formulae()
         self.n_sd_per_gridbox = n_sd_per_gridbox
@@ -112,9 +115,11 @@ class Settings:
             water_vapour_mixing_ratio = self.water_vapour_mixing_ratio(
                 z_above_reservoir
             )
-            d_water_vapour_mixing_ratio__dz = Derivative(
-                self.water_vapour_mixing_ratio
-            )(z_above_reservoir)
+            d_water_vapour_mixing_ratio__dz = (
+                0
+                if ignore_moisture_profile_in_density_calc
+                else Derivative(self.water_vapour_mixing_ratio)(z_above_reservoir)
+            )
             T = self.formulae.state_variable_triplet.T(
                 rhod[0], self.thd(z_above_reservoir)
             )
@@ -164,10 +169,8 @@ class Settings:
             self.number_of_bins + 1,
             endpoint=True,
         )
-        self.cloud_water_radius_range = [1 * si.um, 50 * si.um]
-        self.cloud_water_radius_range_igel = [1 * si.um, 25 * si.um]
-        self.rain_water_radius_range = [50 * si.um, np.inf * si.um]
-        self.rain_water_radius_range_igel = [25 * si.um, np.inf * si.um]
+        self.cloud_water_radius_range = cloud_water_radius_range
+        self.rain_water_radius_range = rain_water_radius_range
         self.save_spec_and_attr_times = save_spec_and_attr_times
 
     @property
