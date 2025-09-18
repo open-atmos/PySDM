@@ -949,8 +949,8 @@
   },
   "https://doi.org/10.1175/JAS-D-21-0275.1": {
     "usages": [
-      "examples/Hill_et_al_2023/__init__.py",
-      "examples/Hill_et_al_2023/figs_1_2_4.ipynb"
+      "examples/PySDM_examples/Hill_et_al_2023/__init__.py",
+      "examples/PySDM_examples/Hill_et_al_2023/figs_1_2_4.ipynb"
     ],
     "title": "Toward a Numerical Benchmark for Warm Rain Processes",
     "label": "Hill et al. 2023 (JAS 80)"
