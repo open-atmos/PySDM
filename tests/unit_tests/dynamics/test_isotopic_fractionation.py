@@ -25,9 +25,6 @@ DUMMY_ATTRIBUTES = {
     )
 }
 
-# TODO
-R_SMOW = Formulae().constants.VSMOW_R_2H
-
 
 class TestIsotopicFractionation:
     @staticmethod
@@ -143,16 +140,16 @@ class TestIsotopicFractionation:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "RH, R_rain, sign_of_dR_vap, sign_of_dR_rain",
+        "RH, delta_rain, sign_of_dR_vap, sign_of_dR_rain",
         (
-            (0.5, 0.86 * R_SMOW, -1, 1),
-            (0.5, 0.9 * R_SMOW, 1, 1),
-            (0.5, 0.98 * R_SMOW, 1, -1),
+            (0.5, 0.86 - 1, -1, 1),
+            (0.5, 0.9 - 1, 1, 1),
+            (0.5, 0.98 - 1, 1, -1),
         ),
     )
     def test_scenario_from_gedzelman_fig_2_for_single_superdroplet_and_single_isotope(
         RH,
-        R_rain,
+        delta_rain,
         sign_of_dR_vap,
         sign_of_dR_rain,
         backend_class,
@@ -163,28 +160,32 @@ class TestIsotopicFractionation:
         const = formulae.constants
 
         multiplicity = np.ones(1)
-        m_t = formulae.trivia.volume(radius=1 * si.mm) * const.rho_w
-
+        m_t = 1 * si.ng
         cell_volume = 1 * si.m**3
         mass_dry_air = 1 * si.kg
         d_mixing_ratio_env = 0.01 * si.g / si.kg
         temperature = formulae.trivia.C2K(10) * si.K
-        R_vap = formulae.trivia.isotopic_delta_2_ratio(-200 * PER_MILLE, R_SMOW)
+        R_vap = formulae.trivia.isotopic_delta_2_ratio(
+            -200 * PER_MILLE, const.VSMOW_R_2H
+        )
 
         e = RH * formulae.saturation_vapour_pressure.pvs_water(temperature)
         n_vap_total = e * cell_volume / const.R_str / temperature
         n_vap_heavy = n_vap_total * R_vap / (1 + R_vap)
         mass_2H_vap = n_vap_heavy * const.M_2H
-        r_v = mass_2H_vap / mass_dry_air
 
         attributes = DUMMY_ATTRIBUTES.copy()
-        attributes["moles_2H"] = (
-            m_t / (1 + const.M_1H / (R_rain * const.M_2H)) / const.M_2H
+        attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
+            delta=delta_rain,
+            mass_total=m_t,
+            molar_mass_heavy_molecule=const.M_2H_1H_16O,
+            R_STD=const.VSMOW_R_2H,
+            light_atoms_per_light_molecule=2,
         )
         for isotope in HEAVY_ISOTOPES:
             if isotope != "2H":
                 attributes[f"moles_{isotope}"] = 0
-        attributes["signed water mass"] = 1 * si.ng
+        attributes["signed water mass"] = m_t
         attributes["multiplicity"] = multiplicity
 
         builder = Builder(
@@ -198,14 +199,11 @@ class TestIsotopicFractionation:
         particulator = builder.build(attributes=attributes, products=())
         particulator.environment["RH"] = RH
         particulator.environment["dry_air_density"] = mass_dry_air / cell_volume
-        particulator.environment["mixing_ratio_2H"] = r_v
+        particulator.environment["mixing_ratio_2H"] = mass_2H_vap / mass_dry_air
 
-        # sanity check
-        assert (
-            formulae.trivia.isotopic_delta_2_ratio(
-                particulator.attributes["delta_2H"][0], R_SMOW
-            )
-            == R_rain
+        # sanity check for initial condition
+        np.testing.assert_approx_equal(
+            particulator.attributes["delta_2H"][0], delta_rain, significant=3
         )
 
         # act
@@ -233,12 +231,15 @@ class TestIsotopicFractionation:
         )  # or old?
         new_n_light_vap = new_n_total_vap - new_n_heavy_vap
         new_R_vap = new_n_heavy_vap / new_n_light_vap
-        new_R_liq = formulae.trivia.isotopic_delta_2_ratio(new_delta_2H, R_SMOW)
+        new_R_liq = formulae.trivia.isotopic_delta_2_ratio(
+            new_delta_2H, const.VSMOW_R_2H
+        )
         #
         dR_vap = new_R_vap - R_vap
-        dR_rain = new_R_liq - R_rain
-        print(dR_rain, dR_vap)
-        assert False
+        dR_rain = new_R_liq - formulae.trivia.isotopic_delta_2_ratio(
+            delta_rain, const.VSMOW_R_2H
+        )
+
         # assert
         assert np.sign(dR_vap) == sign_of_dR_vap
         assert np.sign(dR_rain) == sign_of_dR_rain
