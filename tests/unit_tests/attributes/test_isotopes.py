@@ -156,3 +156,39 @@ class TestIsotopes:
 
         # assert
         assert value == expected_tau
+
+    @staticmethod
+    def test_moles(
+        backend_class,
+        m_t=1 * si.ng,
+    ):
+        # arrange
+        formulae = Formulae()
+
+        from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
+        from PySDM import Builder
+        from PySDM.environments import Box
+
+        attributes = {
+            "multiplicity": np.asarray([0]),
+            "signed water mass": m_t,
+        }
+        for isotope in HEAVY_ISOTOPES:
+            # if isotope != "2H":
+            attributes[f"moles_{isotope}"] = 44
+
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(formulae=formulae),
+            environment=Box(dv=np.nan, dt=-1 * si.s),
+        )
+        builder.request_attribute("moles light water")
+        builder.request_attribute("moles_16O")
+        particulator = builder.build(attributes=attributes, products=())
+
+        # sanity check for initial condition
+        np.testing.assert_approx_equal(
+            particulator.attributes["moles light water"][0],
+            particulator.attributes["moles_16O"][0],
+            significant=10,
+        )
