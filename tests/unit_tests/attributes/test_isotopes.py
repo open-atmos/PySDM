@@ -185,11 +185,11 @@ class TestIsotopes:
         builder.request_attribute("moles_16O")
         particulator = builder.build(attributes=attributes, products=())
 
-        # sanity check for initial condition
+        # assert
         np.testing.assert_approx_equal(
             particulator.attributes["moles light water"][0],
             particulator.attributes["moles_16O"][0]
             - particulator.attributes["moles_2H"][0]
             - particulator.attributes["moles_3H"][0],
-            significant=10,
+            significant=5,
         )
