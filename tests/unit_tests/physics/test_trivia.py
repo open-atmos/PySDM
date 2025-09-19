@@ -116,7 +116,7 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize("delta", (0.86 - 1, 0.9 - 1, 0.98 - 1))
-    def test_moles_heavy_atom(
+    def test_moles_2H_atom(
         delta,
         m_t=1 * si.ng,
     ):
@@ -126,25 +126,21 @@ class TestTrivia:
 
         from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
-        attributes = {
-            "multiplicity": np.asarray([0]),
-            "signed water mass": m_t,
-            "moles_2H": formulae.trivia.moles_heavy_atom(
-                delta=delta,
-                mass_total=m_t,
-                molar_mass_heavy_molecule=const.M_2H_1H_16O,
-                R_STD=const.VSMOW_R_2H,
-                light_atoms_per_light_molecule=2,
-            ),
-        }
-        for isotope in HEAVY_ISOTOPES:
-            if isotope != "2H":
-                attributes[f"moles_{isotope}"] = 0
-        attributes["moles light water"] = (
-            attributes["signed water mass"] / const.M_1H2_16O
+        signed_water_mass = m_t
+        moles_2H = formulae.trivia.moles_heavy_atom(
+            delta=delta,
+            mass_total=signed_water_mass,
+            molar_mass_heavy_molecule=const.M_2H_1H_16O,
+            R_STD=const.VSMOW_R_2H,
         )
-        ratio = attributes["moles_2H"] / attributes["moles light water"]
-        sut = formulae.trivia.isotopic_ratio_2_delta(ratio, const.VSMOW_R_2H)
+        moles_light_water = (
+            signed_water_mass - const.M_2H_1H_16O * moles_2H
+        ) / const.M_1H2_16O
+
+        # act
+        sut = formulae.trivia.isotopic_ratio_2_delta(
+            ratio=moles_2H / moles_light_water, reference_ratio=const.VSMOW_R_2H
+        )
 
         # assert
-        np.testing.assert_approx_equal(actual=sut, desired=delta, significant=10)
+        np.testing.assert_approx_equal(actual=sut, desired=delta, significant=5)
