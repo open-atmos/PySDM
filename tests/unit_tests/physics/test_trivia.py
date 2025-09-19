@@ -5,7 +5,7 @@ from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics import constants_defaults
+from PySDM.physics import constants_defaults, si
 
 
 class TestTrivia:
@@ -113,3 +113,48 @@ class TestTrivia:
 
         # assert
         assert temperature_in_kelvin == temperature_in_celsius + 273.15
+
+    @staticmethod
+    @pytest.mark.parametrize("delta", (0.86 - 1, 0.9 - 1, 0.98 - 1))
+    def test_moles_heavy_atom(
+        backend_class,
+        delta,
+        m_t=1 * si.ng,
+    ):
+        # arrange
+        formulae = Formulae()
+        const = formulae.constants
+
+        from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
+        from PySDM import Builder
+        from PySDM.environments import Box
+
+        attributes = {
+            "multiplicity": np.asarray([0]),
+            "signed water mass": m_t,
+            "moles_2H": formulae.trivia.moles_heavy_atom(
+                delta=delta,
+                mass_total=m_t,
+                molar_mass_heavy_molecule=const.M_2H_1H_16O,
+                R_STD=const.VSMOW_R_2H,
+                light_atoms_per_light_molecule=2,
+            ),
+        }
+        for isotope in HEAVY_ISOTOPES:
+            if isotope != "2H":
+                attributes[f"moles_{isotope}"] = 0
+
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(formulae=formulae),
+            environment=Box(dv=np.nan, dt=-1 * si.s),
+        )
+        builder.request_attribute("delta_2H")
+        particulator = builder.build(attributes=attributes, products=())
+        # ratio = moles_2H /
+        # formulae.trivia.isotopic_delta_2_ratio(ratio, const.VSMOW_R_2H)
+
+        # sanity check for initial condition
+        np.testing.assert_approx_equal(
+            particulator.attributes["delta_2H"][0], delta, significant=10
+        )
