@@ -174,7 +174,6 @@ class TestIsotopes:
             "signed water mass": m_t,
         }
         for isotope in HEAVY_ISOTOPES:
-            # if isotope != "2H":
             attributes[f"moles_{isotope}"] = 44
 
         builder = Builder(
@@ -189,6 +188,8 @@ class TestIsotopes:
         # sanity check for initial condition
         np.testing.assert_approx_equal(
             particulator.attributes["moles light water"][0],
-            particulator.attributes["moles_16O"][0],
+            particulator.attributes["moles_16O"][0]
+            - particulator.attributes["moles_2H"][0]
+            - particulator.attributes["moles_3H"][0],
             significant=10,
         )

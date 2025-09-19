@@ -81,8 +81,8 @@ class Moles16O(Helper):
             builder=builder,
             name="moles_16O",
             attrs_to_multiplier={
-                builder.get_attribute("moles_2H"): 0.5,
-                builder.get_attribute("moles_3H"): 0.5,
+                builder.get_attribute("moles_2H"): 1.0,
+                builder.get_attribute("moles_3H"): 1.0,
                 builder.get_attribute("moles light water"): 1.0,
             },
         )
