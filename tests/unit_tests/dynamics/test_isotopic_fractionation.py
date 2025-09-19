@@ -171,7 +171,9 @@ class TestIsotopicFractionation:
 
         e = RH * formulae.saturation_vapour_pressure.pvs_water(temperature)
         n_vap_total = e * cell_volume / const.R_str / temperature
-        n_vap_heavy = n_vap_total * R_vap / (1 + R_vap)
+        n_vap_heavy = n_vap_total * formulae.trivia.mixing_ratio_to_specific_content(
+            R_vap
+        )
         mass_2H_vap = n_vap_heavy * const.M_2H
 
         attributes = DUMMY_ATTRIBUTES.copy()
@@ -180,7 +182,6 @@ class TestIsotopicFractionation:
             mass_total=m_t,
             molar_mass_heavy_molecule=const.M_2H_1H_16O,
             R_STD=const.VSMOW_R_2H,
-            light_atoms_per_light_molecule=2,
         )
         for isotope in HEAVY_ISOTOPES:
             if isotope != "2H":
@@ -203,7 +204,7 @@ class TestIsotopicFractionation:
 
         # sanity check for initial condition
         np.testing.assert_approx_equal(
-            particulator.attributes["delta_2H"][0], delta_rain, significant=3
+            particulator.attributes["delta_2H"][0], delta_rain, significant=5
         )
 
         # act
