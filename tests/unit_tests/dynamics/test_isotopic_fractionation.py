@@ -208,42 +208,19 @@ class TestIsotopicFractionation:
         )
 
         # act
-
         droplet_dm = -d_mixing_ratio_env * mass_dry_air / multiplicity
         particulator.attributes["diffusional growth mass change"].data[:] = droplet_dm
-
-        print(particulator.environment["mixing_ratio_2H"][0])
-        print(particulator.attributes["delta_2H"][0])
-
         particulator.dynamics["IsotopicFractionation"]()
 
-        print(particulator.environment["mixing_ratio_2H"][0])
-        print(particulator.attributes["delta_2H"][0])
-
-        # new_n_liq = dn_liq_dt + n_liq
-        new_r2H_v = particulator.environment["mixing_ratio_2H"][0]
-        new_delta_2H = particulator.attributes["delta_2H"][0]
-        # new_n_2H_liq = particulator.attributes["moles_2H"][0]
-        #
-        new_n_heavy_vap = new_r2H_v * mass_dry_air / const.M_2H
-        molar_mass_vap_new = np.nan  # f(mixing_ratio_total, mixing_ratio_2H)
-        new_n_total_vap = (
-            n_vap_total + d_mixing_ratio_env * mass_dry_air / molar_mass_vap_new
-        )  # or old?
-        new_n_light_vap = new_n_total_vap - new_n_heavy_vap
-        new_R_vap = new_n_heavy_vap / new_n_light_vap
-        new_R_liq = formulae.trivia.isotopic_delta_2_ratio(
-            new_delta_2H, const.VSMOW_R_2H
-        )
-        #
-        dR_vap = new_R_vap - R_vap
-        dR_rain = new_R_liq - formulae.trivia.isotopic_delta_2_ratio(
-            delta_rain, const.VSMOW_R_2H
-        )
-
         # assert
-        assert np.sign(dR_vap) == sign_of_dR_vap
-        assert np.sign(dR_rain) == sign_of_dR_rain
+        assert (
+            np.sign(particulator.environment["mixing_ratio_2H"][0] - R_vap)
+            == sign_of_dR_vap
+        )
+        assert (
+            np.sign(particulator.attributes["delta_2H"][0] - delta_rain)
+            == sign_of_dR_rain
+        )
 
     # TODO
     @staticmethod
