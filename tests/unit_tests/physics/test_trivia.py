@@ -132,6 +132,7 @@ class TestTrivia:
             mass_total=signed_water_mass,
             molar_mass_heavy_molecule=const.M_2H_1H_16O,
             R_STD=const.VSMOW_R_2H,
+            light_atoms_per_light_molecule=2,
         )
         moles_light_water = (
             signed_water_mass - const.M_2H_1H_16O * moles_2H
