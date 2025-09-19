@@ -165,9 +165,7 @@ class TestIsotopicFractionation:
         mass_dry_air = 1 * si.kg
         d_mixing_ratio_env = 0.01 * si.g / si.kg
         temperature = formulae.trivia.C2K(10) * si.K
-        R_vap = formulae.trivia.isotopic_delta_2_ratio(
-            -200 * PER_MILLE, const.VSMOW_R_2H
-        )
+        R_vap = formulae.trivia.isotopic_delta_2_ratio(-200, const.VSMOW_R_2H)
 
         e = RH * formulae.saturation_vapour_pressure.pvs_water(temperature)
         n_vap_total = e * cell_volume / const.R_str / temperature
@@ -182,6 +180,7 @@ class TestIsotopicFractionation:
             mass_total=m_t,
             molar_mass_heavy_molecule=const.M_2H_1H_16O,
             R_STD=const.VSMOW_R_2H,
+            light_atoms_per_light_molecule=2,
         )
         for isotope in HEAVY_ISOTOPES:
             if isotope != "2H":
@@ -212,15 +211,12 @@ class TestIsotopicFractionation:
         particulator.attributes["diffusional growth mass change"].data[:] = droplet_dm
         particulator.dynamics["IsotopicFractionation"]()
 
+        new_R_vap = particulator.environment["mixing_ratio_2H"][0]
+        new_delta_rain = particulator.attributes["delta_2H"][0]
+
         # assert
-        assert (
-            np.sign(particulator.environment["mixing_ratio_2H"][0] - R_vap)
-            == sign_of_dR_vap
-        )
-        assert (
-            np.sign(particulator.attributes["delta_2H"][0] - delta_rain)
-            == sign_of_dR_rain
-        )
+        assert np.sign(new_R_vap - R_vap) == sign_of_dR_vap
+        assert np.sign(new_delta_rain - delta_rain) == sign_of_dR_rain
 
     # TODO
     @staticmethod

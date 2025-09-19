@@ -10,9 +10,15 @@ from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 class DeltaImpl(DerivedAttribute):
     def __init__(self, builder, *, heavy_isotope):
         assert heavy_isotope[:-1].isnumeric()
+        if heavy_isotope[-1] == "H":
+            light_isotope = "1H"
+        elif heavy_isotope[-1] == "O":
+            light_isotope = "16O"
+        else:
+            raise NotImplementedError()
 
         self.heavy_isotope = builder.get_attribute(f"moles_{heavy_isotope}")
-        self.light_isotope = builder.get_attribute(f"moles light water")
+        self.light_isotope = builder.get_attribute(f"moles_{light_isotope}")
         super().__init__(
             builder,
             name="delta_" + heavy_isotope,
