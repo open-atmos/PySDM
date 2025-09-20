@@ -293,7 +293,7 @@ jobs:
           python -m pip install pytest-timeout
           python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
 
-      - if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+      - if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
         run: |
           set -x
           mkdir -p $HOME/work/_temp/_github_home/figures
@@ -305,21 +305,21 @@ jobs:
           ls $HOME/work/_temp/_github_home/figures
 
       - name: animation movie upload
-        if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
           name: animation-movie-${{ matrix.platform }}
           if-no-files-found: error
           path: ~/work/_temp/_github_home/figures/*.gif
       - name: animation frame upload
-        if: ( ! startsWith(matrix.platform, 'windows-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
         uses: actions/upload-artifact@v4
         with:
           name: animation-frame-${{ matrix.platform }}
           if-no-files-found: error
           path: ~/work/_temp/_github_home/figures/*.pdf
       - name: tip release upload
-        if: github.ref == 'refs/heads/main' && ( startsWith(matrix.platform, 'ubuntu-') ) && matrix.test-suite == env.anim_test-suite && matrix.python-version == env.anim_python-version
+        if: github.ref == 'refs/heads/main' && ( startsWith(matrix.platform, 'ubuntu-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
