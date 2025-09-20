@@ -141,6 +141,7 @@ class Simulation:
             PySDM_products.AmbientWaterVapourMixingRatio(
                 name="water_vapour_mixing_ratio"
             ),
+            PySDM_products.LiquidWaterContent(name="LWC"),
         ]
         if settings.enable_condensation:
             self.products.extend(
