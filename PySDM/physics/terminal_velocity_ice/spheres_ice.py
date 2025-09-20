@@ -8,12 +8,12 @@ class IceSphere:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def v_base_term(radius, prefactor):
-        return prefactor * 2 * radius
+    def v_base_term(const, radius, prefactor):
+        return prefactor * const.TWO * radius
 
     @staticmethod
     def stokes_regime(const, radius, dynamic_viscosity):
-        return const.g_std * const.rho_i * radius / 9 / dynamic_viscosity
+        return const.g_std * const.rho_i * radius / const.NINE / dynamic_viscosity
 
     # TODO #1602 general functional relationship between reynolds number and drag coefficient
     @staticmethod

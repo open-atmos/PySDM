@@ -13,12 +13,12 @@ class TestTerminalVelocity:
             radius = 44 * si.um
 
             # act
-            velocity = terminal_velocity.rogers_yau.RogersYau.v_term(
+            velocity = terminal_velocity.RogersYau.v_term(
                 constants_defaults, radius=radius
             )
 
             # assert
-            assert velocity.check("[length] / [time]")
+            assert velocity.check("[length] / [time]")  # pylint: disable=no-member
 
     @staticmethod
     def test_unit_solid_spherical():
@@ -33,7 +33,7 @@ class TestTerminalVelocity:
                 constants_defaults, radius=radius, dynamic_viscosity=dynamic_viscocity
             )
             velocity = terminal_velocity_ice.IceSphere.v_base_term(
-                radius=radius, prefactor=prefactor
+                constants_defaults, radius=radius, prefactor=prefactor
             )
 
             # assert
