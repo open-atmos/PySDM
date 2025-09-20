@@ -78,7 +78,16 @@
                                 <a class="variable" href="#TerminalVelocity.radius">radius</a>
                         </li>
                         <li>
-                                <a class="variable" href="#TerminalVelocity.approximation">approximation</a>
+                                <a class="variable" href="#TerminalVelocity.signed_water_mass">signed_water_mass</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TerminalVelocity.cell_id">cell_id</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TerminalVelocity.approximation_liquid">approximation_liquid</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#TerminalVelocity.approximation_ice">approximation_ice</a>
                         </li>
                         <li>
                                 <a class="function" href="#TerminalVelocity.recalculate">recalculate</a>
@@ -124,15 +133,30 @@
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TerminalVelocity</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;radius&quot;</span><span class="p">)</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">]</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;terminal velocity&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_class</span><span class="p">(</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;terminal velocity&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_liquid</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_class</span><span class="p">(</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="p">)</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_ice</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_ice_class</span><span class="p">(</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="p">)</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_liquid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="c1"># TODO #1605 order of functions calls changes result. approximation_liquid will override</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="c1">#  approximation_ice when mixed-phase spheres shape active</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">():</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">approximation_ice</span><span class="p">(</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">],</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -158,15 +182,30 @@
 </span><span id="TerminalVelocity-14"><a href="#TerminalVelocity-14"><span class="linenos">14</span></a><span class="k">class</span><span class="w"> </span><span class="nc">TerminalVelocity</span><span class="p">(</span><span class="n">DerivedAttribute</span><span class="p">):</span>
 </span><span id="TerminalVelocity-15"><a href="#TerminalVelocity-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="TerminalVelocity-16"><a href="#TerminalVelocity-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;radius&quot;</span><span class="p">)</span>
-</span><span id="TerminalVelocity-17"><a href="#TerminalVelocity-17"><span class="linenos">17</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">]</span>
-</span><span id="TerminalVelocity-18"><a href="#TerminalVelocity-18"><span class="linenos">18</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;terminal velocity&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
-</span><span id="TerminalVelocity-19"><a href="#TerminalVelocity-19"><span class="linenos">19</span></a>
-</span><span id="TerminalVelocity-20"><a href="#TerminalVelocity-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_class</span><span class="p">(</span>
-</span><span id="TerminalVelocity-21"><a href="#TerminalVelocity-21"><span class="linenos">21</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="TerminalVelocity-22"><a href="#TerminalVelocity-22"><span class="linenos">22</span></a>        <span class="p">)</span>
-</span><span id="TerminalVelocity-23"><a href="#TerminalVelocity-23"><span class="linenos">23</span></a>
-</span><span id="TerminalVelocity-24"><a href="#TerminalVelocity-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="TerminalVelocity-25"><a href="#TerminalVelocity-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</span><span id="TerminalVelocity-17"><a href="#TerminalVelocity-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="TerminalVelocity-18"><a href="#TerminalVelocity-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
+</span><span id="TerminalVelocity-19"><a href="#TerminalVelocity-19"><span class="linenos">19</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
+</span><span id="TerminalVelocity-20"><a href="#TerminalVelocity-20"><span class="linenos">20</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;terminal velocity&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
+</span><span id="TerminalVelocity-21"><a href="#TerminalVelocity-21"><span class="linenos">21</span></a>
+</span><span id="TerminalVelocity-22"><a href="#TerminalVelocity-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_liquid</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_class</span><span class="p">(</span>
+</span><span id="TerminalVelocity-23"><a href="#TerminalVelocity-23"><span class="linenos">23</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="TerminalVelocity-24"><a href="#TerminalVelocity-24"><span class="linenos">24</span></a>        <span class="p">)</span>
+</span><span id="TerminalVelocity-25"><a href="#TerminalVelocity-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_ice</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_ice_class</span><span class="p">(</span>
+</span><span id="TerminalVelocity-26"><a href="#TerminalVelocity-26"><span class="linenos">26</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="TerminalVelocity-27"><a href="#TerminalVelocity-27"><span class="linenos">27</span></a>        <span class="p">)</span>
+</span><span id="TerminalVelocity-28"><a href="#TerminalVelocity-28"><span class="linenos">28</span></a>
+</span><span id="TerminalVelocity-29"><a href="#TerminalVelocity-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="TerminalVelocity-30"><a href="#TerminalVelocity-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_liquid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</span><span id="TerminalVelocity-31"><a href="#TerminalVelocity-31"><span class="linenos">31</span></a>        <span class="c1"># TODO #1605 order of functions calls changes result. approximation_liquid will override</span>
+</span><span id="TerminalVelocity-32"><a href="#TerminalVelocity-32"><span class="linenos">32</span></a>        <span class="c1">#  approximation_ice when mixed-phase spheres shape active</span>
+</span><span id="TerminalVelocity-33"><a href="#TerminalVelocity-33"><span class="linenos">33</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">():</span>
+</span><span id="TerminalVelocity-34"><a href="#TerminalVelocity-34"><span class="linenos">34</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">approximation_ice</span><span class="p">(</span>
+</span><span id="TerminalVelocity-35"><a href="#TerminalVelocity-35"><span class="linenos">35</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="TerminalVelocity-36"><a href="#TerminalVelocity-36"><span class="linenos">36</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="TerminalVelocity-37"><a href="#TerminalVelocity-37"><span class="linenos">37</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="TerminalVelocity-38"><a href="#TerminalVelocity-38"><span class="linenos">38</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
+</span><span id="TerminalVelocity-39"><a href="#TerminalVelocity-39"><span class="linenos">39</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">],</span>
+</span><span id="TerminalVelocity-40"><a href="#TerminalVelocity-40"><span class="linenos">40</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -184,12 +223,17 @@
     <a class="headerlink" href="#TerminalVelocity.__init__"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="TerminalVelocity.__init__-15"><a href="#TerminalVelocity.__init__-15"><span class="linenos">15</span></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 </span><span id="TerminalVelocity.__init__-16"><a href="#TerminalVelocity.__init__-16"><span class="linenos">16</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;radius&quot;</span><span class="p">)</span>
-</span><span id="TerminalVelocity.__init__-17"><a href="#TerminalVelocity.__init__-17"><span class="linenos">17</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">]</span>
-</span><span id="TerminalVelocity.__init__-18"><a href="#TerminalVelocity.__init__-18"><span class="linenos">18</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;terminal velocity&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
-</span><span id="TerminalVelocity.__init__-19"><a href="#TerminalVelocity.__init__-19"><span class="linenos">19</span></a>
-</span><span id="TerminalVelocity.__init__-20"><a href="#TerminalVelocity.__init__-20"><span class="linenos">20</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_class</span><span class="p">(</span>
-</span><span id="TerminalVelocity.__init__-21"><a href="#TerminalVelocity.__init__-21"><span class="linenos">21</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
-</span><span id="TerminalVelocity.__init__-22"><a href="#TerminalVelocity.__init__-22"><span class="linenos">22</span></a>        <span class="p">)</span>
+</span><span id="TerminalVelocity.__init__-17"><a href="#TerminalVelocity.__init__-17"><span class="linenos">17</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="TerminalVelocity.__init__-18"><a href="#TerminalVelocity.__init__-18"><span class="linenos">18</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s2">&quot;cell id&quot;</span><span class="p">)</span>
+</span><span id="TerminalVelocity.__init__-19"><a href="#TerminalVelocity.__init__-19"><span class="linenos">19</span></a>        <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="p">]</span>
+</span><span id="TerminalVelocity.__init__-20"><a href="#TerminalVelocity.__init__-20"><span class="linenos">20</span></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;terminal velocity&quot;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">dependencies</span><span class="p">)</span>
+</span><span id="TerminalVelocity.__init__-21"><a href="#TerminalVelocity.__init__-21"><span class="linenos">21</span></a>
+</span><span id="TerminalVelocity.__init__-22"><a href="#TerminalVelocity.__init__-22"><span class="linenos">22</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_liquid</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_class</span><span class="p">(</span>
+</span><span id="TerminalVelocity.__init__-23"><a href="#TerminalVelocity.__init__-23"><span class="linenos">23</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="TerminalVelocity.__init__-24"><a href="#TerminalVelocity.__init__-24"><span class="linenos">24</span></a>        <span class="p">)</span>
+</span><span id="TerminalVelocity.__init__-25"><a href="#TerminalVelocity.__init__-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_ice</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">terminal_velocity_ice_class</span><span class="p">(</span>
+</span><span id="TerminalVelocity.__init__-26"><a href="#TerminalVelocity.__init__-26"><span class="linenos">26</span></a>            <span class="n">builder</span><span class="o">.</span><span class="n">particulator</span>
+</span><span id="TerminalVelocity.__init__-27"><a href="#TerminalVelocity.__init__-27"><span class="linenos">27</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -207,13 +251,46 @@
     
 
                             </div>
-                            <div id="TerminalVelocity.approximation" class="classattr">
+                            <div id="TerminalVelocity.signed_water_mass" class="classattr">
                                 <div class="attr variable">
-            <span class="name">approximation</span>
+            <span class="name">signed_water_mass</span>
 
         
     </div>
-    <a class="headerlink" href="#TerminalVelocity.approximation"></a>
+    <a class="headerlink" href="#TerminalVelocity.signed_water_mass"></a>
+    
+    
+
+                            </div>
+                            <div id="TerminalVelocity.cell_id" class="classattr">
+                                <div class="attr variable">
+            <span class="name">cell_id</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TerminalVelocity.cell_id"></a>
+    
+    
+
+                            </div>
+                            <div id="TerminalVelocity.approximation_liquid" class="classattr">
+                                <div class="attr variable">
+            <span class="name">approximation_liquid</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TerminalVelocity.approximation_liquid"></a>
+    
+    
+
+                            </div>
+                            <div id="TerminalVelocity.approximation_ice" class="classattr">
+                                <div class="attr variable">
+            <span class="name">approximation_ice</span>
+
+        
+    </div>
+    <a class="headerlink" href="#TerminalVelocity.approximation_ice"></a>
     
     
 
@@ -229,8 +306,18 @@
 
     </div>
     <a class="headerlink" href="#TerminalVelocity.recalculate"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TerminalVelocity.recalculate-24"><a href="#TerminalVelocity.recalculate-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="TerminalVelocity.recalculate-25"><a href="#TerminalVelocity.recalculate-25"><span class="linenos">25</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TerminalVelocity.recalculate-29"><a href="#TerminalVelocity.recalculate-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="TerminalVelocity.recalculate-30"><a href="#TerminalVelocity.recalculate-30"><span class="linenos">30</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">approximation_liquid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+</span><span id="TerminalVelocity.recalculate-31"><a href="#TerminalVelocity.recalculate-31"><span class="linenos">31</span></a>        <span class="c1"># TODO #1605 order of functions calls changes result. approximation_liquid will override</span>
+</span><span id="TerminalVelocity.recalculate-32"><a href="#TerminalVelocity.recalculate-32"><span class="linenos">32</span></a>        <span class="c1">#  approximation_ice when mixed-phase spheres shape active</span>
+</span><span id="TerminalVelocity.recalculate-33"><a href="#TerminalVelocity.recalculate-33"><span class="linenos">33</span></a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae</span><span class="o">.</span><span class="n">particle_shape_and_density</span><span class="o">.</span><span class="n">supports_mixed_phase</span><span class="p">():</span>
+</span><span id="TerminalVelocity.recalculate-34"><a href="#TerminalVelocity.recalculate-34"><span class="linenos">34</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">approximation_ice</span><span class="p">(</span>
+</span><span id="TerminalVelocity.recalculate-35"><a href="#TerminalVelocity.recalculate-35"><span class="linenos">35</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="TerminalVelocity.recalculate-36"><a href="#TerminalVelocity.recalculate-36"><span class="linenos">36</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="TerminalVelocity.recalculate-37"><a href="#TerminalVelocity.recalculate-37"><span class="linenos">37</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">cell_id</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span>
+</span><span id="TerminalVelocity.recalculate-38"><a href="#TerminalVelocity.recalculate-38"><span class="linenos">38</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
+</span><span id="TerminalVelocity.recalculate-39"><a href="#TerminalVelocity.recalculate-39"><span class="linenos">39</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">particulator</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;p&quot;</span><span class="p">],</span>
+</span><span id="TerminalVelocity.recalculate-40"><a href="#TerminalVelocity.recalculate-40"><span class="linenos">40</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 

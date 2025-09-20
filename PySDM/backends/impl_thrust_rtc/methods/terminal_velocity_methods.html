@@ -75,13 +75,13 @@
                                 <a class="function" href="#TerminalVelocityMethods.linear_collection_efficiency">linear_collection_efficiency</a>
                         </li>
                         <li>
-                                <a class="function" href="#TerminalVelocityMethods.interpolation">interpolation</a>
+                                <a class="function" href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation">gunn_and_kinzer_interpolation</a>
                         </li>
                         <li>
                                 <a class="function" href="#TerminalVelocityMethods.power_series">power_series</a>
                         </li>
                         <li>
-                                <a class="function" href="#TerminalVelocityMethods.terminal_velocity">terminal_velocity</a>
+                                <a class="function" href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity">rogers_and_yau_terminal_velocity</a>
                         </li>
                 </ul>
 
@@ -180,7 +180,7 @@
 </span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>        <span class="p">)</span>
 </span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>
 </span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__interpolation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__gunn_and_kinzer_interpolation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>        <span class="c1"># TODO #599 r&lt;0</span>
 </span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>            <span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">,</span> <span class="s2">&quot;factor&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">),</span>
@@ -237,9 +237,9 @@
 </span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a>        <span class="p">)</span>
 </span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a>
 </span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">gunn_and_kinzer_interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 </span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="n">factor_device</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__interpolation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__gunn_and_kinzer_interpolation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
 </span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>            <span class="nb">len</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span> <span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">radius</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">factor_device</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>        <span class="p">)</span>
 </span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>
@@ -268,7 +268,7 @@
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="p">)</span>
 </span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>
 </span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__terminal_velocity_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__rogers_and_yau_terminal_velocity_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">),</span>
 </span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -282,8 +282,10 @@
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>        <span class="p">)</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>
 </span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">terminal_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__terminal_velocity_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">])</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">rogers_and_yau_terminal_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__rogers_and_yau_terminal_velocity_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>            <span class="n">n</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">]</span>
+</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -357,7 +359,7 @@
 </span><span id="TerminalVelocityMethods-70"><a href="#TerminalVelocityMethods-70"><span class="linenos"> 70</span></a>        <span class="p">)</span>
 </span><span id="TerminalVelocityMethods-71"><a href="#TerminalVelocityMethods-71"><span class="linenos"> 71</span></a>
 </span><span id="TerminalVelocityMethods-72"><a href="#TerminalVelocityMethods-72"><span class="linenos"> 72</span></a>    <span class="nd">@cached_property</span>
-</span><span id="TerminalVelocityMethods-73"><a href="#TerminalVelocityMethods-73"><span class="linenos"> 73</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__interpolation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="TerminalVelocityMethods-73"><a href="#TerminalVelocityMethods-73"><span class="linenos"> 73</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__gunn_and_kinzer_interpolation_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="TerminalVelocityMethods-74"><a href="#TerminalVelocityMethods-74"><span class="linenos"> 74</span></a>        <span class="c1"># TODO #599 r&lt;0</span>
 </span><span id="TerminalVelocityMethods-75"><a href="#TerminalVelocityMethods-75"><span class="linenos"> 75</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="TerminalVelocityMethods-76"><a href="#TerminalVelocityMethods-76"><span class="linenos"> 76</span></a>            <span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">,</span> <span class="s2">&quot;factor&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">),</span>
@@ -414,9 +416,9 @@
 </span><span id="TerminalVelocityMethods-127"><a href="#TerminalVelocityMethods-127"><span class="linenos">127</span></a>        <span class="p">)</span>
 </span><span id="TerminalVelocityMethods-128"><a href="#TerminalVelocityMethods-128"><span class="linenos">128</span></a>
 </span><span id="TerminalVelocityMethods-129"><a href="#TerminalVelocityMethods-129"><span class="linenos">129</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="TerminalVelocityMethods-130"><a href="#TerminalVelocityMethods-130"><span class="linenos">130</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+</span><span id="TerminalVelocityMethods-130"><a href="#TerminalVelocityMethods-130"><span class="linenos">130</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">gunn_and_kinzer_interpolation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 </span><span id="TerminalVelocityMethods-131"><a href="#TerminalVelocityMethods-131"><span class="linenos">131</span></a>        <span class="n">factor_device</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">factor</span><span class="p">)</span>
-</span><span id="TerminalVelocityMethods-132"><a href="#TerminalVelocityMethods-132"><span class="linenos">132</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__interpolation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="TerminalVelocityMethods-132"><a href="#TerminalVelocityMethods-132"><span class="linenos">132</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__gunn_and_kinzer_interpolation_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
 </span><span id="TerminalVelocityMethods-133"><a href="#TerminalVelocityMethods-133"><span class="linenos">133</span></a>            <span class="nb">len</span><span class="p">(</span><span class="n">radius</span><span class="p">),</span> <span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">radius</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">factor_device</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 </span><span id="TerminalVelocityMethods-134"><a href="#TerminalVelocityMethods-134"><span class="linenos">134</span></a>        <span class="p">)</span>
 </span><span id="TerminalVelocityMethods-135"><a href="#TerminalVelocityMethods-135"><span class="linenos">135</span></a>
@@ -445,7 +447,7 @@
 </span><span id="TerminalVelocityMethods-158"><a href="#TerminalVelocityMethods-158"><span class="linenos">158</span></a>        <span class="p">)</span>
 </span><span id="TerminalVelocityMethods-159"><a href="#TerminalVelocityMethods-159"><span class="linenos">159</span></a>
 </span><span id="TerminalVelocityMethods-160"><a href="#TerminalVelocityMethods-160"><span class="linenos">160</span></a>    <span class="nd">@cached_property</span>
-</span><span id="TerminalVelocityMethods-161"><a href="#TerminalVelocityMethods-161"><span class="linenos">161</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__terminal_velocity_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="TerminalVelocityMethods-161"><a href="#TerminalVelocityMethods-161"><span class="linenos">161</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__rogers_and_yau_terminal_velocity_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 </span><span id="TerminalVelocityMethods-162"><a href="#TerminalVelocityMethods-162"><span class="linenos">162</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
 </span><span id="TerminalVelocityMethods-163"><a href="#TerminalVelocityMethods-163"><span class="linenos">163</span></a>            <span class="n">param_names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="s2">&quot;radius&quot;</span><span class="p">),</span>
 </span><span id="TerminalVelocityMethods-164"><a href="#TerminalVelocityMethods-164"><span class="linenos">164</span></a>            <span class="n">name_iter</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">,</span>
@@ -459,8 +461,10 @@
 </span><span id="TerminalVelocityMethods-172"><a href="#TerminalVelocityMethods-172"><span class="linenos">172</span></a>        <span class="p">)</span>
 </span><span id="TerminalVelocityMethods-173"><a href="#TerminalVelocityMethods-173"><span class="linenos">173</span></a>
 </span><span id="TerminalVelocityMethods-174"><a href="#TerminalVelocityMethods-174"><span class="linenos">174</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="TerminalVelocityMethods-175"><a href="#TerminalVelocityMethods-175"><span class="linenos">175</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">terminal_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-</span><span id="TerminalVelocityMethods-176"><a href="#TerminalVelocityMethods-176"><span class="linenos">176</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__terminal_velocity_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">])</span>
+</span><span id="TerminalVelocityMethods-175"><a href="#TerminalVelocityMethods-175"><span class="linenos">175</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">rogers_and_yau_terminal_velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+</span><span id="TerminalVelocityMethods-176"><a href="#TerminalVelocityMethods-176"><span class="linenos">176</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__rogers_and_yau_terminal_velocity_body</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="TerminalVelocityMethods-177"><a href="#TerminalVelocityMethods-177"><span class="linenos">177</span></a>            <span class="n">n</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="n">values</span><span class="p">,</span> <span class="n">radius</span><span class="p">]</span>
+</span><span id="TerminalVelocityMethods-178"><a href="#TerminalVelocityMethods-178"><span class="linenos">178</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -526,24 +530,24 @@
     
 
                             </div>
-                            <div id="TerminalVelocityMethods.interpolation" class="classattr">
-                                        <input id="TerminalVelocityMethods.interpolation-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="TerminalVelocityMethods.gunn_and_kinzer_interpolation" class="classattr">
+                                        <input id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">interpolation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
+        <span class="name">gunn_and_kinzer_interpolation</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="TerminalVelocityMethods.interpolation-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="TerminalVelocityMethods.gunn_and_kinzer_interpolation-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#TerminalVelocityMethods.interpolation"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TerminalVelocityMethods.interpolation-11"><a href="#TerminalVelocityMethods.interpolation-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="TerminalVelocityMethods.interpolation-12"><a href="#TerminalVelocityMethods.interpolation-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
-</span><span id="TerminalVelocityMethods.interpolation-13"><a href="#TerminalVelocityMethods.interpolation-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-</span><span id="TerminalVelocityMethods.interpolation-14"><a href="#TerminalVelocityMethods.interpolation-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="TerminalVelocityMethods.interpolation-15"><a href="#TerminalVelocityMethods.interpolation-15"><span class="linenos">15</span></a>            <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
-</span><span id="TerminalVelocityMethods.interpolation-16"><a href="#TerminalVelocityMethods.interpolation-16"><span class="linenos">16</span></a>                <span class="n">trtc</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
-</span><span id="TerminalVelocityMethods.interpolation-17"><a href="#TerminalVelocityMethods.interpolation-17"><span class="linenos">17</span></a>            <span class="k">return</span> <span class="n">result</span>
+    <a class="headerlink" href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-11"><a href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-12"><a href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
+</span><span id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-13"><a href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+</span><span id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-14"><a href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-15"><a href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation-15"><span class="linenos">15</span></a>            <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+</span><span id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-16"><a href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation-16"><span class="linenos">16</span></a>                <span class="n">trtc</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
+</span><span id="TerminalVelocityMethods.gunn_and_kinzer_interpolation-17"><a href="#TerminalVelocityMethods.gunn_and_kinzer_interpolation-17"><span class="linenos">17</span></a>            <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -574,24 +578,24 @@
     
 
                             </div>
-                            <div id="TerminalVelocityMethods.terminal_velocity" class="classattr">
-                                        <input id="TerminalVelocityMethods.terminal_velocity-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                            <div id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity" class="classattr">
+                                        <input id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">terminal_velocity</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
+        <span class="name">rogers_and_yau_terminal_velocity</span><span class="signature pdoc-code condensed">(<span class="param"><span class="o">*</span><span class="n">args</span>, </span><span class="param"><span class="o">**</span><span class="n">kwargs</span></span><span class="return-annotation">):</span></span>
 
-                <label class="view-source-button" for="TerminalVelocityMethods.terminal_velocity-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#TerminalVelocityMethods.terminal_velocity"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TerminalVelocityMethods.terminal_velocity-11"><a href="#TerminalVelocityMethods.terminal_velocity-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span id="TerminalVelocityMethods.terminal_velocity-12"><a href="#TerminalVelocityMethods.terminal_velocity-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
-</span><span id="TerminalVelocityMethods.terminal_velocity-13"><a href="#TerminalVelocityMethods.terminal_velocity-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-</span><span id="TerminalVelocityMethods.terminal_velocity-14"><a href="#TerminalVelocityMethods.terminal_velocity-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span id="TerminalVelocityMethods.terminal_velocity-15"><a href="#TerminalVelocityMethods.terminal_velocity-15"><span class="linenos">15</span></a>            <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
-</span><span id="TerminalVelocityMethods.terminal_velocity-16"><a href="#TerminalVelocityMethods.terminal_velocity-16"><span class="linenos">16</span></a>                <span class="n">trtc</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
-</span><span id="TerminalVelocityMethods.terminal_velocity-17"><a href="#TerminalVelocityMethods.terminal_velocity-17"><span class="linenos">17</span></a>            <span class="k">return</span> <span class="n">result</span>
+    <a class="headerlink" href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-11"><a href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity-11"><span class="linenos">11</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-12"><a href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity-12"><span class="linenos">12</span></a>            <span class="k">if</span> <span class="n">debug_print</span><span class="p">:</span>
+</span><span id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-13"><a href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity-13"><span class="linenos">13</span></a>                <span class="nb">print</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+</span><span id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-14"><a href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity-14"><span class="linenos">14</span></a>            <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span><span id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-15"><a href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity-15"><span class="linenos">15</span></a>            <span class="k">if</span> <span class="n">wait</span><span class="p">:</span>
+</span><span id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-16"><a href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity-16"><span class="linenos">16</span></a>                <span class="n">trtc</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
+</span><span id="TerminalVelocityMethods.rogers_and_yau_terminal_velocity-17"><a href="#TerminalVelocityMethods.rogers_and_yau_terminal_velocity-17"><span class="linenos">17</span></a>            <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
