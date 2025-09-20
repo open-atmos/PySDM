@@ -10,14 +10,8 @@ from PySDM.physics import si
 from .dummy_storage import DummyStorage
 
 
-@pytest.mark.parametrize(
-    "singular",
-    (
-        pytest.param(False, id="singular: False"),
-        pytest.param(True, id="singular: True"),
-    ),
-)
-def test_freezing(singular):
+@pytest.mark.parametrize("freezing_immersion", ("singular", "time-dependent"))
+def test_freezing(freezing_immersion):
     # Arrange
     settings = Settings(
         Formulae(
@@ -47,7 +41,7 @@ def test_freezing(singular):
     settings.processes["freezing"] = True
     settings.processes["coalescence"] = False
 
-    settings.freezing_singular = singular
+    settings.freezing_immersion = freezing_immersion
     settings.th_std0 -= 35 * si.K
     settings.initial_water_vapour_mixing_ratio -= 7.15 * si.g / si.kg
 

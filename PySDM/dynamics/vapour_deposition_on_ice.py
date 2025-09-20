@@ -5,9 +5,10 @@ from PySDM.dynamics.impl import register_dynamic
 
 @register_dynamic()
 class VapourDepositionOnIce:
-    def __init__(self):
+    def __init__(self, adaptive: bool = True):
         """called by the user while building a particulator"""
         self.particulator = None
+        self.adaptive = adaptive
 
     def register(self, *, builder):
         """called by the builder"""
@@ -17,4 +18,4 @@ class VapourDepositionOnIce:
 
     def __call__(self):
         """called by the particulator during simulation"""
-        self.particulator.deposition()
+        self.particulator.deposition(adaptive=self.adaptive)

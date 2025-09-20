@@ -7,10 +7,11 @@ from matplotlib import pyplot
 from scipy import signal
 
 from PySDM import Builder, Formulae, products
-from PySDM.backends import CPU, GPU
+from PySDM.backends import Numba, ThrustRTC
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
@@ -30,9 +31,9 @@ class TestParcelSanityChecks:
     @pytest.mark.parametrize(
         "backend_class",
         (
-            CPU,
+            Numba,
             pytest.param(
-                GPU,
+                ThrustRTC,
                 marks=pytest.mark.xfail(
                     strict=True,
                     reason="TODO #1117 (works with CUDA!)",

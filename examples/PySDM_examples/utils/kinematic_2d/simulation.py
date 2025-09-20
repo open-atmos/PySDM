@@ -146,7 +146,7 @@ class Simulation:
         if self.settings.processes["freezing"]:
             builder.add_dynamic(
                 Freezing(
-                    singular=self.settings.freezing_singular,
+                    immersion_freezing=self.settings.freezing_immersion,
                     thaw=self.settings.freezing_thaw,
                 )
             )
@@ -171,7 +171,7 @@ class Simulation:
                     np.random.random(attributes["dry volume"].size),  # TODO #599: seed
                 )
 
-            if self.settings.freezing_singular:
+            if self.settings.freezing_immersion == "singular":
                 attributes["freezing temperature"] = (
                     formulae.freezing_temperature_spectrum.invcdf(
                         np.random.random(immersed_surface_area.size),  # TODO #599: seed
@@ -185,9 +185,9 @@ class Simulation:
                 assert self.settings.n_sd % 2 == 0
                 assert 0 < self.settings.freezing_inp_frac < 1
                 freezing_attribute = {
-                    True: "freezing temperature",
-                    False: "immersed surface area",
-                }[self.settings.freezing_singular]
+                    "singular": "freezing temperature",
+                    "time-dependent": "immersed surface area",
+                }[self.settings.freezing_immersion]
                 for name, array in attributes.items():
                     if array.shape[-1] != self.settings.n_sd // 2:
                         raise AssertionError(f"attribute >>{name}<< has wrong size")

@@ -309,6 +309,9 @@ BIGG_DT_MEDIAN = np.nan
 NIEMAND_A = np.nan
 NIEMAND_B = np.nan
 
+HOMOGENEOUS_FREEZING_THRESHOLD = T0 - 38 * si.K
+""" value from [Shima et al. 2020](https://doi.org/10.5194/gmd-13-4107-2020) """
+
 ABIFM_UNIT = 1 / si.cm**2 / si.s
 """ ice nucleation rate using ABIFM
 ([Knopf & Alpert 2013](https://doi.org/10.1039/C3FD00035D)) """
@@ -699,7 +702,7 @@ bulk_phase_partitioning_exponent = np.nan
 
 BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 = np.nan * si.dimensionless
 """
-Coefficient c1 used in [Bolin 1958](https://https://digitallibrary.un.org/record/3892725)
+Coefficient c1 used in [Bolin 1958](https://digitallibrary.un.org/record/3892725)
 for the falling drop evaporation timescale of equilibration with ambient air void of a given
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).
