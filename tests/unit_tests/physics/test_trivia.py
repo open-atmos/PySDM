@@ -116,32 +116,47 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize("delta", (0.86 - 1, 0.9 - 1, 0.98 - 1))
-    def test_moles_2H_atom(
+    @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
+    @pytest.mark.parametrize(
+        "heavy_isotope_name, heavy_isotope_molecule",
+        (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
+    )
+    def test_moles_heavy_atom(
         delta,
-        m_t=1 * si.ng,
+        water_mass,
+        heavy_isotope_name,
+        heavy_isotope_molecule,
     ):
         # arrange
         formulae = Formulae()
         const = formulae.constants
 
-        from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
+        molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
+        R_STD = getattr(const, f"VSMOW_R_{heavy_isotope_name}")
+        if heavy_isotope_name[-1] == "O":
+            light_atoms_per_light_molecule = 1
+        elif heavy_isotope_name[-1] == "H":
+            light_atoms_per_light_molecule = 2
+        else:
+            light_atoms_per_light_molecule = 0
 
-        signed_water_mass = m_t
-        moles_2H = formulae.trivia.moles_heavy_atom(
+        moles_atom = formulae.trivia.moles_heavy_atom(
             delta=delta,
-            mass_total=signed_water_mass,
-            molar_mass_heavy_molecule=const.M_2H_1H_16O,
-            R_STD=const.VSMOW_R_2H,
-            light_atoms_per_light_molecule=2,
+            mass_total=water_mass,
+            molar_mass_heavy_molecule=molar_mass_heavy_molecule,
+            R_STD=R_STD,
+            light_atoms_per_light_molecule=light_atoms_per_light_molecule,
         )
         moles_light_water = (
-            signed_water_mass - const.M_2H_1H_16O * moles_2H
-        ) / const.M_1H2_16O
+            moles_atom
+            / light_atoms_per_light_molecule
+            / formulae.trivia.isotopic_delta_2_ratio(delta=delta, reference_ratio=R_STD)
+        )
 
         # act
-        sut = formulae.trivia.isotopic_ratio_2_delta(
-            ratio=moles_2H / moles_light_water, reference_ratio=const.VSMOW_R_2H
+        sut = (
+            moles_atom * molar_mass_heavy_molecule + moles_light_water * const.M_1H2_16O
         )
 
         # assert
-        np.testing.assert_approx_equal(actual=sut, desired=delta, significant=5)
+        np.testing.assert_approx_equal(actual=sut, desired=water_mass, significant=5)
