@@ -8,11 +8,22 @@ import numpy as np
 class TestIsotopeMethods:
     @staticmethod
     def test_isotopic_fractionation(backend_instance):
+        """checks if for a given dm_dt of total liquid water, the changes
+        in the amounts of moles of heavy isotopes in droplets,
+        and in the ambient air are OK"""
         # arrange
-        backend = backend_instance
+        # tau =
+        # dm_dt =
+        # ambient_isotope_mixing_ratio=
 
         # act
-        backend.isotopic_fractionation()
+        # backend_instance.isotopic_fractionation(
+        #
+        # )
+
+        # assert
+        # assert dm_iso_dt == ...
+        # assert ambient_isotope_mixing_ratio == ...
 
     @staticmethod
     def test_isotopic_delta(backend_instance):
