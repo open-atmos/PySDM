@@ -39,6 +39,7 @@ ONE = 1
 TWO = 2
 THREE = 3
 FOUR = 4
+NINE = 9
 TWELVE = 12
 ONE_THIRD = 1 / 3
 ONE_HALF = 1 / 2
