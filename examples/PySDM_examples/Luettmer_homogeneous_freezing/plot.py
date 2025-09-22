@@ -16,6 +16,7 @@ tick_fsize = 15
 # title_fsize = 15
 # line_width = 2.5
 T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
+T_frz_bins_kelvin = np.linspace(230, 240, num=100, endpoint=True)
 
 
 def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
@@ -78,12 +79,14 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     ax.legend(loc="upper left", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
 
+
     twin = ax.twinx()
     twin.plot(time, RH, color="red", linestyle="-", label="RH")
     twin.plot(time, RHi, color="blue", linestyle="-", label="RHi")
     twin.set_ylabel("relative humidity [%]", fontsize=ax_lab_fsize)
     twin.legend(loc="upper right", fontsize=ax_lab_fsize)
     twin.tick_params(labelsize=tick_fsize)
+    twin.grid(visible=True)
 
     """ Water activity difference profile """
     lin_s_SP2023 = "--"
@@ -115,6 +118,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     ax.set_ylim(1e-30, 1e30)
     ax.set_yscale("log")
     ax.tick_params(labelsize=tick_fsize)
+    ax.grid(visible=True)
     twin = ax.twinx()
     twin.plot(time, d_a_w_ice, color="gray", linestyle="-", label=r"$\Delta a_{w}$")
     twin.set_ylim(0.2, 0.35)
@@ -134,6 +138,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     ax.set_ylabel(r"mass content [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize)
     ax.legend(fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
+    ax.grid(visible=True)
 
     if show_conc:
         twin = ax.twinx()
@@ -156,6 +161,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     ax.set_ylabel("mean radius [µm]", fontsize=ax_lab_fsize)
     ax.legend(fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
+    ax.grid(visible=True)
 
 
 def plot_freezing_temperatures_histogram(ax, simulation):
@@ -170,8 +176,10 @@ def plot_freezing_temperatures_histogram(ax, simulation):
 
         """ Freezing temperatures """
         hist = ax.hist(
-            formulae.trivia.K2C(T_frz),
-            bins=T_frz_bins,
+            # formulae.trivia.K2C(T_frz),
+            T_frz,
+            # bins=T_frz_bins,
+            bins=T_frz_bins_kelvin,
             density=True,
             cumulative=-1,
             alpha=1.0,
@@ -179,8 +187,9 @@ def plot_freezing_temperatures_histogram(ax, simulation):
             linewidth=1.5,
         )
 
+    ax.axvline(x=235, color='k', linestyle='--')
     ax.set_title(title, fontsize=ax_lab_fsize)
-    ax.set_xlabel("freezing temperature [°C]", fontsize=ax_lab_fsize)
+    ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
     ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
 
@@ -233,9 +242,11 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
     hom_freezing_type = histogram_data_dict["hom_freezing_type"]
     # for i, hom_freezing_type in enumerate(hom_freezing_types):
 
-    T_frz = formulae.trivia.K2C(
-        (np.asarray(histogram_data_dict["T_frz_histogram_list"]))
-    )
+    # T_frz = formulae.trivia.K2C(
+    #     (np.asarray(histogram_data_dict["T_frz_histogram_list"]))
+    # )
+    T_frz = np.asarray(histogram_data_dict["T_frz_histogram_list"])
+
     if "w_updraft_histogram_list" in histogram_data_dict:
         w = histogram_data_dict["w_updraft_histogram_list"]
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
@@ -246,7 +257,8 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
         w = np.asarray(histogram_data_dict["rc_max_histogram_list"]) * 1e6
         y_label = "(maximum) radius [µm]"
 
-    xlim = (-39.5, -34)
+    # xlim = (-39.5, -34)
+    xlim = (233, 241)
     h = sns.JointGrid(
         x=T_frz,
         y=w,
@@ -272,7 +284,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
         sns.histplot,
         element="step",
     )
-    h.set_axis_labels("freezing temperature [°C]", y_label, fontsize=ax_lab_fsize)
+    h.set_axis_labels("freezing temperature [K]", y_label, fontsize=ax_lab_fsize)
     h.ax_joint.set_title(
         "Freezing: " + hom_freezing_type + title_add,
         pad=70,

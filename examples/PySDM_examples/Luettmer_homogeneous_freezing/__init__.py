@@ -1,8 +1,8 @@
 """
 Homogeneous freezing example
 
-hom_freezing_cloud_droplets.ipynb:
-.. include:: ./hom_freezing_cloud_droplets.ipynb
+hom_freezing.ipynb:
+.. include:: ./hom_freezing.ipynb
 """
 
 from .settings import Settings

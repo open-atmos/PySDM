@@ -3,8 +3,10 @@ from PySDM import Formulae
 from PySDM.physics.constants import si
 from PySDM.backends import CPU
 import time
-from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
-from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
+# from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
+# from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
+from settings import Settings
+from simulation import Simulation
 
 
 formulae = Formulae(
