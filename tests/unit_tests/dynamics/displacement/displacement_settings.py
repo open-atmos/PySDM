@@ -8,10 +8,12 @@ from ...dummy_environment import DummyEnvironment
 from ...dummy_particulator import DummyParticulator
 
 
-class DisplacementSettings:  # pylint: disable=too-few-public-methods
-    def __init__(self, n_sd=1, grid=None, positions=None, courant_field_data=None):
+class DisplacementSettings:  # pylint: disable=too-few-public-methods,too-many-arguments
+    def __init__(
+        self, n_sd=1, volume=None, grid=None, positions=None, courant_field_data=None
+    ):
         self.n = np.ones(n_sd, dtype=np.int64)
-        self.volume = np.ones(n_sd, dtype=np.float64)
+        self.volume = volume or np.ones(n_sd, dtype=np.float64)
         self.grid = grid or (1, 1)
         self.courant_field_data = courant_field_data or (
             np.array([[0, 0]]).T,
