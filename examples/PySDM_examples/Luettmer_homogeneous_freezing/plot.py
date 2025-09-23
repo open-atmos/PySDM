@@ -310,7 +310,14 @@ def plot_ensemble_bulk(simulations, var_name, ensemble_var, freezing_types):
                 if (simulation["settings"]["hom_freezing"] == hom_freezing_type
                         and simulation["settings"][ens_var_name] == ens_var[i]):
                     output = simulation["ensemble_member_outputs"][0]
-                    var[i] = np.asarray(output[var_name])[-1]
+                    if var_name == "freezing_fraction":
+                        ni = np.asarray(output["ni"])[-1]
+                        nc = np.asarray(output["ns"])[0]
+                        var[i] = (1 - (nc - ni) / nc) * 100
+                        # print("{:.2E}".format(nc),"{:.2E}".format(ni), var[i])
+                        # quit()
+                    else:
+                        var[i] = np.asarray(output[var_name])[-1]
 
         pyplot.scatter(ens_var, var, label=hom_freezing_type)
 
@@ -318,11 +325,17 @@ def plot_ensemble_bulk(simulations, var_name, ensemble_var, freezing_types):
         pyplot.yscale('log')
         y_label = r"ice number concentration [$\mathrm{kg^{-1}}$]"
         title = "Ice number concentrations"
+        pyplot.ylim(1e6,1e10)
 
     if var_name == "IWC":
         pyplot.yscale('log')
         y_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
         title = "Ice mass content"
+
+    if var_name == "freezing_fraction":
+        title = "frozen fraction of real droplets "
+        y_label = r"frozen fraction[$\mathrm{\%}$]"
+
 
     if ens_var_name == "N_dv_droplet_distribution":
         pyplot.xscale('log')
