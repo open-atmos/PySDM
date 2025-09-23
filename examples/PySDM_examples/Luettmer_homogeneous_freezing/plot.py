@@ -293,3 +293,45 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
     h.ax_marg_y.remove()
 
     return h
+
+
+
+
+def plot_ensemble_bulk(simulations, var_name, ensemble_var, freezing_types):
+
+    ens_var, ens_var_name = ensemble_var
+    len_ens_var = len(ens_var)
+
+
+    for hom_freezing_type in freezing_types:
+        var = np.zeros(len_ens_var)
+        for i in range(len_ens_var):
+            for simulation in simulations:
+                if (simulation["settings"]["hom_freezing"] == hom_freezing_type
+                        and simulation["settings"][ens_var_name] == ens_var[i]):
+                    output = simulation["ensemble_member_outputs"][0]
+                    var[i] = np.asarray(output[var_name])[-1]
+
+        pyplot.scatter(ens_var, var, label=hom_freezing_type)
+
+    if var_name == "ni":
+        pyplot.yscale('log')
+        y_label = r"ice number concentration [$\mathrm{kg^{-1}}$]"
+        title = "Ice number concentrations"
+
+    if var_name == "IWC":
+        pyplot.yscale('log')
+        y_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
+        title = "Ice mass content"
+
+    if ens_var_name == "N_dv_droplet_distribution":
+        pyplot.xscale('log')
+        x_label = r"ccn concentration [$\mathrm{m^{-3}}$]"
+
+    pyplot.title(title, fontsize=ax_lab_fsize)
+    pyplot.xlabel(x_label,fontsize=ax_lab_fsize)
+    pyplot.ylabel(y_label, fontsize=ax_lab_fsize)
+    pyplot.legend(fontsize=ax_lab_fsize)
+
+
+
