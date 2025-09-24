@@ -131,6 +131,29 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return (E + 1) * (delta_0_SMOW + 1) - 1
 
     @staticmethod
+    def moles_heavy_atom(
+        const,
+        delta,
+        mass_total,
+        molar_mass_heavy_molecule,
+        R_STD,
+        light_atoms_per_light_molecule,
+    ):
+        return mass_total / (
+            (
+                1
+                + const.M_1H2_16O
+                / (
+                    light_atoms_per_light_molecule
+                    * (delta + 1)
+                    * R_STD
+                    * molar_mass_heavy_molecule
+                )
+            )
+            * molar_mass_heavy_molecule
+        )
+
+    @staticmethod
     def mixing_ratio_to_specific_content(mixing_ratio):
         return mixing_ratio / (1 + mixing_ratio)
 
