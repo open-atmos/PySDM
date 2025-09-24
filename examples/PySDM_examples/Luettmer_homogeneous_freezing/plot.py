@@ -79,7 +79,6 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     ax.legend(loc="upper left", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
 
-
     twin = ax.twinx()
     twin.plot(time, RH, color="red", linestyle="-", label="RH")
     twin.plot(time, RHi, color="blue", linestyle="-", label="RHi")
@@ -187,7 +186,7 @@ def plot_freezing_temperatures_histogram(ax, simulation):
             linewidth=1.5,
         )
 
-    ax.axvline(x=235, color='k', linestyle='--')
+    ax.axvline(x=235, color="k", linestyle="--")
     ax.set_title(title, fontsize=ax_lab_fsize)
     ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
     ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
@@ -295,20 +294,21 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
     return h
 
 
-
-
-def plot_ensemble_bulk(simulations, var_name, ensemble_var, freezing_types):
+def plot_ensemble_bulk(
+    simulations, var_name, ensemble_var, freezing_types, title_add=""
+):
 
     ens_var, ens_var_name = ensemble_var
     len_ens_var = len(ens_var)
-
 
     for hom_freezing_type in freezing_types:
         var = np.zeros(len_ens_var)
         for i in range(len_ens_var):
             for simulation in simulations:
-                if (simulation["settings"]["hom_freezing"] == hom_freezing_type
-                        and simulation["settings"][ens_var_name] == ens_var[i]):
+                if (
+                    simulation["settings"]["hom_freezing"] == hom_freezing_type
+                    and simulation["settings"][ens_var_name] == ens_var[i]
+                ):
                     output = simulation["ensemble_member_outputs"][0]
                     if var_name == "freezing_fraction":
                         ni = np.asarray(output["ni"])[-1]
@@ -319,32 +319,32 @@ def plot_ensemble_bulk(simulations, var_name, ensemble_var, freezing_types):
                     else:
                         var[i] = np.asarray(output[var_name])[-1]
 
-        pyplot.scatter(ens_var, var, label=hom_freezing_type)
+        pyplot.scatter(var, ens_var, label=hom_freezing_type)
 
     if var_name == "ni":
-        pyplot.yscale('log')
-        y_label = r"ice number concentration [$\mathrm{kg^{-1}}$]"
+        pyplot.xscale("log")
+        x_label = r"$n_{i} \, [\mathrm{kg^{-1}}$]"
         title = "Ice number concentrations"
-        pyplot.ylim(1e6,1e10)
+        pyplot.xlim(1e6, 1e10)
 
     if var_name == "IWC":
-        pyplot.yscale('log')
-        y_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
+        pyplot.xscale("log")
+        x_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
         title = "Ice mass content"
 
     if var_name == "freezing_fraction":
         title = "frozen fraction of real droplets "
-        y_label = r"frozen fraction[$\mathrm{\%}$]"
-
+        x_label = r"$n_{frz} \, [\mathrm{\%}$]"
 
     if ens_var_name == "N_dv_droplet_distribution":
-        pyplot.xscale('log')
-        x_label = r"ccn concentration [$\mathrm{m^{-3}}$]"
+        pyplot.yscale("log")
+        y_label = r"$n_{ccn} \, [\mathrm{m^{-3}}$]"
 
-    pyplot.title(title, fontsize=ax_lab_fsize)
-    pyplot.xlabel(x_label,fontsize=ax_lab_fsize)
+    if ens_var_name == "w_updraft":
+        pyplot.yscale("log")
+        y_label = r"w [$\mathrm{m \, s^{-1}}$]"
+
+    pyplot.title(title + title_add, fontsize=ax_lab_fsize)
+    pyplot.xlabel(x_label, fontsize=ax_lab_fsize)
     pyplot.ylabel(y_label, fontsize=ax_lab_fsize)
     pyplot.legend(fontsize=ax_lab_fsize)
-
-
-
