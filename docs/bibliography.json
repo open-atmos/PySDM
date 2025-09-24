@@ -950,6 +950,14 @@
     "title": "A physically constrained classical description of the homogeneous nucleation of ice in water",
     "label": "Koop and Murray 2016 (J. Chem. Phys. 145)"
   },
+  "https://doi.org/10.48550/arXiv.2509.05536": {
+    "usages": [
+      "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_10.ipynb"
+    ],
+    "title": "Adaptive time-stepping for the Super-Droplet Method Monte Carlo collision-coalescence scheme",
+    "label": "Ware et al. 2025 (arXiv)"
+  },
   "https://doi.org/10.1175/1520-0469(2000)057%3C0916:CCTV%3E2.0.CO;2": {
     "usages": [
       "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py",
