@@ -125,7 +125,7 @@ the license of the contributed code must be compatible with GPL v3.
 Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
 the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
 The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html)
-and [Pylint](https://pylint.org), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
+and [Pylint](https://pylint.readthedocs.io/en/stable/), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
 code analysis (which are all part of the CI workflows).
 
 We also use [pre-commit hooks](https://pre-commit.com). 
