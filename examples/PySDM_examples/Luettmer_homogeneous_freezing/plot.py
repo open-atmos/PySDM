@@ -80,10 +80,10 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     ax.tick_params(labelsize=tick_fsize)
 
     twin = ax.twinx()
-    twin.plot(time, RH, color="red", linestyle="-", label="RH")
-    twin.plot(time, RHi, color="blue", linestyle="-", label="RHi")
+    twin.plot(time, RH, color="red", linestyle="-", label=r"$S_{w}$")
+    twin.plot(time, RHi, color="blue", linestyle="-", label=r"$S_{i}$")
     twin.set_ylabel("relative humidity [%]", fontsize=ax_lab_fsize)
-    twin.legend(loc="upper right", fontsize=ax_lab_fsize)
+    twin.legend(loc="center right", fontsize=ax_lab_fsize)
     twin.tick_params(labelsize=tick_fsize)
     twin.grid(visible=True)
 
@@ -171,7 +171,7 @@ def plot_freezing_temperatures_histogram(ax, simulation):
         output = simulation["ensemble_member_outputs"][i]
         T_frz = np.asarray(output["T_frz"])
 
-        title = "Freezing method=" + simulation["settings"]["hom_freezing"]
+        title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
 
         """ Freezing temperatures """
         hist = ax.hist(
@@ -186,6 +186,7 @@ def plot_freezing_temperatures_histogram(ax, simulation):
             linewidth=1.5,
         )
 
+    ax.set_xlim(left=234, right=239)
     ax.axvline(x=235, color="k", linestyle="--")
     ax.set_title(title, fontsize=ax_lab_fsize)
     ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)

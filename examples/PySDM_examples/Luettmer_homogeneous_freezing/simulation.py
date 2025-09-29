@@ -169,7 +169,11 @@ class Simulation:
 
         while True:
 
-            self.particulator.run(self.n_substeps)
+            for i in range(self.n_substeps):
+                self.particulator.run(1)
+            #     do_sedimenation_function:
+            #          for j in n_sd:
+            #                íf vt(j) > updraft: remove particle
             self.save(output)
 
             # print( output["t"][-1], output["T"][-1], output["RH"][-1], output["LWC"][-1], output["IWC"][-1] )

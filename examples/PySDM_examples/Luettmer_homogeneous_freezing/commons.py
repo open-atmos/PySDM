@@ -4,10 +4,8 @@ from PySDM.physics.constants import si
 from PySDM.backends import CPU
 import time
 
-# from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
-# from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
-from settings import Settings
-from simulation import Simulation
+from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
+from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
 
 
 formulae = Formulae(
@@ -74,7 +72,7 @@ def hom_pure_droplet_freezing_standard_setup():
         "w_updraft": 1.0 * si.meter / si.second,
         "T0": formulae.trivia.C2K(-25),
         "dz": 0.1 * si.meter,
-        "N_dv_droplet_distribution": 5000 / si.cm**3,
+        "N_dv_droplet_distribution": 750 / si.cm**3,
         "r_mean_droplet_distribution": 15 * si.nanometer,
         "type_droplet_distribution": "monodisperse",
         "RH_0": 0.995,
