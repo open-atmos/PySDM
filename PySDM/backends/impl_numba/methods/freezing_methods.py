@@ -14,6 +14,7 @@ from ...impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
     TimeDependentHomogeneousAttributes,
+    ThresholdHomogeneousAndThawAttributes,
 )
 
 
@@ -37,25 +38,40 @@ class FreezingMethods(BackendMethods):
         return body
 
     @cached_property
-    def _freeze_singular_body(self):
+    def _thaw_instantaneous_body(self):
         _thaw = self._thaw
-        _freeze = self._freeze
         frozen_and_above_freezing_point = (
             self.formulae.trivia.frozen_and_above_freezing_point
         )
+
+        @numba.njit(**self.default_jit_flags)
+        def body(attributes, cell, temperature):
+            n_sd = len(attributes.signed_water_mass)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+                if frozen_and_above_freezing_point(
+                    attributes.signed_water_mass[i], temperature[cell[i]]
+                ):
+                    _thaw(attributes.signed_water_mass, i)
+
+        return body
+
+    @cached_property
+    def _immersion_freezing_singular_body(self):
+        _freeze = self._freeze
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
 
         @numba.njit(**self.default_jit_flags)
-        def body(attributes, temperature, relative_humidity, cell, thaw):
+        def body(
+            attributes,
+            temperature,
+            relative_humidity,
+            cell,
+        ):
             n_sd = len(attributes.freezing_temperature)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.freezing_temperature[i] == 0:
                     continue
-                if thaw and frozen_and_above_freezing_point(
-                    attributes.signed_water_mass[i], temperature[cell[i]]
-                ):
-                    _thaw(attributes.signed_water_mass, i)
-                elif (
+                if (
                     unfrozen_and_saturated(
                         attributes.signed_water_mass[i], relative_humidity[cell[i]]
                     )
@@ -66,12 +82,8 @@ class FreezingMethods(BackendMethods):
         return body
 
     @cached_property
-    def _freeze_time_dependent_body(self):
-        _thaw = self._thaw
+    def _immersion_freezing_time_dependent_body(self):
         _freeze = self._freeze
-        frozen_and_above_freezing_point = (
-            self.formulae.trivia.frozen_and_above_freezing_point
-        )
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
         j_het = self.formulae.heterogeneous_ice_nucleation_rate.j_het
         prob_zero_events = self.formulae.trivia.poissonian_avoidance_function
@@ -83,20 +95,14 @@ class FreezingMethods(BackendMethods):
             timestep,
             cell,
             a_w_ice,
-            temperature,
             relative_humidity,
-            thaw,
         ):
             n_sd = len(attributes.signed_water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
                 cell_id = cell[i]
-                if thaw and frozen_and_above_freezing_point(
-                    attributes.signed_water_mass[i], temperature[cell_id]
-                ):
-                    _thaw(attributes.signed_water_mass, i)
-                elif unfrozen_and_saturated(
+                if unfrozen_and_saturated(
                     attributes.signed_water_mass[i], relative_humidity[cell_id]
                 ):
                     rate_assuming_constant_temperature_within_dt = (
@@ -111,12 +117,8 @@ class FreezingMethods(BackendMethods):
         return body
 
     @cached_property
-    def _freeze_time_dependent_homogeneous_body(self):
-        _thaw = self._thaw
+    def _homogeneous_freezing_time_dependent_body(self):
         _freeze = self._freeze
-        frozen_and_above_freezing_point = (
-            self.formulae.trivia.frozen_and_above_freezing_point
-        )
         unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
         j_hom = self.formulae.homogeneous_ice_nucleation_rate.j_hom
         prob_zero_events = self.formulae.trivia.poissonian_avoidance_function
@@ -136,17 +138,12 @@ class FreezingMethods(BackendMethods):
             a_w_ice,
             temperature,
             relative_humidity_ice,
-            thaw,
         ):
 
             n_sd = len(attributes.signed_water_mass)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 cell_id = cell[i]
-                if thaw and frozen_and_above_freezing_point(
-                    attributes.signed_water_mass[i], temperature[cell_id]
-                ):
-                    _thaw(attributes.signed_water_mass, i)
-                elif unfrozen_and_ice_saturated(
+                if unfrozen_and_ice_saturated(
                     attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
                 ):
                     d_a_w_ice = (relative_humidity_ice[cell_id] - 1.0) * a_w_ice[
@@ -167,10 +164,44 @@ class FreezingMethods(BackendMethods):
 
         return body
 
-    def freeze_singular(
-        self, *, attributes, temperature, relative_humidity, cell, thaw: bool
+    @cached_property
+    def _homogeneous_freezing_threshold_body(self):
+        _freeze = self._freeze
+        unfrozen_and_ice_saturated = self.formulae.trivia.unfrozen_and_ice_saturated
+        const = self.formulae.constants
+
+        @numba.njit(**self.default_jit_flags)
+        def body(attributes, cell, temperature, relative_humidity_ice):
+            n_sd = len(attributes.signed_water_mass)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+                cell_id = cell[i]
+                if unfrozen_and_ice_saturated(
+                    attributes.signed_water_mass[i], relative_humidity_ice[cell_id]
+                ):
+                    if temperature[cell_id] <= const.HOMOGENEOUS_FREEZING_THRESHOLD:
+                        _freeze(attributes.signed_water_mass, i)
+
+        return body
+
+    def thaw_instantaneous(
+        self,
+        *,
+        attributes,
+        cell,
+        temperature,
     ):
-        self._freeze_singular_body(
+        self._thaw_instantaneous_body(
+            ThresholdHomogeneousAndThawAttributes(
+                signed_water_mass=attributes.signed_water_mass.data,
+            ),
+            cell.data,
+            temperature.data,
+        )
+
+    def immersion_freezing_singular(
+        self, *, attributes, temperature, relative_humidity, cell
+    ):
+        self._immersion_freezing_singular_body(
             SingularAttributes(
                 freezing_temperature=attributes.freezing_temperature.data,
                 signed_water_mass=attributes.signed_water_mass.data,
@@ -178,10 +209,9 @@ class FreezingMethods(BackendMethods):
             temperature.data,
             relative_humidity.data,
             cell.data,
-            thaw=thaw,
         )
 
-    def freeze_time_dependent(
+    def immersion_freezing_time_dependent(
         self,
         *,
         rand,
@@ -189,11 +219,9 @@ class FreezingMethods(BackendMethods):
         timestep,
         cell,
         a_w_ice,
-        temperature,
         relative_humidity,
-        thaw: bool,
     ):
-        self._freeze_time_dependent_body(
+        self._immersion_freezing_time_dependent_body(
             rand.data,
             TimeDependentAttributes(
                 immersed_surface_area=attributes.immersed_surface_area.data,
@@ -202,12 +230,27 @@ class FreezingMethods(BackendMethods):
             timestep,
             cell.data,
             a_w_ice.data,
-            temperature.data,
             relative_humidity.data,
-            thaw=thaw,
         )
 
-    def freeze_time_dependent_homogeneous(
+    def homogeneous_freezing_threshold(
+        self,
+        *,
+        attributes,
+        cell,
+        temperature,
+        relative_humidity_ice,
+    ):
+        self._homogeneous_freezing_threshold_body(
+            ThresholdHomogeneousAndThawAttributes(
+                signed_water_mass=attributes.signed_water_mass.data,
+            ),
+            cell.data,
+            temperature.data,
+            relative_humidity_ice.data,
+        )
+
+    def homogeneous_freezing_time_dependent(
         self,
         *,
         rand,
@@ -217,9 +260,8 @@ class FreezingMethods(BackendMethods):
         a_w_ice,
         temperature,
         relative_humidity_ice,
-        thaw: bool,
     ):
-        self._freeze_time_dependent_homogeneous_body(
+        self._homogeneous_freezing_time_dependent_body(
             rand.data,
             TimeDependentHomogeneousAttributes(
                 volume=attributes.volume.data,
@@ -230,7 +272,6 @@ class FreezingMethods(BackendMethods):
             a_w_ice.data,
             temperature.data,
             relative_humidity_ice.data,
-            thaw=thaw,
         )
 
     @cached_property

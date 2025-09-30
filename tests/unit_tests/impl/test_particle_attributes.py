@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU, GPU, ThrustRTC
+from PySDM.backends import Numba, ThrustRTC
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
@@ -72,7 +72,8 @@ class TestParticleAttributes:
         ],
     )
     @pytest.mark.parametrize(
-        "backend_cls", (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True)))
+        "backend_cls",
+        (Numba, pytest.param(ThrustRTC, marks=pytest.mark.xfail(strict=True))),
     )  # TODO #330
     def test_sort_by_cell_id(
         *, backend_cls, multiplicity, cells, idx, new_idx, cell_start
@@ -152,7 +153,7 @@ class TestParticleAttributes:
         u01 = [0.1, 0.4, 0.2, 0.5, 0.9, 0.1, 0.6, 0.3]
 
         # Arrange
-        particulator = DummyParticulator(CPU, n_sd=n_sd)
+        particulator = DummyParticulator(Numba, n_sd=n_sd)
         sut = ParticleAttributesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = make_indexed_storage(
@@ -172,7 +173,7 @@ class TestParticleAttributes:
 
     @staticmethod
     def test_permutation_local(backend_class):
-        if backend_class is GPU:
+        if backend_class is ThrustRTC:
             pytest.skip("TODO #358")
         n_sd = 8
         u01 = [0.1, 0.4, 0.2, 0.5, 0.9, 0.1, 0.6, 0.3]
@@ -233,7 +234,7 @@ class TestParticleAttributes:
 
     @staticmethod
     def test_permutation_local_repeatable(backend_class):
-        if backend_class is GPU:
+        if backend_class is ThrustRTC:
             pytest.skip("TODO #358")
         n_sd = 800
         idx = range(n_sd)
