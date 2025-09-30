@@ -208,7 +208,9 @@ sns.heatmap(deficit_matrix_flipped,
 cbar = axes[2].collections[0].colorbar
 # cbar.ax.yaxis.set_major_formatter(formatter)
 
-axes[1].set_xticks(np.arange(len(runs)))
+axes[1].set_xticks(np.arange(len(runs)) + 0.5)
+axes[1].set_yticks(np.arange(len(dts)) + 0.5)
+axes[1].set_yticklabels(dts[::-1])  # Reverse the order of
 axes[1].set_xticklabels([f"$2^{{{n}}}$" for n in runs])  # Format as 2^n_sd
 axes[2].set_xticks(np.arange(len(runs)) + 0.5)
 axes[2].set_xticklabels([f"$2^{{{n}}}$" for n in runs])  # Format as 2^n_sd
