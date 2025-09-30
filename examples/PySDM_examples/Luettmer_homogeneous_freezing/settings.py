@@ -8,7 +8,7 @@ from PySDM.physics.constants import si
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
 from tests.unit_tests.backends.test_oxidation import formulae
-from PySDM.dynamics.collisions.collision_kernels import Golovin
+from PySDM.dynamics.collisions.collision_kernels import Golovin, Geometric
 
 
 class Settings:
@@ -66,7 +66,7 @@ class Settings:
         self.deposition_enable = deposition_enable
         self.deposition_adaptive = deposition_adaptive
         self.scipy_solver = scipy_solver
-        self.collision_kernel = Golovin(b=1.5e3 / si.second)
+        self.collision_kernel = Geometric()
 
         if hom_freezing == "threshold":
             self.hom_freezing_type = "threshold"
@@ -92,21 +92,27 @@ class Settings:
         )
 
         if self.type_droplet_distribution == ("monodisperse"):
-            self.r_dry = np.ones(self.n_sd) * r_mean_droplet_distribution
+            self.r_wet = np.ones(self.n_sd) * r_mean_droplet_distribution
             self.specific_concentration = (
                 np.ones(self.n_sd)
                 * N_dv_droplet_distribution
                 / self.n_sd
                 / dry_air_density
             )
-
+            if coalescence_enable:  # do lucky droplet method
+                v_small = self.formulae.trivia.volume(
+                    radius=r_mean_droplet_distribution
+                )
+                self.r_wet[0 : int(self.n_sd * 0.1)] = self.formulae.trivia.radius(
+                    volume=2 * v_small
+                )
         elif self.type_droplet_distribution == ("lognormal"):
             spectrum = Lognormal(
                 norm_factor=N_dv_droplet_distribution / dry_air_density,
                 m_mode=r_mean_droplet_distribution,
                 s_geom=sigma_droplet_distribution,
             )
-            self.r_dry, self.specific_concentration = spectral_sampling.Linear(
+            self.r_wet, self.specific_concentration = spectral_sampling.Linear(
                 spectrum
             ).sample(n_sd)
 

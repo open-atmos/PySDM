@@ -11,9 +11,8 @@ from PySDM.dynamics import (
     Coalescence,
 )
 from PySDM.environments import Parcel
-from PySDM.physics import constants as const
 from PySDM.initialisation import discretise_multiplicities
-from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_dry_radii
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 
 
@@ -44,7 +43,9 @@ class Simulation:
         if settings.condensation_enable:
             builder.add_dynamic(Condensation(adaptive=True))
         if settings.coalescence_enable:
-            builder.add_dynamic(Coalescence(collision_kernel=settings.collision_kernel))
+            builder.add_dynamic(
+                Coalescence(collision_kernel=settings.collision_kernel, adaptive=False)
+            )
         if settings.deposition_enable:
             builder.add_dynamic(
                 VapourDepositionOnIce(adaptive=settings.deposition_adaptive)
@@ -59,15 +60,17 @@ class Simulation:
         self.multiplicities = discretise_multiplicities(
             settings.specific_concentration * env.mass_of_dry_air
         )
-        self.r_dry = settings.r_dry
-        v_dry = settings.formulae.trivia.volume(radius=self.r_dry)
-        kappa = settings.kappa
+        # self.r_dry = settings.r_dry
+        self.r_wet = settings.r_wet
 
-        self.r_wet = equilibrate_wet_radii(
-            r_dry=self.r_dry,
+        kappa = np.full_like(settings.r_wet, settings.kappa)
+
+        self.r_dry = equilibrate_dry_radii(
+            r_wet=self.r_wet,
             environment=builder.particulator.environment,
-            kappa_times_dry_volume=kappa * v_dry,
+            kappa=kappa,
         )
+        v_dry = settings.formulae.trivia.volume(radius=self.r_dry)
         self.initial_mass = formulae.particle_shape_and_density.radius_to_mass(
             self.r_wet
         )
@@ -169,11 +172,7 @@ class Simulation:
 
         while True:
 
-            for i in range(self.n_substeps):
-                self.particulator.run(1)
-            #     do_sedimenation_function:
-            #          for j in n_sd:
-            #                íf vt(j) > updraft: remove particle
+            self.particulator.run(self.n_substeps)
             self.save(output)
 
             # print( output["t"][-1], output["T"][-1], output["RH"][-1], output["LWC"][-1], output["IWC"][-1] )
