@@ -1,4 +1,4 @@
-from PySDM.dynamics import DepositionRemoval
+from PySDM.dynamics import SedimentationRemoval
 from PySDM.physics import si
 from PySDM.environments import Box
 from PySDM.builder import Builder
@@ -9,10 +9,10 @@ import pytest
 import numpy as np
 
 
-class TestDepositionRemoval:
+class TestSedimentationRemoval:
     @staticmethod
     @pytest.mark.parametrize("all_or_nothing", (True, False))
-    def test_convergence_wrt_dt(all_or_nothing, plot=True):
+    def test_convergence_wrt_dt(all_or_nothing, plot=False):
         # arrange
         dt = 1 * si.s
         dv = 666 * si.m**3
@@ -26,7 +26,7 @@ class TestDepositionRemoval:
             environment=Box(dv=dv, dt=dt),
             backend=backend_instance,
         )
-        builder.add_dynamic(DepositionRemoval(all_or_nothing=all_or_nothing))
+        builder.add_dynamic(SedimentationRemoval(all_or_nothing=all_or_nothing))
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray(multiplicity),
@@ -47,10 +47,12 @@ class TestDepositionRemoval:
         pyplot.title(f"{all_or_nothing=}")
         pyplot.xlabel("time [s]")
         pyplot.ylabel("particle concentration [m$^{-3}$]")
-        pyplot.plot(output["time"], output["particle concentration"])
+        pyplot.semilogy(output["time"], output["particle concentration"])
+
         if plot:
             pyplot.show()
         else:
             pyplot.clf()
 
         # assert
+        # TODO!

@@ -566,17 +566,17 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
         )
 
-    def deposition_removal(self, *, all_or_nothing, length_scale):
+    def sedimentation_removal(self, *, all_or_nothing, length_scale):
         # TODO: to be moved into backend (and attributes?)
 
         prob_zero_events = self.formulae.trivia.poissonian_avoidance_function
 
-        def backend_deposition_removal_all_or_nothing(
+        def backend_sedimentation_removal_all_or_nothing(
             *, relative_fall_velocity, length_scale, timestep, u01
         ):
             pass
 
-        def backend_deposition_removal_deterministic(
+        def backend_sedimentation_removal_deterministic(
             *, relative_fall_velocity, multiplicity, length_scale, timestep
         ):
             for i, velocity in enumerate(relative_fall_velocity):
@@ -586,14 +586,14 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 multiplicity[i] *= survive_prob
 
         if all_or_nothing:
-            backend_deposition_removal_all_or_nothing(
+            backend_sedimentation_removal_all_or_nothing(
                 relative_fall_velocity=self.attributes["relative fall velocity"].data,
                 length_scale=length_scale,
                 timestep=self.dt,
                 u01=None,
             )
         else:
-            backend_deposition_removal_deterministic(
+            backend_sedimentation_removal_deterministic(
                 relative_fall_velocity=self.attributes["relative fall velocity"].data,
                 multiplicity=self.attributes["multiplicity"].data,
                 length_scale=length_scale,

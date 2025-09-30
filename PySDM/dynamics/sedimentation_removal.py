@@ -5,7 +5,7 @@ import numpy as np
 
 
 @register_dynamic()
-class DepositionRemoval:
+class SedimentationRemoval:
     def __init__(self, *, all_or_nothing: bool):
         """stochastic ("all or nothing") or deterministic (multiplicity altering) removal"""
         self.all_or_nothing = all_or_nothing
@@ -20,7 +20,7 @@ class DepositionRemoval:
     def __call__(self):
         """see, e.g., the naive scheme in Algorithm 1 in
         [Curtis et al. 2016](https://doi.org/10.1016/j.jcp.2016.06.029)"""
-        self.particulator.deposition_removal(
+        self.particulator.sedimentation_removal(
             all_or_nothing=self.all_or_nothing,
             length_scale=self.length_scale,
         )
