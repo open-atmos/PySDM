@@ -86,7 +86,7 @@ def make_default_product_collection(settings):
         products.append(PySDM_products.BreakupRateDeficitPerGridbox(name="brd"))
     if settings.processes["freezing"]:
         products.append(PySDM_products.IceWaterContent())
-        if settings.freezing_singular:
+        if settings.freezing_immersion == "singular":
             products.append(
                 PySDM_products.FreezableSpecificConcentration(settings.T_bins_edges)
             )
