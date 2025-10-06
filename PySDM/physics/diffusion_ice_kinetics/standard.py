@@ -23,7 +23,7 @@ class Standard:
     @staticmethod
     def D(const, D, r, lmbd, T):
         return D / (
-            r / (r + lmbd)
+            r / (r + lmbd * const.C_cunn)
             + 4.0 * D / const.MAC_ice / np.sqrt(8.0 * const.Rv * T / const.PI) / r
         )
 
@@ -31,8 +31,7 @@ class Standard:
     def K(const, K, r, lmbd, T, rho):  # pylint: disable=too-many-arguments
         return K / (
             r / (r + lmbd)
-            + 4.0
-            * K
+            + K
             / const.HAC_ice
             / np.sqrt(8.0 * const.Rd * T / const.PI)
             / const.c_pd

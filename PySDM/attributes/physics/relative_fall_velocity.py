@@ -1,5 +1,5 @@
 """
-Attributes for tracking droplet velocity
+Attributes for tracking particle velocity
 """
 
 from PySDM.attributes.impl import (
@@ -29,13 +29,13 @@ class RelativeFallMomentum(ExtensiveAttribute):
 class RelativeFallVelocity(DerivedAttribute):
     def __init__(self, builder):
         self.momentum = builder.get_attribute("relative fall momentum")
-        self.water_mass = builder.get_attribute("water mass")
+        self.signed_water_mass = builder.get_attribute("signed water mass")
 
         super().__init__(
             builder,
             name="relative fall velocity",
-            dependencies=(self.momentum, self.water_mass),
+            dependencies=(self.momentum, self.signed_water_mass),
         )
 
     def recalculate(self):
-        self.data.ratio(self.momentum.get(), self.water_mass.get())
+        self.data.ratio(self.momentum.get(), self.signed_water_mass.get())

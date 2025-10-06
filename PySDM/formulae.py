@@ -19,7 +19,13 @@ from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
+from PySDM.dynamics.terminal_velocity import (
+    GunnKinzer1949,
+    PowerSeries,
+    RogersYau,
+    ColumnarIceCrystal,
+    IceSphere,
+)
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
@@ -47,6 +53,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         hydrostatics: str = "ConstantGVapourMixingRatioAndThetaStd",
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
+        homogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
         isotope_equilibrium_fractionation_factors: str = "Null",
         isotope_kinetic_fractionation_factors: str = "Null",
@@ -60,6 +67,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
+        terminal_velocity_ice: str = "ColumnarIceCrystal",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
         bulk_phase_partitioning: str = "Null",
         handle_all_breakups: bool = False,
@@ -86,6 +94,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.hydrostatics = hydrostatics
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
+        self.homogeneous_ice_nucleation_rate = homogeneous_ice_nucleation_rate
         self.fragmentation_function = fragmentation_function
         self.isotope_equilibrium_fractionation_factors = (
             isotope_equilibrium_fractionation_factors
@@ -102,6 +111,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
+        self.terminal_velocity_ice = terminal_velocity_ice
         self.bulk_phase_partitioning = bulk_phase_partitioning
 
         self._components = tuple(
@@ -164,6 +174,10 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "TpDependent": TpDependent,
             "PowerSeries": PowerSeries,
         }[terminal_velocity]
+        self.terminal_velocity_ice_class = {
+            "ColumnarIceCrystal": ColumnarIceCrystal,
+            "IceSphere": IceSphere,
+        }[terminal_velocity_ice]
 
     def __str__(self):
         description = []
