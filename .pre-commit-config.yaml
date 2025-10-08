@@ -4,7 +4,7 @@ default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 25.9.0
     hooks:
       - id: black
 
@@ -14,7 +14,7 @@ repos:
 #      - id: isort
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -28,3 +28,14 @@ repos:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
+  - repo: https://github.com/AgnieszkaZaba/devops_tests
+    rev: 7c704440e9a6f4ef0e102a3c570b885364bc319a
+    hooks:
+      - id: check-notebooks
+        name: check notebooks
+        entry: check_notebooks
+        language: python
+      - id: check-badges
+        name: check badges
+        entry: check_badges
+        language: python

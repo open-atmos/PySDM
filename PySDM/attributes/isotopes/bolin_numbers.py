@@ -21,10 +21,17 @@ class BolinNumberImpl(DerivedAttribute):
         )
 
     def recalculate(self):
-        self.particulator.bolin_number(
+        self.particulator.backend.bolin_number(
             output=self.data,
             molar_mass=self.molar_mass,
-            moles_heavy_isotope=self.moles_heavy_isotope.data,
+            cell_id=self.particulator.attributes["cell id"],
+            moles_heavy_isotope=self.moles_heavy_isotope,
+            moles_light_isotope=self.particulator.attributes["moles light water"],
+            relative_humidity=self.particulator.environment["RH"],
+            temperature=self.particulator.environment["T"],
+            ambient_heavy_isotope_mixing_ratio=self.particulator.environment[
+                f"mixing ratio {heavy_isotope}"
+            ],
         )
 
 
