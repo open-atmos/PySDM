@@ -1,5 +1,27 @@
-# to run pvpython script use command line: pvpython filename.py
+import argparse
 from paraview import simple as pvs  # Updated import statement
+
+
+def cli_using_argparse(ap):
+    ap.add_argument(
+        "--sd-products-pvd",
+        dest="sd_products_pvd",
+        default=r"C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output\\sd_products.pvd",
+        help="Path to sd_products.pvd",
+    )
+    ap.add_argument(
+        "--sd-attributes-pvd",
+        dest="sd_attributes_pvd",
+        default=r"C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output\\sd_attributes.pvd",
+        help="Path to sd_attributes.pvd",
+    )
+
+
+parser = argparse.ArgumentParser(
+    description="ParaView pvpython script for visualizing sd_products and sd_attributes PVD files."
+)
+cli_using_argparse(parser)
+args = parser.parse_args()
 
 pvs._DisableFirstRenderCameraReset()
 
@@ -9,7 +31,7 @@ renderView1 = pvs.GetActiveViewOrCreate("RenderView")
 # show data in view prod
 sd_productspvd = pvs.PVDReader(
     registrationName="sd_products.pvd",
-    FileName="C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output\\sd_products.pvd",
+    FileName=args.sd_products_pvd,
 )
 sd_productspvdDisplay = pvs.Show(
     sd_productspvd, renderView1, "UnstructuredGridRepresentation"
@@ -22,7 +44,7 @@ rHLUT.RescaleTransferFunction(90.0, 101.0)
 # show data in view attr
 sd_attributespvd = pvs.PVDReader(
     registrationName="sd_attributes.pvd",
-    FileName="C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output\\sd_attributes.pvd",
+    FileName=args.sd_attributes_pvd,
 )
 sd_attributespvdDisplay = pvs.Show(
     sd_attributespvd, renderView1, "UnstructuredGridRepresentation"
@@ -43,6 +65,8 @@ rHLUTColorBar.TitleColor = [0.0, 0.0, 0.0]
 sd_productspvdDisplay.Opacity = 0.4
 sd_productspvdDisplay.DisableLighting = 1
 sd_productspvdDisplay.Diffuse = 0.76
+rHLUT.ApplyPreset("Black, Blue and White", True)
+rHLUT.NanColor = [0.6666666666666666, 1.0, 1.0]
 
 # Properties modified on sd_productspvdDisplay.DataAxesGrid
 sd_productspvdDisplay.DataAxesGrid.GridAxesVisibility = 1
@@ -67,10 +91,6 @@ renderView1.OrientationAxesZColor = [0.0, 0.0, 0.0]
 renderView1.UseColorPaletteForBackground = 0
 renderView1.Background = [1.0, 1.0, 1.0]
 
-# rHLUT color
-rHLUT.ApplyPreset("Black, Blue and White", True)
-rHLUT.NanColor = [0.6666666666666666, 1.0, 1.0]
-
 # Properties modified on volumeLUTColorBar
 volumeLUTColorBar = pvs.GetScalarBar(volumeLUT, renderView1)
 volumeLUTColorBar.LabelColor = [0.0, 0.0, 0.0]
@@ -78,10 +98,15 @@ volumeLUTColorBar.DrawScalarBarOutline = 1
 volumeLUTColorBar.ScalarBarOutlineColor = [0.0, 0.0, 0.0]
 volumeLUTColorBar.TitleColor = [0.0, 0.0, 0.0]
 
-# attr size and shape
+# attr size and shape and color etc
 sd_attributespvdDisplay.PointSize = 13.0
 sd_attributespvdDisplay.RenderPointsAsSpheres = 1
 sd_attributespvdDisplay.Interpolation = "PBR"
+volumeLUT.ApplyPreset("Cold and Hot", True)
+volumeLUT.MapControlPointsToLogSpace()
+volumeLUT.UseLogScale = 1
+volumeLUT.NumberOfTableValues = 16
+volumeLUT.InvertTransferFunction()
 
 # Properties modified on sd_attributespvdDisplay.DataAxesGrid
 sd_attributespvdDisplay.DataAxesGrid.GridAxesVisibility = 1
@@ -93,18 +118,9 @@ sd_attributespvdDisplay.DataAxesGrid.ZTitleColor = [0.0, 0.0, 0.0]
 sd_attributespvdDisplay.DataAxesGrid.XAxisUseCustomLabels = 1
 sd_attributespvdDisplay.DataAxesGrid.YAxisUseCustomLabels = 1
 
-# volumeLUT preset and scale
-volumeLUT.ApplyPreset("Cold and Hot", True)
-volumeLUT.MapControlPointsToLogSpace()
-volumeLUT.UseLogScale = 1
-volumeLUT.NumberOfTableValues = 16
-volumeLUT.InvertTransferFunction()
-
-# layout
+# current camera placement for renderView1 and layout
 layout1 = pvs.GetLayout()
-layout1.SetSize(1593, 1128)
-
-# current camera placement for renderView1
+layout1.SetSize(1592, 1128)
 renderView1.CameraPosition = [1548.945972263949, -1349.493616194682, 699.2699178747185]
 renderView1.CameraFocalPoint = [
     -1.3686701146742275e-13,
@@ -122,9 +138,9 @@ renderView1.CameraParallelScale = 534.07781536883
 animationScene1 = pvs.GetAnimationScene()
 animationScene1.UpdateAnimationUsingDataTimeSteps()
 
-output_animation_path = "C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output_animation.avi"  # Change the extension as needed
+output_animation_path = r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\output_animation.avi"  # Change the extension as needed
 output_screenshot_path = (
-    "C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\last_frame.png"
+    r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\last_frame.png"
 )
 pvs.SaveAnimation(output_animation_path, renderView1, FrameRate=15)
 pvs.SaveScreenshot(output_screenshot_path, renderView1)
