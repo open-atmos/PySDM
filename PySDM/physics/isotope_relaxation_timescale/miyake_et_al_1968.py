@@ -23,8 +23,24 @@ class MiyakeEtAl1968:  # pylint:disable=too-few-public-methods
         """
         return (radius**2 * alpha * const.rho_w) / (3 * rho_s * D)
 
-    @staticmethod
+    @staticmethod  # TODO
     def bolin_number(
-        const, moles_heavy_isotope, relative_humidity, molar_mass
+        D_ratio_heavy_to_light,
+        alpha,
+        D_light,
+        Fk,
+        R_vap,
+        R_liq,
+        moles_heavy_isotope,
+        relative_humidity,
+        molar_mass,
     ):  # pylint: disable=unused-argument
-        return 44.0
+        return (
+            D_ratio_heavy_to_light
+            * alpha
+            / (
+                (1 + D_light * Fk) * relative_humidity * (alpha * R_vap / R_liq - 1)
+                + relative_humidity
+                - 1
+            )
+        )
