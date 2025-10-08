@@ -142,7 +142,8 @@ def set_camera_view(render_view):
 
 def save_animation_and_screenshot(render_view, animation_path, screenshot_path):
     """
-    Save animation and screenshot."""
+    Save animation and screenshot.
+    """
     animation_scene = pvs.GetAnimationScene()
     animation_scene.UpdateAnimationUsingDataTimeSteps()
 
