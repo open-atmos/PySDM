@@ -3,7 +3,10 @@ ParaView pvpython script for visualizing sd_products and sd_attributes.
 """
 
 import argparse
+from collections import namedtuple
 from paraview import simple as pvs  # pylint: disable=import-error
+
+pvs._DisableFirstRenderCameraReset()  # pylint: disable=protected-access
 
 
 def cli_using_argparse(argparse_parser):
@@ -22,6 +25,16 @@ def cli_using_argparse(argparse_parser):
         default=r"C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output\\sd_attributes.pvd",  # pylint: disable=line-too-long
         help="Path to sd_attributes.pvd",
     )
+    argparse_parser.add_argument(
+        "--output-animation-path",
+        default=r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\output_animation.avi",  # pylint: disable=line-too-long
+        help="Output path for the animation file.",
+    )
+    argparse_parser.add_argument(
+        "--output-screenshot-path",
+        default=r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\last_frame.png",  # pylint: disable=line-too-long
+        help="Output path for the screenshot file.",
+    )
 
 
 parser = argparse.ArgumentParser(
@@ -30,34 +43,41 @@ parser = argparse.ArgumentParser(
 cli_using_argparse(parser)
 args = parser.parse_args()
 
-# TODO tuple
-pvs._DisableFirstRenderCameraReset()  # pylint: disable=protected-access
-renderView1 = pvs.GetActiveViewOrCreate("RenderView")
 sd_productspvd = pvs.PVDReader(
-    registrationName="sd_products.pvd",
-    FileName=args.sd_products_pvd,
-)
-sd_productspvdDisplay = pvs.Show(
-    sd_productspvd, renderView1, "UnstructuredGridRepresentation"
+    registrationName="sd_products.pvd", FileName=args.sd_products_pvd
 )
 sd_attributespvd = pvs.PVDReader(
-    registrationName="sd_attributes.pvd",
-    FileName=args.sd_attributes_pvd,
+    registrationName="sd_attributes.pvd", FileName=args.sd_attributes_pvd
 )
-sd_attributespvdDisplay = pvs.Show(
-    sd_attributespvd, renderView1, "UnstructuredGridRepresentation"
-)
-rHlookup_table = pvs.GetColorTransferFunction("RH")
-volumelookup_table = pvs.GetColorTransferFunction("volume")
+
+setup = {
+    "renderView1": pvs.GetActiveViewOrCreate("RenderView"),
+    "sd_productspvdDisplay": pvs.Show(
+        sd_productspvd,
+        pvs.GetActiveViewOrCreate("RenderView"),
+        "UnstructuredGridRepresentation",
+    ),
+    "sd_attributespvdDisplay": pvs.Show(
+        sd_attributespvd,
+        pvs.GetActiveViewOrCreate("RenderView"),
+        "UnstructuredGridRepresentation",
+    ),
+    "rHlookup_table": pvs.GetColorTransferFunction("RH"),
+    "volumelookup_table": pvs.GetColorTransferFunction("volume"),
+}
+
+animation_setup = namedtuple("setup", setup.keys())(**setup)
 
 
-def configure_color_bar_and_display(display, lookup_table, kind):
+def configure_color_bar_and_display(
+    display, lookup_table, kind, *, anim_setup=animation_setup
+):
     """
     Configure color bar and display settings.
     """
     display.Representation = "Surface"
-    display.SetScalarBarVisibility(renderView1, True)
-    color_bar = pvs.GetScalarBar(lookup_table, renderView1)
+    display.SetScalarBarVisibility(anim_setup.renderView1, True)
+    color_bar = pvs.GetScalarBar(lookup_table, anim_setup.renderView1)
     color_bar.LabelColor = [0.0, 0.0, 0.0]
     color_bar.DrawScalarBarOutline = 1
     color_bar.ScalarBarOutlineColor = [0.0, 0.0, 0.0]
@@ -151,18 +171,18 @@ def save_animation_and_screenshot(render_view, animation_path, screenshot_path):
     pvs.SaveScreenshot(screenshot_path, render_view)
 
 
-configure_color_bar_and_display(sd_productspvdDisplay, rHlookup_table, kind="prod")
-configure_data_axes_grid(sd_productspvdDisplay, kind="prod")
-configure_view_appearance(renderView1)
 configure_color_bar_and_display(
-    sd_attributespvdDisplay, volumelookup_table, kind="attr"
+    animation_setup.sd_productspvdDisplay, animation_setup.rHlookup_table, kind="prod"
 )
-configure_data_axes_grid(sd_attributespvdDisplay, kind="attr")
-set_camera_view(renderView1)
-OUTPUT_ANIMATION_PATH = r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\output_animation.avi"  # pylint: disable=line-too-long
-OUTPUT_SCREENSHOT_PATH = (
-    r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\last_frame.png"
+configure_data_axes_grid(animation_setup.sd_productspvdDisplay, kind="prod")
+configure_view_appearance(animation_setup.renderView1)
+configure_color_bar_and_display(
+    animation_setup.sd_attributespvdDisplay,
+    animation_setup.volumelookup_table,
+    kind="attr",
 )
+configure_data_axes_grid(animation_setup.sd_attributespvdDisplay, kind="attr")
+set_camera_view(animation_setup.renderView1)
 save_animation_and_screenshot(
-    renderView1, OUTPUT_ANIMATION_PATH, OUTPUT_SCREENSHOT_PATH
+    animation_setup.renderView1, args.output_animation_path, args.output_screenshot_path
 )
