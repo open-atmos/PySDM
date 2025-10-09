@@ -52,7 +52,7 @@ setup(
             "numdifftools==0.9.41",
             "vtk==9.5.2",
             "pyrcel==1.3.4",
-            "pyvinecopulib==0.7.3",
+            "pyvinecopulib==0.7.5",
         ]
     },
     author="https://github.com/open-atmos/PySDM/graphs/contributors",
