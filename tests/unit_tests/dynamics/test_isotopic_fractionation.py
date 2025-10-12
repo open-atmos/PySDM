@@ -113,12 +113,15 @@ class TestIsotopicFractionation:
         #   -> R_vap
         #   -> delta
         delta_2H = 44 * PER_MILLE
-        particle_initial_isotope_content = 666.0 * si.moles
+        particle_initial_isotope_content = 1 * si.moles
         cell_volume = 1 * si.m**3
 
         attributes = DUMMY_ATTRIBUTES.copy()
         attributes["moles_2H"] = particle_initial_isotope_content
-        attributes["signed water mass"] = 1 * si.ng
+        for isotope in HEAVY_ISOTOPES:
+            if isotope != "2H":
+                attributes[f"moles_{isotope}"] = 0 * si.moles
+        attributes["signed water mass"] = 44.0 * si.kg
         attributes["multiplicity"] = np.ones(1)
 
         formulae = Formulae(
