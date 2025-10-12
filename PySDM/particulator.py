@@ -452,8 +452,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         for isotope in heavy_isotopes:
             self.backend.isotopic_fractionation(
                 cell_id=self.attributes["cell id"],
-                multiplicity=self.attributes["multiplicity"],
                 cell_volume=self.environment.mesh.dv,
+                multiplicity=self.attributes["multiplicity"],
                 dm_total=self.attributes["diffusional growth mass change"],
                 signed_water_mass=self.attributes["signed water mass"],
                 dry_air_density=self.environment["dry_air_density"],
@@ -466,8 +466,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                         "18O": "M_1H2_18O",
                     }[isotope],
                 ),
+                # moles_light_water=self.attributes["moles light water"],
                 moles_heavy=self.attributes[f"moles_{isotope}"],
-                moles_light=self.attributes["moles light water"],
                 delta_heavy=self.attributes[f"delta_{isotope}"],
                 bolin_number=self.attributes[f"Bolin number for {isotope}"],
             )
