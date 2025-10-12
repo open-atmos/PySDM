@@ -31,9 +31,9 @@ class MiyakeEtAl1968:  # pylint:disable=too-few-public-methods
         Fk,
         R_vap,
         R_liq,
-        moles_heavy_isotope,
+        moles_heavy,
         relative_humidity,
-        molar_mass,
+        # molar_mass,
     ):  # pylint: disable=unused-argument
         return (
             D_ratio_heavy_to_light

@@ -113,7 +113,7 @@ class TestIsotopes:
     @staticmethod
     @pytest.mark.parametrize("heavy_isotope", HEAVY_ISOTOPES)
     @pytest.mark.parametrize(
-        "moles_heavy_isotope, relative_humidity, expected_tau",
+        "moles_heavy, relative_humidity, expected_tau",
         (
             (0, 0.99, 44),
             (0, 1.01, 44),
@@ -123,7 +123,7 @@ class TestIsotopes:
     def test_bolin_number_attribute(
         backend_class,
         heavy_isotope: str,
-        moles_heavy_isotope: float,
+        moles_heavy: float,
         relative_humidity: float,
         expected_tau: float,
         variant: str,
@@ -146,7 +146,7 @@ class TestIsotopes:
             attributes={
                 "multiplicity": np.ones(n_sd),
                 "signed water mass": np.ones(n_sd) * si.ng,
-                f"moles_{heavy_isotope}": np.ones(n_sd) * moles_heavy_isotope,
+                f"moles_{heavy_isotope}": np.ones(n_sd) * moles_heavy,
             }
         )
         particulator.environment["RH"] = relative_humidity

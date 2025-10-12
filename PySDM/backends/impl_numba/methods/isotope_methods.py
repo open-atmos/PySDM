@@ -35,11 +35,13 @@ class IsotopeMethods(BackendMethods):
             bolin_number,
             signed_water_mass,
             moles_heavy,
+            moles_light,
             molar_mass_heavy,
-            ambient_isotope_mixing_ratio,
+            # ambient_isotope_mixing_ratio,
             cell_id,
             cell_volume,
             dry_air_density,
+            delta_heavy,
         ):
             # assume Bo = tau' / tau_total
             #           = (m'/dm') / (m/dm)
@@ -61,7 +63,7 @@ class IsotopeMethods(BackendMethods):
                 mass_of_dry_air = (
                     dry_air_density[cell_id[sd_id]] * cell_volume
                 )  # TODO: pass from outside
-                ambient_isotope_mixing_ratio[cell_id[sd_id]] -= (
+                delta_heavy[cell_id[sd_id]] -= (  # FIXME ambient isotope mixing ratio
                     dm_heavy * multiplicity[sd_id] / mass_of_dry_air
                 )
 
@@ -75,11 +77,12 @@ class IsotopeMethods(BackendMethods):
         bolin_number,
         signed_water_mass,
         moles_heavy,
+        moles_light,
         molar_mass_heavy,
-        ambient_isotope_mixing_ratio,
         cell_id,
         cell_volume,
         dry_air_density,
+        delta_heavy,
     ):
         self._isotopic_fractionation_body(
             multiplicity=multiplicity.data,
@@ -87,11 +90,12 @@ class IsotopeMethods(BackendMethods):
             bolin_number=bolin_number.data,
             signed_water_mass=signed_water_mass.data,
             moles_heavy=moles_heavy.data,
+            moles_light=moles_light.data,
             molar_mass_heavy=molar_mass_heavy,
-            ambient_isotope_mixing_ratio=ambient_isotope_mixing_ratio.data,
             cell_id=cell_id.data,
             cell_volume=cell_volume,
             dry_air_density=dry_air_density.data,
+            delta_heavy=delta_heavy.data,
         )
 
     @cached_property
@@ -101,31 +105,31 @@ class IsotopeMethods(BackendMethods):
         @numba.njit(**self.default_jit_flags)
         def body(
             output,
-            molar_mass,
+            # molar_mass,
             cell_id,
-            moles_heavy_isotope,
-            moles_light_isotope,
+            moles_heavy,
+            moles_light,
             relative_humidity,
             temperature,
-            ambient_heavy_isotope_mixing_ratio,
+            delta_heavy,
         ):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-                moles_heavy = moles_heavy_isotope[i]
-                moles_light = moles_light_isotope[i]
-                molar_mass = molar_mass
+                moles_heavy_isotope = moles_heavy[i]
+                moles_light_isotope = moles_light[i]
+                # molar_mass = molar_mass
 
-                D_ratio_heavy_to_light = (
+                D_heavy_to_light = (
                     ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(temperature)
                 )
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=D_ratio_heavy_to_light,
+                    D_ratio_heavy_to_light=D_heavy_to_light,
                     alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(
-                        temperature
+                        temperature[cell_id[i]]
                     ),
-                    D_light=ff.constants__DO,
-                    Fk=1,  # TODO
-                    R_vap=ambient_heavy_isotope_mixing_ratio,
-                    R_liq=moles_heavy / moles_light,
+                    D_light=1e-5,  # ff.constants__DO,
+                    Fk_Howell=1,  # TODO
+                    R_vap=delta_heavy[cell_id[i]],
+                    R_liq=moles_heavy_isotope / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
                 )
 
@@ -135,49 +139,21 @@ class IsotopeMethods(BackendMethods):
         self,
         *,
         output,
-        molar_mass,
+        # molar_mass,
         cell_id,
-        moles_heavy_isotope,
-        moles_light_isotope,
+        moles_heavy,
+        moles_light,
         relative_humidity,
         temperature,
-        ambient_heavy_isotope_mixing_ratio,
+        delta_heavy,
     ):
         self._bolin_number_body(
             output=output.data,
-            molar_mass=molar_mass,
+            # molar_mass=molar_mass,
             cell_id=cell_id.data,
-            moles_heavy_isotope=moles_heavy_isotope.data,
-            moles_light_isotope=moles_light_isotope.data,
+            moles_heavy=moles_heavy.data,
+            moles_light=moles_light.data,
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
-            ambient_heavy_isotope_mixing_ratio=ambient_heavy_isotope_mixing_ratio.data,
+            delta_heavy=delta_heavy.data,
         )
-
-    @cached_property
-    def _mixing_ratio_body(self):
-        ff = self.formulae_flattened
-
-        @numba.njit(**self.default_jit_flags)
-        def body(
-            output,
-            molar_mass,
-            cell_id,
-            moles_heavy_isotope,
-            moles_light_isotope,
-            relative_humidity,
-            temperature,
-            ambient_heavy_isotope_mixing_ratio,
-        ):
-            for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-                output[i] = ff.isotope_relaxation_timescale__mixing_ratio(
-                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(
-                        temperature
-                    ),
-                    D_light=ff.constants__DO,
-                    R_vap=ambient_heavy_isotope_mixing_ratio,
-                    R_liq=moles_heavy / moles_light,
-                    relative_humidity=relative_humidity[cell_id[i]],
-                )
-
-        return body
