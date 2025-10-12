@@ -451,6 +451,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def isotopic_fractionation(self, heavy_isotopes: tuple):
         for isotope in heavy_isotopes:
             self.backend.isotopic_fractionation(
+                cell_id=self.attributes["cell id"],
+                multiplicity=self.attributes["multiplicity"],
+                cell_volume=self.environment.mesh.dv,
+                dm_total=self.attributes["diffusional growth mass change"],
+                signed_water_mass=self.attributes["signed water mass"],
+                dry_air_density=self.environment["dry_air_density"],
                 molar_mass_heavy=getattr(
                     self.formulae.constants,
                     {
@@ -461,15 +467,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                     }[isotope],
                 ),
                 moles_heavy=self.attributes[f"moles_{isotope}"],
-                dm_total=self.attributes["diffusional growth mass change"],
-                bolin_number=self.attributes[f"Bolin number for {isotope}"],
-                signed_water_mass=self.attributes["signed water mass"],
-                multiplicity=self.attributes["multiplicity"],
-                dry_air_density=self.environment["dry_air_density"],
-                cell_volume=self.environment.mesh.dv,
-                cell_id=self.attributes["cell id"],
-                delta_heavy=self.attributes[f"delta_{isotope}"],
                 moles_light=self.attributes["moles light water"],
+                delta_heavy=self.attributes[f"delta_{isotope}"],
+                bolin_number=self.attributes[f"Bolin number for {isotope}"],
             )
             self.attributes.mark_updated(f"moles_{isotope}")
 
