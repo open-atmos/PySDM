@@ -1,4 +1,4 @@
-class GedzelmanArnold1994:  # pylint: disable=too-few-public-methods
+class GedzelmanAndArnold1994:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
@@ -11,8 +11,9 @@ class GedzelmanArnold1994:  # pylint: disable=too-few-public-methods
         Fk_Howell,
         R_vap,
         R_liq,
-        relative_humidity,  # molar_heavy
-    ):  # pylint: disable=unused-argument
+        relative_humidity,
+    ):
+        # pylint: disable=unused-argument
         # dR_liq_dt = (
         #     3
         #     * D_ratio_heavy_to_light
@@ -31,12 +32,10 @@ class GedzelmanArnold1994:  # pylint: disable=too-few-public-methods
         # Bo = (1 / dR_liq_dt * R_liq * dm_dt_over_m)
         D_heavy = D_ratio_heavy_to_light * D_light
         RH_eq = 1  # TODO check
-        Fd_Fick = const.rho_w / const.rho_STP / D_light  # TODO check
         return (
-            const.rho_w
-            / const.rho_STP
+            1
             * (relative_humidity - RH_eq)
-            / (Fk_Howell + Fd_Fick)
+            / (Fk_Howell * const.rho_STP / const.rho_w + 1 / D_light)
             / (
                 relative_humidity * D_heavy * (R_vap / R_liq - 1 / alpha)
                 + (1 - relative_humidity)

@@ -201,7 +201,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return mass_2H_vap / mass_dry_air
 
     @staticmethod
-    def mixing_ratio_to_R_vap(
+    def mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
         mixing_ratio, n_vap_total, heavy_molar_mass, mass_dry_air
     ):
         """

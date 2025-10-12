@@ -460,17 +460,16 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                         "18O": "M_1H2_18O",
                     }[isotope],
                 ),
+                moles_heavy=self.attributes[f"moles_{isotope}"],
                 dm_total=self.attributes["diffusional growth mass change"],
                 bolin_number=self.attributes[f"Bolin number for {isotope}"],
                 signed_water_mass=self.attributes["signed water mass"],
                 multiplicity=self.attributes["multiplicity"],
-                moles_heavy=self.attributes[f"moles_{isotope}"],
                 dry_air_density=self.environment["dry_air_density"],
                 cell_volume=self.environment.mesh.dv,
                 cell_id=self.attributes["cell id"],
-                ambient_isotope_mixing_ratio=self.environment[
-                    f"mixing_ratio_{isotope}"
-                ],
+                delta_heavy=self.attributes[f"delta_{isotope}"],
+                moles_light=self.attributes["moles light water"],
             )
             self.attributes.mark_updated(f"moles_{isotope}")
 

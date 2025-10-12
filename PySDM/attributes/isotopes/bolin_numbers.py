@@ -10,28 +10,30 @@ from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
 class BolinNumberImpl(DerivedAttribute):
     def __init__(self, builder, *, heavy_isotope: str):
-        self.moles_heavy_isotope = builder.get_attribute("moles_" + heavy_isotope)
-        self.molar_mass = getattr(
-            builder.particulator.formulae.constants, f"M_{heavy_isotope}"
-        )
+        self.moles_heavy = builder.get_attribute(f"moles_{heavy_isotope}")
+        self.delta_heavy = builder.get_attribute(f"delta_{heavy_isotope}")
+        # self.molar_mass = getattr(
+        #     builder.particulator.formulae.constants, f"M_{heavy_isotope}"
+        # )
         super().__init__(
             builder,
             name="Bolin number for " + heavy_isotope,
-            dependencies=(self.moles_heavy_isotope,),
+            dependencies=(
+                self.moles_heavy,
+                self.delta_heavy,
+            ),
         )
 
     def recalculate(self):
         self.particulator.backend.bolin_number(
             output=self.data,
-            molar_mass=self.molar_mass,
+            # molar_mass=self.molar_mass,
             cell_id=self.particulator.attributes["cell id"],
-            moles_heavy_isotope=self.moles_heavy_isotope,
-            moles_light_isotope=self.particulator.attributes["moles light water"],
-            relative_humidity=self.particulator.environment["RH"],
+            moles_heavy=self.moles_heavy.data,
+            moles_light=self.particulator.attributes["moles light water"],
             temperature=self.particulator.environment["T"],
-            ambient_heavy_isotope_mixing_ratio=self.particulator.environment[
-                f"mixing ratio {heavy_isotope}"
-            ],
+            relative_humidity=self.particulator.environment["RH"],
+            delta_heavy=self.delta_heavy.data,
         )
 
 
