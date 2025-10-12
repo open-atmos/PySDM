@@ -72,30 +72,30 @@ class IsotopeMethods(BackendMethods):
     def isotopic_fractionation(
         self,
         *,
+        cell_id,
         multiplicity,
+        cell_volume,
         dm_total,
-        bolin_number,
         signed_water_mass,
+        dry_air_density,
+        molar_mass_heavy,
         moles_heavy,
         moles_light,
-        molar_mass_heavy,
-        cell_id,
-        cell_volume,
-        dry_air_density,
         delta_heavy,
+        bolin_number,
     ):
         self._isotopic_fractionation_body(
+            cell_id=cell_id.data,
             multiplicity=multiplicity.data,
+            cell_volume=cell_volume.data,
             dm_total=dm_total.data,
-            bolin_number=bolin_number.data,
             signed_water_mass=signed_water_mass.data,
+            dry_air_density=dry_air_density.data,
+            molar_mass_heavy=molar_mass_heavy.data,
             moles_heavy=moles_heavy.data,
             moles_light=moles_light.data,
-            molar_mass_heavy=molar_mass_heavy,
-            cell_id=cell_id.data,
-            cell_volume=cell_volume,
-            dry_air_density=dry_air_density.data,
             delta_heavy=delta_heavy.data,
+            bolin_number=bolin_number.data,
         )
 
     @cached_property
@@ -128,7 +128,7 @@ class IsotopeMethods(BackendMethods):
                     ),
                     D_light=1e-5,  # ff.constants__DO,
                     Fk_Howell=1,  # TODO
-                    R_vap=delta_heavy[cell_id[i]],
+                    R_vap=delta_heavy[cell_id[i]],  # TODO
                     R_liq=moles_heavy_isotope / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
                 )

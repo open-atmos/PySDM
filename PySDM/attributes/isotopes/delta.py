@@ -34,7 +34,7 @@ class DeltaImpl(DerivedAttribute):
 
     def recalculate(self):
         self.data.ratio(self.heavy_isotope.get(), self.light_isotope.get())
-        self.particulator.backend.isotopic_delta(
+        self.particulator.backend.isotopic_delta(  ## Question: can we reuse it?
             self.data, self.data, self.reference_ratio
         )
 
