@@ -14,20 +14,21 @@ class GedzelmanAndArnold1994:  # pylint: disable=too-few-public-methods
         relative_humidity,
     ):
         # pylint: disable=unused-argument
-        # dR_liq_dt = (
+        # dR_liq_dt_over_R_liq = (
         #     3
         #     * D_ratio_heavy_to_light
-        #     * rho_s
+        #     * D_light
+        #     * const.rho_STP
         #     / const.rho_w
         #     / radius**2
         #     * (
-        #         relative_humidity * (R_vap - R_liq / alpha)
+        #         relative_humidity * (R_vap / R_liq - 1 / alpha)
         #         + (1 - relative_humidity)
         #         / (1 + Fk_Howell * D_light)
-        #         * R_liq
         #         * (1 / D_ratio_heavy_to_light - 1 / alpha)
         #     )
         # )
+        # Bo = 1 / (n / dn_dt + 1)
         # dm_dt_over_m = 3 / r**2 * r_dr_dt
         # Bo = (1 / dR_liq_dt * R_liq * dm_dt_over_m)
         D_heavy = D_ratio_heavy_to_light * D_light

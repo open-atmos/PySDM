@@ -468,7 +468,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 ),
                 # moles_light_water=self.attributes["moles light water"],
                 moles_heavy=self.attributes[f"moles_{isotope}"],
-                delta_heavy=self.attributes[f"delta_{isotope}"],
+                molar_mixing_ratio=self.environment[f"molar mixing ratio {isotope}"],
+                # delta_heavy=self.attributes[f"delta_{isotope}"],
                 bolin_number=self.attributes[f"Bolin number for {isotope}"],
             )
             self.attributes.mark_updated(f"moles_{isotope}")

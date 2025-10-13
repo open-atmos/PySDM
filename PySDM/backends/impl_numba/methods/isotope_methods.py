@@ -49,7 +49,7 @@ class IsotopeMethods(BackendMethods):
             #   dm_total (actual - incl. population/curvature effects)
             # output:
             #   dm_heavy = dm_total / Bo * m'/m
-
+            # Question: do we need molar mass for heavy isotopes; is it possible to define molar Bolin number?
             for sd_id in range(multiplicity.shape[0]):
                 mass_ratio_heavy_to_total = (
                     moles_heavy[sd_id] * molar_mass_heavy
@@ -80,6 +80,7 @@ class IsotopeMethods(BackendMethods):
         moles_heavy,
         delta_heavy,
         bolin_number,
+        molar_mixing_ratio,
     ):
         self._isotopic_fractionation_body(
             cell_id=cell_id.data,
@@ -92,6 +93,7 @@ class IsotopeMethods(BackendMethods):
             moles_heavy=moles_heavy.data,
             delta_heavy=delta_heavy.data,
             bolin_number=bolin_number.data,
+            molar_mixing_ratio=molar_mixing_ratio.data,  # add isotope
         )
 
     @cached_property
@@ -118,7 +120,7 @@ class IsotopeMethods(BackendMethods):
                     alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(
                         temperature[cell_id[i]]
                     ),
-                    D_light=1e-5,  # ff.constants__DO,
+                    D_light=ff.constants.D0,
                     Fk_Howell=1,  # TODO
                     R_vap=delta_heavy[cell_id[i]],  # TODO
                     R_liq=moles_heavy_isotope / moles_light_isotope,
