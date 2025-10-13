@@ -6,9 +6,10 @@ from PySDM.physics import convert_to, si
 
 
 def plot(
-    var, qlabel, fname, output, vmin=None, vmax=None, cmin=None, cmax=None, line=None
+    var, qlabel, fname, output, vmin=None, vmax=None, cmin=None, cmax=None, line=None,colors=None,
 ):
     line = line or {15: ":", 20: "--", 25: "-", 30: "-."}
+    colors = colors or {15: 'k', 20: 'tab:blue', 25: 'tab:orange', 30: 'tab:green'}
     dt = output["t"][1] - output["t"][0]
     dz = output["z"][1] - output["z"][0]
     tgrid = np.concatenate(((output["t"][0] - dt / 2,), output["t"] + dt / 2))
@@ -44,11 +45,11 @@ def plot(
         for line_t, line_s in line.items():
             if last_t < line_t * si.min <= t:
                 params["ls"] = line_s
-                ax2.plot(x, z, **params)
+                ax2.plot(x, z, color=colors[line_t])
                 if vmin is not None and vmax is not None:
-                    ax1.axvline(t, ymin=vmin, ymax=vmax, **params)
+                    ax1.axvline(t, ymin=vmin, ymax=vmax, color=colors[line_t])
                 else:
-                    ax1.axvline(t, **params)
+                    ax1.axvline(t, color=colors[line_t])
         last_t = t
 
     show_plot(filename=fname, inline_format="png")
