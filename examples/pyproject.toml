@@ -4,4 +4,4 @@ local_scheme = "no-local-version"
 version_scheme = "post-release"
 
 [build-system]
-requires = ['setuptools==80.9.0', 'setuptools-scm==9.0.1']
+requires = ['setuptools==80.9.0', 'setuptools-scm==9.2.1']
