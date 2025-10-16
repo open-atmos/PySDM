@@ -40,6 +40,7 @@ class IsotopeMethods(BackendMethods):
             moles_heavy,
             delta_heavy,
             bolin_number,
+            molar_mixing_ratio,
         ):
             # assume Bo = tau' / tau_total
             #           = (m'/dm') / (m/dm)
@@ -93,7 +94,7 @@ class IsotopeMethods(BackendMethods):
             moles_heavy=moles_heavy.data,
             delta_heavy=delta_heavy.data,
             bolin_number=bolin_number.data,
-            molar_mixing_ratio=molar_mixing_ratio.data,  # add isotope
+            molar_mixing_ratio=molar_mixing_ratio.data,
         )
 
     @cached_property
