@@ -136,7 +136,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
         delta,
         mass_total,
         molar_mass_heavy_molecule,
-        R_STD,
+        reference_ratio,
         light_atoms_per_light_molecule,
     ):
         return mass_total / (
@@ -146,7 +146,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
                 / (
                     light_atoms_per_light_molecule
                     * (delta + 1)
-                    * R_STD
+                    * reference_ratio
                     * molar_mass_heavy_molecule
                 )
             )
