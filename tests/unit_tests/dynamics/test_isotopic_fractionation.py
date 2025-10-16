@@ -26,8 +26,6 @@ DUMMY_ATTRIBUTES = {
 }
 
 
-# @pytest.fixture
-# def isotope_settings_factory(backend_class):
 def isotope_settings_factory(
     request_attributes=None,
     initial_values_for_attributes=None,
@@ -37,7 +35,6 @@ def isotope_settings_factory(
         isotope_relaxation_timescale="GedzelmanAndArnold1994",
         isotope_diffusivity_ratios="GrahamsLaw",
         isotope_equilibrium_fractionation_factors="VanHook1968",
-        # saturation_vapour_pressure="FlatauWalkoCotton",
     )
     RH = 1
     multiplicity = np.ones(1)
@@ -82,8 +79,6 @@ def isotope_settings_factory(
             particulator.environment[f"molar mixing ratio {isotope}"] = 0  #
 
     return formulae, particulator
-
-    # return _create
 
 
 class TestIsotopicFractionation:
@@ -171,32 +166,69 @@ class TestIsotopicFractionation:
         assert particulator.attributes["moles_2H"][0] == initial_values["moles_2H"]
 
     @staticmethod
-    @pytest.mark.parametrize("R_rain", np.linspace(-0.14, -0.02, 5))
+    @pytest.mark.parametrize("molecular_R_rain", np.linspace(0.8, 1, 5) * VSMOW_R_2H)
     def test_initial_condition_for_delta_isotopes(
         backend_instance,
-        isotope_settings_factory,
-        R_rain,
+        molecular_R_rain,
     ):
         # arrange
-        m_t = 1 * si.kg
-        n_total = m_t / Formulae().constants.Mv
-        H_per_light_molecule = 2
-        formulae, particulator = isotope_settings_factory(
-            initial_values_for_attributes={
-                "moles_2H": (
-                    H_per_light_molecule * n_total * R_rain / (1 + R_rain)
-                )  # assuming one isotope
-            },
-            request_attributes=["delta_2H"],
-        )
+        formulae = Formulae()
         const = formulae.constants
+        temperature = formulae.trivia.C2K(10) * si.K
+        dt = -1 * si.s
+        cell_volume = 1 * si.m**3
+        mass_dry_air = 1 * si.ng
+        m_t = 1 * si.kg
+
+        attributes = DUMMY_ATTRIBUTES.copy()
+        moles_total = m_t / const.Mv
+
+        for isotope in HEAVY_ISOTOPES:
+            attributes[f"moles_{isotope}"] = 0 * si.mol
+
+        heavy_moles_sum_without_2H = sum(
+            attributes[f"moles_{isotope}"] for isotope in HEAVY_ISOTOPES
+        )
+        moles_2H = (
+            molecular_R_rain
+            * (moles_total - heavy_moles_sum_without_2H)
+            / (1 + molecular_R_rain)
+        )
+        attributes["moles_2H"] = moles_2H
+        attributes["signed water mass"] = m_t
+        attributes["multiplicity"] = np.ones(1)
+        builder = Builder(
+            n_sd=1,
+            backend=backend_instance,
+            environment=Box(dv=cell_volume, dt=dt),
+        )
+        builder.add_dynamic(Condensation())
+        builder.add_dynamic(IsotopicFractionation(isotopes=HEAVY_ISOTOPES))
+        builder.request_attribute("delta_2H")
+
+        particulator = builder.build(attributes=attributes, products=())
+        particulator.environment["T"] = temperature
+        particulator.environment["RH"] = 1
+        particulator.environment["dry_air_density"] = mass_dry_air / cell_volume
+        for isotope in HEAVY_ISOTOPES:
+            # if isotope != "2H":
+            particulator.environment[f"molar mixing ratio {isotope}"] = 0
+
+        R_rain = (
+            particulator.attributes["moles_2H"][0]
+            / particulator.attributes["moles_1H"][0]
+        )
         delta_rain = formulae.trivia.isotopic_ratio_2_delta(R_rain, const.VSMOW_R_2H)
 
         # assert
         np.testing.assert_approx_equal(
+            particulator.attributes["moles_2H"][0],
+            moles_2H,
+            significant=5,
+        )
+        np.testing.assert_approx_equal(
             particulator.attributes["delta_2H"][0],
             delta_rain,
-            significant=5,
         )
 
     @staticmethod
@@ -209,7 +241,6 @@ class TestIsotopicFractionation:
         ),
     )
     def test_scenario_from_gedzelman_fig_2_for_single_superdroplet_and_single_isotope(
-        isotope_settings_factory,
         RH,
         delta_rain,
         sign_of_dR_vap,
@@ -217,48 +248,66 @@ class TestIsotopicFractionation:
         backend_class,
     ):
         # arrange
-        cell_volume = 1 * si.m**3
-        m_t = 1 * si.kg
-
-        default_formulae = Formulae()
-        formulae, particulator = isotope_settings_factory(
-            initial_values_for_attributes={
-                "signed water mass": m_t,
-                "moles_2H": default_formulae.trivia.moles_heavy_atom(
-                    delta=delta_rain,
-                    mass_total=m_t,
-                    molar_mass_heavy_molecule=default_formulae.constants.M_2H_1H_16O,
-                    reference_ratio=default_formulae.constants.VSMOW_R_2H,
-                    light_atoms_per_light_molecule=2,
-                ),
-            },
-            request_attributes=["delta_2H"],
-            additional_parameters={"cell_volume": cell_volume},
+        formulae = Formulae(  # TODO
+            isotope_relaxation_timescale="GedzelmanAndArnold1994",
+            isotope_diffusivity_ratios="GrahamsLaw",
+            isotope_equilibrium_fractionation_factors="VanHook1968",
         )
-        particulator.environment["RH"] = RH
-        temperature = particulator.environment["T"][0]
-
         const = formulae.constants
-        R_vap = formulae.trivia.isotopic_delta_2_ratio(
-            -200 * PER_MILLE, const.VSMOW_R_2H
-        )
-        n_vap_total = formulae.trivia.n_vap_total(
-            RH=RH,
-            temperature=temperature,
-            pvs_water=formulae.saturation_vapour_pressure.pvs_water(temperature),
-            cell_volume=cell_volume,
-        )
-        # mass_2H_vap = n_vap_total * (R_vap / (1 + R_vap)) * const.M_2H_1H_16O
+        cell_volume = 1 * si.m**3
+        multiplicity = np.ones(1)
+        m_t = 1 * si.kg
+        temperature = formulae.trivia.C2K(10) * si.K
+        dt = -1 * si.s
+        mass_dry_air = 1 * si.ng
 
-        molar_mixing_ratio_2H = (
-            formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
-                R_vap=R_vap,
-                n_vap_total=n_vap_total,
-                mass_dry_air=particulator.environment["dry_air_density"][0]
-                * cell_volume,
-            )
+        # initial_R_vap = formulae.trivia.isotopic_delta_2_ratio(
+        #     -200 * PER_MILLE, const.VSMOW_R_2H
+        # )
+        n_vap_total = (
+            RH
+            * formulae.saturation_vapour_pressure.pvs_water(temperature)
+            * cell_volume
+            / const.R_str
+            / temperature
         )
-        particulator.environment["molar mixing ratio 2H"] = molar_mixing_ratio_2H
+
+        attributes = DUMMY_ATTRIBUTES.copy()
+        attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(  # CHECK
+            delta=delta_rain,
+            mass_total=m_t,
+            molar_mass_heavy_molecule=const.M_2H_1H_16O,
+            reference_ratio=const.VSMOW_R_2H,
+            light_atoms_per_light_molecule=2,
+        )
+        for isotope in HEAVY_ISOTOPES:
+            if isotope != "2H":
+                attributes[f"moles_{isotope}"] = 0 * si.moles
+
+        attributes["signed water mass"] = m_t
+        attributes["multiplicity"] = multiplicity
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(
+                formulae=formulae,
+            ),
+            environment=Box(dv=cell_volume, dt=dt),
+        )
+        builder.add_dynamic(Condensation())
+        builder.add_dynamic(IsotopicFractionation(isotopes=HEAVY_ISOTOPES))
+        builder.request_attribute("delta_2H")
+
+        particulator = builder.build(attributes=attributes, products=())
+        particulator.environment["T"] = temperature
+        particulator.environment["RH"] = RH
+        particulator.environment["dry_air_density"] = mass_dry_air / cell_volume
+        # particulator.environment["molar mixing ratio 2H"] = (
+        #     formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+        #         R_vap=initial_R_vap,
+        #         n_vap_total=n_vap_total,
+        #         mass_dry_air=mass_dry_air,
+        #     )
+        # )
         for isotope in HEAVY_ISOTOPES:
             if isotope != "2H":
                 particulator.environment[f"molar mixing ratio {isotope}"] = 0
@@ -267,7 +316,6 @@ class TestIsotopicFractionation:
                 )
 
         # sanity check for initial condition
-
         np.testing.assert_approx_equal(
             particulator.attributes["delta_2H"][0],
             delta_rain,
