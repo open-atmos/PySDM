@@ -38,7 +38,6 @@ class IsotopeMethods(BackendMethods):
             dry_air_density,
             molar_mass_heavy,
             moles_heavy,
-            delta_heavy,
             bolin_number,
             molar_mixing_ratio,
         ):
@@ -58,12 +57,13 @@ class IsotopeMethods(BackendMethods):
                 dm_heavy = (
                     dm_total[sd_id] / bolin_number[sd_id] * mass_ratio_heavy_to_total
                 )
-                moles_heavy[sd_id] += dm_heavy / molar_mass_heavy
+                dn_heavy = dm_heavy / molar_mass_heavy
+                moles_heavy[sd_id] += dn_heavy
                 mass_of_dry_air = (
                     dry_air_density[sd_id] * cell_volume
                 )  # TODO: pass from outside
-                delta_heavy[cell_id[sd_id]] -= (  # FIXME ambient isotope mixing ratio
-                    dm_heavy * multiplicity[sd_id] / mass_of_dry_air
+                molar_mixing_ratio[cell_id[sd_id]] -= (
+                    dn_heavy * multiplicity[sd_id] / mass_of_dry_air
                 )
 
         return body
@@ -79,7 +79,6 @@ class IsotopeMethods(BackendMethods):
         dry_air_density,
         molar_mass_heavy,
         moles_heavy,
-        delta_heavy,
         bolin_number,
         molar_mixing_ratio,
     ):
@@ -92,7 +91,6 @@ class IsotopeMethods(BackendMethods):
             dry_air_density=dry_air_density.data,
             molar_mass_heavy=molar_mass_heavy,
             moles_heavy=moles_heavy.data,
-            delta_heavy=delta_heavy.data,
             bolin_number=bolin_number.data,
             molar_mixing_ratio=molar_mixing_ratio.data,
         )
@@ -109,7 +107,7 @@ class IsotopeMethods(BackendMethods):
             temperature,
             moles_light_water,
             moles_heavy,
-            delta_heavy,
+            molar_mixing_ratio,
         ):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 moles_heavy_isotope = moles_heavy[i]
@@ -123,7 +121,7 @@ class IsotopeMethods(BackendMethods):
                     ),
                     D_light=ff.constants.D0,
                     Fk_Howell=1,  # TODO
-                    R_vap=delta_heavy[cell_id[i]],  # TODO
+                    R_vap=molar_mixing_ratio[cell_id[i]],
                     R_liq=moles_heavy_isotope / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
                 )
@@ -139,7 +137,7 @@ class IsotopeMethods(BackendMethods):
         temperature,
         moles_light_water,
         moles_heavy,
-        delta_heavy,
+        molar_mixing_ratio,
     ):
         self._bolin_number_body(
             output=output.data,
@@ -148,5 +146,5 @@ class IsotopeMethods(BackendMethods):
             temperature=temperature.data,
             moles_light_water=moles_light_water.data,
             moles_heavy=moles_heavy.data,
-            delta_heavy=delta_heavy.data,
+            molar_mixing_ratio=molar_mixing_ratio.data,
         )
