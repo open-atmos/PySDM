@@ -210,5 +210,9 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return n_vap_heavy / n_vap_total / (1 - n_vap_heavy / n_vap_total)
 
     @staticmethod
-    def n_vap_total(const, RH, temperature, pvs_water, cell_volume):
-        return RH * pvs_water * cell_volume / const.R_str / temperature
+    def moles_heavy_isotope(molecular_R_rain, moles_total, moles):
+        return (
+            molecular_R_rain
+            * (moles_total - heavy_moles_sum_without_2H)
+            / (1 + molecular_R_rain)
+        )
