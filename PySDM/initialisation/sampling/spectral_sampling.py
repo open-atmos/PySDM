@@ -99,33 +99,41 @@ class AlphaSampling(
 ):  # pylint: disable=too-few-public-methods
     """as in [Matsushima et al. 2023](https://doi.org/10.5194/gmd-16-6211-2023)"""
 
-    def __init__(self, spectrum, alpha, size_range=None, dist_0=None, dist_1=None):
+    def __init__(self, spectrum, alpha, size_range=None, dist_0=None, dist_1=None,interp_points=10000,convert_to=None):
         super().__init__(spectrum, size_range)
         self.alpha = alpha
         if dist_0 is None:
             dist_0 = self.spectrum
         if dist_1 is None:
 
-            def dist_1_inv(y):
-                return (self.size_range[1] - self.size_range[0]) * y
+            if convert_to=="radius":
+                def dist_1_inv(y):
+                    return 4*np.pi/3*(((3/(4*np.pi)*self.size_range[1])**(1/3) - (3/(4*np.pi)*self.size_range[0])**(1/3)) * y + (3/(4*np.pi)*self.size_range[0])**(1/3))**3
+            elif convert_to=="log_radius":
+                def dist_1_inv(y):
+                    radius_0 = (3/(4*np.pi)*self.size_range[0])**(1/3)
+                    radius_1 = (3/(4*np.pi)*self.size_range[1])**(1/3)
+                    return 4*np.pi/3*(np.exp((np.log(radius_1) - np.log(radius_0)) * y + np.log(radius_0)))**3
+            elif convert_to=="log":
+                def dist_1_inv(y):
+                    return np.exp((np.log(self.size_range[1]) - np.log(self.size_range[0])) * y + np.log(self.size_range[0]))
+            else:
+                def dist_1_inv(y):
+                    return (self.size_range[1] - self.size_range[0]) * y + self.size_range[0]
 
         else:
             dist_1_inv = dist_1.percentiles
         self.dist_0_cdf = dist_0.cdf
         self.dist_1_inv = dist_1_inv
+        self.x_prime = np.linspace(self.size_range[0], self.size_range[1], num=interp_points)
 
     def sample(
-        self, n_sd, *, backend=None, xprime=None
+        self, n_sd, *, backend=None,
     ):  # pylint: disable=unused-argument
 
-        if xprime is None:
-            even_spec = np.linspace(
-                default_cdf_range[0], default_cdf_range[1], num=2 * n_sd + 3
-            )
-            x_prime = self.spectrum.percentiles(even_spec)
-        sd_cdf = self.dist_0_cdf(x_prime)
+        sd_cdf = self.dist_0_cdf(self.x_prime)
 
-        x_sd_cdf = (1 - self.alpha) * x_prime + self.alpha * self.dist_1_inv(sd_cdf)
+        x_sd_cdf = (1 - self.alpha) * self.x_prime + self.alpha * self.dist_1_inv(sd_cdf)
 
         inv_cdf = interp1d(sd_cdf, x_sd_cdf)
 
