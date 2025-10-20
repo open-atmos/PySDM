@@ -3,10 +3,8 @@ import numpy as np
 import json
 
 from matplotlib import pyplot as plt
-from PySDM_examples.eware_2024.example import run,Settings,SpectrumPlotter
-# from PySDM_examples.Shima_et_al_2009.settings import Settings
-# from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
-from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity,Logarithmic,Linear
+from PySDM_examples.Ware_et_al_2025.example import run,Settings,SpectrumPlotter
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.backends import CPU
 
 
@@ -141,9 +139,6 @@ def main(plot: bool = True, save: str = None):
 if __name__ == "__main__":
     meanoutputs,regular,type_matrix = main(plot=False, save=".")
     
-# results = {"regular":regular,"type_matrix":type_matrix}
-# with open('test_runs_6_29.json', 'w', encoding='UTF-8') as f:
-#     json.dump(results, f)
 
 #%%
 import seaborn as sns

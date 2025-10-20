@@ -3,9 +3,7 @@ import numpy as np
 import json
 
 from matplotlib import pyplot as plt
-from PySDM_examples.eware_2024.example import run,Settings,SpectrumPlotter
-# from PySDM_examples.Shima_et_al_2009.settings import Settings
-# from PySDM_examples.Shima_et_al_2009.spectrum_plotter import SpectrumPlotter
+from PySDM_examples.Ware_et_al_2025.example import run,Settings,SpectrumPlotter
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity,Logarithmic,Linear
 from PySDM.backends import CPU
 
@@ -13,12 +11,12 @@ from PySDM.backends import CPU
 def main(plot: bool = True, save: str = None):
     backend = CPU()
     n_sds = [13,14,15,16,17,18,19]
-    dts = [20,10,5]#, "adaptive"]
+    dts = [20,10,5,2,1]#, "adaptive"]
     sampling_strat = [ConstantMultiplicity,Logarithmic, Linear]
     sampling_strat_names = ["ConstantMultiplicity","Logarithmic", "Linear"]
     regular = {"ConstantMultiplicity":{},"Logarithmic":{}, "Linear":{}}
     adaptive = {"ConstantMultiplicity":{},"Logarithmic":{}, "Linear":{}}
-    iters_without_warmup = 5
+    iters_without_warmup = 30
     base_time = None
     base_error = None
 
@@ -56,7 +54,7 @@ def main(plot: bool = True, save: str = None):
                 one_for_warmup = 1
                 for it in range(iters_without_warmup + one_for_warmup):
                     settings = Settings()
-                    backend.formulae.seet = it
+                    backend.formulae.seed = it
 
                     settings.n_sd = 2**n_sd
                     settings.dt = dt #if dt != "adaptive" else max(dts[:-1])
@@ -133,6 +131,10 @@ def main(plot: bool = True, save: str = None):
         deficit_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
         mean_time_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
         sanity_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
+        plotter = SpectrumPlotter(Settings(), legend=False)
+        # plotter.fig = fig
+        # plotter.ax = axs[i, j]
+        plotter.smooth = False
         for i, dt in enumerate(dts):
             for j, n_sd in enumerate(n_sds):
                 sanity_heatmap[i][j] = "dt="+str(dt)+", n_sd="+str(n_sd)
@@ -142,14 +144,15 @@ def main(plot: bool = True, save: str = None):
                 errors = []
                 one_for_warmup = 1
                 for it in range(iters_without_warmup + one_for_warmup):
-                    settings = Settings(seed=it)
+                    settings = Settings()
+                    backend.formulae.seed = it
 
                     settings.n_sd = 2**n_sd
                     settings.dt = dt #if dt != "adaptive" else max(dts[:-1])
                     settings.adaptive = True
                     settings.sampling = strat(settings.spectrum)
 
-                    states, exec_time, deficit = run(settings)
+                    states, exec_time, deficit = run(settings,backend)
                     deficit *= settings.dt*settings.dv*settings.rho
                     print(f"{dt=}, {n_sd=}, {exec_time=}, {it=}")
                     if it != 0:
@@ -174,10 +177,7 @@ def main(plot: bool = True, save: str = None):
                 last_step_error = sum(errors) / len(errors)
                 error_std = np.std(errors)
 
-                plotter = SpectrumPlotter(settings, legend=False)
-                plotter.fig = fig
-                plotter.ax = axs[i, j]
-                plotter.smooth = False
+
                 # for step, vals in mean_output.items():
                 #     error = plotter.plot(vals, step * settings.dt)
                 # last_step_error = error/1e3 #grams to kg
@@ -238,7 +238,3 @@ def main(plot: bool = True, save: str = None):
 
 if __name__ == "__main__":
     regular,adaptive,type_matrix = main(plot=False, save=".")
-    
-results = {"regular":regular,"adaptive":adaptive,"type_matrix":type_matrix}
-with open('test_runs_6_29.json', 'w', encoding='UTF-8') as f:
-    json.dump(results, f)
