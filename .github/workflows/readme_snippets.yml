@@ -32,6 +32,8 @@ jobs:
           python -We readme.py
           sed -i -e 's/CPU/GPU/g' readme.py
           python -We readme.py
+          sed -i -e 's/GPU/JAX/g' readme.py
+          python -We readme.py
       
       - name: artefacts
         if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest'
