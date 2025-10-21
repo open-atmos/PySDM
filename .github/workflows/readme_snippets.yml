@@ -33,6 +33,7 @@ jobs:
           sed -i -e 's/CPU/GPU/g' readme.py
           python -We readme.py
           sed -i -e 's/GPU/JAX/g' readme.py
+          sed -i '/pyplot\.legend()/,$d' readme.py
           python -We readme.py
       
       - name: artefacts
