@@ -139,9 +139,6 @@ class Simulation:
         # output["water_mass"].append(
         #     self.particulator.attributes["signed water mass"].data.tolist()
         # )
-        # output["T_frz"].append(
-        #     self.particulator.attributes["temperature of last freezing"].data.tolist()
-        # )
         output["T_frz"] = self.particulator.attributes[
             "temperature of last freezing"
         ].data.tolist()
@@ -175,9 +172,7 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            # print( output["t"][-1], output["T"][-1], output["RH"][-1], output["LWC"][-1], output["IWC"][-1] )
-
-            if output["LWC"][-1] < output["LWC"][0]:
+            if np.isclose(output["LWC"][-1],0,rtol=0,atol=1e-15):
                 print("all particles frozen or evaporated")
                 # Assert for water saturation
                 test_water_saturation = np.asarray(output["RH"])
