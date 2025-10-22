@@ -1,11 +1,13 @@
 """basic tests for threshold freezing temperatures"""
 
 from pathlib import Path
+import numpy as np
 
 import pytest
 
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Luettmer_homogeneous_freezing
+from PySDM.physics.constants_defaults import HOMOGENEOUS_FREEZING_THRESHOLD
 
 PLOT = False
 
@@ -14,16 +16,20 @@ PLOT = False
 def variables_fixture():
     return notebook_vars(
         file=Path(Luettmer_homogeneous_freezing.__file__).parent
-        / "hom_freezing_cloud_droplets.ipynb",
+        / "simple_homogenous_freezing_example.ipynb",
         plot=PLOT,
     )
 
 
 class TestNotebook:
     @staticmethod
-    def test_1(variables):
-        assert variables["n_sd"] == 100
+    def test_freezing_temperatures(variables):
+        for simulation in variables["simulations"]:
+            output = simulation["ensemble_member_outputs"][0]
+            T_frz = np.asarray(output["T_frz"])
 
-    @staticmethod
-    def test_2(variables):
-        print(len(variables["simulations"]))
+            # assert
+            assert all(np.isfinite(T_frz))
+            assert all(T_frz > 0)
+            assert all(T_frz - HOMOGENEOUS_FREEZING_THRESHOLD > -0.5)
+
