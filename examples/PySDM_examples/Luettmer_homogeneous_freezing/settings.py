@@ -7,8 +7,7 @@ from PySDM import Formulae
 from PySDM.physics.constants import si
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
-from tests.unit_tests.backends.test_oxidation import formulae
-from PySDM.dynamics.collisions.collision_kernels import Golovin, Geometric
+from PySDM.dynamics.collisions.collision_kernels import Geometric
 
 
 class Settings:
@@ -57,7 +56,6 @@ class Settings:
         self.mass_of_dry_air = 1000 * si.kilogram
         self.initial_pressure = p0
         self.initial_water_supersaturation = RH_0
-        # self.initial_ice_supersaturation = RHi_0
         self.kappa = kappa
         self.initial_temperature = T0
 

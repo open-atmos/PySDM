@@ -91,22 +91,34 @@ class Simulation:
             PySDM_products.AmbientRelativeHumidity(name="RH_ice", unit="%"),
             PySDM_products.AmbientTemperature(name="T"),
             PySDM_products.AmbientPressure(name="p", unit="hPa"),
-            PySDM_products.WaterMixingRatio(name="water", radius_range=(0, np.inf)),
-            PySDM_products.WaterMixingRatio(name="ice", radius_range=(-np.inf, 0)),
-            PySDM_products.WaterMixingRatio(
-                name="total", radius_range=(-np.inf, np.inf)
-            ),
+            PySDM_products.WaterMixingRatio(name="LWC", radius_range=(0, np.inf)),
+            PySDM_products.WaterMixingRatio(name="IWC", radius_range=(-np.inf, 0)),
             PySDM_products.AmbientWaterVapourMixingRatio(
-                name="vapour", var="water_vapour_mixing_ratio"
+                name="qv", var="water_vapour_mixing_ratio"
             ),
             PySDM_products.ParticleSpecificConcentration(
-                name="n_s", radius_range=(0, np.inf), unit="kg^-1"
+                name="ns", radius_range=(0, np.inf), unit="kg^-1"
             ),
             PySDM_products.ParticleSpecificConcentration(
-                name="n_i", radius_range=(-np.inf, 0), unit="kg^-1"
+                name="ni", radius_range=(-np.inf, 0), unit="kg^-1"
             ),
-            PySDM_products.MeanRadius(name="r_s", radius_range=(0, np.inf)),
-            PySDM_products.MeanRadius(name="r_i", radius_range=(-np.inf, 0)),
+            PySDM_products.MeanRadius(name="rs", radius_range=(0, np.inf)),
+            PySDM_products.MeanRadius(name="ri", radius_range=(-np.inf, 0)),
+        ]
+        self.output_product_list = [
+            "z",
+            "t",
+            "T",
+            "p",
+            "RH",
+            "RH_ice",
+            "LWC",
+            "IWC",
+            "qv",
+            "ns",
+            "ni",
+            "rs",
+            "ri",
         ]
 
         self.particulator = builder.build(attributes, products)
@@ -123,22 +135,12 @@ class Simulation:
     def save(self, output):
         cell_id = 0
 
-        output["z"].append(self.particulator.products["z"].get()[cell_id])
-        output["t"].append(self.particulator.products["t"].get())
-        output["RH"].append(self.particulator.products["RH"].get()[cell_id])
-        output["RHi"].append(self.particulator.products["RH_ice"].get()[cell_id])
-        output["T"].append(self.particulator.products["T"].get()[cell_id])
-        output["P"].append(self.particulator.products["p"].get()[cell_id])
-        output["LWC"].append(self.particulator.products["water"].get()[cell_id])
-        output["IWC"].append(self.particulator.products["ice"].get()[cell_id])
-        output["qv"].append(self.particulator.products["vapour"].get()[cell_id])
-        output["ns"].append(self.particulator.products["n_s"].get()[cell_id])
-        output["ni"].append(self.particulator.products["n_i"].get()[cell_id])
-        output["rs"].append(self.particulator.products["r_s"].get()[cell_id])
-        output["ri"].append(self.particulator.products["r_i"].get()[cell_id])
-        # output["water_mass"].append(
-        #     self.particulator.attributes["signed water mass"].data.tolist()
-        # )
+        for key in self.output_product_list:
+            if key == "t":
+                output[key].append(self.particulator.products[key].get())
+            else:
+                output[key].append(self.particulator.products[key].get()[cell_id])
+
         output["T_frz"] = self.particulator.attributes[
             "temperature of last freezing"
         ].data.tolist()
@@ -148,22 +150,10 @@ class Simulation:
         print("Starting simulation...")
 
         output = {
-            "t": [],
-            "z": [],
-            "RH": [],
-            "RHi": [],
-            "T": [],
-            "P": [],
-            "LWC": [],
-            "IWC": [],
-            "qv": [],
-            "ns": [],
-            "ni": [],
-            "rs": [],
-            "ri": [],
-            # "water_mass": [],
             "T_frz": [],
         }
+        for key in self.output_product_list:
+            output[key] = []
 
         self.save(output)
 
@@ -172,7 +162,7 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            if np.isclose(output["LWC"][-1],0,rtol=0,atol=1e-15):
+            if np.isclose(output["LWC"][-1], 0, rtol=0, atol=1e-15):
                 print("all particles frozen or evaporated")
                 # Assert for water saturation
                 test_water_saturation = np.asarray(output["RH"])

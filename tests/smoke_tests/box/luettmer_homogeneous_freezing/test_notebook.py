@@ -32,4 +32,3 @@ class TestNotebook:
             assert all(np.isfinite(T_frz))
             assert all(T_frz > 0)
             assert all(T_frz - HOMOGENEOUS_FREEZING_THRESHOLD > -0.5)
-

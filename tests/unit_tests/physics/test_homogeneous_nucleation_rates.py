@@ -109,7 +109,7 @@ class TestHomogeneousIceNucleationRate:
     )
     def test_fig_1_in_spichtinger_et_al_2023(
         pvs_parametrisation, context, plot=False
-    ):  # pylint disable=too-many-locals
+    ):  # pylint: disable=too-many-locals
         # arrange
         si = physics.si
         formulae = Formulae(
