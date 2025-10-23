@@ -9,3 +9,6 @@ try:
 except PackageNotFoundError:
     # package is not installed
     pass
+
+import PySDM
+assert PySDM.__version__ == __version__
