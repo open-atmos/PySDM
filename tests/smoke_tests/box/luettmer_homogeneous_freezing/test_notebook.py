@@ -20,6 +20,7 @@ def variables_fixture():
         plot=PLOT,
     )
 
+
 @staticmethod
 def test_freezing_temperatures(variables):
     for simulation in variables["simulations"]:

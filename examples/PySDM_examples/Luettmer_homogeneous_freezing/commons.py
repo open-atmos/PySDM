@@ -1,12 +1,11 @@
-# import numpy as np
+"""commons for homogeneous freezing notebooks"""
+
+import time
+from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
+from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
 from PySDM import Formulae
 from PySDM.physics.constants import si
 from PySDM.backends import CPU
-import time
-
-from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
-from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
-
 
 formulae = Formulae(
     particle_shape_and_density="MixedPhaseSpheres",
@@ -19,7 +18,7 @@ def run_simulations(setting):
         "settings": setting,
         "ensemble_member_outputs": [],
     }
-    for n in range(setting["number_of_ensemble_runs"]):
+    for _ in range(setting["number_of_ensemble_runs"]):
         model_setup = Settings(**simulation["settings"])
         model_setup.formulae.seed += 1
         model = Simulation(model_setup)

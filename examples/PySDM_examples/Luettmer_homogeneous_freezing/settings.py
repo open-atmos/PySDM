@@ -1,9 +1,6 @@
-import time
+"""prepare settings for simulations for homogeneous freezing notebooks"""
 
 import numpy as np
-from pystrict import strict
-
-from PySDM import Formulae
 from PySDM.physics.constants import si
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
@@ -33,7 +30,6 @@ class Settings:
         n_output: int = 30,
         backend=None,
         scipy_solver=False,
-        number_of_ensemble_runs: None,
     ):
         self.backend = backend
         print(

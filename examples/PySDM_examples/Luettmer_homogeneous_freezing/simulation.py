@@ -1,7 +1,5 @@
 import numpy as np
-import warnings
 import PySDM.products as PySDM_products
-from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import (
     AmbientThermodynamics,
@@ -17,7 +15,7 @@ from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 
 
 class Simulation:
-    def __init__(self, settings, backend=CPU):
+    def __init__(self, settings):
 
         dt = settings.dt
 
@@ -173,9 +171,10 @@ class Simulation:
                 test_water_saturation = np.where(
                     np.asarray(output["IWC"]) > 0.0, 100.0, test_water_saturation
                 )
-                if np.allclose(test_water_saturation, 100.0, rtol=5e-2) == False:
+                if np.allclose(test_water_saturation, 100.0, rtol=5e-2) is False:
                     print(
-                        "Warning: water saturation is too high outside of activation and mixed-phase environment"
+                        "Warning: water saturation is too high outside "
+                        "of activation and mixed-phase environment"
                     )
 
                 break

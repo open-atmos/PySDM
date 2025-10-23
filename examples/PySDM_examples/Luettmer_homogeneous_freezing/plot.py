@@ -1,7 +1,7 @@
-import matplotlib.pyplot as plt
+"""shared plot functions for homogeneous freezing notebooks"""
+
 from matplotlib import pyplot
 import numpy as np
-from scipy.ndimage import histogram
 import seaborn as sns
 
 from PySDM import Formulae
@@ -13,8 +13,6 @@ formulae = Formulae(
 # general plot settings
 ax_lab_fsize = 15
 tick_fsize = 15
-# title_fsize = 15
-# line_width = 2.5
 T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
 T_frz_bins_kelvin = np.linspace(230, 240, num=100, endpoint=True)
 
@@ -43,10 +41,6 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     d_a_w_ice = (RHi / 100 - 1) * a_w_ice
 
     j_hom_rate = Formulae(
-        homogeneous_ice_nucleation_rate="Koop2000"
-    ).homogeneous_ice_nucleation_rate
-    koop_2000 = j_hom_rate.j_hom(T, d_a_w_ice)
-    j_hom_rate = Formulae(
         homogeneous_ice_nucleation_rate="KoopMurray2016"
     ).homogeneous_ice_nucleation_rate
     koop_murray_2016 = j_hom_rate.j_hom(T, d_a_w_ice)
@@ -71,7 +65,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     )
     fig.suptitle(title, fontsize=16)
 
-    """ Temperture profile """
+    # Temperture profile
     ax = axs[0, 0]
     ax.plot(time, formulae.trivia.K2C(T), color="black", linestyle="-", label="T")
     ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
@@ -87,14 +81,13 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     twin.tick_params(labelsize=tick_fsize)
     twin.grid(visible=True)
 
-    """ Water activity difference profile """
+    # Water activity difference profile
     lin_s_SP2023 = "--"
     lin_s_KM2016 = "-"
     if simulation["settings"]["hom_freezing"] == "Spichtinger2023":
         lin_s_SP2023 = "-"
         lin_s_KM2016 = "--"
     ax = axs[0, 1]
-    # ax.plot(time, koop_2000, color="black", linestyle="-", label="Koop2000")
     ax.plot(
         time,
         koop_murray_2016,
@@ -125,7 +118,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
     twin.tick_params(labelsize=tick_fsize)
     twin.legend(loc="lower right", fontsize=ax_lab_fsize)
 
-    """ Mass content and number concentration"""
+    # Mass content and number concentration
     ax = axs[1, 0]
     ax.plot(time, qc, color="red", linestyle="-", label="water")
     ax.plot(time, qi, color="blue", linestyle="-", label="ice")
@@ -150,7 +143,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
         )
         twin.tick_params(labelsize=tick_fsize)
 
-    """ Mean radius """
+    # Mean radius
     ax = axs[1, 1]
     ax.plot(time, rc * 1e6, color="red", linestyle="-", label="water")
     ax.plot(time, ri * 1e6, color="blue", linestyle="-", label="ice")
@@ -174,10 +167,8 @@ def plot_freezing_temperatures_histogram(ax, simulation):
         title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
 
         """ Freezing temperatures """
-        hist = ax.hist(
-            # formulae.trivia.K2C(T_frz),
+        ax.hist(
             T_frz,
-            # bins=T_frz_bins,
             bins=T_frz_bins_kelvin,
             density=True,
             cumulative=-1,
@@ -186,12 +177,12 @@ def plot_freezing_temperatures_histogram(ax, simulation):
             linewidth=1.5,
         )
 
-    ax.set_xlim(left=234, right=239)
-    ax.axvline(x=235, color="k", linestyle="--")
-    ax.set_title(title, fontsize=ax_lab_fsize)
-    ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
-    ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
-    ax.tick_params(labelsize=tick_fsize)
+        ax.set_xlim(left=234, right=239)
+        ax.axvline(x=235, color="k", linestyle="--")
+        ax.set_title(title, fontsize=ax_lab_fsize)
+        ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
+        ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
+        ax.tick_params(labelsize=tick_fsize)
 
     return ax
 
@@ -236,15 +227,10 @@ def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
 
 def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_add=""):
 
-    # hom_freezing_types = ["KoopMurray2016", "Koop_Correction", "Koop2000"]
     sns.set_theme(style="ticks")
 
     hom_freezing_type = histogram_data_dict["hom_freezing_type"]
-    # for i, hom_freezing_type in enumerate(hom_freezing_types):
 
-    # T_frz = formulae.trivia.K2C(
-    #     (np.asarray(histogram_data_dict["T_frz_histogram_list"]))
-    # )
     T_frz = np.asarray(histogram_data_dict["T_frz_histogram_list"])
 
     if "w_updraft_histogram_list" in histogram_data_dict:
@@ -257,7 +243,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
         w = np.asarray(histogram_data_dict["rc_max_histogram_list"]) * 1e6
         y_label = "(maximum) radius [µm]"
 
-    # xlim = (-39.5, -34)
     xlim = (233, 241)
     h = sns.JointGrid(
         x=T_frz,
@@ -265,9 +250,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_a
         xlim=xlim,
     )
     h.ax_joint.set(yscale="log")
-    # if hom_freezing_type == "KoopMurray2016":
-    #     x_pos_cbar = 0.75
-    # else:
     x_pos_cbar = 0.75
     cax = h.figure.add_axes([x_pos_cbar, 0.55, 0.02, 0.2])
     h.plot_joint(
@@ -315,8 +297,6 @@ def plot_ensemble_bulk(
                         ni = np.asarray(output["ni"])[-1]
                         nc = np.asarray(output["ns"])[0]
                         var[i] = (1 - (nc - ni) / nc) * 100
-                        # print("{:.2E}".format(nc),"{:.2E}".format(ni), var[i])
-                        # quit()
                     else:
                         var[i] = np.asarray(output[var_name])[-1]
 
