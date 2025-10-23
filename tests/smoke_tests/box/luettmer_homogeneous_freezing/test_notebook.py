@@ -20,15 +20,13 @@ def variables_fixture():
         plot=PLOT,
     )
 
+@staticmethod
+def test_freezing_temperatures(variables):
+    for simulation in variables["simulations"]:
+        output = simulation["ensemble_member_outputs"][0]
+        T_frz = np.asarray(output["T_frz"])
 
-class TestNotebook:
-    @staticmethod
-    def test_freezing_temperatures(variables):
-        for simulation in variables["simulations"]:
-            output = simulation["ensemble_member_outputs"][0]
-            T_frz = np.asarray(output["T_frz"])
-
-            # assert
-            assert all(np.isfinite(T_frz))
-            assert all(T_frz > 0)
-            assert all(T_frz - HOMOGENEOUS_FREEZING_THRESHOLD > -0.5)
+        # assert
+        assert all(np.isfinite(T_frz))
+        assert all(T_frz > 0)
+        assert all(T_frz - HOMOGENEOUS_FREEZING_THRESHOLD > -0.5)
