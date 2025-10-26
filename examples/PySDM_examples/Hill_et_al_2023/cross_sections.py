@@ -47,7 +47,6 @@ def compute_dvol_andsigma_vertical(output, settings, zslice, time):
 
 
 def compute_LWP_and_nc_time_series(output, settings, z_slice):
-    # LWP = np.mean(output["LWC"][z_slice], axis=0) * settings.z_max
     LWP = np.sum(output["LWC"][z_slice], axis=0) * settings.dz
     num_conc = (output["nc"] + output["nr"])[z_slice]
     mask = output["LWC"][z_slice] > 1e-5
@@ -61,7 +60,7 @@ def compute_LWP_and_nc_time_series(output, settings, z_slice):
 def compute_LWP_and_nc_vertical(output, z_slice, time):
     t_idx = np.where(output["t"] == time)[0][0]
     LWC = output["LWC"][z_slice, t_idx]
-    num_conc = (output["nc"] + output["nr"] + output["na"])[z_slice, t_idx]
+    num_conc = (output["nc"] + output["nr"])[z_slice, t_idx]
     mask = output["LWC"][z_slice, t_idx] > 1e-5
     masked = num_conc * mask
     masked[masked == 0] = np.nan
