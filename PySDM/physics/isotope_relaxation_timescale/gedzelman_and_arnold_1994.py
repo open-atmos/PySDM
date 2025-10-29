@@ -8,39 +8,20 @@ class GedzelmanAndArnold1994:  # pylint: disable=too-few-public-methods
         D_ratio_heavy_to_light,
         alpha,
         D_light,
-        Fk_Howell,
+        Fk,
         R_vap,
         R_liq,
         relative_humidity,
     ):
         # pylint: disable=unused-argument
-        # dR_liq_dt_over_R_liq = (
-        #     3
-        #     * D_ratio_heavy_to_light
-        #     * D_light
-        #     * const.rho_STP
-        #     / const.rho_w
-        #     / radius**2
-        #     * (
-        #         relative_humidity * (R_vap / R_liq - 1 / alpha)
-        #         + (1 - relative_humidity)
-        #         / (1 + Fk_Howell * D_light)
-        #         * (1 / D_ratio_heavy_to_light - 1 / alpha)
-        #     )
-        # )
-        # Bo = 1 / (n / dn_dt + 1)
-        # dm_dt_over_m = 3 / r**2 * r_dr_dt
-        # Bo = (1 / dR_liq_dt * R_liq * dm_dt_over_m)
-        D_heavy = D_ratio_heavy_to_light * D_light
-        RH_eq = 1  # TODO check
         return (
-            1
-            * (relative_humidity - RH_eq)
-            / (Fk_Howell * const.rho_STP / const.rho_w + 1 / D_light)
+            R_liq
+            / D_ratio_heavy_to_light
+            * (relative_humidity - 1)
+            * (relative_humidity + 1)
+            / (1 + Fk * D_light)
             / (
-                relative_humidity * D_heavy * (R_vap / R_liq - 1 / alpha)
-                + (1 - relative_humidity)
-                / (1 / D_heavy + Fk_Howell / D_ratio_heavy_to_light)
-                * (1 / D_ratio_heavy_to_light - 1 / alpha)
+                R_liq / alpha * (1 + Fk * D_light * relative_humidity)
+                - R_vap * relative_humidity * (1 + Fk * D_light)
             )
         )
