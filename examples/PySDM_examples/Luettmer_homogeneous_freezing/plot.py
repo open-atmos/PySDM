@@ -17,13 +17,35 @@ T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
 T_frz_bins_kelvin = np.linspace(230, 240, num=100, endpoint=True)
 
 
+def cumulative_histogram(data, bins, reverse=False, density=True):
+    # Compute regular histogram using given bins
+    hist, bin_edges = np.histogram(data, bins=bins, density=False)
+
+    # Cumulative sum
+    if reverse:
+        cum_hist = np.cumsum(hist[::-1])[::-1]
+        cum_hist_0 = cum_hist[0]
+    else:
+        cum_hist = np.cumsum(hist)
+        cum_hist_0 = cum_hist[-1]
+
+    # Normalize
+    if density:
+        cum_hist = cum_hist / cum_hist_0
+
+    # Compute bin centers
+    bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
+
+    return cum_hist, bin_centers
+
+
 def plot_thermodynamics_and_bulk(simulation, title_add="", show_conc=False):
 
     output = simulation["ensemble_member_outputs"][0]
     time = output["t"]
     T = np.asarray(output["T"])
     RH = np.asarray(output["RH"])
-    RHi = np.asarray(output["RHi"])
+    RHi = np.asarray(output["RH_ice"])
     qc = np.asarray(output["LWC"])
     qi = np.asarray(output["IWC"])
     qv = np.asarray(output["qv"])
@@ -166,7 +188,7 @@ def plot_freezing_temperatures_histogram(ax, simulation):
 
         title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
 
-        """ Freezing temperatures """
+        # Freezing temperatures
         ax.hist(
             T_frz,
             bins=T_frz_bins_kelvin,
@@ -183,6 +205,50 @@ def plot_freezing_temperatures_histogram(ax, simulation):
         ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
         ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
         ax.tick_params(labelsize=tick_fsize)
+
+    return ax
+
+
+def plot_freezing_temperatures_histogram_allinone(ax, simulations):
+
+    colors = ["black", "blue", "red"]
+
+    for k, simulation in enumerate(simulations):
+
+        number_of_ensemble_runs = simulation["settings"]["number_of_ensemble_runs"]
+        n_sd = simulation["settings"]["n_sd"]
+        histogram_list = np.zeros((number_of_ensemble_runs, len(T_frz_bins_kelvin) - 1))
+        for i in range(number_of_ensemble_runs):
+            output = simulation["ensemble_member_outputs"][i]
+            T_frz = np.asarray(output["T_frz"])
+
+            title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
+
+            hist, T_frz_bins_center = cumulative_histogram(
+                T_frz, T_frz_bins_kelvin, reverse=True
+            )
+            histogram_list[i, :] = hist
+
+        max_line = np.max(histogram_list, axis=0)
+        mean_line = np.mean(histogram_list, axis=0)
+        min_line = np.min(histogram_list, axis=0)
+
+        color = colors[k]
+        ax.plot(
+            T_frz_bins_center,
+            mean_line,
+            color=color,
+            label=r"$N_{sd}$: " + "{}".format(int(n_sd)),
+        )
+        ax.fill_between(T_frz_bins_center, min_line, max_line, color=color, alpha=0.2)
+
+    ax.set_xlim(left=234.5, right=238)
+    ax.axvline(x=235, color="k", linestyle="--")
+    ax.set_title(title, fontsize=ax_lab_fsize)
+    ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
+    ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
+    ax.tick_params(labelsize=tick_fsize)
+    ax.legend(loc="upper right", fontsize=ax_lab_fsize)
 
     return ax
 
@@ -225,28 +291,51 @@ def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
         i += 1
 
 
-def plot_freezing_temperatures_2d_histogram_seaborn(histogram_data_dict, title_add=""):
+def plot_freezing_temperatures_2d_histogram_seaborn(
+    ensemble_simulations, hom_freezing_type, calc_pairwise_distance=False, title_add=""
+):
 
     sns.set_theme(style="ticks")
 
-    hom_freezing_type = histogram_data_dict["hom_freezing_type"]
+    ens_variable_name = ensemble_simulations["ens_variable_name"]
+    simulations = ensemble_simulations[hom_freezing_type]
 
-    T_frz = np.asarray(histogram_data_dict["T_frz_histogram_list"])
+    ens_variable = []
+    T_frz_hist = []
 
-    if "w_updraft_histogram_list" in histogram_data_dict:
-        w = histogram_data_dict["w_updraft_histogram_list"]
+    for simulation in simulations:
+        ens_variable_value = simulation["settings"][ens_variable_name]
+        n_realisations = simulation["settings"]["number_of_ensemble_runs"]
+        n_sd = simulation["settings"]["n_sd"]
+
+        T_frz_realisations = np.zeros((n_realisations, n_sd))
+
+        for i in range(n_realisations):
+            output = simulation["ensemble_member_outputs"][i]
+            T_frz_realisations[i, :] = np.asarray(output["T_frz"])
+
+        if calc_pairwise_distance:
+            pass
+        else:
+            T_frz = np.mean(T_frz_realisations, axis=0)
+
+        T_frz_hist.extend(T_frz)
+        ens_variable.extend(np.full_like(T_frz, ens_variable_value))
+
+    y_label = ""
+    if ens_variable_name == "w_updraft":
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
-    elif "n_ccn_histogram_list" in histogram_data_dict:
-        w = histogram_data_dict["n_ccn_histogram_list"]
+    elif ens_variable_name == "n_ccn":
         y_label = r"ccn concentration [$\mathrm{m^{-3}}$]"
-    elif "rc_max_histogram_list" in histogram_data_dict:
-        w = np.asarray(histogram_data_dict["rc_max_histogram_list"]) * 1e6
+        ens_variable_name = "N_dv_droplet_distribution"
+    elif ens_variable_name == "maximum_radius":
+        ens_variable = ens_variable * 1e6
         y_label = "(maximum) radius [µm]"
 
     xlim = (233, 241)
     h = sns.JointGrid(
-        x=T_frz,
-        y=w,
+        x=T_frz_hist,
+        y=ens_variable,
         xlim=xlim,
     )
     h.ax_joint.set(yscale="log")
@@ -302,6 +391,7 @@ def plot_ensemble_bulk(
 
         pyplot.scatter(var, ens_var, label=hom_freezing_type)
 
+    title, x_label, y_label = "", "", ""
     if var_name == "ni":
         pyplot.xscale("log")
         x_label = r"$n_{i} \, [\mathrm{kg^{-1}}$]"

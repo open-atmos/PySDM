@@ -30,6 +30,7 @@ class Settings:
         n_output: int = 30,
         backend=None,
         scipy_solver=False,
+        number_of_ensemble_runs=1,
     ):
         self.backend = backend
         print(
@@ -110,6 +111,7 @@ class Settings:
                 spectrum
             ).sample(n_sd)
 
+        self.number_of_ensemble_runs = number_of_ensemble_runs
         self.dz = dz
         self.t_max_duration = 10000
         self.dt = dz / self.w_updraft
