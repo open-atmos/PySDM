@@ -120,7 +120,7 @@ class IsotopeMethods(BackendMethods):
                         temperature[cell_id[i]]
                     ),
                     D_light=ff.constants.D0,
-                    Fk_Howell=1,  # TODO
+                    Fk=1,  # TODO
                     R_vap=molar_mixing_ratio[cell_id[i]],
                     R_liq=moles_heavy_isotope / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
