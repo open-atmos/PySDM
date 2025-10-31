@@ -20,6 +20,8 @@ class Simulation:
         dt = settings.dt
 
         formulae = settings.formulae
+        
+        self.silent = settings.silent
 
         env = Parcel(
             mixed_phase=True,
@@ -58,7 +60,6 @@ class Simulation:
         self.multiplicities = discretise_multiplicities(
             settings.specific_concentration * env.mass_of_dry_air
         )
-        # self.r_dry = settings.r_dry
         self.r_wet = settings.r_wet
 
         kappa = np.full_like(settings.r_wet, settings.kappa)
@@ -145,7 +146,8 @@ class Simulation:
 
     def run(self):
 
-        print("Starting simulation...")
+        if not self.silent:
+            print("Starting simulation...")
 
         output = {
             "T_frz": [],
@@ -161,7 +163,8 @@ class Simulation:
             self.save(output)
 
             if np.isclose(output["LWC"][-1], 0, rtol=0, atol=1e-15):
-                print("all particles frozen or evaporated")
+                if not self.silent:
+                    print("all particles frozen or evaporated")
                 # Assert for water saturation
                 test_water_saturation = np.asarray(output["RH"])
                 # Sort out times before CCN activation & after first occurence of ice

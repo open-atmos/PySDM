@@ -16,8 +16,8 @@ class Settings:
         w_updraft: float,
         T0: float,
         dz: float,
-        N_dv_droplet_distribution: float,
-        r_mean_droplet_distribution: float,
+        n_ccn: float,
+        r_ccn: float,
         sigma_droplet_distribution: float = None,
         type_droplet_distribution: str,
         p0: float = 200 * si.hectopascals,
@@ -27,26 +27,28 @@ class Settings:
         deposition_enable: bool = True,
         coalescence_enable: bool = False,
         deposition_adaptive: bool = True,
+        silent: bool = True,
         n_output: int = 30,
         backend=None,
         scipy_solver=False,
         number_of_ensemble_runs=1,
     ):
         self.backend = backend
-        print(
-            "Setting up simulation for "
-            + hom_freezing
-            + " with wpdraft="
-            + str(w_updraft)
-            + " and n_sd="
-            + str(n_sd)
-            + " and n_dv="
-            + str(N_dv_droplet_distribution)
-        )
+        if not silent:
+            print(
+                "Setting up simulation for "
+                + hom_freezing
+                + " with wpdraft="
+                + str(w_updraft)
+                + " and N_sd="
+                + str(n_sd)
+                + " and n_ccn="
+                + str(n_ccn)
+            )
         self.n_sd = n_sd
         self.w_updraft = w_updraft
-        self.N_dv_droplet_distribution = N_dv_droplet_distribution
-        self.r_mean_droplet_distribution = r_mean_droplet_distribution
+        self.n_ccn = n_ccn
+        self.r_ccn = r_ccn
         self.sigma_droplet_distribution = sigma_droplet_distribution
         self.type_droplet_distribution = type_droplet_distribution
 
@@ -61,6 +63,7 @@ class Settings:
         self.deposition_enable = deposition_enable
         self.deposition_adaptive = deposition_adaptive
         self.scipy_solver = scipy_solver
+        self.silent = silent
         self.collision_kernel = Geometric()
 
         if hom_freezing == "threshold":
@@ -87,24 +90,24 @@ class Settings:
         )
 
         if self.type_droplet_distribution == ("monodisperse"):
-            self.r_wet = np.ones(self.n_sd) * r_mean_droplet_distribution
+            self.r_wet = np.ones(self.n_sd) * r_ccn
             self.specific_concentration = (
                 np.ones(self.n_sd)
-                * N_dv_droplet_distribution
+                * n_ccn
                 / self.n_sd
                 / dry_air_density
             )
             if coalescence_enable:  # do lucky droplet method
                 v_small = self.formulae.trivia.volume(
-                    radius=r_mean_droplet_distribution
+                    radius=r_ccn
                 )
                 self.r_wet[0 : int(self.n_sd * 0.1)] = self.formulae.trivia.radius(
                     volume=2 * v_small
                 )
         elif self.type_droplet_distribution == ("lognormal"):
             spectrum = Lognormal(
-                norm_factor=N_dv_droplet_distribution / dry_air_density,
-                m_mode=r_mean_droplet_distribution,
+                norm_factor=n_ccn / dry_air_density,
+                m_mode=r_ccn,
                 s_geom=sigma_droplet_distribution,
             )
             self.r_wet, self.specific_concentration = spectral_sampling.Linear(

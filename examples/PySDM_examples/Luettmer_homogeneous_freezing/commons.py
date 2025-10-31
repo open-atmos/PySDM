@@ -71,8 +71,8 @@ def hom_pure_droplet_freezing_standard_setup():
         "w_updraft": 1.0 * si.meter / si.second,
         "T0": formulae.trivia.C2K(-25),
         "dz": 0.1 * si.meter,
-        "N_dv_droplet_distribution": 750 / si.cm**3,
-        "r_mean_droplet_distribution": 15 * si.nanometer,
+        "n_ccn": 750 / si.cm**3,
+        "r_ccn": 15 * si.nanometer,
         "type_droplet_distribution": "monodisperse",
         "RH_0": 0.995,
         "p0": 500 * si.hectopascals,
@@ -80,5 +80,6 @@ def hom_pure_droplet_freezing_standard_setup():
         "deposition_enable": True,
         "deposition_adaptive": True,
         "number_of_ensemble_runs": 1,
+        "silent": True,
     }
     return standard

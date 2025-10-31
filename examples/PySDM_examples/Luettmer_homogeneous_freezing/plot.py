@@ -3,6 +3,7 @@
 from matplotlib import pyplot
 import numpy as np
 import seaborn as sns
+from matplotlib.ticker import MultipleLocator
 
 from PySDM import Formulae
 
@@ -11,6 +12,7 @@ formulae = Formulae(
 )
 
 # general plot settings
+ax_title_size = 18
 ax_lab_fsize = 15
 tick_fsize = 15
 T_frz_bins = np.linspace(-40, -34, num=60, endpoint=True)
@@ -203,13 +205,13 @@ def plot_freezing_temperatures_histogram(ax, simulation):
         ax.axvline(x=235, color="k", linestyle="--")
         ax.set_title(title, fontsize=ax_lab_fsize)
         ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
-        ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
+        ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
         ax.tick_params(labelsize=tick_fsize)
 
     return ax
 
 
-def plot_freezing_temperatures_histogram_allinone(ax, simulations):
+def plot_freezing_temperatures_histogram_allinone(ax, simulations, title):
 
     colors = ["black", "blue", "red"]
 
@@ -221,8 +223,6 @@ def plot_freezing_temperatures_histogram_allinone(ax, simulations):
         for i in range(number_of_ensemble_runs):
             output = simulation["ensemble_member_outputs"][i]
             T_frz = np.asarray(output["T_frz"])
-
-            title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
 
             hist, T_frz_bins_center = cumulative_histogram(
                 T_frz, T_frz_bins_kelvin, reverse=True
@@ -246,8 +246,10 @@ def plot_freezing_temperatures_histogram_allinone(ax, simulations):
     ax.axvline(x=235, color="k", linestyle="--")
     ax.set_title(title, fontsize=ax_lab_fsize)
     ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
-    ax.set_ylabel("frequency", fontsize=ax_lab_fsize)
+    ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
+    ax.xaxis.set_major_locator(MultipleLocator(1))
+    ax.xaxis.set_minor_locator(MultipleLocator(0.5))
     ax.legend(loc="upper right", fontsize=ax_lab_fsize)
 
     return ax
@@ -284,7 +286,7 @@ def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
         c = ax.pcolor(X, Y, hist)
         fig.colorbar(c, ax=ax)
 
-        ax.set_title(title, fontsize=ax_lab_fsize)
+        ax.set_title(title, fontsize=ax_title_size)
         ax.set_xlabel("freezing temperature [°C]", fontsize=ax_lab_fsize)
         ax.set_ylabel("vertical updraft [m/s]", fontsize=ax_lab_fsize)
 
@@ -292,7 +294,7 @@ def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
 
 
 def plot_freezing_temperatures_2d_histogram_seaborn(
-    ensemble_simulations, hom_freezing_type, calc_pairwise_distance=False, title_add=""
+    ensemble_simulations, hom_freezing_type, calc_pairwise_distance=False, title=""
 ):
 
     sns.set_theme(style="ticks")
@@ -327,7 +329,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
     elif ens_variable_name == "n_ccn":
         y_label = r"ccn concentration [$\mathrm{m^{-3}}$]"
-        ens_variable_name = "N_dv_droplet_distribution"
     elif ens_variable_name == "maximum_radius":
         ens_variable = ens_variable * 1e6
         y_label = "(maximum) radius [µm]"
@@ -339,8 +340,8 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         xlim=xlim,
     )
     h.ax_joint.set(yscale="log")
-    x_pos_cbar = 0.75
-    cax = h.figure.add_axes([x_pos_cbar, 0.55, 0.02, 0.2])
+    ax = h.figure.add_axes([0.75, 0.55, 0.02, 0.2])
+
     h.plot_joint(
         sns.histplot,
         stat="density",
@@ -348,7 +349,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         discrete=(False, False),
         pmax=0.8,
         cbar=True,
-        cbar_ax=cax,
+        cbar_ax=ax,
     )
 
     h.plot_marginals(
@@ -357,13 +358,13 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     )
     h.set_axis_labels("freezing temperature [K]", y_label, fontsize=ax_lab_fsize)
     h.ax_joint.set_title(
-        "Freezing: " + hom_freezing_type + title_add,
+        title,
         pad=70,
-        fontsize=ax_lab_fsize,
+        fontsize=ax_title_size,
     )
     h.ax_marg_y.remove()
 
-    return h
+    return ax
 
 
 def plot_ensemble_bulk(
