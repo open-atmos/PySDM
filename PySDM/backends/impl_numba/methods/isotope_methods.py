@@ -105,23 +105,31 @@ class IsotopeMethods(BackendMethods):
             cell_id,
             relative_humidity,
             temperature,
+            density_dry_air,
             moles_light_water,
             moles_heavy,
             molar_mixing_ratio,
         ):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
+                T = temperature[cell_id[i]]
                 moles_heavy_isotope = moles_heavy[i]
                 moles_light_isotope = moles_light_water[i]
+                Fk = 1  # TODO
+                isotopic_mixing_ratio = ff.trivia__molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+                    T=T,
+                    RH=relative_humidity,
+                    molar_mixing_ratio=molar_mixing_ratio,
+                    density_dry_air=density_dry_air,
+                    pvs_water=ff.saturation_vapour_pressure__pvs_water(T),
+                )
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(
-                        temperature[cell_id[i]]
+                        T
                     ),
-                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(
-                        temperature[cell_id[i]]
-                    ),
+                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
                     D_light=ff.constants.D0,
-                    Fk=1,  # TODO
-                    R_vap=molar_mixing_ratio[cell_id[i]],
+                    Fk=Fk,
+                    R_vap=isotopic_mixing_ratio,
                     R_liq=moles_heavy_isotope / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
                 )
@@ -135,6 +143,7 @@ class IsotopeMethods(BackendMethods):
         cell_id,
         relative_humidity,
         temperature,
+        density_dry_air,
         moles_light_water,
         moles_heavy,
         molar_mixing_ratio,
@@ -144,6 +153,7 @@ class IsotopeMethods(BackendMethods):
             cell_id=cell_id.data,
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
+            density_dry_air=density_dry_air.data,
             moles_light_water=moles_light_water.data,
             moles_heavy=moles_heavy.data,
             molar_mixing_ratio=molar_mixing_ratio.data,

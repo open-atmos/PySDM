@@ -4,6 +4,7 @@ import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae, physics
+from PySDM.physics.constants_defaults import VSMOW_R_2H
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics import constants_defaults, si
 
@@ -115,14 +116,16 @@ class TestTrivia:
         assert temperature_in_kelvin == temperature_in_celsius + 273.15
 
     @staticmethod
-    @pytest.mark.parametrize("delta", (0.86 - 1, 0.9 - 1, 0.98 - 1))
+    @pytest.mark.parametrize(
+        "isotopic_ratio", (0.86 * VSMOW_R_2H, 0.9 * VSMOW_R_2H, 0.98 * VSMOW_R_2H)
+    )
     @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
     @pytest.mark.parametrize(
         "heavy_isotope_name, heavy_isotope_molecule",
         (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
     )
     def test_moles_heavy_atom(
-        delta,
+        isotopic_ratio,
         water_mass,
         heavy_isotope_name,
         heavy_isotope_molecule,
@@ -132,7 +135,6 @@ class TestTrivia:
         const = formulae.constants
 
         molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
-        R_STD = getattr(const, f"VSMOW_R_{heavy_isotope_name}")
         if heavy_isotope_name[-1] == "O":
             light_atoms_per_light_molecule = 1
         elif heavy_isotope_name[-1] == "H":
@@ -141,17 +143,12 @@ class TestTrivia:
             light_atoms_per_light_molecule = 0
 
         moles_atom = formulae.trivia.moles_heavy_atom(
-            delta=delta,
+            isotopic_ratio=isotopic_ratio,
             mass_total=water_mass,
             molar_mass_heavy_molecule=molar_mass_heavy_molecule,
-            R_STD=R_STD,
             light_atoms_per_light_molecule=light_atoms_per_light_molecule,
         )
-        moles_light_water = (
-            moles_atom
-            / light_atoms_per_light_molecule
-            / formulae.trivia.isotopic_delta_2_ratio(delta=delta, reference_ratio=R_STD)
-        )
+        moles_light_water = moles_atom / light_atoms_per_light_molecule / isotopic_ratio
 
         # act
         sut = (
@@ -161,6 +158,7 @@ class TestTrivia:
         # assert
         np.testing.assert_approx_equal(actual=sut, desired=water_mass, significant=5)
 
+    @staticmethod
     @pytest.mark.parametrize(
         "bolin_number, dm_dt_over_m, expected_tau",
         ((1, 2, 0.5), (2, 1, 0.5), (2, 2, 0.25)),

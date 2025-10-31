@@ -26,6 +26,7 @@ class BolinNumberImpl(DerivedAttribute):
             cell_id=self.particulator.attributes["cell id"],
             relative_humidity=self.particulator.environment["RH"],
             temperature=self.particulator.environment["T"],
+            density_dry_air=self.particulator.environment["dry_air_density"],
             moles_light_water=self.particulator.attributes["moles light water"],
             moles_heavy=self.moles_heavy.data,
             molar_mixing_ratio=self.molar_mixing_ratio.data,
