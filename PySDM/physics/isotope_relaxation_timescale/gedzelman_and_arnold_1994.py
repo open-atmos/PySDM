@@ -15,13 +15,13 @@ class GedzelmanAndArnold1994:  # pylint: disable=too-few-public-methods
     ):
         # pylint: disable=unused-argument
         return (
-            R_liq
+            1
             / D_ratio_heavy_to_light
             * (relative_humidity - 1)
             * (relative_humidity + 1)
             / (1 + Fk * D_light)
             / (
-                R_liq / alpha * (1 + Fk * D_light * relative_humidity)
-                - R_vap * relative_humidity * (1 + Fk * D_light)
+                1 / alpha * (1 + Fk * D_light * relative_humidity)
+                - R_vap / R_liq * relative_humidity * (1 + Fk * D_light)
             )
         )

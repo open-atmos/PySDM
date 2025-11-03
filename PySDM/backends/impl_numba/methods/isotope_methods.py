@@ -61,7 +61,7 @@ class IsotopeMethods(BackendMethods):
                 moles_heavy[sd_id] += dn_heavy
                 mass_of_dry_air = (
                     dry_air_density[sd_id] * cell_volume
-                )  # TODO: pass from outside
+                )  # TODO: pass from outside (do not use V??)
                 molar_mixing_ratio[cell_id[sd_id]] -= (
                     dn_heavy * multiplicity[sd_id] / mass_of_dry_air
                 )
@@ -99,7 +99,7 @@ class IsotopeMethods(BackendMethods):
     def _bolin_number_body(self):
         ff = self.formulae_flattened
 
-        @numba.njit(**self.default_jit_flags)
+        # @numba.njit(**self.default_jit_flags)
         def body(
             output,
             cell_id,
@@ -112,15 +112,19 @@ class IsotopeMethods(BackendMethods):
         ):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
+
                 moles_heavy_isotope = moles_heavy[i]
                 moles_light_isotope = moles_light_water[i]
-                Fk = 1  # TODO
+                conc_vap_total = (
+                    ff.saturation_vapour_pressure__pvs_water(T)
+                    * relative_humidity[cell_id[i]]
+                    / ff.constants.R_str
+                    / T
+                )
                 isotopic_mixing_ratio = ff.trivia__molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
-                    T=T,
-                    RH=relative_humidity,
-                    molar_mixing_ratio=molar_mixing_ratio,
-                    density_dry_air=density_dry_air,
-                    pvs_water=ff.saturation_vapour_pressure__pvs_water(T),
+                    molar_mixing_ratio=molar_mixing_ratio[cell_id[i]],
+                    density_dry_air=density_dry_air[cell_id[i]],
+                    conc_vap_total=conc_vap_total,
                 )
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(
@@ -128,7 +132,7 @@ class IsotopeMethods(BackendMethods):
                     ),
                     alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
                     D_light=ff.constants.D0,
-                    Fk=Fk,
+                    Fk=1,  # TODO
                     R_vap=isotopic_mixing_ratio,
                     R_liq=moles_heavy_isotope / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
