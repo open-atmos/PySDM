@@ -191,25 +191,29 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return 1 / Bo / dm_dt_over_m
 
     @staticmethod
-    def R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(  # TODO reuse for R_liq
-        const, R_vap, T, RH, pvs_water, density_dry_air
+    def R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+        R_vap, density_dry_air, conc_vap_total
     ):
-        n_vap_total = pvs_water * RH / const.Rv / T
-        n_vap_heavy = n_vap_total * R_vap / (1 + R_vap)
-        return n_vap_heavy / density_dry_air
+        conc_vap_heavy = conc_vap_total * R_vap / (1 + R_vap)
+        return conc_vap_heavy / density_dry_air
 
     @staticmethod
     def molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
-        const, T, RH, molar_mixing_ratio, density_dry_air, pvs_water
+        molar_mixing_ratio, density_dry_air, conc_vap_total
     ):
-        n_vap_total = pvs_water * RH / const.Rv / T
-        n_vap_heavy = molar_mixing_ratio * density_dry_air
-        return n_vap_heavy / n_vap_total / (1 - n_vap_heavy / n_vap_total)
+        conc_vap_heavy = molar_mixing_ratio * density_dry_air
+        return conc_vap_heavy / (conc_vap_total - conc_vap_heavy)
 
     @staticmethod
-    def moles_heavy_isotope(molecular_R_rain, moles_total, moles):
+    def moles_heavy_isotope(
+        molecular_R_liq,
+        mass_total,
+        mass_other_heavy_isotopes,
+        water_molar_mass,
+        molar_mass_heavy_molecule,
+    ):
         return (
-            molecular_R_rain
-            * (moles_total - heavy_moles_sum_without_2H)
-            / (1 + molecular_R_rain)
+            (mass_total - mass_other_heavy_isotopes)
+            * molecular_R_liq
+            / (water_molar_mass + molecular_R_liq * molar_mass_heavy_molecule)
         )
