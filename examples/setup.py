@@ -47,7 +47,7 @@ setup(
             "matplotlib!=3.9.1",
             "Pillow<11.3.0",
             "joblib==1.5.1",
-            "ipywidgets==8.1.7",
+            "ipywidgets==8.1.8",
             "seaborn==0.13.2",
             "numdifftools==0.9.41",
             "vtk==9.5.2",
