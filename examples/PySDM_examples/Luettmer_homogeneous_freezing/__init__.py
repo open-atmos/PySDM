@@ -10,6 +10,6 @@ from .simulation import Simulation
 from .plot import (
     plot_thermodynamics_and_bulk,
     plot_freezing_temperatures_histogram,
-    plot_freezing_temperatures_2d_histogram,
+    plot_freezing_temperatures_histogram_allinone,
     plot_freezing_temperatures_2d_histogram_seaborn,
 )

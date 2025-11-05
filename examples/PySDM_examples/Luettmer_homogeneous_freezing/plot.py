@@ -211,7 +211,9 @@ def plot_freezing_temperatures_histogram(ax, simulation):
     return ax
 
 
-def plot_freezing_temperatures_histogram_allinone(ax, simulations, title):
+def plot_freezing_temperatures_histogram_allinone(
+    ax, simulations, title, lloc="upper right"
+):
 
     colors = ["black", "blue", "red"]
 
@@ -242,7 +244,7 @@ def plot_freezing_temperatures_histogram_allinone(ax, simulations, title):
         )
         ax.fill_between(T_frz_bins_center, min_line, max_line, color=color, alpha=0.2)
 
-    ax.set_xlim(left=234.5, right=238)
+    ax.set_xlim(left=234.5, right=239)
     ax.axvline(x=235, color="k", linestyle="--")
     ax.set_title(title, fontsize=ax_lab_fsize)
     ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
@@ -250,47 +252,9 @@ def plot_freezing_temperatures_histogram_allinone(ax, simulations, title):
     ax.tick_params(labelsize=tick_fsize)
     ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-    ax.legend(loc="upper right", fontsize=ax_lab_fsize)
+    ax.legend(loc=lloc, fontsize=ax_lab_fsize)
 
     return ax
-
-
-def plot_freezing_temperatures_2d_histogram(histogram_data_dict):
-
-    vertical_updrafts_bins = np.geomspace(0.05, 15, num=6, endpoint=True)
-
-    hom_freezing_types = histogram_data_dict.keys()
-
-    fig, axs = pyplot.subplots(2, 2, figsize=(10, 10), constrained_layout=True)
-    axs = axs.ravel()
-    i = 0
-    for hom_freezing_type in hom_freezing_types:
-
-        title = "Freezing method=" + hom_freezing_type
-
-        ax = axs[i]
-        T_frz = formulae.trivia.K2C(
-            np.asarray(histogram_data_dict[hom_freezing_type]["T_frz_histogram_list"])
-        )
-
-        hist, x, y = np.histogram2d(
-            T_frz,
-            histogram_data_dict[hom_freezing_type]["w_updraft_histogram_list"],
-            bins=(T_frz_bins, vertical_updrafts_bins),
-        )
-        y = np.log10(y)
-        X, Y = np.meshgrid(x, y)
-
-        hist = hist.T / sum(hist.flatten())
-
-        c = ax.pcolor(X, Y, hist)
-        fig.colorbar(c, ax=ax)
-
-        ax.set_title(title, fontsize=ax_title_size)
-        ax.set_xlabel("freezing temperature [°C]", fontsize=ax_lab_fsize)
-        ax.set_ylabel("vertical updraft [m/s]", fontsize=ax_lab_fsize)
-
-        i += 1
 
 
 def plot_freezing_temperatures_2d_histogram_seaborn(
@@ -344,7 +308,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
 
     h.plot_joint(
         sns.histplot,
-        stat="density",
+        stat="probability",
         binwidth=0.25,
         discrete=(False, False),
         pmax=0.8,
@@ -367,56 +331,68 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     return ax
 
 
-def plot_ensemble_bulk(
-    simulations, var_name, ensemble_var, freezing_types, title_add=""
-):
+def plot_ensemble_bulk(ax, ensemble_simulations, var_name, title_add=""):
 
-    ens_var, ens_var_name = ensemble_var
-    len_ens_var = len(ens_var)
+    for ensemble_simulation in ensemble_simulations:
 
-    for hom_freezing_type in freezing_types:
-        var = np.zeros(len_ens_var)
-        for i in range(len_ens_var):
-            for simulation in simulations:
-                if (
-                    simulation["settings"]["hom_freezing"] == hom_freezing_type
-                    and simulation["settings"][ens_var_name] == ens_var[i]
-                ):
-                    output = simulation["ensemble_member_outputs"][0]
-                    if var_name == "freezing_fraction":
-                        ni = np.asarray(output["ni"])[-1]
-                        nc = np.asarray(output["ns"])[0]
-                        var[i] = (1 - (nc - ni) / nc) * 100
-                    else:
-                        var[i] = np.asarray(output[var_name])[-1]
+        ens_var = ensemble_simulation["ens_variable"]
+        ens_var_name = ensemble_simulation["ens_variable_name"]
+        hom_freezing_types = ensemble_simulation["hom_freezing_types"]
+        len_ens_var = len(ens_var)
 
-        pyplot.scatter(var, ens_var, label=hom_freezing_type)
+        for hom_freezing_type in hom_freezing_types:
+            if hom_freezing_type == "KoopMurray2016":
+                hom_frz_short = "KM16"
+            elif hom_freezing_type == "Spichtinger2023":
+                hom_frz_short = "SP23"
+            simulations = ensemble_simulation[hom_freezing_type]
+            var = np.zeros(len_ens_var)
+            for i in range(len_ens_var):
+                for simulation in simulations:
+                    if (
+                        simulation["settings"]["hom_freezing"] == hom_freezing_type
+                        and simulation["settings"][ens_var_name] == ens_var[i]
+                    ):
+                        output = simulation["ensemble_member_outputs"][0]
+                        if var_name == "freezing_fraction":
+                            ni = np.asarray(output["ni"])[-1]
+                            nc = np.asarray(output["ns"])[0]
+                            var[i] = (1 - (nc - ni) / nc) * 100
+                        else:
+                            var[i] = np.asarray(output[var_name])[-1]
 
-    title, x_label, y_label = "", "", ""
+            ax.plot(var, ens_var, "-o", label=hom_frz_short)
+
+    title, x_label, y_label, ens_label = "", "", "", ""
     if var_name == "ni":
-        pyplot.xscale("log")
+        ax.set_xscale("log")
         x_label = r"$n_{i} \, [\mathrm{kg^{-1}}$]"
-        title = "Ice number concentrations"
-        pyplot.xlim(1e6, 1e10)
+        title = "ice number concentrations"
+        ax.set_xlim(1e6, 1e10)
 
     if var_name == "IWC":
-        pyplot.xscale("log")
+        ax.set_xscale("log")
         x_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
-        title = "Ice mass content"
+        title = "ice mass content"
 
     if var_name == "freezing_fraction":
-        title = "frozen fraction of real droplets "
+        title = "frozen fraction"
         x_label = r"$n_{frz} \, [\mathrm{\%}$]"
+        ax.set_xlim(0, 20)
 
-    if ens_var_name == "N_dv_droplet_distribution":
-        pyplot.yscale("log")
+    if ens_var_name == "n_ccn":
+        ax.set_yscale("log")
         y_label = r"$n_{ccn} \, [\mathrm{m^{-3}}$]"
+        ens_label = r"$n_{ccn}$ ensemble"
 
     if ens_var_name == "w_updraft":
-        pyplot.yscale("log")
+        ax.set_yscale("log")
         y_label = r"w [$\mathrm{m \, s^{-1}}$]"
+        ens_label = "w ensemble"
 
-    pyplot.title(title + title_add, fontsize=ax_lab_fsize)
-    pyplot.xlabel(x_label, fontsize=ax_lab_fsize)
-    pyplot.ylabel(y_label, fontsize=ax_lab_fsize)
-    pyplot.legend(fontsize=ax_lab_fsize)
+    ax.set_title(title_add + " " + title + " for " + ens_label, fontsize=ax_lab_fsize)
+    ax.set_xlabel(x_label, fontsize=ax_lab_fsize)
+    ax.set_ylabel(y_label, fontsize=ax_lab_fsize)
+    ax.legend(fontsize=ax_lab_fsize)
+
+    return

@@ -20,7 +20,7 @@ class Simulation:
         dt = settings.dt
 
         formulae = settings.formulae
-        
+
         self.silent = settings.silent
 
         env = Parcel(
@@ -162,7 +162,7 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            if np.isclose(output["LWC"][-1], 0, rtol=0, atol=1e-15):
+            if output["LWC"][-1] <= output["LWC"][0] * 0.9:
                 if not self.silent:
                     print("all particles frozen or evaporated")
                 # Assert for water saturation

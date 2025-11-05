@@ -92,15 +92,10 @@ class Settings:
         if self.type_droplet_distribution == ("monodisperse"):
             self.r_wet = np.ones(self.n_sd) * r_ccn
             self.specific_concentration = (
-                np.ones(self.n_sd)
-                * n_ccn
-                / self.n_sd
-                / dry_air_density
+                np.ones(self.n_sd) * n_ccn / self.n_sd / dry_air_density
             )
             if coalescence_enable:  # do lucky droplet method
-                v_small = self.formulae.trivia.volume(
-                    radius=r_ccn
-                )
+                v_small = self.formulae.trivia.volume(radius=r_ccn)
                 self.r_wet[0 : int(self.n_sd * 0.1)] = self.formulae.trivia.radius(
                     volume=2 * v_small
                 )
