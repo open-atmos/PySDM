@@ -340,14 +340,12 @@ def plot_ensemble_bulk(ax, ensemble_simulations, var_name, title_add=""):
         hom_freezing_labels = ["KM16", "SP23"]
         len_ens_var = len(ens_var)
 
-        for k,hom_freezing_type in enumerate(hom_freezing_types):
+        for k, hom_freezing_type in enumerate(hom_freezing_types):
             simulations = ensemble_simulation[hom_freezing_type]
             var = np.zeros(len_ens_var)
             for i in range(len_ens_var):
                 for simulation in simulations:
-                    if (
-                        simulation["settings"][ens_var_name] == ens_var[i]
-                    ):
+                    if simulation["settings"][ens_var_name] == ens_var[i]:
                         output = simulation["ensemble_member_outputs"][0]
                         if var_name == "freezing_fraction":
                             ni = np.asarray(output["ni"])[-1]
