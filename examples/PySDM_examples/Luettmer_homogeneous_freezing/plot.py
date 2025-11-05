@@ -1,9 +1,8 @@
 """shared plot functions for homogeneous freezing notebooks"""
 
-from matplotlib import pyplot
+from matplotlib import pyplot, ticker
 import numpy as np
 import seaborn as sns
-from matplotlib.ticker import MultipleLocator
 
 from PySDM import Formulae
 
@@ -240,7 +239,7 @@ def plot_freezing_temperatures_histogram_allinone(
             T_frz_bins_center,
             mean_line,
             color=color,
-            label=r"$N_{sd}$: " + "{}".format(int(n_sd)),
+            label=r"$N_{sd}$: " + f"{int(n_sd):5.0f}",
         )
         ax.fill_between(T_frz_bins_center, min_line, max_line, color=color, alpha=0.2)
 
@@ -338,20 +337,16 @@ def plot_ensemble_bulk(ax, ensemble_simulations, var_name, title_add=""):
         ens_var = ensemble_simulation["ens_variable"]
         ens_var_name = ensemble_simulation["ens_variable_name"]
         hom_freezing_types = ensemble_simulation["hom_freezing_types"]
+        hom_freezing_labels = ["KM16", "SP23"]
         len_ens_var = len(ens_var)
 
-        for hom_freezing_type in hom_freezing_types:
-            if hom_freezing_type == "KoopMurray2016":
-                hom_frz_short = "KM16"
-            elif hom_freezing_type == "Spichtinger2023":
-                hom_frz_short = "SP23"
+        for k,hom_freezing_type in enumerate(hom_freezing_types):
             simulations = ensemble_simulation[hom_freezing_type]
             var = np.zeros(len_ens_var)
             for i in range(len_ens_var):
                 for simulation in simulations:
                     if (
-                        simulation["settings"]["hom_freezing"] == hom_freezing_type
-                        and simulation["settings"][ens_var_name] == ens_var[i]
+                        simulation["settings"][ens_var_name] == ens_var[i]
                     ):
                         output = simulation["ensemble_member_outputs"][0]
                         if var_name == "freezing_fraction":
@@ -361,7 +356,7 @@ def plot_ensemble_bulk(ax, ensemble_simulations, var_name, title_add=""):
                         else:
                             var[i] = np.asarray(output[var_name])[-1]
 
-            ax.plot(var, ens_var, "-o", label=hom_frz_short)
+            ax.plot(var, ens_var, "-o", label=hom_freezing_labels[k])
 
     title, x_label, y_label, ens_label = "", "", "", ""
     if var_name == "ni":
@@ -395,4 +390,4 @@ def plot_ensemble_bulk(ax, ensemble_simulations, var_name, title_add=""):
     ax.set_ylabel(y_label, fontsize=ax_lab_fsize)
     ax.legend(fontsize=ax_lab_fsize)
 
-    return
+    return ax
