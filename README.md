@@ -63,7 +63,7 @@ For an overview of PySDM features (and the preferred way to cite PySDM in papers
 - [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
 - [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
   
-PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](https://gmd.copernicus.org/articles/16/4193/2023/gmd-16-4193-2023.html).   
+PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](https://doi.org/10.5194/gmd-16-4193-2023).   
 For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
 ## Dependencies and Installation
