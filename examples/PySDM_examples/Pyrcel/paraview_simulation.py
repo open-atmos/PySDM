@@ -16,23 +16,19 @@ def cli_using_argparse(argparse_parser):
     argparse_parser.add_argument(
         "--sd-products-pvd",
         dest="sd_products_pvd",
-        default=r"C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output\\sd_products.pvd",  # pylint: disable=line-too-long
         help="Path to sd_products.pvd",
     )
     argparse_parser.add_argument(
         "--sd-attributes-pvd",
         dest="sd_attributes_pvd",
-        default=r"C:\\Users\\strza\\Desktop\\PySDM\\examples\\PySDM_examples\\Pyrcel\\output\\sd_attributes.pvd",  # pylint: disable=line-too-long
         help="Path to sd_attributes.pvd",
     )
     argparse_parser.add_argument(
         "--output-animation-path",
-        default=r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\output_animation.avi",  # pylint: disable=line-too-long
         help="Output path for the animation file.",
     )
     argparse_parser.add_argument(
         "--output-screenshot-path",
-        default=r"C:\Users\strza\Desktop\PySDM\examples\PySDM_examples\Pyrcel\last_frame.png",  # pylint: disable=line-too-long
         help="Output path for the screenshot file.",
     )
 
