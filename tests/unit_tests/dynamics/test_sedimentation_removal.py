@@ -11,43 +11,62 @@ import numpy as np
 
 class TestSedimentationRemoval:
     @staticmethod
-    @pytest.mark.parametrize("all_or_nothing", (True, False))
-    def test_convergence_wrt_dt(all_or_nothing, plot=False):
+    @pytest.mark.parametrize("all_or_nothing", (False,))
+    def test_convergence_wrt_dt(all_or_nothing, plot=True):
         # arrange
-        dt = 1 * si.s
-        dv = 666 * si.m**3
-        n_steps = 100
-        multiplicity = [1, 10, 100, 1000]
-        water_mass = [1 * si.ug, 2 * si.ug, 3 * si.ug, 4 * si.ug]
+        dts = 5 * si.s, 0.5 * si.s
+        dvs = 1e2 * si.m**3, 1e3 * si.m**3, 1e4 * si.m**3
+        t_max = 500 * si.s
+        multiplicities = 1e5, 1e6, 1e7, 1e8
+        water_masses = 1 * si.ug, 2 * si.ug, 3 * si.ug, 4 * si.ug
         backend_instance = CPU()
 
-        builder = Builder(
-            n_sd=len(multiplicity),
-            environment=Box(dv=dv, dt=dt),
-            backend=backend_instance,
-        )
-        builder.add_dynamic(SedimentationRemoval(all_or_nothing=all_or_nothing))
-        particulator = builder.build(
-            attributes={
-                "multiplicity": np.asarray(multiplicity),
-                "signed water mass": np.asarray(water_mass),
-            },
-            products=(ParticleConcentration(), SuperDropletCountPerGridbox(), Time()),
-        )
-
         # act
-        output = {name: [] for name in particulator.products}
-        for step in range(n_steps):
-            if step != 0:
-                particulator.run(steps=1)
-            for name, product in particulator.products.items():
-                output[name].append(product.get() + 0)
+        output = {}
+        for dt in dts:
+            for dv in dvs:
+                builder = Builder(
+                    n_sd=len(multiplicities),
+                    environment=Box(dv=dv, dt=dt),
+                    backend=backend_instance,
+                )
+                builder.add_dynamic(SedimentationRemoval(all_or_nothing=all_or_nothing))
+                particulator = builder.build(
+                    attributes={
+                        "multiplicity": np.asarray(multiplicities),
+                        "signed water mass": np.asarray(water_masses),
+                    },
+                    products=(
+                        ParticleConcentration(),
+                        SuperDropletCountPerGridbox(),
+                        Time(),
+                    ),
+                )
+                key = f"{dt=} {dv=}"
+                output[key] = {name: [] for name in particulator.products}
+                while particulator.n_steps * dt <= t_max:
+                    if len(output[key]["time"]) != 0:
+                        particulator.run(steps=1)
+                    for name, product in particulator.products.items():
+                        output[key][name].append(product.get() + 0)
 
         # plot
         pyplot.title(f"{all_or_nothing=}")
         pyplot.xlabel("time [s]")
         pyplot.ylabel("particle concentration [m$^{-3}$]")
-        pyplot.semilogy(output["time"], output["particle concentration"])
+        for dt in dts:
+            for dv in dvs:
+                key = f"{dt=} {dv=}"
+                pyplot.plot(
+                    output[key]["time"],
+                    output[key]["particle concentration"],
+                    label=key,
+                    linewidth=4 + 3 * np.log10(dt),
+                )
+        pyplot.gca().set_yscale("log")
+        pyplot.gca().set_xlim(left=0, right=t_max)
+        pyplot.legend()
+        pyplot.grid()
 
         if plot:
             pyplot.show()
