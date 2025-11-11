@@ -197,7 +197,7 @@ def make(self):
         power, sqrt,
         arctanh as atanh,
         arcsinh as asinh,
-        sinh,
+        sinh, tanh,
         maximum, minimum,
         where,  # TODO #1295
     )
