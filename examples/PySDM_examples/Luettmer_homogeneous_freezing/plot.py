@@ -249,8 +249,8 @@ def plot_freezing_temperatures_histogram_allinone(
     ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
     ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
-    ax.xaxis.set_major_locator(MultipleLocator(1))
-    ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
+    ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
     ax.legend(loc=lloc, fontsize=ax_lab_fsize)
 
     return ax
@@ -330,7 +330,9 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     return ax
 
 
-def plot_ensemble_bulk(ax, ensemble_simulations, var_name, title_add=""):
+def plot_ensemble_bulk(
+    ax, ensemble_simulations, var_name, title_add=""
+):  # pylint: disable=too-many-nested-blocks
 
     for ensemble_simulation in ensemble_simulations:
 

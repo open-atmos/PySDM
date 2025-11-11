@@ -69,7 +69,7 @@ def hom_pure_droplet_freezing_standard_setup():
     standard = {
         "n_sd": int(1e3),
         "w_updraft": 1.0 * si.meter / si.second,
-        "T0": formulae.trivia.C2K(-25),
+        "T0": 245 * si.kelvin,
         "dz": 0.1 * si.meter,
         "n_ccn": 750 / si.cm**3,
         "r_ccn": 15 * si.nanometer,
