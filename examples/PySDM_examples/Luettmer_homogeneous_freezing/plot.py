@@ -40,9 +40,9 @@ def cumulative_histogram(data, bins, reverse=False, density=True):
     return cum_hist, bin_centers
 
 
-def plot_thermodynamics_and_bulk(
-    simulation, title_add=["", "", "", ""], show_conc=False
-):
+def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
+    if title_add is None:
+        title_add = ["", "", "", ""]
     plot_daw = True
     output = simulation["ensemble_member_outputs"][0]
     time = output["t"]
@@ -53,8 +53,8 @@ def plot_thermodynamics_and_bulk(
     qi = np.asarray(output["IWC"])
     qv = np.asarray(output["qv"])
     qt = qc + qv + qi
-    rc = np.asarray(output["rs"])
-    ri = np.asarray(output["ri"])
+    # rc = np.asarray(output["rs"])
+    # ri = np.asarray(output["ri"])
     T_frz = np.asarray(output["T_frz"])
     if show_conc:
         nc = np.asarray(output["ns"])
@@ -75,7 +75,7 @@ def plot_thermodynamics_and_bulk(
     ).homogeneous_ice_nucleation_rate
     spichtinger_2023 = j_hom_rate.j_hom(T, d_a_w_ice)
 
-    fig, axs = pyplot.subplots(
+    _, axs = pyplot.subplots(
         1, 4, figsize=(20, 5), sharex=False, constrained_layout=True
     )
 
