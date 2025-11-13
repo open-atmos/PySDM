@@ -62,7 +62,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-24.04]
-        python-version: ["3.9"]
+        python-version: ["3.12"]
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4.1.6
