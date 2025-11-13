@@ -73,10 +73,14 @@ class VTKExporterPyrcel(VTKExporter):
         for level in range(self.n_levels):
             hd = self.half_diagonal[level]
             _z = self.output["products"]["z"][level]
-            x[i := level * 4], y[i], z[i] = -hd, -hd, _z
-            x[i := i + 1], y[i], z[i] = -hd, hd, _z
-            x[i := i + 1], y[i], z[i] = hd, hd, _z
-            x[i := i + 1], y[i], z[i] = hd, -hd, _z
+            i = level * 4
+            x[i], y[i], z[i] = -hd, -hd, _z
+            i += 1
+            x[i], y[i], z[i] = -hd, hd, _z
+            i += 1
+            x[i], y[i], z[i] = hd, hd, _z
+            i += 1
+            x[i], y[i], z[i] = hd, -hd, _z
             conn += [*range(4 * (level + 1), 4 * (level + 2))] * 2
         conn = np.asarray(conn[:-4])
         offset = np.asarray(range(8, 8 * self.n_levels, 8))
