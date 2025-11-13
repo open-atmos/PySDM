@@ -370,6 +370,7 @@
   },
   "https://doi.org/10.5194/gmd-16-4193-2023": {
     "usages": [
+      "README.md",
       "examples/docs/pysdm_examples_landing.md",
       "examples/PySDM_examples/deJong_Mackay_et_al_2023/__init__.py"
     ],
