@@ -12,8 +12,7 @@ import matplotlib.colors as colors
 from PySDM_examples.Ware_et_al_2025.box_simulation import main
 
 
-regular_data,adaptive_data,type_matrix = main(plot=False, save=".")
-
+regular_data,adaptive_data,log2_Ns,dts,init_names = main(plot=False, save=".")
 
 global_droplets_norm_error = max(
     max(max(regular_data["ConstantMultiplicity"]["Error"])),
@@ -26,24 +25,13 @@ global_droplets_norm_time = max(
     max(max(adaptive_data["Linear"]["MeanTime"])),
 )
 
-# Example parameters
-log2_Ns = [13, 14, 15, 16, 17, 18,19]
-dts = [20.0, 10.0, 5.0, 2.0, 1.0]
-init_names = ["ConstantMultiplicity", "Logarithmic", "Linear"]
-init_py = init_names  # Assuming `init_py` is equivalent to `init_names` in this context
-
 
 #%%
-#create mosaic layout with init_names+rows
 fig, axes = plt.subplot_mosaic([
         [init+"_Error" for init in init_names],
         [init+"_MeanTime" for init in init_names],
         [init+"_Deficit" for init in init_names],
     ],sharex=True, sharey=True, figsize=(8, 4), constrained_layout=True)
-# Create heatmaps for regular data
-
-#replace all 0s with NaN
-# np.where(np.array(regular_data).any(0) == 0, np.nan, regular_data)
 
 vminmx = {
     "Error": [np.min([regular_data[i]["Error"] for i in init_names]),
@@ -68,9 +56,11 @@ init_naming = {
     "Logarithmic": "uniform-in-log($r$)",
     "Linear": "uniform-in-$r$",
 }
-
-formatter = ScalarFormatter(useMathText=True)
-formatter.set_powerlimits((0, 0))  # Force scientific notation for all values
+cticks = {
+    "Error": np.linspace(0,.15,4),
+    "MeanTime": np.linspace(0,1,5),
+    "Deficit": np.logspace(0,6,7),
+}
 
 
 for row in ["Error", "MeanTime","Deficit"]:        
@@ -79,22 +69,17 @@ for row in ["Error", "MeanTime","Deficit"]:
 
     for init in init_names:
         ax = axes[f"{init}_{row}"]
-        data = np.array(regular_data[init][row])#,axis=0)
+        data = np.array(regular_data[init][row])
         data = np.where(data == 0, np.nan, data)*mult[row]
-        # Use Matplotlib contour plot
         bounds = np.linspace(vmin, vmax, 20) if row != "Deficit" else \
             np.logspace(np.log10(vmin), np.log10(vmax), 20)
         norm = colors.BoundaryNorm(boundaries=bounds, ncolors=256)
 
         im = ax.imshow(
                 data,     
-                # ax=ax, 
                 norm=norm,               
-                # norm=LogNorm(vmin=vmin,vmax=vmax) if row =="Deficit" else \
-                #     Normalize(vmin=vmin, vmax=vmax),
                 cmap=plt.get_cmap(Colormap('crameri:oslo_r').to_mpl(),10),
                 aspect="auto",
-                # cbar=False,# if init == init_names[-1] else False,
             )
         if init == init_names[0]:
             cbar = fig.colorbar(
@@ -103,10 +88,11 @@ for row in ["Error", "MeanTime","Deficit"]:
                 orientation="vertical", 
                 aspect=5,
                 label=labels[row],
-                # ticks=bounds[::4],  # Add ticks at the boundaries
-                format='%.2f' if row != "Deficit" else formatter, 
+                ticks=cticks[row], 
+                format='%.2f', 
             )
             cbar.ax.yaxis.set_offset_position('left')
+            cbar.ax.set_yticklabels([f'$10^{{{int(np.log10(a))}}}$' for a in cticks[row]]) if row == "Deficit" else None 
 
         ax.invert_yaxis()
         for spine in ax.spines.values():
@@ -141,7 +127,7 @@ for row in ["Error", "MeanTime"]:
 
     for init in init_names:
         ax = axes[f"{init}_{row}"]
-        data = np.array(adaptive_data[init][row])#,axis=0)
+        data = np.array(adaptive_data[init][row])
         data = np.where(data == 0, np.nan, data)*mult[row]
 
         bounds = np.linspace(vmin, vmax, 20)
@@ -149,13 +135,9 @@ for row in ["Error", "MeanTime"]:
 
         contour = ax.imshow(
                 data,    
-                # levels = 15,   
                 norm = norm,             
-                # norm=LogNorm(vmin=vmin,vmax=vmax,ncolors=4) if row =="Deficit" else \
-                #     Normalize(vmin=vmin, vmax=vmax, ncolors=2),
                 cmap=plt.get_cmap(Colormap('crameri:oslo_r').to_mpl(),20),
                 aspect="auto",
-                # ('oslo', Nlevels=15),
             )
         ax.invert_yaxis()
 
@@ -167,8 +149,8 @@ for row in ["Error", "MeanTime"]:
                 aspect=5, 
                 # pad=0.1, 
                 label=labels[row],
-                ticks=bounds[::4], 
-                format='%.2f' if row != "Deficit" else formatter,  #
+                ticks=cticks[row],
+                format='%.2f',
             )
             cbar.ax.yaxis.set_offset_position('left')
 
@@ -186,3 +168,5 @@ for row in ["Error", "MeanTime"]:
 plt.savefig("AdaptiveHeatmaps.pdf")
 plt.show()
 
+
+# %%

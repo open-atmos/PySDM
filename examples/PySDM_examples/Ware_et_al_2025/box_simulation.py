@@ -11,7 +11,7 @@ from PySDM.backends import CPU
 def main(plot: bool = True, save: str = None):
     backend = CPU()
     n_sds = [13,14,15,16,17,18,19]
-    dts = [20,10,5,2,1]#, "adaptive"]
+    dts = [20,10,5,2,1]
     sampling_strat = [ConstantMultiplicity,Logarithmic, Linear]
     sampling_strat_names = ["ConstantMultiplicity","Logarithmic", "Linear"]
     regular = {"ConstantMultiplicity":{},"Logarithmic":{}, "Linear":{}}
@@ -33,7 +33,7 @@ def main(plot: bool = True, save: str = None):
     error_std_heatmaps_adaptive = {}
     deficit_heatmaps_adaptive = {}
     mean_time_heatmaps_adaptive = {}
-
+    one_for_warmup = 1
 
 
     for k,strat in enumerate(sampling_strat):
@@ -51,14 +51,13 @@ def main(plot: bool = True, save: str = None):
                 deficits = []
                 errors = []
                 exec_times = []
-                one_for_warmup = 1
                 for it in range(iters_without_warmup + one_for_warmup):
                     settings = Settings()
                     backend.formulae.seed = it
 
                     settings.n_sd = 2**n_sd
-                    settings.dt = dt #if dt != "adaptive" else max(dts[:-1])
-                    settings.adaptive = False #dt == "adaptive"
+                    settings.dt = dt
+                    settings.adaptive = False
                     settings.sampling = strat(settings.spectrum)
 
                     states, exec_time, deficit = run(settings,backend)
@@ -72,30 +71,19 @@ def main(plot: bool = True, save: str = None):
                         for step, vals in states.items():
                             error = plotter.plot(vals, step * settings.dt)
                         errors.append(error*1e-3) #grams to kg
-                mean_time = np.mean(exec_times)#[one_for_warmup:])
+                mean_time = np.mean(exec_times[one_for_warmup:])
                 if base_time is None:
                     base_time = mean_time
                 norm_time = mean_time / base_time
                 mean_output = {}
-                # mean_deficit = {}
                 for key in outputs[0].keys():
                     mean_output[key] = sum((output[key] for output in outputs)) / len(
                         outputs
                     )
-                # for key in deficits[0].keys():
-                #     mean_deficit[key] = sum((deficit[key] for deficit in deficits)) / len(
-                #         deficits
-                #     )
                 mean_deficit = sum(deficits) / len(deficits)
                 last_step_error = sum(errors) / len(errors)
                 error_std = np.std(errors)
 
-                # for step, vals in mean_output.items():
-                #     error = plotter.plot(vals, step * settings.dt)
-                # last_step_error = error*1e-3 #grams to kg
-                # if base_error is None:
-                #     base_error = last_step_error
-                # norm_error = last_step_error / base_error
 
                 plotter.ylabel = (
                     r"$\bf{dt: "
@@ -115,7 +103,7 @@ def main(plot: bool = True, save: str = None):
                 )
                 error_heatmap[i][j] = last_step_error
                 error_std_hm[i][j] = error_std
-                deficit_heatmap[i][j] = mean_deficit #sum(mean_deficit)/3600
+                deficit_heatmap[i][j] = mean_deficit
                 mean_time_heatmap[i][j] = mean_time
                 plotter.finished = False
                 plotter.finish()
@@ -132,8 +120,6 @@ def main(plot: bool = True, save: str = None):
         mean_time_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
         sanity_heatmap = [[0 for _ in range(len(n_sds))] for _ in range(len(dts))]
         plotter = SpectrumPlotter(Settings(), legend=False)
-        # plotter.fig = fig
-        # plotter.ax = axs[i, j]
         plotter.smooth = False
         for i, dt in enumerate(dts):
             for j, n_sd in enumerate(n_sds):
@@ -142,13 +128,12 @@ def main(plot: bool = True, save: str = None):
                 deficits = []
                 exec_times = []
                 errors = []
-                one_for_warmup = 1
                 for it in range(iters_without_warmup + one_for_warmup):
                     settings = Settings()
                     backend.formulae.seed = it
 
                     settings.n_sd = 2**n_sd
-                    settings.dt = dt #if dt != "adaptive" else max(dts[:-1])
+                    settings.dt = dt
                     settings.adaptive = True
                     settings.sampling = strat(settings.spectrum)
 
@@ -163,7 +148,7 @@ def main(plot: bool = True, save: str = None):
                         for step, vals in states.items():
                             error = plotter.plot(vals, step * settings.dt)
                         errors.append(error*1e-3) #grams to kg
-                mean_time = np.mean(exec_times)#[one_for_warmup:])
+                mean_time = np.mean(exec_times[one_for_warmup:])
                 if base_time is None:
                     base_time = mean_time
                 norm_time = mean_time / base_time
@@ -177,13 +162,6 @@ def main(plot: bool = True, save: str = None):
                 last_step_error = sum(errors) / len(errors)
                 error_std = np.std(errors)
 
-
-                # for step, vals in mean_output.items():
-                #     error = plotter.plot(vals, step * settings.dt)
-                # last_step_error = error/1e3 #grams to kg
-                # if base_error is None:
-                #     base_error = last_step_error
-                # norm_error = last_step_error / base_error
 
                 plotter.ylabel = (
                     r"$\bf{dt: "
@@ -203,7 +181,7 @@ def main(plot: bool = True, save: str = None):
                 )
                 error_heatmap[i][j] = last_step_error
                 error_std_hm[i][j] = error_std
-                deficit_heatmap[i][j] = mean_deficit #sum(mean_deficit)/3600
+                deficit_heatmap[i][j] = mean_deficit 
                 mean_time_heatmap[i][j] = mean_time
                 plotter.finished = False
                 plotter.finish()
@@ -233,8 +211,8 @@ def main(plot: bool = True, save: str = None):
             print(strat,deficit_heatmaps[sampling_strat_names[k]])
             plt.imshow(deficit_heatmaps[sampling_strat_names[k]], cmap='viridis')
         plt.show()
-    return regular,adaptive,sanity_heatmap
+    return regular,adaptive,n_sds,dts
 
 
 if __name__ == "__main__":
-    regular,adaptive,type_matrix = main(plot=False, save=".")
+    regular,adaptive,n_sds,dts,sampling_strat_names = main(plot=False, save=".")
