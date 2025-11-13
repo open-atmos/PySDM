@@ -224,7 +224,6 @@ It is a <a href="https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/co
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;Plots&quot;</span><span class="p">)</span>
-<span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;PlotlyJS&quot;</span><span class="p">)</span>
 
 <span class="n">ConstantMultiplicity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/initialisation/sampling/spectral_sampling.html">PySDM.initialisation.sampling.spectral_sampling</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ConstantMultiplicity</span>
 <span class="n">Exponential</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/initialisation/spectra.html">PySDM.initialisation.spectra</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">Exponential</span>
@@ -369,7 +368,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary></p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">;</span><span class="w"> </span><span class="n">plotlyjs</span><span class="p">()</span>
+<pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">;</span><span class="w"> </span><span class="n">gr</span><span class="p">()</span>
 
 <span class="k">for</span><span class="w"> </span><span class="n">step</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="mi">1200</span><span class="o">:</span><span class="mi">3600</span>
 <span class="w">    </span><span class="n">particulator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">step</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">particulator</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span>
@@ -528,7 +527,7 @@ and the
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="n">PyCall</span>
-<span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">;</span><span class="w"> </span><span class="n">plotlyjs</span><span class="p">()</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">;</span><span class="w"> </span><span class="n">gr</span><span class="p">()</span>
 <span class="n">si</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/physics.html">PySDM.physics</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">si</span>
 <span class="n">spectral_sampling</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/initialisation/sampling.html">PySDM.initialisation.sampling</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">spectral_sampling</span>
 <span class="n">discretise_multiplicities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pyimport</span><span class="p">(</span><span class="s">&quot;<a href="PySDM/initialisation.html">PySDM.initialisation</a>&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">discretise_multiplicities</span>
