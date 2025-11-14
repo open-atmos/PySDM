@@ -67,10 +67,10 @@ jobs:
           verbose: true
 
           # The timeout seconds to provide to requests, defaults to 5 seconds
-          timeout: 7
+          timeout: 15
 
           # How many times to retry a failed request (each is logged, defaults to 1)
-          retry_count: 3
+          retry_count: 4
 
           # A comma separated links to exclude during URL checks
           exclude_urls: https://www.gnu.org/licenses/gpl-3.0.html,https://open-atmos.github.io/PySDM/\2/\3.html
