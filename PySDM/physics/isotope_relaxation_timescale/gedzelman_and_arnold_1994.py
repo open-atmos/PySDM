@@ -12,16 +12,19 @@ class GedzelmanAndArnold1994:  # pylint: disable=too-few-public-methods
         R_vap,
         R_liq,
         relative_humidity,
+        rho_v,
     ):
+        """from eq. 20 and eq. 16 we corrected eq. 17 and calculate Bolin number"""
         # pylint: disable=unused-argument
+        missing_factor_b = rho_v
+        b = Fk / const.rho_w * D_light
         return (
-            1
+            alpha
             / D_ratio_heavy_to_light
-            * (relative_humidity - 1)
-            * (relative_humidity + 1)
-            / (1 + Fk * D_light)
+            * (1 - relative_humidity)
+            / (1 + missing_factor_b * b)
             / (
-                1 / alpha * (1 + Fk * D_light * relative_humidity)
-                - R_vap / R_liq * relative_humidity * (1 + Fk * D_light)
+                relative_humidity * (1 - R_vap * alpha / R_liq)
+                + (1 - relative_humidity) / (1 + missing_factor_b * b)
             )
         )
