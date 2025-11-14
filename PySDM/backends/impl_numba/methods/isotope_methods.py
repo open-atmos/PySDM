@@ -58,6 +58,12 @@ class IsotopeMethods(BackendMethods):
                     dm_total[sd_id] / bolin_number[sd_id] * mass_ratio_heavy_to_total
                 )
                 dn_heavy = dm_heavy / molar_mass_heavy
+                # dn_heavy = (
+                #     moles_heavy[sd_id]
+                #     * dm_total[sd_id]
+                #     / signed_water_mass[sd_id]
+                #     / bolin_number[sd_id]
+                # )
                 moles_heavy[sd_id] += dn_heavy
                 mass_of_dry_air = (
                     dry_air_density[sd_id] * cell_volume
@@ -112,30 +118,31 @@ class IsotopeMethods(BackendMethods):
         ):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
-
+                pvs_water = ff.saturation_vapour_pressure__pvs_water(T)
                 moles_heavy_isotope = moles_heavy[i]
-                moles_light_isotope = moles_light_water[i]
+                moles_light_isotope = moles_light_water[i]  # TODO
                 conc_vap_total = (
-                    ff.saturation_vapour_pressure__pvs_water(T)
-                    * relative_humidity[cell_id[i]]
-                    / ff.constants.R_str
-                    / T
+                    pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
                 isotopic_mixing_ratio = ff.trivia__molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
                     molar_mixing_ratio=molar_mixing_ratio[cell_id[i]],
                     density_dry_air=density_dry_air[cell_id[i]],
                     conc_vap_total=conc_vap_total,
                 )
+                rho_v = pvs_water / T / ff.constants.Rv
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(
                         T
                     ),
                     alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
                     D_light=ff.constants.D0,
-                    Fk=1,  # TODO
+                    Fk=ff.drop_growth__Fk(
+                        T=T, K=ff.constants.K0, lv=ff.constants.l_tri
+                    ),
                     R_vap=isotopic_mixing_ratio,
                     R_liq=moles_heavy_isotope / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
+                    rho_v=rho_v,
                 )
 
         return body

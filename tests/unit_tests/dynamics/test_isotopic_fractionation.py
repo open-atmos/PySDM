@@ -17,6 +17,7 @@ from PySDM.physics import si, in_unit
 from PySDM.physics.constants import PER_MILLE, PER_CENT
 from PySDM.physics.constants_defaults import VSMOW_R_2H  # TODO!
 
+
 BASE_INITIAL_ATTRIBUTES = {
     "multiplicity": np.ones(1),
     "signed water mass": 1,
@@ -32,6 +33,7 @@ def formulae():
         isotope_relaxation_timescale="GedzelmanAndArnold1994",
         isotope_diffusivity_ratios="GrahamsLaw",
         isotope_equilibrium_fractionation_factors="VanHook1968",
+        isotope_ratio_evolution="GedzelmanAndArnold1994",
     )
 
 
@@ -142,11 +144,11 @@ def set_up_env_and_do_one_step(
             conc_vap_total=initial_conc_vap - dm / const.Mv / cell_volume,
         )
     )
-    dR_vap = new_R_vap - initial_R_vap["2H"]
-    dR_liq = (
+    new_R_liq = (
         particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
-        - initial_R_liq
     )
+    dR_vap = new_R_vap - initial_R_vap["2H"]
+    dR_liq = new_R_liq - initial_R_liq
     return dR_vap / initial_R_vap["2H"], dR_liq / initial_R_liq
 
 
@@ -323,14 +325,13 @@ class TestIsotopicFractionation:
     def test_plot_dR_liq_2H(formulae, backend_class):
         const = formulae.constants
         T = formulae.trivia.C2K(10) * si.K
+        delta_2H = -200 * PER_MILLE
         initial_R_vap = {
-            "2H": formulae.trivia.isotopic_delta_2_ratio(
-                -200 * PER_MILLE, const.VSMOW_R_2H
-            )
+            "2H": formulae.trivia.isotopic_delta_2_ratio(delta_2H, const.VSMOW_R_2H)
         }
-        number_of_points = 8
-        molecular_R_liq = np.linspace(0.2, 1, number_of_points) * VSMOW_R_2H
-        RH = np.linspace(0, 1, number_of_points)
+        number_of_points = 10
+        molecular_R_liq = np.linspace(0.8, 1, number_of_points) * VSMOW_R_2H
+        RH = np.linspace(0.1, 1.0, number_of_points)
 
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
         attributes["signed water mass"] = const.rho_w * formulae.trivia.volume(
@@ -353,11 +354,8 @@ class TestIsotopicFractionation:
                     attributes=attributes,
                     initial_R_vap=initial_R_vap,
                 )
-        R_equilibrium = (
-            formulae.isotope_equilibrium_fractionation_factors.alpha_l_2H(T)
-            * initial_R_vap["2H"]
-            / VSMOW_R_2H
-        )
+        alpha_2H = formulae.isotope_equilibrium_fractionation_factors.alpha_l_2H(T)
+        R_equilibrium = alpha_2H * initial_R_vap["2H"] / VSMOW_R_2H
         labels = [
             "$\\Delta R_\\text{liq} / R_\\text{liq}$ [%]",
             "$\\Delta R_\\text{vap} / R_\\text{vap}$ [%]",
@@ -384,6 +382,50 @@ class TestIsotopicFractionation:
             ax_top.set_xticklabels(["eq"])
             ax_top.tick_params(axis="x", direction="out", length=6)
 
+        rho_vs = formulae.saturation_vapour_pressure.pvs_water(T) / T / const.Rv
+        b = (
+            formulae.drop_growth.Fk(
+                T=T, K=formulae.constants.K0, lv=formulae.constants.l_tri
+            )
+            / const.rho_w
+            * rho_vs
+            * formulae.constants.D0
+        )
+        x = np.linspace(alpha_2H * initial_R_vap["2H"] / VSMOW_R_2H, 1.01, 200)
+        zero_condition_liq = (
+            formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
+                diff_rat_light_to_heavy=1
+                / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T),
+                iso_ratio_x=x * VSMOW_R_2H,
+                iso_ratio_r=x * VSMOW_R_2H,
+                iso_ratio_v=initial_R_vap["2H"],
+                b=b,
+                alpha_w=alpha_2H,
+            )
+        )
+        zero_condition_vap = (
+            formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
+                diff_rat_light_to_heavy=1
+                / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T),
+                iso_ratio_x=initial_R_vap["2H"],
+                iso_ratio_r=x * VSMOW_R_2H,
+                iso_ratio_v=initial_R_vap["2H"],
+                b=b,
+                alpha_w=alpha_2H,
+            )
+        )
+        names = ["liquid", "vapour"]
+        for i, y in enumerate([zero_condition_liq, zero_condition_vap]):
+            ax[i].plot(
+                x,
+                in_unit(
+                    y,
+                    PER_CENT,
+                ),
+                label=f"{names[i]} line from GA",
+            )
+            ax[i].legend()
+            ax[i].set_ylim((in_unit(RH[0], PER_CENT), in_unit(RH[-1], PER_CENT)))
         pyplot.tight_layout()
         show_plot("R_ratios_for_liquid_and_vapour")
 
