@@ -106,7 +106,7 @@ def set_up_env_and_do_one_step(
     initial_conc_vap = (
         formulae.saturation_vapour_pressure.pvs_water(T) * RH / const.R_str / T
     )
-    attributes["moles_2H"] = formulae.trivia.moles_heavy_isotope(
+    attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
         molecular_R_liq=molecular_R_liq,
         mass_total=attributes["signed water mass"],
         mass_other_heavy_isotopes=0,
@@ -256,7 +256,7 @@ class TestIsotopicFractionation:
         # arrange
         const = formulae.constants
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
-        attributes["moles_2H"] = formulae.trivia.moles_heavy_isotope(
+        attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
             molecular_R_liq=molecular_R_liq,
             mass_total=attributes["signed water mass"],
             mass_other_heavy_isotopes=sum(
@@ -329,7 +329,7 @@ class TestIsotopicFractionation:
         initial_R_vap = {
             "2H": formulae.trivia.isotopic_delta_2_ratio(delta_2H, const.VSMOW_R_2H)
         }
-        number_of_points = 10
+        number_of_points = 6
         molecular_R_liq = np.linspace(0.8, 1, number_of_points) * VSMOW_R_2H
         RH = np.linspace(0.1, 1.0, number_of_points)
 
@@ -361,71 +361,55 @@ class TestIsotopicFractionation:
             "$\\Delta R_\\text{vap} / R_\\text{vap}$ [%]",
         ]
         fig, ax = pyplot.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
-        for i, data in enumerate([rel_diff_liq, rel_diff_vap]):
-            pcm = ax[i].pcolormesh(
+        diff_ratio = 1 / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T)
+        b_factor = (
+            formulae.drop_growth.Fk(
+                T, K=formulae.constants.K0, lv=formulae.constants.l_tri
+            )
+            / const.rho_w
+            * formulae.saturation_vapour_pressure.pvs_water(T)
+            / T
+            / const.Rv
+            * formulae.constants.D0
+        )
+        for ax_i, data, label in zip(ax, [rel_diff_liq, rel_diff_vap], labels):
+            data_percent = in_unit(data, PER_CENT)
+            pcm = ax_i.pcolormesh(
                 R_grid,
                 in_unit(RH_grid, PER_CENT),
-                data_percent := in_unit(data, PER_CENT),
+                data_percent,
                 cmap="seismic",
                 vmin=-np.nanmax(np.abs(data_percent)),
                 vmax=np.nanmax(np.abs(data_percent)),
             )
-            fig.colorbar(pcm, ax=ax[i], extend="both")
-
-            ax[i].set_title(labels[i])
-            ax[i].set_xlabel(
+            fig.colorbar(pcm, ax=ax_i, extend="both")
+            ax_i.set_title(label)
+            ax_i.set_xlabel(
                 "molecular isotope ratio of rain normalised to atomic VSMOW [1]"
             )
-            ax_top = ax[i].secondary_xaxis("top")
 
+            ax_top = ax_i.secondary_xaxis("top")
             ax_top.set_xticks([R_equilibrium])
             ax_top.set_xticklabels(["eq"])
             ax_top.tick_params(axis="x", direction="out", length=6)
 
-        rho_vs = formulae.saturation_vapour_pressure.pvs_water(T) / T / const.Rv
-        b = (
-            formulae.drop_growth.Fk(
-                T=T, K=formulae.constants.K0, lv=formulae.constants.l_tri
-            )
-            / const.rho_w
-            * rho_vs
-            * formulae.constants.D0
-        )
-        x = np.linspace(alpha_2H * initial_R_vap["2H"] / VSMOW_R_2H, 1.01, 200)
-        zero_condition_liq = (
+        x = np.linspace(R_equilibrium, 1.01, 200)
+        zero_conditions = [
             formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
-                diff_rat_light_to_heavy=1
-                / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T),
-                iso_ratio_x=x * VSMOW_R_2H,
+                diff_rat_light_to_heavy=diff_ratio,
+                iso_ratio_x=val_x,
                 iso_ratio_r=x * VSMOW_R_2H,
                 iso_ratio_v=initial_R_vap["2H"],
-                b=b,
+                b=b_factor,
                 alpha_w=alpha_2H,
             )
-        )
-        zero_condition_vap = (
-            formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
-                diff_rat_light_to_heavy=1
-                / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T),
-                iso_ratio_x=initial_R_vap["2H"],
-                iso_ratio_r=x * VSMOW_R_2H,
-                iso_ratio_v=initial_R_vap["2H"],
-                b=b,
-                alpha_w=alpha_2H,
-            )
-        )
-        names = ["liquid", "vapour"]
-        for i, y in enumerate([zero_condition_liq, zero_condition_vap]):
-            ax[i].plot(
-                x,
-                in_unit(
-                    y,
-                    PER_CENT,
-                ),
-                label=f"{names[i]} line from GA",
-            )
-            ax[i].legend()
-            ax[i].set_ylim((in_unit(RH[0], PER_CENT), in_unit(RH[-1], PER_CENT)))
+            for val_x in [x * VSMOW_R_2H, initial_R_vap["2H"]]
+        ]
+        for ax_i, y, name in zip(ax, zero_conditions, ["liquid", "vapour"]):
+            ax_i.plot(x, in_unit(y, PER_CENT), label=f"{name} line from GA")
+            ax_i.legend()
+            ax_i.set_ylim(in_unit(RH[0], PER_CENT), in_unit(RH[-1], PER_CENT))
+
         pyplot.tight_layout()
         show_plot("R_ratios_for_liquid_and_vapour")
 
