@@ -27,7 +27,7 @@ class Simulation(BasicSimulation):
                 initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
                 T0=settings.initial_temperature,
                 w=settings.vertical_velocity,
-                mass_of_dry_air=44 * si.kg,
+                mass_of_dry_air=66666 * si.kg,
             ),
         )
         builder.add_dynamic(AmbientThermodynamics())
