@@ -148,11 +148,14 @@ class TestTrivia:
             molar_mass_heavy_molecule=molar_mass_heavy_molecule,
             light_atoms_per_light_molecule=light_atoms_per_light_molecule,
         )
-        moles_light_water = moles_atom / light_atoms_per_light_molecule / isotopic_ratio
+        moles_light_molecule = (
+            moles_atom / light_atoms_per_light_molecule / isotopic_ratio
+        )
 
         # act
         sut = (
-            moles_atom * molar_mass_heavy_molecule + moles_light_water * const.M_1H2_16O
+            moles_atom * molar_mass_heavy_molecule
+            + moles_light_molecule * const.M_1H2_16O
         )
 
         # assert

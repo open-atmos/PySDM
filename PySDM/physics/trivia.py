@@ -205,7 +205,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return conc_vap_heavy / (conc_vap_total - conc_vap_heavy)
 
     @staticmethod
-    def moles_heavy_isotope(
+    def moles_heavy_atom(
         molecular_R_liq,
         mass_total,
         mass_other_heavy_isotopes,

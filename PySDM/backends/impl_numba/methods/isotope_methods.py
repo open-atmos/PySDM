@@ -112,15 +112,15 @@ class IsotopeMethods(BackendMethods):
             relative_humidity,
             temperature,
             density_dry_air,
-            moles_light_water,
+            moles_light_molecule,
             moles_heavy,
             molar_mixing_ratio,
         ):
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
                 pvs_water = ff.saturation_vapour_pressure__pvs_water(T)
-                moles_heavy_isotope = moles_heavy[i]
-                moles_light_isotope = moles_light_water[i]  # TODO
+                moles_heavy_atom = moles_heavy[i]
+                moles_light_isotope = moles_light_molecule[i]  # TODO
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
@@ -140,7 +140,7 @@ class IsotopeMethods(BackendMethods):
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
                     ),
                     R_vap=isotopic_mixing_ratio,
-                    R_liq=moles_heavy_isotope / moles_light_isotope,
+                    R_liq=moles_heavy_atom / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
                     rho_v=rho_v,
                 )
@@ -155,7 +155,7 @@ class IsotopeMethods(BackendMethods):
         relative_humidity,
         temperature,
         density_dry_air,
-        moles_light_water,
+        moles_light_molecule,
         moles_heavy,
         molar_mixing_ratio,
     ):
@@ -165,7 +165,7 @@ class IsotopeMethods(BackendMethods):
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
             density_dry_air=density_dry_air.data,
-            moles_light_water=moles_light_water.data,
+            moles_light_molecule=moles_light_molecule.data,
             moles_heavy=moles_heavy.data,
             molar_mixing_ratio=molar_mixing_ratio.data,
         )
