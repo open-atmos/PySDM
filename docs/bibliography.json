@@ -91,7 +91,8 @@
       "examples/docs/pysdm_examples_landing.md",
       "examples/PySDM_examples/utils/kinematic_2d/__init__.py",
       "examples/PySDM_examples/Morrison_and_Grabowski_2007/__init__.py",
-      "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_1.ipynb"
+      "examples/PySDM_examples/Morrison_and_Grabowski_2007/fig_1.ipynb",
+      "examples/PySDM_examples/seeding/MG2007_seeding.ipynb"
     ],
     "label": "Morrison & Grabowski 2007 (J. Atmos. Sci. 64)",
     "title": "Comparison of Bulk and Bin Warm-Rain Microphysics Models Using a Kinematic Framework"
@@ -260,7 +261,9 @@
       "examples/PySDM_examples/Arabas_et_al_2015/gui.ipynb",
       "PySDM/dynamics/displacement.py",
       "PySDM/physics/particle_advection/implicit_in_space.py",
-      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
+      "examples/PySDM_examples/seeding/MG2007_seeding.ipynb"
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py",
+      "examples/PySDM_examples/seeding/MG2007_seeding.ipynb"    
     ],
     "label": "Arabas et al. 2015 (Geosci. Model Dev. 2015)",
     "title": "libcloudph++ 1.0: a single-moment bulk, double-moment bulk, and particle-based warm-rain microphysics library in C++"
@@ -515,7 +518,8 @@
       "examples/docs/pysdm_examples_landing.md",
       "examples/PySDM_examples/deJong_Mackay_et_al_2023/figs_10_11_12_13.ipynb",
       "examples/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb",
-      "examples/PySDM_examples/Shipway_and_Hill_2012/__init__.py"
+      "examples/PySDM_examples/Shipway_and_Hill_2012/__init__.py",
+      "examples/PySDM_examples/seeding/SH2012_seeding.ipynb"
     ],
     "label": "Shipway & Hill 2012 (Q. J. R. Meteorol. Soc. 138)",
     "title": "Diagnosis of systematic differences between multiple parametrizations of warm rain microphysics using a kinematic framework"
@@ -612,7 +616,9 @@
   },
   "https://doi.org/10.1016/S0169-8095(97)00082-3": {
     "usages": [
-      "examples/PySDM_examples/utils/kinematic_2d/__init__.py"
+      "examples/PySDM_examples/Szumowski_et_al_1998/__init__.py",
+      "examples/PySDM_examples/utils/kinematic_2d/__init__.py",
+      "examples/PySDM_examples/seeding/MG2007_seeding.ipynb"    
     ],
     "label": "Szumowski et al. 1998 (Atmos. Res. 45)",
     "title": "Simple two-dimensional kinematic framework designed to test warm rain microphysical models"
