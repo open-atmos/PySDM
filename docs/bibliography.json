@@ -974,5 +974,12 @@
     ],
     "label": "Barthazy and Schefold 2006 (Atmos. Res. 82)",
     "title": "Fall velocity of snowflakes of different riming degree and crystal types"
+  },
+  "https://doi.org/10.1016/j.jcp.2016.06.029": {
+    "usages": [
+      "PySDM/dynamics/deposition_removal.py"
+    ],
+    "label": "Curtis et al. 2016 (J. Comp. Phys. 322)",
+    "title": "Accelerated simulation of stochastic particle removal\nprocesses in particle-resolved aerosol models"
   }
 }
