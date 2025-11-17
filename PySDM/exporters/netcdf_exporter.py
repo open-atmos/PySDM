@@ -1,6 +1,6 @@
 """netCDF exporter implemented using
-[SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf)
-"""
+[SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.netcdf_file.html)
+"""  # pylint: disable=line-too-long
 
 import numpy as np
 from scipy.io import netcdf_file

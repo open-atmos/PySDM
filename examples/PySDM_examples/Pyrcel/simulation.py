@@ -6,7 +6,7 @@ from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
 
@@ -91,7 +91,9 @@ class Simulation(BasicSimulation):
                 attr[drop_id].append(attr_data[drop_id])
         super()._save(output)
 
-    def run(self):
+    def run(self, observers=()):
+        for observer in observers:
+            self.particulator.observers.append(observer)
         output_products = super()._run(
             self.settings.nt, self.settings.steps_per_output_interval
         )

@@ -2,11 +2,11 @@ import importlib
 
 from matplotlib import pyplot as plt
 from PySDM_examples.Arabas_et_al_2015 import Settings
-from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
+from PySDM_examples.utils.kinematic_2d import Simulation, Storage
 
 import PySDM.backends.impl_numba.conf
 from PySDM import Formulae
-from PySDM.backends import CPU, GPU
+from PySDM.backends import Numba, ThrustRTC
 from PySDM.products import WallTime
 
 
@@ -42,11 +42,11 @@ def main():
     n_sd = range(14, 16, 1)
 
     times = {}
-    backends = [(CPU, "sync"), (CPU, "async")]
-    if GPU.ENABLE:
-        backends.append((GPU, "async"))
+    backends = [(Numba, "sync"), (Numba, "async")]
+    if ThrustRTC.ENABLE:
+        backends.append((ThrustRTC, "async"))
     for backend, mode in backends:
-        if backend is CPU:
+        if backend is Numba:
             PySDM.backends.impl_numba.conf.NUMBA_PARALLEL = mode
             reload_cpu_backend()
         key = f"{backend} (mode={mode})"

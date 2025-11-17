@@ -39,9 +39,12 @@ The 2D prescribed-flow framework used here can be traced back to the work of
     and dry-air potential temperature.
   In PySDM-examples, the Eulerian advection is handled using the <a href="https://doi.org/10.21105/joss.03896">PyMPDATA</a> Numba-based
     implementation of the <a href="https://doi.org/10.1002/fld.1071">MPDATA numerical scheme of Smolarkiewicz (e.g., 2006)</a>.
-  An animation depicting PySDM simulation capturing <mark>aerosol collisional processing</mark> by warm rain is shown below:
-
-![animation](https://github.com/open-atmos/PySDM/wiki/files/kinematic_2D_example.gif)
+  An animation depicting PySDM simulation capturing <mark>aerosol collisional processing</mark> by warm rain is shown below
+  (<a href="https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/_HOWTOs/paraview_hello_world.ipynb">see
+  the Paraview hello-world HOWTO Jupyter notbook for code generating the simulation and visualisation</a>):
+<center>
+  <img src="https://github.com/open-atmos/PySDM/releases/download/tip/docs_intro_animation_ubuntu-24.04.gif" style="width:80%" />
+</center>
 
 Example notebooks:
 - `PySDM_examples.Arabas_et_al_2015`
@@ -89,6 +92,8 @@ Example notebooks include:
 - condensation and aqueous-chemistry
   - `PySDM_examples.Kreidenweis_et_al_2003`: <mark>Hoppel gap</mark> simulation setup (i.e. depiction of evolution of aerosol mass spectrum from a monomodal to bimodal due to aqueous‐phase SO2 oxidation)
   - `PySDM_examples.Jaruga_and_Pawlowska_2018`: exploration of numerical convergence using the above Hoppel-gap simulation setup
+- freezing
+  - `PySDM_examples.Spichtinger_et_al_2023`: <mark>homogeneous freezing</mark> and ice growth (<mark>Wegener-Bergeron-Findeisen process</mark>)
 
 The parcel environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
 

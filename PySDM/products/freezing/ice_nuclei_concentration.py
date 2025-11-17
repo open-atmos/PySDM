@@ -19,7 +19,9 @@ class IceNucleiConcentration(ConcentrationProduct):
 
     def register(self, builder):
         super().register(builder)
-        singular = builder.particulator.dynamics["Freezing"].singular
+        singular = (
+            builder.particulator.dynamics["Freezing"].immersion_freezing == "singular"
+        )
         self.__filter_attr = {
             True: "freezing temperature",
             False: "immersed surface area",

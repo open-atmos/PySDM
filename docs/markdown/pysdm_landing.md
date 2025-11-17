@@ -16,6 +16,70 @@ More elaborate examples reproducing results from literature, engineered in Pytho
 notebooks are maintained in the
 [PySDM-examples package](https://open-atmos.github.io/PySDM/PySDM_examples).
 
+## Note on physical units and dimensional analysis
+
+Throughout the entire PySDM codebase, all values are stored in **SI units**, and all physics formulae expect **SI values as arguments**.
+Otherwise, it is a bug - please report.
+
+### Initialisation of physical constants
+Physical constants are initialised using the ``PySDM.physics.si`` object as follows:
+<details>
+<summary>Julia (click to expand)</summary>
+
+```Julia
+using Pkg
+Pkg.add("PyCall")
+using PyCall
+si = pyimport("PySDM.physics").si
+
+temperature = 300 * si.K
+pressure = 1000 * si.hPa
+vapour_mixing_ratio = 10 * si.g / si.kg
+```
+</details>
+<details>
+<summary>Matlab (click to expand)</summary>
+
+```Matlab
+si = py.importlib.import_module('PySDM.physics').si;
+
+temperature = 300 * si.K;
+pressure = 1000 * si.hPa;
+vapour_mixing_ratio = 10 * si.g / si.kg;
+```
+</details>
+<details open>
+<summary>Python (click to expand)</summary>
+
+```Python
+from PySDM.physics import si
+
+temperature = 300 * si.K
+pressure = 1000 * si.hPa
+vapour_mixing_ratio = 10 * si.g / si.kg
+```
+</details>
+
+_Note: The actual numerical values of the above variables are `300`, `100000` and `.01`, respectively._
+
+### Output and plotting
+The one exception to the **only-SI** rule is when outputting simulation product data or plotting.
+In these cases, non-SI units should be always indicated in variable names,
+  e.g.:
+  - `temperature_C` for Celsius,
+  - `RH_percent` for percent values,
+  - `pressure_hPa` to use hectopascals.
+
+However, such conversions are best to be done
+  on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`.
+
+### Dimensional Analysis
+By default, the `si` object contains bare multipliers corresponding to SI prefixes.
+For testing purposes, the [``DimensionalAnalysis``](https://open-atmos.github.io/PySDM/PySDM/physics/dimensional_analysis.html#DimensionalAnalysis)
+context manager can be used to inject an instance of [Pint](https://pint.readthedocs.io/)
+unit registry as `si`, thus enabling dimensional analysis of PySDM codebase.
+For an example, see the [dimensional analysis HOWTO](https://github.com/open-atmos/PySDM/blob/main/examples/PySDM_examples/_HOWTOs/dimensional_analysis.ipynb).
+
 # Tutorials
 
 ## Hello-world coalescence example in Python, Julia and Matlab
@@ -31,13 +95,8 @@ It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collis
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-using Pkg
-Pkg.add("PyCall")
 Pkg.add("Plots")
-Pkg.add("PlotlyJS")
 
-using PyCall
-si = pyimport("PySDM.physics").si
 ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
 Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 
@@ -68,7 +127,6 @@ attributes = py.dict(pyargs('volume', tmp{1}, 'multiplicity', tmp{2}));
 <summary>Python (click to expand)</summary>
 
 ```Python
-from PySDM.physics import si
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra.exponential import Exponential
 
@@ -170,7 +228,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-using Plots; plotlyjs()
+using Plots; gr()
 
 for step = 0:1200:3600
     particulator.run(step - particulator.n_steps)
@@ -309,9 +367,9 @@ initial humidity.
 Subsequent particle growth due to [`Condensation`](https://open-atmos.github.io/PySDM/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
 causes a subset of particles to activate into cloud droplets.
 Results of the simulation are plotted against vertical
-[`ParcelDisplacement`](https://open-atmos.github.io/PySDM/PySDM/products/housekeeping/parcel_displacement.html)
+[`ParcelDisplacement`](https://open-atmos.github.io/PySDM/PySDM/products/parcel/parcel_displacement.html)
 and depict the evolution of
-[`PeakSupersaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_supersaturation.html),
+[`PeakSaturation`](https://open-atmos.github.io/PySDM/PySDM/products/condensation/peak_saturation.html),
 [`EffectiveRadius`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/effective_radius.html),
 [`ParticleConcentration`](https://open-atmos.github.io/PySDM/PySDM/products/size_spectral/particle_concentration.html#ParticleConcentration)
 and the
@@ -322,12 +380,12 @@ and the
 
 ```Julia
 using PyCall
-using Plots; plotlyjs()
+using Plots; gr()
 si = pyimport("PySDM.physics").si
 spectral_sampling = pyimport("PySDM.initialisation.sampling").spectral_sampling
 discretise_multiplicities = pyimport("PySDM.initialisation").discretise_multiplicities
 Lognormal = pyimport("PySDM.initialisation.spectra").Lognormal
-equilibrate_wet_radii = pyimport("PySDM.initialisation").equilibrate_wet_radii
+equilibrate_wet_radii = pyimport("PySDM.initialisation.hygroscopic_equilibrium").equilibrate_wet_radii
 CPU = pyimport("PySDM.backends").CPU
 AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
 Condensation = pyimport("PySDM.dynamics").Condensation
@@ -367,7 +425,7 @@ attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = formulae.trivia.volume(radius=r_wet)
 
 particulator = builder.build(attributes, products=[
-    products.PeakSupersaturation(name="S_max", unit="%"),
+    products.PeakSaturation(name="S_max_percent", unit="%"),
     products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
     products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
     products.WaterMixingRatio(name="liquid water mixing ratio", unit="g/kg", radius_range=cloud_range),
@@ -408,7 +466,7 @@ si = py.importlib.import_module('PySDM.physics').si;
 spectral_sampling = py.importlib.import_module('PySDM.initialisation.sampling').spectral_sampling;
 discretise_multiplicities = py.importlib.import_module('PySDM.initialisation').discretise_multiplicities;
 Lognormal = py.importlib.import_module('PySDM.initialisation.spectra').Lognormal;
-equilibrate_wet_radii = py.importlib.import_module('PySDM.initialisation').equilibrate_wet_radii;
+equilibrate_wet_radii = py.importlib.import_module('PySDM.initialisation.hygroscopic_equilibrium').equilibrate_wet_radii;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 AmbientThermodynamics = py.importlib.import_module('PySDM.dynamics').AmbientThermodynamics;
 Condensation = py.importlib.import_module('PySDM.dynamics').Condensation;
@@ -455,7 +513,7 @@ attributes = py.dict(pyargs( ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
-    products.PeakSupersaturation(pyargs('name', 'S_max', 'unit', '%')), ...
+    products.PeakSaturation(pyargs('name', 'S_max_percent', 'unit', '%')), ...
     products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
     products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
     products.WaterMixingRatio(pyargs('name', 'liquid water mixing ratio', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
@@ -509,7 +567,8 @@ saveas(gcf, "parcel.png");
 ```Python
 from matplotlib import pyplot
 from PySDM.physics import si
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.backends import CPU
@@ -549,7 +608,7 @@ attributes = {
 }
 
 particulator = builder.build(attributes, products=[
-  products.PeakSupersaturation(name='S_max', unit='%'),
+  products.PeakSaturation(name='S_max_percent', unit='%'),
   products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
   products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
   products.WaterMixingRatio(name='liquid water mixing ratio', unit='g/kg', radius_range=cloud_range),
@@ -603,8 +662,8 @@ mindmap
         ...
       (...)
     ((backends))
-      CPU
-      GPU
+      Numba
+      ThrustRTC
     ((dynamics))
       AqueousChemistry
       Collision
@@ -665,7 +724,7 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - Pencil Code (Fortran):
   https://github.com/pencil-code/pencil-code/blob/master/src/particles_coagulation.f90
 - PALM LES (Fortran):
-  https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90
+  https://gitlab.palm-model.org/releases/palm_model_system/-/blob/master/packages/palm/model/src/lagrangian_particle_model_mod.f90
 - libcloudph++ (C++):
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
 - LCM1D (Python)

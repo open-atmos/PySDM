@@ -42,7 +42,7 @@ def _condensation(
         n_cell=particulator.mesh.n_cell,
         cell_start_arg=particulator.attributes.cell_start.data,
         attributes=_Attributes(
-            water_mass=particulator.attributes["water mass"].data,
+            signed_water_mass=particulator.attributes["signed water mass"].data,
             v_cr=None,
             multiplicity=particulator.attributes["multiplicity"].data,
             vdry=particulator.attributes["dry volume"].data,
@@ -132,24 +132,31 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
             r = jit_formulae.trivia__radius(v)
             Dr = jit_formulae.diffusion_kinetics__D(DTp, r, lambdaD)
             Kr = jit_formulae.diffusion_kinetics__K(KTp, r, lambdaK)
-            ventilation_factor = jit_formulae.ventilation__ventilation_coefficient(
+            mass_ventilation_factor = jit_formulae.ventilation__ventilation_coefficient(
                 sqrt_re_times_cbrt_sc=jit_formulae.trivia__sqrt_re_times_cbrt_sc(
                     Re=reynolds_number[i],
                     Sc=schmidt_number,
                 )
             )
+            heat_ventilation_factor = mass_ventilation_factor  # TODO #1588
             sgm = jit_formulae.surface_tension__sigma(T, v, dry_volume[i], f_org[i])
+            Fk = jit_formulae.drop_growth__Fk(
+                T=T,
+                lv=lv,
+                K=heat_ventilation_factor * Kr,
+            )
+            Fd = jit_formulae.drop_growth__Fd(
+                T=T,
+                pvs=pvs,
+                D=mass_ventilation_factor * Dr,
+            )
             r_dr_dt = jit_formulae.drop_growth__r_dr_dt(
-                jit_formulae.hygroscopicity__RH_eq(
+                RH_eq=jit_formulae.hygroscopicity__RH_eq(
                     r, T, kappa[i], dry_volume[i] / PI_4_3, sgm
                 ),
-                T,
-                RH,
-                lv,
-                pvs,
-                Dr,
-                Kr,
-                ventilation_factor,
+                RH=RH,
+                Fk=Fk,
+                Fd=Fd,
             )
             dm_dt = jit_formulae.particle_shape_and_density__dm_dt(r, r_dr_dt)
             dy_dt[idx_x + i] = jit_formulae.diffusion_coordinate__dx_dt(m, dm_dt)
@@ -235,7 +242,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         y0 = np.empty(n_sd_in_cell + idx_x)
         y0[idx_thd] = thd
         y0[idx_x:] = jit_formulae.diffusion_coordinate__x(
-            attributes.water_mass[cell_idx]
+            attributes.signed_water_mass[cell_idx]
         )
         total_water_mixing_ratio = (
             water_vapour_mixing_ratio
@@ -281,12 +288,12 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
 
         m_new = 0
         for i in range(n_sd_in_cell):
-            attributes.water_mass[cell_idx[i]] = (
+            attributes.signed_water_mass[cell_idx[i]] = (
                 jit_formulae.diffusion_coordinate__mass(y1[idx_x + i])
             )
             m_new += (
                 attributes.multiplicity[cell_idx[i]]
-                * attributes.water_mass[cell_idx[i]]
+                * attributes.signed_water_mass[cell_idx[i]]
             )
 
         return (

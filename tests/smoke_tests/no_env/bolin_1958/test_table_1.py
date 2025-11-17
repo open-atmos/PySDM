@@ -7,6 +7,7 @@ from collections import defaultdict
 import numpy as np
 import pytest
 from open_atmos_jupyter_utils import notebook_vars
+
 from PySDM_examples import Bolin_1958
 
 

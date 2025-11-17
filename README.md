@@ -18,7 +18,6 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 [![Github Actions Build Status](https://github.com/open-atmos/PySDM/workflows/tests/badge.svg?branch=main)](https://github.com/open-atmos/PySDM/actions)
-[![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/open-atmos/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
 [![Coverage Status](https://codecov.io/gh/open-atmos/PySDM/branch/main/graph/badge.svg)](https://app.codecov.io/gh/open-atmos/PySDM)    
 [![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
 [![API docs](https://shields.mitmproxy.org/badge/docs-pdoc.dev-brightgreen.svg)](https://open-atmos.github.io/PySDM/)
@@ -64,7 +63,7 @@ For an overview of PySDM features (and the preferred way to cite PySDM in papers
 - [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (PySDM v1).
 - [de Jong, Singer et al. 2023](https://doi.org/10.21105/joss.04968) (PySDM v2).
   
-PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](10.5194/gmd-16-4193-2023).   
+PySDM includes an extension of the SDM scheme to represent collisional breakup described in [de Jong, Mackay et al. 2023](https://doi.org/10.5194/gmd-16-4193-2023).   
 For a list of talks and other materials on PySDM as well as a list of published papers featuring PySDM simulations, see the [project wiki](https://github.com/open-atmos/PySDM/wiki).
 
 ## Dependencies and Installation
@@ -78,12 +77,7 @@ To install PySDM using ``pip``, use: ``pip install PySDM``
 (or ``pip install git+https://github.com/open-atmos/PySDM.git`` to get updates
 beyond the latest release).
 
-Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. Dependencies of PySDM are available at the following conda channels:
-- numba: [numba](https://anaconda.org/numba/numba)
-- conda-forge: [pyevtk](https://anaconda.org/conda-forge/pyevtk), [pint](https://anaconda.org/conda-forge/pint) and []()
-- fyplus: [ThrustRTC](https://anaconda.org/fyplus/thrustrtc), [CURandRTC](https://anaconda.org/fyplus/curandrtc)
-- bjodah: [chempy](https://anaconda.org/bjodah/chempy)
-- nvidia: [cudatoolkit](https://anaconda.org/nvidia/cudatoolkit)
+Conda users may use ``pip`` as well, see the [Installing non-conda packages](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#installing-non-conda-packages) section in the conda docs. 
 
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies can be installed with ``pip -e .[tests]``.
@@ -116,7 +110,7 @@ only the supporting .py files).
 [![PyPI](https://img.shields.io/static/v1?label=+&logo=pypi&color=gold&message=PyPI)](https://pypi.org/)
 [![GithubActions](https://img.shields.io/static/v1?label=+&logo=github&color=darkgreen&message=GitHub&nbsp;Actions)](https://github.com/features/actions)
 [![Jupyter](https://img.shields.io/static/v1?label=+&logo=Jupyter&color=blue&message=Jupyter)](https://jupyter.org/)
-[![PyCharm](https://img.shields.io/static/v1?label=+&logo=pycharm&color=purple&message=PyCharm)](https:///)
+[![PyCharm](https://img.shields.io/static/v1?label=+&logo=pycharm&color=purple&message=PyCharm)](https://www.jetbrains.com/pycharm/)
 
 Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/open-atmos/PySDM/pulls) - it helps to keep record of code authorship, 
 track and archive the code review workflow and allows to benefit
@@ -131,7 +125,7 @@ the license of the contributed code must be compatible with GPL v3.
 Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
 the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
 The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html)
-and [Pylint](https://pylint.org), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
+and [Pylint](https://pylint.readthedocs.io/en/stable/), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
 code analysis (which are all part of the CI workflows).
 
 We also use [pre-commit hooks](https://pre-commit.com). 
@@ -144,7 +138,7 @@ The `.pre-commit-config.yaml` file can be modified in case new hooks are to be a
   existing ones need to be altered.  
 
 Further hints addressed at PySDM developers are maintained in the [open-atmos/python-dev-hints Wiki](https://github.com/open-atmos/python-dev-hints/wiki)
-  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOS).
+  and in [PySDM HOWTOs](https://github.com/open-atmos/PySDM/tree/main/examples/PySDM_examples/_HOWTOs).
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/open-atmos/PySDM/issues/new).

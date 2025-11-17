@@ -5,7 +5,7 @@ import pytest
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_et_al_2023 import Settings0D, run_box_breakup
 
-from PySDM.backends import CPU, GPU
+from PySDM.backends import Numba, ThrustRTC
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Exponential
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics import si
@@ -25,7 +25,10 @@ class TestFig7:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class",
-        (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True))),  # TODO #987
+        (
+            Numba,
+            pytest.param(ThrustRTC, marks=pytest.mark.xfail(strict=True)),
+        ),  # TODO #987
     )
     def test_fig_7a(backend_class, plot=False):
         # arrange

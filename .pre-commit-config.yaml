@@ -1,6 +1,6 @@
-files: '.py'
+files: '.py|.json'
 exclude: '.git'
-default_stages: [commit]
+default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/psf/black
@@ -19,3 +19,12 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: debug-statements
+      - id: check-json
+        files: '.json'
+
+  - repo: https://github.com/lk16/detect-missing-init
+    rev: v0.1.6
+    hooks:
+    - id: detect-missing-init
+      args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
+

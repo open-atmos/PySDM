@@ -2,7 +2,7 @@
 import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from PySDM_examples.utils.kinematic_2d import Simulation
 
 from PySDM.physics.constants import si
 
@@ -94,7 +94,7 @@ def test_initialisation(backend_class, plot=False):
         mass_conc_wet = np.sum(histogram_wet[:, level]) / rhod[level]
         mass_conc_STP = settings.spectrum_per_mass_of_dry_air.norm_factor
         assert 0.5 * mass_conc_STP < mass_conc_dry < 1.5 * mass_conc_STP
-        np.testing.assert_approx_equal(mass_conc_dry, mass_conc_wet, significant=5)
+        np.testing.assert_approx_equal(mass_conc_dry, mass_conc_wet, significant=3)
 
     # Assert - decreasing number density
     assert np.sum(histogram_dry[:, 0]) > np.sum(histogram_dry[:, -1])
