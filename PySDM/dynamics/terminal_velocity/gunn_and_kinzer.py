@@ -131,7 +131,7 @@ class GunnKinzer1949:  # pylint: disable=too-few-public-methods
                 f"Radii can be interpolated up to {self.maximum_radius} m"
                 + f" (max value of {r_max} m within input data)"
             )
-        self.particulator.backend.interpolation(
+        self.particulator.backend.gunn_and_kinzer_interpolation(
             output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
         )
 
