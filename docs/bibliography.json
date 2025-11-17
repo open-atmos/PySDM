@@ -951,6 +951,14 @@
     "title": "A physically constrained classical description of the homogeneous nucleation of ice in water",
     "label": "Koop and Murray 2016 (J. Chem. Phys. 145)"
   },
+  "https://doi.org/10.1175/JAS-D-21-0275.1": {
+    "usages": [
+      "examples/PySDM_examples/Hill_et_al_2023/__init__.py",
+      "examples/PySDM_examples/Hill_et_al_2023/figs_1_2_4.ipynb"
+    ],
+    "title": "Toward a Numerical Benchmark for Warm Rain Processes",
+    "label": "Hill et al. 2023 (JAS 80)"
+  },
   "https://doi.org/10.48550/arXiv.2509.05536": {
     "usages": [
       "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
