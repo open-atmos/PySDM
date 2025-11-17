@@ -2,11 +2,11 @@
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU, GPU
+from PySDM.backends import Numba, ThrustRTC
 
 
 @pytest.mark.parametrize(
-    "backend", (pytest.param(GPU, marks=pytest.mark.xfail(strict=True)), CPU)
+    "backend", (pytest.param(ThrustRTC, marks=pytest.mark.xfail(strict=True)), Numba)
 )
 def test_setitem(backend):
     # arrange

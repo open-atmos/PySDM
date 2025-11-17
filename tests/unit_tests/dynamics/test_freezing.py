@@ -11,7 +11,7 @@ from PySDM.products import (
     IceWaterContent,
     LiquidWaterContent,
 )
-from PySDM.backends import GPU
+from PySDM.backends import ThrustRTC
 
 VERY_BIG_J_HET = 1e20
 EPSILON_RH = 1e-3
@@ -26,7 +26,7 @@ class TestDropletFreezing:
     def test_record_freezing_temperature_on_time_dependent_freeze(
         backend_class, record_freezing_temperature
     ):
-        if backend_class is GPU and record_freezing_temperature:
+        if backend_class is ThrustRTC and record_freezing_temperature:
             pytest.skip("TODO #1495")
 
         # arrange
