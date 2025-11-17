@@ -96,7 +96,6 @@ It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collis
 
 ```Julia
 Pkg.add("Plots")
-Pkg.add("PlotlyJS")
 
 ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
 Exponential = pyimport("PySDM.initialisation.spectra").Exponential
@@ -229,7 +228,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-using Plots; plotlyjs()
+using Plots; gr()
 
 for step = 0:1200:3600
     particulator.run(step - particulator.n_steps)
@@ -381,7 +380,7 @@ and the
 
 ```Julia
 using PyCall
-using Plots; plotlyjs()
+using Plots; gr()
 si = pyimport("PySDM.physics").si
 spectral_sampling = pyimport("PySDM.initialisation.sampling").spectral_sampling
 discretise_multiplicities = pyimport("PySDM.initialisation").discretise_multiplicities

@@ -134,6 +134,7 @@ TEST_SUITES = {
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
         "Spichtinger_et_al_2023",
+        "Ware_et_al_2025",
     ],
     "multi-process_a": [
         "Arabas_et_al_2015",
@@ -181,11 +182,16 @@ def get_selected_test_paths(suite_name, paths):
 
 
 def pytest_addoption(parser):
-    parser.addoption("--suite", action="store")
+    parser.addoption("--suite", action="append")
 
 
 def pytest_generate_tests(metafunc):
-    suite_name = metafunc.config.option.suite
+    suite_args = metafunc.config.option.suite or []
+
+    # Support both --suite name1 --suite name2 and --suite name1,name2
+    suite_names = []
+    for arg in suite_args:
+        suite_names.extend([s.strip() for s in arg.split(",") if s.strip()])
 
     pysdm_examples_abs_path = (
         pathlib.Path(__file__)
@@ -199,9 +205,14 @@ def pytest_generate_tests(metafunc):
             for path in findfiles(pysdm_examples_abs_path, r".*\.ipynb$")
             if ".ipynb_checkpoints" not in str(path)
         ]
-        selected_paths = set(get_selected_test_paths(suite_name, notebook_paths)) - set(
-            SMOKE_TEST_COVERED_PATHS
-        )
+        selected_paths = set()
+        for suite_name in suite_names:
+            selected_paths.update(
+                set(get_selected_test_paths(suite_name, notebook_paths))
+            )
+
+        # Remove duplicates and any smoke-tested paths
+        selected_paths = selected_paths - set(SMOKE_TEST_COVERED_PATHS)
         metafunc.parametrize(
             "notebook_filename",
             selected_paths,
@@ -213,7 +224,11 @@ def pytest_generate_tests(metafunc):
             pysdm_examples_abs_path,
             r".*\.(py)$",
         )
-        selected_paths = get_selected_test_paths(suite_name, examples_paths)
+        selected_paths = set()
+        for suite_name in suite_names:
+            selected_paths.update(
+                set(get_selected_test_paths(suite_name, examples_paths))
+            )
         metafunc.parametrize(
             "example_filename",
             selected_paths,
