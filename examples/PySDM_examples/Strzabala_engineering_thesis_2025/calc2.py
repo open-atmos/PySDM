@@ -1,3 +1,5 @@
+"""Module for processing PVD files and rendering visualizations using ParaView."""
+
 #!/usr/bin/env pvpython
 import argparse
 from collections import namedtuple
@@ -5,10 +7,11 @@ import pathlib
 
 from paraview import simple as pvs  # pylint: disable=import-error
 
-pvs._DisableFirstRenderCameraReset()
+pvs._DisableFirstRenderCameraReset()  # pylint: disable=protected-access
 
 
 def cli_using_argparse(argp):
+    """Set up command line argument parsing."""
     argp.add_argument("product_path", help="path to pvd products file")
     argp.add_argument("attributes_path", help=" path to pvd attributes file")
     argp.add_argument("output_path", help="path where to write output files")
@@ -110,81 +113,91 @@ materialLibrary1 = pvs.GetMaterialLibrary()
 setup.renderView1.Update()
 
 
-def create_new_calculator(
-    calcinput,
-    representation,
-    function,
-    color_by1,
-    color_by2,
-    color_by3,
-    scalar_coloring=False,
-    hide=False,
-    *,
-    y,
-    registrationame,
-):
-    calculator = pvs.Calculator(registrationName=registrationame, Input=calcinput)
-    display = pvs.Show(calculator, y.renderView1, representation)
+def create_new_calculator(params):
+    """Create a new calculator in ParaView."""
+    calcinput = params["calcinput"]
+    representation = params["representation"]
+    function = params["function"]
+    color_by1 = params["color_by1"]
+    color_by2 = params["color_by2"]
+    color_by3 = params["color_by3"]
+    scalar_coloring = params.get("scalar_coloring", False)
+    hide = params.get("hide", False)
+    setup_context = params["setup_context"]
+    registration_name = params["registration_name"]
+
+    calculator = pvs.Calculator(registrationName=registration_name, Input=calcinput)
+    display = pvs.Show(calculator, setup_context.renderView1, representation)
     calculator.Function = function
-    y.renderView1.Update()
-    if scalar_coloring is True:
+    setup_context.renderView1.Update()
+    if scalar_coloring:
         pvs.ColorBy(display, (color_by1, color_by2, color_by3))
-    if hide is True:
-        pvs.Hide(calculator, y.renderView1)
-    return y.renderView1.Update()
+    if hide:
+        pvs.Hide(calculator, setup_context.renderView1)
+    return setup_context.renderView1.Update()
 
 
 def scalar_bar(name, *, y, erLUT):
-    calculator1Display = pvs.Show(
+    """Display a scalar bar for the given name."""
+    calculator1_display = pvs.Show(
         calculator1, y.renderView1, "UnstructuredGridRepresentation"
     )
-    calculator1Display.SetScalarBarVisibility(y.renderView1, True)
-    scalarBar = pvs.GetScalarBar(erLUT.effectiveradiusLUT, y.renderView1)
-    scalarBar.ComponentTitle = ""
-    scalarBar.Title = name
-    scalarBar.TitleFontSize = 25
-    scalarBar.LabelFontSize = 25
-    scalarBar.LabelColor = setup.color
-    scalarBar.TitleColor = setup.color
-    pvs.Hide(scalarBar)
+    calculator1_display.SetScalarBarVisibility(y.renderView1, True)
+    scalar_bar_instance = pvs.GetScalarBar(erLUT.effectiveradiusLUT, y.renderView1)
+    scalar_bar_instance.ComponentTitle = ""
+    scalar_bar_instance.Title = name
+    scalar_bar_instance.TitleFontSize = 25
+    scalar_bar_instance.LabelFontSize = 25
+    scalar_bar_instance.LabelColor = setup.color
+    scalar_bar_instance.TitleColor = setup.color
+    pvs.Hide(scalar_bar_instance)
     y.renderView1.Update()
 
 
-def create_glyph(
-    registration_name, put, scale_array1, scale_array2, color_by=False, *, y
-):
+def create_glyph(params):
+    """Create a glyph representation in ParaView."""
+    registration_name = params["registration_name"]
+    put = params["put"]
+    scale_array1 = params["scale_array1"]
+    scale_array2 = params["scale_array2"]
+    color_by = params.get("color_by", False)
+
     glyph = pvs.Glyph(registrationName=registration_name, Input=put, GlyphType="Arrow")
-    glyphDisplay = pvs.Show(glyph, y.renderView1, "GeometryRepresentation")
-    glyphDisplay.Representation = "Surface"
+    glyph_display = pvs.Show(glyph, setup.renderView1, "GeometryRepresentation")
+    glyph_display.Representation = "Surface"
     glyph.ScaleArray = [scale_array1, scale_array2]
     glyph.ScaleFactor = 100
-    glyphDisplay.SetScalarBarVisibility(y.renderView1, True)
-    multiplicityLUT = pvs.GetColorTransferFunction("multiplicity")
-    multiplicityLUTColorBar = pvs.GetScalarBar(multiplicityLUT, y.renderView1)
-    multiplicityLUTColorBar.Position = [0.8, 0.5]
-    multiplicityLUTColorBar.TitleFontSize = 25
-    multiplicityLUTColorBar.LabelFontSize = 25
-    multiplicityLUTColorBar.LabelColor = setup.color
-    multiplicityLUTColorBar.TitleColor = setup.color
-    if color_by is True:
-        glyphDisplay.ColorArrayName = ["POINTS", ""]
-        pvs.ColorBy(glyphDisplay, None)
-    y.renderView1.Update()
+    glyph_display.SetScalarBarVisibility(setup.renderView1, True)
+
+    multiplicity_lut = pvs.GetColorTransferFunction("multiplicity")
+    multiplicity_lut_color_bar = pvs.GetScalarBar(multiplicity_lut, setup.renderView1)
+    multiplicity_lut_color_bar.Position = [0.5, 0.9]
+    multiplicity_lut_color_bar.TitleFontSize = 25
+    multiplicity_lut_color_bar.LabelFontSize = 25
+    multiplicity_lut_color_bar.LabelColor = setup.color
+    multiplicity_lut_color_bar.TitleColor = setup.color
+
+    if color_by:
+        glyph_display.ColorArrayName = ["POINTS", ""]
+        pvs.ColorBy(glyph_display, None)
+
+    setup.renderView1.Update()
 
 
 def apply_presets_logscale_opacity_and_update(*, y, attdisplay, erLUT, proddisplay):
-    multiplicityLUT = pvs.GetColorTransferFunction("multiplicity")
-    multiplicityLUT.RescaleTransferFunction(19951.0, 50461190157.0)
-    calculator1Display = pvs.Show(
+    """Apply presets, log scale, opacity settings, and update the view."""
+    multiplicity_lut = pvs.GetColorTransferFunction("multiplicity")
+    multiplicity_lut.RescaleTransferFunction(19951.0, 50461190157.0)
+    calculator1_display = pvs.Show(
         calculator1, y.renderView1, "UnstructuredGridRepresentation"
     )
-    multiplicityLUT.ApplyPreset(args.multiplicity_preset, True)
+    multiplicity_lut.ApplyPreset(args.multiplicity_preset, True)
     if args.multiplicity_logscale:
-        multiplicityLUT.MapControlPointsToLogSpace()
-        multiplicityLUT.UseLogScale = 1
+        multiplicity_lut.MapControlPointsToLogSpace()
+        multiplicity_lut.UseLogScale = 1
     else:
-        multiplicityLUT.MapControlPointsToLinearSpace()
-        multiplicityLUT.UseLogScale = 0
+        multiplicity_lut.MapControlPointsToLinearSpace()
+        multiplicity_lut.UseLogScale = 0
 
     erLUT.effectiveradiusLUT.ApplyPreset(args.effectiveradius_preset, True)
     if args.effectiveradius_logscale:
@@ -195,15 +208,15 @@ def apply_presets_logscale_opacity_and_update(*, y, attdisplay, erLUT, proddispl
         erLUT.effectiveradiusLUT.UseLogScale = 0
 
     erLUT.effectiveradiusLUT.NanColor = args.effectiveradius_nan_color
-    # proddisplay.sd_productspvdDisplay.SetRepresentationType("Surface With Edges")
     proddisplay.sd_productspvdDisplay.Opacity = args.sd_products_opacity
     proddisplay.sd_productspvdDisplay.SetScalarBarVisibility(y.renderView1, False)
-    calculator1Display.Opacity = args.calculator1_opacity
+    calculator1_display.Opacity = args.calculator1_opacity
     attdisplay.sd_attributespvdDisplay.Opacity = args.sd_attributes_opacity
     y.renderView1.Update()
 
 
 def get_layout(*, y):
+    """Set the layout for the render view."""
     pvs.SetViewProperties(
         Background=setup.inverted_color, UseColorPaletteForBackground=0
     )
@@ -215,12 +228,9 @@ def get_layout(*, y):
 
 
 def set_current_camera_placement(*, y):
+    """Set the camera placement for the render view."""
     y.renderView1.InteractionMode = "2D"
-    y.renderView1.CameraPosition = [
-        836,
-        677,
-        -4098,
-    ]
+    y.renderView1.CameraPosition = [836, 677, -4098]
     y.renderView1.CameraFocalPoint = [636, 1030, 0.0]
     y.renderView1.CameraViewUp = [1.0, 0.0, 0.0]
     y.renderView1.CameraParallelScale = 1560
@@ -228,34 +238,35 @@ def set_current_camera_placement(*, y):
 
 
 def axes_settings(*, view):
-    # setup.renderView1.Background = [1,0.5,0.2]
+    """Configure axes settings for the render view."""
     view.CenterAxesVisibility = True
     view.OrientationAxesVisibility = False
-    axesGrid = view.AxesGrid
-    axesGrid.Visibility = True
-    axesGrid.XTitle = "Z [m]"
-    axesGrid.YTitle = "X [m]"
+    axes_grid = view.AxesGrid
+    axes_grid.Visibility = True
+    axes_grid.XTitle = "Z [m]"
+    axes_grid.YTitle = "X [m]"
 
-    axesGrid.XAxisUseCustomLabels = True
-    axesGrid.XAxisLabels = [300, 600, 900, 1200]
-    axesGrid.YAxisUseCustomLabels = True
-    axesGrid.YAxisLabels = [300, 600, 900, 1200]
+    axes_grid.XAxisUseCustomLabels = True
+    axes_grid.XAxisLabels = [300, 600, 900, 1200]
+    axes_grid.YAxisUseCustomLabels = True
+    axes_grid.YAxisLabels = [300, 600, 900, 1200]
 
-    axesGrid.XTitleFontSize = 30
-    axesGrid.XLabelFontSize = 30
-    axesGrid.YTitleFontSize = 30
-    axesGrid.YLabelFontSize = 30
+    axes_grid.XTitleFontSize = 30
+    axes_grid.XLabelFontSize = 30
+    axes_grid.YTitleFontSize = 30
+    axes_grid.YLabelFontSize = 30
 
-    axesGrid.XTitleColor = setup.color
-    axesGrid.XLabelColor = setup.color
-    axesGrid.YTitleColor = setup.color
-    axesGrid.YLabelColor = setup.color
-    axesGrid.GridColor = [0.1, 0.1, 0.1]
+    axes_grid.XTitleColor = setup.color
+    axes_grid.XLabelColor = setup.color
+    axes_grid.YTitleColor = setup.color
+    axes_grid.YLabelColor = setup.color
+    axes_grid.GridColor = [0.1, 0.1, 0.1]
     view.CenterAxesVisibility = False
     view.Update()
 
 
 def time_annotation(*, y):
+    """Add a time annotation to the render view."""
     time = pvs.AnnotateTimeFilter(
         guiName="AnnotateTimeFilter1", Scale=1 / 60, Format="Time:{time:g}min"
     )
@@ -269,16 +280,18 @@ def time_annotation(*, y):
 
 
 def text(text_in, position_y, *, view):
+    """Display text in the render view at a specified position."""
     sentence = pvs.Text()
     sentence.Text = text_in
-    textDisplay = pvs.Show(sentence, view)
-    textDisplay.Color = setup.color
-    textDisplay.WindowLocation = "Any Location"
-    textDisplay.FontSize = 28
-    textDisplay.Position = [0.17, position_y]
+    text_display = pvs.Show(sentence, view)
+    text_display.Color = setup.color
+    text_display.WindowLocation = "Any Location"
+    text_display.FontSize = 28
+    text_display.Position = [0.17, position_y]
 
 
 def last_anim_frame(animation_frame_name):
+    """Export the last animation frame to a file."""
     time_steps = sd_productspvd.TimestepValues
     last_time = time_steps[90]
     setup.renderView1.ViewTime = last_time
@@ -294,38 +307,34 @@ def last_anim_frame(animation_frame_name):
 
 
 calculator1 = create_new_calculator(
-    sd_attributespvd,
-    "UnstructuredGridRepresentation",
-    '"relative fall velocity"*(-iHat)',
-    "None",
-    "None",
-    "None",
-    y=setup,
-    registrationame="Calculator1",
+    {
+        "calcinput": sd_attributespvd,
+        "representation": "UnstructuredGridRepresentation",
+        "function": '"relative fall velocity"*(-iHat)',
+        "color_by1": "None",
+        "color_by2": "None",
+        "color_by3": "None",
+        "scalar_coloring": False,
+        "hide": False,
+        "setup_context": setup,
+        "registration_name": "Calculator1",
+    }
 )
-# scalar_bar("effective radius [um]", y=setup, erLUT=setup)
-glyph1 = create_glyph(
-    "Glyph1", calculator1, "POINTS", "relative fall velocity", y=setup
+
+create_glyph(
+    {
+        "registration_name": "Glyph1",
+        "put": calculator1,
+        "scale_array1": "POINTS",
+        "scale_array2": "relative fall velocity",
+        "color_by": False,
+        "setup_context": setup,
+    }
 )
-pvs.Hide(glyph1)
-"""calculator2 = create_new_calculator(
-    sd_productspvd,
-    "StructuredGridRepresentation",
-    "cx*jHat+cy*iHat",
-    "CELLS",
-    "Result",
-    "Magnitude",
-    True,
-    True,
-    y=setup,
-    registrationame="Calculator2",
-)"""
-# pvs.Hide(calculator2)
+
 apply_presets_logscale_opacity_and_update(
     y=setup, attdisplay=setup, erLUT=setup, proddisplay=setup
 )
-# glyph2 = create_glyph("Glyph2", calculator2, "CELLS", "Result", True, y=setup)
-# pvs.Hide(glyph2)
 get_layout(y=setup)
 set_current_camera_placement(y=setup)
 axes_settings(view=setup.renderView1)
