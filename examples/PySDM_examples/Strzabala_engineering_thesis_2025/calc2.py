@@ -1,6 +1,6 @@
+#!/usr/bin/env pvpython
 """Module for processing PVD files and rendering visualizations using ParaView."""
 
-#!/usr/bin/env pvpython
 import argparse
 from collections import namedtuple
 import pathlib
