@@ -1,3 +1,4 @@
+#!/usr/bin/env pvpython
 """
 ParaView pvpython script for visualizing sd_products and sd_attributes.
 """
