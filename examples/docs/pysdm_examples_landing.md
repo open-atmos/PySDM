@@ -97,6 +97,10 @@ Example notebooks include:
 
 The parcel environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
 
+<center>
+  <img src="https://github.com/open-atmos/PySDM/releases/download/tip/parcel_animation_ubuntu-24.04.gif" style="width:80%" />
+</center>
+
 ## 0D box environment
 
 The box environment is void of any spatial or thermodynamic context, it constitutes the most basic framework.
