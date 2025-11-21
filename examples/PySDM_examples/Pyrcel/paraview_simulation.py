@@ -6,6 +6,7 @@ ParaView pvpython script for visualizing sd_products and sd_attributes.
 import argparse
 from collections import namedtuple
 from paraview import simple as pvs  # pylint: disable=import-error
+import pathlib
 
 pvs._DisableFirstRenderCameraReset()  # pylint: disable=protected-access
 
@@ -165,7 +166,29 @@ def save_animation_and_screenshot(render_view, animation_path, screenshot_path):
     animation_scene.UpdateAnimationUsingDataTimeSteps()
 
     pvs.SaveAnimation(animation_path, render_view, FrameRate=15)
-    pvs.SaveScreenshot(screenshot_path, render_view)
+
+    if not screenshot_path:
+        return
+
+    # set view to last available timestep and update readers before exporting screenshot
+    time_steps = sd_productspvd.TimestepValues
+    if not time_steps:
+        return
+
+    last_time = time_steps[-1]
+    render_view.ViewTime = last_time
+
+    for reader in (sd_productspvd, sd_attributespvd):
+        reader.UpdatePipeline(last_time)
+
+    pvs.ExportView(
+        filename=str(pathlib.Path(screenshot_path)),
+        view=render_view,
+        Rasterize3Dgeometry=False,
+        GL2PSdepthsortmethod="BSP sorting (slow, best)",
+    )
+
+    pvs.RenderAllViews()
 
 
 configure_color_bar_and_display(
