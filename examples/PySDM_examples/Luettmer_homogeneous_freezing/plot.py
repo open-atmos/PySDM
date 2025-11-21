@@ -40,10 +40,12 @@ def cumulative_histogram(data, bins, reverse=False, density=True):
     return cum_hist, bin_centers
 
 
-def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
+def plot_thermodynamics_and_bulk(
+    simulation, title_add=None, show_conc=False, t_lim=None
+):
     if title_add is None:
         title_add = ["", "", "", ""]
-    plot_daw = True
+    plot_daw = False
     output = simulation["ensemble_member_outputs"][0]
     time = output["t"]
     T = np.asarray(output["T"])
@@ -60,6 +62,13 @@ def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
         nc = np.asarray(output["ns"])
         ni = np.asarray(output["ni"])
 
+    if t_lim == None:
+        t_lim = np.amax(time)
+
+    first_ice_idx = np.where(qi > 1e-7)[0][0]
+    first_ice_time = time[first_ice_idx]
+    first_T_frz = T[first_ice_idx]
+
     svp = Formulae(
         saturation_vapour_pressure="FlatauWalkoCotton"
     ).saturation_vapour_pressure
@@ -74,11 +83,22 @@ def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
         homogeneous_ice_nucleation_rate="Koop_Correction"
     ).homogeneous_ice_nucleation_rate
     spichtinger_2023 = j_hom_rate.j_hom(T, d_a_w_ice)
+    abs_diff_j_hom = (koop_murray_2016 - spichtinger_2023) / koop_murray_2016
+    # abs_diff_j_hom[:first_ice_idx-1] = 0
 
     _, axs = pyplot.subplots(
         1, 4, figsize=(20, 5), sharex=False, constrained_layout=True
     )
 
+    # print( title_add[0] )
+    # KP = koop_murray_2016[first_ice_idx]
+    # SP = spichtinger_2023[first_ice_idx]
+    # print( np.log10(KP),
+    #        np.log10(SP),
+    #        np.log10(abs(KP-SP)),
+    #        abs(KP-SP)/KP,
+    #        np.log10(KP)-np.log10(SP),
+    #        )
     # Temperture profile
     iax = 0
     ax = axs[iax]
@@ -86,10 +106,12 @@ def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
     ax.plot(time, RH, color="red", linestyle="-", label=r"$S_{w}$")
     ax.plot(time, RHi, color="blue", linestyle="-", label=r"$S_{i}$")
     ax.set_ylabel("saturation ratio", fontsize=ax_lab_fsize)
-    ax.legend(loc="center right", fontsize=ax_lab_fsize)
+    ax.legend(loc="center left", fontsize=ax_lab_fsize)
+    ax.set_xlim(time[0], t_lim)
     ax.tick_params(labelsize=tick_fsize)
     ax.set_title(title_add[iax] + r"ambient thermodynamics", fontsize=ax_lab_fsize)
     ax.grid(visible=True)
+    ax.axvline(x=first_ice_time, color="black", linestyle="--")
 
     twin = ax.twinx()
     twin.plot(time, T, color="black", linestyle="-", label="T")
@@ -127,8 +149,10 @@ def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
     ax.legend(loc="upper left", fontsize=ax_lab_fsize)
     ax.set_ylim(1e-30, 1e30)
     ax.set_yscale("log")
+    ax.set_xlim(time[0], t_lim)
     ax.tick_params(labelsize=tick_fsize)
     ax.grid(visible=True)
+    ax.axvline(x=first_ice_time, color="black", linestyle="--")
     ax.set_title(title_add[iax] + r"nucleation rates", fontsize=ax_lab_fsize)
     if plot_daw:
         twin = ax.twinx()
@@ -136,7 +160,16 @@ def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
         twin.set_ylim(0.2, 0.35)
         twin.set_ylabel("water activity difference", fontsize=ax_lab_fsize)
         twin.tick_params(labelsize=tick_fsize)
-        twin.legend(loc="lower right", fontsize=ax_lab_fsize)
+        twin.legend(loc="lower left", fontsize=ax_lab_fsize)
+    else:
+        twin = ax.twinx()
+        twin.plot(
+            time, abs_diff_j_hom, label=r"$\Delta J_{\mathrm{hom}}$", color="gray"
+        )
+        twin.set_ylim(-10, 10)
+        twin.set_ylabel("relative error", fontsize=ax_lab_fsize)
+        twin.tick_params(labelsize=tick_fsize)
+        twin.legend(loc="lower left", fontsize=ax_lab_fsize)
 
     # Mass content and number concentration
     iax = 1
@@ -151,7 +184,9 @@ def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
     ax.set_ylabel(r"mass content [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize)
     ax.legend(fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
+    ax.set_xlim(time[0], t_lim)
     ax.grid(visible=True)
+    ax.axvline(x=first_ice_time, color="black", linestyle="--")
     ax.set_title(title_add[iax] + r"bulk quantities", fontsize=ax_lab_fsize)
     if show_conc:
         twin = ax.twinx()
@@ -192,6 +227,7 @@ def plot_thermodynamics_and_bulk(simulation, title_add=None, show_conc=False):
     ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
     ax.grid(visible=True)
+    ax.axvline(x=first_T_frz, color="black", linestyle="--")
     ax.set_title(title_add[iax] + r"$T_{frz}$ histogram", fontsize=ax_lab_fsize)
 
 
