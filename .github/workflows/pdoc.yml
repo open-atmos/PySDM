@@ -28,7 +28,7 @@ jobs:
           python-version: "3.12"
 
       - name: exclude pvpython scripts
-        run: rm examples/PySDM_examples/utils/pvanim.py
+        run: grep -rl '^#!/usr/bin/env pvpython' examples/PySDM_examples | xargs rm -f
 
       - run: pip install pdoc nbformat gitpython
       - run: pip install -e .
