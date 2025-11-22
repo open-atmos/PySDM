@@ -66,8 +66,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - if: startsWith(matrix.platform, 'ubuntu-')
-        run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
+      - run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
 
       - run: pip install -e .
       - run: pip install pytest-codeblocks pytest
