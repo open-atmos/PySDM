@@ -38,7 +38,7 @@ jobs:
           unset CI
           cd ${{ matrix.packages-dir }}
           python -m build 2>&1 | tee build.log
-          exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py \
+          exit `fgrep -i warning build.log | grep -v warnings.py \
             | grep -v "no previously-included files matching" \
             | grep -v "version of {dist_name} already set" \
             | grep -v -E "UserWarning: version of PySDM(-examples)? already set" \
