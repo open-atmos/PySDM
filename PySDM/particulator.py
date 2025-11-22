@@ -470,15 +470,28 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 Instead increase multiplicity of injected particles."
             )
 
-        self.backend.seeding(
-            idx=self.attributes._ParticleAttributes__idx,
-            multiplicity=self.attributes["multiplicity"],
-            extensive_attributes=self.attributes.get_extensive_attribute_storage(),
-            seeded_particle_index=seeded_particle_index,
-            seeded_particle_multiplicity=seeded_particle_multiplicity,
-            seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
-            number_of_super_particles_to_inject=number_of_super_particles_to_inject,
-        )
+        if self.environment.mesh.n_dims == 0:
+            self.backend.seeding(
+                idx=self.attributes._ParticleAttributes__idx,
+                multiplicity=self.attributes["multiplicity"],
+                extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+                seeded_particle_index=seeded_particle_index,
+                seeded_particle_multiplicity=seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+            )
+
+        else:
+            self.backend.seeding(
+                idx=self.attributes._ParticleAttributes__idx,
+                multiplicity=self.attributes["multiplicity"],
+                extensive_attributes=self.attributes.get_extensive_attribute_storage(),
+                seeded_particle_index=seeded_particle_index,
+                seeded_particle_multiplicity=seeded_particle_multiplicity,
+                seeded_particle_extensive_attributes=seeded_particle_extensive_attributes,
+                number_of_super_particles_to_inject=number_of_super_particles_to_inject,
+            )
+
         self.attributes.reset_idx()
         self.attributes.sanitize()
 
