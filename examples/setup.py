@@ -28,7 +28,6 @@ setup(
         "open-atmos-jupyter-utils",
         "pystrict",
         "matplotlib",
-        "Pillow",
         "joblib",
         "ipywidgets",
         "seaborn",
@@ -41,11 +40,10 @@ setup(
     extras_require={
         "CI_version_pins": [
             "PySDM[CI_version_pins]",
-            "PyMPDATA==1.6.1",
+            "PyMPDATA==1.6.3",
             "open-atmos-jupyter-utils==1.3.0",
             "pystrict==1.3",
             "matplotlib!=3.9.1",
-            "Pillow<11.3.0",
             "joblib==1.5.1",
             "ipywidgets==8.1.7",
             "seaborn==0.13.2",
