@@ -62,7 +62,7 @@ def plot_thermodynamics_and_bulk(
         nc = np.asarray(output["ns"])
         ni = np.asarray(output["ni"])
 
-    if t_lim == None:
+    if t_lim is None:
         t_lim = np.amax(time)
 
     first_ice_idx = np.where(qi > 1e-7)[0][0]
@@ -296,20 +296,24 @@ def plot_freezing_temperatures_histogram_allinone(
         ax.fill_between(T_frz_bins_center, min_line, max_line, color=color, alpha=0.2)
 
     ax.set_xlim(left=234.5, right=239)
-    ax.axvline(x=235, color="k", linestyle="--")
     ax.set_title(title, fontsize=ax_lab_fsize)
     ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
     ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
     ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
     ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
+    ax.grid(visible=True)
     ax.legend(loc=lloc, fontsize=ax_lab_fsize)
 
     return ax
 
 
 def plot_freezing_temperatures_2d_histogram_seaborn(
-    ensemble_simulations, hom_freezing_type, calc_pairwise_distance=False, title=""
+    ensemble_simulations,
+    hom_freezing_type,
+    title="",
+    height=4,
+    width=5,
 ):
 
     sns.set_theme(style="ticks")
@@ -318,44 +322,50 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     simulations = ensemble_simulations[hom_freezing_type]
 
     ens_variable = []
+    ens_variable_sec = []
     T_frz_hist = []
 
     for simulation in simulations:
         ens_variable_value = simulation["settings"][ens_variable_name]
-        n_realisations = simulation["settings"]["number_of_ensemble_runs"]
-        n_sd = simulation["settings"]["n_sd"]
 
-        T_frz_realisations = np.zeros((n_realisations, n_sd))
+        output = simulation["ensemble_member_outputs"][0]
+        qi = np.asarray(output["IWC"])
+        T_frz = np.asarray(output["T_frz"])
+        first_ice_idx = np.where(qi > 1e-7)[0][0]
 
-        for i in range(n_realisations):
-            output = simulation["ensemble_member_outputs"][i]
-            T_frz_realisations[i, :] = np.asarray(output["T_frz"])
-
-        if calc_pairwise_distance:
-            pass
+        if ens_variable_name == "n_ccn":
+            rs = np.asarray(output["rs"])
+            ens_variable_sec_value = rs[first_ice_idx - 1]
         else:
-            T_frz = np.mean(T_frz_realisations, axis=0)
+            time = np.asarray(output["t"])
+            T = np.asarray(output["T"])
+            ens_variable_sec_value = abs(np.mean(np.diff(T) / np.diff(time)))
 
         T_frz_hist.extend(T_frz)
         ens_variable.extend(np.full_like(T_frz, ens_variable_value))
+        ens_variable_sec.append(ens_variable_sec_value)
 
-    y_label = ""
+    ens_variable = np.array(ens_variable)
+    ens_variable_sec = np.array(ens_variable_sec)
+
+    y_label, y_label_sec = "", ""
     if ens_variable_name == "w_updraft":
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
+        y_label_sec = r"cooling rate [$\mathrm{K \, s^{-1}}$]"
     elif ens_variable_name == "n_ccn":
-        y_label = r"ccn concentration [$\mathrm{m^{-3}}$]"
-    elif ens_variable_name == "maximum_radius":
-        ens_variable = ens_variable * 1e6
-        y_label = "(maximum) radius [µm]"
+        y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
+        y_label_sec = r"radius [$\mathrm{\mu m}$]"
+        ens_variable = ens_variable / 1.0e6
+        ens_variable_sec = ens_variable_sec * 1.0e6
 
-    xlim = (233, 241)
+    xlim = (233.5, 240)
     h = sns.JointGrid(
         x=T_frz_hist,
         y=ens_variable,
         xlim=xlim,
     )
     h.ax_joint.set(yscale="log")
-    ax = h.figure.add_axes([0.75, 0.55, 0.02, 0.2])
+    ax = h.figure.add_axes([0.15, 0.1, 0.02, 0.2])
 
     h.plot_joint(
         sns.histplot,
@@ -374,10 +384,33 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     h.set_axis_labels("freezing temperature [K]", y_label, fontsize=ax_lab_fsize)
     h.ax_joint.set_title(
         title,
-        pad=70,
+        pad=50,
         fontsize=ax_title_size,
     )
+    h.ax_joint.tick_params(labelsize=tick_fsize)
+    h.ax_joint.grid(True, axis="x", which="both", linestyle="-", linewidth=0.6)
+    h.ax_marg_x.tick_params(labelsize=tick_fsize)
+    h.ax_marg_y.tick_params(labelsize=tick_fsize)
+
+    h.ax_joint.xaxis.set_major_locator(ticker.MultipleLocator(1))
     h.ax_marg_y.remove()
+
+    ens_variable_label = np.unique(np.sort(ens_variable))
+    ax2 = h.ax_joint.secondary_yaxis("right", functions=(lambda y: y, lambda y: y))
+    ax2.set_yticks(ens_variable_label)
+    ax2.set_yticklabels([f"{v:.3f}" for v in ens_variable_sec])
+    ax2.minorticks_off()
+    ax2.tick_params(
+        axis="y",
+        which="both",
+        direction="out",
+        length=h.ax_joint.yaxis.get_ticklines()[0].get_markersize(),
+        width=h.ax_joint.yaxis.get_ticklines()[0].get_markeredgewidth(),
+        labelsize=tick_fsize,
+    )
+    ax2.set_ylabel(y_label_sec, fontsize=ax_lab_fsize)
+
+    h.fig.set_size_inches(width, height)
 
     return ax
 
