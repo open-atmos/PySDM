@@ -61,7 +61,8 @@ class DeterministicSpectralSampling(
             )
 
         return x, y_float
-    
+
+
 class RandomSampling(
     DeterministicSpectralSampling
 ):  # pylint: disable=too-few-public-methods
@@ -70,7 +71,7 @@ class RandomSampling(
         spectrum,
         size_range: Optional[Tuple[float, float]] = None,
         error_threshold: Optional[float] = None,
-        sample_method: str = 'Deterministic', # 'Deterministic,' 'Random,' or 'PseudoRandom'
+        sample_method: str = "Deterministic",  # 'Deterministic,' 'Random,' or 'PseudoRandom'
     ):
         super().__init__(spectrum, size_range)
         self.error_threshold = error_threshold or 0.01
@@ -83,11 +84,11 @@ class RandomSampling(
         )
         assert 0 < self.cdf_range[0] < self.cdf_range[1]
 
-        if sample_method == 'Deterministic':
+        if sample_method == "Deterministic":
             self._find_percentiles = self._find_percentiles_deterministic
-        elif sample_method == 'PseudoRandom':
+        elif sample_method == "PseudoRandom":
             self._find_percentiles = self._find_percentiles_pseudorandom
-        elif sample_method == 'Random':
+        elif sample_method == "Random":
             self._find_percentiles = self._find_percentiles_random
         else:
             raise ValueError(f"Unknown sample_method: {sample_method}")
@@ -97,7 +98,7 @@ class RandomSampling(
             self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1
         )
         return percent_values
-    
+
     def _find_percentiles_pseudorandom(self, n_sd, backend):
         num_elements = n_sd
         storage = backend.Storage.empty(num_elements, dtype=float)
@@ -114,7 +115,7 @@ class RandomSampling(
             )
 
         return percent_values
-    
+
     def _find_percentiles_random(self, n_sd, backend):
         num_elements = 2 * n_sd + 1
         storage = backend.Storage.empty(num_elements, dtype=float)
@@ -127,45 +128,51 @@ class RandomSampling(
         return percent_values
 
 
-
-class Logarithmic(
-    RandomSampling
-):  # pylint: disable=too-few-public-methods
+class Logarithmic(RandomSampling):  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         spectrum,
         size_range: [None, Tuple[float, float]] = None,
         error_threshold: Optional[float] = None,
-        sample_method: str = 'Deterministic',
+        sample_method: str = "Deterministic",
     ):
         super().__init__(spectrum, size_range, error_threshold, sample_method)
 
-
     def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
         percentiles = self._find_percentiles(n_sd, backend)
-        grid = np.exp((np.log(self.size_range[1]) - np.log(self.size_range[0])) * percentiles + np.log(self.size_range[0]))
+        grid = np.exp(
+            (np.log(self.size_range[1]) - np.log(self.size_range[0])) * percentiles
+            + np.log(self.size_range[0])
+        )
         return self._sample(grid, self.spectrum)
 
-class Linear(
-    RandomSampling
-):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range=None, 
-                error_threshold: Optional[float] = None, 
-                sample_method: str = 'Deterministic'):
+
+class Linear(RandomSampling):  # pylint: disable=too-few-public-methods
+    def __init__(
+        self,
+        spectrum,
+        size_range=None,
+        error_threshold: Optional[float] = None,
+        sample_method: str = "Deterministic",
+    ):
         super().__init__(spectrum, size_range, error_threshold, sample_method)
 
-    def sample(self, n_sd, *, backend=None):  
+    def sample(self, n_sd, *, backend=None):
         percentiles = self._find_percentiles(n_sd, backend)
-        grid = self.size_range[0] + percentiles * (self.size_range[1] - self.size_range[0])
+        grid = self.size_range[0] + percentiles * (
+            self.size_range[1] - self.size_range[0]
+        )
         return self._sample(grid, self.spectrum)
 
 
-class ConstantMultiplicity(
-    RandomSampling
-):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range=None, 
-                error_threshold: Optional[float] = None, 
-                sample_method: str = 'Deterministic'):
+class ConstantMultiplicity(RandomSampling):  # pylint: disable=too-few-public-methods
+    def __init__(
+        self,
+        spectrum,
+        size_range=None,
+        error_threshold: Optional[float] = None,
+        sample_method: str = "Deterministic",
+    ):
         super().__init__(spectrum, size_range, error_threshold, sample_method)
 
     def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
@@ -178,53 +185,106 @@ class ConstantMultiplicity(
 
 
 class UniformRandom(ConstantMultiplicity):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range=None, 
-                error_threshold: Optional[float] = None):
-        super().__init__(spectrum, size_range, error_threshold, sample_method='Random')
+    def __init__(
+        self, spectrum, size_range=None, error_threshold: Optional[float] = None
+    ):
+        super().__init__(spectrum, size_range, error_threshold, sample_method="Random")
 
 
-class AlphaSampling(
-    RandomSampling
-):  # pylint: disable=too-few-public-methods
+class AlphaSampling(RandomSampling):  # pylint: disable=too-few-public-methods
     """as in [Matsushima et al. 2023](https://doi.org/10.5194/gmd-16-6211-2023)"""
 
-    def __init__(self, spectrum, alpha, size_range=None, dist_0=None, dist_1=None,interp_points=10000,convert_to=None,
-                 error_threshold: Optional[float] = None, 
-                 sample_method: str = 'Deterministic'):
+    def __init__(
+        self,
+        spectrum,
+        alpha,
+        size_range=None,
+        dist_0=None,
+        dist_1=None,
+        interp_points=10000,
+        convert_to=None,
+        error_threshold: Optional[float] = None,
+        sample_method: str = "Deterministic",
+    ):
         super().__init__(spectrum, size_range, error_threshold, sample_method)
+
         self.alpha = alpha
+
         if dist_0 is None:
             dist_0 = self.spectrum
         if dist_1 is None:
+            if convert_to == "radius":
 
-            if convert_to=="radius":
                 def dist_1_inv(y):
-                    return 4*np.pi/3*(((3/(4*np.pi)*self.size_range[1])**(1/3) - (3/(4*np.pi)*self.size_range[0])**(1/3)) * y + (3/(4*np.pi)*self.size_range[0])**(1/3))**3
-            elif convert_to=="log_radius":
+                    return (
+                        4
+                        * np.pi
+                        / 3
+                        * (
+                            (
+                                (3 / (4 * np.pi) * self.size_range[1]) ** (1 / 3)
+                                - (3 / (4 * np.pi) * self.size_range[0]) ** (1 / 3)
+                            )
+                            * y
+                            + (3 / (4 * np.pi) * self.size_range[0]) ** (1 / 3)
+                        )
+                        ** 3
+                    )
+
+            elif convert_to == "log_radius":
+
                 def dist_1_inv(y):
-                    radius_0 = (3/(4*np.pi)*self.size_range[0])**(1/3)
-                    radius_1 = (3/(4*np.pi)*self.size_range[1])**(1/3)
-                    return 4*np.pi/3*(np.exp((np.log(radius_1) - np.log(radius_0)) * y + np.log(radius_0)))**3
-            elif convert_to=="log":
+                    radius_0 = (3 / (4 * np.pi) * self.size_range[0]) ** (1 / 3)
+                    radius_1 = (3 / (4 * np.pi) * self.size_range[1]) ** (1 / 3)
+                    return (
+                        4
+                        * np.pi
+                        / 3
+                        * (
+                            np.exp(
+                                (np.log(radius_1) - np.log(radius_0)) * y
+                                + np.log(radius_0)
+                            )
+                        )
+                        ** 3
+                    )
+
+            elif convert_to == "log":
+
                 def dist_1_inv(y):
-                    return np.exp((np.log(self.size_range[1]) - np.log(self.size_range[0])) * y + np.log(self.size_range[0]))
+                    return np.exp(
+                        (np.log(self.size_range[1]) - np.log(self.size_range[0])) * y
+                        + np.log(self.size_range[0])
+                    )
+
             else:
+
                 def dist_1_inv(y):
-                    return (self.size_range[1] - self.size_range[0]) * y + self.size_range[0]
+                    return (
+                        self.size_range[1] - self.size_range[0]
+                    ) * y + self.size_range[0]
 
         else:
             dist_1_inv = dist_1.percentiles
+
         self.dist_0_cdf = dist_0.cdf
         self.dist_1_inv = dist_1_inv
-        self.x_prime = np.linspace(self.size_range[0], self.size_range[1], num=interp_points)
+        self.x_prime = np.linspace(
+            self.size_range[0], self.size_range[1], num=interp_points
+        )
 
     def sample(
-        self, n_sd, *, backend=None,
+        self,
+        n_sd,
+        *,
+        backend=None,
     ):  # pylint: disable=unused-argument
 
         sd_cdf = self.dist_0_cdf(self.x_prime)
 
-        x_sd_cdf = (1 - self.alpha) * self.x_prime + self.alpha * self.dist_1_inv(sd_cdf)
+        x_sd_cdf = (1 - self.alpha) * self.x_prime + self.alpha * self.dist_1_inv(
+            sd_cdf
+        )
 
         inv_cdf = interp1d(sd_cdf, x_sd_cdf)
 
@@ -237,5 +297,3 @@ class AlphaSampling(
             percentiles = inv_cdf(percent_values)
 
         return self._sample(percentiles, self.spectrum)
-
-

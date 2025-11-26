@@ -10,15 +10,23 @@ from PySDM.physics import si
 @pytest.mark.parametrize(
     "alpha_class, alias_class, alphavalue",
     (
-        pytest.param((spectral_sampling.AlphaSampling), (spectral_sampling.Linear),(1), id="full range"),
         pytest.param(
             (spectral_sampling.AlphaSampling),
-            (spectral_sampling.ConstantMultiplicity),(0),
+            (spectral_sampling.Linear),
+            (1),
+            id="full range",
+        ),
+        pytest.param(
+            (spectral_sampling.AlphaSampling),
+            (spectral_sampling.ConstantMultiplicity),
+            (0),
             id="partial range",
         ),
     ),
 )
-def test_spectral_discretisation(alpha_class, alias_class,alphavalue, backend_instance):
+def test_spectral_discretisation(
+    alpha_class, alias_class, alphavalue, backend_instance
+):
     # Arrange
     n_sd = 100
     backend = backend_instance
@@ -28,7 +36,7 @@ def test_spectral_discretisation(alpha_class, alias_class,alphavalue, backend_in
         scale=0.03 * si.micrometre,
     )
 
-    alpha = alpha_class(spectrum,alpha=alphavalue)
+    alpha = alpha_class(spectrum, alpha=alphavalue)
     alias = alias_class(spectrum)
 
     # Act
