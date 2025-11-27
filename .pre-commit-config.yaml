@@ -29,7 +29,7 @@ repos:
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
   - repo: https://github.com/Sfonxu/devops_tests
-    rev: 8ab1808ac652847414f8a8093adcbccba5958552
+    rev: 10a6f61ff07a3430a4f16ea6ab45d98282749b8e
     hooks:
       - id: check-badges
         name: check badges
