@@ -28,3 +28,9 @@ repos:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
+  - repo: https://github.com/Sfonxu/devops_tests
+    rev: 8ab1808ac652847414f8a8093adcbccba5958552
+    hooks:
+      - id: check-badges
+        name: check badges
+        args: [--fix-header, --repo-name=PySDM]
