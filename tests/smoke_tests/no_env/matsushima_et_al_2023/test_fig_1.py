@@ -18,5 +18,8 @@ def notebook_local_variables_fixture():
 
 class TestFig1:
     @staticmethod
-    def test_TODO(notebook_local_variables):
-        pass
+    def test_panel_b(notebook_local_variables):
+        for alpha, y_data in notebook_local_variables["yas"].items():
+            minimum_value = np.amin(y_data)
+            print(alpha, minimum_value)
+            assert minimum_value == 0 if alpha != 1 else 0.1

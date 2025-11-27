@@ -12,7 +12,7 @@ from scipy.interpolate import interp1d
 default_cdf_range = (0.00001, 0.99999)
 
 
-class SpectralSampling:  # pylint: disable=too-few-public-methods
+class SpectralSampling:
     def __init__(self, spectrum, size_range: Optional[Tuple[float, float]] = None):
         self.spectrum = spectrum
 
@@ -35,9 +35,7 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
             self.size_range = size_range
 
 
-class DeterministicSpectralSampling(
-    SpectralSampling
-):  # pylint: disable=too-few-public-methods
+class DeterministicSpectralSampling(SpectralSampling):
     # TODO #1031 - error_threshold will be also used in non-deterministic sampling
     def __init__(
         self,
@@ -63,15 +61,12 @@ class DeterministicSpectralSampling(
         return x, y_float
 
 
-class RandomSampling(
-    DeterministicSpectralSampling
-):  # pylint: disable=too-few-public-methods
+class RandomSampling(DeterministicSpectralSampling):
     def __init__(
         self,
         spectrum,
         size_range: Optional[Tuple[float, float]] = None,
         error_threshold: Optional[float] = None,
-        sample_method: str = "Deterministic",  # 'Deterministic,' 'Random,' or 'PseudoRandom'
     ):
         super().__init__(spectrum, size_range)
         self.error_threshold = error_threshold or 0.01
@@ -84,16 +79,7 @@ class RandomSampling(
         )
         assert 0 < self.cdf_range[0] < self.cdf_range[1]
 
-        if sample_method == "Deterministic":
-            self._find_percentiles = self._find_percentiles_deterministic
-        elif sample_method == "PseudoRandom":
-            self._find_percentiles = self._find_percentiles_pseudorandom
-        elif sample_method == "Random":
-            self._find_percentiles = self._find_percentiles_random
-        else:
-            raise ValueError(f"Unknown sample_method: {sample_method}")
-
-    def _find_percentiles_deterministic(self, n_sd, backend):
+    def _find_percentiles_deterministic(self, n_sd):
         percent_values = np.linspace(
             self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1
         )
@@ -128,7 +114,7 @@ class RandomSampling(
         return percent_values
 
 
-class Logarithmic(RandomSampling):  # pylint: disable=too-few-public-methods
+class Logarithmic(RandomSampling):
     def __init__(
         self,
         spectrum,
@@ -138,7 +124,7 @@ class Logarithmic(RandomSampling):  # pylint: disable=too-few-public-methods
     ):
         super().__init__(spectrum, size_range, error_threshold, sample_method)
 
-    def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
+    def sample(self, n_sd, *, backend=None):
         percentiles = self._find_percentiles(n_sd, backend)
         grid = np.exp(
             (np.log(self.size_range[1]) - np.log(self.size_range[0])) * percentiles
@@ -147,7 +133,7 @@ class Logarithmic(RandomSampling):  # pylint: disable=too-few-public-methods
         return self._sample(grid, self.spectrum)
 
 
-class Linear(RandomSampling):  # pylint: disable=too-few-public-methods
+class Linear(RandomSampling):
     def __init__(
         self,
         spectrum,
@@ -165,17 +151,16 @@ class Linear(RandomSampling):  # pylint: disable=too-few-public-methods
         return self._sample(grid, self.spectrum)
 
 
-class ConstantMultiplicity(RandomSampling):  # pylint: disable=too-few-public-methods
+class ConstantMultiplicity(RandomSampling):
     def __init__(
         self,
         spectrum,
         size_range=None,
         error_threshold: Optional[float] = None,
-        sample_method: str = "Deterministic",
     ):
         super().__init__(spectrum, size_range, error_threshold, sample_method)
 
-    def sample(self, n_sd, *, backend=None):  # pylint: disable=unused-argument
+    def sample(self, n_sd, *, backend=None):
         percentiles = self._find_percentiles(n_sd, backend)
         grid = self.spectrum.percentiles(percentiles)
 
@@ -184,14 +169,14 @@ class ConstantMultiplicity(RandomSampling):  # pylint: disable=too-few-public-me
         return self._sample(grid, self.spectrum)
 
 
-class UniformRandom(ConstantMultiplicity):  # pylint: disable=too-few-public-methods
+class UniformRandom(ConstantMultiplicity):
     def __init__(
         self, spectrum, size_range=None, error_threshold: Optional[float] = None
     ):
         super().__init__(spectrum, size_range, error_threshold, sample_method="Random")
 
 
-class AlphaSampling(RandomSampling):  # pylint: disable=too-few-public-methods
+class AlphaSampling(RandomSampling):
     """as in [Matsushima et al. 2023](https://doi.org/10.5194/gmd-16-6211-2023)"""
 
     def __init__(
@@ -204,9 +189,8 @@ class AlphaSampling(RandomSampling):  # pylint: disable=too-few-public-methods
         interp_points=10000,
         convert_to=None,
         error_threshold: Optional[float] = None,
-        sample_method: str = "Deterministic",
     ):
-        super().__init__(spectrum, size_range, error_threshold, sample_method)
+        super().__init__(spectrum, size_range, error_threshold)
 
         self.alpha = alpha
 
@@ -273,13 +257,13 @@ class AlphaSampling(RandomSampling):  # pylint: disable=too-few-public-methods
             self.size_range[0], self.size_range[1], num=interp_points
         )
 
-    def sample(
-        self,
-        n_sd,
-        *,
-        backend=None,
-    ):  # pylint: disable=unused-argument
+    def sample_pseudorandom(self):
+        pass
 
+    def sample_quasirandom(self):
+        pass
+
+    def sample_deterministic(self, n_sd):
         sd_cdf = self.dist_0_cdf(self.x_prime)
 
         x_sd_cdf = (1 - self.alpha) * self.x_prime + self.alpha * self.dist_1_inv(
@@ -288,7 +272,7 @@ class AlphaSampling(RandomSampling):  # pylint: disable=too-few-public-methods
 
         inv_cdf = interp1d(sd_cdf, x_sd_cdf)
 
-        percent_values = self._find_percentiles(n_sd, backend)
+        percent_values = self._find_percentiles_deterministic(n_sd)
         if self.alpha == 0:
             percentiles = self.spectrum.percentiles(percent_values)
         elif self.alpha == 1:
