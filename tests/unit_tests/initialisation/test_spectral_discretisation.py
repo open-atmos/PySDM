@@ -18,19 +18,20 @@ formulae = Formulae()
 @pytest.mark.parametrize(
     "discretisation",
     (
-        pytest.param(spectral_sampling.Linear(spectrum, m_range)),
-        pytest.param(spectral_sampling.Logarithmic(spectrum, m_range)),
-        pytest.param(spectral_sampling.ConstantMultiplicity(spectrum, m_range)),
-        pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
+        pytest.param(spectral_sampling.Linear(spectrum, size_range=m_range)),
+        pytest.param(spectral_sampling.Logarithmic(spectrum, size_range=m_range)),
+        pytest.param(
+            spectral_sampling.ConstantMultiplicity(spectrum, size_range=m_range)
+        ),
     ),
 )
-def test_spectral_discretisation(discretisation, backend_instance):
+@pytest.mark.parametrize("method", ("deterministic", "quasirandom", "pseudorandom"))
+def test_spectral_discretisation(discretisation, method, backend_instance):
     # Arrange
     n_sd = 100000
-    backend = backend_instance
 
     # Act
-    m, n = discretisation.sample(n_sd, backend=backend)
+    m, n = getattr(discretisation, f"sample_{method}")(n_sd, backend=backend_instance)
 
     # Assert
     assert m.shape == n.shape

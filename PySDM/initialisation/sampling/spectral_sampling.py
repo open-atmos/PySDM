@@ -1,6 +1,6 @@
 """
-spectral sampling logic incl. linear, logarithmic, uniform-random and constant-multiplicity
- sampling classes
+spectral discretisation logic incl. linear, logarithmic, and constant-multiplicity
+ layouts with deterministic, pseudorandom and quasirandom sampling
 """
 
 from typing import Optional, Tuple
@@ -13,12 +13,20 @@ default_cdf_range = (0.00001, 0.99999)
 
 
 class SpectralSampling:
-    def __init__(self, spectrum, size_range: Optional[Tuple[float, float]] = None):
+    def __init__(
+        self,
+        spectrum,
+        *,
+        size_range: Optional[Tuple[float, float]] = None,
+        error_threshold: Optional[float] = None,
+    ):
         self.spectrum = spectrum
+        self.error_threshold = error_threshold or 0.01
 
         if size_range is None:
+            self.cdf_range = default_cdf_range
             if hasattr(spectrum, "percentiles"):
-                self.size_range = spectrum.percentiles(default_cdf_range)
+                self.size_range = spectrum.percentiles(self.cdf_range)
             else:
                 self.size_range = [np.nan, np.nan]
                 for i in (0, 1):
@@ -33,25 +41,17 @@ class SpectralSampling:
             assert size_range[0] > 0
             assert size_range[1] > size_range[0]
             self.size_range = size_range
+            self.cdf_range = (
+                spectrum.cdf(size_range[0]),
+                spectrum.cdf(size_range[1]),
+            )
 
-
-class DeterministicSpectralSampling(SpectralSampling):
-    # TODO #1031 - error_threshold will be also used in non-deterministic sampling
-    def __init__(
-        self,
-        spectrum,
-        size_range: Optional[Tuple[float, float]] = None,
-        error_threshold: Optional[float] = None,
-    ):
-        super().__init__(spectrum, size_range)
-        self.error_threshold = error_threshold or 0.01
-
-    def _sample(self, grid, spectrum):
+    def _sample_with_grid(self, grid):
         x = grid[1:-1:2]
-        cdf = spectrum.cumulative(grid[0::2])
+        cdf = self.spectrum.cumulative(grid[0::2])
         y_float = cdf[1:] - cdf[0:-1]
 
-        diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
+        diff = abs(1 - np.sum(y_float) / self.spectrum.norm_factor)
         if diff > self.error_threshold:
             raise ValueError(
                 f"{diff * 100:.3g}% error in total real-droplet number due to sampling "
@@ -60,123 +60,67 @@ class DeterministicSpectralSampling(SpectralSampling):
 
         return x, y_float
 
-
-class RandomSampling(DeterministicSpectralSampling):
-    def __init__(
-        self,
-        spectrum,
-        size_range: Optional[Tuple[float, float]] = None,
-        error_threshold: Optional[float] = None,
-    ):
-        super().__init__(spectrum, size_range)
-        self.error_threshold = error_threshold or 0.01
-
-        self.cdf_range = (
-            # spectrum.cdf(self.size_range[0]),
-            # spectrum.cdf(self.size_range[1]),
-            default_cdf_range[0],
-            default_cdf_range[1],
+    def sample_deterministic(self, n_sd, *, backend=None):
+        return self._sample(
+            frac_values=np.linspace(
+                self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1
+            )
         )
-        assert 0 < self.cdf_range[0] < self.cdf_range[1]
 
-    def _find_percentiles_deterministic(self, n_sd):
-        percent_values = np.linspace(
-            self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1
-        )
-        return percent_values
-
-    def _find_percentiles_pseudorandom(self, n_sd, backend):
+    def sample_quasirandom(self, n_sd, *, backend):
         num_elements = n_sd
         storage = backend.Storage.empty(num_elements, dtype=float)
         backend.Random(seed=backend.formulae.seed, size=num_elements)(storage)
         u01 = storage.to_ndarray()
 
-        percent_values = np.linspace(
+        frac_values = np.linspace(
             self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1
         )
 
-        for i in range(1, len(percent_values) - 1, 2):
-            percent_values[i] = percent_values[i - 1] + u01[i // 2] * (
-                percent_values[i + 1] - percent_values[i - 1]
+        for i in range(1, len(frac_values) - 1, 2):
+            frac_values[i] = frac_values[i - 1] + u01[i // 2] * (
+                frac_values[i + 1] - frac_values[i - 1]
             )
 
-        return percent_values
+        return self._sample(frac_values=frac_values)
 
-    def _find_percentiles_random(self, n_sd, backend):
+    def sample_pseudorandom(self, n_sd, *, backend):
         num_elements = 2 * n_sd + 1
         storage = backend.Storage.empty(num_elements, dtype=float)
         backend.Random(seed=backend.formulae.seed, size=num_elements)(storage)
         u01 = storage.to_ndarray()
 
-        percent_values = np.sort(
+        frac_values = np.sort(
             self.cdf_range[0] + u01 * (self.cdf_range[1] - self.cdf_range[0])
         )
-        return percent_values
+        return self._sample(frac_values=frac_values)
 
 
-class Logarithmic(RandomSampling):
-    def __init__(
-        self,
-        spectrum,
-        size_range: [None, Tuple[float, float]] = None,
-        error_threshold: Optional[float] = None,
-        sample_method: str = "Deterministic",
-    ):
-        super().__init__(spectrum, size_range, error_threshold, sample_method)
-
-    def sample(self, n_sd, *, backend=None):
-        percentiles = self._find_percentiles(n_sd, backend)
+class Logarithmic(SpectralSampling):
+    def _sample(self, frac_values):
         grid = np.exp(
-            (np.log(self.size_range[1]) - np.log(self.size_range[0])) * percentiles
+            (np.log(self.size_range[1]) - np.log(self.size_range[0])) * frac_values
             + np.log(self.size_range[0])
         )
-        return self._sample(grid, self.spectrum)
+        return self._sample_with_grid(grid)
 
 
-class Linear(RandomSampling):
-    def __init__(
-        self,
-        spectrum,
-        size_range=None,
-        error_threshold: Optional[float] = None,
-        sample_method: str = "Deterministic",
-    ):
-        super().__init__(spectrum, size_range, error_threshold, sample_method)
-
-    def sample(self, n_sd, *, backend=None):
-        percentiles = self._find_percentiles(n_sd, backend)
-        grid = self.size_range[0] + percentiles * (
+class Linear(SpectralSampling):
+    def _sample(self, frac_values):
+        grid = self.size_range[0] + frac_values * (
             self.size_range[1] - self.size_range[0]
         )
-        return self._sample(grid, self.spectrum)
+        return self._sample_with_grid(grid)
 
 
-class ConstantMultiplicity(RandomSampling):
-    def __init__(
-        self,
-        spectrum,
-        size_range=None,
-        error_threshold: Optional[float] = None,
-    ):
-        super().__init__(spectrum, size_range, error_threshold, sample_method)
-
-    def sample(self, n_sd, *, backend=None):
-        percentiles = self._find_percentiles(n_sd, backend)
-        grid = self.spectrum.percentiles(percentiles)
-
+class ConstantMultiplicity(SpectralSampling):
+    def _sample(self, frac_values):
+        grid = self.spectrum.percentiles(frac_values)
         assert np.isfinite(grid).all()
-
-        return self._sample(grid, self.spectrum)
-
-
-class UniformRandom(ConstantMultiplicity):
-    def __init__(
-        self, spectrum, size_range=None, error_threshold: Optional[float] = None
-    ):
-        super().__init__(spectrum, size_range, error_threshold, sample_method="Random")
+        return self._sample_with_grid(grid)
 
 
-class AlphaSampling(RandomSampling):
+class AlphaSampling(SpectralSampling):
     """as in [Matsushima et al. 2023](https://doi.org/10.5194/gmd-16-6211-2023)"""
 
     def __init__(
@@ -190,7 +134,9 @@ class AlphaSampling(RandomSampling):
         convert_to=None,
         error_threshold: Optional[float] = None,
     ):
-        super().__init__(spectrum, size_range, error_threshold)
+        super().__init__(
+            spectrum, size_range=size_range, error_threshold=error_threshold
+        )
 
         self.alpha = alpha
 
@@ -257,27 +203,16 @@ class AlphaSampling(RandomSampling):
             self.size_range[0], self.size_range[1], num=interp_points
         )
 
-    def sample_pseudorandom(self):
-        pass
-
-    def sample_quasirandom(self):
-        pass
-
-    def sample_deterministic(self, n_sd):
-        sd_cdf = self.dist_0_cdf(self.x_prime)
-
-        x_sd_cdf = (1 - self.alpha) * self.x_prime + self.alpha * self.dist_1_inv(
-            sd_cdf
-        )
-
-        inv_cdf = interp1d(sd_cdf, x_sd_cdf)
-
-        percent_values = self._find_percentiles_deterministic(n_sd)
+    def _sample(self, frac_values):
         if self.alpha == 0:
-            percentiles = self.spectrum.percentiles(percent_values)
+            frac_values = self.spectrum.percentiles(frac_values)
         elif self.alpha == 1:
-            percentiles = self.dist_1_inv(percent_values)
+            frac_values = self.dist_1_inv(frac_values)
         else:
-            percentiles = inv_cdf(percent_values)
+            sd_cdf = self.dist_0_cdf(self.x_prime)
+            x_sd_cdf = (1 - self.alpha) * self.x_prime + self.alpha * self.dist_1_inv(
+                sd_cdf
+            )
+            frac_values = interp1d(sd_cdf, x_sd_cdf)(frac_values)
 
-        return self._sample(percentiles, self.spectrum)
+        return self._sample_with_grid(frac_values)

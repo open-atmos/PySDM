@@ -14,18 +14,17 @@ from PySDM.physics import si
             (spectral_sampling.AlphaSampling),
             (spectral_sampling.Linear),
             (1),
-            id="full range",
         ),
         pytest.param(
             (spectral_sampling.AlphaSampling),
             (spectral_sampling.ConstantMultiplicity),
             (0),
-            id="partial range",
         ),
     ),
 )
+@pytest.mark.parametrize("method", ("deterministic", "quasirandom", "pseudorandom"))
 def test_spectral_discretisation(
-    alpha_class, alias_class, alphavalue, backend_instance
+    alpha_class, alias_class, alphavalue, backend_instance, method
 ):
     # Arrange
     n_sd = 100
@@ -36,12 +35,13 @@ def test_spectral_discretisation(
         scale=0.03 * si.micrometre,
     )
 
-    alpha = alpha_class(spectrum, alpha=alphavalue)
-    alias = alias_class(spectrum)
+    error_threshold = None if method != "pseudorandom" else 0.1
+    alpha = alpha_class(spectrum, alpha=alphavalue, error_threshold=error_threshold)
+    alias = alias_class(spectrum, error_threshold=error_threshold)
 
     # Act
-    m_alpha, n_alpha = alpha.sample(n_sd, backend=backend)
-    m_alias, n_alias = alias.sample(n_sd, backend=backend)
+    m_alpha, n_alpha = getattr(alpha, f"sample_{method}")(n_sd, backend=backend)
+    m_alias, n_alias = getattr(alias, f"sample_{method}")(n_sd, backend=backend)
 
     # Assert
     np.testing.assert_allclose(

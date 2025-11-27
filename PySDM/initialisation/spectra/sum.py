@@ -20,7 +20,7 @@ class Sum:
         cdf_arg = np.zeros(len(interpolation_grid) * len(self.spectra) + 1)
         cdf_arg[1:] = np.concatenate(percentiles)
         cdf = self.cumulative(cdf_arg) / self.norm_factor
-        self.inverse_cdf = interp1d(cdf, cdf_arg)
+        self.inverse_cdf = interp1d(cdf, cdf_arg, bounds_error=False)
 
     def size_distribution(self, arg):
         result = 0.0
