@@ -13,7 +13,13 @@ from PySDM.physics import si
 
 class Simulation(BasicSimulation):
     def __init__(
-        self, settings, products=None, scipy_solver=False, rtol_thd=1e-10, rtol_x=1e-10
+        self,
+        settings,
+        products=None,
+        scipy_solver=False,
+        rtol_thd=1e-10,
+        rtol_x=1e-10,
+        mass_of_dry_air=44 * si.kg,
     ):
         n_sd = sum(settings.n_sd_per_mode)
         builder = Builder(
@@ -27,7 +33,7 @@ class Simulation(BasicSimulation):
                 initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
                 T0=settings.initial_temperature,
                 w=settings.vertical_velocity,
-                mass_of_dry_air=66666 * si.kg,
+                mass_of_dry_air=mass_of_dry_air,
             ),
         )
         builder.add_dynamic(AmbientThermodynamics())

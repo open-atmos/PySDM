@@ -86,6 +86,7 @@ Example notebooks include:
   - `PySDM_examples.Yang_et_al_2018`: polydisperse particle spectrum, activation/deactivation cycles
   - `PySDM_examples.Abdul_Razzak_Ghan_2000`: polydisperse activation, comparison against <mark>GCM parameterisation</mark>
   - `PySDM_examples.Pyrcel`: polydisperse activation, mimicking example test case from <mark>Pyrcel</mark> documentation
+  - `PySDM_examples.Strzabala_2025_BEng`: ParaView visualisation example
   - `PySDM_examples.Lowe_et_al_2019`: externally mixed polydisperse size spectrum with <mark>surface-active organics</mark> case
   - `PySDM_examples.Grabowski_and_Pawlowska_2023`: polydisperse activation, focus on <mark>ripening</mark>
   - `PySDM_examples.Jensen_and_Nugent_2017`: polydisperse activation featuring <mark>giant CCN</mark>
