@@ -959,6 +959,7 @@
       "examples/PySDM_examples/Matsushima_et_al_2023/figure_1.ipynb",
       "examples/PySDM_examples/Matsushima_et_al_2023/__init__.py"
     ]
+  },
   "https://doi.org/10.48550/arXiv.2509.05536": {
     "usages": [
       "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
