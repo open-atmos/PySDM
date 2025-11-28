@@ -10,7 +10,7 @@ dependencies = [
     "ThrustRTC>=0.3.20",
     "CURandRTC>=0.1.2",
     "numba>=0.51.2",
-    "intel-openmp; platform_system=='Darwin'"
+    "intel-openmp; platform_system=='Darwin'",
     # TODO #1344: (numpy 2.0.0 incompatibility in https://github.com/bjodah/chempy/issues/234)
     "numpy"
     + (
