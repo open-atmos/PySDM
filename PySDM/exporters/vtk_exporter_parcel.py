@@ -15,15 +15,14 @@ import numpy as np
 from PySDM.exporters.vtk_exporter import VTKExporter
 
 
+# pylint: disable=too-many-instance-attributes
 class VTKExporterParcel(VTKExporter):
     """
     Custom VTK exporter for parcel PySDM, exporting products as grids
     and attributes as point clouds for ParaView visualization.
     """
 
-    def __init__(
-        self, n_sd, output, mass_of_dry_air
-    ):  # pylint: disable=too-many-instance-attributes
+    def __init__(self, n_sd, output, mass_of_dry_air):
         super().__init__()
         self.output = output
         self.coords = {
