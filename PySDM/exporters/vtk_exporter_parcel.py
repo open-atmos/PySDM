@@ -12,7 +12,7 @@ from pyevtk.hl import unstructuredGridToVTK, pointsToVTK
 from pyevtk.vtk import VtkHexahedron, VtkGroup
 import numpy as np
 
-from PySDM.exporters import VTKExporter
+from PySDM.exporters.vtk_exporter import VTKExporter
 
 
 class VTKExporterParcel(VTKExporter):
@@ -21,7 +21,9 @@ class VTKExporterParcel(VTKExporter):
     and attributes as point clouds for ParaView visualization.
     """
 
-    def __init__(self, n_sd, output, mass_of_dry_air):
+    def __init__(
+        self, n_sd, output, mass_of_dry_air
+    ):  # pylint: disable=too-many-instance-attributes
         super().__init__()
         self.output = output
         self.coords = {
