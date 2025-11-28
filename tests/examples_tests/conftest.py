@@ -139,6 +139,7 @@ TEST_SUITES = {
     "multi-process_a": [
         "Arabas_et_al_2015",
         "_HOWTOs",
+        "Strzabala_2025_BEng",
     ],
     "multi-process_b": [
         "Arabas_et_al_2025",
