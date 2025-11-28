@@ -1,7 +1,7 @@
 """
-VTK Exporter for Pyrcel PySDM simulations.
+VTK Exporter for parcel PySDM simulations.
 
-This module defines `VTKExporterPyrcel`, a subclass of `PySDM.exporters.VTKExporter`,
+This module defines `VTKExporterParcel`, a subclass of `PySDM.exporters.VTKExporter`,
 that writes simulation outputs to VTK format using `pyevtk`. It exports product
 profiles (e.g., relative humidity) as unstructured grids and particle attributes
 as point clouds, along with `.pvd` collection files for time-series visualization
@@ -15,18 +15,20 @@ import numpy as np
 from PySDM.exporters import VTKExporter
 
 
-class VTKExporterPyrcel(VTKExporter):
+class VTKExporterParcel(VTKExporter):
     """
-    Custom VTK exporter for Pyrcel PySDM, exporting products as grids
+    Custom VTK exporter for parcel PySDM, exporting products as grids
     and attributes as point clouds for ParaView visualization.
     """
 
     def __init__(self, n_sd, output, mass_of_dry_air):
         super().__init__()
         self.output = output
-        self.x_coords = np.random.random(n_sd)
-        self.y_coords = np.random.random(n_sd)
-        self.z_coords = np.random.random(n_sd)
+        self.coords = {
+            "x": np.random.random(n_sd),
+            "y": np.random.random(n_sd),
+            "z": np.random.random(n_sd),
+        }
         self.half_diagonal = []
         self.n_levels = len(self.output["products"]["z"])
 
@@ -135,14 +137,14 @@ class VTKExporterPyrcel(VTKExporter):
                 - self.output["products"]["z"][step - 1]
             )
             if step == 1:
-                self.z_coords *= delta_z
+                self.coords["z"] *= delta_z
             else:
-                self.z_coords += delta_z
+                self.coords["z"] += delta_z
 
         pointsToVTK(
             path,
-            2 * (self.x_coords - 0.5) * self.half_diagonal[step],
-            2 * (self.y_coords - 0.5) * self.half_diagonal[step],
-            self.z_coords,
+            2 * (self.coords["x"] - 0.5) * self.half_diagonal[step],
+            2 * (self.coords["y"] - 0.5) * self.half_diagonal[step],
+            self.coords["z"],
             data=payload,
         )
