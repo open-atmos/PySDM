@@ -28,8 +28,8 @@ repos:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
-  - repo: https://github.com/open-atmos/devops_tests
-    rev: v0.0.1
+  - repo: https://github.com/AgnieszkaZaba/devops_tests
+    rev: hooks-issue
     hooks:
       - id: check-badges
         name: check badges
