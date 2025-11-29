@@ -46,6 +46,9 @@ class SpectralSampling:
                 spectrum.cdf(size_range[1]),
             )
 
+    def _sample(_):
+        raise NotImplementedError()
+
     def _sample_with_grid(self, grid):
         x = grid[1:-1:2]
         cdf = self.spectrum.cumulative(grid[0::2])
@@ -60,7 +63,9 @@ class SpectralSampling:
 
         return x, y_float
 
-    def sample_deterministic(self, n_sd, *, backend=None):
+    def sample_deterministic(
+        self, n_sd, *, backend=None
+    ):  # pylint: disable=unused-argument
         return self._sample(
             frac_values=np.linspace(
                 self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1

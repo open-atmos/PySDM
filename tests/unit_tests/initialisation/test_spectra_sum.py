@@ -1,7 +1,7 @@
-from PySDM.initialisation.spectra import Sum, Gaussian
-
 import numpy as np
 import pytest
+
+from PySDM.initialisation.spectra import Sum, Gaussian
 
 
 @pytest.mark.parametrize("fun", ("pdf", "cdf"))
