@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from pathlib import Path
 
 import numpy as np
@@ -18,8 +19,16 @@ def notebook_local_variables_fixture():
 
 class TestFig1:
     @staticmethod
+    def test_panel_a(notebook_local_variables):
+        pass
+
+    @staticmethod
     def test_panel_b(notebook_local_variables):
         for alpha, y_data in notebook_local_variables["yas"].items():
             minimum_value = np.amin(y_data)
             print(alpha, minimum_value)
             assert minimum_value == 0 if alpha != 1 else 0.1
+
+    @staticmethod
+    def test_panel_c(notebook_local_variables):
+        pass

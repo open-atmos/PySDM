@@ -46,7 +46,7 @@ class SpectralSampling:
                 spectrum.cdf(size_range[1]),
             )
 
-    def _sample(_):
+    def _sample(self, frac_values, num):  # pylint: disable=unused-argument
         raise NotImplementedError()
 
     def _sample_with_grid(self, grid):
