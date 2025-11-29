@@ -43,7 +43,7 @@ def run_box_breakup(
     else:
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             settings.spectrum
-        ).sample_deerministic(settings.n_sd)
+        ).sample_deterministic(settings.n_sd)
     breakup = Collision(
         collision_kernel=settings.kernel,
         coalescence_efficiency=settings.coal_eff,
