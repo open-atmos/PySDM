@@ -43,7 +43,9 @@ class Simulation(BasicSimulation):
         }
         for i, (kappa, spectrum) in enumerate(settings.aerosol_modes_by_kappa.items()):
             sampling = ConstantMultiplicity(spectrum)
-            r_dry, n_per_volume = sampling.sample(settings.n_sd_per_mode[i])
+            r_dry, n_per_volume = sampling.sample_deterministic(
+                settings.n_sd_per_mode[i]
+            )
             v_dry = settings.formulae.trivia.volume(radius=r_dry)
             attributes["multiplicity"] = np.append(
                 attributes["multiplicity"], n_per_volume * volume

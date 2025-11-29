@@ -35,15 +35,15 @@ def run_box_breakup(
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     if sample_in_radius:
-        diams, attributes["multiplicity"] = Logarithmic(settings.spectrum).sample(
-            settings.n_sd
-        )
+        diams, attributes["multiplicity"] = Logarithmic(
+            settings.spectrum
+        ).sample_deterministic(settings.n_sd)
         radii = diams / 2
         attributes["volume"] = Formulae().trivia.volume(radius=radii)
     else:
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             settings.spectrum
-        ).sample(settings.n_sd)
+        ).sample_deerministic(settings.n_sd)
     breakup = Collision(
         collision_kernel=settings.kernel,
         coalescence_efficiency=settings.coal_eff,
@@ -100,7 +100,7 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
-    ).sample(settings.n_sd)
+    ).sample_deterministic(settings.n_sd)
     coal = Coalescence(
         collision_kernel=settings.kernel,
         coalescence_efficiency=settings.coal_eff,
