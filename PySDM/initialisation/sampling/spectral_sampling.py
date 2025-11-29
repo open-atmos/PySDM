@@ -131,7 +131,8 @@ class AlphaSampling(SpectralSampling):
     def __init__(
         self,
         spectrum,
-        *alpha,
+        *,
+        alpha,
         size_range=None,
         dist_0=None,
         dist_1=None,
