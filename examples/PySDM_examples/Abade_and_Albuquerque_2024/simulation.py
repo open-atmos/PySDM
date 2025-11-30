@@ -49,9 +49,9 @@ class Simulation(BasicSimulation):
         if settings.enable_vapour_deposition_on_ice:
             builder.add_dynamic(VapourDepositionOnIce(adaptive=True))
 
-        r_dry, n_in_dv = ConstantMultiplicity(settings.soluble_aerosol).sample(
-            n_sd=settings.n_sd
-        )
+        r_dry, n_in_dv = ConstantMultiplicity(
+            settings.soluble_aerosol
+        ).sample_deterministic(n_sd=settings.n_sd)
         attributes = builder.particulator.environment.init_attributes(
             n_in_dv=n_in_dv, kappa=settings.kappa, r_dry=r_dry
         )

@@ -19,7 +19,9 @@ from PySDM.physics import si
 FORMULAE = Formulae()
 SPECTRUM = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 N_SD = 64
-R_DRY, specific_concentration = spectral_sampling.Logarithmic(SPECTRUM).sample(N_SD)
+R_DRY, specific_concentration = spectral_sampling.Logarithmic(
+    SPECTRUM
+).sample_deterministic(N_SD)
 V_DRY = FORMULAE.trivia.volume(radius=R_DRY)
 KAPPA = 0.5
 CLOUD_RANGE = (0.5 * si.um, 25 * si.um)

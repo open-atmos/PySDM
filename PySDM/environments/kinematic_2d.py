@@ -60,9 +60,9 @@ class Kinematic2D(Moist):
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_sampling(spectrum=dry_radius_spectrum).sample(
-                n_sd=n_sd, backend=self.particulator.backend
-            )
+            r_dry, n_per_kg = spectral_sampling(
+                spectrum=dry_radius_spectrum
+            ).sample_deterministic(n_sd=n_sd, backend=self.particulator.backend)
 
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]
