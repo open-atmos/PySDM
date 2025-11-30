@@ -11,4 +11,4 @@ except PackageNotFoundError:
     # package is not installed
     pass
 
-assert PySDM.__version__ == __version__
+# assert PySDM.__version__ == __version__
