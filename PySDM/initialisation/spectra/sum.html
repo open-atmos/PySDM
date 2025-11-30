@@ -95,6 +95,12 @@
                         <li>
                                 <a class="function" href="#Sum.percentiles">percentiles</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Sum.pdf">pdf</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Sum.cdf">cdf</a>
+                        </li>
                 </ul>
 
             </li>
@@ -144,7 +150,7 @@
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>        <span class="n">cdf_arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interpolation_grid</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectra</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="n">cdf_arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">percentiles</span><span class="p">)</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>        <span class="n">cdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cumulative</span><span class="p">(</span><span class="n">cdf_arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">cdf_arg</span><span class="p">)</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">cdf_arg</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>
 </span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">size_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -160,6 +166,12 @@
 </span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a>
 </span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">percentiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdf_values</span><span class="p">):</span>
 </span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span><span class="p">(</span><span class="n">cdf_values</span><span class="p">)</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_distribution</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cumulative</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
 </span></pre></div>
 
 
@@ -197,7 +209,7 @@
 </span><span id="Sum-21"><a href="#Sum-21"><span class="linenos">21</span></a>        <span class="n">cdf_arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interpolation_grid</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectra</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span><span id="Sum-22"><a href="#Sum-22"><span class="linenos">22</span></a>        <span class="n">cdf_arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">percentiles</span><span class="p">)</span>
 </span><span id="Sum-23"><a href="#Sum-23"><span class="linenos">23</span></a>        <span class="n">cdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cumulative</span><span class="p">(</span><span class="n">cdf_arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
-</span><span id="Sum-24"><a href="#Sum-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">cdf_arg</span><span class="p">)</span>
+</span><span id="Sum-24"><a href="#Sum-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">cdf_arg</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span><span id="Sum-25"><a href="#Sum-25"><span class="linenos">25</span></a>
 </span><span id="Sum-26"><a href="#Sum-26"><span class="linenos">26</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">size_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
 </span><span id="Sum-27"><a href="#Sum-27"><span class="linenos">27</span></a>        <span class="n">result</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -213,6 +225,12 @@
 </span><span id="Sum-37"><a href="#Sum-37"><span class="linenos">37</span></a>
 </span><span id="Sum-38"><a href="#Sum-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">percentiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdf_values</span><span class="p">):</span>
 </span><span id="Sum-39"><a href="#Sum-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span><span class="p">(</span><span class="n">cdf_values</span><span class="p">)</span>
+</span><span id="Sum-40"><a href="#Sum-40"><span class="linenos">40</span></a>
+</span><span id="Sum-41"><a href="#Sum-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+</span><span id="Sum-42"><a href="#Sum-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_distribution</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
+</span><span id="Sum-43"><a href="#Sum-43"><span class="linenos">43</span></a>
+</span><span id="Sum-44"><a href="#Sum-44"><span class="linenos">44</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+</span><span id="Sum-45"><a href="#Sum-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cumulative</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
 </span></pre></div>
 
 
@@ -236,7 +254,7 @@
 </span><span id="Sum.__init__-21"><a href="#Sum.__init__-21"><span class="linenos">21</span></a>        <span class="n">cdf_arg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interpolation_grid</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spectra</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </span><span id="Sum.__init__-22"><a href="#Sum.__init__-22"><span class="linenos">22</span></a>        <span class="n">cdf_arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">percentiles</span><span class="p">)</span>
 </span><span id="Sum.__init__-23"><a href="#Sum.__init__-23"><span class="linenos">23</span></a>        <span class="n">cdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cumulative</span><span class="p">(</span><span class="n">cdf_arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
-</span><span id="Sum.__init__-24"><a href="#Sum.__init__-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">cdf_arg</span><span class="p">)</span>
+</span><span id="Sum.__init__-24"><a href="#Sum.__init__-24"><span class="linenos">24</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cdf</span><span class="p">,</span> <span class="n">cdf_arg</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -333,6 +351,44 @@
     <a class="headerlink" href="#Sum.percentiles"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="Sum.percentiles-38"><a href="#Sum.percentiles-38"><span class="linenos">38</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">percentiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cdf_values</span><span class="p">):</span>
 </span><span id="Sum.percentiles-39"><a href="#Sum.percentiles-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inverse_cdf</span><span class="p">(</span><span class="n">cdf_values</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Sum.pdf" class="classattr">
+                                        <input id="Sum.pdf-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">pdf</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">arg</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Sum.pdf-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Sum.pdf"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Sum.pdf-41"><a href="#Sum.pdf-41"><span class="linenos">41</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+</span><span id="Sum.pdf-42"><a href="#Sum.pdf-42"><span class="linenos">42</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_distribution</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Sum.cdf" class="classattr">
+                                        <input id="Sum.cdf-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">cdf</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="n">arg</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Sum.cdf-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Sum.cdf"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Sum.cdf-44"><a href="#Sum.cdf-44"><span class="linenos">44</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+</span><span id="Sum.cdf-45"><a href="#Sum.cdf-45"><span class="linenos">45</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cumulative</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">norm_factor</span>
 </span></pre></div>
 
 
