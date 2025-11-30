@@ -3,6 +3,7 @@ spectral discretisation logic incl. linear, logarithmic, and constant-multiplici
  layouts with deterministic, pseudorandom and quasirandom sampling
 """
 
+import abc
 from typing import Optional, Tuple
 
 import numpy as np
@@ -25,17 +26,7 @@ class SpectralSampling:
 
         if size_range is None:
             self.cdf_range = default_cdf_range
-            if hasattr(spectrum, "percentiles"):
-                self.size_range = spectrum.percentiles(self.cdf_range)
-            else:
-                self.size_range = [np.nan, np.nan]
-                for i in (0, 1):
-                    result = optimize.root(
-                        lambda x, value=default_cdf_range[i]: spectrum.cdf(x) - value,
-                        x0=spectrum.median(),
-                    )
-                    assert result.success
-                    self.size_range[i] = result.x
+            self.size_range = spectrum.percentiles(self.cdf_range)
         else:
             assert len(size_range) == 2
             assert size_range[0] > 0
@@ -46,8 +37,9 @@ class SpectralSampling:
                 spectrum.cdf(size_range[1]),
             )
 
-    def _sample(self, frac_values):  # pylint: disable=unused-argument
-        raise NotImplementedError()
+    @abc.abstractmethod
+    def _sample(self, frac_values):
+        pass
 
     def _sample_with_grid(self, grid):
         x = grid[1:-1:2]
