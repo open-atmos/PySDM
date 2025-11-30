@@ -7,7 +7,6 @@ import abc
 from typing import Optional, Tuple
 
 import numpy as np
-from scipy import optimize
 from scipy.interpolate import interp1d
 
 default_cdf_range = (0.00001, 0.99999)
