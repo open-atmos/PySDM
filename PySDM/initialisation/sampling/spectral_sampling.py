@@ -124,77 +124,16 @@ class AlphaSampling(SpectralSampling):
         spectrum,
         *,
         alpha,
+        dist_1_inv,
+        interp_points,
         size_range=None,
-        dist_0=None,
-        dist_1=None,
-        interp_points=10000,
-        convert_to=None,
         error_threshold: Optional[float] = None,
     ):
         super().__init__(
             spectrum, size_range=size_range, error_threshold=error_threshold
         )
-
         self.alpha = alpha
-
-        if dist_0 is None:
-            dist_0 = self.spectrum
-        if dist_1 is None:
-            if convert_to == "radius":
-
-                def dist_1_inv(y):
-                    return (
-                        4
-                        * np.pi
-                        / 3
-                        * (
-                            (
-                                (3 / (4 * np.pi) * self.size_range[1]) ** (1 / 3)
-                                - (3 / (4 * np.pi) * self.size_range[0]) ** (1 / 3)
-                            )
-                            * y
-                            + (3 / (4 * np.pi) * self.size_range[0]) ** (1 / 3)
-                        )
-                        ** 3
-                    )
-
-            elif convert_to == "log_radius":
-
-                def dist_1_inv(y):
-                    radius_0 = (3 / (4 * np.pi) * self.size_range[0]) ** (1 / 3)
-                    radius_1 = (3 / (4 * np.pi) * self.size_range[1]) ** (1 / 3)
-                    return (
-                        4
-                        * np.pi
-                        / 3
-                        * (
-                            np.exp(
-                                (np.log(radius_1) - np.log(radius_0)) * y
-                                + np.log(radius_0)
-                            )
-                        )
-                        ** 3
-                    )
-
-            elif convert_to == "log":
-
-                def dist_1_inv(y):
-                    return np.exp(
-                        (np.log(self.size_range[1]) - np.log(self.size_range[0])) * y
-                        + np.log(self.size_range[0])
-                    )
-
-            else:
-
-                def dist_1_inv(y):
-                    return (
-                        self.size_range[1] - self.size_range[0]
-                    ) * y + self.size_range[0]
-
-        else:
-            dist_1_inv = dist_1.percentiles
-
-        self.dist_0_cdf = dist_0.cdf
+        self.dist_0_cdf = self.spectrum.cdf
         self.dist_1_inv = dist_1_inv
         self.x_prime = np.linspace(
             self.size_range[0], self.size_range[1], num=interp_points
@@ -204,12 +143,11 @@ class AlphaSampling(SpectralSampling):
         if self.alpha == 0:
             frac_values = self.spectrum.percentiles(frac_values)
         elif self.alpha == 1:
-            frac_values = self.dist_1_inv(frac_values)
+            frac_values = self.dist_1_inv(frac_values, self.size_range)
         else:
             sd_cdf = self.dist_0_cdf(self.x_prime)
             x_sd_cdf = (1 - self.alpha) * self.x_prime + self.alpha * self.dist_1_inv(
-                sd_cdf
+                sd_cdf, self.size_range
             )
             frac_values = interp1d(sd_cdf, x_sd_cdf)(frac_values)
-
         return self._sample_with_grid(frac_values)

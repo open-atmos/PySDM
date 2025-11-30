@@ -36,7 +36,14 @@ def test_spectral_discretisation(
     )
 
     error_threshold = None if method != "pseudorandom" else 0.1
-    alpha = alpha_class(spectrum, alpha=alphavalue, error_threshold=error_threshold)
+    alpha = alpha_class(
+        spectrum,
+        alpha=alphavalue,
+        dist_1_inv=lambda y, size_range: (size_range[1] - size_range[0]) * y
+        + size_range[0],
+        interp_points=10000,
+        error_threshold=error_threshold,
+    )
     alias = alias_class(spectrum, error_threshold=error_threshold)
 
     # Act
