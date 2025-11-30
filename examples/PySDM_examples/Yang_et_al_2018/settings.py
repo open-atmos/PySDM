@@ -34,7 +34,7 @@ class Settings:
                 s_geom=1.4,
             ),
             size_range=(10.633 * si.nanometre, 513.06 * si.nanometre),
-        ).sample(n_sd)
+        ).sample_deterministic(n_sd)
         self.dt_max = dt_max
 
         self.dt_output = dt_output

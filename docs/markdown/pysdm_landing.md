@@ -103,7 +103,7 @@ Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample_deterministic(n_sd)
 ```
 </details>
 <details>
@@ -119,7 +119,7 @@ initial_spectrum = Exponential(pyargs(...
     'norm_factor', 8.39e12, ...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
-tmp = ConstantMultiplicity(initial_spectrum).sample(int32(n_sd));
+tmp = ConstantMultiplicity(initial_spectrum).sample_deterministic(int32(n_sd));
 attributes = py.dict(pyargs('volume', tmp{1}, 'multiplicity', tmp{2}));
 ```
 </details>
@@ -133,7 +133,7 @@ from PySDM.initialisation.spectra.exponential import Exponential
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample_deterministic(n_sd)
 ```
 </details>
 
@@ -323,7 +323,7 @@ The component submodules used to create this simulation are visualized below:
     IS["initial_spectrum :Exponential"] -->|passed as arg to| CM_INIT
     CM_INIT(["ConstantMultiplicity.__init__()"]) -->|instantiates| CM_INSTANCE
     CM_INSTANCE[":ConstantMultiplicity"] -.-|has a method| SAMPLE
-    SAMPLE(["ConstantMultiplicity.sample()"]) -->|returns| n
+    SAMPLE(["ConstantMultiplicity.sample_deterministic()"]) -->|returns| n
     SAMPLE -->|returns| volume
     n -->|added as element of| ATTRIBUTES
     PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_RUN(["Particulator.run()"])
@@ -414,7 +414,7 @@ builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
@@ -495,7 +495,7 @@ builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environ
 builder.add_dynamic(AmbientThermodynamics());
 builder.add_dynamic(Condensation());
 
-tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
+tmp = spectral_sampling.Logarithmic(spectrum).sample_deterministic(int32(n_sd));
 r_dry = tmp{1};
 v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
@@ -596,7 +596,7 @@ builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
