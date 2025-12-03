@@ -19,8 +19,6 @@ from PySDM.physics.constants_defaults import VSMOW_R_2H  # TODO!
 
 
 BASE_INITIAL_ATTRIBUTES = {
-    "multiplicity": np.ones(1),
-    "signed water mass": 1,
     "dry volume": np.nan,
     "kappa times dry volume": np.nan,
     **{f"moles_{isotope}": 0 * si.mole for isotope in HEAVY_ISOTOPES},
@@ -41,19 +39,24 @@ def make_particulator(
     *,
     formulae,
     backend_class,
+    molecular_R_liq,
     initial_R_vap=None,
     attributes=None,
-    isotopes_considered=(),
-    n_sd: int = 1,
+    isotopes_considered=("2H",),
+    n_sd=1,
     dv: float = np.nan,
     dt: float = -1 * si.s,
     RH: float = 1,
     T: float = 1,
 ):
     const = formulae.constants
-    if attributes is None:
-        attributes = BASE_INITIAL_ATTRIBUTES.copy()
-
+    attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
+        molecular_R_liq=molecular_R_liq,
+        mass_total=attributes["signed water mass"],
+        mass_other_heavy_isotopes=0,
+        water_molar_mass=const.Mv,  # TODO to ceck
+        molar_mass_heavy_molecule=const.M_2H_1H_16O,
+    )
     builder = Builder(
         n_sd=n_sd,
         backend=backend_class(
@@ -66,7 +69,7 @@ def make_particulator(
 
     builder.particulator.environment["RH"] = RH
     builder.particulator.environment["T"] = T
-    rho_d = const.p_STP / const.Rd / T
+    rho_d = const.p_STP / const.Rd / T  # TODO check
     builder.particulator.environment["dry_air_density"] = rho_d
 
     initial_conc_vap = (
@@ -77,62 +80,46 @@ def make_particulator(
     for isotope in HEAVY_ISOTOPES:
         initial_R_vap.setdefault(isotope, 0)
         if rho_d is not None and initial_conc_vap is not None:
-            molar_mixing_ratio = formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
-                R_vap=initial_R_vap[isotope],
-                density_dry_air=rho_d,
-                conc_vap_total=initial_conc_vap,
+            builder.particulator.environment[f"molar mixing ratio {isotope}"] = (
+                formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+                    R_vap=initial_R_vap[isotope],
+                    density_dry_air=rho_d,
+                    conc_vap_total=initial_conc_vap,
+                )
             )
         else:
-            molar_mixing_ratio = 0
-        builder.particulator.environment[f"molar mixing ratio {isotope}"] = (
-            molar_mixing_ratio
-        )
+            builder.particulator.environment[f"molar mixing ratio {isotope}"] = 0
     builder.request_attribute("delta_2H")
     return builder.build(attributes=attributes, products=())
 
 
-def set_up_env_and_do_one_step(
-    *,
-    RH,
-    molecular_R_liq,
-    backend_class,
-    formulae,
-    attributes,
-    initial_R_vap,
-):
-    const = formulae.constants
-    T = formulae.trivia.C2K(10) * si.K
-    cell_volume = 1 * si.cm**3
+def do_one_step(formulae, particulator, evaporated_mass_fraction):
     initial_conc_vap = (
-        formulae.saturation_vapour_pressure.pvs_water(T) * RH / const.R_str / T
+        formulae.saturation_vapour_pressure.pvs_water(particulator.environment["T"][0])
+        * particulator.environment["RH"][0]
+        / formulae.constants.R_str
+        / particulator.environment["T"][0]
     )
-    attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
-        molecular_R_liq=molecular_R_liq,
-        mass_total=attributes["signed water mass"],
-        mass_other_heavy_isotopes=0,
-        water_molar_mass=const.Mv,
-        molar_mass_heavy_molecule=const.M_2H_1H_16O,
+    initial_R_vap = (
+        formulae.trivia.molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+            molar_mixing_ratio=particulator.environment["molar mixing ratio 2H"][0],
+            density_dry_air=particulator.environment["dry_air_density"][0],
+            conc_vap_total=initial_conc_vap,
+        )
     )
-    particulator = make_particulator(
-        formulae=formulae,
-        backend_class=backend_class,
-        attributes=attributes,
-        isotopes_considered=("2H",),
-        initial_R_vap=initial_R_vap,
-        dv=cell_volume,
-        T=T,
-        RH=RH,
-    )
-
     initial_R_liq = (
         particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
     )
 
-    dm = -0.1 * particulator.attributes["signed water mass"][0]
-    particulator.attributes["diffusional growth mass change"].data[:] = dm
+    dm = -evaporated_mass_fraction * (
+        particulator.attributes["signed water mass"][0]
+        * particulator.attributes["multiplicity"][0]
+    )
+    particulator.attributes["diffusional growth mass change"].data[0] = (
+        dm / particulator.attributes["multiplicity"]
+    )
     assert np.all(particulator.attributes["diffusional growth mass change"].data < 0)
 
-    # act
     particulator.dynamics["IsotopicFractionation"]()
 
     new_R_vap = (
@@ -141,15 +128,42 @@ def set_up_env_and_do_one_step(
                 0
             ],
             density_dry_air=particulator.environment["dry_air_density"][0],
-            conc_vap_total=initial_conc_vap - dm / const.Mv / cell_volume,
+            conc_vap_total=initial_conc_vap
+            - dm / formulae.constants.Mv / particulator.environment.mesh.dv,
         )
     )
     new_R_liq = (
         particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
     )
-    dR_vap = new_R_vap - initial_R_vap["2H"]
+    dR_vap = new_R_vap - initial_R_vap
     dR_liq = new_R_liq - initial_R_liq
-    return dR_vap / initial_R_vap["2H"], dR_liq / initial_R_liq
+    return dR_vap / initial_R_vap, dR_liq / initial_R_liq
+
+
+def zero_conditions(formulae, T, R_vap):
+    b_factor = (
+        formulae.drop_growth.Fk(T, K=formulae.constants.K0, lv=formulae.constants.l_tri)
+        / formulae.constants.rho_w
+        * formulae.saturation_vapour_pressure.pvs_water(T)
+        / T
+        / formulae.constants.Rv
+        * formulae.constants.D0
+    )
+    alpha_2H = formulae.isotope_equilibrium_fractionation_factors.alpha_l_2H(T)
+    R_equilibrium = alpha_2H * R_vap / VSMOW_R_2H
+    R_range = np.linspace(R_equilibrium, 1.01, 200)
+    return R_range, [
+        formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
+            diff_rat_light_to_heavy=1
+            / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T),
+            iso_ratio_x=val_x,
+            iso_ratio_r=R_range * VSMOW_R_2H,
+            iso_ratio_v=R_vap,
+            b=b_factor,
+            alpha_w=alpha_2H,
+        )
+        for val_x in [R_range * VSMOW_R_2H, R_vap]
+    ]
 
 
 class TestIsotopicFractionation:
@@ -322,91 +336,77 @@ class TestIsotopicFractionation:
     #     assert np.sign(delta_delta) == sign_of_dR_liq
 
     @staticmethod
-    def test_plot_dR_liq_2H(formulae, backend_class):
+    @pytest.mark.parametrize("multiplicity", (1e0, 1e3, 1e6))
+    @pytest.mark.parametrize("volume", (1 * si.m**3, 1000 * si.m**3))
+    def test_plot_dR_liq_2H(
+        formulae,
+        backend_class,
+        multiplicity,
+        volume,
+        n_sd=1,
+        liquid_water_content=1 * si.g / si.m**3,
+        evaporated_mass_fraction=0.02,
+    ):
         const = formulae.constants
         T = formulae.trivia.C2K(10) * si.K
         delta_2H = -200 * PER_MILLE
         initial_R_vap = {
             "2H": formulae.trivia.isotopic_delta_2_ratio(delta_2H, const.VSMOW_R_2H)
         }
-        number_of_points = 6
-        molecular_R_liq = np.linspace(0.8, 1, number_of_points) * VSMOW_R_2H
-        RH = np.linspace(0.1, 1.0, number_of_points)
+        grid = (6, 6)
+        molecular_R_liq = np.linspace(0.8, 1, grid[0]) * VSMOW_R_2H
+        RH = np.linspace(0.1, 1.0, grid[1])
+
+        total_liquid_water_mass = liquid_water_content * volume
 
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
-        attributes["signed water mass"] = const.rho_w * formulae.trivia.volume(
-            radius=0.1 * si.mm
-        )
+        attributes["multiplicity"] = multiplicity * np.ones(n_sd)
+        attributes["signed water mass"] = total_liquid_water_mass / multiplicity
 
-        R_grid, RH_grid = np.meshgrid(
-            molecular_R_liq / formulae.constants.VSMOW_R_2H, RH
-        )
-        rel_diff_vap = np.zeros_like(RH_grid)
-        rel_diff_liq = np.zeros_like(RH_grid)
+        rel_diff_vap = np.zeros(grid)
+        rel_diff_liq = np.zeros(grid)
 
-        for i in range(number_of_points):
-            for j in range(number_of_points):
-                rel_diff_vap[i, j], rel_diff_liq[i, j] = set_up_env_and_do_one_step(
-                    RH=RH[i],
-                    molecular_R_liq=molecular_R_liq[j],
-                    backend_class=backend_class,
+        for i in range(grid[0]):
+            for j in range(grid[1]):
+                rel_diff_vap[i, j], rel_diff_liq[i, j] = do_one_step(
                     formulae=formulae,
-                    attributes=attributes,
-                    initial_R_vap=initial_R_vap,
+                    particulator=make_particulator(
+                        RH=RH[i],
+                        molecular_R_liq=molecular_R_liq[j],
+                        backend_class=backend_class,
+                        formulae=formulae,
+                        attributes=attributes,
+                        initial_R_vap=initial_R_vap,
+                        dv=volume,
+                        n_sd=n_sd,
+                        T=T,
+                    ),
+                    evaporated_mass_fraction=evaporated_mass_fraction,
                 )
-        alpha_2H = formulae.isotope_equilibrium_fractionation_factors.alpha_l_2H(T)
-        R_equilibrium = alpha_2H * initial_R_vap["2H"] / VSMOW_R_2H
-        labels = [
-            "$\\Delta R_\\text{liq} / R_\\text{liq}$ [%]",
-            "$\\Delta R_\\text{vap} / R_\\text{vap}$ [%]",
-        ]
-        fig, ax = pyplot.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
-        diff_ratio = 1 / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T)
-        b_factor = (
-            formulae.drop_growth.Fk(
-                T, K=formulae.constants.K0, lv=formulae.constants.l_tri
-            )
-            / const.rho_w
-            * formulae.saturation_vapour_pressure.pvs_water(T)
-            / T
-            / const.Rv
-            * formulae.constants.D0
+        phases = ["liquid", "vapour"]
+        R_grid, RH_percent_grid = np.meshgrid(
+            molecular_R_liq / VSMOW_R_2H, in_unit(RH, PER_CENT)
         )
-        for ax_i, data, label in zip(ax, [rel_diff_liq, rel_diff_vap], labels):
-            data_percent = in_unit(data, PER_CENT)
-            pcm = ax_i.pcolormesh(
+        fig, ax = pyplot.subplots(1, 2, figsize=(12, 5), sharex=True, sharey=True)
+        fig.suptitle(f"$\\xi$={multiplicity:.0e}, V={volume:.0e} [m$^3$]")
+        for idx, data in enumerate([rel_diff_liq, rel_diff_vap]):
+            pcm = ax[idx].pcolormesh(
                 R_grid,
-                in_unit(RH_grid, PER_CENT),
-                data_percent,
+                RH_percent_grid,
+                data_percent := in_unit(data, PER_CENT),
                 cmap="seismic",
-                vmin=-np.nanmax(np.abs(data_percent)),
-                vmax=np.nanmax(np.abs(data_percent)),
+                vmax=(vmax := np.nanmax(np.abs(data_percent))),
+                vmin=-vmax,
             )
-            fig.colorbar(pcm, ax=ax_i, extend="both")
-            ax_i.set_title(label)
-            ax_i.set_xlabel(
+            fig.colorbar(pcm, ax=ax[idx], extend="both")
+            ax[idx].set_title(f"$\\Delta R/R$ [%], R-{phases[idx]}")
+            ax[idx].set_xlabel(
                 "molecular isotope ratio of rain normalised to atomic VSMOW [1]"
             )
 
-            ax_top = ax_i.secondary_xaxis("top")
-            ax_top.set_xticks([R_equilibrium])
-            ax_top.set_xticklabels(["eq"])
-            ax_top.tick_params(axis="x", direction="out", length=6)
-
-        x = np.linspace(R_equilibrium, 1.01, 200)
-        zero_conditions = [
-            formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
-                diff_rat_light_to_heavy=diff_ratio,
-                iso_ratio_x=val_x,
-                iso_ratio_r=x * VSMOW_R_2H,
-                iso_ratio_v=initial_R_vap["2H"],
-                b=b_factor,
-                alpha_w=alpha_2H,
-            )
-            for val_x in [x * VSMOW_R_2H, initial_R_vap["2H"]]
-        ]
-        for ax_i, y, name in zip(ax, zero_conditions, ["liquid", "vapour"]):
-            ax_i.plot(x, in_unit(y, PER_CENT), label=f"{name} line from GA")
+        R_range, zero_cond = zero_conditions(formulae, T, initial_R_vap["2H"])
+        for ax_i, y, name in zip(ax, zero_cond, phases):
+            ax_i.plot(R_range, in_unit(y, PER_CENT), label=f"{name} line from GA")
             ax_i.legend()
             ax_i.set_ylim(in_unit(RH[0], PER_CENT), in_unit(RH[-1], PER_CENT))
 

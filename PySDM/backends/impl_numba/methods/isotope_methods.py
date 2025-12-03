@@ -129,7 +129,7 @@ class IsotopeMethods(BackendMethods):
                     density_dry_air=density_dry_air[cell_id[i]],
                     conc_vap_total=conc_vap_total,
                 )
-                rho_v = pvs_water / T / ff.constants.Rv
+                rho_v = pvs_water / T / ff.constants.Rv  # TODO Rv?
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(
                         T
