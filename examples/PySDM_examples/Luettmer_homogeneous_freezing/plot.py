@@ -427,6 +427,11 @@ def plot_ensemble_bulk(
         hom_freezing_labels = ["KM16", "SP23"]
         len_ens_var = len(ens_var)
 
+        if ens_var_name == "n_ccn":
+            ens_var_scale = 1.0 / 1e6
+        else:
+            ens_var_scale = 1.0
+
         for k, hom_freezing_type in enumerate(hom_freezing_types):
             simulations = ensemble_simulation[hom_freezing_type]
             var = np.zeros(len_ens_var)
@@ -441,13 +446,13 @@ def plot_ensemble_bulk(
                         else:
                             var[i] = np.asarray(output[var_name])[-1]
 
-            ax.plot(var, ens_var, "-o", label=hom_freezing_labels[k])
+            ax.plot(var, ens_var * ens_var_scale, "-o", label=hom_freezing_labels[k])
 
     title, x_label, y_label, ens_label = "", "", "", ""
     if var_name == "ni":
         ax.set_xscale("log")
-        x_label = r"$n_{i} \, [\mathrm{kg^{-1}}$]"
-        title = "ice number concentrations"
+        x_label = r"ice number concentration [$\mathrm{kg^{-1}}$]"
+        title = r"$n_{i}$"
         ax.set_xlim(1e6, 1e10)
 
     if var_name == "IWC":
@@ -456,23 +461,24 @@ def plot_ensemble_bulk(
         title = "ice mass content"
 
     if var_name == "freezing_fraction":
-        title = "frozen fraction"
-        x_label = r"$n_{frz} \, [\mathrm{\%}$]"
+        title = r"$n_{frz}$"
+        x_label = r"frozen fraction [$\mathrm{\%}$]"
         ax.set_xlim(0, 20)
 
     if ens_var_name == "n_ccn":
         ax.set_yscale("log")
-        y_label = r"$n_{ccn} \, [\mathrm{m^{-3}}$]"
+        y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
         ens_label = r"$n_{ccn}$ ensemble"
 
     if ens_var_name == "w_updraft":
         ax.set_yscale("log")
-        y_label = r"w [$\mathrm{m \, s^{-1}}$]"
+        y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
         ens_label = "w ensemble"
 
     ax.set_title(title_add + " " + title + " for " + ens_label, fontsize=ax_lab_fsize)
     ax.set_xlabel(x_label, fontsize=ax_lab_fsize)
     ax.set_ylabel(y_label, fontsize=ax_lab_fsize)
+    ax.grid(visible=True)
     ax.legend(fontsize=ax_lab_fsize)
 
     return ax
