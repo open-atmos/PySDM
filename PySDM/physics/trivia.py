@@ -209,11 +209,34 @@ class Trivia:  # pylint: disable=too-many-public-methods
         molecular_R_liq,
         mass_total,
         mass_other_heavy_isotopes,
-        water_molar_mass,
+        molar_mass_light_molecule,
         molar_mass_heavy_molecule,
     ):
         return (
-            (mass_total - mass_other_heavy_isotopes)
-            * molecular_R_liq
-            / (water_molar_mass + molecular_R_liq * molar_mass_heavy_molecule)
+            molecular_R_liq
+            * (mass_total - mass_other_heavy_isotopes)
+            / (molar_mass_heavy_molecule * molecular_R_liq + molar_mass_light_molecule)
+        )
+        # return (
+        #     (mass_total - mass_other_heavy_isotopes)
+        #     * molecular_R_liq
+        #     / (average_liquid_molar_mass + molecular_R_liq * molar_mass_heavy_molecule)
+        # )
+
+    @staticmethod
+    def molecular_R_liq(
+        moles_heavy_molecule,
+        molar_mass_heavy_molecule,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+    ):
+        return (
+            moles_heavy_molecule
+            * molar_mass_light_molecule
+            / (
+                mass_total
+                - moles_heavy_molecule * molar_mass_heavy_molecule
+                - mass_other_heavy_isotopes
+            )
         )
