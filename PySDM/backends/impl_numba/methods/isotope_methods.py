@@ -36,8 +36,8 @@ class IsotopeMethods(BackendMethods):
             dm_total,
             signed_water_mass,
             dry_air_density,
-            molar_mass_heavy,
-            moles_heavy,
+            molar_mass_heavy_molecule,
+            moles_heavy_molecule,
             bolin_number,
             molar_mixing_ratio,
         ):
@@ -52,24 +52,18 @@ class IsotopeMethods(BackendMethods):
             # Question: do we need molar mass for heavy isotopes; is it possible to define molar Bolin number?
             for sd_id in range(multiplicity.shape[0]):
                 mass_ratio_heavy_to_total = (
-                    moles_heavy[sd_id] * molar_mass_heavy
+                    moles_heavy_molecule[sd_id] * molar_mass_heavy_molecule
                 ) / signed_water_mass[sd_id]
                 dm_heavy = (
                     dm_total[sd_id] / bolin_number[sd_id] * mass_ratio_heavy_to_total
                 )
-                dn_heavy = dm_heavy / molar_mass_heavy
-                # dn_heavy = (
-                #     moles_heavy[sd_id]
-                #     * dm_total[sd_id]
-                #     / signed_water_mass[sd_id]
-                #     / bolin_number[sd_id]
-                # )
-                moles_heavy[sd_id] += dn_heavy
+                dn_heavy_molecule = dm_heavy / molar_mass_heavy_molecule
+                moles_heavy_molecule[sd_id] += dn_heavy_molecule
                 mass_of_dry_air = (
                     dry_air_density[sd_id] * cell_volume
                 )  # TODO: pass from outside (do not use V??)
                 molar_mixing_ratio[cell_id[sd_id]] -= (
-                    dn_heavy * multiplicity[sd_id] / mass_of_dry_air
+                    dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
                 )
 
         return body
@@ -83,8 +77,8 @@ class IsotopeMethods(BackendMethods):
         dm_total,
         signed_water_mass,
         dry_air_density,
-        molar_mass_heavy,
-        moles_heavy,
+        molar_mass_heavy_molecule,
+        moles_heavy_molecule,
         bolin_number,
         molar_mixing_ratio,
     ):
@@ -95,8 +89,8 @@ class IsotopeMethods(BackendMethods):
             dm_total=dm_total.data,
             signed_water_mass=signed_water_mass.data,
             dry_air_density=dry_air_density.data,
-            molar_mass_heavy=molar_mass_heavy,
-            moles_heavy=moles_heavy.data,
+            molar_mass_heavy_molecule=molar_mass_heavy_molecule,
+            moles_heavy_molecule=moles_heavy_molecule.data,
             bolin_number=bolin_number.data,
             molar_mixing_ratio=molar_mixing_ratio.data,
         )

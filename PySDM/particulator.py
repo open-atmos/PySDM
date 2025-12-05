@@ -457,7 +457,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 dm_total=self.attributes["diffusional growth mass change"],
                 signed_water_mass=self.attributes["signed water mass"],
                 dry_air_density=self.environment["dry_air_density"],
-                molar_mass_heavy=getattr(
+                molar_mass_heavy_molecule=getattr(
                     self.formulae.constants,
                     {
                         "2H": "M_2H_1H_16O",
@@ -466,7 +466,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                         "18O": "M_1H2_18O",
                     }[isotope],
                 ),
-                moles_heavy=self.attributes[f"moles_{isotope}"],
+                moles_heavy_molecule=self.attributes[f"moles_{isotope}"],  # TODO
                 molar_mixing_ratio=self.environment[f"molar mixing ratio {isotope}"],
                 bolin_number=self.attributes[f"Bolin number for {isotope}"],
             )
