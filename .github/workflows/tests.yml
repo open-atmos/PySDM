@@ -140,8 +140,6 @@ jobs:
           setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
-      - if: startsWith(matrix.platform, 'macos-')
-        run: brew install libomp
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -204,8 +202,6 @@ jobs:
 
       - if: startsWith(matrix.platform, 'ubuntu-')
         run: echo NUMBA_THREADING_LAYER=omp >> $GITHUB_ENV
-      - if: startsWith(matrix.platform, 'macos-')
-        run: brew install libomp
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
