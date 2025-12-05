@@ -3,7 +3,6 @@ unit test for the IsotopicFractionation dynamic
 """
 
 from contextlib import nullcontext
-from functools import partial
 
 import numpy as np
 from matplotlib import pyplot
