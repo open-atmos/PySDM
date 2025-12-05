@@ -17,7 +17,7 @@ class GedzelmanAndArnold1994:  # pylint: disable=too-few-public-methods
         """from eq. 20 and eq. 16 we corrected eq. 17 and calculate Bolin number"""
         # pylint: disable=unused-argument
         missing_factor_b = rho_v
-        b = Fk / const.rho_w * D_light
+        b = Fk * D_light
         return (
             alpha
             / D_ratio_heavy_to_light
