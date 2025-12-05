@@ -131,6 +131,27 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return (E + 1) * (delta_0_SMOW + 1) - 1
 
     @staticmethod
+    def moles_heavy_atom(
+        const,
+        isotopic_ratio,
+        mass_total,
+        molar_mass_heavy_molecule,
+        light_atoms_per_light_molecule,
+    ):
+        return mass_total / (
+            (
+                1
+                + const.Mv
+                / (
+                    light_atoms_per_light_molecule
+                    * isotopic_ratio
+                    * molar_mass_heavy_molecule
+                )
+            )
+            * molar_mass_heavy_molecule
+        )
+
+    @staticmethod
     def mixing_ratio_to_specific_content(mixing_ratio):
         return mixing_ratio / (1 + mixing_ratio)
 
@@ -168,3 +189,54 @@ class Trivia:  # pylint: disable=too-many-public-methods
         see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)
         """
         return 1 / Bo / dm_dt_over_m
+
+    @staticmethod
+    def R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+        R_vap, density_dry_air, conc_vap_total
+    ):
+        conc_vap_heavy = conc_vap_total * R_vap / (1 + R_vap)
+        return conc_vap_heavy / density_dry_air
+
+    @staticmethod
+    def molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+        molar_mixing_ratio, density_dry_air, conc_vap_total
+    ):
+        conc_vap_heavy = molar_mixing_ratio * density_dry_air
+        return conc_vap_heavy / (conc_vap_total - conc_vap_heavy)
+
+    @staticmethod
+    def moles_heavy_atom(
+        molecular_R_liq,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+        molar_mass_heavy_molecule,
+    ):
+        return (
+            molecular_R_liq
+            * (mass_total - mass_other_heavy_isotopes)
+            / (molar_mass_heavy_molecule * molecular_R_liq + molar_mass_light_molecule)
+        )
+        # return (
+        #     (mass_total - mass_other_heavy_isotopes)
+        #     * molecular_R_liq
+        #     / (average_liquid_molar_mass + molecular_R_liq * molar_mass_heavy_molecule)
+        # )
+
+    @staticmethod
+    def molecular_R_liq(
+        moles_heavy_molecule,
+        molar_mass_heavy_molecule,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+    ):
+        return (
+            moles_heavy_molecule
+            * molar_mass_light_molecule
+            / (
+                mass_total
+                - moles_heavy_molecule * molar_mass_heavy_molecule
+                - mass_other_heavy_isotopes
+            )
+        )
