@@ -310,32 +310,6 @@ class TestIsotopicFractionation:
             significant=10,
         )
 
-    # @staticmethod
-    # @pytest.mark.parametrize(
-    #     "RH, molecular_R_liq, sign_of_dR_vap, sign_of_dRliq",
-    #     (
-    #         (0.5, 0.86 * VSMOW_R_2H, -1, 1),
-    #         (0.5, 0.9 * VSMOW_R_2H, 1, 1),
-    #         (0.5, 0.98 * VSMOW_R_2H, 1, -1),
-    #     ),
-    # )
-    # def test_scenario_from_gedzelman_fig_2_for_single_superdroplet_and_single_isotope(  # TODO
-    #     RH,
-    #     molecular_R_liq,
-    #     sign_of_dR_vap,
-    #     sign_of_dR_liq,
-    #     backend_class,
-    # ):
-    #     # arrange
-    #     delta_delta = d_delta_liq(
-    #         molecular_R_liq=molecular_R_liq,
-    #         RH=RH,
-    #         backend_class=backend_class,
-    #         isotopes_considered=("2H",),
-    #     )
-    #
-    #     assert np.sign(delta_delta) == sign_of_dR_liq
-
     @staticmethod
     @pytest.mark.parametrize("multiplicity", (1e0, 1e3, 1e6))
     @pytest.mark.parametrize("volume", (1 * si.m**3, 1000 * si.m**3))
@@ -354,7 +328,7 @@ class TestIsotopicFractionation:
         initial_R_vap = {
             "2H": formulae.trivia.isotopic_delta_2_ratio(delta_2H, const.VSMOW_R_2H)
         }
-        grid = (6, 6)
+        grid = (8, 8)
         molecular_R_liq = np.linspace(0.8, 1, grid[0]) * VSMOW_R_2H
         RH = np.linspace(0.1, 1.0, grid[1])
 
