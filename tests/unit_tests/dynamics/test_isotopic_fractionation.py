@@ -108,12 +108,8 @@ def do_one_step(formulae, particulator, evaporated_mass_fraction):
             conc_vap_total=initial_conc_vap,
         )
     )
-    initial_R_liq = formulae.trivia.molecular_R_liq(
-        moles_heavy_molecule=particulator.attributes["moles_2H"][0],
-        molar_mass_heavy_molecule=formulae.constants.M_2H_1H_16O,
-        mass_total=particulator.attributes["signed water mass"][0],
-        mass_other_heavy_isotopes=0,
-        molar_mass_light_molecule=formulae.constants.M_1H2_16O,
+    initial_R_liq = (
+        particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
     )
 
     dm = -evaporated_mass_fraction * (
@@ -137,12 +133,8 @@ def do_one_step(formulae, particulator, evaporated_mass_fraction):
             - dm / formulae.constants.Mv / particulator.environment.mesh.dv,
         )
     )
-    new_R_liq = formulae.trivia.molecular_R_liq(
-        moles_heavy_molecule=particulator.attributes["moles_2H"][0],
-        molar_mass_heavy_molecule=formulae.constants.M_2H_1H_16O,
-        mass_total=particulator.attributes["signed water mass"][0],
-        mass_other_heavy_isotopes=0,
-        molar_mass_light_molecule=formulae.constants.M_1H2_16O,
+    new_R_liq = (
+        particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
     )
     dR_vap = new_R_vap - initial_R_vap
     dR_liq = new_R_liq - initial_R_liq
