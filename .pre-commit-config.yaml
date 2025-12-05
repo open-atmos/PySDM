@@ -27,15 +27,3 @@ repos:
     hooks:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
-
-  - repo: https://github.com/AgnieszkaZaba/devops_tests
-    rev: 7c704440e9a6f4ef0e102a3c570b885364bc319a
-    hooks:
-      - id: check-notebooks
-        name: check notebooks
-        entry: check_notebooks
-        language: python
-      - id: check-badges
-        name: check badges
-        entry: check_badges
-        language: python
