@@ -33,6 +33,7 @@ def formulae():
         isotope_diffusivity_ratios="GrahamsLaw",
         isotope_equilibrium_fractionation_factors="VanHook1968",
         isotope_ratio_evolution="GedzelmanAndArnold1994",
+        drop_growth="Mason1971",
     )
 
 
