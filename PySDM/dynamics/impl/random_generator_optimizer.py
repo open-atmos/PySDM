@@ -45,4 +45,7 @@ class RandomGeneratorOptimizer:  # pylint: disable=too-many-instance-attributes
             self.pairs_rand.urand(self.rnd)
             self.rand.urand(self.rnd)
         self.substep += 1
-        return self.pairs_rand[shift : self.particulator.n_sd + shift], self.rand
+        if self.optimized_random:
+            return self.pairs_rand[shift : self.particulator.n_sd + shift], self.rand
+        else:
+            return self.pairs_rand, self.rand
