@@ -227,7 +227,9 @@ def simulation(
             n_sd, multiplicity / volume
         )
     else:
-        _isa, _conc = spectral_sampling.ConstantMultiplicity(spectrum).sample(n_sd)
+        _isa, _conc = spectral_sampling.ConstantMultiplicity(
+            spectrum
+        ).sample_deterministic(n_sd)
     attributes = {
         "multiplicity": discretise_multiplicities(_conc * volume),
         "immersed surface area": _isa,
