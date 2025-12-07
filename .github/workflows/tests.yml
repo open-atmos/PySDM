@@ -138,7 +138,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
-      - run: echo NUMBA_THREADING_LAYER=workqueue >> $GITHUB_ENV
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -198,8 +197,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
-
-      - run: echo NUMBA_THREADING_LAYER=workqueue >> $GITHUB_ENV
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -259,8 +256,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
           # https://github.com/numba/numba/issues/6350#issuecomment-728174860
-          
-      - run: echo NUMBA_THREADING_LAYER=workqueue >> $GITHUB_ENV
 
       - if: startsWith(matrix.platform, 'ubuntu-') && (contains(matrix.test-suite, 'multi-process_a') || contains(matrix.test-suite, 'multi-process_b'))
         run: |
