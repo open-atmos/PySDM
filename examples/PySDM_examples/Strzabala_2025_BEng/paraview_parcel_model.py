@@ -152,7 +152,7 @@ def configure_data_axes_grid(display, kind):
         display.DataAxesGrid.ZTitleFontSize = args.axes_title_size
         display.DataAxesGrid.ZLabelFontSize = args.axes_label_size
     else:
-        display.DataAxesGrid.ZTitle = "Z [m]"
+        display.DataAxesGrid.ZTitle = "     Z [m]     "
         display.DataAxesGrid.ZLabelColor = [0.0, 0.0, 0.0]
         display.DataAxesGrid.ZTitleColor = [0.0, 0.0, 0.0]
         display.DataAxesGrid.ZTitleFontSize = args.axes_title_size
