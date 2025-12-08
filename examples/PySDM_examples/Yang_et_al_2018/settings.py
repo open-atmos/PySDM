@@ -19,9 +19,7 @@ class Settings:
         dt_max: float = 1 * si.second,
     ):
         self.total_time = 3 * si.hours
-        self.mass_of_dry_air = (
-            1000 * si.kilogram
-        )  # TODO #335 doubled with jupyter si unit
+        self.mass_of_dry_air = 1000 * si.kilogram
 
         self.n_steps = int(
             self.total_time / (5 * si.second)
