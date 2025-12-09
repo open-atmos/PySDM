@@ -114,7 +114,7 @@ class IsotopeMethods(BackendMethods):
                 T = temperature[cell_id[i]]
                 pvs_water = ff.saturation_vapour_pressure__pvs_water(T)
                 moles_heavy_atom = moles_heavy[i]
-                moles_light_isotope = moles_light_molecule[i]  # TODO
+                moles_light_isotope = moles_light_molecule[i]  # TODO approx
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
@@ -123,7 +123,7 @@ class IsotopeMethods(BackendMethods):
                     density_dry_air=density_dry_air[cell_id[i]],
                     conc_vap_total=conc_vap_total,
                 )
-                rho_v = pvs_water / T / ff.constants.Rv  # TODO Rv?
+                rho_v = pvs_water / T / ff.constants.Rv  # TODO approx
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(
                         T
