@@ -30,14 +30,12 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         R_vap,
         R_liq,
         relative_humidity,
+        rho_v,
     ):  # pylint: disable=unused-argument
+        b_zaba = rho_v * D_light * Fk
+        S = relative_humidity - 1
         return (
-            1
+            alpha  # TODO check once again
             / D_ratio_heavy_to_light
-            * alpha
-            / (
-                (1 + D_light * Fk) * relative_humidity * (alpha * R_vap / R_liq - 1)
-                + relative_humidity
-                - 1
-            )
+            / ((1 + b_zaba) * S * (1 - alpha * R_vap / R_liq) + (1 - S))
         )
