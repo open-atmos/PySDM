@@ -7,7 +7,6 @@ from PySDM_examples.Lowe_et_al_2019.aerosol_code import AerosolMarine
 from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
 from PySDM import Formulae
-from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
 FORMULAE = Formulae(constants=LOWE_CONSTS)
@@ -30,7 +29,6 @@ def test_dz_sensitivity(
             n_sd_per_mode=200,
             model=model,
             aerosol=aerosol,
-            spectral_sampling=spec_sampling.ConstantMultiplicity,
         )
         simulation = Simulation(settings)
         output[key] = simulation.run()

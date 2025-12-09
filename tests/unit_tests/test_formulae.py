@@ -104,7 +104,7 @@ class TestFormulae:
                 v_dry if isinstance(v_dry, float) else v_dry[i],
                 f_org if isinstance(f_org, float) else f_org[i],
             )
-        np.testing.assert_array_equal(actual, expected)
+        np.testing.assert_allclose(actual, expected, rtol=1e-15)
 
     @staticmethod
     def test_flatten():

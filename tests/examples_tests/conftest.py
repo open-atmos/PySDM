@@ -134,10 +134,13 @@ TEST_SUITES = {
         "Ervens_and_Feingold_2012",
         "Niedermeier_et_al_2014",
         "Spichtinger_et_al_2023",
+        "Ware_et_al_2025",
+        "Matsushima_et_al_2023",
     ],
     "multi-process_a": [
         "Arabas_et_al_2015",
         "_HOWTOs",
+        "Strzabala_2025_BEng",
     ],
     "multi-process_b": [
         "Arabas_et_al_2025",
