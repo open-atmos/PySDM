@@ -5,7 +5,7 @@ unit tests for isotope-related attributes
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import constants_defaults, si
@@ -107,5 +107,89 @@ class TestIsotopes:
                 reference_ratio=getattr(constants_defaults, f"VSMOW_R_{isotope}"),
                 ratio=n_heavy_isotope / n_light_isotope,
             ),
+            significant=5,
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize("heavy_isotope", HEAVY_ISOTOPES)
+    @pytest.mark.parametrize(
+        "moles_heavy, relative_humidity, expected_tau",
+        (
+            (0, 0.99, 44),
+            (0, 1.01, 44),
+        ),
+    )  # TODO: check sign!
+    @pytest.mark.parametrize("variant", ("MiyakeEtAl1968",))
+    def test_bolin_number_attribute(
+        backend_class,
+        heavy_isotope: str,
+        moles_heavy: float,
+        relative_humidity: float,
+        expected_tau: float,
+        variant: str,
+    ):  # pylint: disable=too-many-arguments
+        if backend_class.__name__ != "Numba":
+            pytest.skip("# TODO - isotopes on GPU")
+
+        # arrange
+        n_sd = 1
+        builder = Builder(
+            n_sd=n_sd,
+            backend=backend_class(
+                formulae=Formulae(isotope_relaxation_timescale=variant)
+            ),
+            environment=Box(dt=np.nan, dv=np.nan),
+        )
+        attribute_name = f"Bolin number for {heavy_isotope}"
+        builder.request_attribute(attribute_name)
+        particulator = builder.build(
+            attributes={
+                "multiplicity": np.ones(n_sd),
+                "signed water mass": np.ones(n_sd) * si.ng,
+                f"moles_{heavy_isotope}": np.ones(n_sd) * moles_heavy,
+            }
+        )
+        particulator.environment["RH"] = relative_humidity
+
+        # act
+        value = particulator.attributes[attribute_name].to_ndarray()
+
+        # assert
+        assert value == expected_tau
+
+    @staticmethod
+    def test_moles(
+        backend_class,
+        m_t=1 * si.ng,
+    ):
+        # arrange
+        formulae = Formulae()
+
+        from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
+        from PySDM import Builder
+        from PySDM.environments import Box
+
+        attributes = {
+            "multiplicity": np.asarray([0]),
+            "signed water mass": m_t,
+        }
+        for isotope in HEAVY_ISOTOPES:
+            attributes[f"moles_{isotope}"] = 44
+
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(formulae=formulae),
+            environment=Box(dv=np.nan, dt=-1 * si.s),
+        )
+        builder.request_attribute("moles light water")
+        builder.request_attribute("moles_16O")
+        particulator = builder.build(attributes=attributes, products=())
+
+        # assert
+        np.testing.assert_approx_equal(
+            particulator.attributes["moles light water"][0],
+            particulator.attributes["moles_16O"][0]
+            - particulator.attributes["moles_2H"][0]
+            - particulator.attributes["moles_3H"][0],
             significant=5,
         )

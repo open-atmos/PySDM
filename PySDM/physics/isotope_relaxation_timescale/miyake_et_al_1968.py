@@ -22,3 +22,25 @@ class MiyakeEtAl1968:  # pylint:disable=too-few-public-methods
             diffusivity * theta, where theta from eq. (25) is ventilation_coefficient
         """
         return (radius**2 * alpha * const.rho_w) / (3 * rho_s * D)
+
+    @staticmethod  # TODO
+    def bolin_number(
+        D_ratio_heavy_to_light,
+        alpha,
+        D_light,
+        Fk,
+        R_vap,
+        R_liq,
+        moles_heavy,
+        relative_humidity,
+        # molar_mass,
+    ):  # pylint: disable=unused-argument
+        return (
+            D_ratio_heavy_to_light
+            * alpha
+            / (
+                (1 + D_light * Fk) * relative_humidity * (alpha * R_vap / R_liq - 1)
+                + relative_humidity
+                - 1
+            )
+        )
