@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: "3.10"
-      - run: python -m pip install $PIP_INSTALL_ARGS -e .[CI_version_pins]
+      - run: python -m pip install $PIP_INSTALL_ARGS -e .
       - run: python -m pip install $PIP_INSTALL_ARGS pytest-codeblocks pytest
       - run: |
           python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
@@ -48,7 +48,7 @@ jobs:
       - uses: actions/setup-python@v5.0.0
         with:
           python-version: "3.10"
-      - run: pip install -e .[CI_version_pins]
+      - run: pip install -e .
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
       - uses: julia-actions/setup-julia@v2
@@ -68,7 +68,7 @@ jobs:
 
       - run: echo NUMBA_THREADING_LAYER=workqueue >> $GITHUB_ENV
 
-      - run: pip install -e .[CI_version_pins]
+      - run: pip install -e .
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - run: cat -n readme.m
