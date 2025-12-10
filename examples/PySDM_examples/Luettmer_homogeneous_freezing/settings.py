@@ -105,7 +105,7 @@ class Settings:
                 m_mode=r_ccn,
                 s_geom=sigma_droplet_distribution,
             )
-            self.r_wet, self.specific_concentration = spectral_sampling.Linear(
+            self.r_wet, self.specific_concentration = spectral_sampling.Logarithmic(
                 spectrum
             ).sample(n_sd)
 

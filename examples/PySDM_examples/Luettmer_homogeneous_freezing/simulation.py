@@ -143,6 +143,11 @@ class Simulation:
         output["T_frz"] = self.particulator.attributes[
             "temperature of last freezing"
         ].data.tolist()
+        if not output["radius"]:
+            output["radius"] = self.particulator.attributes["radius"].data.tolist()
+            output["multiplicity"] = self.particulator.attributes[
+                "multiplicity"
+            ].data.tolist()
 
     def run(self):
 
@@ -151,6 +156,8 @@ class Simulation:
 
         output = {
             "T_frz": [],
+            "radius": [],
+            "multiplicity": [],
         }
         for key in self.output_product_list:
             output[key] = []
