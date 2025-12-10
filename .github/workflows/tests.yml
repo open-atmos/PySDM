@@ -226,7 +226,10 @@ jobs:
         include:
           - platform: "macos-14"
             python-version: "3.12"
-            test-suite: "multi-process_a,multi-process_b,multi-process_d,multi-process_e"
+            test-suite: "multi-process_a,multi-process_b"
+          - platform: "macos-14"
+            python-version: "3.12"
+            test-suite: "multi-process_d,multi-process_e"
         exclude:
           - platform: "macos-14"
             test-suite: "multi-process_a"
@@ -238,7 +241,7 @@ jobs:
             test-suite: "multi-process_e"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 30 || 32 }}
+    timeout-minutes: 30
     steps:
       - name: Debug contexts
         run: |
