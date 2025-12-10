@@ -1,5 +1,4 @@
 import numpy as np
-
 from PySDM_examples.utils.kinematic_2d.make_default_product_collection import (
     make_default_product_collection,
 )
@@ -33,11 +32,7 @@ class Simulation:
     def products(self):
         return self.particulator.products
 
-    def reinit(  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
-        self,
-        products=None,
-        additional_advectees_initial_profiles: dict[str, np.ndarray] = None,
-    ):
+    def reinit(self, products=None):
         formulae = self.settings.formulae
         backend = self.backend_class(formulae=formulae)
         environment = Kinematic2D(
@@ -75,7 +70,6 @@ class Simulation:
             initial_profiles = {
                 "th": self.settings.initial_dry_potential_temperature_profile,
                 "water_vapour_mixing_ratio": self.settings.initial_vapour_mixing_ratio_profile,
-                **(additional_advectees_initial_profiles or {}),
             }
             advectees = dict(
                 (
