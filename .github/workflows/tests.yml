@@ -164,10 +164,10 @@ jobs:
         include:
           - platform: "macos-14"
             python-version: "3.12"
-            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c tests/smoke_tests/parcel_d" # combined for macos
+            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c" # combined for macos
           - platform: "macos-14"
             python-version: "3.12"
-            test-suite: "tests/smoke_tests/no_env tests/tutorials_tests tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined for macos
+            test-suite: "tests/smoke_tests/parcel_d tests/smoke_tests/no_env tests/tutorials_tests tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined for macos
         exclude:
           # TODO #1406
           - platform: "macos-14"
