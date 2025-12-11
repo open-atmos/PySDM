@@ -118,7 +118,9 @@ class TestIsotopes:
         # arrange
         formulae = Formulae()
         attributes = {
-            "multiplicity": (0,),
+            "multiplicity": np.ndarray(
+                0,
+            ),
             "signed water mass": m_t,
         }
         for isotope in HEAVY_ISOTOPES:
