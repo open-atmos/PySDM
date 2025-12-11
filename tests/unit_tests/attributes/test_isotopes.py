@@ -118,11 +118,11 @@ class TestIsotopes:
         # arrange
         formulae = Formulae()
         attributes = {
-            "multiplicity": np.asarray((0,)),
-            "signed water mass": m_t,
+            "multiplicity": np.asarray([0]),
+            "signed water mass": np.asarray([m_t]),
         }
         for isotope in HEAVY_ISOTOPES:
-            attributes[f"moles_{isotope}"] = 44
+            attributes[f"moles_{isotope}"] = np.asarray([44])
 
         builder = Builder(
             n_sd=1,
@@ -135,9 +135,9 @@ class TestIsotopes:
 
         # assert
         np.testing.assert_approx_equal(
-            particulator.attributes["moles light water"][0],
-            particulator.attributes["moles_16O"][0]
-            - particulator.attributes["moles_2H"][0]
-            - particulator.attributes["moles_3H"][0],
+            particulator.attributes["moles light water"].data[0],
+            particulator.attributes["moles_16O"].data[0]
+            - particulator.attributes["moles_2H"].data[0]
+            - particulator.attributes["moles_3H"].data[0],
             significant=5,
         )
