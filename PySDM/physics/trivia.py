@@ -191,45 +191,33 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return 1 / Bo / dm_dt_over_m
 
     @staticmethod
-    def R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(  # TODO reuse for R_liq
-        const, R_vap, T, RH, pvs_water, density_dry_air
+    def R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+        R_vap, density_dry_air, conc_vap_total
     ):
-        n_vap_total = pvs_water * RH / const.Rv / T
-        n_vap_heavy = n_vap_total * R_vap / (1 + R_vap)
-        return n_vap_heavy / density_dry_air
+        conc_vap_heavy = conc_vap_total * R_vap / (1 + R_vap)
+        return conc_vap_heavy / density_dry_air
 
     @staticmethod
     def molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
-        const, T, RH, molar_mixing_ratio, density_dry_air, pvs_water
+        molar_mixing_ratio, density_dry_air, conc_vap_total
     ):
-        n_vap_total = pvs_water * RH / const.Rv / T
-        n_vap_heavy = molar_mixing_ratio * density_dry_air
-        return n_vap_heavy / n_vap_total / (1 - n_vap_heavy / n_vap_total)
+        conc_vap_heavy = molar_mixing_ratio * density_dry_air
+        return conc_vap_heavy / (conc_vap_total - conc_vap_heavy)
 
     @staticmethod
-    def n_vap_total(const, RH, temperature, pvs_water, cell_volume):
-        return RH * pvs_water * cell_volume / const.R_str / temperature
-
-    @staticmethod
-    def moles_heavy_atom(
-        *,
+    def molecular_R_liq(
+        moles_heavy_molecule,
+        molar_mass_heavy_molecule,
         mass_total,
         mass_other_heavy_isotopes,
         molar_mass_light_molecule,
-        molar_mass_heavy_molecule,
-        molecular_isotope_ratio,
-        atoms_per_heavy_molecule,
     ):
-        """
-        Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)
-        from molecular isotope ratios (e.g. moles of HDO to moles of H2O),
-        using total mass and mass of other heavy isotopes.
-        """
         return (
-            (mass_total - mass_other_heavy_isotopes)
+            moles_heavy_molecule
+            * molar_mass_light_molecule
             / (
-                molar_mass_light_molecule / molecular_isotope_ratio
-                + molar_mass_heavy_molecule
+                mass_total
+                - moles_heavy_molecule * molar_mass_heavy_molecule
+                - mass_other_heavy_isotopes
             )
-            / atoms_per_heavy_molecule
         )
