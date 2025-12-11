@@ -47,7 +47,7 @@ setup(
             "joblib==1.5.1",
             "ipywidgets==8.1.7",
             "seaborn==0.13.2",
-            "numdifftools==0.9.41",
+            "numdifftools==0.9.42",
             "vtk==9.5.2",
             "pyrcel==1.3.4",
             "pyvinecopulib==0.7.3",
