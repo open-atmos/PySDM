@@ -164,10 +164,10 @@ jobs:
         include:
           - platform: "macos-14"
             python-version: "3.12"
-            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c" # combined for macos
+            test-suite: "tests/smoke_tests/parcel_b tests/smoke_tests/parcel_c tests/smoke_tests/parcel_d" # combined for macos
           - platform: "macos-14"
             python-version: "3.12"
-            test-suite: "tests/smoke_tests/parcel_d tests/smoke_tests/no_env tests/tutorials_tests tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined for macos
+            test-suite: "tests/smoke_tests/no_env tests/tutorials_tests tests/smoke_tests/kinematic_2d tests/smoke_tests/kinematic_1d" # combined for macos
         exclude:
           # TODO #1406
           - platform: "macos-14"
@@ -187,7 +187,7 @@ jobs:
             test-suite: "tests/smoke_tests/parcel_d"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 20 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 26 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
