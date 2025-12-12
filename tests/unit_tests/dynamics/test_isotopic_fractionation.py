@@ -28,7 +28,7 @@ BASE_INITIAL_ATTRIBUTES = {
 @pytest.fixture(scope="session")
 def formulae():
     return Formulae(
-        isotope_relaxation_timescale="GedzelmanAndArnold1994",
+        isotope_relaxation_timescale="ZabaEtAl",
         isotope_diffusivity_ratios="GrahamsLaw",
         isotope_equilibrium_fractionation_factors="VanHook1968",
         isotope_ratio_evolution="GedzelmanAndArnold1994",
