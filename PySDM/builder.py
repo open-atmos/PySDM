@@ -94,14 +94,6 @@ class Builder:
     ):
         assert self.particulator.environment is not None
 
-        if "n" in attributes and "multiplicity" not in attributes:
-            attributes["multiplicity"] = attributes["n"]
-            del attributes["n"]
-            warnings.warn(
-                'renaming attributes["n"] to attributes["multiplicity"]',
-                DeprecationWarning,
-            )
-
         if "volume" in attributes and "water mass" not in attributes:
             assert self.particulator.formulae.particle_shape_and_density.__name__ in (
                 LiquidSpheres.__name__,
