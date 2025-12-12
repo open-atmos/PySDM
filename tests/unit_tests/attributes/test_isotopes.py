@@ -187,9 +187,9 @@ class TestIsotopes:
 
         # assert
         np.testing.assert_approx_equal(
-            particulator.attributes["moles light water"][0],
-            particulator.attributes["moles_16O"][0]
-            - particulator.attributes["moles_2H"][0]
-            - particulator.attributes["moles_3H"][0],
+            particulator.attributes["moles light water"].data[0],
+            particulator.attributes["moles_16O"].data[0]
+            - particulator.attributes["moles_2H"].data[0]
+            - particulator.attributes["moles_3H"].data[0],
             significant=5,
         )
