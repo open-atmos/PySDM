@@ -109,7 +109,7 @@ class IsotopeMethods(BackendMethods):
             moles_light_molecule,
             moles_heavy,
             molar_mixing_ratio,
-        ):
+        ):  # pylint: disable=too-many-locals,too-many-arguments
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
                 pvs_water = ff.saturation_vapour_pressure__pvs_water(T)
