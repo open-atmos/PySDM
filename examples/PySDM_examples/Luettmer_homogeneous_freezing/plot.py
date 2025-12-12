@@ -3,6 +3,7 @@
 from matplotlib import pyplot, ticker
 import numpy as np
 import seaborn as sns
+from cycler import cycler
 
 from PySDM import Formulae
 
@@ -390,6 +391,8 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         y_log = False
         binwidth = 0.1
 
+    ens_variable_label = np.unique(np.sort(ens_variable))
+
     xlim = (231.5, 240)
     h = sns.JointGrid(
         x=T_frz_hist,
@@ -430,7 +433,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     h.ax_marg_y.remove()
 
     if second_axis:
-        ens_variable_label = np.unique(np.sort(ens_variable))
+
         ax2 = h.ax_joint.secondary_yaxis("right", functions=(lambda y: y, lambda y: y))
         ax2.set_yticks(ens_variable_label)
         ax2.set_yticklabels([f"{v:.3f}" for v in ens_variable_sec])
@@ -454,7 +457,10 @@ def plot_ensemble_bulk(
     ax, ensemble_simulations, var_name, title_add=""
 ):  # pylint: disable=too-many-nested-blocks
 
-    for ensemble_simulation in ensemble_simulations:
+    colors = ["blue", "red", "cyan"]
+    pyplot.rcParams["axes.prop_cycle"] = cycler(color=colors)
+
+    for k, ensemble_simulation in enumerate(ensemble_simulations):
 
         ens_var = np.asarray(ensemble_simulation["ens_variable"])
         ens_var_name = ensemble_simulation["ens_variable_name"]
@@ -470,20 +476,45 @@ def plot_ensemble_bulk(
         if ens_var_name == "sig":
             ens_var_name = "sigma_droplet_distribution"
 
-        for k, hom_freezing_type in enumerate(hom_freezing_types):
+        for j, hom_freezing_type in enumerate(hom_freezing_types):
             simulations = ensemble_simulation[hom_freezing_type]
-            var = np.zeros(len_ens_var)
+            number_of_ensemble_runs = simulations[0]["settings"][
+                "number_of_ensemble_runs"
+            ]
+            var = np.zeros((len_ens_var, number_of_ensemble_runs))
             for i in range(len_ens_var):
                 for simulation in simulations:
                     if simulation["settings"][ens_var_name] == ens_var[i]:
-                        output = simulation["ensemble_member_outputs"][0]
-                        if var_name == "freezing_fraction":
-                            ni = np.asarray(output["ni"])[-1]
-                            nc = np.asarray(output["ns"])[0]
-                            var[i] = (1 - (nc - ni) / nc) * 100
-                        else:
-                            var[i] = np.asarray(output[var_name])[-1]
-            ax.plot(var, ens_var * ens_var_scale, "-o", label=hom_freezing_labels[k])
+                        for h in range(number_of_ensemble_runs):
+                            output = simulation["ensemble_member_outputs"][h]
+                            if var_name == "freezing_fraction":
+                                ni = np.asarray(output["ni"])[-1]
+                                nc = np.asarray(output["ns"])[0]
+                                var[i, h] = (1 - (nc - ni) / nc) * 100
+                            else:
+                                var[i, h] = np.asarray(output[var_name])[-1]
+
+            if number_of_ensemble_runs > 1:
+                ax.plot(
+                    np.mean(var, axis=1),
+                    ens_var * ens_var_scale,
+                    "-o",
+                    label=hom_freezing_labels[j],
+                )
+                # print( np.min(var,axis=1), np.max(var,axis=1),ens_var * ens_var_scale )
+                ax.fill_betweenx(
+                    ens_var * ens_var_scale,
+                    np.min(var, axis=1),
+                    np.max(var, axis=1),
+                    alpha=0.2,
+                )
+            else:
+                ax.plot(
+                    var[:, 0],
+                    ens_var * ens_var_scale,
+                    "-o",
+                    label=hom_freezing_labels[j],
+                )
 
     title, x_label, y_label, ens_label = "", "", "", ""
     if var_name == "ni":
@@ -496,6 +527,7 @@ def plot_ensemble_bulk(
         ax.set_xscale("log")
         x_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
         title = "ice mass content"
+        ax.set_xlim(1e-4, 1e-3)
 
     if var_name == "freezing_fraction":
         title = r"$n_{frz}$"
