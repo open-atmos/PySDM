@@ -36,109 +36,110 @@ def formulae():
     )
 
 
-def make_particulator(
-    *,
-    formulae,
-    backend_class,
-    molecular_R_liq,
-    initial_R_vap=None,
-    attributes=None,
-    isotopes_considered=("2H",),
-    n_sd=1,
-    dv: float = np.nan,
-    dt: float = -1 * si.s,
-    RH: float = 1,
-    T: float = 1,
-):
-    const = formulae.constants
-    attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
-        molecular_R_liq=molecular_R_liq,
-        mass_total=attributes["signed water mass"],
-        mass_other_heavy_isotopes=0,
-        molar_mass_light_molecule=const.M_1H2_16O,
-        molar_mass_heavy_molecule=const.M_2H_1H_16O,
-    )
-    builder = Builder(
-        n_sd=n_sd,
-        backend=backend_class(
-            formulae=formulae,
-        ),
-        environment=Box(dv=dv, dt=dt),
-    )
-    builder.add_dynamic(Condensation())
-    builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
-
-    builder.particulator.environment["RH"] = RH
-    builder.particulator.environment["T"] = T
-    rho_d = const.p_STP / const.Rd / T  # TODO check
-    builder.particulator.environment["dry_air_density"] = rho_d
-
-    initial_conc_vap = (
-        formulae.saturation_vapour_pressure.pvs_water(T) * RH / const.R_str / T
-    )
-    if initial_R_vap is None:
-        initial_R_vap = {}
-    for isotope in HEAVY_ISOTOPES:
-        initial_R_vap.setdefault(isotope, 0)
-        if rho_d is not None and initial_conc_vap is not None:
-            builder.particulator.environment[f"molar mixing ratio {isotope}"] = (
-                formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
-                    R_vap=initial_R_vap[isotope],
-                    density_dry_air=rho_d,
-                    conc_vap_total=initial_conc_vap,
-                )
-            )
-        else:
-            builder.particulator.environment[f"molar mixing ratio {isotope}"] = 0
-    builder.request_attribute("delta_2H")
-    return builder.build(attributes=attributes, products=())
-
-
-def do_one_step(formulae, particulator, evaporated_mass_fraction):
-    initial_conc_vap = (
-        formulae.saturation_vapour_pressure.pvs_water(particulator.environment["T"][0])
-        * particulator.environment["RH"][0]
-        / formulae.constants.R_str
-        / particulator.environment["T"][0]
-    )
-    initial_R_vap = (
-        formulae.trivia.molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
-            molar_mixing_ratio=particulator.environment["molar mixing ratio 2H"][0],
-            density_dry_air=particulator.environment["dry_air_density"][0],
-            conc_vap_total=initial_conc_vap,
-        )
-    )
-    initial_R_liq = (
-        particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
-    )
-
-    dm = -evaporated_mass_fraction * (
-        particulator.attributes["signed water mass"][0]
-        * particulator.attributes["multiplicity"][0]
-    )
-    particulator.attributes["diffusional growth mass change"].data[0] = (
-        dm / particulator.attributes["multiplicity"]
-    )
-    assert np.all(particulator.attributes["diffusional growth mass change"].data < 0)
-
-    particulator.dynamics["IsotopicFractionation"]()
-
-    new_R_vap = (
-        formulae.trivia.molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
-            molar_mixing_ratio=particulator.environment["molar mixing ratio 2H"].data[
-                0
-            ],
-            density_dry_air=particulator.environment["dry_air_density"][0],
-            conc_vap_total=initial_conc_vap
-            - dm / formulae.constants.Mv / particulator.environment.mesh.dv,
-        )
-    )
-    new_R_liq = (
-        particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
-    )
-    dR_vap = new_R_vap - initial_R_vap
-    dR_liq = new_R_liq - initial_R_liq
-    return dR_vap / initial_R_vap, dR_liq / initial_R_liq
+#
+# def make_particulator(
+#     *,
+#     formulae,
+#     backend_class,
+#     molecular_R_liq,
+#     initial_R_vap=None,
+#     attributes=None,
+#     isotopes_considered=("2H",),
+#     n_sd=1,
+#     dv: float = np.nan,
+#     dt: float = -1 * si.s,
+#     RH: float = 1,
+#     T: float = 1,
+# ):
+#     const = formulae.constants
+#     attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
+#         molecular_R_liq=molecular_R_liq,
+#         mass_total=attributes["signed water mass"],
+#         mass_other_heavy_isotopes=0,
+#         molar_mass_light_molecule=const.M_1H2_16O,
+#         molar_mass_heavy_molecule=const.M_2H_1H_16O,
+#     )
+#     builder = Builder(
+#         n_sd=n_sd,
+#         backend=backend_class(
+#             formulae=formulae,
+#         ),
+#         environment=Box(dv=dv, dt=dt),
+#     )
+#     builder.add_dynamic(Condensation())
+#     builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
+#
+#     builder.particulator.environment["RH"] = RH
+#     builder.particulator.environment["T"] = T
+#     rho_d = const.p_STP / const.Rd / T  # TODO check
+#     builder.particulator.environment["dry_air_density"] = rho_d
+#
+#     initial_conc_vap = (
+#         formulae.saturation_vapour_pressure.pvs_water(T) * RH / const.R_str / T
+#     )
+#     if initial_R_vap is None:
+#         initial_R_vap = {}
+#     for isotope in HEAVY_ISOTOPES:
+#         initial_R_vap.setdefault(isotope, 0)
+#         if rho_d is not None and initial_conc_vap is not None:
+#             builder.particulator.environment[f"molar mixing ratio {isotope}"] = (
+#                 formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+#                     R_vap=initial_R_vap[isotope],
+#                     density_dry_air=rho_d,
+#                     conc_vap_total=initial_conc_vap,
+#                 )
+#             )
+#         else:
+#             builder.particulator.environment[f"molar mixing ratio {isotope}"] = 0
+#     builder.request_attribute("delta_2H")
+#     return builder.build(attributes=attributes, products=())
+#
+#
+# def do_one_step(formulae, particulator, evaporated_mass_fraction):
+#     initial_conc_vap = (
+#         formulae.saturation_vapour_pressure.pvs_water(particulator.environment["T"][0])
+#         * particulator.environment["RH"][0]
+#         / formulae.constants.R_str
+#         / particulator.environment["T"][0]
+#     )
+#     initial_R_vap = (
+#         formulae.trivia.molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+#             molar_mixing_ratio=particulator.environment["molar mixing ratio 2H"][0],
+#             density_dry_air=particulator.environment["dry_air_density"][0],
+#             conc_vap_total=initial_conc_vap,
+#         )
+#     )
+#     initial_R_liq = (
+#         particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
+#     )
+#
+#     dm = -evaporated_mass_fraction * (
+#         particulator.attributes["signed water mass"][0]
+#         * particulator.attributes["multiplicity"][0]
+#     )
+#     particulator.attributes["diffusional growth mass change"].data[0] = (
+#         dm / particulator.attributes["multiplicity"]
+#     )
+#     assert np.all(particulator.attributes["diffusional growth mass change"].data < 0)
+#
+#     particulator.dynamics["IsotopicFractionation"]()
+#
+#     new_R_vap = (
+#         formulae.trivia.molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+#             molar_mixing_ratio=particulator.environment["molar mixing ratio 2H"].data[
+#                 0
+#             ],
+#             density_dry_air=particulator.environment["dry_air_density"][0],
+#             conc_vap_total=initial_conc_vap
+#             - dm / formulae.constants.Mv / particulator.environment.mesh.dv,
+#         )
+#     )
+#     new_R_liq = (
+#         particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
+#     )
+#     dR_vap = new_R_vap - initial_R_vap
+#     dR_liq = new_R_liq - initial_R_liq
+#     return dR_vap / initial_R_vap, dR_liq / initial_R_liq
 
 
 def zero_conditions(formulae, T, R_vap):
