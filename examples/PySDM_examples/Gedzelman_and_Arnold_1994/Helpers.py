@@ -115,7 +115,7 @@ class Settings:
 
         builder.particulator.environment["RH"] = RH
         builder.particulator.environment["T"] = T
-        rho_d = const.p_STP / const.Rd / T  # TODO check
+        rho_d = const.p_STP / const.Rd / T
         builder.particulator.environment["dry_air_density"] = rho_d
 
         initial_conc_vap = (
