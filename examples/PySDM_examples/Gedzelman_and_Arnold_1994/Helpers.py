@@ -1,5 +1,12 @@
 import numpy as np
 
+from PySDM import Builder
+from PySDM.dynamics import Condensation, IsotopicFractionation
+from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
+from PySDM.physics import si
+from PySDM.environments import Box
+from PySDM.backends import CPU
+
 
 class Commons:  # pylint: disable=too-few-public-methods
     """groups values used in both equations"""
@@ -77,7 +84,6 @@ class Settings:
     def make_particulator(
         *,
         formulae,
-        backend_class,
         molecular_R_liq,
         initial_R_vap=None,
         attributes=None,
@@ -95,10 +101,11 @@ class Settings:
             mass_other_heavy_isotopes=0,
             molar_mass_light_molecule=const.M_1H2_16O,
             molar_mass_heavy_molecule=const.M_2H_1H_16O,
+            atoms_per_heavy_molecule=1,
         )
         builder = Builder(
             n_sd=n_sd,
-            backend=backend_class(
+            backend=CPU(
                 formulae=formulae,
             ),
             environment=Box(dv=dv, dt=dt),

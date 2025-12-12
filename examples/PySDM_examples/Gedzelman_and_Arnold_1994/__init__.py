@@ -8,4 +8,4 @@ fig_2.ipynb:
 .. include:: ./fig_2.ipynb.badges.md
 """
 
-from .Helpers import Commons, NoFractionationSaturation
+from .Helpers import Commons, NoFractionationSaturation, Settings
