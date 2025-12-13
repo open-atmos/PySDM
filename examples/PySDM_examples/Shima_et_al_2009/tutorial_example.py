@@ -7,8 +7,11 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
 
 
 def run(settings, observers=()):
-    builder = Builder(n_sd=settings.n_sd, backend=CPU(formulae=settings.formulae))
-    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=CPU(formulae=settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
+    )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
     attributes["volume"], attributes["multiplicity"] = sampling.sample_deterministic(
