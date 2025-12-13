@@ -54,5 +54,6 @@ from . import (
     terminal_velocity,
     terminal_velocity_ice,
     bulk_phase_partitioning,
+    turbulent_relaxation_timescale,
 )
 from .constants import convert_to, in_unit, si
