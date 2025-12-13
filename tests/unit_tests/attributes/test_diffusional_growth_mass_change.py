@@ -1,3 +1,5 @@
+"""test attribute diffusional growth mass change"""
+
 import numpy as np
 from PySDM import Builder
 from PySDM.dynamics import Condensation, AmbientThermodynamics
@@ -6,6 +8,7 @@ from ..dynamics.test_vapour_deposition_on_ice import MoistBox
 
 
 def test_diffusional_growth_mass_change(backend_instance):
+    """check diffusional growth mass change updated after Condensation"""
     # arrange
     n_sd = 1
     dt = 1 * si.s
@@ -21,7 +24,7 @@ def test_diffusional_growth_mass_change(backend_instance):
             "water mass": np.ones(n_sd) * si.ng,
             "multiplicity": np.ones(n_sd),
             "dry volume": (dry_volume := np.ones(n_sd) * si.nm**3),
-            "kappa times dry volume": np.ones(n_sd) * dry_volume * (kappa := 0.6),
+            "kappa times dry volume": np.ones(n_sd) * dry_volume * 0.6,
         }
     )
     particulator.environment["rhod"] = 1 * si.kg / si.m**3
