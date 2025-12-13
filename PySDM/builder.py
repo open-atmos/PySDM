@@ -3,7 +3,6 @@ The Builder class handling creation of  `PySDM.particulator.Particulator` instan
 """
 
 import inspect
-import warnings
 
 import numpy as np
 
