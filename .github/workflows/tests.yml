@@ -187,7 +187,7 @@ jobs:
             test-suite: "tests/smoke_tests/parcel_d"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 26 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 22 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
