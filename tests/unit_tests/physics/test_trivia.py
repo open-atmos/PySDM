@@ -4,8 +4,9 @@ import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae, physics
+from PySDM.physics.constants_defaults import VSMOW_R_2H
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics import constants_defaults
+from PySDM.physics import constants_defaults, si
 
 
 class TestTrivia:
@@ -113,6 +114,52 @@ class TestTrivia:
 
         # assert
         assert temperature_in_kelvin == temperature_in_celsius + 273.15
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "isotopic_ratio", (0.86 * VSMOW_R_2H, 0.9 * VSMOW_R_2H, 0.98 * VSMOW_R_2H)
+    )
+    @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
+    @pytest.mark.parametrize(
+        "heavy_isotope_name, heavy_isotope_molecule",
+        (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
+    )
+    def test_moles_heavy_atom(
+        isotopic_ratio,
+        water_mass,
+        heavy_isotope_name,
+        heavy_isotope_molecule,
+    ):
+        # arrange
+        formulae = Formulae()
+        const = formulae.constants
+
+        molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
+        if heavy_isotope_name[-1] == "O":
+            light_atoms_per_light_molecule = 1
+        elif heavy_isotope_name[-1] == "H":
+            light_atoms_per_light_molecule = 2
+        else:
+            light_atoms_per_light_molecule = 0
+
+        moles_atom = formulae.trivia.moles_heavy_atom(
+            isotopic_ratio=isotopic_ratio,
+            mass_total=water_mass,
+            molar_mass_heavy_molecule=molar_mass_heavy_molecule,
+            light_atoms_per_light_molecule=light_atoms_per_light_molecule,
+        )
+        moles_light_molecule = (
+            moles_atom / light_atoms_per_light_molecule / isotopic_ratio
+        )
+
+        # act
+        sut = (
+            moles_atom * molar_mass_heavy_molecule
+            + moles_light_molecule * const.M_1H2_16O
+        )
+
+        # assert
+        np.testing.assert_approx_equal(actual=sut, desired=water_mass, significant=5)
 
     @staticmethod
     @pytest.mark.parametrize(

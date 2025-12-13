@@ -30,8 +30,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.dynamics = {}
         self.products = {}
         self.observers = []
+        self.initialisers = []
 
-        self.n_steps = 0
+        self.n_steps = -1
 
         self.sorting_scheme = "default"
         self.condensation_solver = None
@@ -49,6 +50,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.null = self.Storage.empty(0, dtype=float)
 
     def run(self, steps):
+        if self.n_steps == -1:
+            self._notify_initialisers()
+            self.n_steps = 0
         for _ in range(steps):
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
@@ -60,6 +64,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         reversed_order_so_that_environment_is_last = reversed(self.observers)
         for observer in reversed_order_so_that_environment_is_last:
             observer.notify()
+
+    def _notify_initialisers(self):
+        for initialiser in self.initialisers:
+            initialiser.setup()
 
     @property
     def Storage(self):
@@ -441,8 +449,27 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             )
 
     def isotopic_fractionation(self, heavy_isotopes: tuple):
-        self.backend.isotopic_fractionation()
         for isotope in heavy_isotopes:
+            self.backend.isotopic_fractionation(
+                cell_id=self.attributes["cell id"],
+                cell_volume=self.environment.mesh.dv,
+                multiplicity=self.attributes["multiplicity"],
+                dm_total=self.attributes["diffusional growth mass change"],
+                signed_water_mass=self.attributes["signed water mass"],
+                dry_air_density=self.environment["dry_air_density"],
+                molar_mass_heavy_molecule=getattr(
+                    self.formulae.constants,
+                    {
+                        "2H": "M_2H_1H_16O",
+                        "3H": "M_3H_1H_16O",
+                        "17O": "M_1H2_17O",
+                        "18O": "M_1H2_18O",
+                    }[isotope],
+                ),
+                moles_heavy_molecule=self.attributes[f"moles_{isotope}"],  # TODO
+                molar_mixing_ratio=self.environment[f"molar mixing ratio {isotope}"],
+                bolin_number=self.attributes[f"Bolin number for {isotope}"],
+            )
             self.attributes.mark_updated(f"moles_{isotope}")
 
     def seeding(
