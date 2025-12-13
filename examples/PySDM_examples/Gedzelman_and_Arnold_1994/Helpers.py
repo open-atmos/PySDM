@@ -41,9 +41,12 @@ class Commons:  # pylint: disable=too-few-public-methods
         )
         self.b = (
             missing_b_multiplier
-            * kwargs["formulae"].latent_heat_vapourisation.lv(kwargs["T"]) ** 2
+            * (
+                kwargs["formulae"].latent_heat_vapourisation.lv(kwargs["T"]) / const.K0
+                - 1
+            )
+            * kwargs["formulae"].latent_heat_vapourisation.lv(kwargs["T"])
             * const.D0
-            / const.K0
             / const.Rv
             / kwargs["T"] ** 2
         )
