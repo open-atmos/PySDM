@@ -34,7 +34,7 @@ class TestParcelVTKExporter:
             },
             "attributes": {
                 "radius": np.random.random((100, 10)),
-                "n": np.random.random((100, 10)),
+                "multiplicity": np.random.random((100, 10)),
             },
         }
         return output
