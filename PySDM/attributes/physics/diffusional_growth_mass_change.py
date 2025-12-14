@@ -1,3 +1,8 @@
+"""diagnosed diffusional mass change within a timestep
+(temporarily without spport for collisional processes), developed to enable
+clean coupling between condensation and other dynamics (e.g., isotopic
+fractionation)"""
+
 from PySDM.attributes.impl import register_attribute, DerivedAttribute
 
 
