@@ -77,7 +77,6 @@ class TestTrivia:
     def test_poissonian_avoidance_function():
         with DimensionalAnalysis():
             # Arrange
-            formulae = Formulae()
             si = constants_defaults.si  # pylint: disable=redefined-outer-name
             sut = Trivia.poissonian_avoidance_function
 
