@@ -145,6 +145,7 @@ class TestTrivia:
         else:
             atoms_per_heavy_molecule = 0
 
+        # act
         moles_heavy_atom = Trivia.moles_heavy_atom(
             mass_total=water_mass,
             molecular_R_liq=molecular_isotopic_ratio,
@@ -153,10 +154,9 @@ class TestTrivia:
             molar_mass_heavy_molecule=molar_mass_heavy_molecule,
             atoms_per_heavy_molecule=atoms_per_heavy_molecule,
         )
+
         moles_heavy_molecule = atoms_per_heavy_molecule * moles_heavy_atom
         moles_light_molecule = moles_heavy_molecule / molecular_isotopic_ratio
-
-        # act
         sut = (
             moles_heavy_molecule * molar_mass_heavy_molecule
             + moles_light_molecule * molar_mass_light_molecule
