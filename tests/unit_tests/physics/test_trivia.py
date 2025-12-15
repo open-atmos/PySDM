@@ -15,11 +15,11 @@ class TestTrivia:
     @pytest.mark.parametrize("x", (-0.9, -0.1, -0.01, 0, 0.01, 0.1, 0.9))
     def test_erfinv_approx_reltol(x):
         # arrange
-        trivia = Formulae().trivia
+        const = Formulae().constants
         expected = erfinv(x)
 
         # act
-        actual = trivia.erfinv_approx(x)
+        actual = Trivia.erfinv_approx(const=const, c=x)
 
         # assert
         if expected == 0:
@@ -35,10 +35,10 @@ class TestTrivia:
     @staticmethod
     def test_erfinv_approx_abstol():
         # arrange
-        formulae = Formulae()
+        const = Formulae().constants
 
         # act
-        params = formulae.trivia.erfinv_approx(0.25)
+        params = Trivia.erfinv_approx(const=const, c=0.25)
 
         # assert
         diff = np.abs(params - 0.2253)
@@ -47,11 +47,10 @@ class TestTrivia:
     @staticmethod
     def test_isotopic_enrichment_to_delta_SMOW():
         # arrange
-        formulae = Formulae()
         ARBITRARY_VALUE = 44
 
         # act
-        delta = formulae.trivia.isotopic_enrichment_to_delta_SMOW(ARBITRARY_VALUE, 0)
+        delta = Trivia.isotopic_enrichment_to_delta_SMOW(ARBITRARY_VALUE, 0)
 
         # assert
         assert delta == ARBITRARY_VALUE
@@ -62,7 +61,7 @@ class TestTrivia:
             # Arrange
             formulae = Formulae()
             si = constants_defaults.si  # pylint: disable=redefined-outer-name
-            sut = formulae.trivia.air_schmidt_number
+            sut = Trivia.air_schmidt_number
             eta_air = formulae.air_dynamic_viscosity.eta_air(temperature=300 * si.K)
             # Act
             sc = sut(
@@ -80,7 +79,7 @@ class TestTrivia:
             # Arrange
             formulae = Formulae()
             si = constants_defaults.si  # pylint: disable=redefined-outer-name
-            sut = formulae.trivia.poissonian_avoidance_function
+            sut = Trivia.poissonian_avoidance_function
 
             # Act
             prob = sut(
@@ -94,11 +93,11 @@ class TestTrivia:
     @staticmethod
     def test_kelvin_to_celsius():
         # arrange
-        formulae = Formulae()
+        const = Formulae().constants
         temperature_in_kelvin = 44
 
         # act
-        temperature_in_celsius = formulae.trivia.K2C(temperature_in_kelvin)
+        temperature_in_celsius = Trivia.K2C(const=const, TK=temperature_in_kelvin)
 
         # assert
         assert temperature_in_celsius == temperature_in_kelvin - 273.15
@@ -106,11 +105,11 @@ class TestTrivia:
     @staticmethod
     def test_celsius_to_kelvin():
         # arrange
-        formulae = Formulae()
+        const = Formulae().constants
         temperature_in_celsius = 666
 
         # act
-        temperature_in_kelvin = formulae.trivia.C2K(temperature_in_celsius)
+        temperature_in_kelvin = Trivia.C2K(const=const, TC=temperature_in_celsius)
 
         # assert
         assert temperature_in_kelvin == temperature_in_celsius + 273.15
@@ -132,11 +131,9 @@ class TestTrivia:
         heavy_isotope_molecule,
     ):
         # arrange
-        formulae = Formulae()
-        molar_mass_heavy_molecule = getattr(
-            formulae.constants, f"M_{heavy_isotope_molecule}"
-        )
-        molar_mass_light_molecule = formulae.constants.M_1H2_16O
+        const = Formulae().constants
+        molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
+        molar_mass_light_molecule = const.M_1H2_16O
         if heavy_isotope_name[-1] == "O":
             atoms_per_heavy_molecule = 1
         elif heavy_isotope_name[-1] == "H":
