@@ -3,10 +3,11 @@ import numpy as np
 import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
-from PySDM import Formulae, physics
+from PySDM import Formulae
 from PySDM.physics.constants_defaults import VSMOW_R_2H
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics import constants_defaults, si
+from PySDM.physics.trivia import Trivia
 
 
 class TestTrivia:
@@ -132,10 +133,10 @@ class TestTrivia:
     ):
         # arrange
         formulae = Formulae()
-        const = formulae.constants
-
-        molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
-        molar_mass_light_molecule = const.M_1H2_16O
+        molar_mass_heavy_molecule = getattr(
+            formulae.constants, f"M_{heavy_isotope_molecule}"
+        )
+        molar_mass_light_molecule = formulae.constants.M_1H2_16O
         if heavy_isotope_name[-1] == "O":
             atoms_per_heavy_molecule = 1
         elif heavy_isotope_name[-1] == "H":
@@ -143,7 +144,7 @@ class TestTrivia:
         else:
             atoms_per_heavy_molecule = 0
 
-        moles_heavy_atom = formulae.trivia.moles_heavy_atom(
+        moles_heavy_atom = Trivia.moles_heavy_atom(
             mass_total=water_mass,
             molecular_R_liq=molecular_isotopic_ratio,
             mass_other_heavy_isotopes=0,
@@ -170,7 +171,7 @@ class TestTrivia:
     )
     def test_tau(bolin_number, dm_dt_over_m, expected_tau):
         # arrange
-        sut = physics.trivia.Trivia.tau
+        sut = Trivia.tau
 
         # act
         value = sut(Bo=bolin_number, dm_dt_over_m=dm_dt_over_m)
