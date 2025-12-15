@@ -60,10 +60,9 @@ class TestTrivia:
         with DimensionalAnalysis():
             # Arrange
             formulae = Formulae()
-            si = constants_defaults.si
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
             sut = formulae.trivia.air_schmidt_number
             eta_air = formulae.air_dynamic_viscosity.eta_air(temperature=300 * si.K)
-
             # Act
             sc = sut(
                 dynamic_viscosity=eta_air,
@@ -79,7 +78,7 @@ class TestTrivia:
         with DimensionalAnalysis():
             # Arrange
             formulae = Formulae()
-            si = constants_defaults.si
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
             sut = formulae.trivia.poissonian_avoidance_function
 
             # Act
@@ -139,13 +138,10 @@ class TestTrivia:
         molar_mass_light_molecule = const.M_1H2_16O
         if heavy_isotope_name[-1] == "O":
             atoms_per_heavy_molecule = 1
-            light_atoms_per_light_molecule = 1
         elif heavy_isotope_name[-1] == "H":
             atoms_per_heavy_molecule = 1
-            light_atoms_per_light_molecule = 2
         else:
             atoms_per_heavy_molecule = 0
-            light_atoms_per_light_molecule = 0
 
         moles_heavy_atom = formulae.trivia.moles_heavy_atom(
             mass_total=water_mass,
