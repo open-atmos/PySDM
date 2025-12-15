@@ -88,9 +88,8 @@ class Settings:
         *,
         formulae,
         molecular_R_liq,
-        initial_R_vap=None,
+        initial_R_vap,
         attributes=None,
-        isotopes_considered=("2H",),
         n_sd=1,
         dv: float = np.nan,
         dt: float = -1 * si.s,
@@ -114,7 +113,7 @@ class Settings:
             environment=Box(dv=dv, dt=dt),
         )
         builder.add_dynamic(Condensation())
-        builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
+        builder.add_dynamic(IsotopicFractionation(isotopes=("2H",)))
 
         builder.particulator.environment["RH"] = RH
         builder.particulator.environment["T"] = T
@@ -124,17 +123,19 @@ class Settings:
         initial_conc_vap = (
             formulae.saturation_vapour_pressure.pvs_water(T) * RH / const.R_str / T
         )
-        if initial_R_vap is None:
-            initial_R_vap = {}
+
+        molar_mixin_ratio_2H = (
+            formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+                R_vap=initial_R_vap,
+                density_dry_air=rho_d,
+                conc_vap_total=initial_conc_vap,
+            )
+        )
+
         for isotope in HEAVY_ISOTOPES:
-            initial_R_vap.setdefault(isotope, 0)
-            if rho_d is not None and initial_conc_vap is not None:
+            if isotope == "2H":
                 builder.particulator.environment[f"molar mixing ratio {isotope}"] = (
-                    formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
-                        R_vap=initial_R_vap[isotope],
-                        density_dry_air=rho_d,
-                        conc_vap_total=initial_conc_vap,
-                    )
+                    molar_mixin_ratio_2H
                 )
             else:
                 builder.particulator.environment[f"molar mixing ratio {isotope}"] = 0
@@ -142,7 +143,7 @@ class Settings:
         return builder.build(attributes=attributes, products=())
 
     @staticmethod
-    def do_one_step(formulae, particulator, evaporated_mass_fraction):
+    def do_one_step(*, formulae, particulator, evaporated_mass_fraction):
         initial_conc_vap = (
             formulae.saturation_vapour_pressure.pvs_water(
                 particulator.environment["T"][0]

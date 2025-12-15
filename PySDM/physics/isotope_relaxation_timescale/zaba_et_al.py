@@ -35,6 +35,7 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         S = relative_humidity - 1
         return (
             alpha
+            * (1 - S)
             / D_ratio_heavy_to_light
-            / ((1 + b_zaba) * S * (1 - alpha * R_vap / R_liq) + (1 - S))
+            / ((1 + b_zaba) * S * (1 - alpha * R_vap / R_liq))
         )
