@@ -120,6 +120,9 @@ class TestTrivia:
     )
     @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
     @pytest.mark.parametrize(
+        "mass_other_heavy_isotopes", np.linspace(10**-7, 10**-2, 3) * si.ng
+    )
+    @pytest.mark.parametrize(
         "heavy_isotope_name, heavy_isotope_molecule",
         (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
     )
@@ -128,8 +131,10 @@ class TestTrivia:
         water_mass,
         heavy_isotope_name,
         heavy_isotope_molecule,
+        mass_other_heavy_isotopes,
     ):
         # arrange
+        assert mass_other_heavy_isotopes <= water_mass
         const = Formulae().constants
         molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
         molar_mass_light_molecule = const.M_1H2_16O
@@ -143,7 +148,7 @@ class TestTrivia:
         moles_heavy_atom = Trivia.moles_heavy_atom(
             mass_total=water_mass,
             molecular_R_liq=molecular_isotopic_ratio,
-            mass_other_heavy_isotopes=0,
+            mass_other_heavy_isotopes=mass_other_heavy_isotopes,
             molar_mass_light_molecule=molar_mass_light_molecule,
             molar_mass_heavy_molecule=molar_mass_heavy_molecule,
             atoms_per_heavy_molecule=atoms_per_heavy_molecule,
@@ -155,6 +160,7 @@ class TestTrivia:
         sut = (
             moles_heavy_molecule * molar_mass_heavy_molecule
             + moles_light_molecule * molar_mass_light_molecule
+            + mass_other_heavy_isotopes
         )
 
         # assert
