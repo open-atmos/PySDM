@@ -142,7 +142,7 @@ class TestTrivia:
         elif heavy_isotope_name[-1] == "H":
             atoms_per_heavy_molecule = 1
         else:
-            atoms_per_heavy_molecule = 0
+            assert False
 
         # act
         moles_heavy_atom = Trivia.moles_heavy_atom(
