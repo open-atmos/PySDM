@@ -12,53 +12,53 @@ class Commons:  # pylint: disable=too-few-public-methods
     """groups values used in both equations"""
 
     def __init__(self, **kwargs):
-        const = kwargs["formulae"].constants
+        self.formulae = kwargs["formulae"]
+        const = self.formulae.constants
         self.vsmow_ratio = getattr(const, f'VSMOW_R_{kwargs["isotope"]}')
-        self.iso_ratio_v = kwargs["formulae"].trivia.isotopic_delta_2_ratio(
+        self.iso_ratio_v = self.formulae.trivia.isotopic_delta_2_ratio(
             kwargs["delta_v"], self.vsmow_ratio
         )
         alpha_fun = getattr(
-            kwargs["formulae"].isotope_equilibrium_fractionation_factors,
+            self.formulae.isotope_equilibrium_fractionation_factors,
             f'alpha_l_{kwargs["isotope"]}',
         )
         if kwargs["isotope"] == "17O":
-            alpha_l_18O = kwargs[
-                "formulae"
-            ].isotope_equilibrium_fractionation_factors.alpha_l_18O(kwargs["T"])
+            alpha_l_18O = (
+                self.formulae.isotope_equilibrium_fractionation_factors.alpha_l_18O(
+                    kwargs["T"]
+                )
+            )
             self.alpha_w = alpha_fun(np.nan, alpha_l_18O)
         else:
             self.alpha_w = alpha_fun(kwargs["T"])
 
         self.diff_coef_ratio = 1 / getattr(
-            kwargs["formulae"].isotope_diffusivity_ratios,
+            self.formulae.isotope_diffusivity_ratios,
             f'ratio_{kwargs["isotope"]}_heavy_to_light',
         )(kwargs["T"])
 
         missing_b_multiplier = (
-            kwargs["formulae"].saturation_vapour_pressure.pvs_water(kwargs["T"])
+            self.formulae.saturation_vapour_pressure.pvs_water(kwargs["T"])
             / kwargs["T"]
             / const.Rv
         )
         self.b = (
             missing_b_multiplier
-            * (
-                kwargs["formulae"].latent_heat_vapourisation.lv(kwargs["T"]) / const.K0
-                - 1
-            )
-            * kwargs["formulae"].latent_heat_vapourisation.lv(kwargs["T"])
+            * (self.formulae.latent_heat_vapourisation.lv(kwargs["T"]) / const.K0 - 1)
+            * self.formulae.latent_heat_vapourisation.lv(kwargs["T"])
             * const.D0
             / const.Rv
             / kwargs["T"] ** 2
         )
-        self.saturation_for_zero_dR_condition = kwargs[
-            "formulae"
-        ].isotope_ratio_evolution.saturation_for_zero_dR_condition
+        self.saturation_for_zero_dR_condition = (
+            self.formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition
+        )
         any_number = 44.0
-        self.vent_coeff_ratio = kwargs[
-            "formulae"
-        ].isotope_ventilation_ratio.ratio_heavy_to_light(
-            ventilation_coefficient=any_number,
-            diffusivity_ratio_heavy_to_light=self.diff_coef_ratio,
+        self.vent_coeff_ratio = (
+            self.formulae.isotope_ventilation_ratio.ratio_heavy_to_light(
+                ventilation_coefficient=any_number,
+                diffusivity_ratio_heavy_to_light=self.diff_coef_ratio,
+            )
         )
 
 
