@@ -32,7 +32,7 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         rho_v,
     ):
         b_zaba = rho_v * D_light * Fk
-        S = relative_humidity - 1
+        S = relative_humidity  # - 1
         return (
             alpha
             * (1 - S)
