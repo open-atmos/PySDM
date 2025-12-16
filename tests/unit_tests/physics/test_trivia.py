@@ -4,18 +4,21 @@ import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
-from PySDM.physics.constants_defaults import VSMOW_R_2H
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics import constants_defaults, si
 from PySDM.physics.trivia import Trivia
 
 
+@pytest.fixture(scope="session")
+def const():
+    return Formulae().constants
+
+
 class TestTrivia:
     @staticmethod
     @pytest.mark.parametrize("x", (-0.9, -0.1, -0.01, 0, 0.01, 0.1, 0.9))
-    def test_erfinv_approx_reltol(x):
+    def test_erfinv_approx_reltol(const, x):
         # arrange
-        const = Formulae().constants
         expected = erfinv(x)
 
         # act
@@ -33,9 +36,8 @@ class TestTrivia:
             assert np.abs(np.log(actual / expected)) < 1e-3
 
     @staticmethod
-    def test_erfinv_approx_abstol():
+    def test_erfinv_approx_abstol(const):
         # arrange
-        const = Formulae().constants
 
         # act
         params = Trivia.erfinv_approx(const=const, c=0.25)
@@ -50,7 +52,9 @@ class TestTrivia:
         ARBITRARY_VALUE = 44
 
         # act
-        delta = Trivia.isotopic_enrichment_to_delta_SMOW(ARBITRARY_VALUE, 0)
+        delta = Trivia.isotopic_enrichment_to_delta_SMOW(
+            E=ARBITRARY_VALUE, delta_0_SMOW=0
+        )
 
         # assert
         assert delta == ARBITRARY_VALUE
@@ -115,8 +119,8 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "molecular_isotopic_ratio",
-        (0.86 * VSMOW_R_2H, 0.9 * VSMOW_R_2H, 0.98 * VSMOW_R_2H),
+        "molecular_isotopic_ratio_over_VSMOW",
+        (0.86, 0.9, 0.98),
     )
     @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
     @pytest.mark.parametrize(
@@ -127,7 +131,8 @@ class TestTrivia:
         (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
     )
     def test_moles_heavy_atom(
-        molecular_isotopic_ratio,
+        const,
+        molecular_isotopic_ratio_over_VSMOW,
         water_mass,
         heavy_isotope_name,
         heavy_isotope_molecule,
@@ -135,7 +140,9 @@ class TestTrivia:
     ):
         # arrange
         assert mass_other_heavy_isotopes <= water_mass
-        const = Formulae().constants
+        molecular_isotopic_ratio = (
+            molecular_isotopic_ratio_over_VSMOW * const.VSMOW_R_2H
+        )
         molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
         molar_mass_light_molecule = const.M_1H2_16O
         if heavy_isotope_name[-1] == "O":
