@@ -1,6 +1,7 @@
 """
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 """
+import jax
 
 from PySDM.backends.impl_jax import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
@@ -23,6 +24,7 @@ class Jax(
     def __init__(
         self, formulae=None, *, double_precision=True, override_jit_flags=None
     ):
+        jax.config.update('jax_enable_x64', True)
         if not double_precision:
             raise NotImplementedError()
         
