@@ -115,7 +115,7 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "molecular_isotopic_ratio",
+        "molecular_isotope_ratio",
         (0.86 * CONST.VSMOW_R_2H, 0.9 * CONST.VSMOW_R_2H, 0.98 * CONST.VSMOW_R_2H),
     )
     @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
@@ -127,7 +127,7 @@ class TestTrivia:
         (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
     )
     def test_moles_heavy_atom(
-        molecular_isotopic_ratio,
+        molecular_isotope_ratio,
         water_mass,
         heavy_isotope_name,
         heavy_isotope_molecule,
@@ -147,7 +147,7 @@ class TestTrivia:
         # act
         moles_heavy_atom = Trivia.moles_heavy_atom(
             mass_total=water_mass,
-            molecular_R_liq=molecular_isotopic_ratio,
+            molecular_isotope_ratio=molecular_isotope_ratio,
             mass_other_heavy_isotopes=mass_other_heavy_isotopes,
             molar_mass_light_molecule=molar_mass_light_molecule,
             molar_mass_heavy_molecule=molar_mass_heavy_molecule,
@@ -155,7 +155,7 @@ class TestTrivia:
         )
 
         moles_heavy_molecule = atoms_per_heavy_molecule * moles_heavy_atom
-        moles_light_molecule = moles_heavy_molecule / molecular_isotopic_ratio
+        moles_light_molecule = moles_heavy_molecule / molecular_isotope_ratio
         sut = (
             moles_heavy_molecule * molar_mass_heavy_molecule
             + moles_light_molecule * molar_mass_light_molecule
