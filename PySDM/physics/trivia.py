@@ -176,11 +176,14 @@ class Trivia:  # pylint: disable=too-many-public-methods
         mass_other_heavy_isotopes,
         molar_mass_light_molecule,
         molar_mass_heavy_molecule,
-        molecular_R_liq,
+        molecular_isotope_ratio,
         atoms_per_heavy_molecule,
     ):
         return (
             (mass_total - mass_other_heavy_isotopes)
-            / (molar_mass_light_molecule / molecular_R_liq + molar_mass_heavy_molecule)
+            / (
+                molar_mass_light_molecule / molecular_isotope_ratio
+                + molar_mass_heavy_molecule
+            )
             / atoms_per_heavy_molecule
         )
