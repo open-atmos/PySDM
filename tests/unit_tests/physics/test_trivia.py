@@ -9,20 +9,18 @@ from PySDM.physics import constants_defaults, si
 from PySDM.physics.trivia import Trivia
 
 
-@pytest.fixture(scope="session")
-def const():
-    return Formulae().constants
+CONST = Formulae().constants
 
 
 class TestTrivia:
     @staticmethod
     @pytest.mark.parametrize("x", (-0.9, -0.1, -0.01, 0, 0.01, 0.1, 0.9))
-    def test_erfinv_approx_reltol(const, x):
+    def test_erfinv_approx_reltol(x):
         # arrange
         expected = erfinv(x)
 
         # act
-        actual = Trivia.erfinv_approx(const=const, c=x)
+        actual = Trivia.erfinv_approx(const=CONST, c=x)
 
         # assert
         if expected == 0:
@@ -36,11 +34,11 @@ class TestTrivia:
             assert np.abs(np.log(actual / expected)) < 1e-3
 
     @staticmethod
-    def test_erfinv_approx_abstol(const):
+    def test_erfinv_approx_abstol():
         # arrange
 
         # act
-        params = Trivia.erfinv_approx(const=const, c=0.25)
+        params = Trivia.erfinv_approx(const=CONST, c=0.25)
 
         # assert
         diff = np.abs(params - 0.2253)
@@ -96,11 +94,10 @@ class TestTrivia:
     @staticmethod
     def test_kelvin_to_celsius():
         # arrange
-        const = Formulae().constants
         temperature_in_kelvin = 44
 
         # act
-        temperature_in_celsius = Trivia.K2C(const=const, TK=temperature_in_kelvin)
+        temperature_in_celsius = Trivia.K2C(const=CONST, TK=temperature_in_kelvin)
 
         # assert
         assert temperature_in_celsius == temperature_in_kelvin - 273.15
@@ -108,19 +105,18 @@ class TestTrivia:
     @staticmethod
     def test_celsius_to_kelvin():
         # arrange
-        const = Formulae().constants
         temperature_in_celsius = 666
 
         # act
-        temperature_in_kelvin = Trivia.C2K(const=const, TC=temperature_in_celsius)
+        temperature_in_kelvin = Trivia.C2K(const=CONST, TC=temperature_in_celsius)
 
         # assert
         assert temperature_in_kelvin == temperature_in_celsius + 273.15
 
     @staticmethod
     @pytest.mark.parametrize(
-        "molecular_isotopic_ratio_over_VSMOW",
-        (0.86, 0.9, 0.98),
+        "molecular_isotopic_ratio",
+        (0.86 * CONST.VSMOW_R_2H, 0.9 * CONST.VSMOW_R_2H, 0.98 * CONST.VSMOW_R_2H),
     )
     @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
     @pytest.mark.parametrize(
@@ -131,8 +127,7 @@ class TestTrivia:
         (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
     )
     def test_moles_heavy_atom(
-        const,
-        molecular_isotopic_ratio_over_VSMOW,
+        molecular_isotopic_ratio,
         water_mass,
         heavy_isotope_name,
         heavy_isotope_molecule,
@@ -140,11 +135,8 @@ class TestTrivia:
     ):
         # arrange
         assert mass_other_heavy_isotopes <= water_mass
-        molecular_isotopic_ratio = (
-            molecular_isotopic_ratio_over_VSMOW * const.VSMOW_R_2H
-        )
-        molar_mass_heavy_molecule = getattr(const, f"M_{heavy_isotope_molecule}")
-        molar_mass_light_molecule = const.M_1H2_16O
+        molar_mass_heavy_molecule = getattr(CONST, f"M_{heavy_isotope_molecule}")
+        molar_mass_light_molecule = CONST.M_1H2_16O
         if heavy_isotope_name[-1] == "O":
             atoms_per_heavy_molecule = 1
         elif heavy_isotope_name[-1] == "H":
