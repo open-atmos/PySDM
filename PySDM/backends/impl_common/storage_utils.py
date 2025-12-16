@@ -58,6 +58,10 @@ class StorageBase:
     @abstractmethod
     def fill(self, other):
         raise NotImplementedError()
+    
+    @abstractmethod
+    def rowview(self, i):
+        raise NotImplementedError()
 
 
 def get_data_from_ndarray(array, storage_class: Type[StorageBase], copy_fun):

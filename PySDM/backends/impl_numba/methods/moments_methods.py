@@ -5,6 +5,7 @@ CPU implementation of moment calculation backend methods
 from functools import cached_property
 
 import numba
+import time
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
@@ -98,6 +99,7 @@ class MomentsMethods(BackendMethods):
             skip_division_by_m0=skip_division_by_m0,
         )
 
+
     @cached_property
     def _spectrum_moments_body(self):
         @numba.njit(**self.default_jit_flags)
@@ -119,10 +121,13 @@ class MomentsMethods(BackendMethods):
             # pylint: disable=too-many-locals
             moment_0[:, :] = 0
             moments[:, :] = 0
+            print(length)
             for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
                 i = idx[idx_i]
+                t4 = time.time()
                 for k in range(x_bins.shape[0] - 1):
                     if x_bins[k] <= x_attr[i] < x_bins[k + 1]:
+                        # print("adagio")
                         atomic_add(
                             moment_0,
                             (k, cell_id[i]),
@@ -138,6 +143,7 @@ class MomentsMethods(BackendMethods):
                             ),
                         )
                         break
+                print(f"oop: {time.time() - t4}")
             for c_id in range(moment_0.shape[1]):
                 for k in range(x_bins.shape[0] - 1):
                     moments[k, c_id] = (

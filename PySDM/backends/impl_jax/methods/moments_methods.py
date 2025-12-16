@@ -3,8 +3,10 @@ CPU implementation of moment calculation backend methods
 """
 
 from functools import cached_property
+import time
+import jax
 
-import numba
+# import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
@@ -13,7 +15,7 @@ from PySDM.backends.impl_numba.atomic_operations import atomic_add
 class MomentsMethods(BackendMethods):
     @cached_property
     def _moments_body(self):
-        @numba.njit(**self.default_jit_flags)
+        # @numba.njit(**self.default_jit_flags)
         def body(
             *,
             moment_0,
@@ -34,7 +36,7 @@ class MomentsMethods(BackendMethods):
             # pylint: disable=too-many-locals
             moment_0[:] = 0
             moments[:, :] = 0
-            for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
+            for idx_i in range(length):  # pylint: disable=not-an-iterable
                 i = idx[idx_i]
                 if min_x <= x_attr[i] < max_x:
                     atomic_add(
@@ -99,8 +101,9 @@ class MomentsMethods(BackendMethods):
         )
 
     @cached_property
+    # @jax.jit
     def _spectrum_moments_body(self):
-        @numba.njit(**self.default_jit_flags)
+        # @numba.njit(**self.default_jit_flags)
         def body(
             *,
             moment_0,
@@ -116,13 +119,22 @@ class MomentsMethods(BackendMethods):
             weighting_attribute,
             weighting_rank,
         ):
+            t1 = time.time()
             # pylint: disable=too-many-locals
-            moment_0[:, :] = 0
-            moments[:, :] = 0
-            for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
+            moment_0.at[:, :].set(0)
+            moments.at[:, :].set(0)
+            # print(f"initial moments setter: {time.time() - t1}")
+            # print(length)
+            for idx_i in range(length):  # pylint: disable=not-an-iterable
                 i = idx[idx_i]
+                t4 = time.time()
+                # print(f"x_bins type: {type(x_bins)}")
+                # print(f"x_attr type: {type(x_attr)}")
                 for k in range(x_bins.shape[0] - 1):
+                    # print(f"x_attr[i]: {x_attr[i]}")
                     if x_bins[k] <= x_attr[i] < x_bins[k + 1]:
+                    # if x_bins[k] != x_bins[k + 1] and x_bins[k] == x_bins[k+1]:
+                        t2 = time.time()
                         atomic_add(
                             moment_0,
                             (k, cell_id[i]),
@@ -137,14 +149,18 @@ class MomentsMethods(BackendMethods):
                                 * attr_data[i] ** rank
                             ),
                         )
+                        # print(f"adding... : {time.time() - t2}")
                         break
+                # print(f"oop: {time.time() - t4}")
+            # print(f"After loop 1 checkpoint: {time.time() - t1}")
             for c_id in range(moment_0.shape[1]):
                 for k in range(x_bins.shape[0] - 1):
-                    moments[k, c_id] = (
+                    moments.at[k, c_id].set(
                         moments[k, c_id] / moment_0[k, c_id]
                         if moment_0[k, c_id] != 0
                         else 0
                     )
+            # print(f"spectrum moments body: {time.time() - t1}")
 
         return body
 

@@ -359,6 +359,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
         ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
 
+        # print("Attr name: " + attr_name)
         self.backend.moments(
             moment_0=moment_0,
             moments=moments,
@@ -388,6 +389,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         weighting_attribute="water mass",
         weighting_rank=0,
     ):
+        print("Attr name: " + attr_name)
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
             moment_0=moment_0,
