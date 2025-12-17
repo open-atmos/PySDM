@@ -1,8 +1,10 @@
 """
 Homogeneous freezing example
 
-hom_freezing.ipynb:
-.. include:: ./hom_freezing.ipynb
+.. include:: ./fig_1_2_3.ipynb
+.. include:: ./fig_4_5_6_S3_S4.ipynb
+.. include:: ./fig_S1_S2.ipynb
+.. include:: ./simple_homogenous_freezing_example.ipynb
 """
 
 from .settings import Settings
