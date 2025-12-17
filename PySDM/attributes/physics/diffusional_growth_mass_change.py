@@ -1,5 +1,5 @@
 """diagnosed diffusional mass change within a timestep
-(temporarily without spport for collisional processes), developed to enable
+(temporarily without support for collisional processes), developed to enable
 clean coupling between condensation and other dynamics (e.g., isotopic
 fractionation)"""
 
@@ -26,7 +26,7 @@ class DiffusionalGrowthMassChange(DerivedAttribute):
         self.notify()
 
     def notify(self):
-        self.data[:] -= self.water_mass.data.data
+        self.data[:] -= self.water_mass.data
 
     def recalculate(self):
-        self.data[:] += self.water_mass.data.data
+        self.data[:] += self.water_mass.data
