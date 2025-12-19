@@ -13,7 +13,7 @@ class TestDiffusionalGrowthMassChange:
     @staticmethod
     def test_initialisation(backend_class):
         if backend_class.__name__ != "Numba":
-            pytest.skip("only Numba supporter - TODO")
+            pytest.skip("only Numba supporter - TODO #1438")
 
         # arrange
         particulator = DummyParticulator(backend_class)
@@ -57,7 +57,7 @@ class TestDiffusionalGrowthMassChange:
     @pytest.mark.parametrize("steps", (0, 1, 2))
     def test_methods(backend_class, steps):
         if backend_class.__name__ != "Numba":
-            pytest.skip("only Numba supporter - TODO")
+            pytest.skip("only Numba supporter - TODO #1438")
 
         # arrange
         n_sd = 1
