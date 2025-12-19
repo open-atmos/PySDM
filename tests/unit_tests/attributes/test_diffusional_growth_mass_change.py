@@ -79,8 +79,8 @@ class TestDiffusionalGrowthMassChange:
             particulator.run(steps=1)
 
         # assert
-        np.testing.assert_approx_equal(
+        np.testing.assert_allclose(
             desired=mass_delta if steps != 0 else np.zeros_like(mass_delta),
             actual=particulator.attributes["diffusional growth mass change"].data,
-            significant=8,
+            rtol=1e-8,
         )
