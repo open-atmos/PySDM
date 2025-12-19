@@ -5,8 +5,8 @@ import pytest
 
 from PySDM.attributes import DiffusionalGrowthMassChange
 from PySDM.physics import si
-from ..dummy_particulator import DummyParticulator
 from PySDM.dynamics import Collision
+from ..dummy_particulator import DummyParticulator
 
 
 class TestDiffusionalGrowthMassChange:
