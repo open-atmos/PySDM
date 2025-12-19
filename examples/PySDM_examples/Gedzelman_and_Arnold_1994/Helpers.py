@@ -98,11 +98,11 @@ class Settings:
     ):
         const = formulae.constants
         attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
-            molecular_R_liq=molecular_R_liq,
             mass_total=attributes["signed water mass"],
             mass_other_heavy_isotopes=0,
             molar_mass_light_molecule=const.M_1H2_16O,
             molar_mass_heavy_molecule=const.M_2H_1H_16O,
+            molecular_isotope_ratio=molecular_R_liq,
             atoms_per_heavy_molecule=1,
         )
         builder = Builder(
