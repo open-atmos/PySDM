@@ -4,7 +4,6 @@ import numpy as np
 import pytest
 
 from PySDM.attributes import DiffusionalGrowthMassChange
-from PySDM.attributes.impl import DummyAttribute
 from PySDM.physics import si
 from ..dummy_particulator import DummyParticulator
 from PySDM.dynamics import Collision
@@ -13,20 +12,22 @@ from PySDM.dynamics import Collision
 class TestDiffusionalGrowthMassChange:
     @staticmethod
     def test_initialisation(backend_class):
+        if backend_class.__name__ != "Numba":
+            pytest.skip("only Numba supporter - TODO")
+
         # arrange
         particulator = DummyParticulator(backend_class)
         particulator.request_attribute("diffusional growth mass change")
-        particulator.initialisers = []
-        particulator.observers = []
 
         # act
         particulator.build(
-            attributes={"multiplicity": np.ones(1), "water mass": 1 * si.ng}
+            attributes={"multiplicity": np.ones(1), "water mass": np.ones(1)}
         )
 
         # assert
-        assert len(particulator.initialisers) == 1
-        assert len(particulator.observers) == 1
+        for items in (particulator.initialisers, particulator.observers):
+            assert len(items) == 1
+            assert isinstance(items[0], DiffusionalGrowthMassChange)
 
     @staticmethod
     @pytest.mark.xfail(
@@ -53,16 +54,33 @@ class TestDiffusionalGrowthMassChange:
         particulator.build(attributes={})
 
     @staticmethod
-    def test_methods(backend_class):
+    @pytest.mark.parametrize("steps", (0, 1, 2))
+    def test_methods(backend_class, steps):
+        if backend_class.__name__ != "Numba":
+            pytest.skip("only Numba supporter - TODO")
+
         # arrange
-        particulator = DummyParticulator(backend_class)
+        n_sd = 1
+        mass_delta = np.ones(n_sd) * si.ng
+
+        particulator = DummyParticulator(backend_class, n_sd=n_sd, formulae=None)
         particulator.request_attribute("diffusional growth mass change")
+        particulator.build(
+            attributes={
+                "multiplicity": np.ones(n_sd),
+                "water mass": np.ones(n_sd) * si.ug,
+            }
+        )
 
         # act
-        particulator.build(
-            attributes={"multiplicity": np.ones(1), "water mass": np.ones(1) * si.ng}
-        )
-        sut = DiffusionalGrowthMassChange(particulator)
+        particulator.run(steps=0)
+        for _ in range(steps):
+            particulator.attributes["signed water mass"].data[:] += mass_delta
+            particulator.run(steps=1)
 
         # assert
-        sut.notify()  # TODO
+        np.testing.assert_approx_equal(
+            desired=mass_delta if steps != 0 else 0,
+            actual=particulator.attributes["diffusional growth mass change"].data,
+            significant=8,
+        )

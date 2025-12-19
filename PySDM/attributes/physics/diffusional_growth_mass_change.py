@@ -15,6 +15,7 @@ class DiffusionalGrowthMassChange(DerivedAttribute):
             name="diffusional growth mass change",
             dependencies=(self.water_mass,),
         )
+        self.old = None
         assert "Collision" not in builder.particulator.dynamics
         for triggers in (
             builder.particulator.observers,
@@ -23,10 +24,13 @@ class DiffusionalGrowthMassChange(DerivedAttribute):
             triggers.append(self)
 
     def setup(self):
-        self.notify()
+        self.old = self.water_mass.data.data.copy()
+        self.data.data[:] = 0
 
     def notify(self):
-        self.data[:] -= self.water_mass.data
+        new = self.water_mass.data.data
+        self.data.data[:] = new - self.old
+        self.old[:] = new
 
     def recalculate(self):
-        self.data[:] += self.water_mass.data
+        pass
