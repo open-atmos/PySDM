@@ -69,7 +69,6 @@ def test_lwc_constant(backend_class, croupier, adaptive):
     particulator = builder.build(attributes)
 
     volumes = {}
-    particulator.n_steps = 0
 
     # Act
     for step in steps:
