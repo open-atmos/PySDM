@@ -139,7 +139,7 @@ class TestIsotopeKineticFractionationFactors:
         )(T)
         alpha_kin_jm = formulae.isotope_kinetic_fractionation_factors.alpha_kinetic(
             alpha_equilibrium=alpha_eq,
-            relative_humidity=Si,  # TODO
+            relative_humidity=Si,
             D_ratio_heavy_to_light=D_heavy_to_light,
         )
         formulae = Formulae(
