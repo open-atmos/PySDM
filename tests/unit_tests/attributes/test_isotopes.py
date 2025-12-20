@@ -5,7 +5,7 @@ unit tests for isotope-related attributes
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import constants_defaults, si
@@ -107,5 +107,37 @@ class TestIsotopes:
                 reference_ratio=getattr(constants_defaults, f"VSMOW_R_{isotope}"),
                 ratio=n_heavy_isotope / n_light_isotope,
             ),
+            significant=5,
+        )
+
+    @staticmethod
+    def test_moles(
+        backend_class,
+        m_t=1 * si.ng,
+    ):
+        # arrange
+        formulae = Formulae()
+        attributes = {
+            "multiplicity": np.asarray([0]),
+            "signed water mass": np.asarray([m_t]),
+        }
+        for isotope in HEAVY_ISOTOPES:
+            attributes[f"moles_{isotope}"] = np.asarray([44])
+
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(formulae=formulae),
+            environment=Box(dv=np.nan, dt=-1 * si.s),
+        )
+        builder.request_attribute("moles light water")
+        builder.request_attribute("moles_16O")
+        particulator = builder.build(attributes=attributes, products=())
+
+        # assert
+        np.testing.assert_approx_equal(
+            particulator.attributes["moles light water"].data[0],
+            particulator.attributes["moles_16O"].data[0]
+            - particulator.attributes["moles_2H"].data[0]
+            - particulator.attributes["moles_3H"].data[0],
             significant=5,
         )

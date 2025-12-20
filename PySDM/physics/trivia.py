@@ -168,3 +168,27 @@ class Trivia:  # pylint: disable=too-many-public-methods
         see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)
         """
         return 1 / Bo / dm_dt_over_m
+
+    @staticmethod
+    def moles_heavy_atom(
+        *,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+        molar_mass_heavy_molecule,
+        molecular_isotope_ratio,
+        atoms_per_heavy_molecule,
+    ):
+        """
+        Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)
+        from molecular isotope ratios (e.g. moles of HDO to moles of H2O),
+        using total mass and mass of other heavy isotopes.
+        """
+        return (
+            (mass_total - mass_other_heavy_isotopes)
+            / (
+                molar_mass_light_molecule / molecular_isotope_ratio
+                + molar_mass_heavy_molecule
+            )
+            / atoms_per_heavy_molecule
+        )

@@ -25,7 +25,7 @@ def run_box(settings, backend_class=CPU):
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
-    ).sample(settings.n_sd)
+    ).sample_deterministic(settings.n_sd)
     builder.add_dynamic(
         Coalescence(
             collision_kernel=settings.kernel,
