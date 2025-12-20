@@ -67,7 +67,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def _notify_initialisers(self):
         for initialiser in self.initialisers:
             initialiser.setup()
-        self.initializers.clear()
+        self.initialisers.clear()
 
     @property
     def Storage(self):
