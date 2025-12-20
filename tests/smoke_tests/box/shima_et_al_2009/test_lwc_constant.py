@@ -69,13 +69,11 @@ def test_lwc_constant(backend_class, croupier, adaptive):
     particulator = builder.build(attributes)
 
     volumes = {}
+    particulator.n_steps = 0
 
     # Act
     for step in steps:
-        n_steps = step - np.maximum(
-            particulator.n_steps, 0
-        )  # particulator.n_steps is set to -1 when initialised
-        particulator.run(steps=n_steps)
+        particulator.run(step - particulator.n_steps)
         check(
             n_part=n_part,
             dv=dv,
