@@ -72,10 +72,10 @@ def test_lwc_constant(backend_class, croupier, adaptive):
 
     # Act
     for step in steps:
-        if particulator.n_steps == -1:
-            particulator.n_steps = 0
-        particulator.run(step - particulator.n_steps)
-        print(particulator.n_steps)
+        n_steps = step - np.maximum(
+            particulator.n_steps, 0
+        )  # particulator.n_steps is set to -1 when initialised
+        particulator.run(n_steps=n_steps)
         check(
             n_part=n_part,
             dv=dv,
@@ -84,9 +84,7 @@ def test_lwc_constant(backend_class, croupier, adaptive):
             attributes=particulator.attributes,
             step=step,
         )
-        print(particulator.n_steps)
         volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
-        print(particulator.n_steps)
 
     # Assert
     x_max = 0
