@@ -30,6 +30,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.dynamics = {}
         self.products = {}
         self.observers = []
+        self.initialisers = []
 
         self.n_steps = 0
 
@@ -49,6 +50,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.null = self.Storage.empty(0, dtype=float)
 
     def run(self, steps):
+        if len(self.initialisers) > 0:
+            self._notify_initialisers()
         for _ in range(steps):
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
@@ -60,6 +63,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         reversed_order_so_that_environment_is_last = reversed(self.observers)
         for observer in reversed_order_so_that_environment_is_last:
             observer.notify()
+
+    def _notify_initialisers(self):
+        for initialiser in self.initialisers:
+            initialiser.setup()
+        self.initialisers.clear()
 
     @property
     def Storage(self):
