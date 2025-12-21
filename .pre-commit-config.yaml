@@ -31,7 +31,7 @@ repos:
   - repo: https://github.com/christopher-hacker/enforce-notebook-run-order
     rev: 2.1.1
     hooks:
-    - id: ć
+    - id: enforce-notebook-run-order
 
   - repo: https://github.com/open-atmos/devops_tests
     rev: v0.0.2
