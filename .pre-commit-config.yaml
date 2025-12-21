@@ -28,6 +28,11 @@ repos:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
+  - repo: https://github.com/christopher-hacker/enforce-notebook-run-order
+    rev: 2.1.1
+    hooks:
+    - id: ć
+
   - repo: https://github.com/open-atmos/devops_tests
     rev: v0.0.2
     hooks:
