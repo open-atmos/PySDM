@@ -5,15 +5,15 @@ import pytest
 
 from PySDM.attributes import DiffusionalGrowthMassChange
 from PySDM.physics import si
-from ..dummy_particulator import DummyParticulator
 from PySDM.dynamics import Collision
+from ..dummy_particulator import DummyParticulator
 
 
 class TestDiffusionalGrowthMassChange:
     @staticmethod
     def test_initialisation(backend_class):
         if backend_class.__name__ != "Numba":
-            pytest.skip("only Numba supporter - TODO")
+            pytest.skip("only Numba supporter - TODO #1438")
 
         # arrange
         particulator = DummyParticulator(backend_class)
@@ -57,7 +57,7 @@ class TestDiffusionalGrowthMassChange:
     @pytest.mark.parametrize("steps", (0, 1, 2))
     def test_methods(backend_class, steps):
         if backend_class.__name__ != "Numba":
-            pytest.skip("only Numba supporter - TODO")
+            pytest.skip("only Numba supporter - TODO #1438")
 
         # arrange
         n_sd = 1
@@ -79,8 +79,8 @@ class TestDiffusionalGrowthMassChange:
             particulator.run(steps=1)
 
         # assert
-        np.testing.assert_approx_equal(
-            desired=mass_delta if steps != 0 else 0,
+        np.testing.assert_allclose(
+            desired=mass_delta if steps != 0 else np.zeros_like(mass_delta),
             actual=particulator.attributes["diffusional growth mass change"].data,
-            significant=8,
+            rtol=1e-8,
         )

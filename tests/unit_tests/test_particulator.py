@@ -27,6 +27,25 @@ class TestParticulator:
         assert observer.steps == steps
 
     @staticmethod
+    def test_initialiser(backend_class):
+        class Initialiser:  # pylint: disable=too-few-public-methods
+            def __init__(self, particulator):
+                self.particulator = particulator
+                self.particulator.initialisers.append(self)
+                self.if_setup = False
+
+            def setup(self):
+                self.if_setup = True
+
+        steps = -1
+
+        particulator = DummyParticulator(backend_class, 44)
+        initialiser = Initialiser(particulator)
+        particulator.run(steps)
+
+        assert initialiser.if_setup
+
+    @staticmethod
     @pytest.mark.parametrize("isotopes", (("1H",), ("1H", "2H"), ("16O", "17I", "18O")))
     def test_isotopic_fractionation_marks_moles_as_updated(
         backend_class, isotopes: tuple
