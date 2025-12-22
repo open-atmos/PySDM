@@ -9,17 +9,144 @@ import pytest
 
 from PySDM import Builder, Formulae
 from PySDM.dynamics import Condensation, IsotopicFractionation
-from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
+from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES, LIGHT_ISOTOPES
+from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
 from PySDM.physics.constants_defaults import VSMOW_R_2H  # TODO!
 
+#
+# def make_particulator(
+#     *,
+#     formulae,
+#     backend_class,
+#     molecular_R_liq,
+#     initial_R_vap=None,
+#     attributes=None,
+#     isotopes_considered=("2H",),
+#     n_sd=1,
+#     dv: float = np.nan,
+#     dt: float = -1 * si.s,
+#     RH: float = 1,
+#     T: float = 1,
+# ):
+#     const = formulae.constants
+#     attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
+#         molecular_R_liq=molecular_R_liq,
+#         mass_total=attributes["signed water mass"],
+#         mass_other_heavy_isotopes=0,
+#         molar_mass_light_molecule=const.M_1H2_16O,
+#         molar_mass_heavy_molecule=const.M_2H_1H_16O,
+#     )
+#     builder = Builder(
+#         n_sd=n_sd,
+#         backend=backend_class(
+#             formulae=formulae,
+#         ),
+#         environment=Box(dv=dv, dt=dt),
+#     )
+#     builder.add_dynamic(Condensation())
+#     builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
+#
+#     builder.particulator.environment["RH"] = RH
+#     builder.particulator.environment["T"] = T
+#     rho_d = const.p_STP / const.Rd / T  # TODO check
+#     builder.particulator.environment["dry_air_density"] = rho_d
+#
+#     initial_conc_vap = (
+#         formulae.saturation_vapour_pressure.pvs_water(T) * RH / const.R_str / T
+#     )
+#     if initial_R_vap is None:
+#         initial_R_vap = {}
+#     for isotope in HEAVY_ISOTOPES:
+#         initial_R_vap.setdefault(isotope, 0)
+#         if rho_d is not None and initial_conc_vap is not None:
+#             builder.particulator.environment[f"molar mixing ratio {isotope}"] = (
+#                 formulae.trivia.R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+#                     R_vap=initial_R_vap[isotope],
+#                     density_dry_air=rho_d,
+#                     conc_vap_total=initial_conc_vap,
+#                 )
+#             )
+#         else:
+#             builder.particulator.environment[f"molar mixing ratio {isotope}"] = 0
+#     builder.request_attribute("delta_2H")
+#     return builder.build(attributes=attributes, products=())
+#
+#
+# def do_one_step(formulae, particulator, evaporated_mass_fraction):
+#     initial_conc_vap = (
+#         formulae.saturation_vapour_pressure.pvs_water(particulator.environment["T"][0])
+#         * particulator.environment["RH"][0]
+#         / formulae.constants.R_str
+#         / particulator.environment["T"][0]
+#     )
+#     initial_R_vap = (
+#         formulae.trivia.molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+#             molar_mixing_ratio=particulator.environment["molar mixing ratio 2H"][0],
+#             density_dry_air=particulator.environment["dry_air_density"][0],
+#             conc_vap_total=initial_conc_vap,
+#         )
+#     )
+#     initial_R_liq = (
+#         particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
+#     )
+#
+#     dm = -evaporated_mass_fraction * (
+#         particulator.attributes["signed water mass"][0]
+#         * particulator.attributes["multiplicity"][0]
+#     )
+#     particulator.attributes["diffusional growth mass change"].data[0] = (
+#         dm / particulator.attributes["multiplicity"]
+#     )
+#     assert np.all(particulator.attributes["diffusional growth mass change"].data < 0)
+#
+#     particulator.dynamics["IsotopicFractionation"]()
+#
+#     new_R_vap = (
+#         formulae.trivia.molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+#             molar_mixing_ratio=particulator.environment["molar mixing ratio 2H"].data[
+#                 0
+#             ],
+#             density_dry_air=particulator.environment["dry_air_density"][0],
+#             conc_vap_total=initial_conc_vap
+#             - dm / formulae.constants.Mv / particulator.environment.mesh.dv,
+#         )
+#     )
+#     new_R_liq = (
+#         particulator.attributes["moles_2H"][0] / particulator.attributes["moles_1H"][0]
+#     )
+#     dR_vap = new_R_vap - initial_R_vap
+#     dR_liq = new_R_liq - initial_R_liq
+#     return dR_vap / initial_R_vap, dR_liq / initial_R_liq
 
 BASE_INITIAL_ATTRIBUTES = {
+    "multiplicity": np.ones(1),
     "dry volume": np.nan,
     "kappa times dry volume": np.nan,
+    "signed water mass": np.ones(1) * si.ng,
     **{f"moles_{isotope}": 0 * si.mole for isotope in HEAVY_ISOTOPES},
 }
+
+
+def make_particulator(backend_instance, isotopes_considered, attributes):
+    builder = Builder(
+        n_sd=1,
+        backend=backend_instance,
+        environment=Box(dv=np.nan, dt=1 * si.s),
+    )
+    for iso in isotopes_considered:
+        attributes[f"moles_{iso}"] = np.nan
+        builder.request_attribute(f"delta_{iso}")
+        builder.particulator.environment[f"molar mixing ratio {iso}"] = np.nan
+    builder.particulator.environment["RH"] = np.nan
+    builder.particulator.environment["T"] = np.nan
+    builder.particulator.environment["dry_air_density"] = np.nan
+
+    builder.add_dynamic(Condensation())
+    builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
+
+    return builder.build(attributes)
 
 
 @pytest.fixture(scope="session")
@@ -65,14 +192,14 @@ class TestIsotopicFractionation:
         "dynamics, context",
         (
             pytest.param(
-                (Condensation(), IsotopicFractionation(isotopes=("1H",))), nullcontext()
+                (Condensation(), IsotopicFractionation(isotopes=("2H",))), nullcontext()
             ),
             pytest.param(
-                (IsotopicFractionation(isotopes=("1H",)),),
+                (IsotopicFractionation(isotopes=("2H",)),),
                 pytest.raises(AssertionError, match="dynamics"),
             ),
             pytest.param(
-                (IsotopicFractionation(isotopes=("1H",)), Condensation()),
+                (IsotopicFractionation(isotopes=("2H",)), Condensation()),
                 pytest.raises(AssertionError, match="dynamics"),
             ),
         ),
@@ -84,18 +211,42 @@ class TestIsotopicFractionation:
         )
         for dynamic in dynamics:
             builder.add_dynamic(dynamic)
+        builder.particulator.environment[f"molar mixing ratio 2H"] = np.nan
 
         # act
         with context:
             builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
 
     @staticmethod
-    def test_call_marks_all_isotopes_as_updated(backend_class, formulae):
+    @pytest.mark.parametrize(
+        "isotope",
+        [
+            *HEAVY_ISOTOPES,
+            *[
+                pytest.param(
+                    iso, marks=pytest.mark.xfail(reason="Light isotope", strict=True)
+                )
+                for iso in LIGHT_ISOTOPES
+            ],
+        ],
+    )
+    def test_fractionation_implemented_for_isotope(backend_instance, isotope):
+        # arrange
+        builder = Builder(
+            n_sd=1, backend=backend_instance, environment=Box(dv=np.nan, dt=-1 * si.s)
+        )
+        builder.add_dynamic(Condensation())
+        builder.add_dynamic(IsotopicFractionation(isotopes=(isotope,)))
+        builder.particulator.environment[f"molar mixing ratio {isotope}"] = np.nan
+        builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
+
+    @staticmethod
+    def test_call_marks_all_isotopes_as_updated(formulae):
         # arrange
         particulator = make_particulator(
-            formulae=formulae,
-            backend_class=backend_class,
-            isotopes_considered=HEAVY_ISOTOPES,
+            backend_instance=CPU(formulae=formulae),
+            isotopes_considered=("2H",),
+            attributes=BASE_INITIAL_ATTRIBUTES.copy(),
         )
 
         for isotope in HEAVY_ISOTOPES:
@@ -135,13 +286,9 @@ class TestIsotopicFractionation:
         attributes["signed water mass"] = 1
 
         particulator = make_particulator(
-            formulae=formulae,
-            backend_class=backend_class,
+            backend_instance=backend_class(formulae=formulae),
             attributes=attributes,
             isotopes_considered=(),
-            dv=1 * si.m**3,
-            T=formulae.trivia.C2K(10) * si.K,
-            RH=1,
         )
 
         # act
@@ -164,22 +311,21 @@ class TestIsotopicFractionation:
         const = formulae.constants
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
         attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
-            molecular_R_liq=molecular_R_liq,
             mass_total=attributes["signed water mass"],
             mass_other_heavy_isotopes=sum(
                 attributes[f"moles_{isotope}"]
                 for isotope in HEAVY_ISOTOPES
                 if isotope != "2H"
             ),
-            water_molar_mass=const.Mv,
+            molar_mass_light_molecule=const.M_1H2_16O,
             molar_mass_heavy_molecule=const.M_2H_1H_16O,
+            molecular_isotope_ratio=molecular_R_liq,
+            atoms_per_heavy_molecule=1,
         )
 
         particulator = make_particulator(
-            formulae=formulae,
-            backend_class=backend_class,
+            backend_instance=backend_class(formulae=formulae),
             attributes=attributes,
-            RH=1,
             isotopes_considered=("2H",),
         )
         # act

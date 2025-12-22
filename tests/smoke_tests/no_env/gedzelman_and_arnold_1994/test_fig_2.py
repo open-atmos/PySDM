@@ -13,8 +13,8 @@ from PySDM_examples import Gedzelman_and_Arnold_1994
 PLOT = False
 
 
-@pytest.fixture(scope="session", name="notebook_local_variables")
-def notebook_local_variables_fixture():
+@pytest.fixture(scope="session", name="notebook_variables")
+def notebook_variables_fixture():
     return notebook_vars(
         Path(Gedzelman_and_Arnold_1994.__file__).parent / "fig_2.ipynb", plot=PLOT
     )
@@ -31,19 +31,41 @@ def notebook_local_variables_fixture():
         (0.85, 1, "eq_23"),
     ),
 )
-class TestFig2:
-    @staticmethod
-    def test_fig_2(notebook_local_variables, x, y, var):
-        """given that the plot depends on a number of constants that are likely to cause
-        discrepancies, the comparison is rough and effectively just a regression test
-        (expected values roughly correspond to the paper plot, but are based on PySDM output)
-        """
-        plot_x = notebook_local_variables["fig2_x"]
-        plot_y = notebook_local_variables["fig2_y"][var]
-        eps = (plot_x[1] - plot_x[0]) / 2
-        index = np.where(abs(plot_x - x) < eps)
-        np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
+def test_fig_2(notebook_variables, x, y, var):  # TODO, fix variable names
+    """given that the plot depends on a number of constants that are likely to cause
+    discrepancies, the comparison is rough and effectively just a regression test
+    (expected values roughly correspond to the paper plot, but are based on PySDM output)
+    """
+    plot_x = notebook_variables["fig2_x"]
+    plot_y = notebook_variables["fig2_y"][var]
+    eps = (plot_x[1] - plot_x[0]) / 2
+    index = np.where(abs(plot_x - x) < eps)
+    np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
 
-    @staticmethod
-    def test_isotope_ratio_change(notebook_local_variables):
-        pass
+
+def test_isotope_ratio_change(notebook_variables):
+    # arange
+    saturation_for_zero_dR_condition = notebook_variables["S_eq"]
+    rel_diff_vap, rel_diff_liq = (
+        notebook_variables["rel_diff_vap"],
+        notebook_variables["rel_diff_liq"],
+    )
+
+    mesh_grid = np.meshgrid(
+        saturation_for_zero_dR_condition["liquid"], notebook_variables["rh_percent"]
+    )
+    growth_liq = np.where(
+        mesh_grid[1] > saturation_for_zero_dR_condition["liquid"], 1, -1
+    )
+    mesh_grid = np.meshgrid(
+        saturation_for_zero_dR_condition["vapour"], notebook_variables["rh_percent"]
+    )
+    growth_vap = np.where(
+        mesh_grid[1] > saturation_for_zero_dR_condition["vapour"], 1, -1
+    )
+
+    # act
+
+    # assert
+    np.testing.assert_allclose(actual=growth_liq, desired=True)
+    np.testing.assert_allclose(actual=growth_vap, desired=True)
