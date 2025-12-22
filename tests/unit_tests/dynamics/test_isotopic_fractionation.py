@@ -5,16 +5,13 @@ unit test for the IsotopicFractionation dynamic
 from contextlib import nullcontext
 
 import numpy as np
-from matplotlib import pyplot
 import pytest
-from open_atmos_jupyter_utils import show_plot
 
 from PySDM import Builder, Formulae
 from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 from PySDM.environments import Box
-from PySDM.physics import si, in_unit
-from PySDM.physics.constants import PER_MILLE, PER_CENT
+from PySDM.physics import si
 from PySDM.physics.constants_defaults import VSMOW_R_2H  # TODO!
 
 
