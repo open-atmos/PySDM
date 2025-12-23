@@ -10,18 +10,17 @@ import pytest
 from PySDM import Builder, Formulae
 from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES, LIGHT_ISOTOPES
-from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
 from PySDM.physics.constants_defaults import VSMOW_R_2H  # TODO!
 
-
+n_sd = 1
 BASE_INITIAL_ATTRIBUTES = {
     "multiplicity": np.ones(1),
-    "dry volume": np.nan,
-    "kappa times dry volume": np.nan,
-    "signed water mass": np.ones(1) * si.ng,
-    **{f"moles_{isotope}": 0 * si.mole for isotope in HEAVY_ISOTOPES},
+    "dry volume": np.array(np.nan),
+    "kappa times dry volume": np.array(np.nan),
+    "signed water mass": np.array(np.nan),
+    **{f"moles_{isotope}": np.zeros(1) * si.mole for isotope in HEAVY_ISOTOPES},
 }
 
 
@@ -32,12 +31,12 @@ def make_particulator(backend_instance, isotopes_considered, attributes):
         environment=Box(dv=np.nan, dt=1 * si.s),
     )
     for iso in isotopes_considered:
-        attributes[f"moles_{iso}"] = np.nan
+        attributes[f"moles_{iso}"] = np.array(np.nan)
         builder.request_attribute(f"delta_{iso}")
-        builder.particulator.environment[f"molar mixing ratio {iso}"] = np.nan
-    builder.particulator.environment["RH"] = np.nan
-    builder.particulator.environment["T"] = np.nan
-    builder.particulator.environment["dry_air_density"] = np.nan
+        builder.particulator.environment[f"molar mixing ratio {iso}"] = np.array(np.nan)
+    builder.particulator.environment["RH"] = np.array(np.nan)
+    builder.particulator.environment["T"] = np.array(np.nan)
+    builder.particulator.environment["dry_air_density"] = np.array(np.nan)
 
     builder.add_dynamic(Condensation())
     builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
@@ -137,10 +136,10 @@ class TestIsotopicFractionation:
         builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
 
     @staticmethod
-    def test_call_marks_all_isotopes_as_updated(formulae):
+    def test_call_marks_all_isotopes_as_updated(formulae, backend_class):
         # arrange
         particulator = make_particulator(
-            backend_instance=CPU(formulae=formulae),
+            backend_instance=backend_class(formulae=formulae),
             isotopes_considered=("2H",),
             attributes=BASE_INITIAL_ATTRIBUTES.copy(),
         )
@@ -178,8 +177,7 @@ class TestIsotopicFractionation:
         """neither a bug nor a feature :) - just a simplification (?)"""
         # arrange
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
-        attributes["moles_2H"] = 44
-        attributes["signed water mass"] = 1
+        attributes["moles_2H"] = 44.0 * np.ones(1)
 
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
@@ -206,6 +204,7 @@ class TestIsotopicFractionation:
         # arrange
         const = formulae.constants
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
+        attributes["signed water mass"] = np.ones(1) * si.ng
         attributes["moles_2H"] = formulae.trivia.moles_heavy_atom(
             mass_total=attributes["signed water mass"],
             mass_other_heavy_isotopes=sum(
