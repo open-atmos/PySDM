@@ -12,9 +12,7 @@ from PySDM.dynamics import Condensation, IsotopicFractionation
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES, LIGHT_ISOTOPES
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.physics.constants_defaults import VSMOW_R_2H  # TODO!
 
-n_sd = 1
 BASE_INITIAL_ATTRIBUTES = {
     "multiplicity": np.ones(1),
     "dry volume": np.array(np.nan),
@@ -195,7 +193,10 @@ class TestIsotopicFractionation:
         assert particulator.attributes["moles_2H"][0] == attributes["moles_2H"]
 
     @staticmethod
-    @pytest.mark.parametrize("molecular_R_liq", np.linspace(0.8, 1, 5) * VSMOW_R_2H)
+    @pytest.mark.parametrize(
+        "molecular_R_liq",
+        np.linspace(0.8, 1, 5) * Formulae().constants.VSMOW_R_2H,
+    )
     def test_initial_condition_for_delta_isotopes(
         backend_class,
         formulae,
