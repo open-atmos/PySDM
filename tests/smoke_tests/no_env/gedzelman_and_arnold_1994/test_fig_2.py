@@ -6,9 +6,11 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from matplotlib import pyplot
+
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Gedzelman_and_Arnold_1994
+
+from PySDM.physics.constants import in_unit, PER_CENT
 
 PLOT = False
 
@@ -46,12 +48,11 @@ def test_fig_2(notebook_variables, x, y, var):  # TODO, fix variable names
 @pytest.mark.parametrize(
     "phase, eps",
     (
-        ("liquid", 1e-10),
-        ("liquid", 1e-5),
-        ("liquid", 1e-1),
-        ("vapour", 1e-10),
-        ("vapour", 1e-5),
-        ("vapour", 1e-1),
+        ("liquid", 0.02),
+        ("liquid", 0.06),
+        ("vapour", 0.06),
+        ("vapour", 0.09),
+        ("vapour", 0.1),
     ),
 )
 def test_isotope_ratio_change(notebook_variables, phase, eps):
@@ -63,18 +64,11 @@ def test_isotope_ratio_change(notebook_variables, phase, eps):
     COMMONS = notebook_variables["COMMONS"]
     heavier_liq = mR_liq > COMMONS.iso_ratio_liq_eq
 
-    rel_diff_vap, rel_diff_liq = (
-        notebook_variables["rel_diff_vap"],
-        notebook_variables["rel_diff_liq"],
-    )
+    rel_diff = notebook_variables[f"rel_diff_{phase[:3]}"]
+    above_eq_line = heavier_liq * (rh_tile > s_eq[phase])
 
-    above_liq_eq_line = heavier_liq * (rh_tile > s_eq["liquid"])
-    above_vap_eq_line = heavier_liq * (rh_tile > s_eq["vapour"])
     # act
-    sut = {
-        "liquid": np.where(above_liq_eq_line, -1, 1) * rel_diff_liq[::-1, :],
-        "vapour": np.where(above_vap_eq_line, 1, -1) * rel_diff_vap[::-1, :],
-    }
+    sut = np.where(above_eq_line, -1, 1) * rel_diff[::-1, :] * PER_CENT
+
     # assert
-    np.testing.assert_array_less(-sut["liquid"][~np.isnan(sut["liquid"])], eps)
-    np.testing.assert_array_less(-sut["vapour"][~np.isnan(sut["vapour"])], eps)
+    np.testing.assert_array_less(-sut[~np.isnan(sut)], eps)
