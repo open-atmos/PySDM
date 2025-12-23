@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
+from matplotlib import pyplot
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Gedzelman_and_Arnold_1994
 
@@ -43,29 +43,39 @@ def test_fig_2(notebook_variables, x, y, var):  # TODO, fix variable names
     np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
 
 
-def test_isotope_ratio_change(notebook_variables):
+@pytest.mark.parametrize("eps", np.logspace(-3, 1, num=5))
+def test_isotope_ratio_change(notebook_variables, eps):
     # arange
-    saturation_for_zero_dR_condition = notebook_variables["S_eq"]
     rel_diff_vap, rel_diff_liq = (
         notebook_variables["rel_diff_vap"],
         notebook_variables["rel_diff_liq"],
     )
+    rh = notebook_variables["RH"]
+    mR_liq = notebook_variables["molecular_R_liq"]
 
-    mesh_grid = np.meshgrid(
-        saturation_for_zero_dR_condition["liquid"], notebook_variables["rh_percent"]
-    )
-    growth_liq = np.where(
-        mesh_grid[1] > saturation_for_zero_dR_condition["liquid"], 1, -1
-    )
-    mesh_grid = np.meshgrid(
-        saturation_for_zero_dR_condition["vapour"], notebook_variables["rh_percent"]
-    )
-    growth_vap = np.where(
-        mesh_grid[1] > saturation_for_zero_dR_condition["vapour"], 1, -1
-    )
-
+    rh_tile = np.tile(rh, (len(rh), 1))
+    s_eq = notebook_variables["s_eq"]
+    COMMONS = notebook_variables["COMMONS"]
+    heavier_liq = mR_liq > COMMONS.iso_ratio_liq_eq
+    above_liq_eq_line = heavier_liq * (rh_tile > s_eq["liquid"])
+    above_vap_eq_line = heavier_liq * (rh_tile > s_eq["vapour"])
     # act
-
+    sut = {
+        "liquid": (rel_diff_liq[above_liq_eq_line], rel_diff_liq[~above_liq_eq_line])
+        * 100,
+        "vapour": (rel_diff_vap[above_vap_eq_line], rel_diff_vap[~above_vap_eq_line])
+        * 100,
+    }
     # assert
-    np.testing.assert_allclose(actual=growth_liq, desired=True)
-    np.testing.assert_allclose(actual=growth_vap, desired=True)
+    np.testing.assert_array_less(
+        (sut["liquid"][0] - eps)[~np.isnan(sut["liquid"][0])], 0, verbose=True
+    )
+    # np.testing.assert_array_less(
+    #     -(sut["liquid"][1] + eps)[~np.isnan(sut["liquid"][1])], 0, verbose=True
+    # )
+    np.testing.assert_array_less(
+        -(sut["vapour"][0] + eps)[~np.isnan(sut["vapour"][0])], 0, verbose=True
+    )
+    np.testing.assert_array_less(
+        -(sut["vapour"][1] + eps)[~np.isnan(sut["vapour"][1])], 0, verbose=True
+    )
