@@ -43,39 +43,38 @@ def test_fig_2(notebook_variables, x, y, var):  # TODO, fix variable names
     np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
 
 
-@pytest.mark.parametrize("eps", np.logspace(-3, 1, num=5))
-def test_isotope_ratio_change(notebook_variables, eps):
+@pytest.mark.parametrize(
+    "phase, eps",
+    (
+        ("liquid", 1e-10),
+        ("liquid", 1e-5),
+        ("liquid", 1e-1),
+        ("vapour", 1e-10),
+        ("vapour", 1e-5),
+        ("vapour", 1e-1),
+    ),
+)
+def test_isotope_ratio_change(notebook_variables, phase, eps):
     # arange
+    rh = notebook_variables["RH"]
+    mR_liq = notebook_variables["molecular_R_liq"]
+    rh_tile = np.tile(rh[::-1], (len(rh), 1)).T
+    s_eq = notebook_variables["s_eq"]
+    COMMONS = notebook_variables["COMMONS"]
+    heavier_liq = mR_liq > COMMONS.iso_ratio_liq_eq
+
     rel_diff_vap, rel_diff_liq = (
         notebook_variables["rel_diff_vap"],
         notebook_variables["rel_diff_liq"],
     )
-    rh = notebook_variables["RH"]
-    mR_liq = notebook_variables["molecular_R_liq"]
 
-    rh_tile = np.tile(rh, (len(rh), 1))
-    s_eq = notebook_variables["s_eq"]
-    COMMONS = notebook_variables["COMMONS"]
-    heavier_liq = mR_liq > COMMONS.iso_ratio_liq_eq
     above_liq_eq_line = heavier_liq * (rh_tile > s_eq["liquid"])
     above_vap_eq_line = heavier_liq * (rh_tile > s_eq["vapour"])
     # act
     sut = {
-        "liquid": (rel_diff_liq[above_liq_eq_line], rel_diff_liq[~above_liq_eq_line])
-        * 100,
-        "vapour": (rel_diff_vap[above_vap_eq_line], rel_diff_vap[~above_vap_eq_line])
-        * 100,
+        "liquid": np.where(above_liq_eq_line, -1, 1) * rel_diff_liq[::-1, :],
+        "vapour": np.where(above_vap_eq_line, 1, -1) * rel_diff_vap[::-1, :],
     }
     # assert
-    np.testing.assert_array_less(
-        (sut["liquid"][0] - eps)[~np.isnan(sut["liquid"][0])], 0, verbose=True
-    )
-    # np.testing.assert_array_less(
-    #     -(sut["liquid"][1] + eps)[~np.isnan(sut["liquid"][1])], 0, verbose=True
-    # )
-    np.testing.assert_array_less(
-        -(sut["vapour"][0] + eps)[~np.isnan(sut["vapour"][0])], 0, verbose=True
-    )
-    np.testing.assert_array_less(
-        -(sut["vapour"][1] + eps)[~np.isnan(sut["vapour"][1])], 0, verbose=True
-    )
+    np.testing.assert_array_less(-sut["liquid"][~np.isnan(sut["liquid"])], eps)
+    np.testing.assert_array_less(-sut["vapour"][~np.isnan(sut["vapour"])], eps)
