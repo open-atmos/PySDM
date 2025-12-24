@@ -192,3 +192,35 @@ class Trivia:  # pylint: disable=too-many-public-methods
             )
             / atoms_per_heavy_molecule
         )
+
+    @staticmethod
+    def R_vap_to_molar_mixing_ratio_assuming_single_heavy_isotope(
+        R_vap, density_dry_air, conc_vap_total
+    ):
+        conc_vap_heavy = conc_vap_total * R_vap / (1 + R_vap)
+        return conc_vap_heavy / density_dry_air
+
+    @staticmethod
+    def molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
+        molar_mixing_ratio, density_dry_air, conc_vap_total
+    ):
+        conc_vap_heavy = molar_mixing_ratio * density_dry_air
+        return conc_vap_heavy / (conc_vap_total - conc_vap_heavy)
+
+    @staticmethod
+    def molecular_R_liq(
+        moles_heavy_molecule,
+        molar_mass_heavy_molecule,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+    ):
+        return (
+            moles_heavy_molecule
+            * molar_mass_light_molecule
+            / (
+                mass_total
+                - moles_heavy_molecule * molar_mass_heavy_molecule
+                - mass_other_heavy_isotopes
+            )
+        )

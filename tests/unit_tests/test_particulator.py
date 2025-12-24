@@ -140,7 +140,7 @@ class TestParticulator:
         assert particulator.attributes.sane
 
     @staticmethod
-    def test_seeding_fails_if_no_null_super_droplets_availale(backend_class):
+    def test_seeding_fails_if_no_null_super_droplets_available(backend_class):
         # arrange
         a_number = 44
 
