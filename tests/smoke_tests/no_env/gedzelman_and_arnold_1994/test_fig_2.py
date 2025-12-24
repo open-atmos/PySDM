@@ -17,6 +17,7 @@ PLOT = False
 
 @pytest.fixture(scope="session", name="notebook_variables")
 def notebook_variables_fixture():
+    """notebook variables fixture"""
     return notebook_vars(
         Path(Gedzelman_and_Arnold_1994.__file__).parent / "fig_2.ipynb", plot=PLOT
     )

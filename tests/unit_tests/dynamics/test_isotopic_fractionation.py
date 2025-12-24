@@ -1,7 +1,8 @@
 """
-unit test for the IsotopicFractionation dynamic
+unit tests for the IsotopicFractionation dynamic
 """
 
+# pylint: disable=redefined-outer-name
 from contextlib import nullcontext
 
 import numpy as np
@@ -23,6 +24,7 @@ BASE_INITIAL_ATTRIBUTES = {
 
 
 def make_particulator(backend_instance, isotopes_considered, attributes):
+    """return basic particulator needed for testing"""
     builder = Builder(
         n_sd=1,
         backend=backend_instance,
@@ -44,6 +46,7 @@ def make_particulator(backend_instance, isotopes_considered, attributes):
 
 @pytest.fixture(scope="session")
 def formulae():
+    """common formulae"""
     return Formulae(
         isotope_relaxation_timescale="ZabaEtAl",
         isotope_diffusivity_ratios="GrahamsLaw",
@@ -53,33 +56,9 @@ def formulae():
     )
 
 
-def zero_conditions(formulae, T, R_vap):
-    b_factor = (
-        formulae.drop_growth.Fk(T, K=formulae.constants.K0, lv=formulae.constants.l_tri)
-        / formulae.constants.rho_w
-        * formulae.saturation_vapour_pressure.pvs_water(T)
-        / T
-        / formulae.constants.Rv
-        * formulae.constants.D0
-    )
-    alpha_2H = formulae.isotope_equilibrium_fractionation_factors.alpha_l_2H(T)
-    R_equilibrium = alpha_2H * R_vap / VSMOW_R_2H
-    R_range = np.linspace(R_equilibrium, 1.01, 200)
-    return R_range, [
-        formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
-            diff_rat_light_to_heavy=1
-            / formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T),
-            iso_ratio_x=val_x,
-            iso_ratio_r=R_range * VSMOW_R_2H,
-            iso_ratio_v=R_vap,
-            b=b_factor,
-            alpha_w=alpha_2H,
-        )
-        for val_x in [R_range * VSMOW_R_2H, R_vap]
-    ]
-
-
 class TestIsotopicFractionation:
+    """test the IsotopicFractionation dynamic"""
+
     @staticmethod
     @pytest.mark.parametrize(
         "dynamics, context",
@@ -98,13 +77,16 @@ class TestIsotopicFractionation:
         ),
     )
     def test_ensure_condensation_executed_before(backend_instance, dynamics, context):
+        """
+        test that run fails when isotopic fractionation
+        is executed before or without condensation"""
         # arrange
         builder = Builder(
             n_sd=1, backend=backend_instance, environment=Box(dv=np.nan, dt=1 * si.s)
         )
         for dynamic in dynamics:
             builder.add_dynamic(dynamic)
-        builder.particulator.environment[f"molar mixing ratio 2H"] = np.nan
+        builder.particulator.environment["molar mixing ratio 2H"] = np.nan
 
         # act
         with context:
@@ -124,6 +106,8 @@ class TestIsotopicFractionation:
         ],
     )
     def test_fractionation_implemented_for_isotope(backend_instance, isotope):
+        """test isotopic fractionation implemented
+        for heavy water isotopes and raising error for light ones"""
         # arrange
         builder = Builder(
             n_sd=1, backend=backend_instance, environment=Box(dv=np.nan, dt=-1 * si.s)
@@ -135,6 +119,7 @@ class TestIsotopicFractionation:
 
     @staticmethod
     def test_call_marks_all_isotopes_as_updated(formulae, backend_class):
+        """test isotopic fractionation dynamic updates moles attribute"""
         # arrange
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
@@ -185,9 +170,7 @@ class TestIsotopicFractionation:
 
         # act
         particulator.attributes["diffusional growth mass change"].data[:] = 0
-        particulator.dynamics[
-            "IsotopicFractionation"
-        ]()  # TODO: call condensation as well!
+        particulator.dynamics["IsotopicFractionation"]()
 
         # assert
         assert particulator.attributes["moles_2H"][0] == attributes["moles_2H"]
@@ -202,6 +185,7 @@ class TestIsotopicFractionation:
         formulae,
         molecular_R_liq,
     ):
+        """test initial condition for delta_isotopes is calculated properly"""
         # arrange
         const = formulae.constants
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
