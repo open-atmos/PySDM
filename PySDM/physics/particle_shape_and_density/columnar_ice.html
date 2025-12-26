@@ -117,7 +117,7 @@
 </span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">polar_radius_empirical_parametrisation</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sec. 3.1.2 in [Spichtinger &amp; Gierens 2009].</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sec. 3.1.2 in [Spichtinger &amp; Gierens 2009](https://doi.org/10.5194/acp-9-685-2009).</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">        Note that the notation in the paper is incorrect.</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
@@ -132,7 +132,7 @@
 </span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
 </span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">aspect_ratio_empirical_parametrisation</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Eq. 17 in [Spichtinger &amp; Gierens 2009]&quot;&quot;&quot;</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Eq. 17 in [Spichtinger &amp; Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)&quot;&quot;&quot;</span>
 </span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
 </span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>            <span class="n">mass</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">columnar_ice_mass_transition</span><span class="p">,</span>
 </span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>            <span class="mi">1</span><span class="p">,</span>
@@ -169,7 +169,7 @@
 </span><span id="ColumnarIce-12"><a href="#ColumnarIce-12"><span class="linenos">12</span></a>
 </span><span id="ColumnarIce-13"><a href="#ColumnarIce-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="ColumnarIce-14"><a href="#ColumnarIce-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">polar_radius_empirical_parametrisation</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-</span><span id="ColumnarIce-15"><a href="#ColumnarIce-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sec. 3.1.2 in [Spichtinger &amp; Gierens 2009].</span>
+</span><span id="ColumnarIce-15"><a href="#ColumnarIce-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sec. 3.1.2 in [Spichtinger &amp; Gierens 2009](https://doi.org/10.5194/acp-9-685-2009).</span>
 </span><span id="ColumnarIce-16"><a href="#ColumnarIce-16"><span class="linenos">16</span></a><span class="sd">        Note that the notation in the paper is incorrect.</span>
 </span><span id="ColumnarIce-17"><a href="#ColumnarIce-17"><span class="linenos">17</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="ColumnarIce-18"><a href="#ColumnarIce-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
@@ -184,7 +184,7 @@
 </span><span id="ColumnarIce-27"><a href="#ColumnarIce-27"><span class="linenos">27</span></a>
 </span><span id="ColumnarIce-28"><a href="#ColumnarIce-28"><span class="linenos">28</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="ColumnarIce-29"><a href="#ColumnarIce-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">aspect_ratio_empirical_parametrisation</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-</span><span id="ColumnarIce-30"><a href="#ColumnarIce-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Eq. 17 in [Spichtinger &amp; Gierens 2009]&quot;&quot;&quot;</span>
+</span><span id="ColumnarIce-30"><a href="#ColumnarIce-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Eq. 17 in [Spichtinger &amp; Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)&quot;&quot;&quot;</span>
 </span><span id="ColumnarIce-31"><a href="#ColumnarIce-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
 </span><span id="ColumnarIce-32"><a href="#ColumnarIce-32"><span class="linenos">32</span></a>            <span class="n">mass</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">columnar_ice_mass_transition</span><span class="p">,</span>
 </span><span id="ColumnarIce-33"><a href="#ColumnarIce-33"><span class="linenos">33</span></a>            <span class="mi">1</span><span class="p">,</span>
@@ -221,7 +221,7 @@
     <a class="headerlink" href="#ColumnarIce.polar_radius_empirical_parametrisation"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ColumnarIce.polar_radius_empirical_parametrisation-13"><a href="#ColumnarIce.polar_radius_empirical_parametrisation-13"><span class="linenos">13</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="ColumnarIce.polar_radius_empirical_parametrisation-14"><a href="#ColumnarIce.polar_radius_empirical_parametrisation-14"><span class="linenos">14</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">polar_radius_empirical_parametrisation</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-</span><span id="ColumnarIce.polar_radius_empirical_parametrisation-15"><a href="#ColumnarIce.polar_radius_empirical_parametrisation-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sec. 3.1.2 in [Spichtinger &amp; Gierens 2009].</span>
+</span><span id="ColumnarIce.polar_radius_empirical_parametrisation-15"><a href="#ColumnarIce.polar_radius_empirical_parametrisation-15"><span class="linenos">15</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Sec. 3.1.2 in [Spichtinger &amp; Gierens 2009](https://doi.org/10.5194/acp-9-685-2009).</span>
 </span><span id="ColumnarIce.polar_radius_empirical_parametrisation-16"><a href="#ColumnarIce.polar_radius_empirical_parametrisation-16"><span class="linenos">16</span></a><span class="sd">        Note that the notation in the paper is incorrect.</span>
 </span><span id="ColumnarIce.polar_radius_empirical_parametrisation-17"><a href="#ColumnarIce.polar_radius_empirical_parametrisation-17"><span class="linenos">17</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="ColumnarIce.polar_radius_empirical_parametrisation-18"><a href="#ColumnarIce.polar_radius_empirical_parametrisation-18"><span class="linenos">18</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
@@ -236,7 +236,7 @@
 </span></pre></div>
 
 
-            <div class="docstring"><p>Sec. 3.1.2 in [Spichtinger &amp; Gierens 2009].
+            <div class="docstring"><p>Sec. 3.1.2 in <a href="https://doi.org/10.5194/acp-9-685-2009">Spichtinger &amp; Gierens 2009</a>.
 Note that the notation in the paper is incorrect.</p>
 </div>
 
@@ -256,7 +256,7 @@ Note that the notation in the paper is incorrect.</p>
     <a class="headerlink" href="#ColumnarIce.aspect_ratio_empirical_parametrisation"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ColumnarIce.aspect_ratio_empirical_parametrisation-28"><a href="#ColumnarIce.aspect_ratio_empirical_parametrisation-28"><span class="linenos">28</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="ColumnarIce.aspect_ratio_empirical_parametrisation-29"><a href="#ColumnarIce.aspect_ratio_empirical_parametrisation-29"><span class="linenos">29</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">aspect_ratio_empirical_parametrisation</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">mass</span><span class="p">):</span>
-</span><span id="ColumnarIce.aspect_ratio_empirical_parametrisation-30"><a href="#ColumnarIce.aspect_ratio_empirical_parametrisation-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Eq. 17 in [Spichtinger &amp; Gierens 2009]&quot;&quot;&quot;</span>
+</span><span id="ColumnarIce.aspect_ratio_empirical_parametrisation-30"><a href="#ColumnarIce.aspect_ratio_empirical_parametrisation-30"><span class="linenos">30</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Eq. 17 in [Spichtinger &amp; Gierens 2009](https://doi.org/10.5194/acp-9-685-2009)&quot;&quot;&quot;</span>
 </span><span id="ColumnarIce.aspect_ratio_empirical_parametrisation-31"><a href="#ColumnarIce.aspect_ratio_empirical_parametrisation-31"><span class="linenos">31</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
 </span><span id="ColumnarIce.aspect_ratio_empirical_parametrisation-32"><a href="#ColumnarIce.aspect_ratio_empirical_parametrisation-32"><span class="linenos">32</span></a>            <span class="n">mass</span> <span class="o">&lt;</span> <span class="n">const</span><span class="o">.</span><span class="n">columnar_ice_mass_transition</span><span class="p">,</span>
 </span><span id="ColumnarIce.aspect_ratio_empirical_parametrisation-33"><a href="#ColumnarIce.aspect_ratio_empirical_parametrisation-33"><span class="linenos">33</span></a>            <span class="mi">1</span><span class="p">,</span>
@@ -277,7 +277,7 @@ Note that the notation in the paper is incorrect.</p>
 </span></pre></div>
 
 
-            <div class="docstring"><p>Eq. 17 in [Spichtinger &amp; Gierens 2009]</p>
+            <div class="docstring"><p>Eq. 17 in <a href="https://doi.org/10.5194/acp-9-685-2009">Spichtinger &amp; Gierens 2009</a></p>
 </div>
 
 
