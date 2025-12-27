@@ -4,14 +4,10 @@ from matplotlib import pyplot, ticker
 import numpy as np
 import seaborn as sns
 from cycler import cycler
-
 from PySDM import Formulae
 
-formulae = Formulae(
-    particle_shape_and_density="MixedPhaseSpheres",
-)
+formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
 
-# general plot settings
 ax_title_size = 18
 ax_lab_fsize = 15
 tick_fsize = 15
@@ -170,7 +166,6 @@ def plot_thermodynamics_and_bulk(
         ax.axvline(x=first_T_frz, color="black", linestyle="--")
         ax.set_title(title_add[iax] + r"$T_{frz}$ histogram", fontsize=ax_lab_fsize)
     else:
-        # Mean radius
         ax.plot(time, rc * 1e6, color="red", linestyle="-", label="water")
         ax.plot(time, ri * 1e6, color="blue", linestyle="-", label="ice")
         ax.set_yscale("log")
@@ -460,8 +455,7 @@ def plot_ensemble_bulk(
     colors = ["blue", "red", "cyan"]
     pyplot.rcParams["axes.prop_cycle"] = cycler(color=colors)
 
-    for k, ensemble_simulation in enumerate(ensemble_simulations):
-
+    for ensemble_simulation in ensemble_simulations:
         ens_var = np.asarray(ensemble_simulation["ens_variable"])
         ens_var_name = ensemble_simulation["ens_variable_name"]
         hom_freezing_types = ensemble_simulation["hom_freezing_types"]
@@ -522,33 +516,27 @@ def plot_ensemble_bulk(
         x_label = r"ice number concentration [$\mathrm{kg^{-1}}$]"
         title = r"$n_{i}$"
         ax.set_xlim(1e6, 1e10)
-
-    if var_name == "IWC":
+    elif var_name == "IWC":
         ax.set_xscale("log")
         x_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
         title = "ice mass content"
         ax.set_xlim(1e-4, 1e-3)
-
-    if var_name == "freezing_fraction":
+    elif var_name == "freezing_fraction":
         title = r"$n_{frz}$"
         x_label = r"frozen fraction [$\mathrm{\%}$]"
         ax.set_xlim(0, 20)
-
-    if ens_var_name == "n_ccn":
+    elif ens_var_name == "n_ccn":
         ax.set_yscale("log")
         y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
         ens_label = r"$n_{ccn}$ ensemble"
-
-    if ens_var_name == "w_updraft":
+    elif ens_var_name == "w_updraft":
         ax.set_yscale("log")
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
         ens_label = "w ensemble"
-
-    if ens_var_name == "sigma_droplet_distribution":
+    elif ens_var_name == "sigma_droplet_distribution":
         y_label = r"standard deviation DSD"
         ens_label = r"$\sigma$ ensemble"
-
-    if ens_var_name == "n_sd":
+    elif ens_var_name == "n_sd":
         ax.set_yscale("log")
         y_label = "number of super-particles"
         ens_label = r"$n_{sd}$ ensemble"
