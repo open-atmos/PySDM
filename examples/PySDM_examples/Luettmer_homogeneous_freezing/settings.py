@@ -107,7 +107,7 @@ class Settings:
             )
             self.r_wet, self.specific_concentration = spectral_sampling.Logarithmic(
                 spectrum
-            ).sample(n_sd)
+            ).sample_deterministic(n_sd)
 
         self.number_of_ensemble_runs = number_of_ensemble_runs
         self.dz = dz
