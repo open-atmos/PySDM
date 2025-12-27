@@ -3,9 +3,13 @@ import numpy as np
 import pytest
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
-from PySDM import Formulae, physics
+from PySDM import Formulae
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics import constants_defaults
+from PySDM.physics import constants_defaults, si
+from PySDM.physics.trivia import Trivia
+
+
+CONST = Formulae().constants
 
 
 class TestTrivia:
@@ -13,11 +17,10 @@ class TestTrivia:
     @pytest.mark.parametrize("x", (-0.9, -0.1, -0.01, 0, 0.01, 0.1, 0.9))
     def test_erfinv_approx_reltol(x):
         # arrange
-        trivia = Formulae().trivia
         expected = erfinv(x)
 
         # act
-        actual = trivia.erfinv_approx(x)
+        actual = Trivia.erfinv_approx(const=CONST, c=x)
 
         # assert
         if expected == 0:
@@ -33,10 +36,9 @@ class TestTrivia:
     @staticmethod
     def test_erfinv_approx_abstol():
         # arrange
-        formulae = Formulae()
 
         # act
-        params = formulae.trivia.erfinv_approx(0.25)
+        params = Trivia.erfinv_approx(const=CONST, c=0.25)
 
         # assert
         diff = np.abs(params - 0.2253)
@@ -45,11 +47,12 @@ class TestTrivia:
     @staticmethod
     def test_isotopic_enrichment_to_delta_SMOW():
         # arrange
-        formulae = Formulae()
         ARBITRARY_VALUE = 44
 
         # act
-        delta = formulae.trivia.isotopic_enrichment_to_delta_SMOW(ARBITRARY_VALUE, 0)
+        delta = Trivia.isotopic_enrichment_to_delta_SMOW(
+            E=ARBITRARY_VALUE, delta_0_SMOW=0
+        )
 
         # assert
         assert delta == ARBITRARY_VALUE
@@ -59,10 +62,9 @@ class TestTrivia:
         with DimensionalAnalysis():
             # Arrange
             formulae = Formulae()
-            si = constants_defaults.si
-            sut = formulae.trivia.air_schmidt_number
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
+            sut = Trivia.air_schmidt_number
             eta_air = formulae.air_dynamic_viscosity.eta_air(temperature=300 * si.K)
-
             # Act
             sc = sut(
                 dynamic_viscosity=eta_air,
@@ -77,9 +79,8 @@ class TestTrivia:
     def test_poissonian_avoidance_function():
         with DimensionalAnalysis():
             # Arrange
-            formulae = Formulae()
-            si = constants_defaults.si
-            sut = formulae.trivia.poissonian_avoidance_function
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
+            sut = Trivia.poissonian_avoidance_function
 
             # Act
             prob = sut(
@@ -93,11 +94,10 @@ class TestTrivia:
     @staticmethod
     def test_kelvin_to_celsius():
         # arrange
-        formulae = Formulae()
         temperature_in_kelvin = 44
 
         # act
-        temperature_in_celsius = formulae.trivia.K2C(temperature_in_kelvin)
+        temperature_in_celsius = Trivia.K2C(const=CONST, TK=temperature_in_kelvin)
 
         # assert
         assert temperature_in_celsius == temperature_in_kelvin - 273.15
@@ -105,14 +105,65 @@ class TestTrivia:
     @staticmethod
     def test_celsius_to_kelvin():
         # arrange
-        formulae = Formulae()
         temperature_in_celsius = 666
 
         # act
-        temperature_in_kelvin = formulae.trivia.C2K(temperature_in_celsius)
+        temperature_in_kelvin = Trivia.C2K(const=CONST, TC=temperature_in_celsius)
 
         # assert
         assert temperature_in_kelvin == temperature_in_celsius + 273.15
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "molecular_isotope_ratio",
+        (0.86 * CONST.VSMOW_R_2H, 0.9 * CONST.VSMOW_R_2H, 0.98 * CONST.VSMOW_R_2H),
+    )
+    @pytest.mark.parametrize("water_mass", np.linspace(10**-2, 10**3, 9) * si.ng)
+    @pytest.mark.parametrize(
+        "mass_other_heavy_isotopes", np.linspace(10**-7, 10**-2, 3) * si.ng
+    )
+    @pytest.mark.parametrize(
+        "heavy_isotope_name, heavy_isotope_molecule",
+        (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
+    )
+    def test_moles_heavy_atom(
+        molecular_isotope_ratio,
+        water_mass,
+        heavy_isotope_name,
+        heavy_isotope_molecule,
+        mass_other_heavy_isotopes,
+    ):
+        # arrange
+        assert mass_other_heavy_isotopes <= water_mass
+        molar_mass_heavy_molecule = getattr(CONST, f"M_{heavy_isotope_molecule}")
+        molar_mass_light_molecule = CONST.M_1H2_16O
+        if heavy_isotope_name[-1] == "O":
+            atoms_per_heavy_molecule = 1
+        elif heavy_isotope_name[-1] == "H":
+            atoms_per_heavy_molecule = 1
+        else:
+            assert False
+
+        # act
+        moles_heavy_atom = Trivia.moles_heavy_atom(
+            mass_total=water_mass,
+            molecular_isotope_ratio=molecular_isotope_ratio,
+            mass_other_heavy_isotopes=mass_other_heavy_isotopes,
+            molar_mass_light_molecule=molar_mass_light_molecule,
+            molar_mass_heavy_molecule=molar_mass_heavy_molecule,
+            atoms_per_heavy_molecule=atoms_per_heavy_molecule,
+        )
+
+        moles_heavy_molecule = atoms_per_heavy_molecule * moles_heavy_atom
+        moles_light_molecule = moles_heavy_molecule / molecular_isotope_ratio
+        sut = (
+            moles_heavy_molecule * molar_mass_heavy_molecule
+            + moles_light_molecule * molar_mass_light_molecule
+            + mass_other_heavy_isotopes
+        )
+
+        # assert
+        np.testing.assert_approx_equal(actual=sut, desired=water_mass, significant=5)
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -121,7 +172,7 @@ class TestTrivia:
     )
     def test_tau(bolin_number, dm_dt_over_m, expected_tau):
         # arrange
-        sut = physics.trivia.Trivia.tau
+        sut = Trivia.tau
 
         # act
         value = sut(Bo=bolin_number, dm_dt_over_m=dm_dt_over_m)

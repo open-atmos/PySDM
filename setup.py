@@ -40,10 +40,11 @@ dependencies = [
         else ""
     ),
     "pyevtk",
+    "pyparsing" + ("==3.2.5" if CI else ""),
 ]
 
 optional_dependencies = {
-    "unit-tests": ["pytest", "pytest-timeout", "matplotlib!=3.9.1", "Pillow<11.3.0"],
+    "unit-tests": ["pytest", "pytest-timeout", "matplotlib!=3.9.1"],
     "nonunit-tests": ["pytest", "PySDM-examples", "PyPartMC"],
     "CI_version_pins": [
         "PyPartMC==1.7.2",

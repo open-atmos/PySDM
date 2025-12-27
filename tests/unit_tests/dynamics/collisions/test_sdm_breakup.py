@@ -801,7 +801,7 @@ class TestSDMBreakup:
         attributes = {}
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             spectrum
-        ).sample(n_sd)
+        ).sample_deterministic(n_sd)
 
         mu = Trivia.volume(const, radius=100 * si.um)
         fragmentation = breakup_fragmentations.Exponential(scale=mu)
