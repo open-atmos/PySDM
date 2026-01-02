@@ -10,7 +10,7 @@ dependencies = [
     "ThrustRTC>=0.3.20",
     "CURandRTC>=0.1.2",
     "numba>=0.51.2",
-    "numpy"
+    "numpy",
     "Pint",
     "chempy",
     "scipy"
