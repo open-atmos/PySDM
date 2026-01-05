@@ -21,7 +21,7 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def bolin_number(
+    def bolin_number(  # pylint: disable=too-many-arguments
         D_ratio_heavy_to_light,
         alpha,
         D_light,

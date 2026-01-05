@@ -1,5 +1,4 @@
 """
-# TODO: define Bolin number
 # TODO: consider positive/negative values?
 # TODO: comment on total vs. light approximation
 """
