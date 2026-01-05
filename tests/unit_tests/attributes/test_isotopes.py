@@ -115,11 +115,11 @@ class TestIsotopes:
     @pytest.mark.parametrize(
         "moles_heavy, relative_humidity, expected_tau",
         (
-            (0, 0.99, 44),  # FIXME
-            (0, 1.01, 44),
+            (1, 0.99, 44),  # FIXME
+            (1, 1.01, 44),
         ),
     )  # TODO: check sign!
-    @pytest.mark.parametrize("variant", ("MiyakeEtAl1968",))
+    @pytest.mark.parametrize("variant", ("ZabaEtAl",))
     def test_bolin_number_attribute(
         backend_class,
         heavy_isotope: str,
@@ -136,18 +136,32 @@ class TestIsotopes:
         builder = Builder(
             n_sd=n_sd,
             backend=backend_class(
-                formulae=Formulae(isotope_relaxation_timescale=variant)
+                formulae=Formulae(
+                    isotope_relaxation_timescale=variant,
+                    isotope_diffusivity_ratios="HellmannAndHarvey2020",
+                    isotope_equilibrium_fractionation_factors="VanHook1968",
+                )
             ),
             environment=Box(dt=np.nan, dv=np.nan),
         )
         attribute_name = f"Bolin number for {heavy_isotope}"
         builder.request_attribute(attribute_name)
+        builder.request_attribute(f"delta_{heavy_isotope}")
+        for iso in HEAVY_ISOTOPES:
+            builder.particulator.environment[f"molar mixing ratio {iso}"] = 0
+        builder.particulator.environment[f"molar mixing ratio {heavy_isotope}"] = 0.44
+        builder.particulator.environment["T"] = 44.0
+        builder.particulator.environment["dry_air_density"] = 44.0
+        attributes = {
+            "multiplicity": np.ones(n_sd),
+            "signed water mass": np.ones(n_sd) * si.ng,
+        }
+        for iso in HEAVY_ISOTOPES:
+            attributes[f"moles_{iso}"] = (
+                np.ones(n_sd) * moles_heavy if iso == heavy_isotope else np.zeros(n_sd)
+            )
         particulator = builder.build(
-            attributes={
-                "multiplicity": np.ones(n_sd),
-                "signed water mass": np.ones(n_sd) * si.ng,
-                f"moles_{heavy_isotope}": np.ones(n_sd) * moles_heavy,
-            }
+            attributes=attributes,
         )
         particulator.environment["RH"] = relative_humidity
 
