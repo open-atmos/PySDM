@@ -113,63 +113,68 @@ class TestIsotopes:
     @staticmethod
     @pytest.mark.parametrize("heavy_isotope", HEAVY_ISOTOPES)
     @pytest.mark.parametrize(
-        "moles_heavy, relative_humidity, expected_tau",
+        "moles_heavy, relative_humidity, expected_sign_of_tau",
         (
-            (1, 0.99, 44),  # FIXME
-            (1, 1.01, 44),
+            (1, 0.99, -1),
+            (1, 1.01, 1),
         ),
-    )  # TODO: check sign!
+    )
     @pytest.mark.parametrize("variant", ("ZabaEtAl",))
     def test_bolin_number_attribute(
         backend_class,
         heavy_isotope: str,
         moles_heavy: float,
         relative_humidity: float,
-        expected_tau: float,
+        expected_sign_of_tau: float,
         variant: str,
     ):  # pylint: disable=too-many-arguments
         if backend_class.__name__ != "Numba":
             pytest.skip("# TODO - isotopes on GPU")
 
         # arrange
+        any_positive_number = 44.0
+        ff = Formulae(
+            isotope_relaxation_timescale=variant,
+            isotope_diffusivity_ratios="HellmannAndHarvey2020",
+            isotope_equilibrium_fractionation_factors="VanHook1968",
+        )
         n_sd = 1
+        attribute_name = f"Bolin number for {heavy_isotope}"
+
         builder = Builder(
             n_sd=n_sd,
-            backend=backend_class(
-                formulae=Formulae(
-                    isotope_relaxation_timescale=variant,
-                    isotope_diffusivity_ratios="HellmannAndHarvey2020",
-                    isotope_equilibrium_fractionation_factors="VanHook1968",
-                )
-            ),
+            backend=backend_class(formulae=ff),
             environment=Box(dt=np.nan, dv=np.nan),
         )
-        attribute_name = f"Bolin number for {heavy_isotope}"
         builder.request_attribute(attribute_name)
         builder.request_attribute(f"delta_{heavy_isotope}")
+
         for iso in HEAVY_ISOTOPES:
             builder.particulator.environment[f"molar mixing ratio {iso}"] = 0
         builder.particulator.environment[f"molar mixing ratio {heavy_isotope}"] = 0.44
-        builder.particulator.environment["T"] = 44.0
-        builder.particulator.environment["dry_air_density"] = 44.0
-        attributes = {
+
+        attr = {
             "multiplicity": np.ones(n_sd),
-            "signed water mass": np.ones(n_sd) * si.ng,
+            "signed water mass": np.full(n_sd, si.ng),
+            **{
+                f"moles_{iso}": np.full(
+                    n_sd, moles_heavy if iso == heavy_isotope else 0.0
+                )
+                for iso in HEAVY_ISOTOPES
+            },
         }
-        for iso in HEAVY_ISOTOPES:
-            attributes[f"moles_{iso}"] = (
-                np.ones(n_sd) * moles_heavy if iso == heavy_isotope else np.zeros(n_sd)
-            )
-        particulator = builder.build(
-            attributes=attributes,
-        )
+        particulator = builder.build(attributes=attr)
         particulator.environment["RH"] = relative_humidity
+        particulator.environment["T"] = any_positive_number
+        particulator.environment["dry_air_density"] = any_positive_number
 
         # act
         value = particulator.attributes[attribute_name].to_ndarray()
 
         # assert
-        assert value == expected_tau
+        np.testing.assert_approx_equal(
+            np.sign(value), expected_sign_of_tau, significant=5
+        )
 
     @staticmethod
     def test_moles(
