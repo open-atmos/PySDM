@@ -33,6 +33,4 @@ class DiffusionalGrowthMassChange(DerivedAttribute):
         self.old[:] = new
 
     def recalculate(self):
-        new = self.water_mass.data.data
-        self.data.data[:] = new - self.old
-        self.old[:] = new
+        pass
