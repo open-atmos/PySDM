@@ -35,12 +35,10 @@ class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
         self._recalculate_spectrum_moment(attr=self.attr, rank=1, filter_attr=self.attr)
-
         for i in range(vals.shape[1]):
             self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
             vals[:, i] = self.buffer.ravel()
             self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] *= self.buffer.ravel()
-
         vals *= 1 / np.diff(np.log(self.radius_bins_edges)) / self.particulator.mesh.dv
         return vals
