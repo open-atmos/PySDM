@@ -359,6 +359,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
         ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
 
+        # print("Attr name: " + attr_name)
         self.backend.moments(
             moment_0=moment_0,
             moments=moments,

@@ -5,6 +5,7 @@ CPU implementation of moment calculation backend methods
 from functools import cached_property
 
 import numba
+import time
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
@@ -98,6 +99,7 @@ class MomentsMethods(BackendMethods):
             skip_division_by_m0=skip_division_by_m0,
         )
 
+
     @cached_property
     def _spectrum_moments_body(self):
         @numba.njit(**self.default_jit_flags)
@@ -116,6 +118,7 @@ class MomentsMethods(BackendMethods):
             weighting_attribute,
             weighting_rank,
         ):
+
             # pylint: disable=too-many-locals
             moment_0[:, :] = 0
             moments[:, :] = 0
@@ -138,6 +141,7 @@ class MomentsMethods(BackendMethods):
                             ),
                         )
                         break
+            return
             for c_id in range(moment_0.shape[1]):
                 for k in range(x_bins.shape[0] - 1):
                     moments[k, c_id] = (
@@ -166,7 +170,7 @@ class MomentsMethods(BackendMethods):
     ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
-        return self._spectrum_moments_body(
+        self._spectrum_moments_body(
             moment_0=moment_0.data,
             moments=moments.data,
             multiplicity=multiplicity.data,
@@ -180,3 +184,4 @@ class MomentsMethods(BackendMethods):
             weighting_attribute=weighting_attribute.data,
             weighting_rank=weighting_rank,
         )
+        
