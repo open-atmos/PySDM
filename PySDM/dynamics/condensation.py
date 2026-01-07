@@ -1,6 +1,7 @@
 """
 bespoke condensational growth solver
 with implicit-in-particle-size integration and adaptive timestepping
+as in [Bartman 2020 (MSc thesis, Section 3.3)](https://www.ap.uj.edu.pl/diplomas/attachments/file/download/125485/)
 """
 
 from collections import namedtuple

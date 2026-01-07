@@ -995,5 +995,14 @@
     ],
     "label": "Barthazy and Schefold 2006 (Atmos. Res. 82)",
     "title": "Fall velocity of snowflakes of different riming degree and crystal types"
+  },
+  "https://www.ap.uj.edu.pl/diplomas/attachments/file/download/125485/": {
+    "usages": [
+      "PySDM/backends/impl_numba/methods/condensation_methods.py",
+      "PySDM/dynamics/condensation.py",
+      "PySDM/products/condensation/condensation_timestep.py"
+    ],
+    "label": "Bartman 2020 (MSc thesis)",
+    "title": "PySDM v1.0: Pythonic particle-based cloud microphysics package"
   }
 }
