@@ -118,16 +118,14 @@ class MomentsMethods(BackendMethods):
             weighting_attribute,
             weighting_rank,
         ):
+
             # pylint: disable=too-many-locals
             moment_0[:, :] = 0
             moments[:, :] = 0
-            print(length)
             for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
                 i = idx[idx_i]
-                t4 = time.time()
                 for k in range(x_bins.shape[0] - 1):
                     if x_bins[k] <= x_attr[i] < x_bins[k + 1]:
-                        # print("adagio")
                         atomic_add(
                             moment_0,
                             (k, cell_id[i]),
@@ -143,7 +141,7 @@ class MomentsMethods(BackendMethods):
                             ),
                         )
                         break
-                print(f"oop: {time.time() - t4}")
+            return
             for c_id in range(moment_0.shape[1]):
                 for k in range(x_bins.shape[0] - 1):
                     moments[k, c_id] = (
@@ -172,7 +170,7 @@ class MomentsMethods(BackendMethods):
     ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
-        return self._spectrum_moments_body(
+        self._spectrum_moments_body(
             moment_0=moment_0.data,
             moments=moments.data,
             multiplicity=multiplicity.data,
@@ -186,3 +184,4 @@ class MomentsMethods(BackendMethods):
             weighting_attribute=weighting_attribute.data,
             weighting_rank=weighting_rank,
         )
+        
