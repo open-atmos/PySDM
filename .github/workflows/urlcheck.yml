@@ -15,16 +15,12 @@ on:
 jobs:
   url-check:
     runs-on: ubuntu-24.04
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4.1.6
       - name: URLs-checker
         id: urlcheck
         uses: urlstechie/urlchecker-action@master
         with:
-          # A subfolder or path to navigate to in the present or cloned repository
-          # subfolder: docs
-
           # A comma-separated list of file types to cover in the URL checks
           file_types: .md,.py,.json,.ipynb,.yaml,.yml,.jinja2,.toml
 
@@ -51,10 +47,4 @@ jobs:
 
           # choose if the force pass or not
           force_pass : false
-
-      - name: check-if-any-url-failed
-        if: always()
-        run: |
-          if [ "${{ steps.urlcheck.outcome }}" == "failure" ]; then
-            exit 1
-          fi
+          
