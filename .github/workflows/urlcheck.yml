@@ -53,6 +53,7 @@ jobs:
           force_pass : false
 
       - name: check-if-any-url-failed
+        if: always()
         run: |
           if [ "${{ steps.urlcheck.outcome }}" == "failure" ]; then
             exit 1
