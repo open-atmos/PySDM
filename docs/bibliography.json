@@ -169,7 +169,8 @@
   "https://doi.org/10.5194/acp-7-1961-2007": {
     "usages": [
       "PySDM/physics/hygroscopicity/kappa_koehler.py",
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/constants_defaults.py",
+      "examples/PySDM_examples/Jensen_and_Nugent_2017/settings.py"
     ],
     "label": "Petters & Kreidenweis 2007 (Atmos. Chem. Phys. 7)",
     "title": "A single parameter representation of hygroscopic growth and cloud condensation nucleus activity"
@@ -210,7 +211,8 @@
   },
   "https://doi.org/10.1175/1520-0469(1982)039%3C1607:CCABOR%3E2.0.CO;2": {
     "usages": [
-      "PySDM/dynamics/collisions/breakup_fragmentations/lowlist82.py"
+      "PySDM/dynamics/collisions/breakup_fragmentations/lowlist82.py",
+      "PySDM/dynamics/collisions/coalescence_efficiencies/lowlist1982.py"
     ],
     "label": "Low & List 1982 (J. Atmos. Sci. 39)",
     "title": "Collision, Coalescence and Breakup of Raindrops. Part II: Parameterization of Fragment Size Distributions"
@@ -291,6 +293,7 @@
     "usages": [
       "examples/PySDM_examples/deJong_Mackay_et_al_2023/fig_9.ipynb",
       "PySDM/dynamics/collisions/breakup_fragmentations/straub2010.py",
+      "PySDM/dynamics/collisions/coalescence_efficiencies/straub2010.py",
       "PySDM/physics/constants_defaults.py"
     ],
     "label": "Straub et al. 2010 (J. Atmos. Sci. 67)",
@@ -525,7 +528,8 @@
       "examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb",
       "examples/PySDM_examples/Berry_1967/__init__.py",
       "PySDM/dynamics/collisions/collision_kernels/electric.py",
-      "PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py"
+      "PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py",
+      "PySDM/dynamics/collisions/coalescence_efficiencies/berry1967.py"
     ],
     "label": "Berry 1967 (J. Atmos. Sci. 24)",
     "title": "Cloud Droplet Growth by Collection"
@@ -742,7 +746,9 @@
       "PySDM/physics/terminal_velocity/rogers_yau.py",
       "PySDM/physics/drop_growth/fick.py",
       "PySDM/physics/drop_growth/howell_1949.py",
-      "PySDM/physics/drop_growth/mason_1971.py"
+      "PySDM/physics/drop_growth/mason_1971.py",
+      "PySDM/dynamics/terminal_velocity/rogers_and_yau.py",
+      "PySDM/dynamics/terminal_velocity/power_series.py"
     ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
@@ -781,12 +787,18 @@
     "label": "Cotton et al. 2011 (International Geophysics 99)"
   },
   "https://doi.org/10.1007/978-0-306-48100-0": {
-    "usages": ["PySDM/physics/constants_defaults.py"],
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py"
+    ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
   },
   "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
-    "usages": ["PySDM/physics/constants_defaults.py"],
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/constants.py"
+    ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Seinfeld & Pandis 2006 (Wiley)"
   },

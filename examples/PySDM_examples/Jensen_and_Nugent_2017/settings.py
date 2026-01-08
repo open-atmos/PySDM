@@ -21,7 +21,8 @@ class Settings:
         self.t_end_of_ascent = 1500 * si.s if cloud_type == "Sc" else None
         self.dt = dt or 1 * si.s  # TODO #1266: not found in the paper yet
 
-        self.kappa = 1.28  # Table 1 from Petters & Kreidenweis 2007
+        # Table 1 from [Petters & Kreidenweis 2007](https://doi.org/10.5194/acp-7-1961-2007)
+        self.kappa = 1.28
 
         self.formulae = Formulae(
             saturation_vapour_pressure="FlatauWalkoCotton",  # TODO #1266: Bolton
