@@ -183,10 +183,10 @@ class TestTrivia:
     @staticmethod
     @pytest.mark.parametrize(
         "moles_heavy_molecule",
-        np.array((0, 10**-7, 10**-4)),
+        (0, 10**-7, 10**-4),
     )
     @pytest.mark.parametrize(
-        "mass_other_heavy_isotopes", np.array((0, 10, 100)) * si.ng
+        "mass_other_heavy_isotopes", (0 * si.ng, 10 * si.ng, 100 * si.ng)
     )
     @pytest.mark.parametrize(
         "heavy_isotope_molecule",
@@ -219,6 +219,25 @@ class TestTrivia:
         # assert
         assert mass_light >= 0
         np.testing.assert_approx_equal(desired=expected, actual=sut, significant=5)
+
+    @staticmethod
+    def test_molecular_isotope_ratio_is_dimensionless():
+        with DimensionalAnalysis():
+            # arrange
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
+            sut = Trivia.molecular_isotope_ratio
+
+            # act
+            iso_ratio = sut(
+                moles_heavy_molecule=1 * si.mol,
+                mass_total=1 * si.g,
+                mass_other_heavy_isotopes=1 * si.g,
+                molar_mass_light_molecule=1 * si.g / si.mole,
+                molar_mass_heavy_molecule=1 * si.g / si.mole,
+            )
+
+            # assert
+            assert iso_ratio.check(si.dimensionless)
 
     @staticmethod
     @pytest.mark.parametrize(
