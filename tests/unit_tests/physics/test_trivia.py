@@ -1,7 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from _pytest import mark
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
@@ -190,13 +189,12 @@ class TestTrivia:
         "mass_other_heavy_isotopes", np.array((0, 10, 100)) * si.ng
     )
     @pytest.mark.parametrize(
-        "heavy_isotope_name, heavy_isotope_molecule",
-        (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
+        "heavy_isotope_molecule",
+        ("2H_1H_16O", "1H2_17O", "1H2_17O"),
     )
     def test_molecular_isotope_ratio(
         moles_heavy_molecule,
         mass_other_heavy_isotopes,
-        heavy_isotope_name,
         heavy_isotope_molecule,
     ):
         # arrange
