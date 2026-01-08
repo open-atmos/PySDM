@@ -7,6 +7,8 @@ defaults:
 on:
   push:
     branches: [ main ] # FIXME- only for debugging
+  pull_request:
+    branches: [ main ] # FIXME- only for debugging
   schedule:
     - cron: '0 13 * * 4'
 
