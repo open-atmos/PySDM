@@ -42,7 +42,7 @@ jobs:
           exclude_patterns: http://purl.org,http://www.w3.org,https://doi.org/10.1175/
 
           # A comma separated list of file patterns (direct paths work as well) to exclude
-          exclude_files: docs/generate_html.py,.github/workflows/precommit.yml
+          exclude_files: docs/generate_html.py,.github/workflows/urlcheck.yml
 
           # choose if the force pass or not
           force_pass : true
