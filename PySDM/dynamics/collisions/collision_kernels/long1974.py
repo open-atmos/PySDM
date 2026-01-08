@@ -52,4 +52,4 @@ class Long1974:
         # apply piecewise
         self.arrays["condition"].isless(self.arrays["r_lg"], self.rt)
         output.where(self.arrays["condition"], self.arrays["tmp1"], self.arrays["tmp2"])
-        #output.fill(self.arrays["tmp1"])
+        
