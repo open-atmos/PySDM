@@ -172,12 +172,12 @@ class Trivia:  # pylint: disable=too-many-public-methods
     @staticmethod
     def moles_heavy_atom(
         *,
+        atoms_per_heavy_molecule,
         mass_total,
         mass_other_heavy_isotopes,
         molar_mass_light_molecule,
         molar_mass_heavy_molecule,
         molecular_isotope_ratio,
-        atoms_per_heavy_molecule,
     ):
         """
         Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)
@@ -192,3 +192,50 @@ class Trivia:  # pylint: disable=too-many-public-methods
             )
             / atoms_per_heavy_molecule
         )
+
+    @staticmethod
+    def molecular_isotope_ratio(
+        *,
+        moles_heavy_molecule,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+        molar_mass_heavy_molecule,
+    ):
+        """
+        Calculate molecular isotope ratio (e.g. moles of HDO to moles of H2O)
+        from moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)
+        using total mass and mass of other heavy isotopes.
+        """
+        return (
+            moles_heavy_molecule
+            * molar_mass_light_molecule
+            / (
+                mass_total
+                - moles_heavy_molecule * molar_mass_heavy_molecule
+                - mass_other_heavy_isotopes
+            )
+        )
+
+    @staticmethod
+    def molar_mixing_ratio_assuming_single_heavy_isotope(
+        iso_mixing_ratio, density_dry_air, conc_vap_total
+    ):
+        """
+        Calculating molar mixing ratio
+        from isotopic mixing ratio in vapour (e.g. R_vap),
+        assuming single heavy isotope
+        """
+        conc_vap_heavy = conc_vap_total * iso_mixing_ratio / (1 + iso_mixing_ratio)
+        return conc_vap_heavy / density_dry_air
+
+    @staticmethod
+    def isotopic_mixing_ratio_assuming_single_heavy_isotope(
+        molar_mixing_ratio, density_dry_air, conc_vap_total
+    ):
+        """
+        Calculating isotopic mixing ratio in vapour (e.g. R_vap)
+        from molar mixing ratio, assuming single heavy isotope
+        """
+        conc_vap_heavy = molar_mixing_ratio * density_dry_air
+        return conc_vap_heavy / (conc_vap_total - conc_vap_heavy)

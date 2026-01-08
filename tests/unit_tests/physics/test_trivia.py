@@ -1,6 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
+from _pytest import mark
 from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
@@ -115,6 +116,21 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize(
+        "bolin_number, dm_dt_over_m, expected_tau",
+        ((1, 2, 0.5), (2, 1, 0.5), (2, 2, 0.25)),
+    )
+    def test_tau(bolin_number, dm_dt_over_m, expected_tau):
+        # arrange
+        sut = Trivia.tau
+
+        # act
+        value = sut(Bo=bolin_number, dm_dt_over_m=dm_dt_over_m)
+
+        # assert
+        np.testing.assert_almost_equal(actual=value, desired=expected_tau)
+
+    @staticmethod
+    @pytest.mark.parametrize(
         "molecular_isotope_ratio",
         (0.86 * CONST.VSMOW_R_2H, 0.9 * CONST.VSMOW_R_2H, 0.98 * CONST.VSMOW_R_2H),
     )
@@ -167,15 +183,107 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "bolin_number, dm_dt_over_m, expected_tau",
-        ((1, 2, 0.5), (2, 1, 0.5), (2, 2, 0.25)),
+        "moles_heavy_molecule",
+        np.array((0, 10**-7, 10**-4)),
     )
-    def test_tau(bolin_number, dm_dt_over_m, expected_tau):
+    @pytest.mark.parametrize(
+        "mass_other_heavy_isotopes", np.array((0, 10, 100)) * si.ng
+    )
+    @pytest.mark.parametrize(
+        "heavy_isotope_name, heavy_isotope_molecule",
+        (("2H", "2H_1H_16O"), ("17O", "1H2_17O"), ("18O", "1H2_17O")),
+    )
+    def test_molecular_isotope_ratio(
+        moles_heavy_molecule,
+        mass_other_heavy_isotopes,
+        heavy_isotope_name,
+        heavy_isotope_molecule,
+    ):
         # arrange
-        sut = Trivia.tau
+        eps = 10**-7
+        mm_heavy = getattr(CONST, f"M_{heavy_isotope_molecule}")
+        mm_light = CONST.M_1H2_16O
+
+        mass_heavy = mm_heavy * moles_heavy_molecule
+        mass_total = 10**4 * (mass_other_heavy_isotopes + mass_heavy + eps)
+        mass_light = mass_total - mass_other_heavy_isotopes - mass_heavy
 
         # act
-        value = sut(Bo=bolin_number, dm_dt_over_m=dm_dt_over_m)
+        sut = Trivia.molecular_isotope_ratio(
+            mass_total=mass_total,
+            moles_heavy_molecule=moles_heavy_molecule,
+            mass_other_heavy_isotopes=mass_other_heavy_isotopes,
+            molar_mass_light_molecule=mm_light,
+            molar_mass_heavy_molecule=mm_heavy,
+        )
+        expected = mass_heavy / mass_light * mm_light / mm_heavy
 
         # assert
-        np.testing.assert_almost_equal(actual=value, desired=expected_tau)
+        assert mass_light >= 0
+        np.testing.assert_approx_equal(desired=expected, actual=sut, significant=5)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "molar_mixing_ratio, density_dry_air, conc_vap_total, expected",
+        [
+            (0.01, 10.0, 5.0, 0.1 / 4.9),
+            (0.0, 10.0, 5.0, 0.0),
+            (1e-12, 1.0, 1.0, 1e-12 / (1.0 - 1e-12)),
+        ],
+    )
+    def test_isotopic_mixing_ratio_assuming_single_heavy_isotope(
+        molar_mixing_ratio,
+        density_dry_air,
+        conc_vap_total,
+        expected,
+    ):
+        sut = Trivia.isotopic_mixing_ratio_assuming_single_heavy_isotope(
+            molar_mixing_ratio, density_dry_air, conc_vap_total
+        )
+
+        np.testing.assert_allclose(sut, expected, rtol=1e-12)
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "molar_mixing_ratio, density_dry_air, conc_vap_total",
+        [
+            (1.0, 1.0, 1.0),
+            (0.5, 2.0, 1.0),
+        ],
+    )
+    def test_isotopic_mixing_ratio_division_by_zero(
+        molar_mixing_ratio,
+        density_dry_air,
+        conc_vap_total,
+    ):
+        with pytest.raises(ZeroDivisionError):
+            Trivia.isotopic_mixing_ratio_assuming_single_heavy_isotope(
+                molar_mixing_ratio, density_dry_air, conc_vap_total
+            )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "molar_mixing_ratio, density_dry_air, conc_vap_total",
+        [
+            (0.01, 10.0, 5.0),
+            (1e-6, 1.0, 1.0),
+            (0.1, 2.0, 10.0),
+        ],
+    )
+    def test_mixing_and_molar_mixing_ratio_reversed(
+        molar_mixing_ratio,
+        density_dry_air,
+        conc_vap_total,
+    ):
+        # arrange
+        iso = Trivia.isotopic_mixing_ratio_assuming_single_heavy_isotope(
+            molar_mixing_ratio, density_dry_air, conc_vap_total
+        )
+
+        # act
+        recovered = Trivia.molar_mixing_ratio_assuming_single_heavy_isotope(
+            iso, density_dry_air, conc_vap_total
+        )
+
+        # assert
+        np.testing.assert_allclose(recovered, molar_mixing_ratio, rtol=1e-12)
