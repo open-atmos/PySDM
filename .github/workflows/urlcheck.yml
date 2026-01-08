@@ -5,10 +5,6 @@ defaults:
     shell: bash
 
 on:
-  push:
-    branches: [ main ] # FIXME- only for debugging
-  pull_request:
-    branches: [ main ] # FIXME- only for debugging
   schedule:
     - cron: '0 13 * * 4'
 
@@ -23,9 +19,6 @@ jobs:
         with:
           # A comma-separated list of file types to cover in the URL checks
           file_types: .md,.py,.json,.ipynb,.yaml,.yml,.jinja2,.toml
-
-          # Choose whether to include file with no URLs in the prints.
-          print_all: false
 
           # Choose whether to print a more verbose end summary with files and broken URLs.
           verbose: true
@@ -43,8 +36,4 @@ jobs:
           exclude_patterns: http://purl.org,http://www.w3.org,https://doi.org/10.1175/
 
           # A comma separated list of file patterns (direct paths work as well) to exclude
-          exclude_files: docs/generate_html.py #,.github/workflows/urlcheck.yml # FIXME- only for debugging
-
-          # choose if the force pass or not
-          force_pass : false
-          
+          exclude_files: docs/generate_html.py,.github/workflows/urlcheck.yml
