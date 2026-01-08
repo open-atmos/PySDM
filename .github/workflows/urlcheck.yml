@@ -19,6 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.6
       - name: URLs-checker
+        id: urlcheck
         uses: urlstechie/urlchecker-action@master
         with:
           # A subfolder or path to navigate to in the present or cloned repository
@@ -49,4 +50,10 @@ jobs:
           exclude_files: docs/generate_html.py #,.github/workflows/urlcheck.yml # FIXME- only for debugging
 
           # choose if the force pass or not
-          force_pass : true
+          force_pass : false
+
+      - name: check-if-any-url-failed
+        run: |
+          if [ "${{ steps.urlcheck.outcome }}" == "failure" ]; then
+            exit 1
+          fi
