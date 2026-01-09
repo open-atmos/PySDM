@@ -1,5 +1,6 @@
 """
-Long 1974 piecewise kernel from https://journals.ametsoc.org/jas/article/31/4/1040/18766/Solutions-to-the-Droplet-Collection-Equation-for 
+Long 1974 piecewise kernel from 
+https://journals.ametsoc.org/jas/article/31/4/1040/18766/Solutions-to-the-Droplet-Collection-Equation-for 
 Default parameters are:
     lin_coeff = 5.78e3 / s
     sq_coeff = 9.44e15 / m^3 / s
@@ -41,7 +42,7 @@ class Long1974:
         self.arrays["tmp"].fill(self.arrays["v_lg"])
         self.arrays["tmp"] **= 2.0
         self.arrays["tmp1"] *= self.arrays["tmp"]
-        self.arrays["tmp1"] *= self.sc 
+        self.arrays["tmp1"] *= self.sc
 
         # compute large radius (linear) limit
         self.arrays["tmp2"].fill(self.arrays["v_ratio"])

@@ -43,7 +43,7 @@ def divide_if_not_zero(output, divisor):
 
 @numba.njit(**conf.JIT_FLAGS)
 def where(output, condition, true_value, false_value):
-    for i in numba.prange(output.shape[0]):
+    for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
         if condition[i] == 1.0:
             output[i] = true_value[i]
         else:
@@ -51,7 +51,7 @@ def where(output, condition, true_value, false_value):
 
 @numba.njit(**conf.JIT_FLAGS)
 def isless(output, comparison, value):
-    for i in numba.prange(output.shape[0]):
+    for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
         if comparison[i] < value:
             output[i] = 1.0
         else:
