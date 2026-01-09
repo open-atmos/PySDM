@@ -102,7 +102,7 @@ class TestKernels:
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
-        output = _PairwiseStorage.from_ndarray([0.0])
+        output = _PairwiseStorage.from_ndarray(np.array([0.0]))
         is_first_in_pair = _Indicator(length=volume.size)
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
@@ -115,6 +115,6 @@ class TestKernels:
 
         # assert
         if radius_lg < 50e-6:
-            np.testing.assert_array_less(output.to_ndarray(), [3.0e-9, 1.0e-16])
+            np.testing.assert_array_less(output.to_ndarray(), [3.0e-9])
         else:
-            np.testing.assert_array_less([3.0e-9, -1.0e-16], output.to_ndarray())
+            np.testing.assert_array_less([3.0e-9], output.to_ndarray())
