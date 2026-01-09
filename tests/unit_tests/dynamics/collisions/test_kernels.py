@@ -102,7 +102,7 @@ class TestKernels:
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
-        output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
+        output = _PairwiseStorage.from_ndarray([0.0])
         is_first_in_pair = _Indicator(length=volume.size)
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
