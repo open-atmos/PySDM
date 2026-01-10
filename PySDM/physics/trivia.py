@@ -177,7 +177,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
         mass_other_heavy_isotopes,
         molar_mass_light_molecule,
         molar_mass_heavy_molecule,
-        molecular_isotope_ratio,
+        molecular_isotopic_ratio,
     ):
         """
         Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)
@@ -187,14 +187,14 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return (
             (mass_total - mass_other_heavy_isotopes)
             / (
-                molar_mass_light_molecule / molecular_isotope_ratio
+                molar_mass_light_molecule / molecular_isotopic_ratio
                 + molar_mass_heavy_molecule
             )
             / atoms_per_heavy_molecule
         )
 
     @staticmethod
-    def molecular_isotope_ratio(
+    def molecular_isotopic_ratio(
         *,
         moles_heavy_molecule,
         mass_total,
