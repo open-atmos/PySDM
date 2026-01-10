@@ -1,6 +1,7 @@
 """
-Long 1974 piecewise kernel from
-https://journals.ametsoc.org/jas/article/31/4/1040/18766/Solutions-to-the-Droplet-Collection-Equation-for
+piecewise kernel from
+[Long 1974](doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2)
+
 Default parameters are:
     lin_coeff = 5.78e3 / s
     sq_coeff = 9.44e15 / m^3 / s

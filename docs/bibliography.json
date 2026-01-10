@@ -1004,5 +1004,12 @@
     ],
     "label": "Bartman 2020 (MSc thesis)",
     "title": "PySDM v1.0: Pythonic particle-based cloud microphysics package"
+  },
+  "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2": {
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/long1974.py"
+    ],
+    "label": "Long 1974 (J. Atmos. Sci. 31)",
+    "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
   }
 }
