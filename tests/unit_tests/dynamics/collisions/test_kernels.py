@@ -4,7 +4,11 @@ import pytest
 
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.dynamics.collisions.collision_kernels import Golovin, SimpleGeometric, Long1974
+from PySDM.dynamics.collisions.collision_kernels import (
+    Golovin,
+    SimpleGeometric,
+    Long1974,
+)
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
 
@@ -88,14 +92,16 @@ class TestKernels:
             np.testing.assert_array_less([0.0, 0.0], output.to_ndarray())
 
     @staticmethod
-    @pytest.mark.parametrize("radius", (np.array([49e-6, 1e-6]), np.array([50e-6, 1e-6])))
+    @pytest.mark.parametrize(
+        "radius", (np.array([49e-6, 1e-6]), np.array([50e-6, 1e-6]))
+    )
     def test_long1974_regimes(radius):
         # arrange
         env = Box(dv=None, dt=None)
         builder = Builder(backend=CPU(), n_sd=radius.size, environment=env)
         sut = Long1974()
         sut.register(builder)
-        volume = 4/3 * np.pi * radius**3
+        volume = 4 / 3 * np.pi * radius**3
         _ = builder.build(
             attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
         )

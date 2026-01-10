@@ -1,11 +1,12 @@
 """
-Long 1974 piecewise kernel from 
-https://journals.ametsoc.org/jas/article/31/4/1040/18766/Solutions-to-the-Droplet-Collection-Equation-for 
+Long 1974 piecewise kernel from
+https://journals.ametsoc.org/jas/article/31/4/1040/18766/Solutions-to-the-Droplet-Collection-Equation-for
 Default parameters are:
     lin_coeff = 5.78e3 / s
     sq_coeff = 9.44e15 / m^3 / s
     r_thresh = 5e-5 m
 """
+
 
 class Long1974:
     def __init__(self, lin_coeff=5.78e3, sq_coeff=9.44e15, r_thres=5e-5):
@@ -20,16 +21,31 @@ class Long1974:
         self.particulator = builder.particulator
         builder.request_attribute("volume")
         builder.request_attribute("radius")
-        for key in ("r_lg", "v_lg", "v_sm", "v_ratio", "tmp", "tmp1", "tmp2", "condition"):
+        for key in (
+            "r_lg",
+            "v_lg",
+            "v_sm",
+            "v_ratio",
+            "tmp",
+            "tmp1",
+            "tmp2",
+            "condition",
+        ):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
 
     def __call__(self, output, is_first_in_pair):
         # get smaller and larger radii, volume
-        self.arrays["r_lg"].max(self.particulator.attributes["radius"], is_first_in_pair)
-        self.arrays["v_lg"].max(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["v_sm"].min(self.particulator.attributes["volume"], is_first_in_pair)
+        self.arrays["r_lg"].max(
+            self.particulator.attributes["radius"], is_first_in_pair
+        )
+        self.arrays["v_lg"].max(
+            self.particulator.attributes["volume"], is_first_in_pair
+        )
+        self.arrays["v_sm"].min(
+            self.particulator.attributes["volume"], is_first_in_pair
+        )
 
         # compute volume ratio
         self.arrays["v_ratio"].fill(self.arrays["v_sm"])
@@ -53,4 +69,3 @@ class Long1974:
         # apply piecewise
         self.arrays["condition"].isless(self.arrays["r_lg"], self.rt)
         output.where(self.arrays["condition"], self.arrays["tmp1"], self.arrays["tmp2"])
-        
