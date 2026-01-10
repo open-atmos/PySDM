@@ -1,6 +1,6 @@
 """
 piecewise kernel from
-[Long 1974](doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2)
+[Long 1974](https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2)
 
 Default parameters are:
     lin_coeff = 5.78e3 / s
