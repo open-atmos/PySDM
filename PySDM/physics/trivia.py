@@ -218,24 +218,35 @@ class Trivia:  # pylint: disable=too-many-public-methods
         )
 
     @staticmethod
-    def molar_mixing_ratio_assuming_single_heavy_isotope(
-        iso_mixing_ratio, density_dry_air, conc_vap_total
+    def molar_mixing_ratio_wrt_mass_assuming_single_heavy_isotope(
+        isotopic_ratio, density_dry_air, molar_vap_density_total
     ):
         """
-        Calculating molar mixing ratio
-        from isotopic mixing ratio in vapour (e.g. R_vap),
-        assuming single heavy isotope
+        n'/m_d [number of moles of isotopic molecules]/[mass of dry air] - isotopic molar mixing ratio wrt mass
+        n'/n_light - isotopic ratio
+        n/V - molar vapour density
+
+        iso_molar_mixing_ratio_wrt_mass = n'/m_d =
+            = n'/(rho_d * V) = molar_vap_rho_heavy / rho_d
+        n'/n (specific content) = isotopic_ratio / (1 + isotopic_ratio)
+        molar_vap_rho_heavy = n'/V = n/V * n'/n =
+            = molar_vap_rho_total * isotopic_ratio / (1 + isotopic_ratio)
         """
-        conc_vap_heavy = conc_vap_total * iso_mixing_ratio / (1 + iso_mixing_ratio)
-        return conc_vap_heavy / density_dry_air
+        molar_vap_density_heavy = (
+            molar_vap_density_total * isotopic_ratio / (1 + isotopic_ratio)
+        )
+        return molar_vap_density_heavy / density_dry_air
 
     @staticmethod
-    def isotopic_mixing_ratio_assuming_single_heavy_isotope(
-        molar_mixing_ratio, density_dry_air, conc_vap_total
+    def isotopic_ratio_assuming_single_heavy_isotope(
+        molar_mixing_ratio_wrt_mass, density_dry_air, molar_vap_density_total
     ):
         """
-        Calculating isotopic mixing ratio in vapour (e.g. R_vap)
-        from molar mixing ratio, assuming single heavy isotope
+        n/V - molar vapour density
+        isotopic ratio - n'/n_light =
+            = n'/V / (n_light/V) = n'/V / (n/V - n'/V)
         """
-        conc_vap_heavy = molar_mixing_ratio * density_dry_air
-        return conc_vap_heavy / (conc_vap_total - conc_vap_heavy)
+        molar_vap_density_heavy = molar_mixing_ratio_wrt_mass * density_dry_air
+        return molar_vap_density_heavy / (
+            molar_vap_density_total - molar_vap_density_heavy
+        )
