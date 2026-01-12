@@ -123,12 +123,21 @@ class IsotopeMethods(BackendMethods):
                     density_dry_air=density_dry_air[cell_id[i]],
                     conc_vap_total=conc_vap_total,
                 )
+                D_ratio_heavy_to_light = (
+                    ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
+                )
                 rho_v = pvs_water / T / ff.constants.Rv  # TODO approx
+                alpha_eq = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T)
+                alpha_eff = alpha_eq  # TODO
+                # alpha_eff = (
+                #     alpha_eq
+                #     * ff.isotope_kinetic_fractionation_factors__alpha_kinetic(
+                #         alpha_eq, relative_humidity[cell_id[i]], D_ratio_heavy_to_light
+                #     )
+                # )
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(
-                        T
-                    ),
-                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
+                    D_ratio_heavy_to_light=D_ratio_heavy_to_light,
+                    alpha=alpha_eff,
                     D_light=ff.constants.D0,
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
