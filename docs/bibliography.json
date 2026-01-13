@@ -382,7 +382,8 @@
   },
   "https://doi.org/10.1142/p027": {
     "usages": [
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/trivia.py"
     ],
     "label": "Gat 2010",
     "title": "Isotope Hydrology: A Study of the Water Cycle"
@@ -390,8 +391,7 @@
   "https://doi.org/10.1071/CH9520059": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/ventilation/froessling_1938.py",
-      "PySDM/physics/trivia.py"
+      "PySDM/physics/ventilation/froessling_1938.py"
     ],
     "label": "Squires 1952 (Aust. J. Chem. (Aust. J. Sci. Res. 5)",
     "title": "The Growth of Cloud Drops by Condensation. I. General Characteristics"
