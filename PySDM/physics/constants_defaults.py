@@ -776,6 +776,11 @@ def compute_derived_values(c: dict):
     (and neglecting molecular binding energies)
     for discussion, see:
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
+
+    fractional abundances (x_i) are calculated assuming
+        n_H_tot = n_1H + n_2H + n_3H
+        n_O_tot = n_16O + n_17O + n_18O
+    see [Hayes 2004](https://www.researchgate.net/publication/253026920_An_Introduction_to_Isotopic_Calculations)
     """
 
     c["M_1H2_16O"] = c["M_1H"] * 2 + c["M_16O"]
@@ -784,9 +789,6 @@ def compute_derived_values(c: dict):
     c["M_1H2_17O"] = c["M_1H"] * 2 + c["M_17O"]
     c["M_1H2_18O"] = c["M_1H"] * 2 + c["M_18O"]
 
-    # Fractional abundances (x_i), assuming
-    #   n_H_tot = n_1H + n_2H + n_3H
-    #   n_O_tot = n_16O + n_17O + n_18O
     c["x_16O"] = Trivia.isotopic_fraction_assuming_single_heavy_isotope(
         isotopic_ratio=1 / (c["VSMOW_R_17O"] + c["VSMOW_R_18O"])
     )

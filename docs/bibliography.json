@@ -995,5 +995,12 @@
     ],
     "label": "Barthazy and Schefold 2006 (Atmos. Res. 82)",
     "title": "Fall velocity of snowflakes of different riming degree and crystal types"
+  },
+  "https://www.researchgate.net/publication/253026920_An_Introduction_to_Isotopic_Calculations" : {
+    "usages": [
+      "PySDM/physics/constants_defaults.py"
+    ],
+    "label": "Hayes 2004",
+    "title": "An Introduction to Isotopic Calculations"
   }
 }
