@@ -262,6 +262,17 @@ class TestTrivia:
         np.testing.assert_allclose(sut, expected, rtol=1e-12)
 
     @staticmethod
+    @pytest.mark.parametrize("isotopic_ratio", (0, 1e-7, 0.9))
+    def test_isotopic_ratio_and_fraction_reversed(isotopic_ratio):
+        isotopic_fraction = Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=isotopic_ratio,
+        )
+        recovered = Trivia.isotopic_ratio_assuming_single_heavy_isotope(
+            isotopic_fraction=isotopic_fraction
+        )
+        np.testing.assert_allclose(recovered, isotopic_ratio, rtol=1e-12)
+
+    @staticmethod
     @pytest.mark.parametrize(
         "molar_mixing_ratio, density_dry_air, conc_vap_total",
         [
@@ -275,21 +286,16 @@ class TestTrivia:
         density_dry_air,
         conc_vap_total,
     ):
-        # arrange
         iso = Trivia.isotopic_fraction(
             molality_in_dry_air=molar_mixing_ratio,
             density_dry_air=density_dry_air,
             total_vap_concentration=conc_vap_total,
         )
-
-        # act
         recovered = Trivia.molality_in_dry_air(
             isotopic_fraction=iso,
             density_dry_air=density_dry_air,
             total_vap_concentration=conc_vap_total,
         )
-
-        # assert
         np.testing.assert_allclose(recovered, molar_mixing_ratio, rtol=1e-12)
 
     @staticmethod
