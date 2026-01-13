@@ -241,42 +241,25 @@ class TestTrivia:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "molar_mixing_ratio, density_dry_air, conc_vap_total, expected",
+        "molality_in_dry_air, density_dry_air, conc_vap_total, expected",
         [
-            (0.01, 10.0, 5.0, 0.1 / 4.9),
+            (0.01, 10.0, 5.0, 0.02),
             (0.0, 10.0, 5.0, 0.0),
-            (1e-12, 1.0, 1.0, 1e-12 / (1.0 - 1e-12)),
+            (0.01, 0.0, 5.0, 0.0),
+            (1e-12, 3.0, 2.0, 1.5e-12),
         ],
     )
-    def test_isotopic_mixing_ratio_assuming_single_heavy_isotope(
-        molar_mixing_ratio,
+    def test_isotopic_fraction(
+        molality_in_dry_air,
         density_dry_air,
         conc_vap_total,
         expected,
     ):
-        sut = Trivia.isotopic_mixing_ratio_assuming_single_heavy_isotope(
-            molar_mixing_ratio, density_dry_air, conc_vap_total
+        sut = Trivia.isotopic_fraction(
+            molality_in_dry_air, density_dry_air, conc_vap_total
         )
 
         np.testing.assert_allclose(sut, expected, rtol=1e-12)
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        "molar_mixing_ratio, density_dry_air, conc_vap_total",
-        [
-            (1.0, 1.0, 1.0),
-            (0.5, 2.0, 1.0),
-        ],
-    )
-    def test_isotopic_mixing_ratio_division_by_zero(
-        molar_mixing_ratio,
-        density_dry_air,
-        conc_vap_total,
-    ):
-        with pytest.raises(ZeroDivisionError):
-            Trivia.isotopic_mixing_ratio_assuming_single_heavy_isotope(
-                molar_mixing_ratio, density_dry_air, conc_vap_total
-            )
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -287,20 +270,35 @@ class TestTrivia:
             (0.1, 2.0, 10.0),
         ],
     )
-    def test_mixing_and_molar_mixing_ratio_reversed(
+    def test_molality_and_isotopic_fraction_reversed(
         molar_mixing_ratio,
         density_dry_air,
         conc_vap_total,
     ):
         # arrange
-        iso = Trivia.isotopic_mixing_ratio_assuming_single_heavy_isotope(
-            molar_mixing_ratio, density_dry_air, conc_vap_total
+        iso = Trivia.isotopic_fraction(
+            molality_in_dry_air=molar_mixing_ratio,
+            density_dry_air=density_dry_air,
+            total_vap_concentration=conc_vap_total,
         )
 
         # act
-        recovered = Trivia.molar_mixing_ratio_assuming_single_heavy_isotope(
-            iso, density_dry_air, conc_vap_total
+        recovered = Trivia.molality_in_dry_air(
+            isotopic_fraction=iso,
+            density_dry_air=density_dry_air,
+            total_vap_concentration=conc_vap_total,
         )
 
         # assert
         np.testing.assert_allclose(recovered, molar_mixing_ratio, rtol=1e-12)
+
+    @staticmethod
+    def test_molality_in_dry_air_unit():
+        with DimensionalAnalysis():
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
+            molality = Trivia.molality_in_dry_air(
+                isotopic_fraction=1 * si.dimensionless,
+                density_dry_air=1 * si.kg / si.m**3,
+                total_vap_concentration=1 * si.mole / si.m**3,
+            )
+            assert molality.check(si.mole / si.kg)
