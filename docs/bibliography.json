@@ -1002,5 +1002,14 @@
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
+  },
+  "https://www.ap.uj.edu.pl/diplomas/attachments/file/download/125485": {
+    "usages": [
+      "PySDM/backends/impl_numba/methods/condensation_methods.py",
+      "PySDM/dynamics/condensation.py",
+      "PySDM/products/condensation/condensation_timestep.py"
+    ],
+    "label": "Bartman 2020 (MSc thesis)",
+    "title": "PySDM v1.0: Pythonic particle-based cloud microphysics package"
   }
 }
