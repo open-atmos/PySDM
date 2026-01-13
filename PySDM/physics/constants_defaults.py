@@ -784,23 +784,26 @@ def compute_derived_values(c: dict):
     c["M_1H2_17O"] = c["M_1H"] * 2 + c["M_17O"]
     c["M_1H2_18O"] = c["M_1H"] * 2 + c["M_18O"]
 
+    # Fractional abundances (x_i), assuming
+    #   n_H_tot = n_1H + n_2H + n_3H
+    #   n_O_tot = n_16O + n_17O + n_18O
+    c["x_16O"] = Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+        isotopic_ratio=1 / (c["VSMOW_R_17O"] + c["VSMOW_R_18O"])
+    )
+    c["x_17O"] = c["VSMOW_R_17O"] * c["x_16O"]
+    c["x_18O"] = c["VSMOW_R_18O"] * c["x_16O"]
+
+    c["x_1H"] = Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+        isotopic_ratio=1 / (c["VSMOW_R_2H"] + c["VSMOW_R_3H"])
+    )
+    c["x_2H"] = c["VSMOW_R_2H"] * c["x_1H"]
+    c["x_3H"] = c["VSMOW_R_3H"] * c["x_1H"]
+
     c["Mv"] = (
-        (
-            1
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
-        )
-        * c["M_1H2_16O"]
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-        * c["M_2H_1H_16O"]
-        + 1
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-        * c["M_3H_1H_16O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
+        2 * (c["x_1H"] * c["M_1H"] + c["x_2H"] * c["M_2H"] + c["x_3H"] * c["M_3H"])
+        + c["x_16O"] * c["M_16O"]
+        + c["x_17O"] * c["M_17O"]
+        + c["x_18O"] * c["M_18O"]
     )
 
     c["eps"] = c["Mv"] / c["Md"]
