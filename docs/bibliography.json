@@ -382,7 +382,6 @@
   },
   "https://doi.org/10.1142/p027": {
     "usages": [
-      "PySDM/physics/constants_defaults.py",
       "PySDM/physics/trivia.py"
     ],
     "label": "Gat 2010",
