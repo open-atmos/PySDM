@@ -808,6 +808,24 @@ def compute_derived_values(c: dict):
         + c["x_18O"] * c["M_18O"]
     )
 
+    c["Mv_old"] = (
+        (
+            1
+            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
+            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+        )
+        * c["M_1H2_16O"]
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+        * c["M_2H_1H_16O"]
+        + 2
+        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+        * c["M_3H_1H_16O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
+        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
+    )
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
     c["Rv"] = c["R_str"] / c["Mv"]
