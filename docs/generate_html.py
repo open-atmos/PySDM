@@ -67,8 +67,9 @@ def check_urls(urls_from_json):
                 r"\b(https://doi\.org/10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&\'<>^\\])\S)+)\b",
                 r"\b(https://digitallibrary\.un\.org/record/(?:[0-9])+)\b",
                 r"\b(http://mi\.mathnet\.ru/dan(?:[0-9])+)\b",
-                r"\b(https://archive.org/details/(?:[0-9a-z_\.-])+)\b",
-                r"\b(https://web.archive.org/web/(?:[0-9])+/https://(?:[0-9a-zA-Z_\.-/])+)\b",
+                r"\b(https://archive\.org/details/(?:[0-9a-z_\.-])+)\b",
+                r"\b(https://web\.archive\.org/web/(?:[0-9])+/https://(?:[0-9a-zA-Z_\.-/])+)\b",
+                r"\b(https://www\.ap\.uj\.edu\.pl/diplomas/attachments/file/download/(?:[0-9])+)\b",
             ):
                 urls = re.findall(pattern, text)
                 if urls:
@@ -80,7 +81,9 @@ def check_urls(urls_from_json):
     for url in unique_urls_found:
         assert url in unique_urls_read, f"{url} not found in the json file"
     for url in unique_urls_read:
-        assert url in unique_urls_found, f"{url} not referenced in the code"
+        assert (
+            url in unique_urls_found
+        ), f"{url} not referenced in the code (or not recognized url pattern)"
 
     url_usages_found = {
         url: sorted({path for path, d in found_urls if d == url})
@@ -120,7 +123,7 @@ def create_references_html(urls_from_json, code_path):
 
 
 def run_pdoc(code_path, out_path):
-    """generates docs in HTML formay by executing pdoc"""
+    """generates docs in HTML format by executing pdoc"""
     subprocess.run(
         [
             sys.executable,

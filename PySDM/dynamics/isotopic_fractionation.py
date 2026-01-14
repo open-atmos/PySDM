@@ -35,6 +35,7 @@ class IsotopicFractionation:
                 f"{Condensation.__name__} needs to be registered to run prior to {self.__class__}"
             )
 
+        builder.request_attribute("diffusional growth mass change")
         for isotope in self.isotopes:
             builder.request_attribute(f"moles_{isotope}")
 
