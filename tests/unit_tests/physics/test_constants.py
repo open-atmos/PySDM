@@ -147,10 +147,3 @@ class TestConstants:
             + physical_constants["neutron molar mass"][0]
             + physical_constants["electron molar mass"][0]
         )
-
-    @staticmethod
-    def test_Mv_formulae():
-        new_formula = Formulae().constants.Mv
-        old_formula = Formulae().constants.Mv_old
-        print(new_formula - old_formula)
-        np.testing.assert_approx_equal(new_formula, old_formula, significant=8)

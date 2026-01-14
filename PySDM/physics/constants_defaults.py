@@ -781,7 +781,7 @@ def compute_derived_values(c: dict):
         n_H_tot = n_1H + n_2H + n_3H
         n_O_tot = n_16O + n_17O + n_18O
     see [Hayes 2004](https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf)
-    """
+    """  # pylint: disable=line-too-long
 
     c["M_1H2_16O"] = c["M_1H"] * 2 + c["M_16O"]
     c["M_2H_1H_16O"] = c["M_2H"] + c["M_1H"] + c["M_16O"]
