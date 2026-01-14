@@ -776,12 +776,7 @@ def compute_derived_values(c: dict):
     (and neglecting molecular binding energies)
     for discussion, see:
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
-
-    fractional abundances (x_i) are calculated assuming
-        n_H_tot = n_1H + n_2H + n_3H
-        n_O_tot = n_16O + n_17O + n_18O
-    see [Hayes 2004](https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf)
-    """  # pylint: disable=line-too-long
+    """
 
     c["M_1H2_16O"] = c["M_1H"] * 2 + c["M_16O"]
     c["M_2H_1H_16O"] = c["M_2H"] + c["M_1H"] + c["M_16O"]
@@ -789,42 +784,19 @@ def compute_derived_values(c: dict):
     c["M_1H2_17O"] = c["M_1H"] * 2 + c["M_17O"]
     c["M_1H2_18O"] = c["M_1H"] * 2 + c["M_18O"]
 
-    c["x_16O"] = Trivia.isotopic_fraction_assuming_single_heavy_isotope(
-        isotopic_ratio=1 / (c["VSMOW_R_17O"] + c["VSMOW_R_18O"])
-    )
-    c["x_17O"] = c["VSMOW_R_17O"] * c["x_16O"]
-    c["x_18O"] = c["VSMOW_R_18O"] * c["x_16O"]
-
-    c["x_1H"] = Trivia.isotopic_fraction_assuming_single_heavy_isotope(
-        isotopic_ratio=1 / (c["VSMOW_R_2H"] + c["VSMOW_R_3H"])
-    )
-    c["x_2H"] = c["VSMOW_R_2H"] * c["x_1H"]
-    c["x_3H"] = c["VSMOW_R_3H"] * c["x_1H"]
-
     c["Mv"] = (
-        2 * (c["x_1H"] * c["M_1H"] + c["x_2H"] * c["M_2H"] + c["x_3H"] * c["M_3H"])
-        + c["x_16O"] * c["M_16O"]
-        + c["x_17O"] * c["M_17O"]
-        + c["x_18O"] * c["M_18O"]
-    )
-
-    c["Mv_old"] = (
         (
             1
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
+            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
         )
         * c["M_1H2_16O"]
-        + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-        * c["M_2H_1H_16O"]
-        + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-        * c["M_3H_1H_16O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
+        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"]) * c["M_2H_1H_16O"]
+        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"]) * c["M_3H_1H_16O"]
+        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
+        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
     )
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
