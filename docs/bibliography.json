@@ -1007,7 +1007,7 @@
   },
     "https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf" : {
     "usages": [
-      "PySDM/physics/constants_defaults.py"
+      "tests/unit_tests/physics/test_constants.py"
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
