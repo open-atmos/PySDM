@@ -787,16 +787,36 @@ def compute_derived_values(c: dict):
     c["Mv"] = (
         (
             1
-            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-            - Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_2H"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_3H"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_17O"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_18O"]
+            )
         )
         * c["M_1H2_16O"]
-        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"]) * c["M_2H_1H_16O"]
-        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"]) * c["M_3H_1H_16O"]
-        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
-        + Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_2H"]
+        )
+        * c["M_2H_1H_16O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_3H"]
+        )
+        * c["M_3H_1H_16O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_17O"]
+        )
+        * c["M_1H2_17O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_18O"]
+        )
+        * c["M_1H2_18O"]
     )
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
