@@ -1005,7 +1005,7 @@
     "label": "Bartman 2020 (MSc thesis)",
     "title": "PySDM v1.0: Pythonic particle-based cloud microphysics package"
   },
-    "https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf" : {
+    "https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/%7Eals/research-articles/other_stuff/hayes-2004-3.pdf" : {
     "usages": [
       "tests/unit_tests/physics/test_constants.py"
     ],
