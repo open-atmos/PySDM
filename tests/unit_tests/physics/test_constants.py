@@ -128,7 +128,7 @@ class TestConstants:
         """fractional abundances (x_i) are calculated assuming
         n_H_tot = n_1H + n_2H + n_3H
         n_O_tot = n_16O + n_17O + n_18O
-        see [Hayes 2004](https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/%7Eals/research-articles/other_stuff/hayes-2004-3.pdf)
+        see [Hayes 2004](https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf)
         """  # pylint: disable=line-too-long
         const = Formulae().constants
         trivia = Formulae().trivia
