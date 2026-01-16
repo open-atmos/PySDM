@@ -382,7 +382,7 @@
   },
   "https://doi.org/10.1142/p027": {
     "usages": [
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/trivia.py"
     ],
     "label": "Gat 2010",
     "title": "Isotope Hydrology: A Study of the Water Cycle"
@@ -1004,10 +1004,11 @@
     ],
     "label": "Bartman 2020 (MSc thesis)",
     "title": "PySDM v1.0: Pythonic particle-based cloud microphysics package"
-  },
+  }
   "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2": {
     "usages": [
-      "PySDM/dynamics/collisions/collision_kernels/long1974.py"
+      "PySDM/dynamics/collisions/collision_kernels/long1974.py",
+      "examples/PySDM_examples/Long1974/fig10_11_13_14.ipynb"
     ],
     "label": "Long 1974 (J. Atmos. Sci. 31)",
     "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
