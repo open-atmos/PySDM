@@ -14,7 +14,7 @@ class TestIsotopeMethods:
         # arrange
         # tau =
         # dm_dt =
-        # ambient_isotope_mixing_ratio=
+        # ambient_isotope_ratio=
 
         # act
         # backend_instance.isotopic_fractionation(
@@ -23,7 +23,7 @@ class TestIsotopeMethods:
 
         # assert
         # assert dm_iso_dt == ...
-        # assert ambient_isotope_mixing_ratio == ...
+        # assert ambient_isotope_ratio == ...
 
     @staticmethod
     def test_isotopic_delta(backend_instance):

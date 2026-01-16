@@ -33,7 +33,9 @@ def make_particulator(backend_instance, isotopes_considered, attributes):
     for iso in isotopes_considered:
         attributes[f"moles_{iso}"] = np.array(np.nan)
         builder.request_attribute(f"delta_{iso}")
-        builder.particulator.environment[f"molar mixing ratio {iso}"] = np.array(np.nan)
+        builder.particulator.environment[f"molality {iso} in dry air"] = np.array(
+            np.nan
+        )
     builder.particulator.environment["RH"] = np.array(np.nan)
     builder.particulator.environment["T"] = np.array(np.nan)
     builder.particulator.environment["dry_air_density"] = np.array(np.nan)
@@ -86,7 +88,7 @@ class TestIsotopicFractionation:
         )
         for dynamic in dynamics:
             builder.add_dynamic(dynamic)
-        builder.particulator.environment["molar mixing ratio 2H"] = np.nan
+        builder.particulator.environment["molality 2H in dry air"] = np.nan
 
         # act
         with context:
@@ -114,7 +116,7 @@ class TestIsotopicFractionation:
         )
         builder.add_dynamic(Condensation())
         builder.add_dynamic(IsotopicFractionation(isotopes=(isotope,)))
-        builder.particulator.environment[f"molar mixing ratio {isotope}"] = np.nan
+        builder.particulator.environment[f"molality {isotope} in dry air"] = np.nan
         builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
 
     @staticmethod

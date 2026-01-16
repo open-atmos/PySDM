@@ -150,8 +150,8 @@ class TestIsotopes:
         builder.request_attribute(f"delta_{heavy_isotope}")
 
         for iso in HEAVY_ISOTOPES:
-            builder.particulator.environment[f"molar mixing ratio {iso}"] = 0
-        builder.particulator.environment[f"molar mixing ratio {heavy_isotope}"] = 0.44
+            builder.particulator.environment[f"molality {iso} in dry air"] = 0
+        builder.particulator.environment[f"molality {heavy_isotope} in dry air"] = 0.44
 
         attr = {
             "multiplicity": np.ones(n_sd),

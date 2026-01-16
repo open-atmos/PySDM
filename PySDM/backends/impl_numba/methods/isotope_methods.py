@@ -39,7 +39,7 @@ class IsotopeMethods(BackendMethods):
             molar_mass_heavy_molecule,
             moles_heavy_molecule,
             bolin_number,
-            molar_mixing_ratio,
+            molality_in_dry_air,
         ):
             # assume Bo = tau' / tau_total
             #           = (m'/dm') / (m/dm)
@@ -62,9 +62,9 @@ class IsotopeMethods(BackendMethods):
                 mass_of_dry_air = (
                     dry_air_density[sd_id] * cell_volume
                 )  # TODO #1787 pass from outside (do not use V??)
-                molar_mixing_ratio[cell_id[sd_id]] -= (
+                molality_in_dry_air[cell_id[sd_id]] -= (
                     dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
-                )
+                )  # TODO #1787 check multiplicity occurrance
 
         return body
 
@@ -80,7 +80,7 @@ class IsotopeMethods(BackendMethods):
         molar_mass_heavy_molecule,
         moles_heavy_molecule,
         bolin_number,
-        molar_mixing_ratio,
+        molality_in_dry_air,
     ):
         self._isotopic_fractionation_body(
             cell_id=cell_id.data,
@@ -92,7 +92,7 @@ class IsotopeMethods(BackendMethods):
             molar_mass_heavy_molecule=molar_mass_heavy_molecule,
             moles_heavy_molecule=moles_heavy_molecule.data,
             bolin_number=bolin_number.data,
-            molar_mixing_ratio=molar_mixing_ratio.data,
+            molality_in_dry_air=molality_in_dry_air.data,
         )
 
     @cached_property
@@ -108,7 +108,7 @@ class IsotopeMethods(BackendMethods):
             density_dry_air,
             moles_light_molecule,
             moles_heavy,
-            molar_mixing_ratio,
+            molality_in_dry_air,
         ):  # pylint: disable=too-many-locals,too-many-arguments
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
@@ -118,15 +118,16 @@ class IsotopeMethods(BackendMethods):
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
-                isotopic_mixing_ratio = ff.trivia__molar_mixing_ratio_to_R_vap_assuming_single_heavy_isotope(
-                    molar_mixing_ratio=molar_mixing_ratio[cell_id[i]],
+                rho_v = pvs_water / T / ff.constants.Rv  # FIXME??
+                isotopic_fraction = ff.trivia__isotopic_fraction(
+                    molality_in_dry_air=molality_in_dry_air[cell_id[i]],
                     density_dry_air=density_dry_air[cell_id[i]],
-                    conc_vap_total=conc_vap_total,
+                    total_vap_concentration=conc_vap_total,
                 )
                 D_ratio_heavy_to_light = (
                     ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
                 )
-                rho_v = pvs_water / T / ff.constants.Rv
+
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=D_ratio_heavy_to_light,
                     alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
@@ -134,7 +135,9 @@ class IsotopeMethods(BackendMethods):
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
                     ),
-                    R_vap=isotopic_mixing_ratio,
+                    R_vap=ff.trivia.isotopic_ratio_assuming_single_heavy_isotope(
+                        isotopic_fraction
+                    ),
                     R_liq=moles_heavy_atom / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
                     rho_v=rho_v,
@@ -152,7 +155,7 @@ class IsotopeMethods(BackendMethods):
         density_dry_air,
         moles_light_molecule,
         moles_heavy,
-        molar_mixing_ratio,
+        molality_in_dry_air,
     ):
         self._bolin_number_body(
             output=output.data,
@@ -162,5 +165,5 @@ class IsotopeMethods(BackendMethods):
             density_dry_air=density_dry_air.data,
             moles_light_molecule=moles_light_molecule.data,
             moles_heavy=moles_heavy.data,
-            molar_mixing_ratio=molar_mixing_ratio.data,
+            molality_in_dry_air=molality_in_dry_air.data,
         )
