@@ -775,7 +775,6 @@ def compute_derived_values(c: dict):
     water molar mass is computed from molecular masses and VSMOW isotope abundances
     (and neglecting molecular binding energies)
     for discussion, see:
-    - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
     """
 
@@ -788,22 +787,41 @@ def compute_derived_values(c: dict):
     c["Mv"] = (
         (
             1
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_2H"]
+            )
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_3H"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_17O"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_18O"]
+            )
         )
         * c["M_1H2_16O"]
         + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_2H"]
+        )
         * c["M_2H_1H_16O"]
         + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_3H"]
+        )
         * c["M_3H_1H_16O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_17O"]
+        )
+        * c["M_1H2_17O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_18O"]
+        )
+        * c["M_1H2_18O"]
     )
-
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
     c["Rv"] = c["R_str"] / c["Mv"]
