@@ -312,7 +312,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             body="""
             if (condition[i]) {
                 output[i] = true_value[i]
-            } 
+            }
             else {
                 output[i] = false_value[i]
             }
@@ -323,8 +323,8 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         @nice_thrust(**NICE_THRUST_FLAGS)
         def where(output, condition, true_value, false_value):
             Impl.__where_body.launch_n(
-                n=(output.shape[0]), 
-                args=(Impl.thrust((output, condition, true_value, false_value)))
+                n=(output.shape[0]),
+                args=(Impl.thrust((output, condition, true_value, false_value))),
             )
 
         __isless_body = trtc.For(
@@ -333,7 +333,7 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             body="""
             if (comparison[i] < value) {
                 output[i] = true
-            } 
+            }
             else {
                 output[i] = false
             }
