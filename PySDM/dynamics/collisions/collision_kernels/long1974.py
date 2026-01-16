@@ -29,10 +29,12 @@ class Long1974:
             "v_ratio",
             "tmp",
             "tmp1",
-            "condition",
         ):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
+            )
+            self.arrays["condition"] = self.particulator.PairwiseStorage.empty(
+                self.particulator.n_sd // 2, dtype=bool
             )
 
     def __call__(self, output, is_first_in_pair):
