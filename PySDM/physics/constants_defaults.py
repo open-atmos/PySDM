@@ -787,10 +787,12 @@ def compute_derived_values(c: dict):
     c["Mv"] = (
         (
             1
-            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
                 isotopic_ratio=c["VSMOW_R_2H"]
             )
-            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
                 isotopic_ratio=c["VSMOW_R_3H"]
             )
             - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
@@ -801,11 +803,13 @@ def compute_derived_values(c: dict):
             )
         )
         * c["M_1H2_16O"]
-        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+        + 2
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
             isotopic_ratio=c["VSMOW_R_2H"]
         )
         * c["M_2H_1H_16O"]
-        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+        + 2
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
             isotopic_ratio=c["VSMOW_R_3H"]
         )
         * c["M_3H_1H_16O"]
