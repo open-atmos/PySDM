@@ -46,24 +46,6 @@ class MultiBox(Parcel):
 
     def advance_parcel_vars(self):
         """explicit Euler integration of isotope-ratio time derivative"""
-        if self.delta_liquid_water_mixing_ratio < 0:  # FIXME debugging
-            import sys, pprint
-
-            pprint.pprint(
-                {
-                    "delta_liquid_water_mixing_ratio": float(
-                        self.delta_liquid_water_mixing_ratio
-                    ),
-                    "particulator.n_steps": getattr(self.particulator, "n_steps", None),
-                    "dt": getattr(self, "dt", None),
-                    "water_vapour_mixing_ratio": float(
-                        self["water_vapour_mixing_ratio"][0]
-                    ),
-                    "tmp_T0": float(self._tmp["T"][0]),
-                },
-                stream=sys.stderr,
-            )
-
         assert self.delta_liquid_water_mixing_ratio >= 0
         self._recalculate_temperature_pressure_relative_humidity(self._tmp)
 
