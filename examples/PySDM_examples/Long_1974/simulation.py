@@ -9,6 +9,7 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products.size_spectral import ParticleVolumeVersusRadiusLogarithmSpectrum
 from PySDM.products import Time
 
+
 class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
         builder = Builder(
@@ -37,7 +38,6 @@ class Simulation(BasicSimulation):
         particulator = builder.build(attributes, products)
         self.settings = settings
         super().__init__(particulator=particulator)
-
 
     def run(self):
         return super()._run(self.settings.nt, self.settings.steps_per_output_interval)
