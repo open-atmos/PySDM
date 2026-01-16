@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from PySDM import Builder
-from PySDM.backends import CPU
+from PySDM.backends import CPU, ThrustRTC
 from PySDM.dynamics.collisions.collision_kernels import (
     Golovin,
     SimpleGeometric,
@@ -94,6 +94,9 @@ class TestKernels:
     @staticmethod
     @pytest.mark.parametrize(
         "radius", (np.array([49e-6, 1e-6]), np.array([50e-6, 1e-6]))
+    )
+    @pytest.mark.parameterize(
+        "backend_class", (CPU(), ThrustRTC())
     )
     def test_long1974_regimes(radius, backend_class):
         # arrange
