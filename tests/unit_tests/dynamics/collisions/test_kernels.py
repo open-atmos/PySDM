@@ -95,13 +95,10 @@ class TestKernels:
     @pytest.mark.parametrize(
         "radius", (np.array([49e-6, 1e-6]), np.array([50e-6, 1e-6]))
     )
-    @pytest.mark.parameterize(
-        "backend_class", (CPU(), ThrustRTC())
-    )
     def test_long1974_regimes(radius, backend_class):
         # arrange
         env = Box(dv=None, dt=None)
-        builder = Builder(backend=backend_class, n_sd=radius.size, environment=env)
+        builder = Builder(backend=backend_class(), n_sd=radius.size, environment=env)
         sut = Long1974()
         sut.register(builder)
         volume = 4 / 3 * np.pi * radius**3
