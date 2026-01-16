@@ -135,7 +135,7 @@ class IsotopeMethods(BackendMethods):
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
                     ),
-                    R_vap=ff.trivia.isotopic_ratio_assuming_single_heavy_isotope(
+                    R_vap=ff.trivia__isotopic_ratio_assuming_single_heavy_isotope(
                         isotopic_fraction
                     ),
                     R_liq=moles_heavy_atom / moles_light_isotope,
