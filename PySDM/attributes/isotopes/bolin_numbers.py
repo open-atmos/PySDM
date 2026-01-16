@@ -1,7 +1,4 @@
-"""
-# TODO: consider positive/negative values?
-# TODO: comment on total vs. light approximation
-"""
+""" """
 
 from PySDM.attributes.impl import DerivedAttribute, register_attribute
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES

@@ -129,7 +129,7 @@ class TestIsotopes:
         variant: str,
     ):  # pylint: disable=too-many-arguments
         if backend_class.__name__ != "Numba":
-            pytest.skip("# TODO - isotopes on GPU")
+            pytest.skip("# TODO #1787 - isotopes on GPU")
 
         # arrange
         any_positive_number = 44.0

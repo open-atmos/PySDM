@@ -61,7 +61,7 @@ class IsotopeMethods(BackendMethods):
                 moles_heavy_molecule[sd_id] += dn_heavy_molecule
                 mass_of_dry_air = (
                     dry_air_density[sd_id] * cell_volume
-                )  # TODO: pass from outside (do not use V??)
+                )  # TODO #1787 pass from outside (do not use V??)
                 molar_mixing_ratio[cell_id[sd_id]] -= (
                     dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
                 )
@@ -114,7 +114,7 @@ class IsotopeMethods(BackendMethods):
                 T = temperature[cell_id[i]]
                 pvs_water = ff.saturation_vapour_pressure__pvs_water(T)
                 moles_heavy_atom = moles_heavy[i]
-                moles_light_isotope = moles_light_molecule[i]  # TODO approx
+                moles_light_isotope = moles_light_molecule[i]  # TODO #1787
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
@@ -126,18 +126,10 @@ class IsotopeMethods(BackendMethods):
                 D_ratio_heavy_to_light = (
                     ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
                 )
-                rho_v = pvs_water / T / ff.constants.Rv  # TODO approx
-                alpha_eq = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T)
-                alpha_eff = alpha_eq  # TODO
-                # alpha_eff = (
-                #     alpha_eq
-                #     * ff.isotope_kinetic_fractionation_factors__alpha_kinetic(
-                #         alpha_eq, relative_humidity[cell_id[i]], D_ratio_heavy_to_light
-                #     )
-                # )
+                rho_v = pvs_water / T / ff.constants.Rv
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=D_ratio_heavy_to_light,
-                    alpha=alpha_eff,
+                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
                     D_light=ff.constants.D0,
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri

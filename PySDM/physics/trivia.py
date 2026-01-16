@@ -260,4 +260,3 @@ class Trivia:  # pylint: disable=too-many-public-methods
             = molality in dry air / total vapour concentration * dry air density
         """
         return molality_in_dry_air / total_vap_concentration * density_dry_air
-
