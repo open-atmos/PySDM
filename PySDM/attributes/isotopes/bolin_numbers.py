@@ -1,5 +1,8 @@
-""" """
+"""
+Bolin number droplet attribute for heavy isotopes of water atoms
+"""
 
+# pylint: disable=missing-class-docstring, missing-function-docstring
 from PySDM.attributes.impl import DerivedAttribute, register_attribute
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
@@ -36,7 +39,5 @@ def make_bolin_number_factory(heavy_isotope: str):
     return _factory
 
 
-for heavy_isotope in HEAVY_ISOTOPES:
-    register_attribute(name=f"Bolin number for {heavy_isotope}")(
-        make_bolin_number_factory(heavy_isotope)
-    )
+for iso in HEAVY_ISOTOPES:
+    register_attribute(name=f"Bolin number for {iso}")(make_bolin_number_factory(iso))

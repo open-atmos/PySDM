@@ -49,7 +49,6 @@ class IsotopeMethods(BackendMethods):
             #   dm_total (actual - incl. population/curvature effects)
             # output:
             #   dm_heavy = dm_total / Bo * m'/m
-            # Question: do we need molar mass for heavy isotopes; is it possible to define molar Bolin number?
             for sd_id in range(multiplicity.shape[0]):
                 mass_ratio_heavy_to_total = (
                     moles_heavy_molecule[sd_id] * molar_mass_heavy_molecule
