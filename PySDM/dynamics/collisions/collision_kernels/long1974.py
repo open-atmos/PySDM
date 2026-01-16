@@ -1,5 +1,5 @@
 """
-piecewise kernel from
+piecewise kernel from Eq (11) in
 [Long 1974](https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2)
 
 Default parameters are:
@@ -29,7 +29,6 @@ class Long1974:
             "v_ratio",
             "tmp",
             "tmp1",
-            "tmp2",
             "condition",
         ):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
@@ -62,11 +61,10 @@ class Long1974:
         self.arrays["tmp1"] *= self.sc
 
         # compute large radius (linear) limit
-        self.arrays["tmp2"].fill(self.arrays["v_ratio"])
-        self.arrays["tmp2"] += 1.0
-        self.arrays["tmp2"] *= self.arrays["v_lg"]
-        self.arrays["tmp2"] *= self.lc
+        self.arrays["v_ratio"] += 1.0
+        self.arrays["v_ratio"] *= self.arrays["v_lg"]
+        self.arrays["v_ratio"] *= self.lc
 
         # apply piecewise
         self.arrays["condition"].isless(self.arrays["r_lg"], self.rt)
-        output.where(self.arrays["condition"], self.arrays["tmp1"], self.arrays["tmp2"])
+        output.where(self.arrays["condition"], self.arrays["tmp1"], self.arrays["v_ratio"])
