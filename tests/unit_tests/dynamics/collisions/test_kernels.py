@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from PySDM import Builder
-from PySDM.backends import CPU, ThrustRTC
+from PySDM.backends import CPU
 from PySDM.dynamics.collisions.collision_kernels import (
     Golovin,
     SimpleGeometric,
