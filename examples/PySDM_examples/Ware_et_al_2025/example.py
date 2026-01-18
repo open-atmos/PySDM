@@ -10,8 +10,6 @@ from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime, CollisionRateDeficitPerGridbox
 
-from pystrict import strict
-
 from PySDM import Formulae
 from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.initialisation import spectra
@@ -22,7 +20,6 @@ import matplotlib
 from matplotlib import pyplot
 from open_atmos_jupyter_utils import show_plot
 from packaging import version
-# from PySDM_examples.Shima_et_al_2009.error_measure import error_measure
 
 from PySDM.physics.constants import si
 
@@ -214,7 +211,7 @@ class SpectrumPlotter:
             )
 
 
-def run(settings, backend, observers=()):
+def run(settings, backend, observers=(), sampling_method='deterministic'):
     env = Box(dv=settings.dv, dt=settings.dt)
     builder = Builder(
         n_sd=settings.n_sd, backend=backend, environment=env
@@ -222,7 +219,10 @@ def run(settings, backend, observers=()):
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     sampling = settings.sampling
-    attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)
+    attributes["volume"], attributes["multiplicity"] = getattr(
+        sampling,
+        f'sample_{sampling_method}'
+    )(settings.n_sd, backend=backend)
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
     )
@@ -247,7 +247,6 @@ def run(settings, backend, observers=()):
         vals[step] = particulator.products["dv/dlnr"].get()[0]
         vals[step][:] *= settings.rho
         deficit += particulator.products["deficit"].get()
-        # deficit[step][:] *= settings.rho / settings.dv
     deficit = deficit / len(settings.output_steps)
 
     exec_time = particulator.products["wall time"].get()
