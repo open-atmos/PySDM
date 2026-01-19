@@ -34,7 +34,7 @@ class Simulation:
 
     def reinit(self, products=None):
         formulae = self.settings.formulae
-        backend = self.backend#_class(formulae=formulae)
+        backend = self.backend
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,
