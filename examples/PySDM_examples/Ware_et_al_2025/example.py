@@ -8,7 +8,11 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime, CollisionRateDeficitPerGridbox
+from PySDM.products import (
+    ParticleVolumeVersusRadiusLogarithmSpectrum,
+    WallTime,
+    CollisionRateDeficitPerGridbox,
+)
 
 from PySDM import Formulae
 from PySDM.dynamics.collisions.collision_kernels import Golovin
@@ -33,7 +37,7 @@ def error_measure(y, y_true, _):
 
 # @strict
 class Settings:
-    def __init__(self:int,steps: Optional[list] = None):
+    def __init__(self: int, steps: Optional[list] = None):
         steps = steps or [0, 1200, 2400, 3600]
         self.formulae = Formulae()
         self.n_sd = 2**13
@@ -54,7 +58,6 @@ class Settings:
     @property
     def output_steps(self):
         return [int(step / self.dt) for step in self.steps]
-
 
 
 class SpectrumColors:
@@ -211,17 +214,14 @@ class SpectrumPlotter:
             )
 
 
-def run(settings, backend, observers=(), sampling_method='deterministic'):
+def run(settings, backend, observers=(), sampling_method="deterministic"):
     env = Box(dv=settings.dv, dt=settings.dt)
-    builder = Builder(
-        n_sd=settings.n_sd, backend=backend, environment=env
-    )
+    builder = Builder(n_sd=settings.n_sd, backend=backend, environment=env)
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     sampling = settings.sampling
     attributes["volume"], attributes["multiplicity"] = getattr(
-        sampling,
-        f'sample_{sampling_method}'
+        sampling, f"sample_{sampling_method}"
     )(settings.n_sd, backend=backend)
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
@@ -232,7 +232,7 @@ def run(settings, backend, observers=(), sampling_method='deterministic'):
             settings.radius_bins_edges, name="dv/dlnr"
         ),
         WallTime(),
-        CollisionRateDeficitPerGridbox(name='deficit'),
+        CollisionRateDeficitPerGridbox(name="deficit"),
     )
     particulator = builder.build(attributes, products)
 
@@ -276,6 +276,3 @@ def main(plot: bool, save: Optional[str]):
 
 if __name__ == "__main__":
     main(plot="CI" not in os.environ, save=None)
-
-
-
