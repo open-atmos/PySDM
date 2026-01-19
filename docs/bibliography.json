@@ -975,6 +975,10 @@
   "https://doi.org/10.48550/arXiv.2509.05536": {
     "usages": [
       "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_1.ipynb",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_3_4.ipynb",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_5.ipynb",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_6_7_8.ipynb",
       "examples/PySDM_examples/Ware_et_al_2025/fig_10.ipynb"
     ],
     "title": "Adaptive time-stepping for the Super-Droplet Method Monte Carlo collision-coalescence scheme",

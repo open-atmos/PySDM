@@ -36,6 +36,7 @@ setup(
         "pyrcel",
         "pyvinecopulib",
         "networkx",
+        "cmcrameri",
     ],
     extras_require={
         "CI_version_pins": [
