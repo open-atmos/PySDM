@@ -156,7 +156,7 @@ radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m^3)
 builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
+builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s), adaptive=false))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")]
 particulator = builder.build(attributes, products)
 ```
@@ -176,7 +176,7 @@ radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
 env = Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU(), 'environment', env));
-builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
+builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s), 'adaptive', false)));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
   'name', 'dv/dlnr' ...
@@ -200,7 +200,7 @@ radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num
 
 env = Box(dt=1 * si.s, dv=1e6 * si.m ** 3)
 builder = Builder(n_sd=n_sd, backend=CPU(), environment=env)
-builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
+builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s), adaptive=False))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```
