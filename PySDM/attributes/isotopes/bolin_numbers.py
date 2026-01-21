@@ -10,13 +10,14 @@ from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 class BolinNumberImpl(DerivedAttribute):
     def __init__(self, builder, *, heavy_isotope: str):
         self.moles_heavy = builder.get_attribute(f"moles_{heavy_isotope}")
+        self.moles_light = builder.get_attribute("moles light water")
         self.molality_in_dry_air = builder.particulator.environment[
             f"molality {heavy_isotope} in dry air"
         ]
         super().__init__(
             builder,
             name="Bolin number for " + heavy_isotope,
-            dependencies=(self.moles_heavy,),
+            dependencies=(self.moles_heavy, self.moles_light),
         )
 
     def recalculate(self):
@@ -26,7 +27,7 @@ class BolinNumberImpl(DerivedAttribute):
             relative_humidity=self.particulator.environment["RH"],
             temperature=self.particulator.environment["T"],
             density_dry_air=self.particulator.environment["dry_air_density"],
-            moles_light_molecule=self.particulator.attributes["moles light water"],
+            moles_light_molecule=self.moles_light.data,
             moles_heavy=self.moles_heavy.data,
             molality_in_dry_air=self.molality_in_dry_air.data,
         )
