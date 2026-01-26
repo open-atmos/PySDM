@@ -22,9 +22,7 @@ class IsotopeMethods(ThrustRTCBackendMethods):
                 ratio="ratio[i]",
                 reference_ratio="reference_ratio"
             )};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

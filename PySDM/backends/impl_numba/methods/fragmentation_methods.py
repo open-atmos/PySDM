@@ -392,11 +392,11 @@ class FragmentationMethods(BackendMethods):
                 else:
                     ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
                     if rand[i] <= Rf[i]:  # filament breakup
-                        (H1, mu1, sigma1) = ff.fragmentation_function__params_f1(
+                        H1, mu1, sigma1 = ff.fragmentation_function__params_f1(
                             dl[i], dcoal[i]
                         )
-                        (H2, mu2, sigma2) = ff.fragmentation_function__params_f2(ds[i])
-                        (H3, mu3, sigma3) = ff.fragmentation_function__params_f3(
+                        H2, mu2, sigma2 = ff.fragmentation_function__params_f2(ds[i])
+                        H3, mu3, sigma3 = ff.fragmentation_function__params_f3(
                             ds[i], dl[i]
                         )
                         H1 = H1 * mu1
@@ -422,10 +422,10 @@ class FragmentationMethods(BackendMethods):
                             frag_volume[i] = np.exp(lnarg)
 
                     elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
-                        (H1, mu1, sigma1) = ff.fragmentation_function__params_s1(
+                        H1, mu1, sigma1 = ff.fragmentation_function__params_s1(
                             dl[i], ds[i], dcoal[i]
                         )
-                        (H2, mu2, sigma2) = ff.fragmentation_function__params_s2(
+                        H2, mu2, sigma2 = ff.fragmentation_function__params_s2(
                             dl[i], ds[i], St[i]
                         )
                         H1 = H1 * mu1
@@ -445,10 +445,10 @@ class FragmentationMethods(BackendMethods):
                             frag_volume[i] = np.exp(lnarg)
 
                     else:  # disk breakup
-                        (H1, mu1, sigma1) = ff.fragmentation_function__params_d1(
+                        H1, mu1, sigma1 = ff.fragmentation_function__params_d1(
                             W[i], dl[i], dcoal[i], CKE[i]
                         )
-                        (H2, mu2, sigma2) = ff.fragmentation_function__params_d2(
+                        H2, mu2, sigma2 = ff.fragmentation_function__params_d2(
                             ds[i], dl[i], CKE[i]
                         )
                         H1 = H1 * mu1

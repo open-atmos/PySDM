@@ -8,7 +8,6 @@ import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
-
 # TODO #1524
 # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
 
