@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 GPU implementation of backend methods wrapping basic physics formulae
 """

@@ -42,7 +42,7 @@ def _solve_equilibrium_radii(
         f_org = np.zeros_like(radii_in, dtype=float)
 
     @numba.njit(**jit_flags)
-    def impl(radii_in, iters, T, RH, cell_id, kappa, f_org):
+    def impl(*, radii_in, iters, T, RH, cell_id, kappa, f_org):
         radii_out = np.empty_like(radii_in)
         for i in numba.prange(len(radii_in)):  # pylint: disable=not-an-iterable
             cid = cell_id[i]
@@ -95,7 +95,15 @@ def _solve_equilibrium_radii(
         return radii_out
 
     iters = np.empty_like(radii_in, dtype=int)
-    radii_out = impl(radii_in, iters, T, RH, cell_id, kappa, f_org)
+    radii_out = impl(
+        radii_in=radii_in,
+        iters=iters,
+        T=T,
+        RH=RH,
+        cell_id=cell_id,
+        kappa=kappa,
+        f_org=f_org,
+    )
     assert (iters != max_iters).all() and (iters != -1).all()
     return radii_out
 

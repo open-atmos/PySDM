@@ -398,7 +398,7 @@ class CondensationMethods(
             args=(ml.data, signed_water_mass.data, multiplicity.data, cell_id.data),
         )
 
-    # pylint: disable=unused-argument,too-many-locals
+    # pylint: disable=unused-argument,too-many-locals,too-many-arguments
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
         self,

@@ -10,7 +10,7 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
+def straub_Nr(  # pylint: disable=too-many-positional-arguments,unused-argument
     i,
     Nr1,
     Nr2,
@@ -33,7 +33,7 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
+def straub_mass_remainder(  # pylint: disable=too-many-positional-arguments,unused-argument
     i, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, d34, Nr1, Nr2, Nr3, Nr4
 ):
     # pylint: disable=too-many-arguments, too-many-locals
@@ -49,7 +49,7 @@ def straub_mass_remainder(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
+def ll82_Nr(  # pylint: disable=too-many-positional-arguments,unused-argument
     i,
     Rf,
     Rs,
@@ -121,7 +121,7 @@ class FragmentationMethods(BackendMethods):
 
     def slams_fragmentation(
         self, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-positional-arguments
         self._slams_fragmentation_body(
             n_fragment.data, frag_volume.data, x_plus_y.data, probs.data, rand.data
         )

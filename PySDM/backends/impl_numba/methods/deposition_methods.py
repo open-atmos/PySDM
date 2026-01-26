@@ -16,6 +16,7 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-methods
     @cached_property
     def _deposition(self):
+        # pylint: disable=too-many-positional-arguments
         assert self.formulae.particle_shape_and_density.supports_mixed_phase()
 
         formulae = self.formulae_flattened

@@ -1,3 +1,4 @@
+# pylint: disable=too-many-positional-arguments
 """
 CPU implementation of backend methods for particle collisions
 """
@@ -42,9 +43,7 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def coalesce(  # pylint: disable=too-many-arguments
-    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
-):
+def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
     atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n > 0:
@@ -62,7 +61,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def compute_transfer_multiplicities(
     gamma, j, k, multiplicity, particle_mass, fragment_mass_i, max_multiplicity
-):  # pylint: disable=too-many-arguments
+):
     overflow_flag = False
     gamma_j_k = 0
     take_from_j_test = multiplicity[k]
@@ -96,7 +95,7 @@ def compute_transfer_multiplicities(
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def get_new_multiplicities_and_update_attributes(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
-):  # pylint: disable=too-many-arguments
+):
     for a in range(len(attributes)):
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
@@ -122,7 +121,7 @@ def round_multiplicities_to_ints_and_update_attributes(
     nk,
     attributes,
     multiplicity,
-):  # pylint: disable=too-many-arguments
+):
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
@@ -133,7 +132,7 @@ def round_multiplicities_to_ints_and_update_attributes(
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
+def break_up(  # pylint: disable=c,too-many-locals
     i,
     j,
     k,
@@ -190,7 +189,7 @@ def break_up_while(
     breakup_rate_deficit,
     warn_overflows,
     particle_mass,
-):  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
+):  # pylint: disable=unused-argument,too-many-locals
     gamma_deficit = gamma[i]
     overflow_flag = False
     while gamma_deficit > 0:
@@ -330,7 +329,6 @@ class CollisionsMethods(BackendMethods):
     @cached_property
     def _scale_prob_for_adaptive_sdm_gamma_body(self):
         @numba.njit(**self.default_jit_flags)
-        # pylint: disable=too-many-arguments,too-many-locals
         def body(
             prob,
             idx,
@@ -343,7 +341,7 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair,
             stats_n_substep,
             stats_dt_min,
-        ):
+        ):  # pylint: disable=too-many-locals
             """Modified parameters are: `dt_left[cell_id]`, `prob[pair_id]`,
             `stats_n_substep[cell_id]`, `stats_dt_min[cell_id]`;
             `dt_todo[cell_id]` is a local temporary array of time steps to be taken in each cell,
@@ -522,7 +520,6 @@ class CollisionsMethods(BackendMethods):
     @cached_property
     def _compute_gamma_body(self):
         @numba.njit(**self.default_jit_flags)
-        # pylint: disable=too-many-arguments,too-many-locals
         def body(
             prob,
             rand,
@@ -534,7 +531,7 @@ class CollisionsMethods(BackendMethods):
             collision_rate,
             is_first_in_pair,
             out,
-        ):
+        ):  # pylint: disable=too-many-locals
             """
             return in "out" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
             formula:
@@ -633,7 +630,6 @@ class CollisionsMethods(BackendMethods):
     @cached_property
     def _normalize_body(self):
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
-        # pylint: disable=too-many-arguments
         def body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
             n_cell = cell_start.shape[0] - 1
             for i in range(n_cell):
@@ -649,7 +645,6 @@ class CollisionsMethods(BackendMethods):
 
         return body
 
-    # pylint: disable=too-many-arguments
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
         return self._normalize_body(
             prob.data,
@@ -681,7 +676,6 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
     def _counting_sort_by_cell_id_and_update_cell_start(
         new_idx, idx, cell_id, cell_idx, length, cell_start
     ):
@@ -698,7 +692,6 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
     def _parallel_counting_sort_by_cell_id_and_update_cell_start(
         new_idx, idx, cell_id, cell_idx, length, cell_start, cell_start_p
     ):
@@ -743,7 +736,7 @@ class CollisionsMethods(BackendMethods):
     @cached_property
     def _linear_collection_efficiency_body(self):
         @numba.njit(**self.default_jit_flags)
-        # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-locals
         def body(params, output, radii, is_first_in_pair, idx, length, unit):
             A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
             output[:] = 0

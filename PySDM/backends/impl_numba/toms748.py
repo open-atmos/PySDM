@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
+# pylint: disable=invalid-name,too-many-positional-arguments,too-many-locals,too-many-branches,too-many-statements
 """
 Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski's
 libcloudph++ version (GPL) which in turn was based on Boost implementation
@@ -112,7 +112,7 @@ def tol_check(a, b, rtol, within_tolerance):
 
 
 @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
-def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
+def toms748_solve(f, args, ax, bx, fax, fbx, *, rtol, max_iter, within_tolerance):
     count = max_iter
     mu = 0.5
     a = ax
