@@ -34,6 +34,7 @@ def make_particulator(backend_instance, isotopes_considered, attributes):
         if not attributes.get(f"moles_{iso}"):
             attributes[f"moles_{iso}"] = np.array(0)
         builder.particulator.environment[f"molality {iso} in dry air"] = np.array(0.1)
+        builder.request_attribute(f"delta_{iso}")
     builder.particulator.environment["RH"] = np.array(1)
     builder.particulator.environment["T"] = np.array(1)
     builder.particulator.environment["dry_air_density"] = np.array(1)
@@ -79,8 +80,6 @@ class TestIsotopicFractionation:
         """
         test that run fails when isotopic fractionation
         is executed before or without condensation"""
-        if backend_class.__name__ != "Numba":
-            pytest.skip("# TODO #1787 - isotopes on GPU")
 
         # arrange
         builder = Builder(
@@ -110,8 +109,6 @@ class TestIsotopicFractionation:
     def test_fractionation_implemented_for_isotope(backend_class, isotope):
         """test isotopic fractionation implemented
         for heavy water isotopes and raising error for light ones"""
-        if backend_class.__name__ != "Numba":
-            pytest.skip("# TODO #1787 - isotopes on GPU")
 
         # arrange
         builder = Builder(
@@ -168,6 +165,9 @@ class TestIsotopicFractionation:
         formulae, backend_class
     ):
         """neither a bug nor a feature :) - just a simplification (?)"""
+        if backend_class.__name__ != "Numba":
+            pytest.skip("# TODO #1787 - isotopes on GPU")
+
         # arrange
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
         attributes["moles_2H"] = 44.0 * np.ones(1)
