@@ -31,11 +31,10 @@ def make_particulator(backend_instance, isotopes_considered, attributes):
         environment=Box(dv=np.nan, dt=1 * si.s),
     )
     for iso in isotopes_considered:
-        attributes[f"moles_{iso}"] = np.array(np.nan)
+        if not attributes.get(f"moles_{iso}"):
+            attributes[f"moles_{iso}"] = np.array(np.nan)
         builder.request_attribute(f"delta_{iso}")
-        builder.particulator.environment[f"molality {iso} in dry air"] = np.array(
-            np.nan
-        )
+        builder.particulator.environment[f"molality {iso} in dry air"] = np.array(0.1)
     builder.particulator.environment["RH"] = np.array(np.nan)
     builder.particulator.environment["T"] = np.array(np.nan)
     builder.particulator.environment["dry_air_density"] = np.array(np.nan)
@@ -120,15 +119,17 @@ class TestIsotopicFractionation:
         builder.build(attributes=BASE_INITIAL_ATTRIBUTES.copy())
 
     @staticmethod
-    def test_call_marks_all_isotopes_as_updated(formulae, backend_class):
+    @pytest.mark.parametrize("considered_isotopes", (HEAVY_ISOTOPES, ("2H",)))
+    def test_call_marks_all_isotopes_as_updated(
+        formulae, backend_class, considered_isotopes
+    ):
         """test isotopic fractionation dynamic updates moles attribute"""
         # arrange
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
-            isotopes_considered=("2H",),
+            isotopes_considered=considered_isotopes,
             attributes=BASE_INITIAL_ATTRIBUTES.copy(),
         )
-
         for isotope in HEAVY_ISOTOPES:
             # pylint:disable=protected-access
             assert (
@@ -144,7 +145,7 @@ class TestIsotopicFractionation:
         particulator.dynamics["IsotopicFractionation"]()
 
         # assert
-        for isotope in HEAVY_ISOTOPES:
+        for isotope in considered_isotopes:
             # pylint:disable=protected-access
             assert (
                 particulator.attributes._ParticleAttributes__attributes[
@@ -167,7 +168,7 @@ class TestIsotopicFractionation:
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
             attributes=attributes,
-            isotopes_considered=(),
+            isotopes_considered=("2H",),
         )
 
         # act
