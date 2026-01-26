@@ -153,6 +153,7 @@ def equilibrate_dry_radii(
         rtol=rtol,
         max_iters=max_iters,
         skip_fa_lt_zero=False,
+        RH_range=(0, 1),
     )
 
 
@@ -203,4 +204,5 @@ def equilibrate_wet_radii(
         rtol=rtol,
         max_iters=max_iters,
         skip_fa_lt_zero=True,
+        RH_range=(0, 1),
     )
