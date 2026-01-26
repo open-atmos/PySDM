@@ -114,7 +114,7 @@ def tol_check(a, b, rtol, within_tolerance):
 @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
 def toms748_solve(
     f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance
-):  # pylint: disable=too-many-positional-argumrnts
+):  # pylint: disable=too-many-positional-arguments
     count = max_iter
     mu = 0.5
     a = ax
