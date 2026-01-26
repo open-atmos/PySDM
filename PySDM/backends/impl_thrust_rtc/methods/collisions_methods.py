@@ -256,9 +256,7 @@ class CollisionsMethods(
                 auto cid = cell_id[j];
                 static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), "");
                 atomicMin((unsigned int*)&dt_todo[cid], __float_as_uint(dt_optimal));
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -277,9 +275,7 @@ class CollisionsMethods(
                     return;
                 }}
                 prob[i] *= dt_todo[cell_id[j]] / dt;
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -344,9 +340,7 @@ class CollisionsMethods(
             Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
 
             Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -419,9 +413,7 @@ class CollisionsMethods(
             }}
 
             Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -465,9 +457,7 @@ class CollisionsMethods(
             );
 
             out[i] = g;
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -571,9 +561,7 @@ class CollisionsMethods(
             frag_volume[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
                 c="rand[i]"
             )};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -608,9 +596,7 @@ class CollisionsMethods(
                 x_plus_y="x_plus_y[i]",
                 fragtol="fragtol"
             )};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -703,9 +689,7 @@ class CollisionsMethods(
                 }}
 
                 frag_volume[i] = pow(frag_volume[i], 3) * {const.PI} / 6;
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
