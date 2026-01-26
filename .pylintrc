@@ -1,5 +1,5 @@
 [DESIGN]
-max-positional-arguments=6
+max-positional-arguments=7
 max-args=20
 
 [OPTIONS]
