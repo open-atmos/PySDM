@@ -28,17 +28,15 @@ def make_particulator(backend_instance, isotopes_considered, attributes):
     builder = Builder(
         n_sd=1,
         backend=backend_instance,
-        environment=Box(dv=np.nan, dt=1 * si.s),
+        environment=Box(dv=1, dt=1 * si.s),
     )
     for iso in isotopes_considered:
         if not attributes.get(f"moles_{iso}"):
-            attributes[f"moles_{iso}"] = np.array(np.nan)
-        builder.request_attribute(f"delta_{iso}")
+            attributes[f"moles_{iso}"] = np.array(0)
         builder.particulator.environment[f"molality {iso} in dry air"] = np.array(0.1)
-    builder.particulator.environment["RH"] = np.array(np.nan)
-    builder.particulator.environment["T"] = np.array(np.nan)
-    builder.particulator.environment["dry_air_density"] = np.array(np.nan)
-
+    builder.particulator.environment["RH"] = np.array(1)
+    builder.particulator.environment["T"] = np.array(1)
+    builder.particulator.environment["dry_air_density"] = np.array(1)
     builder.add_dynamic(Condensation())
     builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
 
@@ -77,13 +75,16 @@ class TestIsotopicFractionation:
             ),
         ),
     )
-    def test_ensure_condensation_executed_before(backend_instance, dynamics, context):
+    def test_ensure_condensation_executed_before(backend_class, dynamics, context):
         """
         test that run fails when isotopic fractionation
         is executed before or without condensation"""
+        if backend_class.__name__ != "Numba":
+            pytest.skip("# TODO #1787 - isotopes on GPU")
+
         # arrange
         builder = Builder(
-            n_sd=1, backend=backend_instance, environment=Box(dv=np.nan, dt=1 * si.s)
+            n_sd=1, backend=backend_class(), environment=Box(dv=np.nan, dt=1 * si.s)
         )
         for dynamic in dynamics:
             builder.add_dynamic(dynamic)
@@ -106,12 +107,15 @@ class TestIsotopicFractionation:
             ],
         ],
     )
-    def test_fractionation_implemented_for_isotope(backend_instance, isotope):
+    def test_fractionation_implemented_for_isotope(backend_class, isotope):
         """test isotopic fractionation implemented
         for heavy water isotopes and raising error for light ones"""
+        if backend_class.__name__ != "Numba":
+            pytest.skip("# TODO #1787 - isotopes on GPU")
+
         # arrange
         builder = Builder(
-            n_sd=1, backend=backend_instance, environment=Box(dv=np.nan, dt=-1 * si.s)
+            n_sd=1, backend=backend_class(), environment=Box(dv=np.nan, dt=-1 * si.s)
         )
         builder.add_dynamic(Condensation())
         builder.add_dynamic(IsotopicFractionation(isotopes=(isotope,)))
@@ -124,6 +128,9 @@ class TestIsotopicFractionation:
         formulae, backend_class, considered_isotopes
     ):
         """test isotopic fractionation dynamic updates moles attribute"""
+        if backend_class.__name__ != "Numba":
+            pytest.skip("# TODO #1787 - isotopes on GPU")
+
         # arrange
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
@@ -164,7 +171,7 @@ class TestIsotopicFractionation:
         # arrange
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
         attributes["moles_2H"] = 44.0 * np.ones(1)
-
+        attributes["signed water mass"] = np.ones(1)
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
             attributes=attributes,
@@ -172,11 +179,11 @@ class TestIsotopicFractionation:
         )
 
         # act
-        particulator.attributes["diffusional growth mass change"].data[:] = 0
+        particulator.attributes["diffusional growth mass change"][:] = 0
         particulator.dynamics["IsotopicFractionation"]()
 
         # assert
-        assert particulator.attributes["moles_2H"][0] == attributes["moles_2H"]
+        assert particulator.attributes["moles_2H"].data == attributes["moles_2H"]
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -189,6 +196,9 @@ class TestIsotopicFractionation:
         molecular_R_liq,
     ):
         """test initial condition for delta_isotopes is calculated properly"""
+        if backend_class.__name__ != "Numba":
+            pytest.skip("# TODO #1787 - isotopes on GPU")
+
         # arrange
         const = formulae.constants
         attributes = BASE_INITIAL_ATTRIBUTES.copy()

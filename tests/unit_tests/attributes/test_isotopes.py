@@ -94,7 +94,6 @@ class TestIsotopes:
             * attributes["signed water mass"]
             / (constants_defaults.M_1H * 2 + constants_defaults.M_16O)
         )
-        print(delta, n_heavy_isotope, n_light_water)
         if isotope[-1] == "O":
             n_light_isotope = n_light_water
         elif isotope[-1] == "H":
@@ -169,7 +168,7 @@ class TestIsotopes:
         particulator.environment["dry_air_density"] = any_positive_number
 
         # act
-        value = particulator.attributes[attribute_name].to_ndarray()
+        value = particulator.attributes[attribute_name].data
 
         # assert
         np.testing.assert_approx_equal(
