@@ -72,7 +72,9 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             param_names=("volume", "mass"),
             name_iter="i",
             body=f"""
-            volume[i] = {self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass="mass[i]")};
+            volume[i] = {
+                self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass="mass[i]")
+            };
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -84,7 +86,9 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             param_names=("mass", "volume"),
             name_iter="i",
             body=f"""
-            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume="volume[i]")};
+            mass[i] = {
+                self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume="volume[i]")
+            };
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -141,10 +145,12 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             param_names=("output", "rhod", "water_vapour_mixing_ratio"),
             name_iter="i",
             body=f"""
-            output[i] = {self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio.c_inline(
+            output[i] = {
+            self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio.c_inline(
                 rhod="rhod[i]",
                 water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
-            )};
+            )
+            };
             """.replace(
                 "real_type", self._get_c_type()
             ),
