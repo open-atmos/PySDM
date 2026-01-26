@@ -117,7 +117,8 @@ class IsotopeMethods(BackendMethods):
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
-                rho_v = pvs_water / T / ff.constants.Rv  # FIXME??
+                rho_v = pvs_water / T / ff.constants.Rv  # FIXME #1787
+
                 isotopic_fraction = ff.trivia__isotopic_fraction(
                     molality_in_dry_air=molality_in_dry_air[cell_id[i]],
                     density_dry_air=density_dry_air[cell_id[i]],
