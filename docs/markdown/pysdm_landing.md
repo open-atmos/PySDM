@@ -71,7 +71,7 @@ In these cases, non-SI units should be always indicated in variable names,
   - `pressure_hPa` to use hectopascals.
 
 However, such conversions are best to be done
-  on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`.
+  on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`).
 
 ### Dimensional Analysis
 By default, the `si` object contains bare multipliers corresponding to SI prefixes.
