@@ -59,23 +59,35 @@ def test_fig_2(notebook_variables, x, y, phase):
 )
 def test_isotope_ratio_change(notebook_variables, phase, eps_percent):
     """
-    test sign of isotope ratio change (dR) match
-    theoretical saturation lines for dR=0 from paper
-    allowing max error equal eps
+    Check that the sign of isotope ratio change (dR) matches
+    the theoretical saturation lines (dR = 0) from
+    Gedzelman & Arnold (1994), within tolerance eps_percent.
     """
-    # arange
+    cmn = notebook_variables["COMMONS"]
     rh = notebook_variables["RH"]
-    rh_tile = np.tile(rh[::-1], (len(rh), 1)).T
-    heavier_liq = (
-        notebook_variables["molecular_R_liq"]
-        > notebook_variables["COMMONS"].iso_ratio_liq_eq
-    )
+    x = notebook_variables["x"]
+    s_eq = notebook_variables["S_eq"][phase]
 
     rel_diff = notebook_variables[f"rel_diff_{phase[:3]}"]
-    above_eq_line = heavier_liq * (rh_tile > notebook_variables["s_eq"][phase])
+    molecular_R_liq = notebook_variables["molecular_R_liq"]
 
-    # act
-    sut = np.where(above_eq_line, -1, 1) * rel_diff[::-1, :] * PER_CENT
+    # Map isotope ratios onto equilibrium curve
+    idx = np.abs(x[:, None] - molecular_R_liq[None, :]).argmin(axis=0)
+    s_eq_iso = s_eq[idx]  # (n_iso,)
 
-    # assert
-    np.testing.assert_array_less(-sut[~np.isnan(sut)], eps_percent)
+    # Broadcast into RH × isotope space
+    rh_2d = rh[:, None]  # (n_rh, 1)
+    s_eq_2d = s_eq_iso[None, :]  # (1, n_iso)
+
+    heavier_liq = molecular_R_liq > cmn.ratios.iso_ratio_liq_eq
+    heavier_liq_2d = heavier_liq[None, :]
+    above_eq_line = heavier_liq_2d & (rh_2d > s_eq_2d)
+
+    if phase == "liquid":
+        expected_sign = np.where(above_eq_line, -1.0, 1.0)
+    else:  # vapour
+        expected_sign = np.where(above_eq_line, 1.0, -1.0)
+    sut = expected_sign * rel_diff * PER_CENT
+
+    valid = ~np.isnan(sut)
+    np.testing.assert_array_less(-sut[valid], eps_percent)
