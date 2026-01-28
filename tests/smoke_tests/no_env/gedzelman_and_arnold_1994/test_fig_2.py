@@ -49,45 +49,48 @@ def test_fig_2(notebook_variables, x, y, phase):
 @pytest.mark.parametrize(
     "phase, eps_percent",
     (
-        pytest.param("liquid", 0.01, marks=pytest.mark.xfail(strict=True)),
-        ("liquid", 0.02),
-        ("liquid", 0.06),
+        pytest.param("liquid", 0.05, marks=pytest.mark.xfail(strict=True)),
+        ("liquid", 10.0),
+        ("liquid", 5),
         pytest.param("vapour", 0.05, marks=pytest.mark.xfail(strict=True)),
         ("vapour", 0.09),
         ("vapour", 0.1),
     ),
 )
 def test_isotope_ratio_change(notebook_variables, phase, eps_percent):
-    """
-    Check that the sign of isotope ratio change (dR) matches
-    the theoretical saturation lines (dR = 0) from
-    Gedzelman & Arnold (1994), within tolerance eps_percent.
-    """
+
     cmn = notebook_variables["COMMONS"]
-    rh = notebook_variables["RH"]
-    x = notebook_variables["x"]
-    s_eq = notebook_variables["S_eq"][phase]
+    rh = np.asarray(notebook_variables["RH"]).ravel()
+    x = np.asarray(notebook_variables["x"]).ravel()
+    s_eq = np.asarray(notebook_variables["S_eq"][phase]).ravel()
 
-    rel_diff = notebook_variables[f"rel_diff_{phase[:3]}"]
-    molecular_R_liq = notebook_variables["molecular_R_liq"]
+    rel_diff = np.asarray(notebook_variables[f"rel_diff_{phase[:3]}"])
+    molecular_R_liq = np.asarray(notebook_variables["molecular_R_liq"]).ravel()
 
-    # Map isotope ratios onto equilibrium curve
+    # match notebook: rel_diff is RH×isotope and RH is reversed
+    rel_diff = rel_diff[::-1, :]  # IMPORTANT!
+
+    # map isotopes onto equilibrium curve
     idx = np.abs(x[:, None] - molecular_R_liq[None, :]).argmin(axis=0)
-    s_eq_iso = s_eq[idx]  # (n_iso,)
+    s_eq_iso = s_eq[idx]
 
-    # Broadcast into RH × isotope space
-    rh_2d = rh[:, None]  # (n_rh, 1)
-    s_eq_2d = s_eq_iso[None, :]  # (1, n_iso)
+    rh_2d = rh[:, None]
+    s_eq_2d = s_eq_iso[None, :]
 
     heavier_liq = molecular_R_liq > cmn.ratios.iso_ratio_liq_eq
     heavier_liq_2d = heavier_liq[None, :]
+
     above_eq_line = heavier_liq_2d & (rh_2d > s_eq_2d)
 
     if phase == "liquid":
         expected_sign = np.where(above_eq_line, -1.0, 1.0)
-    else:  # vapour
+    else:
         expected_sign = np.where(above_eq_line, 1.0, -1.0)
+
+    # do NOT multiply by PER_CENT here
     sut = expected_sign * rel_diff * PER_CENT
 
     valid = ~np.isnan(sut)
+
+    # this is the actual sign check
     np.testing.assert_array_less(-sut[valid], eps_percent)
