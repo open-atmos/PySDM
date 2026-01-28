@@ -61,6 +61,14 @@ def hom_pure_droplet_freezing_backend():
                 seed=time.time_ns(),
             )
         ),
+        "KoopMurray2016_DAW": CPU(
+            formulae=Formulae(
+                particle_shape_and_density="MixedPhaseSpheres",
+                homogeneous_ice_nucleation_rate="KoopMurray2016_DAW",
+                saturation_vapour_pressure="MurphyKoop2005",
+                seed=time.time_ns(),
+            )
+        ),
     }
     return backends
 
