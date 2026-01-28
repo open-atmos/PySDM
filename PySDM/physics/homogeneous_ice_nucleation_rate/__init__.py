@@ -7,3 +7,4 @@ from .null import Null
 from .koop import Koop2000
 from .koop_corr import Koop_Correction
 from .koop_murray import KoopMurray2016
+from .koop_murray_daw_adaption import KoopMurray2016_DAW

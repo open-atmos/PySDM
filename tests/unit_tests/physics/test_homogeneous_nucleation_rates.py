@@ -7,6 +7,7 @@ import re
 import pytest
 from matplotlib import pyplot
 import numpy as np
+from scipy.optimize.elementwise import find_root
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import homogeneous_ice_nucleation_rate
 from PySDM import physics
@@ -93,6 +94,81 @@ class TestHomogeneousIceNucleationRate:
                 desired=SPICHTINGER_ET_AL_2023_FIG2_DATA["jhom_log10"][index],
                 significant=2,
             )
+
+    @staticmethod
+    def test_fig_11_in_spichtinger_et_al_2023(plot=False):
+        """Fig. 11 in [Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)"""
+        # arrange
+        formulae = Formulae(
+            homogeneous_ice_nucleation_rate="KoopMurray2016",
+            saturation_vapour_pressure="MurphyKoop2005",
+        )
+        formulae_KoopMurray2016_DAW = Formulae(
+            homogeneous_ice_nucleation_rate="KoopMurray2016_DAW",
+        )
+        formulae_Koop_Correction = Formulae(
+            homogeneous_ice_nucleation_rate="Koop_Correction",
+        )
+
+        d_aw_ice = np.arange(0.24, 0.37, 0.01)
+        S_i = -1.0 / (d_aw_ice - 1.0)
+
+        def sat_T(temperature, S_i=1.5):
+            return (
+                formulae.saturation_vapour_pressure.pvs_water(temperature)
+                / formulae.saturation_vapour_pressure.pvs_ice(temperature)
+                - S_i
+            )
+
+        temperature = find_root(sat_T, (210.0, 260.0), args=(S_i,)).x
+
+        # act
+        J_hom_parametrisations = {
+            "Koop & Murray (2016)": np.log10(
+                formulae.homogeneous_ice_nucleation_rate.j_hom(temperature, d_aw_ice)
+            ),
+            "quadratic fit": np.log10(
+                formulae_KoopMurray2016_DAW.homogeneous_ice_nucleation_rate.j_hom(
+                    temperature, d_aw_ice
+                )
+            ),
+            "Koop et al. (2000), corr.": np.log10(
+                formulae_Koop_Correction.homogeneous_ice_nucleation_rate.j_hom(
+                    temperature, d_aw_ice
+                )
+            ),
+        }
+
+        # plot
+        for parametrisation, data in J_hom_parametrisations.items():
+            pyplot.plot(
+                d_aw_ice,
+                data,
+                label=parametrisation,
+            )
+        pyplot.gca().set(
+            xlabel=r"water activity difference $\Delta a_w$",
+            ylabel="log$_{10}(J)$",
+            xlim=(0.24, 0.36),
+            ylim=(-10, 30),
+        )
+        pyplot.grid()
+        pyplot.legend()
+        if plot:
+            pyplot.show()
+        else:
+            pyplot.clf()
+
+        # assert
+        index = range(
+            np.where(np.isclose(d_aw_ice, 0.27))[0][0],
+            np.where(np.isclose(d_aw_ice, 0.34))[0][0] + 1,
+        )
+        np.testing.assert_allclose(
+            np.log10(J_hom_parametrisations["Koop & Murray (2016)"][index]),
+            np.log10(J_hom_parametrisations["quadratic fit"][index]),
+            rtol=0.01,
+        )
 
     @staticmethod
     @pytest.mark.parametrize(
