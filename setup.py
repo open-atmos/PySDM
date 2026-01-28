@@ -40,7 +40,6 @@ optional_dependencies = {
         "Pint==0.24.4",
         "chempy==0.8.3",
         "pyevtk==1.6.0",
-        "numpy==1.25.3",
     ],
 }
 
