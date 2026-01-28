@@ -26,19 +26,7 @@ dependencies = [
     ),
     "Pint",
     "chempy",
-    "scipy"
-    + (
-        {
-            8: "==1.10.1",
-            9: "==1.10.1",
-            10: "==1.10.1",
-            11: "==1.10.1",
-            12: "==1.13.0",
-            13: "==1.13.0",
-        }[sys.version_info.minor]
-        if CI
-        else ""
-    ),
+    "scipy" + ('=' if CI else '>') + "=1.15.0",  # needed for scipy.optimize.elementwise
     "pyevtk",
     "pyparsing" + ("==3.2.5" if CI else ""),
 ]
