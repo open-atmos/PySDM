@@ -37,7 +37,7 @@ optional_dependencies = {
         "PyPartMC==1.7.2",
         "numba==0.60.0",
         "CURandRTC==0.1.7",
-        "Pint==0.25.2",
+        "Pint==0.24.4",
         "chempy==0.8.3",
         "pyevtk==1.6.0",
         "numpy==1.25.3",
