@@ -9,8 +9,8 @@ class MiyakeEtAl1968:  # pylint:disable=too-few-public-methods
 
     @staticmethod
     def tau(
-        const, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
-    ):  # pylint: disable=too-many-arguments, unused-argument
+        const, *, rho_s, radius, D_iso, D, S, R_liq, alpha, R_vap, Fk
+    ):  # pylint: disable=unused-argument
         """
         relative growth of heavy isotope as a function of mass from eq. (28)
 

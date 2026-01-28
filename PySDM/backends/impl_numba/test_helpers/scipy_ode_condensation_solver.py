@@ -95,7 +95,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         return np.sum(n * jit_formulae.diffusion_coordinate__mass(x)) / m_d_mean
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
-    def _impl(  # pylint: disable=too-many-arguments,too-many-locals
+    def _impl(  # pylint: disable=too-many-positional-arguments,too-many-locals
         dy_dt,
         x,
         T,
@@ -166,7 +166,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         )
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
-    def _odesys(  # pylint: disable=too-many-arguments,too-many-locals
+    def _odesys(  # pylint: disable=too-many-positional-arguments,too-many-locals
         t,
         y,
         kappa,
@@ -222,7 +222,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         )
         return dy_dt
 
-    def solve(  # pylint: disable=too-many-arguments,too-many-locals,unused-argument
+    def solve(  # pylint: disable=too-many-positional-arguments,too-many-locals,unused-argument
         attributes,
         cell_idx,
         thd,
