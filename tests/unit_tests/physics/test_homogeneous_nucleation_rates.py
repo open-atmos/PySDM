@@ -7,7 +7,7 @@ import re
 import pytest
 from matplotlib import pyplot
 import numpy as np
-from scipy.optimize.elementwise import find_root
+from scipy.optimize import elementwise
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import homogeneous_ice_nucleation_rate
 from PySDM import physics
@@ -120,7 +120,7 @@ class TestHomogeneousIceNucleationRate:
                 - S_i
             )
 
-        temperature = find_root(sat_T, (210.0, 260.0), args=(S_i,)).x
+        temperature = elementwise.find_root(sat_T, (210.0, 260.0), args=(S_i,)).x
 
         # act
         J_hom_parametrisations = {
