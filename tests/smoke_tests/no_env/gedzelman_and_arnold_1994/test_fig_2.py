@@ -49,48 +49,36 @@ def test_fig_2(notebook_variables, x, y, phase):
 @pytest.mark.parametrize(
     "phase, eps_percent",
     (
-        pytest.param("liquid", 0.05, marks=pytest.mark.xfail(strict=True)),
-        ("liquid", 10.0),
-        ("liquid", 5),
+        pytest.param("liquid", 1.0, marks=pytest.mark.xfail(strict=True)),
+        ("liquid", 1.1),
+        ("liquid", 1.2),
         pytest.param("vapour", 0.05, marks=pytest.mark.xfail(strict=True)),
         ("vapour", 0.09),
         ("vapour", 0.1),
     ),
 )
 def test_isotope_ratio_change(notebook_variables, phase, eps_percent):
-
+    """test sign of the changes above theoretical equilibrium line"""
+    # arrange
     cmn = notebook_variables["COMMONS"]
-    rh = np.asarray(notebook_variables["RH"]).ravel()
-    x = np.asarray(notebook_variables["x"]).ravel()
-    s_eq = np.asarray(notebook_variables["S_eq"][phase]).ravel()
+    rh = notebook_variables["RH"]
+    s_eq = notebook_variables["S_eq"][phase]
+    x_axis_size1 = notebook_variables["x"]
+    x_axis_size2 = notebook_variables["molecular_R_liq"]
 
-    rel_diff = np.asarray(notebook_variables[f"rel_diff_{phase[:3]}"])
-    molecular_R_liq = np.asarray(notebook_variables["molecular_R_liq"]).ravel()
+    eq_line_x_idx = np.abs(x_axis_size1[:, None] - x_axis_size2[None, :]).argmin(axis=0)
+    s_eq_iso = s_eq[eq_line_x_idx]
 
-    # match notebook: rel_diff is RH×isotope and RH is reversed
-    rel_diff = rel_diff[::-1, :]  # IMPORTANT!
+    above_eq_line = (rh[:, None] > s_eq_iso[None, :]) & (
+        x_axis_size2[None, :] > cmn.ratios.iso_ratio_liq_eq
+    )
 
-    # map isotopes onto equilibrium curve
-    idx = np.abs(x[:, None] - molecular_R_liq[None, :]).argmin(axis=0)
-    s_eq_iso = s_eq[idx]
-
-    rh_2d = rh[:, None]
-    s_eq_2d = s_eq_iso[None, :]
-
-    heavier_liq = molecular_R_liq > cmn.ratios.iso_ratio_liq_eq
-    heavier_liq_2d = heavier_liq[None, :]
-
-    above_eq_line = heavier_liq_2d & (rh_2d > s_eq_2d)
-
-    if phase == "liquid":
-        expected_sign = np.where(above_eq_line, -1.0, 1.0)
-    else:
-        expected_sign = np.where(above_eq_line, 1.0, -1.0)
-
-    # do NOT multiply by PER_CENT here
+    # act
+    rel_diff = notebook_variables[f"rel_diff_{phase[:3]}"][::-1, :]
+    expected_sign = np.where(above_eq_line, -1.0, 1.0)
+    if phase == "vapour":
+        expected_sign *= -1
     sut = expected_sign * rel_diff * PER_CENT
 
-    valid = ~np.isnan(sut)
-
-    # this is the actual sign check
-    np.testing.assert_array_less(-sut[valid], eps_percent)
+    # assert
+    np.testing.assert_array_less(-sut[~np.isnan(sut)], eps_percent)
