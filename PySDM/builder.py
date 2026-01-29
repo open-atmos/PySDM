@@ -78,7 +78,7 @@ class Builder:
                 LiquidSpheres.__name__,
                 MixedPhaseSpheres.__name__,
             ), "implied volume-to-mass conversion is only supported for spherical particles"
-            attributes["water mass"] = (
+            attributes["signed water mass"] = (
                 self.particulator.formulae.particle_shape_and_density.volume_to_mass(
                     attributes.pop("volume")
                 )
