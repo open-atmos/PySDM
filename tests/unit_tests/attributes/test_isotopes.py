@@ -171,9 +171,7 @@ class TestIsotopes:
         value = particulator.attributes[attribute_name].data
 
         # assert
-        np.testing.assert_approx_equal(
-            np.sign(value), expected_sign_of_tau, significant=5
-        )
+        np.testing.assert_equal(np.sign(value), expected_sign_of_tau)
 
     @staticmethod
     def test_moles(

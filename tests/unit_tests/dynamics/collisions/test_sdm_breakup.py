@@ -98,7 +98,7 @@ class TestSDMBreakup:
         # Arrange
         backend = backend_instance
         n_sd = 2
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend, environment=env)
         n_init = [6, 6]
         particulator = builder.build(
@@ -178,7 +178,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
@@ -347,7 +347,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend_class(double_precision=True), environment=env)
         particulator = builder.build(
             attributes={
@@ -467,7 +467,7 @@ class TestSDMBreakup:
         def run_simulation(_n_times, _gamma):
             n_init = params["n_init"]
             n_sd = len(n_init)
-            env = Box(dv=np.NaN, dt=np.NaN)
+            env = Box(dv=np.nan, dt=np.nan)
             builder = Builder(n_sd, backend_class(), environment=env)
             particulator = builder.build(
                 attributes={
@@ -546,7 +546,7 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend, environment=env)
         particulator = builder.build(
             attributes={
@@ -615,7 +615,7 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend, environment=env)
         particulator = builder.build(
             attributes={
@@ -713,7 +713,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
@@ -866,7 +866,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(
             n_sd, backend_class(Formulae(handle_all_breakups=True)), environment=env
         )
