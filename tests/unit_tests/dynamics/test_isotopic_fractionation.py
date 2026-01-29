@@ -23,7 +23,13 @@ BASE_INITIAL_ATTRIBUTES = {
 }
 
 
-def make_particulator(backend_instance, isotopes_considered, attributes):
+def make_particulator(
+    backend_instance,
+    isotopes_considered,
+    attributes,
+    rh=np.nan,
+    t=np.nan,
+):
     """return basic particulator needed for testing"""
     builder = Builder(
         n_sd=1,
@@ -35,8 +41,8 @@ def make_particulator(backend_instance, isotopes_considered, attributes):
             attributes[f"moles_{iso}"] = np.array(0)
         builder.particulator.environment[f"molality {iso} in dry air"] = np.array(0.1)
         builder.request_attribute(f"delta_{iso}")
-    builder.particulator.environment["RH"] = np.array(1)
-    builder.particulator.environment["T"] = np.array(1)
+    builder.particulator.environment["RH"] = np.array(rh)
+    builder.particulator.environment["T"] = np.array(t)
     builder.particulator.environment["dry_air_density"] = np.array(1)
     builder.add_dynamic(Condensation())
     builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
@@ -161,8 +167,10 @@ class TestIsotopicFractionation:
             )
 
     @staticmethod
+    @pytest.mark.parametrize("relative_humidity", (0.1, 0.9, 1.1))
+    @pytest.mark.parametrize("temperature", (270 * si.K, 300 * si.K))
     def test_no_isotope_fractionation_if_droplet_size_unchanged(
-        formulae, backend_class
+        formulae, backend_class, relative_humidity, temperature
     ):
         """neither a bug nor a feature :) - just a simplification (?)"""
         if backend_class.__name__ != "Numba":
@@ -171,11 +179,13 @@ class TestIsotopicFractionation:
         # arrange
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
         attributes["moles_2H"] = np.array([44.0])
-        attributes["signed water mass"] = np.array([1.0])
+        attributes["signed water mass"] = np.array([666.0])
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
             attributes=attributes,
             isotopes_considered=("2H",),
+            rh=relative_humidity,
+            t=temperature,
         )
 
         # act
