@@ -170,8 +170,8 @@ class TestIsotopicFractionation:
 
         # arrange
         attributes = BASE_INITIAL_ATTRIBUTES.copy()
-        attributes["moles_2H"] = 44.0 * np.ones(1)
-        attributes["signed water mass"] = np.ones(1)
+        attributes["moles_2H"] = np.array([44.0])
+        attributes["signed water mass"] = np.array([1.0])
         particulator = make_particulator(
             backend_instance=backend_class(formulae=formulae),
             attributes=attributes,
@@ -230,13 +230,15 @@ class TestIsotopicFractionation:
         delta_liq = formulae.trivia.isotopic_ratio_2_delta(R_liq, const.VSMOW_R_2H)
 
         # assert
-        np.testing.assert_approx_equal(
+        np.testing.assert_allclose(
             particulator.attributes["moles_2H"][0],
-            attributes["moles_2H"],
-            significant=50,
+            attributes["moles_2H"][0],
+            rtol=1e-12,
+            atol=0,
         )
-        np.testing.assert_approx_equal(
+        np.testing.assert_allclose(
             particulator.attributes["delta_2H"][0],
             delta_liq,
-            significant=10,
+            rtol=1e-10,
+            atol=0,
         )
