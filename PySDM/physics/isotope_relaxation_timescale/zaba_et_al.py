@@ -19,3 +19,23 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
             * D_iso
             * (S * (alpha * R_vap / R_liq - 1) + (S - 1) / (1 + D * Fk))
         )
+
+    @staticmethod
+    def bolin_number(  # pylint: disable=too-many-arguments
+        D_ratio_heavy_to_light,
+        alpha,
+        D_light,
+        Fk,
+        R_vap,
+        R_liq,
+        relative_humidity,
+        rho_v,
+    ):
+        b_zaba = rho_v * D_light * Fk
+        S = relative_humidity
+        return (
+            alpha
+            * (1 - S)
+            / D_ratio_heavy_to_light
+            / ((1 + b_zaba) * S * (1 - alpha * R_vap / R_liq))
+        )
