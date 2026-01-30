@@ -79,7 +79,7 @@ class TestBoZabaEtAl:
     def test_b_coeff_unit():
         with DimensionalAnalysis():
             si = constants_defaults.si
-            sut = isotope_relaxation_timescale.zaba_et_al.ZabaEtAl.corrected_b_coeff
+            sut = isotope_relaxation_timescale.zaba_et_al.ZabaEtAl.b_corrected
             any_number = 42.0
 
             # act
@@ -99,6 +99,7 @@ class TestBoZabaEtAl:
             si = constants_defaults.si
             sut = isotope_relaxation_timescale.zaba_et_al.ZabaEtAl.bolin_number
             any_number_except_one = 44.0
+
             # act
             value = sut(
                 D_ratio_heavy_to_light=any_number_except_one * si.dimensionless,

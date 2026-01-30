@@ -21,7 +21,7 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def corrected_b_coeff(rho_v, D_light, Fk):
+    def b_corrected(rho_v, D_light, Fk):
         """
         Returns fixed version of the coefficient b
         in [Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99)](https://doi.org/10.1029/93JD03518)
