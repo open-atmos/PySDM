@@ -58,7 +58,7 @@ def test_unit_and_magnitude(paper, iso):
         assert 0 * si.s < result.to_base_units() < 10 * si.s
 
 
-def test_bolin_number_unit():
+def test_bolin1958_bolin_number_unit():
     with DimensionalAnalysis():
         # arrange
         si = constants_defaults.si
@@ -70,3 +70,44 @@ def test_bolin_number_unit():
 
         # assert
         assert value.check(si.dimensionless)
+
+
+class TestBoZabaEtAl:
+    """tests for Bolin number implemented in zaba_et_al.py"""
+
+    @staticmethod
+    def test_b_coeff_unit():
+        with DimensionalAnalysis():
+            si = constants_defaults.si
+            sut = isotope_relaxation_timescale.zaba_et_al.ZabaEtAl.corrected_b_coeff
+            any_number = 42.0
+
+            # act
+            value = sut(
+                D_light=any_number * si.m**2 / si.s,
+                Fk=any_number * si.s / si.m**2,
+                rho_v=any_number * si.g / si.kg,
+            )
+
+            # assert
+            assert value.check(si.dimensionless)
+
+    @staticmethod
+    def test_bolin_number_unit():
+        with DimensionalAnalysis():
+            # arrange
+            si = constants_defaults.si
+            sut = isotope_relaxation_timescale.zaba_et_al.ZabaEtAl.bolin_number
+            any_number_except_one = 44.0
+            # act
+            value = sut(
+                D_ratio_heavy_to_light=any_number_except_one * si.dimensionless,
+                alpha=any_number_except_one * si.dimensionless,
+                R_vap=any_number_except_one * si.dimensionless,
+                R_liq=any_number_except_one * si.dimensionless,
+                relative_humidity=any_number_except_one * si.dimensionless,
+                b=any_number_except_one * si.dimensionless,
+            )
+
+            # assert
+            assert value.check(si.dimensionless)

@@ -21,21 +21,32 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def bolin_number(  # pylint: disable=too-many-arguments
+    def corrected_b_coeff(rho_v, D_light, Fk):
+        """
+        Returns fixed version of the coefficient b
+        in [Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99)](https://doi.org/10.1029/93JD03518)
+        where water vapour density is wrongly omitted.
+        """
+        return rho_v * D_light * Fk
+
+    @staticmethod
+    def bolin_number(
+        *,
         D_ratio_heavy_to_light,
         alpha,
-        D_light,
-        Fk,
         R_vap,
         R_liq,
         relative_humidity,
-        rho_v,
-    ):
-        b_zaba = rho_v * D_light * Fk
-        S = relative_humidity
+        b,
+    ):  # pylint: disable=too-many-arguments
+        """Heavy to total isotopic-timescales ratio (tau_heavy/tau_total).
+
+        Returns:
+            tau_heavy/tau_total = (relative total mass change)/(relative heavy mass change)
+        """
         return (
             alpha
-            * (1 - S)
+            * (1 - relative_humidity)
             / D_ratio_heavy_to_light
-            / ((1 + b_zaba) * S * (1 - alpha * R_vap / R_liq))
+            / ((1 + b) * relative_humidity * (1 - alpha * R_vap / R_liq))
         )
