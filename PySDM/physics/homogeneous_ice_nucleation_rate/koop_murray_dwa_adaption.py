@@ -7,7 +7,7 @@ adapted for water activity formulation
 import numpy as np
 
 
-class KoopMurray2016_DAW:
+class KoopMurray2016_DWA:
     def __init__(self, const):
         pass
 

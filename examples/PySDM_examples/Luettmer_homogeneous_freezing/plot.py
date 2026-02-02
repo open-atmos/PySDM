@@ -101,15 +101,15 @@ def plot_thermodynamics_and_bulk(
     iax = 0
     ax = axs[iax]
 
-    ax.plot(time, RH, color="red", linestyle="-", label=r"$S_{w}$")
-    ax.plot(time, RHi, color="blue", linestyle="-", label=r"$S_{i}$")
+    ax.plot(time, RH, color="red", linestyle="dashdot", label=r"$S_{w}$")
+    ax.plot(time, RHi, color="blue", linestyle="--", label=r"$S_{i}$")
     ax.set_ylabel("saturation ratio", fontsize=ax_lab_fsize)
     ax.legend(loc="center left", fontsize=ax_lab_fsize)
     ax.set_xlim(time[0], t_lim)
     ax.tick_params(labelsize=tick_fsize)
     ax.set_title(title_add[iax] + r"ambient thermodynamics", fontsize=ax_lab_fsize)
     ax.grid(visible=True)
-    ax.axvline(x=first_ice_time, color="black", linestyle="--")
+    ax.axvline(x=first_ice_time, color="black", linestyle=":")
 
     twin = ax.twinx()
     twin.plot(time, T, color="black", linestyle="-", label="T")
@@ -121,10 +121,9 @@ def plot_thermodynamics_and_bulk(
     # Mass content and number concentration
     iax = 1
     ax = axs[iax]
-    ax.plot(time, qc, color="red", linestyle="-", label="water")
-    ax.plot(time, qi, color="blue", linestyle="-", label="ice")
+    ax.plot(time, qc, color="red", linestyle="dashdot", label="water")
+    ax.plot(time, qi, color="blue", linestyle="--", label="ice")
     ax.plot(time, qv, color="black", linestyle="-", label="vapor")
-    ax.plot(time, qt, color="black", linestyle="dotted", label="total")
     ax.set_yscale("log")
     ax.set_ylim(1e-5, 1e-2)
     ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
@@ -133,12 +132,12 @@ def plot_thermodynamics_and_bulk(
     ax.tick_params(labelsize=tick_fsize)
     ax.set_xlim(time[0], t_lim)
     ax.grid(visible=True)
-    ax.axvline(x=first_ice_time, color="black", linestyle="--")
+    ax.axvline(x=first_ice_time, color="black", linestyle=":")
     ax.set_title(title_add[iax] + r"bulk quantities", fontsize=ax_lab_fsize)
     if show_conc:
         twin = ax.twinx()
-        twin.plot(time, nc, color="red", linestyle="--", label="water")
-        twin.plot(time, ni, color="blue", linestyle="--", label="ice")
+        twin.plot(time, nc, color="red", linestyle="densly dashdot", label="water")
+        twin.plot(time, ni, color="blue", linestyle="densly dashed", label="ice")
         twin.set_yscale("log")
         twin.set_xlabel("time [s]", fontsize=ax_lab_fsize)
         twin.set_ylabel(
@@ -163,11 +162,11 @@ def plot_thermodynamics_and_bulk(
         ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
         ax.tick_params(labelsize=tick_fsize)
         ax.grid(visible=True)
-        ax.axvline(x=first_T_frz, color="black", linestyle="--")
+        ax.axvline(x=first_T_frz, color="black", linestyle=":")
         ax.set_title(title_add[iax] + r"$T_{frz}$ histogram", fontsize=ax_lab_fsize)
     else:
-        ax.plot(time, rc * 1e6, color="red", linestyle="-", label="water")
-        ax.plot(time, ri * 1e6, color="blue", linestyle="-", label="ice")
+        ax.plot(time, rc * 1e6, color="red", linestyle="dashdot", label="water")
+        ax.plot(time, ri * 1e6, color="blue", linestyle="--", label="ice")
         ax.set_yscale("log")
         ax.set_ylim(1e-2, 1e2)
         ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
@@ -176,7 +175,7 @@ def plot_thermodynamics_and_bulk(
         ax.set_xlim(time[0], t_lim)
         ax.tick_params(labelsize=tick_fsize)
         ax.grid(visible=True)
-        ax.axvline(x=first_ice_time, color="black", linestyle="--")
+        ax.axvline(x=first_ice_time, color="black", linestyle=":")
         ax.set_title(title_add[iax] + r" mean radius", fontsize=ax_lab_fsize)
 
     iax = 3
@@ -212,12 +211,16 @@ def plot_thermodynamics_and_bulk(
         ax.legend(loc="upper left", fontsize=ax_lab_fsize)
         ax.set_yscale("log")
         ax.set_xlim(time[0], t_lim)
-        ax.axvline(x=first_ice_time, color="black", linestyle="--")
+        ax.axvline(x=first_ice_time, color="black", linestyle=":")
         ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
         if plot_daw:
             twin = ax.twinx()
             twin.plot(
-                time, d_a_w_ice, color="gray", linestyle="-", label=r"$\Delta a_{w}$"
+                time,
+                d_a_w_ice,
+                color="gray",
+                linestyle="dashdot",
+                label=r"$\Delta a_{w}$",
             )
             twin.set_ylim(0.2, 0.35)
             twin.set_ylabel("water activity difference", fontsize=ax_lab_fsize)
@@ -226,7 +229,11 @@ def plot_thermodynamics_and_bulk(
         else:
             twin = ax.twinx()
             twin.plot(
-                time, abs_diff_j_hom, label=r"$\Delta J_{\mathrm{hom}}$", color="gray"
+                time,
+                abs_diff_j_hom,
+                label=r"$\Delta J_{\mathrm{hom}}$",
+                color="gray",
+                linestyle="dashdot",
             )
             twin.set_ylim(-10, 10)
             twin.set_ylabel("relative error", fontsize=ax_lab_fsize)
@@ -238,7 +245,6 @@ def plot_thermodynamics_and_bulk(
         ax.set_xscale("log")
         ax.set_xlim(1e-3, 5e-0)
         ax.set_xlabel("initial radius [µm]", fontsize=ax_lab_fsize)
-        # ax.set_xlim(left=234, right=239)
         ax.set_ylabel("multiplicity", fontsize=ax_lab_fsize)
         ax.set_title(title_add[iax] + r"CCN size distribution", fontsize=ax_lab_fsize)
 
@@ -282,6 +288,7 @@ def plot_freezing_temperatures_histogram_allinone(
 ):
 
     colors = ["black", "blue", "red"]
+    linestyles = ["-", "--", ":"]
 
     for k, simulation in enumerate(simulations):
 
@@ -301,14 +308,17 @@ def plot_freezing_temperatures_histogram_allinone(
         mean_line = np.mean(histogram_list, axis=0)
         min_line = np.min(histogram_list, axis=0)
 
-        color = colors[k]
+        # color = colors[k]
         ax.plot(
             T_frz_bins_center,
             mean_line,
-            color=color,
+            color=colors[k],
+            linestyle=linestyles[k],
             label=r"$N_{sd}$: " + f"{int(n_sd):5.0f}",
         )
-        ax.fill_between(T_frz_bins_center, min_line, max_line, color=color, alpha=0.2)
+        ax.fill_between(
+            T_frz_bins_center, min_line, max_line, color=colors[k], alpha=0.2
+        )
 
     ax.set_xlim(left=234.5, right=239)
     ax.set_title(title, fontsize=ax_lab_fsize)
@@ -453,7 +463,10 @@ def plot_ensemble_bulk(
 ):  # pylint: disable=too-many-nested-blocks
 
     colors = ["blue", "red", "cyan"]
-    pyplot.rcParams["axes.prop_cycle"] = cycler(color=colors)
+    linestyles = ["-", "--", ":"]
+    pyplot.rcParams["axes.prop_cycle"] = cycler(color=colors) + cycler(
+        linestyle=linestyles
+    )
 
     for ensemble_simulation in ensemble_simulations:
         ens_var = np.asarray(ensemble_simulation["ens_variable"])
@@ -489,13 +502,6 @@ def plot_ensemble_bulk(
                                 var[i, h] = np.asarray(output[var_name])[-1]
 
             if number_of_ensemble_runs > 1:
-                ax.plot(
-                    np.mean(var, axis=1),
-                    ens_var * ens_var_scale,
-                    "-o",
-                    label=hom_freezing_labels[j],
-                )
-                # print( np.min(var,axis=1), np.max(var,axis=1),ens_var * ens_var_scale )
                 ax.fill_betweenx(
                     ens_var * ens_var_scale,
                     np.min(var, axis=1),
@@ -503,12 +509,15 @@ def plot_ensemble_bulk(
                     alpha=0.2,
                 )
             else:
-                ax.plot(
+                ax.scatter(
                     var[:, 0],
                     ens_var * ens_var_scale,
-                    "-o",
-                    label=hom_freezing_labels[j],
                 )
+            ax.plot(
+                var[:, 0],
+                ens_var * ens_var_scale,
+                label=hom_freezing_labels[j],
+            )
 
     title, x_label, y_label, ens_label = "", "", "", ""
     if var_name == "ni":
@@ -525,7 +534,8 @@ def plot_ensemble_bulk(
         title = r"$n_{frz}$"
         x_label = r"frozen fraction [$\mathrm{\%}$]"
         ax.set_xlim(0, 20)
-    elif ens_var_name == "n_ccn":
+
+    if ens_var_name == "n_ccn":
         ax.set_yscale("log")
         y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
         ens_label = r"$n_{ccn}$ ensemble"

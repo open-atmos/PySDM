@@ -104,7 +104,7 @@ class TestHomogeneousIceNucleationRate:
             saturation_vapour_pressure="MurphyKoop2005",
         )
         formulae_KoopMurray2016_DAW = Formulae(
-            homogeneous_ice_nucleation_rate="KoopMurray2016_DAW",
+            homogeneous_ice_nucleation_rate="KoopMurray2016_DWA",
         )
         formulae_Koop_Correction = Formulae(
             homogeneous_ice_nucleation_rate="Koop_Correction",
