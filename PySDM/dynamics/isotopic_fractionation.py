@@ -1,6 +1,8 @@
 """
-resolves fractionation of water molecules across different isotopologues
-requires condensation dynamic to be registered (and run beforehand)
+Resolves fractionation of water molecules across different isotopologues.
+
+Requires condensation dynamic to be registered (and run beforehand).
+Considers only single-substituted molecules (i.e. no D2O, etc.)
 """
 
 from PySDM.dynamics.condensation import Condensation
@@ -33,6 +35,7 @@ class IsotopicFractionation:
                 f"{Condensation.__name__} needs to be registered to run prior to {self.__class__}"
             )
 
+        builder.request_attribute("diffusional growth mass change")
         for isotope in self.isotopes:
             builder.request_attribute(f"moles_{isotope}")
 

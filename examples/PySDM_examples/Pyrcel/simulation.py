@@ -6,14 +6,20 @@ from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
 
 
 class Simulation(BasicSimulation):
     def __init__(
-        self, settings, products=None, scipy_solver=False, rtol_thd=1e-10, rtol_x=1e-10
+        self,
+        settings,
+        products=None,
+        scipy_solver=False,
+        rtol_thd=1e-10,
+        rtol_x=1e-10,
+        mass_of_dry_air=44 * si.kg,
     ):
         n_sd = sum(settings.n_sd_per_mode)
         builder = Builder(
@@ -27,7 +33,7 @@ class Simulation(BasicSimulation):
                 initial_water_vapour_mixing_ratio=settings.initial_vapour_mixing_ratio,
                 T0=settings.initial_temperature,
                 w=settings.vertical_velocity,
-                mass_of_dry_air=44 * si.kg,
+                mass_of_dry_air=mass_of_dry_air,
             ),
         )
         builder.add_dynamic(AmbientThermodynamics())
@@ -43,7 +49,9 @@ class Simulation(BasicSimulation):
         }
         for i, (kappa, spectrum) in enumerate(settings.aerosol_modes_by_kappa.items()):
             sampling = ConstantMultiplicity(spectrum)
-            r_dry, n_per_volume = sampling.sample(settings.n_sd_per_mode[i])
+            r_dry, n_per_volume = sampling.sample_deterministic(
+                settings.n_sd_per_mode[i]
+            )
             v_dry = settings.formulae.trivia.volume(radius=r_dry)
             attributes["multiplicity"] = np.append(
                 attributes["multiplicity"], n_per_volume * volume

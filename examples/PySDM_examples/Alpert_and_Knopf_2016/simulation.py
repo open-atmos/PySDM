@@ -219,7 +219,7 @@ def simulation(
         backend=CPU(formulae=formulae),
         environment=Box(dt=time_step, dv=volume),
     )
-    builder.add_dynamic(Freezing(singular=False))
+    builder.add_dynamic(Freezing(immersion_freezing="time-dependent"))
     builder.request_attribute("volume")
 
     if hasattr(spectrum, "s_geom") and spectrum.s_geom == 1:
@@ -227,7 +227,9 @@ def simulation(
             n_sd, multiplicity / volume
         )
     else:
-        _isa, _conc = spectral_sampling.ConstantMultiplicity(spectrum).sample(n_sd)
+        _isa, _conc = spectral_sampling.ConstantMultiplicity(
+            spectrum
+        ).sample_deterministic(n_sd)
     attributes = {
         "multiplicity": discretise_multiplicities(_conc * volume),
         "immersed surface area": _isa,

@@ -18,11 +18,12 @@ from .constants import (  # pylint: disable=unused-import
     PI_4_3,
     PPM,
     T0,
-    THREE,
     ONE,
-    TWO,
-    TWO_THIRDS,
     ONE_HALF,
+    TWO_THIRDS,
+    TWO,
+    THREE,
+    NINE,
     M,
     si,
 )
@@ -308,6 +309,9 @@ BIGG_DT_MEDIAN = np.nan
 
 NIEMAND_A = np.nan
 NIEMAND_B = np.nan
+
+HOMOGENEOUS_FREEZING_THRESHOLD = T0 - 38 * si.K
+""" value from [Shima et al. 2020](https://doi.org/10.5194/gmd-13-4107-2020) """
 
 ABIFM_UNIT = 1 / si.cm**2 / si.s
 """ ice nucleation rate using ABIFM
@@ -635,6 +639,45 @@ ROGERS_YAU_TERM_VEL_SMALL_R_LIMIT = 35 * si.um
 ROGERS_YAU_TERM_VEL_MEDIUM_R_LIMIT = 600 * si.um
 """ 〃 """
 
+SPICHTINGER_GIERENS_TERM_VEL_LIMIT_0 = 2.146e-13 * si.kg
+""" empirical terminal velocity formulation
+for columnar ice crystals from Table 2. in
+[Spichtinger & Gierens 2009](https://doi.org/10.5194/acp-9-685-2009) """
+SPICHTINGER_GIERENS_TERM_VEL_LIMIT_1 = 2.166e-9 * si.kg
+""" 〃 """
+SPICHTINGER_GIERENS_TERM_VEL_LIMIT_2 = 4.264e-8 * si.kg
+""" 〃 """
+SPICHTINGER_TERM_DELTA_COEFF0 = 0.42
+""" 〃 """
+SPICHTINGER_TERM_DELTA_COEFF1 = 0.57
+""" 〃 """
+SPICHTINGER_TERM_DELTA_COEFF2 = 0.31
+""" 〃 """
+SPICHTINGER_TERM_DELTA_COEFF3 = 0.096
+""" 〃 """
+SPICHTINGER_TERM_GAMMA_COEFF0 = (
+    735.4 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF0
+)
+""" 〃 """
+SPICHTINGER_TERM_GAMMA_COEFF1 = (
+    63292.4 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF1
+)
+""" 〃 """
+SPICHTINGER_TERM_GAMMA_COEFF2 = (
+    329.8 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF2
+)
+""" 〃 """
+SPICHTINGER_TERM_GAMMA_COEFF3 = 8.8 * si.m / si.s / si.kg**SPICHTINGER_TERM_DELTA_COEFF3
+""" 〃 """
+SPICHTINGER_CORRECTION_P0 = 300 * si.hectopascal
+""" 〃 """
+SPICHTINGER_CORRECTION_P_EXPO = -0.178
+""" 〃 """
+SPICHTINGER_CORRECTION_T0 = 233 * si.kelvin
+""" 〃 """
+SPICHTINGER_CORRECTION_T_EXPO = -0.394
+""" 〃 """
+
 W76W_G0 = -2.9912729e3 * si.K**2
 """ [Wexler 1976](https://doi.org/10.6028/jres.080A.071) saturation vapour pressure """
 W76W_G1 = -6.0170128e3 * si.K
@@ -699,7 +742,7 @@ bulk_phase_partitioning_exponent = np.nan
 
 BOLIN_ISOTOPE_TIMESCALE_COEFF_C1 = np.nan * si.dimensionless
 """
-Coefficient c1 used in [Bolin 1958](https://https://digitallibrary.un.org/record/3892725)
+Coefficient c1 used in [Bolin 1958](https://digitallibrary.un.org/record/3892725)
 for the falling drop evaporation timescale of equilibration with ambient air void of a given
 isotopologue; in the paper timescale is calculated for tritium with assumption of no tritium
 in the environment around the drop (Table 1).
@@ -732,7 +775,6 @@ def compute_derived_values(c: dict):
     water molar mass is computed from molecular masses and VSMOW isotope abundances
     (and neglecting molecular binding energies)
     for discussion, see:
-    - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
     """
 
@@ -745,22 +787,41 @@ def compute_derived_values(c: dict):
     c["Mv"] = (
         (
             1
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_2H"]
+            )
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_3H"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_17O"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_18O"]
+            )
         )
         * c["M_1H2_16O"]
         + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_2H"]
+        )
         * c["M_2H_1H_16O"]
         + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_3H"]
+        )
         * c["M_3H_1H_16O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_17O"]
+        )
+        * c["M_1H2_17O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_18O"]
+        )
+        * c["M_1H2_18O"]
     )
-
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
     c["Rv"] = c["R_str"] / c["Mv"]

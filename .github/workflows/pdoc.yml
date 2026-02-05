@@ -16,7 +16,7 @@ jobs:
   pdoc:
     strategy:
       matrix:
-        platform: [ ubuntu-latest, macos-13, windows-latest ]
+        platform: [ ubuntu-latest, macos-latest, windows-latest ]
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4.1.6
@@ -28,7 +28,7 @@ jobs:
           python-version: "3.12"
 
       - name: exclude pvpython scripts
-        run: rm examples/PySDM_examples/utils/pvanim.py
+        run: grep -rl '^#!/usr/bin/env pvpython' examples/PySDM_examples | xargs rm -f
 
       - run: pip install pdoc nbformat gitpython
       - run: pip install -e .

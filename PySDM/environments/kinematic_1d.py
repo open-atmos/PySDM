@@ -8,7 +8,7 @@ import numpy as np
 from PySDM.environments.impl.moist import Moist
 
 from PySDM.impl import arakawa_c
-from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.environments.impl import register_environment
 
 
@@ -60,12 +60,12 @@ class Kinematic1D(Moist):
             ) = self.mesh.cellular_attributes(positions)
 
             if collisions_only:
-                v_wet, n_per_kg = spectral_discretisation.sample(
+                v_wet, n_per_kg = spectral_discretisation.sample_deterministic(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
                 )
                 attributes["volume"] = v_wet
             else:
-                r_dry, n_per_kg = spectral_discretisation.sample(
+                r_dry, n_per_kg = spectral_discretisation.sample_deterministic(
                     backend=self.particulator.backend, n_sd=self.particulator.n_sd
                 )
                 attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)

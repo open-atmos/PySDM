@@ -11,7 +11,7 @@ from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
@@ -65,7 +65,7 @@ def test_single_saturation_peak(
         )
     )
 
-    r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
+    r_dry, concentration = ConstantMultiplicity(spectrum).sample_deterministic(n_sd)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
     r_wet = equilibrate_wet_radii(
         r_dry=r_dry,

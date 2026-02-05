@@ -8,7 +8,7 @@ from PySDM import products as PySDM_products
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
 
@@ -61,7 +61,9 @@ def run_parcel(
     }
     for i, mode in enumerate(aerosol.modes):
         kappa, spectrum = mode["kappa"]["CompressedFilmOvadnevaite"], mode["spectrum"]
-        r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
+        r_dry, concentration = ConstantMultiplicity(spectrum).sample_deterministic(
+            n_sd_per_mode
+        )
         v_dry = builder.formulae.trivia.volume(radius=r_dry)
         specific_concentration = concentration / builder.formulae.constants.rho_STP
         attributes["multiplicity"] = np.append(
