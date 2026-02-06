@@ -311,8 +311,8 @@ calculator2 = create_new_calculator(
     "CELLS",
     "Result",
     "Magnitude",
-    True,
-    True,
+    scalar_coloring=True,
+    hide=True,
     y=setup,
     registrationame="Calculator2",
 )
