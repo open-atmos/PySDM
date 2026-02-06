@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,too-many-positional-arguments,too-many-locals,too-many-branches,too-many-statements
+# pylint: disable=invalid-name,too-many-locals,too-many-branches,too-many-statements
 """
 Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski's
 libcloudph++ version (GPL) which in turn was based on Boost implementation
@@ -88,7 +88,9 @@ def quadratic_interpolate(a, b, d, fa, fb, fd, count):
 
 
 @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
-def cubic_interpolate(a, b, d, e, fa, fb, fd, fe):
+def cubic_interpolate(
+    a, b, d, e, fa, fb, fd, fe
+):  # pylint: disable=too-many-positional-arguments
     q11 = (d - e) * fd / (fe - fd)
     q21 = (b - d) * fb / (fd - fb)
     q31 = (a - b) * fa / (fb - fa)
