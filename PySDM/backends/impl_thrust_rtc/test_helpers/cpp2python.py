@@ -187,8 +187,7 @@ def to_numba(name, args, iter_var, body):
 
     body, structs = extract_struct_defs(body)
 
-    result = (
-        f"""
+    result = f"""
 def make(self):
     import numpy as np
     from numpy import (
@@ -214,11 +213,6 @@ def make(self):
             {body}
 
     return {name}
-""".replace(
-            "};", ")"
-        )
-        .replace("} ", "")
-        .replace("}", "")
-    )
+""".replace("};", ")").replace("} ", "").replace("}", "")
 
     return result

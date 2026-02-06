@@ -44,9 +44,7 @@ class CondensationMethods(
             name_iter="i",
             body="""
             atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * signed_water_mass[i]);
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     def __init__(self):
@@ -254,9 +252,7 @@ class CondensationMethods(
                 }}
             }}
             signed_water_mass[i] = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -347,9 +343,7 @@ class CondensationMethods(
                 diffusivity="DTp[i]",
                 density="air_density[i]",
             )};
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -386,9 +380,7 @@ class CondensationMethods(
             );
             rhod_copy[i] += dt * drhod_dt_pred[i] / 2;
             ml_old[i] = ml_new[i];
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     def calculate_m_l(self, ml, signed_water_mass, multiplicity, cell_id):

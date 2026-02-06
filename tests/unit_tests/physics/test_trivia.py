@@ -8,7 +8,6 @@ from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics import constants_defaults, si
 from PySDM.physics.trivia import Trivia
 
-
 CONST = Formulae().constants
 
 

@@ -49,9 +49,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         signed_water_mass[i] = -1 * signed_water_mass[i];
                     }}
                 }}
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -77,9 +75,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 ) {{
                     signed_water_mass[i] = -1 * signed_water_mass[i];
                 }}
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -98,9 +94,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 )}) {{
                     signed_water_mass[i] = -1 * signed_water_mass[i];
                 }}
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -124,9 +118,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 ) {{
                     signed_water_mass[i] = -1 * signed_water_mass[i];
                 }}
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -176,9 +168,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         }}
                     }}
                 }}
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

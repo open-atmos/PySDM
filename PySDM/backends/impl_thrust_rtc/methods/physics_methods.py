@@ -29,9 +29,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             RH[i] = {self.formulae.state_variable_triplet.pv.c_inline(
                 p="p[i]", water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
             )} / {self.formulae.saturation_vapour_pressure.pvs_water.c_inline(T="T[i]")};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -41,9 +39,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             "i",
             f"""
             y[i] = {self.formulae.trivia.explicit_euler.c_inline(y="y[i]", dt="dt", dy_dt="dy_dt")};
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -62,9 +58,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
                 sgm="sigma"
             )};
             v_cr[i] = {self.formulae.trivia.volume.c_inline(radius="r_cr")};
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -73,12 +67,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             param_names=("volume", "mass"),
             name_iter="i",
             body=f"""
-            volume[i] = {
-                self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass="mass[i]")
-            };
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            volume[i] = {self.formulae.particle_shape_and_density.mass_to_volume.c_inline(mass="mass[i]")};
+            """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -87,12 +77,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             param_names=("mass", "volume"),
             name_iter="i",
             body=f"""
-            mass[i] = {
-                self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume="volume[i]")
-            };
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            mass[i] = {self.formulae.particle_shape_and_density.volume_to_mass.c_inline(volume="volume[i]")};
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -150,11 +136,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio.c_inline(
                 rhod="rhod[i]",
                 water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
-            )
-            };
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            )};
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -173,9 +156,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             output[i] = {self.formulae.air_dynamic_viscosity.eta_air.c_inline(
                 temperature="temperature[i]"
             )};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -203,9 +184,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
                 dynamic_viscosity="air_dynamic_viscosity[cell_id[i]]",
                 density="air_density[cell_id[i]]",
             )};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     def reynolds_number(
