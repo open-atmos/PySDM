@@ -28,7 +28,7 @@ jobs:
       - run: |
           pip install pre-commit
           pre-commit clean
-          # pre-commit autoupdate  # TODO #1793
+          pre-commit autoupdate
           pre-commit run --all-files
       - if: ${{ failure() }}
         run: git diff
