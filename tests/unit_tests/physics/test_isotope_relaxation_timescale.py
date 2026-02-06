@@ -76,23 +76,6 @@ class TestBoZabaEtAl:
     """tests for Bolin number implemented in zaba_et_al.py"""
 
     @staticmethod
-    def test_b_coeff_unit():
-        with DimensionalAnalysis():
-            si = constants_defaults.si
-            sut = isotope_relaxation_timescale.zaba_et_al.ZabaEtAl.b_corrected
-            any_number = 42.0
-
-            # act
-            value = sut(
-                D_light=any_number * si.m**2 / si.s,
-                Fk=any_number * si.s / si.m**2,
-                rho_v=any_number * si.g / si.kg,
-            )
-
-            # assert
-            assert value.check(si.dimensionless)
-
-    @staticmethod
     def test_bolin_number_unit():
         with DimensionalAnalysis():
             # arrange

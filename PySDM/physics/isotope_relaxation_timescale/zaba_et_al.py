@@ -21,15 +21,6 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
-    def b_corrected(rho_v, D_light, Fk):
-        """
-        Returns fixed version of the coefficient b
-        in [Gedzelman & Arnold 1994 (J. Geophys. Res. Atmos. 99)](https://doi.org/10.1029/93JD03518)
-        where water vapour density is wrongly omitted.
-        """
-        return rho_v * D_light * Fk
-
-    @staticmethod
     def bolin_number(
         *,
         D_ratio_heavy_to_light,
