@@ -1011,8 +1011,8 @@ class CollisionsMethods(
         )
 
     def slams_fragmentation(
-        self, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
-    ):  # pylint: disable=too-many-positional-arguments
+        self, *, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
+    ):
         self.__slams_fragmentation_body.launch_n(
             n=(len(n_fragment)),
             args=(

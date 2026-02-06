@@ -10,8 +10,9 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_Nr(  # pylint: disable=too-many-positional-arguments,unused-argument
+def straub_Nr(
     i,
+    *,
     Nr1,
     Nr2,
     Nr3,
@@ -19,7 +20,7 @@ def straub_Nr(  # pylint: disable=too-many-positional-arguments,unused-argument
     Nrt,
     CW,
     gam,
-):  # pylint: disable=too-many-branches`
+):
     if gam[i] * CW[i] >= 7.0:
         Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0)
     if CW[i] >= 21.0:
@@ -33,8 +34,8 @@ def straub_Nr(  # pylint: disable=too-many-positional-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_mass_remainder(  # pylint: disable=too-many-positional-arguments,unused-argument
-    i, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, d34, Nr1, Nr2, Nr3, Nr4
+def straub_mass_remainder(
+    i, *, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, d34, Nr1, Nr2, Nr3, Nr4
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     Nr1[i] = Nr1[i] * np.exp(3 * mu1 + 9 * np.power(sigma1, 2) / 2)
@@ -49,7 +50,7 @@ def straub_mass_remainder(  # pylint: disable=too-many-positional-arguments,unus
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def ll82_Nr(  # pylint: disable=too-many-positional-arguments,unused-argument
+def ll82_Nr(
     i,
     Rf,
     Rs,
@@ -120,10 +121,14 @@ class FragmentationMethods(BackendMethods):
         return body
 
     def slams_fragmentation(
-        self, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
-    ):  # pylint: disable=too-many-positional-arguments
+        self, *, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
+    ):
         self._slams_fragmentation_body(
-            n_fragment.data, frag_volume.data, x_plus_y.data, probs.data, rand.data
+            n_fragment=n_fragment.data,
+            frag_volume=frag_volume.data,
+            x_plus_y=x_plus_y.data,
+            probs=probs.data,
+            rand=rand.data,
         )
         self._fragmentation_limiters_body(
             n_fragment=n_fragment.data,
@@ -327,7 +332,9 @@ class FragmentationMethods(BackendMethods):
             *, CW, gam, ds, v_max, frag_volume, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
         ):  # pylint: disable=too-many-arguments,too-many-locals
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
-                straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
+                straub_Nr(
+                    i, Nr1=Nr1, Nr2=Nr2, Nr3=Nr3, Nr4=Nr4, Nrt=Nrt, CW=CW, gam=gam
+                )
                 sigma1 = ff.fragmentation_function__params_sigma1(CW[i])
                 mu1 = ff.fragmentation_function__params_mu1(sigma1)
                 sigma2 = ff.fragmentation_function__params_sigma2(CW[i])
@@ -336,19 +343,19 @@ class FragmentationMethods(BackendMethods):
                 mu3 = ff.fragmentation_function__params_mu3(ds[i])
                 straub_mass_remainder(
                     i,
-                    v_max,
-                    ds,
-                    mu1,
-                    sigma1,
-                    mu2,
-                    sigma2,
-                    mu3,
-                    sigma3,
-                    d34,
-                    Nr1,
-                    Nr2,
-                    Nr3,
-                    Nr4,
+                    vl=v_max,
+                    ds=ds,
+                    mu1=mu1,
+                    sigma1=sigma1,
+                    mu2=mu2,
+                    sigma2=sigma2,
+                    mu3=mu3,
+                    sigma3=sigma3,
+                    d34=d34,
+                    Nr1=Nr1,
+                    Nr2=Nr2,
+                    Nr3=Nr3,
+                    Nr4=Nr4,
                 )
                 Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
