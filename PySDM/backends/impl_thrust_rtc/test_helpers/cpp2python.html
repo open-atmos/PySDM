@@ -314,41 +314,35 @@
 </span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>
 </span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>    <span class="n">body</span><span class="p">,</span> <span class="n">structs</span> <span class="o">=</span> <span class="n">extract_struct_defs</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
 </span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>
-</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a><span class="s2">def make(self):</span>
-</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="s2">    import numpy as np</span>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="s2">    from numpy import (</span>
-</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="s2">        floor, ceil,</span>
-</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="s2">        exp, log,</span>
-</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="s2">        power, sqrt,</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="s2">        arctanh as atanh,</span>
-</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="s2">        arcsinh as asinh,</span>
-</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="s2">        sinh,</span>
-</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="s2">        maximum, minimum,</span>
-</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="s2">        where,  # TODO #1295</span>
-</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="s2">    )</span>
-</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a><span class="s2">    import numba</span>
-</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>
-</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="s2">    @numba.njit(parallel=False, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
-</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a><span class="s2">    def ldexp(a, b):</span>
-</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a><span class="s2">        return a * 2**b</span>
-</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>
-</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="s2">    </span><span class="si">{</span><span class="n">structs</span><span class="si">}</span>
-</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a><span class="s2">    @numba.njit(parallel=</span><span class="si">{</span><span class="n">parallel</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">JIT_FLAGS</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
-</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="s2">    def </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">(__python_n__, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">):</span>
-</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a><span class="s2">        for </span><span class="si">{</span><span class="n">iter_var</span><span class="si">}</span><span class="s2"> in numba.prange(__python_n__):</span>
-</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a><span class="s2">            </span><span class="si">{</span><span class="n">body</span><span class="si">}</span>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>
-</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a><span class="s2">    return </span><span class="si">{</span><span class="n">name</span><span class="si">}</span>
-</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>            <span class="s2">&quot;};&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span>
-</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>        <span class="p">)</span>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;} &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>    <span class="p">)</span>
-</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>
-</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>    <span class="k">return</span> <span class="n">result</span>
+</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a><span class="s2">def make(self):</span>
+</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a><span class="s2">    import numpy as np</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a><span class="s2">    from numpy import (</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a><span class="s2">        floor, ceil,</span>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a><span class="s2">        exp, log,</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a><span class="s2">        power, sqrt,</span>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a><span class="s2">        arctanh as atanh,</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a><span class="s2">        arcsinh as asinh,</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a><span class="s2">        sinh,</span>
+</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a><span class="s2">        maximum, minimum,</span>
+</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="s2">        where,  # TODO #1295</span>
+</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a><span class="s2">    )</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a><span class="s2">    import numba</span>
+</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>
+</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a><span class="s2">    @numba.njit(parallel=False, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
+</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a><span class="s2">    def ldexp(a, b):</span>
+</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a><span class="s2">        return a * 2**b</span>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a><span class="s2">    </span><span class="si">{</span><span class="n">structs</span><span class="si">}</span>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="s2">    @numba.njit(parallel=</span><span class="si">{</span><span class="n">parallel</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">JIT_FLAGS</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
+</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a><span class="s2">    def </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">(__python_n__, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">):</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="s2">        for </span><span class="si">{</span><span class="n">iter_var</span><span class="si">}</span><span class="s2"> in numba.prange(__python_n__):</span>
+</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a><span class="s2">            </span><span class="si">{</span><span class="n">body</span><span class="si">}</span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="s2">    return </span><span class="si">{</span><span class="n">name</span><span class="si">}</span>
+</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;};&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;} &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>    <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 
@@ -657,41 +651,35 @@
 </span><span id="to_numba-188"><a href="#to_numba-188"><span class="linenos">188</span></a>
 </span><span id="to_numba-189"><a href="#to_numba-189"><span class="linenos">189</span></a>    <span class="n">body</span><span class="p">,</span> <span class="n">structs</span> <span class="o">=</span> <span class="n">extract_struct_defs</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
 </span><span id="to_numba-190"><a href="#to_numba-190"><span class="linenos">190</span></a>
-</span><span id="to_numba-191"><a href="#to_numba-191"><span class="linenos">191</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
-</span><span id="to_numba-192"><a href="#to_numba-192"><span class="linenos">192</span></a>        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
-</span><span id="to_numba-193"><a href="#to_numba-193"><span class="linenos">193</span></a><span class="s2">def make(self):</span>
-</span><span id="to_numba-194"><a href="#to_numba-194"><span class="linenos">194</span></a><span class="s2">    import numpy as np</span>
-</span><span id="to_numba-195"><a href="#to_numba-195"><span class="linenos">195</span></a><span class="s2">    from numpy import (</span>
-</span><span id="to_numba-196"><a href="#to_numba-196"><span class="linenos">196</span></a><span class="s2">        floor, ceil,</span>
-</span><span id="to_numba-197"><a href="#to_numba-197"><span class="linenos">197</span></a><span class="s2">        exp, log,</span>
-</span><span id="to_numba-198"><a href="#to_numba-198"><span class="linenos">198</span></a><span class="s2">        power, sqrt,</span>
-</span><span id="to_numba-199"><a href="#to_numba-199"><span class="linenos">199</span></a><span class="s2">        arctanh as atanh,</span>
-</span><span id="to_numba-200"><a href="#to_numba-200"><span class="linenos">200</span></a><span class="s2">        arcsinh as asinh,</span>
-</span><span id="to_numba-201"><a href="#to_numba-201"><span class="linenos">201</span></a><span class="s2">        sinh,</span>
-</span><span id="to_numba-202"><a href="#to_numba-202"><span class="linenos">202</span></a><span class="s2">        maximum, minimum,</span>
-</span><span id="to_numba-203"><a href="#to_numba-203"><span class="linenos">203</span></a><span class="s2">        where,  # TODO #1295</span>
-</span><span id="to_numba-204"><a href="#to_numba-204"><span class="linenos">204</span></a><span class="s2">    )</span>
-</span><span id="to_numba-205"><a href="#to_numba-205"><span class="linenos">205</span></a><span class="s2">    import numba</span>
-</span><span id="to_numba-206"><a href="#to_numba-206"><span class="linenos">206</span></a>
-</span><span id="to_numba-207"><a href="#to_numba-207"><span class="linenos">207</span></a><span class="s2">    @numba.njit(parallel=False, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
-</span><span id="to_numba-208"><a href="#to_numba-208"><span class="linenos">208</span></a><span class="s2">    def ldexp(a, b):</span>
-</span><span id="to_numba-209"><a href="#to_numba-209"><span class="linenos">209</span></a><span class="s2">        return a * 2**b</span>
-</span><span id="to_numba-210"><a href="#to_numba-210"><span class="linenos">210</span></a>
-</span><span id="to_numba-211"><a href="#to_numba-211"><span class="linenos">211</span></a><span class="s2">    </span><span class="si">{</span><span class="n">structs</span><span class="si">}</span>
-</span><span id="to_numba-212"><a href="#to_numba-212"><span class="linenos">212</span></a><span class="s2">    @numba.njit(parallel=</span><span class="si">{</span><span class="n">parallel</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">JIT_FLAGS</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
-</span><span id="to_numba-213"><a href="#to_numba-213"><span class="linenos">213</span></a><span class="s2">    def </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">(__python_n__, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">):</span>
-</span><span id="to_numba-214"><a href="#to_numba-214"><span class="linenos">214</span></a><span class="s2">        for </span><span class="si">{</span><span class="n">iter_var</span><span class="si">}</span><span class="s2"> in numba.prange(__python_n__):</span>
-</span><span id="to_numba-215"><a href="#to_numba-215"><span class="linenos">215</span></a><span class="s2">            </span><span class="si">{</span><span class="n">body</span><span class="si">}</span>
-</span><span id="to_numba-216"><a href="#to_numba-216"><span class="linenos">216</span></a>
-</span><span id="to_numba-217"><a href="#to_numba-217"><span class="linenos">217</span></a><span class="s2">    return </span><span class="si">{</span><span class="n">name</span><span class="si">}</span>
-</span><span id="to_numba-218"><a href="#to_numba-218"><span class="linenos">218</span></a><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-</span><span id="to_numba-219"><a href="#to_numba-219"><span class="linenos">219</span></a>            <span class="s2">&quot;};&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span>
-</span><span id="to_numba-220"><a href="#to_numba-220"><span class="linenos">220</span></a>        <span class="p">)</span>
-</span><span id="to_numba-221"><a href="#to_numba-221"><span class="linenos">221</span></a>        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;} &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span id="to_numba-222"><a href="#to_numba-222"><span class="linenos">222</span></a>        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-</span><span id="to_numba-223"><a href="#to_numba-223"><span class="linenos">223</span></a>    <span class="p">)</span>
-</span><span id="to_numba-224"><a href="#to_numba-224"><span class="linenos">224</span></a>
-</span><span id="to_numba-225"><a href="#to_numba-225"><span class="linenos">225</span></a>    <span class="k">return</span> <span class="n">result</span>
+</span><span id="to_numba-191"><a href="#to_numba-191"><span class="linenos">191</span></a>    <span class="n">result</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+</span><span id="to_numba-192"><a href="#to_numba-192"><span class="linenos">192</span></a><span class="s2">def make(self):</span>
+</span><span id="to_numba-193"><a href="#to_numba-193"><span class="linenos">193</span></a><span class="s2">    import numpy as np</span>
+</span><span id="to_numba-194"><a href="#to_numba-194"><span class="linenos">194</span></a><span class="s2">    from numpy import (</span>
+</span><span id="to_numba-195"><a href="#to_numba-195"><span class="linenos">195</span></a><span class="s2">        floor, ceil,</span>
+</span><span id="to_numba-196"><a href="#to_numba-196"><span class="linenos">196</span></a><span class="s2">        exp, log,</span>
+</span><span id="to_numba-197"><a href="#to_numba-197"><span class="linenos">197</span></a><span class="s2">        power, sqrt,</span>
+</span><span id="to_numba-198"><a href="#to_numba-198"><span class="linenos">198</span></a><span class="s2">        arctanh as atanh,</span>
+</span><span id="to_numba-199"><a href="#to_numba-199"><span class="linenos">199</span></a><span class="s2">        arcsinh as asinh,</span>
+</span><span id="to_numba-200"><a href="#to_numba-200"><span class="linenos">200</span></a><span class="s2">        sinh,</span>
+</span><span id="to_numba-201"><a href="#to_numba-201"><span class="linenos">201</span></a><span class="s2">        maximum, minimum,</span>
+</span><span id="to_numba-202"><a href="#to_numba-202"><span class="linenos">202</span></a><span class="s2">        where,  # TODO #1295</span>
+</span><span id="to_numba-203"><a href="#to_numba-203"><span class="linenos">203</span></a><span class="s2">    )</span>
+</span><span id="to_numba-204"><a href="#to_numba-204"><span class="linenos">204</span></a><span class="s2">    import numba</span>
+</span><span id="to_numba-205"><a href="#to_numba-205"><span class="linenos">205</span></a>
+</span><span id="to_numba-206"><a href="#to_numba-206"><span class="linenos">206</span></a><span class="s2">    @numba.njit(parallel=False, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
+</span><span id="to_numba-207"><a href="#to_numba-207"><span class="linenos">207</span></a><span class="s2">    def ldexp(a, b):</span>
+</span><span id="to_numba-208"><a href="#to_numba-208"><span class="linenos">208</span></a><span class="s2">        return a * 2**b</span>
+</span><span id="to_numba-209"><a href="#to_numba-209"><span class="linenos">209</span></a>
+</span><span id="to_numba-210"><a href="#to_numba-210"><span class="linenos">210</span></a><span class="s2">    </span><span class="si">{</span><span class="n">structs</span><span class="si">}</span>
+</span><span id="to_numba-211"><a href="#to_numba-211"><span class="linenos">211</span></a><span class="s2">    @numba.njit(parallel=</span><span class="si">{</span><span class="n">parallel</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="n">JIT_FLAGS</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">JIT_OPTS</span><span class="si">}</span><span class="s2">)</span>
+</span><span id="to_numba-212"><a href="#to_numba-212"><span class="linenos">212</span></a><span class="s2">    def </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">(__python_n__, </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">):</span>
+</span><span id="to_numba-213"><a href="#to_numba-213"><span class="linenos">213</span></a><span class="s2">        for </span><span class="si">{</span><span class="n">iter_var</span><span class="si">}</span><span class="s2"> in numba.prange(__python_n__):</span>
+</span><span id="to_numba-214"><a href="#to_numba-214"><span class="linenos">214</span></a><span class="s2">            </span><span class="si">{</span><span class="n">body</span><span class="si">}</span>
+</span><span id="to_numba-215"><a href="#to_numba-215"><span class="linenos">215</span></a>
+</span><span id="to_numba-216"><a href="#to_numba-216"><span class="linenos">216</span></a><span class="s2">    return </span><span class="si">{</span><span class="n">name</span><span class="si">}</span>
+</span><span id="to_numba-217"><a href="#to_numba-217"><span class="linenos">217</span></a><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;};&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;} &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+</span><span id="to_numba-218"><a href="#to_numba-218"><span class="linenos">218</span></a>
+</span><span id="to_numba-219"><a href="#to_numba-219"><span class="linenos">219</span></a>    <span class="k">return</span> <span class="n">result</span>
 </span></pre></div>
 
 

@@ -177,215 +177,209 @@
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>                <span class="s2">&quot;n_cell&quot;</span><span class="p">,</span>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>            <span class="p">),</span>
 </span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>            <span class="s2">&quot;fake_i&quot;</span><span class="p">,</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>            <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="s2">            auto i = idx[fake_i];</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="s2">            if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="s2">                atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(multiplicity[i]));</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="s2">                for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="s2">                    auto value = multiplicity[i] * pow(</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="s2">                        (real_type)(attr_data[i]),</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="s2">                        (real_type)(ranks[k])</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="s2">                    );</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], value);</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="s2">               }</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="s2">            }</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>                <span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>            <span class="p">),</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>        <span class="p">)</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>            <span class="p">(</span><span class="s2">&quot;n_ranks&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>            <span class="s2">&quot;c_id&quot;</span><span class="p">,</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">            for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">                if (moment_0[c_id] == 0) {</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">                    moments[n_cell * k  + c_id] = 0;</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="s2">            auto i = idx[fake_i];</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="s2">            if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="s2">                atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(multiplicity[i]));</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="s2">                for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="s2">                    auto value = multiplicity[i] * pow(</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="s2">                        (real_type)(attr_data[i]),</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="s2">                        (real_type)(ranks[k])</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="s2">                    );</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], value);</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="s2">               }</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="s2">            }</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>        <span class="p">)</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>    <span class="nd">@cached_property</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>            <span class="p">(</span><span class="s2">&quot;n_ranks&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>            <span class="s2">&quot;c_id&quot;</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">            for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">                if (moment_0[c_id] == 0) {</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">                    moments[n_cell * k  + c_id] = 0;</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">                }</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">                else {</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">                    moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];</span>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">                }</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">                else {</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">                    moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">                }</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">            }</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="p">)</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>            <span class="p">(</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>                <span class="s2">&quot;attr_data&quot;</span><span class="p">,</span>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>                <span class="s2">&quot;x_attr&quot;</span><span class="p">,</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>                <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>                <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>                <span class="s2">&quot;x_bins&quot;</span><span class="p">,</span>
-</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>                <span class="s2">&quot;n_bins&quot;</span><span class="p">,</span>
-</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                <span class="s2">&quot;moments&quot;</span><span class="p">,</span>
-</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>                <span class="s2">&quot;rank&quot;</span><span class="p">,</span>
-</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>                <span class="s2">&quot;n_sd&quot;</span><span class="p">,</span>
-</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>                <span class="s2">&quot;n_cell&quot;</span><span class="p">,</span>
-</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a>            <span class="p">),</span>
-</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a>            <span class="s2">&quot;fake_i&quot;</span><span class="p">,</span>
-</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span>
-</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a>            <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
-</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="s2">            auto i = idx[fake_i];</span>
-</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="s2">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
-</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="s2">                if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {</span>
-</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="s2">                    atomicAdd(</span>
-</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="s2">                        (real_type*)&amp;moment_0[n_cell * k + cell_id[i]],</span>
-</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="s2">                        (real_type)(multiplicity[i])</span>
-</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="s2">                    );</span>
-</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="s2">                    auto val = multiplicity[i] * pow((real_type)(attr_data[i]), (real_type)(rank));</span>
-</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], val);</span>
-</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a><span class="s2">                    break;</span>
-</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a><span class="s2">                }</span>
-</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a><span class="s2">            }</span>
-</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>                <span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()</span>
-</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>            <span class="p">),</span>
-</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>        <span class="p">)</span>
-</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a>
-</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a>    <span class="nd">@cached_property</span>
-</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a>            <span class="p">(</span><span class="s2">&quot;n_bins&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
-</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a>            <span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
-</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="sd">                if (moment_0[n_cell * k + i] == 0) {</span>
-</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="sd">                    moments[n_cell * k  + i] = 0;</span>
-</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a><span class="sd">                }</span>
-</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a><span class="sd">                else {</span>
-</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a><span class="sd">                    moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];</span>
-</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a><span class="sd">                }</span>
-</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a><span class="sd">            }</span>
-</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
-</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>        <span class="p">)</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">            }</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>        <span class="p">)</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="nd">@cached_property</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>            <span class="p">(</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>                <span class="s2">&quot;attr_data&quot;</span><span class="p">,</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>                <span class="s2">&quot;x_attr&quot;</span><span class="p">,</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>                <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>                <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
+</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>                <span class="s2">&quot;x_bins&quot;</span><span class="p">,</span>
+</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>                <span class="s2">&quot;n_bins&quot;</span><span class="p">,</span>
+</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>                <span class="s2">&quot;moments&quot;</span><span class="p">,</span>
+</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>                <span class="s2">&quot;rank&quot;</span><span class="p">,</span>
+</span><span id="L-112"><a href="#L-112"><span class="linenos">112</span></a>                <span class="s2">&quot;n_sd&quot;</span><span class="p">,</span>
+</span><span id="L-113"><a href="#L-113"><span class="linenos">113</span></a>                <span class="s2">&quot;n_cell&quot;</span><span class="p">,</span>
+</span><span id="L-114"><a href="#L-114"><span class="linenos">114</span></a>            <span class="p">),</span>
+</span><span id="L-115"><a href="#L-115"><span class="linenos">115</span></a>            <span class="s2">&quot;fake_i&quot;</span><span class="p">,</span>
+</span><span id="L-116"><a href="#L-116"><span class="linenos">116</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span id="L-117"><a href="#L-117"><span class="linenos">117</span></a><span class="s2">            auto i = idx[fake_i];</span>
+</span><span id="L-118"><a href="#L-118"><span class="linenos">118</span></a><span class="s2">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
+</span><span id="L-119"><a href="#L-119"><span class="linenos">119</span></a><span class="s2">                if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {</span>
+</span><span id="L-120"><a href="#L-120"><span class="linenos">120</span></a><span class="s2">                    atomicAdd(</span>
+</span><span id="L-121"><a href="#L-121"><span class="linenos">121</span></a><span class="s2">                        (real_type*)&amp;moment_0[n_cell * k + cell_id[i]],</span>
+</span><span id="L-122"><a href="#L-122"><span class="linenos">122</span></a><span class="s2">                        (real_type)(multiplicity[i])</span>
+</span><span id="L-123"><a href="#L-123"><span class="linenos">123</span></a><span class="s2">                    );</span>
+</span><span id="L-124"><a href="#L-124"><span class="linenos">124</span></a><span class="s2">                    auto val = multiplicity[i] * pow((real_type)(attr_data[i]), (real_type)(rank));</span>
+</span><span id="L-125"><a href="#L-125"><span class="linenos">125</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], val);</span>
+</span><span id="L-126"><a href="#L-126"><span class="linenos">126</span></a><span class="s2">                    break;</span>
+</span><span id="L-127"><a href="#L-127"><span class="linenos">127</span></a><span class="s2">                }</span>
+</span><span id="L-128"><a href="#L-128"><span class="linenos">128</span></a><span class="s2">            }</span>
+</span><span id="L-129"><a href="#L-129"><span class="linenos">129</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="L-130"><a href="#L-130"><span class="linenos">130</span></a>        <span class="p">)</span>
+</span><span id="L-131"><a href="#L-131"><span class="linenos">131</span></a>
+</span><span id="L-132"><a href="#L-132"><span class="linenos">132</span></a>    <span class="nd">@cached_property</span>
+</span><span id="L-133"><a href="#L-133"><span class="linenos">133</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-134"><a href="#L-134"><span class="linenos">134</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
+</span><span id="L-135"><a href="#L-135"><span class="linenos">135</span></a>            <span class="p">(</span><span class="s2">&quot;n_bins&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
+</span><span id="L-136"><a href="#L-136"><span class="linenos">136</span></a>            <span class="s2">&quot;i&quot;</span><span class="p">,</span>
+</span><span id="L-137"><a href="#L-137"><span class="linenos">137</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-138"><a href="#L-138"><span class="linenos">138</span></a><span class="sd">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
+</span><span id="L-139"><a href="#L-139"><span class="linenos">139</span></a><span class="sd">                if (moment_0[n_cell * k + i] == 0) {</span>
+</span><span id="L-140"><a href="#L-140"><span class="linenos">140</span></a><span class="sd">                    moments[n_cell * k  + i] = 0;</span>
+</span><span id="L-141"><a href="#L-141"><span class="linenos">141</span></a><span class="sd">                }</span>
+</span><span id="L-142"><a href="#L-142"><span class="linenos">142</span></a><span class="sd">                else {</span>
+</span><span id="L-143"><a href="#L-143"><span class="linenos">143</span></a><span class="sd">                    moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];</span>
+</span><span id="L-144"><a href="#L-144"><span class="linenos">144</span></a><span class="sd">                }</span>
+</span><span id="L-145"><a href="#L-145"><span class="linenos">145</span></a><span class="sd">            }</span>
+</span><span id="L-146"><a href="#L-146"><span class="linenos">146</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="L-147"><a href="#L-147"><span class="linenos">147</span></a>        <span class="p">)</span>
+</span><span id="L-148"><a href="#L-148"><span class="linenos">148</span></a>
+</span><span id="L-149"><a href="#L-149"><span class="linenos">149</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-150"><a href="#L-150"><span class="linenos">150</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="L-151"><a href="#L-151"><span class="linenos">151</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
+</span><span id="L-152"><a href="#L-152"><span class="linenos">152</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
+</span><span id="L-153"><a href="#L-153"><span class="linenos">153</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
 </span><span id="L-154"><a href="#L-154"><span class="linenos">154</span></a>
-</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
-</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
-</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>
-</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>    <span class="c1"># TODO #684</span>
-</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
-</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
-</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>        <span class="n">moment_0</span><span class="p">,</span>
-</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>        <span class="n">moments</span><span class="p">,</span>
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
-</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>        <span class="n">attr_data</span><span class="p">,</span>
-</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>        <span class="n">cell_id</span><span class="p">,</span>
-</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>        <span class="n">ranks</span><span class="p">,</span>
-</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>        <span class="n">min_x</span><span class="p">,</span>
-</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>        <span class="n">max_x</span><span class="p">,</span>
-</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>        <span class="n">x_attr</span><span class="p">,</span>
-</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
-</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
-</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>        <span class="n">skip_division_by_m0</span><span class="p">,</span>
-</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>    <span class="p">):</span>
-</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>
-</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
-</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
-</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>
-</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>        <span class="n">n_ranks</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">ranks</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>
-</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>
-</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>            <span class="p">(</span>
-</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">min_x</span><span class="p">),</span>
-</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">max_x</span><span class="p">),</span>
-</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>                <span class="n">n_ranks</span><span class="p">,</span>
-</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>                <span class="n">ranks</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>                <span class="n">n_sd</span><span class="p">,</span>
-</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>                <span class="n">n_cell</span><span class="p">,</span>
-</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>            <span class="p">),</span>
-</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>        <span class="p">)</span>
-</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>
-</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_division_by_m0</span><span class="p">:</span>
-</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">n_ranks</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
-</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>            <span class="p">)</span>
-</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>
-</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>    <span class="c1"># TODO #684</span>
-</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
-</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
-</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>        <span class="n">moment_0</span><span class="p">,</span>
-</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>        <span class="n">moments</span><span class="p">,</span>
-</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
-</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>        <span class="n">attr_data</span><span class="p">,</span>
-</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>        <span class="n">cell_id</span><span class="p">,</span>
-</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>        <span class="n">rank</span><span class="p">,</span>
-</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>        <span class="n">x_bins</span><span class="p">,</span>
-</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>        <span class="n">x_attr</span><span class="p">,</span>
-</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
-</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
-</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>    <span class="p">):</span>
-</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>        <span class="k">assert</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x_bins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>        <span class="k">assert</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span>
-</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-</span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>
-</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
-</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
-</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>
-</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>        <span class="n">d_rank</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
-</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>        <span class="n">n_bins</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a>
-</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a>
-</span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>            <span class="p">(</span>
-</span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>                <span class="n">x_bins</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a>                <span class="n">n_bins</span><span class="p">,</span>
-</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a>                <span class="n">d_rank</span><span class="p">,</span>
-</span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a>                <span class="n">n_sd</span><span class="p">,</span>
-</span><span id="L-268"><a href="#L-268"><span class="linenos">268</span></a>                <span class="n">n_cell</span><span class="p">,</span>
-</span><span id="L-269"><a href="#L-269"><span class="linenos">269</span></a>            <span class="p">),</span>
-</span><span id="L-270"><a href="#L-270"><span class="linenos">270</span></a>        <span class="p">)</span>
-</span><span id="L-271"><a href="#L-271"><span class="linenos">271</span></a>
-</span><span id="L-272"><a href="#L-272"><span class="linenos">272</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="L-273"><a href="#L-273"><span class="linenos">273</span></a>            <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
-</span><span id="L-274"><a href="#L-274"><span class="linenos">274</span></a>        <span class="p">)</span>
+</span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>    <span class="c1"># TODO #684</span>
+</span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
+</span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
+</span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a>        <span class="n">moment_0</span><span class="p">,</span>
+</span><span id="L-162"><a href="#L-162"><span class="linenos">162</span></a>        <span class="n">moments</span><span class="p">,</span>
+</span><span id="L-163"><a href="#L-163"><span class="linenos">163</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
+</span><span id="L-164"><a href="#L-164"><span class="linenos">164</span></a>        <span class="n">attr_data</span><span class="p">,</span>
+</span><span id="L-165"><a href="#L-165"><span class="linenos">165</span></a>        <span class="n">cell_id</span><span class="p">,</span>
+</span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>        <span class="n">ranks</span><span class="p">,</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>        <span class="n">min_x</span><span class="p">,</span>
+</span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>        <span class="n">max_x</span><span class="p">,</span>
+</span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>        <span class="n">x_attr</span><span class="p">,</span>
+</span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
+</span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a>        <span class="n">skip_division_by_m0</span><span class="p">,</span>
+</span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a>    <span class="p">):</span>
+</span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-177"><a href="#L-177"><span class="linenos">177</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="L-178"><a href="#L-178"><span class="linenos">178</span></a>
+</span><span id="L-179"><a href="#L-179"><span class="linenos">179</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
+</span><span id="L-180"><a href="#L-180"><span class="linenos">180</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+</span><span id="L-181"><a href="#L-181"><span class="linenos">181</span></a>
+</span><span id="L-182"><a href="#L-182"><span class="linenos">182</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="L-183"><a href="#L-183"><span class="linenos">183</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="L-184"><a href="#L-184"><span class="linenos">184</span></a>        <span class="n">n_ranks</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">ranks</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="L-185"><a href="#L-185"><span class="linenos">185</span></a>
+</span><span id="L-186"><a href="#L-186"><span class="linenos">186</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-187"><a href="#L-187"><span class="linenos">187</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-188"><a href="#L-188"><span class="linenos">188</span></a>
+</span><span id="L-189"><a href="#L-189"><span class="linenos">189</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="L-190"><a href="#L-190"><span class="linenos">190</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="L-191"><a href="#L-191"><span class="linenos">191</span></a>            <span class="p">(</span>
+</span><span id="L-192"><a href="#L-192"><span class="linenos">192</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-193"><a href="#L-193"><span class="linenos">193</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">min_x</span><span class="p">),</span>
+</span><span id="L-194"><a href="#L-194"><span class="linenos">194</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-195"><a href="#L-195"><span class="linenos">195</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">max_x</span><span class="p">),</span>
+</span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>                <span class="n">n_ranks</span><span class="p">,</span>
+</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>                <span class="n">ranks</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>                <span class="n">n_sd</span><span class="p">,</span>
+</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>                <span class="n">n_cell</span><span class="p">,</span>
+</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>            <span class="p">),</span>
+</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>        <span class="p">)</span>
+</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_division_by_m0</span><span class="p">:</span>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">n_ranks</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
+</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a>            <span class="p">)</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a>
+</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a>    <span class="c1"># TODO #684</span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
+</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a>        <span class="n">moment_0</span><span class="p">,</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a>        <span class="n">moments</span><span class="p">,</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>        <span class="n">attr_data</span><span class="p">,</span>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>        <span class="n">cell_id</span><span class="p">,</span>
+</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>        <span class="n">rank</span><span class="p">,</span>
+</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>        <span class="n">x_bins</span><span class="p">,</span>
+</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>        <span class="n">x_attr</span><span class="p">,</span>
+</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
+</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
+</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a>    <span class="p">):</span>
+</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>        <span class="k">assert</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x_bins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a>        <span class="k">assert</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span>
+</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a>
+</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
+</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>
+</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a>        <span class="n">d_rank</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a>        <span class="n">n_bins</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a>
+</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>
+</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a>            <span class="p">(</span>
+</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a>                <span class="n">x_bins</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a>                <span class="n">n_bins</span><span class="p">,</span>
+</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a>                <span class="n">d_rank</span><span class="p">,</span>
+</span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>                <span class="n">n_sd</span><span class="p">,</span>
+</span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>                <span class="n">n_cell</span><span class="p">,</span>
+</span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>            <span class="p">),</span>
+</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a>        <span class="p">)</span>
+</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a>
+</span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a>            <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
+</span><span id="L-268"><a href="#L-268"><span class="linenos">268</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -442,215 +436,209 @@
 </span><span id="MomentsMethods-64"><a href="#MomentsMethods-64"><span class="linenos"> 64</span></a>                <span class="s2">&quot;n_cell&quot;</span><span class="p">,</span>
 </span><span id="MomentsMethods-65"><a href="#MomentsMethods-65"><span class="linenos"> 65</span></a>            <span class="p">),</span>
 </span><span id="MomentsMethods-66"><a href="#MomentsMethods-66"><span class="linenos"> 66</span></a>            <span class="s2">&quot;fake_i&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-67"><a href="#MomentsMethods-67"><span class="linenos"> 67</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span>
-</span><span id="MomentsMethods-68"><a href="#MomentsMethods-68"><span class="linenos"> 68</span></a>            <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
-</span><span id="MomentsMethods-69"><a href="#MomentsMethods-69"><span class="linenos"> 69</span></a><span class="s2">            auto i = idx[fake_i];</span>
-</span><span id="MomentsMethods-70"><a href="#MomentsMethods-70"><span class="linenos"> 70</span></a><span class="s2">            if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {</span>
-</span><span id="MomentsMethods-71"><a href="#MomentsMethods-71"><span class="linenos"> 71</span></a><span class="s2">                atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(multiplicity[i]));</span>
-</span><span id="MomentsMethods-72"><a href="#MomentsMethods-72"><span class="linenos"> 72</span></a><span class="s2">                for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
-</span><span id="MomentsMethods-73"><a href="#MomentsMethods-73"><span class="linenos"> 73</span></a><span class="s2">                    auto value = multiplicity[i] * pow(</span>
-</span><span id="MomentsMethods-74"><a href="#MomentsMethods-74"><span class="linenos"> 74</span></a><span class="s2">                        (real_type)(attr_data[i]),</span>
-</span><span id="MomentsMethods-75"><a href="#MomentsMethods-75"><span class="linenos"> 75</span></a><span class="s2">                        (real_type)(ranks[k])</span>
-</span><span id="MomentsMethods-76"><a href="#MomentsMethods-76"><span class="linenos"> 76</span></a><span class="s2">                    );</span>
-</span><span id="MomentsMethods-77"><a href="#MomentsMethods-77"><span class="linenos"> 77</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], value);</span>
-</span><span id="MomentsMethods-78"><a href="#MomentsMethods-78"><span class="linenos"> 78</span></a><span class="s2">               }</span>
-</span><span id="MomentsMethods-79"><a href="#MomentsMethods-79"><span class="linenos"> 79</span></a><span class="s2">            }</span>
-</span><span id="MomentsMethods-80"><a href="#MomentsMethods-80"><span class="linenos"> 80</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-</span><span id="MomentsMethods-81"><a href="#MomentsMethods-81"><span class="linenos"> 81</span></a>                <span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()</span>
-</span><span id="MomentsMethods-82"><a href="#MomentsMethods-82"><span class="linenos"> 82</span></a>            <span class="p">),</span>
-</span><span id="MomentsMethods-83"><a href="#MomentsMethods-83"><span class="linenos"> 83</span></a>        <span class="p">)</span>
-</span><span id="MomentsMethods-84"><a href="#MomentsMethods-84"><span class="linenos"> 84</span></a>
-</span><span id="MomentsMethods-85"><a href="#MomentsMethods-85"><span class="linenos"> 85</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-86"><a href="#MomentsMethods-86"><span class="linenos"> 86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="MomentsMethods-87"><a href="#MomentsMethods-87"><span class="linenos"> 87</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="MomentsMethods-88"><a href="#MomentsMethods-88"><span class="linenos"> 88</span></a>            <span class="p">(</span><span class="s2">&quot;n_ranks&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
-</span><span id="MomentsMethods-89"><a href="#MomentsMethods-89"><span class="linenos"> 89</span></a>            <span class="s2">&quot;c_id&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-90"><a href="#MomentsMethods-90"><span class="linenos"> 90</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="MomentsMethods-91"><a href="#MomentsMethods-91"><span class="linenos"> 91</span></a><span class="sd">            for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
-</span><span id="MomentsMethods-92"><a href="#MomentsMethods-92"><span class="linenos"> 92</span></a><span class="sd">                if (moment_0[c_id] == 0) {</span>
-</span><span id="MomentsMethods-93"><a href="#MomentsMethods-93"><span class="linenos"> 93</span></a><span class="sd">                    moments[n_cell * k  + c_id] = 0;</span>
+</span><span id="MomentsMethods-67"><a href="#MomentsMethods-67"><span class="linenos"> 67</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span id="MomentsMethods-68"><a href="#MomentsMethods-68"><span class="linenos"> 68</span></a><span class="s2">            auto i = idx[fake_i];</span>
+</span><span id="MomentsMethods-69"><a href="#MomentsMethods-69"><span class="linenos"> 69</span></a><span class="s2">            if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {</span>
+</span><span id="MomentsMethods-70"><a href="#MomentsMethods-70"><span class="linenos"> 70</span></a><span class="s2">                atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(multiplicity[i]));</span>
+</span><span id="MomentsMethods-71"><a href="#MomentsMethods-71"><span class="linenos"> 71</span></a><span class="s2">                for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
+</span><span id="MomentsMethods-72"><a href="#MomentsMethods-72"><span class="linenos"> 72</span></a><span class="s2">                    auto value = multiplicity[i] * pow(</span>
+</span><span id="MomentsMethods-73"><a href="#MomentsMethods-73"><span class="linenos"> 73</span></a><span class="s2">                        (real_type)(attr_data[i]),</span>
+</span><span id="MomentsMethods-74"><a href="#MomentsMethods-74"><span class="linenos"> 74</span></a><span class="s2">                        (real_type)(ranks[k])</span>
+</span><span id="MomentsMethods-75"><a href="#MomentsMethods-75"><span class="linenos"> 75</span></a><span class="s2">                    );</span>
+</span><span id="MomentsMethods-76"><a href="#MomentsMethods-76"><span class="linenos"> 76</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], value);</span>
+</span><span id="MomentsMethods-77"><a href="#MomentsMethods-77"><span class="linenos"> 77</span></a><span class="s2">               }</span>
+</span><span id="MomentsMethods-78"><a href="#MomentsMethods-78"><span class="linenos"> 78</span></a><span class="s2">            }</span>
+</span><span id="MomentsMethods-79"><a href="#MomentsMethods-79"><span class="linenos"> 79</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="MomentsMethods-80"><a href="#MomentsMethods-80"><span class="linenos"> 80</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-81"><a href="#MomentsMethods-81"><span class="linenos"> 81</span></a>
+</span><span id="MomentsMethods-82"><a href="#MomentsMethods-82"><span class="linenos"> 82</span></a>    <span class="nd">@cached_property</span>
+</span><span id="MomentsMethods-83"><a href="#MomentsMethods-83"><span class="linenos"> 83</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-84"><a href="#MomentsMethods-84"><span class="linenos"> 84</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
+</span><span id="MomentsMethods-85"><a href="#MomentsMethods-85"><span class="linenos"> 85</span></a>            <span class="p">(</span><span class="s2">&quot;n_ranks&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
+</span><span id="MomentsMethods-86"><a href="#MomentsMethods-86"><span class="linenos"> 86</span></a>            <span class="s2">&quot;c_id&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-87"><a href="#MomentsMethods-87"><span class="linenos"> 87</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MomentsMethods-88"><a href="#MomentsMethods-88"><span class="linenos"> 88</span></a><span class="sd">            for (auto k = 0; k &lt; n_ranks; k+=1) {</span>
+</span><span id="MomentsMethods-89"><a href="#MomentsMethods-89"><span class="linenos"> 89</span></a><span class="sd">                if (moment_0[c_id] == 0) {</span>
+</span><span id="MomentsMethods-90"><a href="#MomentsMethods-90"><span class="linenos"> 90</span></a><span class="sd">                    moments[n_cell * k  + c_id] = 0;</span>
+</span><span id="MomentsMethods-91"><a href="#MomentsMethods-91"><span class="linenos"> 91</span></a><span class="sd">                }</span>
+</span><span id="MomentsMethods-92"><a href="#MomentsMethods-92"><span class="linenos"> 92</span></a><span class="sd">                else {</span>
+</span><span id="MomentsMethods-93"><a href="#MomentsMethods-93"><span class="linenos"> 93</span></a><span class="sd">                    moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];</span>
 </span><span id="MomentsMethods-94"><a href="#MomentsMethods-94"><span class="linenos"> 94</span></a><span class="sd">                }</span>
-</span><span id="MomentsMethods-95"><a href="#MomentsMethods-95"><span class="linenos"> 95</span></a><span class="sd">                else {</span>
-</span><span id="MomentsMethods-96"><a href="#MomentsMethods-96"><span class="linenos"> 96</span></a><span class="sd">                    moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];</span>
-</span><span id="MomentsMethods-97"><a href="#MomentsMethods-97"><span class="linenos"> 97</span></a><span class="sd">                }</span>
-</span><span id="MomentsMethods-98"><a href="#MomentsMethods-98"><span class="linenos"> 98</span></a><span class="sd">            }</span>
-</span><span id="MomentsMethods-99"><a href="#MomentsMethods-99"><span class="linenos"> 99</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-100"><a href="#MomentsMethods-100"><span class="linenos">100</span></a>        <span class="p">)</span>
-</span><span id="MomentsMethods-101"><a href="#MomentsMethods-101"><span class="linenos">101</span></a>
-</span><span id="MomentsMethods-102"><a href="#MomentsMethods-102"><span class="linenos">102</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-103"><a href="#MomentsMethods-103"><span class="linenos">103</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="MomentsMethods-104"><a href="#MomentsMethods-104"><span class="linenos">104</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="MomentsMethods-105"><a href="#MomentsMethods-105"><span class="linenos">105</span></a>            <span class="p">(</span>
-</span><span id="MomentsMethods-106"><a href="#MomentsMethods-106"><span class="linenos">106</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-107"><a href="#MomentsMethods-107"><span class="linenos">107</span></a>                <span class="s2">&quot;attr_data&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-108"><a href="#MomentsMethods-108"><span class="linenos">108</span></a>                <span class="s2">&quot;x_attr&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-109"><a href="#MomentsMethods-109"><span class="linenos">109</span></a>                <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-110"><a href="#MomentsMethods-110"><span class="linenos">110</span></a>                <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-111"><a href="#MomentsMethods-111"><span class="linenos">111</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-112"><a href="#MomentsMethods-112"><span class="linenos">112</span></a>                <span class="s2">&quot;x_bins&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-113"><a href="#MomentsMethods-113"><span class="linenos">113</span></a>                <span class="s2">&quot;n_bins&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-114"><a href="#MomentsMethods-114"><span class="linenos">114</span></a>                <span class="s2">&quot;moments&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-115"><a href="#MomentsMethods-115"><span class="linenos">115</span></a>                <span class="s2">&quot;rank&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-116"><a href="#MomentsMethods-116"><span class="linenos">116</span></a>                <span class="s2">&quot;n_sd&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-117"><a href="#MomentsMethods-117"><span class="linenos">117</span></a>                <span class="s2">&quot;n_cell&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-118"><a href="#MomentsMethods-118"><span class="linenos">118</span></a>            <span class="p">),</span>
-</span><span id="MomentsMethods-119"><a href="#MomentsMethods-119"><span class="linenos">119</span></a>            <span class="s2">&quot;fake_i&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-120"><a href="#MomentsMethods-120"><span class="linenos">120</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span>
-</span><span id="MomentsMethods-121"><a href="#MomentsMethods-121"><span class="linenos">121</span></a>            <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
-</span><span id="MomentsMethods-122"><a href="#MomentsMethods-122"><span class="linenos">122</span></a><span class="s2">            auto i = idx[fake_i];</span>
-</span><span id="MomentsMethods-123"><a href="#MomentsMethods-123"><span class="linenos">123</span></a><span class="s2">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
-</span><span id="MomentsMethods-124"><a href="#MomentsMethods-124"><span class="linenos">124</span></a><span class="s2">                if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {</span>
-</span><span id="MomentsMethods-125"><a href="#MomentsMethods-125"><span class="linenos">125</span></a><span class="s2">                    atomicAdd(</span>
-</span><span id="MomentsMethods-126"><a href="#MomentsMethods-126"><span class="linenos">126</span></a><span class="s2">                        (real_type*)&amp;moment_0[n_cell * k + cell_id[i]],</span>
-</span><span id="MomentsMethods-127"><a href="#MomentsMethods-127"><span class="linenos">127</span></a><span class="s2">                        (real_type)(multiplicity[i])</span>
-</span><span id="MomentsMethods-128"><a href="#MomentsMethods-128"><span class="linenos">128</span></a><span class="s2">                    );</span>
-</span><span id="MomentsMethods-129"><a href="#MomentsMethods-129"><span class="linenos">129</span></a><span class="s2">                    auto val = multiplicity[i] * pow((real_type)(attr_data[i]), (real_type)(rank));</span>
-</span><span id="MomentsMethods-130"><a href="#MomentsMethods-130"><span class="linenos">130</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], val);</span>
-</span><span id="MomentsMethods-131"><a href="#MomentsMethods-131"><span class="linenos">131</span></a><span class="s2">                    break;</span>
-</span><span id="MomentsMethods-132"><a href="#MomentsMethods-132"><span class="linenos">132</span></a><span class="s2">                }</span>
-</span><span id="MomentsMethods-133"><a href="#MomentsMethods-133"><span class="linenos">133</span></a><span class="s2">            }</span>
-</span><span id="MomentsMethods-134"><a href="#MomentsMethods-134"><span class="linenos">134</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
-</span><span id="MomentsMethods-135"><a href="#MomentsMethods-135"><span class="linenos">135</span></a>                <span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()</span>
-</span><span id="MomentsMethods-136"><a href="#MomentsMethods-136"><span class="linenos">136</span></a>            <span class="p">),</span>
-</span><span id="MomentsMethods-137"><a href="#MomentsMethods-137"><span class="linenos">137</span></a>        <span class="p">)</span>
-</span><span id="MomentsMethods-138"><a href="#MomentsMethods-138"><span class="linenos">138</span></a>
-</span><span id="MomentsMethods-139"><a href="#MomentsMethods-139"><span class="linenos">139</span></a>    <span class="nd">@cached_property</span>
-</span><span id="MomentsMethods-140"><a href="#MomentsMethods-140"><span class="linenos">140</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span id="MomentsMethods-141"><a href="#MomentsMethods-141"><span class="linenos">141</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
-</span><span id="MomentsMethods-142"><a href="#MomentsMethods-142"><span class="linenos">142</span></a>            <span class="p">(</span><span class="s2">&quot;n_bins&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
-</span><span id="MomentsMethods-143"><a href="#MomentsMethods-143"><span class="linenos">143</span></a>            <span class="s2">&quot;i&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-144"><a href="#MomentsMethods-144"><span class="linenos">144</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="MomentsMethods-145"><a href="#MomentsMethods-145"><span class="linenos">145</span></a><span class="sd">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
-</span><span id="MomentsMethods-146"><a href="#MomentsMethods-146"><span class="linenos">146</span></a><span class="sd">                if (moment_0[n_cell * k + i] == 0) {</span>
-</span><span id="MomentsMethods-147"><a href="#MomentsMethods-147"><span class="linenos">147</span></a><span class="sd">                    moments[n_cell * k  + i] = 0;</span>
-</span><span id="MomentsMethods-148"><a href="#MomentsMethods-148"><span class="linenos">148</span></a><span class="sd">                }</span>
-</span><span id="MomentsMethods-149"><a href="#MomentsMethods-149"><span class="linenos">149</span></a><span class="sd">                else {</span>
-</span><span id="MomentsMethods-150"><a href="#MomentsMethods-150"><span class="linenos">150</span></a><span class="sd">                    moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];</span>
-</span><span id="MomentsMethods-151"><a href="#MomentsMethods-151"><span class="linenos">151</span></a><span class="sd">                }</span>
-</span><span id="MomentsMethods-152"><a href="#MomentsMethods-152"><span class="linenos">152</span></a><span class="sd">            }</span>
-</span><span id="MomentsMethods-153"><a href="#MomentsMethods-153"><span class="linenos">153</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
-</span><span id="MomentsMethods-154"><a href="#MomentsMethods-154"><span class="linenos">154</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-95"><a href="#MomentsMethods-95"><span class="linenos"> 95</span></a><span class="sd">            }</span>
+</span><span id="MomentsMethods-96"><a href="#MomentsMethods-96"><span class="linenos"> 96</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-97"><a href="#MomentsMethods-97"><span class="linenos"> 97</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-98"><a href="#MomentsMethods-98"><span class="linenos"> 98</span></a>
+</span><span id="MomentsMethods-99"><a href="#MomentsMethods-99"><span class="linenos"> 99</span></a>    <span class="nd">@cached_property</span>
+</span><span id="MomentsMethods-100"><a href="#MomentsMethods-100"><span class="linenos">100</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_0</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-101"><a href="#MomentsMethods-101"><span class="linenos">101</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
+</span><span id="MomentsMethods-102"><a href="#MomentsMethods-102"><span class="linenos">102</span></a>            <span class="p">(</span>
+</span><span id="MomentsMethods-103"><a href="#MomentsMethods-103"><span class="linenos">103</span></a>                <span class="s2">&quot;idx&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-104"><a href="#MomentsMethods-104"><span class="linenos">104</span></a>                <span class="s2">&quot;attr_data&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-105"><a href="#MomentsMethods-105"><span class="linenos">105</span></a>                <span class="s2">&quot;x_attr&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-106"><a href="#MomentsMethods-106"><span class="linenos">106</span></a>                <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-107"><a href="#MomentsMethods-107"><span class="linenos">107</span></a>                <span class="s2">&quot;cell_id&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-108"><a href="#MomentsMethods-108"><span class="linenos">108</span></a>                <span class="s2">&quot;multiplicity&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-109"><a href="#MomentsMethods-109"><span class="linenos">109</span></a>                <span class="s2">&quot;x_bins&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-110"><a href="#MomentsMethods-110"><span class="linenos">110</span></a>                <span class="s2">&quot;n_bins&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-111"><a href="#MomentsMethods-111"><span class="linenos">111</span></a>                <span class="s2">&quot;moments&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-112"><a href="#MomentsMethods-112"><span class="linenos">112</span></a>                <span class="s2">&quot;rank&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-113"><a href="#MomentsMethods-113"><span class="linenos">113</span></a>                <span class="s2">&quot;n_sd&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-114"><a href="#MomentsMethods-114"><span class="linenos">114</span></a>                <span class="s2">&quot;n_cell&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-115"><a href="#MomentsMethods-115"><span class="linenos">115</span></a>            <span class="p">),</span>
+</span><span id="MomentsMethods-116"><a href="#MomentsMethods-116"><span class="linenos">116</span></a>            <span class="s2">&quot;fake_i&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-117"><a href="#MomentsMethods-117"><span class="linenos">117</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">commons</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+</span><span id="MomentsMethods-118"><a href="#MomentsMethods-118"><span class="linenos">118</span></a><span class="s2">            auto i = idx[fake_i];</span>
+</span><span id="MomentsMethods-119"><a href="#MomentsMethods-119"><span class="linenos">119</span></a><span class="s2">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
+</span><span id="MomentsMethods-120"><a href="#MomentsMethods-120"><span class="linenos">120</span></a><span class="s2">                if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {</span>
+</span><span id="MomentsMethods-121"><a href="#MomentsMethods-121"><span class="linenos">121</span></a><span class="s2">                    atomicAdd(</span>
+</span><span id="MomentsMethods-122"><a href="#MomentsMethods-122"><span class="linenos">122</span></a><span class="s2">                        (real_type*)&amp;moment_0[n_cell * k + cell_id[i]],</span>
+</span><span id="MomentsMethods-123"><a href="#MomentsMethods-123"><span class="linenos">123</span></a><span class="s2">                        (real_type)(multiplicity[i])</span>
+</span><span id="MomentsMethods-124"><a href="#MomentsMethods-124"><span class="linenos">124</span></a><span class="s2">                    );</span>
+</span><span id="MomentsMethods-125"><a href="#MomentsMethods-125"><span class="linenos">125</span></a><span class="s2">                    auto val = multiplicity[i] * pow((real_type)(attr_data[i]), (real_type)(rank));</span>
+</span><span id="MomentsMethods-126"><a href="#MomentsMethods-126"><span class="linenos">126</span></a><span class="s2">                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], val);</span>
+</span><span id="MomentsMethods-127"><a href="#MomentsMethods-127"><span class="linenos">127</span></a><span class="s2">                    break;</span>
+</span><span id="MomentsMethods-128"><a href="#MomentsMethods-128"><span class="linenos">128</span></a><span class="s2">                }</span>
+</span><span id="MomentsMethods-129"><a href="#MomentsMethods-129"><span class="linenos">129</span></a><span class="s2">            }</span>
+</span><span id="MomentsMethods-130"><a href="#MomentsMethods-130"><span class="linenos">130</span></a><span class="s2">        &quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;real_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_c_type</span><span class="p">()),</span>
+</span><span id="MomentsMethods-131"><a href="#MomentsMethods-131"><span class="linenos">131</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-132"><a href="#MomentsMethods-132"><span class="linenos">132</span></a>
+</span><span id="MomentsMethods-133"><a href="#MomentsMethods-133"><span class="linenos">133</span></a>    <span class="nd">@cached_property</span>
+</span><span id="MomentsMethods-134"><a href="#MomentsMethods-134"><span class="linenos">134</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">__spectrum_moments_body_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="MomentsMethods-135"><a href="#MomentsMethods-135"><span class="linenos">135</span></a>        <span class="k">return</span> <span class="n">trtc</span><span class="o">.</span><span class="n">For</span><span class="p">(</span>
+</span><span id="MomentsMethods-136"><a href="#MomentsMethods-136"><span class="linenos">136</span></a>            <span class="p">(</span><span class="s2">&quot;n_bins&quot;</span><span class="p">,</span> <span class="s2">&quot;moments&quot;</span><span class="p">,</span> <span class="s2">&quot;moment_0&quot;</span><span class="p">,</span> <span class="s2">&quot;n_cell&quot;</span><span class="p">),</span>
+</span><span id="MomentsMethods-137"><a href="#MomentsMethods-137"><span class="linenos">137</span></a>            <span class="s2">&quot;i&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-138"><a href="#MomentsMethods-138"><span class="linenos">138</span></a><span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="MomentsMethods-139"><a href="#MomentsMethods-139"><span class="linenos">139</span></a><span class="sd">            for (auto k = 0; k &lt; n_bins; k+=1) {</span>
+</span><span id="MomentsMethods-140"><a href="#MomentsMethods-140"><span class="linenos">140</span></a><span class="sd">                if (moment_0[n_cell * k + i] == 0) {</span>
+</span><span id="MomentsMethods-141"><a href="#MomentsMethods-141"><span class="linenos">141</span></a><span class="sd">                    moments[n_cell * k  + i] = 0;</span>
+</span><span id="MomentsMethods-142"><a href="#MomentsMethods-142"><span class="linenos">142</span></a><span class="sd">                }</span>
+</span><span id="MomentsMethods-143"><a href="#MomentsMethods-143"><span class="linenos">143</span></a><span class="sd">                else {</span>
+</span><span id="MomentsMethods-144"><a href="#MomentsMethods-144"><span class="linenos">144</span></a><span class="sd">                    moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];</span>
+</span><span id="MomentsMethods-145"><a href="#MomentsMethods-145"><span class="linenos">145</span></a><span class="sd">                }</span>
+</span><span id="MomentsMethods-146"><a href="#MomentsMethods-146"><span class="linenos">146</span></a><span class="sd">            }</span>
+</span><span id="MomentsMethods-147"><a href="#MomentsMethods-147"><span class="linenos">147</span></a><span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+</span><span id="MomentsMethods-148"><a href="#MomentsMethods-148"><span class="linenos">148</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-149"><a href="#MomentsMethods-149"><span class="linenos">149</span></a>
+</span><span id="MomentsMethods-150"><a href="#MomentsMethods-150"><span class="linenos">150</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="MomentsMethods-151"><a href="#MomentsMethods-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="MomentsMethods-152"><a href="#MomentsMethods-152"><span class="linenos">152</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
+</span><span id="MomentsMethods-153"><a href="#MomentsMethods-153"><span class="linenos">153</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
+</span><span id="MomentsMethods-154"><a href="#MomentsMethods-154"><span class="linenos">154</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
 </span><span id="MomentsMethods-155"><a href="#MomentsMethods-155"><span class="linenos">155</span></a>
-</span><span id="MomentsMethods-156"><a href="#MomentsMethods-156"><span class="linenos">156</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MomentsMethods-157"><a href="#MomentsMethods-157"><span class="linenos">157</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span id="MomentsMethods-158"><a href="#MomentsMethods-158"><span class="linenos">158</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
-</span><span id="MomentsMethods-159"><a href="#MomentsMethods-159"><span class="linenos">159</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
-</span><span id="MomentsMethods-160"><a href="#MomentsMethods-160"><span class="linenos">160</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
-</span><span id="MomentsMethods-161"><a href="#MomentsMethods-161"><span class="linenos">161</span></a>
-</span><span id="MomentsMethods-162"><a href="#MomentsMethods-162"><span class="linenos">162</span></a>    <span class="c1"># TODO #684</span>
-</span><span id="MomentsMethods-163"><a href="#MomentsMethods-163"><span class="linenos">163</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
-</span><span id="MomentsMethods-164"><a href="#MomentsMethods-164"><span class="linenos">164</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="MomentsMethods-165"><a href="#MomentsMethods-165"><span class="linenos">165</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
-</span><span id="MomentsMethods-166"><a href="#MomentsMethods-166"><span class="linenos">166</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="MomentsMethods-167"><a href="#MomentsMethods-167"><span class="linenos">167</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="MomentsMethods-168"><a href="#MomentsMethods-168"><span class="linenos">168</span></a>        <span class="n">moment_0</span><span class="p">,</span>
-</span><span id="MomentsMethods-169"><a href="#MomentsMethods-169"><span class="linenos">169</span></a>        <span class="n">moments</span><span class="p">,</span>
-</span><span id="MomentsMethods-170"><a href="#MomentsMethods-170"><span class="linenos">170</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
-</span><span id="MomentsMethods-171"><a href="#MomentsMethods-171"><span class="linenos">171</span></a>        <span class="n">attr_data</span><span class="p">,</span>
-</span><span id="MomentsMethods-172"><a href="#MomentsMethods-172"><span class="linenos">172</span></a>        <span class="n">cell_id</span><span class="p">,</span>
-</span><span id="MomentsMethods-173"><a href="#MomentsMethods-173"><span class="linenos">173</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="MomentsMethods-174"><a href="#MomentsMethods-174"><span class="linenos">174</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="MomentsMethods-175"><a href="#MomentsMethods-175"><span class="linenos">175</span></a>        <span class="n">ranks</span><span class="p">,</span>
-</span><span id="MomentsMethods-176"><a href="#MomentsMethods-176"><span class="linenos">176</span></a>        <span class="n">min_x</span><span class="p">,</span>
-</span><span id="MomentsMethods-177"><a href="#MomentsMethods-177"><span class="linenos">177</span></a>        <span class="n">max_x</span><span class="p">,</span>
-</span><span id="MomentsMethods-178"><a href="#MomentsMethods-178"><span class="linenos">178</span></a>        <span class="n">x_attr</span><span class="p">,</span>
-</span><span id="MomentsMethods-179"><a href="#MomentsMethods-179"><span class="linenos">179</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
-</span><span id="MomentsMethods-180"><a href="#MomentsMethods-180"><span class="linenos">180</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
-</span><span id="MomentsMethods-181"><a href="#MomentsMethods-181"><span class="linenos">181</span></a>        <span class="n">skip_division_by_m0</span><span class="p">,</span>
-</span><span id="MomentsMethods-182"><a href="#MomentsMethods-182"><span class="linenos">182</span></a>    <span class="p">):</span>
-</span><span id="MomentsMethods-183"><a href="#MomentsMethods-183"><span class="linenos">183</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="MomentsMethods-184"><a href="#MomentsMethods-184"><span class="linenos">184</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-</span><span id="MomentsMethods-185"><a href="#MomentsMethods-185"><span class="linenos">185</span></a>
-</span><span id="MomentsMethods-186"><a href="#MomentsMethods-186"><span class="linenos">186</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
-</span><span id="MomentsMethods-187"><a href="#MomentsMethods-187"><span class="linenos">187</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
-</span><span id="MomentsMethods-188"><a href="#MomentsMethods-188"><span class="linenos">188</span></a>
-</span><span id="MomentsMethods-189"><a href="#MomentsMethods-189"><span class="linenos">189</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</span><span id="MomentsMethods-190"><a href="#MomentsMethods-190"><span class="linenos">190</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="MomentsMethods-191"><a href="#MomentsMethods-191"><span class="linenos">191</span></a>        <span class="n">n_ranks</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">ranks</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="MomentsMethods-192"><a href="#MomentsMethods-192"><span class="linenos">192</span></a>
-</span><span id="MomentsMethods-193"><a href="#MomentsMethods-193"><span class="linenos">193</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="MomentsMethods-194"><a href="#MomentsMethods-194"><span class="linenos">194</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="MomentsMethods-195"><a href="#MomentsMethods-195"><span class="linenos">195</span></a>
-</span><span id="MomentsMethods-196"><a href="#MomentsMethods-196"><span class="linenos">196</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="MomentsMethods-197"><a href="#MomentsMethods-197"><span class="linenos">197</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="MomentsMethods-198"><a href="#MomentsMethods-198"><span class="linenos">198</span></a>            <span class="p">(</span>
-</span><span id="MomentsMethods-199"><a href="#MomentsMethods-199"><span class="linenos">199</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-200"><a href="#MomentsMethods-200"><span class="linenos">200</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">min_x</span><span class="p">),</span>
-</span><span id="MomentsMethods-201"><a href="#MomentsMethods-201"><span class="linenos">201</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-202"><a href="#MomentsMethods-202"><span class="linenos">202</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-203"><a href="#MomentsMethods-203"><span class="linenos">203</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">max_x</span><span class="p">),</span>
-</span><span id="MomentsMethods-204"><a href="#MomentsMethods-204"><span class="linenos">204</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-205"><a href="#MomentsMethods-205"><span class="linenos">205</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-206"><a href="#MomentsMethods-206"><span class="linenos">206</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-207"><a href="#MomentsMethods-207"><span class="linenos">207</span></a>                <span class="n">n_ranks</span><span class="p">,</span>
-</span><span id="MomentsMethods-208"><a href="#MomentsMethods-208"><span class="linenos">208</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-209"><a href="#MomentsMethods-209"><span class="linenos">209</span></a>                <span class="n">ranks</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-210"><a href="#MomentsMethods-210"><span class="linenos">210</span></a>                <span class="n">n_sd</span><span class="p">,</span>
-</span><span id="MomentsMethods-211"><a href="#MomentsMethods-211"><span class="linenos">211</span></a>                <span class="n">n_cell</span><span class="p">,</span>
-</span><span id="MomentsMethods-212"><a href="#MomentsMethods-212"><span class="linenos">212</span></a>            <span class="p">),</span>
-</span><span id="MomentsMethods-213"><a href="#MomentsMethods-213"><span class="linenos">213</span></a>        <span class="p">)</span>
-</span><span id="MomentsMethods-214"><a href="#MomentsMethods-214"><span class="linenos">214</span></a>
-</span><span id="MomentsMethods-215"><a href="#MomentsMethods-215"><span class="linenos">215</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_division_by_m0</span><span class="p">:</span>
-</span><span id="MomentsMethods-216"><a href="#MomentsMethods-216"><span class="linenos">216</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="MomentsMethods-217"><a href="#MomentsMethods-217"><span class="linenos">217</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">n_ranks</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
-</span><span id="MomentsMethods-218"><a href="#MomentsMethods-218"><span class="linenos">218</span></a>            <span class="p">)</span>
-</span><span id="MomentsMethods-219"><a href="#MomentsMethods-219"><span class="linenos">219</span></a>
-</span><span id="MomentsMethods-220"><a href="#MomentsMethods-220"><span class="linenos">220</span></a>    <span class="c1"># TODO #684</span>
-</span><span id="MomentsMethods-221"><a href="#MomentsMethods-221"><span class="linenos">221</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
-</span><span id="MomentsMethods-222"><a href="#MomentsMethods-222"><span class="linenos">222</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
-</span><span id="MomentsMethods-223"><a href="#MomentsMethods-223"><span class="linenos">223</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
-</span><span id="MomentsMethods-224"><a href="#MomentsMethods-224"><span class="linenos">224</span></a>        <span class="bp">self</span><span class="p">,</span>
-</span><span id="MomentsMethods-225"><a href="#MomentsMethods-225"><span class="linenos">225</span></a>        <span class="o">*</span><span class="p">,</span>
-</span><span id="MomentsMethods-226"><a href="#MomentsMethods-226"><span class="linenos">226</span></a>        <span class="n">moment_0</span><span class="p">,</span>
-</span><span id="MomentsMethods-227"><a href="#MomentsMethods-227"><span class="linenos">227</span></a>        <span class="n">moments</span><span class="p">,</span>
-</span><span id="MomentsMethods-228"><a href="#MomentsMethods-228"><span class="linenos">228</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
-</span><span id="MomentsMethods-229"><a href="#MomentsMethods-229"><span class="linenos">229</span></a>        <span class="n">attr_data</span><span class="p">,</span>
-</span><span id="MomentsMethods-230"><a href="#MomentsMethods-230"><span class="linenos">230</span></a>        <span class="n">cell_id</span><span class="p">,</span>
-</span><span id="MomentsMethods-231"><a href="#MomentsMethods-231"><span class="linenos">231</span></a>        <span class="n">idx</span><span class="p">,</span>
-</span><span id="MomentsMethods-232"><a href="#MomentsMethods-232"><span class="linenos">232</span></a>        <span class="n">length</span><span class="p">,</span>
-</span><span id="MomentsMethods-233"><a href="#MomentsMethods-233"><span class="linenos">233</span></a>        <span class="n">rank</span><span class="p">,</span>
-</span><span id="MomentsMethods-234"><a href="#MomentsMethods-234"><span class="linenos">234</span></a>        <span class="n">x_bins</span><span class="p">,</span>
-</span><span id="MomentsMethods-235"><a href="#MomentsMethods-235"><span class="linenos">235</span></a>        <span class="n">x_attr</span><span class="p">,</span>
-</span><span id="MomentsMethods-236"><a href="#MomentsMethods-236"><span class="linenos">236</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
-</span><span id="MomentsMethods-237"><a href="#MomentsMethods-237"><span class="linenos">237</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
-</span><span id="MomentsMethods-238"><a href="#MomentsMethods-238"><span class="linenos">238</span></a>    <span class="p">):</span>
-</span><span id="MomentsMethods-239"><a href="#MomentsMethods-239"><span class="linenos">239</span></a>        <span class="k">assert</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x_bins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span id="MomentsMethods-240"><a href="#MomentsMethods-240"><span class="linenos">240</span></a>        <span class="k">assert</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span>
-</span><span id="MomentsMethods-241"><a href="#MomentsMethods-241"><span class="linenos">241</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span id="MomentsMethods-242"><a href="#MomentsMethods-242"><span class="linenos">242</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
-</span><span id="MomentsMethods-243"><a href="#MomentsMethods-243"><span class="linenos">243</span></a>
-</span><span id="MomentsMethods-244"><a href="#MomentsMethods-244"><span class="linenos">244</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
-</span><span id="MomentsMethods-245"><a href="#MomentsMethods-245"><span class="linenos">245</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
-</span><span id="MomentsMethods-246"><a href="#MomentsMethods-246"><span class="linenos">246</span></a>
-</span><span id="MomentsMethods-247"><a href="#MomentsMethods-247"><span class="linenos">247</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-</span><span id="MomentsMethods-248"><a href="#MomentsMethods-248"><span class="linenos">248</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-</span><span id="MomentsMethods-249"><a href="#MomentsMethods-249"><span class="linenos">249</span></a>        <span class="n">d_rank</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
-</span><span id="MomentsMethods-250"><a href="#MomentsMethods-250"><span class="linenos">250</span></a>        <span class="n">n_bins</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-</span><span id="MomentsMethods-251"><a href="#MomentsMethods-251"><span class="linenos">251</span></a>
-</span><span id="MomentsMethods-252"><a href="#MomentsMethods-252"><span class="linenos">252</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="MomentsMethods-253"><a href="#MomentsMethods-253"><span class="linenos">253</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span id="MomentsMethods-254"><a href="#MomentsMethods-254"><span class="linenos">254</span></a>
-</span><span id="MomentsMethods-255"><a href="#MomentsMethods-255"><span class="linenos">255</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="MomentsMethods-256"><a href="#MomentsMethods-256"><span class="linenos">256</span></a>            <span class="n">length</span><span class="p">,</span>
-</span><span id="MomentsMethods-257"><a href="#MomentsMethods-257"><span class="linenos">257</span></a>            <span class="p">(</span>
-</span><span id="MomentsMethods-258"><a href="#MomentsMethods-258"><span class="linenos">258</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-259"><a href="#MomentsMethods-259"><span class="linenos">259</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-260"><a href="#MomentsMethods-260"><span class="linenos">260</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-261"><a href="#MomentsMethods-261"><span class="linenos">261</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-262"><a href="#MomentsMethods-262"><span class="linenos">262</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-263"><a href="#MomentsMethods-263"><span class="linenos">263</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-264"><a href="#MomentsMethods-264"><span class="linenos">264</span></a>                <span class="n">x_bins</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-265"><a href="#MomentsMethods-265"><span class="linenos">265</span></a>                <span class="n">n_bins</span><span class="p">,</span>
-</span><span id="MomentsMethods-266"><a href="#MomentsMethods-266"><span class="linenos">266</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-</span><span id="MomentsMethods-267"><a href="#MomentsMethods-267"><span class="linenos">267</span></a>                <span class="n">d_rank</span><span class="p">,</span>
-</span><span id="MomentsMethods-268"><a href="#MomentsMethods-268"><span class="linenos">268</span></a>                <span class="n">n_sd</span><span class="p">,</span>
-</span><span id="MomentsMethods-269"><a href="#MomentsMethods-269"><span class="linenos">269</span></a>                <span class="n">n_cell</span><span class="p">,</span>
-</span><span id="MomentsMethods-270"><a href="#MomentsMethods-270"><span class="linenos">270</span></a>            <span class="p">),</span>
-</span><span id="MomentsMethods-271"><a href="#MomentsMethods-271"><span class="linenos">271</span></a>        <span class="p">)</span>
-</span><span id="MomentsMethods-272"><a href="#MomentsMethods-272"><span class="linenos">272</span></a>
-</span><span id="MomentsMethods-273"><a href="#MomentsMethods-273"><span class="linenos">273</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
-</span><span id="MomentsMethods-274"><a href="#MomentsMethods-274"><span class="linenos">274</span></a>            <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
-</span><span id="MomentsMethods-275"><a href="#MomentsMethods-275"><span class="linenos">275</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-156"><a href="#MomentsMethods-156"><span class="linenos">156</span></a>    <span class="c1"># TODO #684</span>
+</span><span id="MomentsMethods-157"><a href="#MomentsMethods-157"><span class="linenos">157</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
+</span><span id="MomentsMethods-158"><a href="#MomentsMethods-158"><span class="linenos">158</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
+</span><span id="MomentsMethods-159"><a href="#MomentsMethods-159"><span class="linenos">159</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">moments</span><span class="p">(</span>
+</span><span id="MomentsMethods-160"><a href="#MomentsMethods-160"><span class="linenos">160</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MomentsMethods-161"><a href="#MomentsMethods-161"><span class="linenos">161</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="MomentsMethods-162"><a href="#MomentsMethods-162"><span class="linenos">162</span></a>        <span class="n">moment_0</span><span class="p">,</span>
+</span><span id="MomentsMethods-163"><a href="#MomentsMethods-163"><span class="linenos">163</span></a>        <span class="n">moments</span><span class="p">,</span>
+</span><span id="MomentsMethods-164"><a href="#MomentsMethods-164"><span class="linenos">164</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
+</span><span id="MomentsMethods-165"><a href="#MomentsMethods-165"><span class="linenos">165</span></a>        <span class="n">attr_data</span><span class="p">,</span>
+</span><span id="MomentsMethods-166"><a href="#MomentsMethods-166"><span class="linenos">166</span></a>        <span class="n">cell_id</span><span class="p">,</span>
+</span><span id="MomentsMethods-167"><a href="#MomentsMethods-167"><span class="linenos">167</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="MomentsMethods-168"><a href="#MomentsMethods-168"><span class="linenos">168</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="MomentsMethods-169"><a href="#MomentsMethods-169"><span class="linenos">169</span></a>        <span class="n">ranks</span><span class="p">,</span>
+</span><span id="MomentsMethods-170"><a href="#MomentsMethods-170"><span class="linenos">170</span></a>        <span class="n">min_x</span><span class="p">,</span>
+</span><span id="MomentsMethods-171"><a href="#MomentsMethods-171"><span class="linenos">171</span></a>        <span class="n">max_x</span><span class="p">,</span>
+</span><span id="MomentsMethods-172"><a href="#MomentsMethods-172"><span class="linenos">172</span></a>        <span class="n">x_attr</span><span class="p">,</span>
+</span><span id="MomentsMethods-173"><a href="#MomentsMethods-173"><span class="linenos">173</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
+</span><span id="MomentsMethods-174"><a href="#MomentsMethods-174"><span class="linenos">174</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
+</span><span id="MomentsMethods-175"><a href="#MomentsMethods-175"><span class="linenos">175</span></a>        <span class="n">skip_division_by_m0</span><span class="p">,</span>
+</span><span id="MomentsMethods-176"><a href="#MomentsMethods-176"><span class="linenos">176</span></a>    <span class="p">):</span>
+</span><span id="MomentsMethods-177"><a href="#MomentsMethods-177"><span class="linenos">177</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="MomentsMethods-178"><a href="#MomentsMethods-178"><span class="linenos">178</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="MomentsMethods-179"><a href="#MomentsMethods-179"><span class="linenos">179</span></a>
+</span><span id="MomentsMethods-180"><a href="#MomentsMethods-180"><span class="linenos">180</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
+</span><span id="MomentsMethods-181"><a href="#MomentsMethods-181"><span class="linenos">181</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+</span><span id="MomentsMethods-182"><a href="#MomentsMethods-182"><span class="linenos">182</span></a>
+</span><span id="MomentsMethods-183"><a href="#MomentsMethods-183"><span class="linenos">183</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="MomentsMethods-184"><a href="#MomentsMethods-184"><span class="linenos">184</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="MomentsMethods-185"><a href="#MomentsMethods-185"><span class="linenos">185</span></a>        <span class="n">n_ranks</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">ranks</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="MomentsMethods-186"><a href="#MomentsMethods-186"><span class="linenos">186</span></a>
+</span><span id="MomentsMethods-187"><a href="#MomentsMethods-187"><span class="linenos">187</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="MomentsMethods-188"><a href="#MomentsMethods-188"><span class="linenos">188</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="MomentsMethods-189"><a href="#MomentsMethods-189"><span class="linenos">189</span></a>
+</span><span id="MomentsMethods-190"><a href="#MomentsMethods-190"><span class="linenos">190</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="MomentsMethods-191"><a href="#MomentsMethods-191"><span class="linenos">191</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="MomentsMethods-192"><a href="#MomentsMethods-192"><span class="linenos">192</span></a>            <span class="p">(</span>
+</span><span id="MomentsMethods-193"><a href="#MomentsMethods-193"><span class="linenos">193</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-194"><a href="#MomentsMethods-194"><span class="linenos">194</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">min_x</span><span class="p">),</span>
+</span><span id="MomentsMethods-195"><a href="#MomentsMethods-195"><span class="linenos">195</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-196"><a href="#MomentsMethods-196"><span class="linenos">196</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-197"><a href="#MomentsMethods-197"><span class="linenos">197</span></a>                <span class="bp">self</span><span class="o">.</span><span class="n">_get_floating_point</span><span class="p">(</span><span class="n">max_x</span><span class="p">),</span>
+</span><span id="MomentsMethods-198"><a href="#MomentsMethods-198"><span class="linenos">198</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-199"><a href="#MomentsMethods-199"><span class="linenos">199</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-200"><a href="#MomentsMethods-200"><span class="linenos">200</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-201"><a href="#MomentsMethods-201"><span class="linenos">201</span></a>                <span class="n">n_ranks</span><span class="p">,</span>
+</span><span id="MomentsMethods-202"><a href="#MomentsMethods-202"><span class="linenos">202</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-203"><a href="#MomentsMethods-203"><span class="linenos">203</span></a>                <span class="n">ranks</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-204"><a href="#MomentsMethods-204"><span class="linenos">204</span></a>                <span class="n">n_sd</span><span class="p">,</span>
+</span><span id="MomentsMethods-205"><a href="#MomentsMethods-205"><span class="linenos">205</span></a>                <span class="n">n_cell</span><span class="p">,</span>
+</span><span id="MomentsMethods-206"><a href="#MomentsMethods-206"><span class="linenos">206</span></a>            <span class="p">),</span>
+</span><span id="MomentsMethods-207"><a href="#MomentsMethods-207"><span class="linenos">207</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-208"><a href="#MomentsMethods-208"><span class="linenos">208</span></a>
+</span><span id="MomentsMethods-209"><a href="#MomentsMethods-209"><span class="linenos">209</span></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_division_by_m0</span><span class="p">:</span>
+</span><span id="MomentsMethods-210"><a href="#MomentsMethods-210"><span class="linenos">210</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">__moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="MomentsMethods-211"><a href="#MomentsMethods-211"><span class="linenos">211</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">n_ranks</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
+</span><span id="MomentsMethods-212"><a href="#MomentsMethods-212"><span class="linenos">212</span></a>            <span class="p">)</span>
+</span><span id="MomentsMethods-213"><a href="#MomentsMethods-213"><span class="linenos">213</span></a>
+</span><span id="MomentsMethods-214"><a href="#MomentsMethods-214"><span class="linenos">214</span></a>    <span class="c1"># TODO #684</span>
+</span><span id="MomentsMethods-215"><a href="#MomentsMethods-215"><span class="linenos">215</span></a>    <span class="c1"># pylint: disable=unused-argument,too-many-locals</span>
+</span><span id="MomentsMethods-216"><a href="#MomentsMethods-216"><span class="linenos">216</span></a>    <span class="nd">@nice_thrust</span><span class="p">(</span><span class="o">**</span><span class="n">NICE_THRUST_FLAGS</span><span class="p">)</span>
+</span><span id="MomentsMethods-217"><a href="#MomentsMethods-217"><span class="linenos">217</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">spectrum_moments</span><span class="p">(</span>
+</span><span id="MomentsMethods-218"><a href="#MomentsMethods-218"><span class="linenos">218</span></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="MomentsMethods-219"><a href="#MomentsMethods-219"><span class="linenos">219</span></a>        <span class="o">*</span><span class="p">,</span>
+</span><span id="MomentsMethods-220"><a href="#MomentsMethods-220"><span class="linenos">220</span></a>        <span class="n">moment_0</span><span class="p">,</span>
+</span><span id="MomentsMethods-221"><a href="#MomentsMethods-221"><span class="linenos">221</span></a>        <span class="n">moments</span><span class="p">,</span>
+</span><span id="MomentsMethods-222"><a href="#MomentsMethods-222"><span class="linenos">222</span></a>        <span class="n">multiplicity</span><span class="p">,</span>
+</span><span id="MomentsMethods-223"><a href="#MomentsMethods-223"><span class="linenos">223</span></a>        <span class="n">attr_data</span><span class="p">,</span>
+</span><span id="MomentsMethods-224"><a href="#MomentsMethods-224"><span class="linenos">224</span></a>        <span class="n">cell_id</span><span class="p">,</span>
+</span><span id="MomentsMethods-225"><a href="#MomentsMethods-225"><span class="linenos">225</span></a>        <span class="n">idx</span><span class="p">,</span>
+</span><span id="MomentsMethods-226"><a href="#MomentsMethods-226"><span class="linenos">226</span></a>        <span class="n">length</span><span class="p">,</span>
+</span><span id="MomentsMethods-227"><a href="#MomentsMethods-227"><span class="linenos">227</span></a>        <span class="n">rank</span><span class="p">,</span>
+</span><span id="MomentsMethods-228"><a href="#MomentsMethods-228"><span class="linenos">228</span></a>        <span class="n">x_bins</span><span class="p">,</span>
+</span><span id="MomentsMethods-229"><a href="#MomentsMethods-229"><span class="linenos">229</span></a>        <span class="n">x_attr</span><span class="p">,</span>
+</span><span id="MomentsMethods-230"><a href="#MomentsMethods-230"><span class="linenos">230</span></a>        <span class="n">weighting_attribute</span><span class="p">,</span>
+</span><span id="MomentsMethods-231"><a href="#MomentsMethods-231"><span class="linenos">231</span></a>        <span class="n">weighting_rank</span><span class="p">,</span>
+</span><span id="MomentsMethods-232"><a href="#MomentsMethods-232"><span class="linenos">232</span></a>    <span class="p">):</span>
+</span><span id="MomentsMethods-233"><a href="#MomentsMethods-233"><span class="linenos">233</span></a>        <span class="k">assert</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">x_bins</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+</span><span id="MomentsMethods-234"><a href="#MomentsMethods-234"><span class="linenos">234</span></a>        <span class="k">assert</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">moments</span><span class="o">.</span><span class="n">shape</span>
+</span><span id="MomentsMethods-235"><a href="#MomentsMethods-235"><span class="linenos">235</span></a>        <span class="k">if</span> <span class="n">weighting_rank</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="MomentsMethods-236"><a href="#MomentsMethods-236"><span class="linenos">236</span></a>            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+</span><span id="MomentsMethods-237"><a href="#MomentsMethods-237"><span class="linenos">237</span></a>
+</span><span id="MomentsMethods-238"><a href="#MomentsMethods-238"><span class="linenos">238</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moment_0</span><span class="p">)</span>
+</span><span id="MomentsMethods-239"><a href="#MomentsMethods-239"><span class="linenos">239</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">ensure_floating_point</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+</span><span id="MomentsMethods-240"><a href="#MomentsMethods-240"><span class="linenos">240</span></a>
+</span><span id="MomentsMethods-241"><a href="#MomentsMethods-241"><span class="linenos">241</span></a>        <span class="n">n_cell</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span><span id="MomentsMethods-242"><a href="#MomentsMethods-242"><span class="linenos">242</span></a>        <span class="n">n_sd</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span><span id="MomentsMethods-243"><a href="#MomentsMethods-243"><span class="linenos">243</span></a>        <span class="n">d_rank</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+</span><span id="MomentsMethods-244"><a href="#MomentsMethods-244"><span class="linenos">244</span></a>        <span class="n">n_bins</span> <span class="o">=</span> <span class="n">trtc</span><span class="o">.</span><span class="n">DVInt64</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="MomentsMethods-245"><a href="#MomentsMethods-245"><span class="linenos">245</span></a>
+</span><span id="MomentsMethods-246"><a href="#MomentsMethods-246"><span class="linenos">246</span></a>        <span class="n">moments</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="MomentsMethods-247"><a href="#MomentsMethods-247"><span class="linenos">247</span></a>        <span class="n">moment_0</span><span class="p">[:]</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="MomentsMethods-248"><a href="#MomentsMethods-248"><span class="linenos">248</span></a>
+</span><span id="MomentsMethods-249"><a href="#MomentsMethods-249"><span class="linenos">249</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_0</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="MomentsMethods-250"><a href="#MomentsMethods-250"><span class="linenos">250</span></a>            <span class="n">length</span><span class="p">,</span>
+</span><span id="MomentsMethods-251"><a href="#MomentsMethods-251"><span class="linenos">251</span></a>            <span class="p">(</span>
+</span><span id="MomentsMethods-252"><a href="#MomentsMethods-252"><span class="linenos">252</span></a>                <span class="n">idx</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-253"><a href="#MomentsMethods-253"><span class="linenos">253</span></a>                <span class="n">attr_data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-254"><a href="#MomentsMethods-254"><span class="linenos">254</span></a>                <span class="n">x_attr</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-255"><a href="#MomentsMethods-255"><span class="linenos">255</span></a>                <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-256"><a href="#MomentsMethods-256"><span class="linenos">256</span></a>                <span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-257"><a href="#MomentsMethods-257"><span class="linenos">257</span></a>                <span class="n">multiplicity</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-258"><a href="#MomentsMethods-258"><span class="linenos">258</span></a>                <span class="n">x_bins</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-259"><a href="#MomentsMethods-259"><span class="linenos">259</span></a>                <span class="n">n_bins</span><span class="p">,</span>
+</span><span id="MomentsMethods-260"><a href="#MomentsMethods-260"><span class="linenos">260</span></a>                <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="MomentsMethods-261"><a href="#MomentsMethods-261"><span class="linenos">261</span></a>                <span class="n">d_rank</span><span class="p">,</span>
+</span><span id="MomentsMethods-262"><a href="#MomentsMethods-262"><span class="linenos">262</span></a>                <span class="n">n_sd</span><span class="p">,</span>
+</span><span id="MomentsMethods-263"><a href="#MomentsMethods-263"><span class="linenos">263</span></a>                <span class="n">n_cell</span><span class="p">,</span>
+</span><span id="MomentsMethods-264"><a href="#MomentsMethods-264"><span class="linenos">264</span></a>            <span class="p">),</span>
+</span><span id="MomentsMethods-265"><a href="#MomentsMethods-265"><span class="linenos">265</span></a>        <span class="p">)</span>
+</span><span id="MomentsMethods-266"><a href="#MomentsMethods-266"><span class="linenos">266</span></a>
+</span><span id="MomentsMethods-267"><a href="#MomentsMethods-267"><span class="linenos">267</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__spectrum_moments_body_1</span><span class="o">.</span><span class="n">launch_n</span><span class="p">(</span>
+</span><span id="MomentsMethods-268"><a href="#MomentsMethods-268"><span class="linenos">268</span></a>            <span class="n">moment_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">moments</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">moment_0</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">n_cell</span><span class="p">)</span>
+</span><span id="MomentsMethods-269"><a href="#MomentsMethods-269"><span class="linenos">269</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -691,11 +679,11 @@
 
     </div>
     <a class="headerlink" href="#MomentsMethods.ensure_floating_point"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.ensure_floating_point-156"><a href="#MomentsMethods.ensure_floating_point-156"><span class="linenos">156</span></a>    <span class="nd">@staticmethod</span>
-</span><span id="MomentsMethods.ensure_floating_point-157"><a href="#MomentsMethods.ensure_floating_point-157"><span class="linenos">157</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-</span><span id="MomentsMethods.ensure_floating_point-158"><a href="#MomentsMethods.ensure_floating_point-158"><span class="linenos">158</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
-</span><span id="MomentsMethods.ensure_floating_point-159"><a href="#MomentsMethods.ensure_floating_point-159"><span class="linenos">159</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
-</span><span id="MomentsMethods.ensure_floating_point-160"><a href="#MomentsMethods.ensure_floating_point-160"><span class="linenos">160</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="MomentsMethods.ensure_floating_point-150"><a href="#MomentsMethods.ensure_floating_point-150"><span class="linenos">150</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="MomentsMethods.ensure_floating_point-151"><a href="#MomentsMethods.ensure_floating_point-151"><span class="linenos">151</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">ensure_floating_point</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="MomentsMethods.ensure_floating_point-152"><a href="#MomentsMethods.ensure_floating_point-152"><span class="linenos">152</span></a>        <span class="n">data_type</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name_elem_cls</span><span class="p">()</span>
+</span><span id="MomentsMethods.ensure_floating_point-153"><a href="#MomentsMethods.ensure_floating_point-153"><span class="linenos">153</span></a>        <span class="k">if</span> <span class="n">data_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="s2">&quot;double&quot;</span><span class="p">):</span>
+</span><span id="MomentsMethods.ensure_floating_point-154"><a href="#MomentsMethods.ensure_floating_point-154"><span class="linenos">154</span></a>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data type </span><span class="si">{</span><span class="n">data_type</span><span class="si">}</span><span class="s2"> not recognised as floating point&quot;</span><span class="p">)</span>
 </span></pre></div>
 
 
