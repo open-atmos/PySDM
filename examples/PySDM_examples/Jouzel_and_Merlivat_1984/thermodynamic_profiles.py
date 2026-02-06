@@ -8,7 +8,6 @@ from scipy.interpolate import make_interp_spline
 from PySDM.physics.constants_defaults import T0
 from PySDM.physics import si
 
-
 pressure = make_interp_spline(
     x=np.asarray([-10, -20, -30, -40, -50])[::-1] + T0,
     y=np.asarray([925, 780, 690, 630, 600])[::-1] * si.mbar,

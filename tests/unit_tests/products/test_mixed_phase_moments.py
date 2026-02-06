@@ -8,7 +8,6 @@ from PySDM.builder import Builder
 from PySDM import Formulae
 from PySDM.environments import Box
 
-
 MASSES = (10.0 * si.ug, -10.0 * si.ug)
 
 

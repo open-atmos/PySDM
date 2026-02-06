@@ -8,7 +8,6 @@ from PySDM_examples import Matsushima_et_al_2023
 
 from PySDM.physics import si
 
-
 PLOT = False
 
 
