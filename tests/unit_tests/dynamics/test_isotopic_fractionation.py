@@ -82,14 +82,14 @@ class TestIsotopicFractionation:
             ),
         ),
     )
-    def test_ensure_condensation_executed_before(backend_class, dynamics, context):
+    def test_ensure_condensation_executed_before(backend_instance, dynamics, context):
         """
         test that run fails when isotopic fractionation
         is executed before or without condensation"""
 
         # arrange
         builder = Builder(
-            n_sd=1, backend=backend_class(), environment=Box(dv=np.nan, dt=1 * si.s)
+            n_sd=1, backend=backend_instance, environment=Box(dv=np.nan, dt=1 * si.s)
         )
         for dynamic in dynamics:
             builder.add_dynamic(dynamic)

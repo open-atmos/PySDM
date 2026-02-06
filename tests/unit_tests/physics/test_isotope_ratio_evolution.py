@@ -86,7 +86,6 @@ class TestGedzelmanAndArnold1994:
         # test unit?
         # test expected values
         # test values, plot?
-        # nan to the left of equilibrium
 
         # arrange
         formulae = Formulae(
