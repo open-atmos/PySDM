@@ -7,6 +7,10 @@ import pytest
 from matplotlib import pyplot
 
 from PySDM import Formulae
+from PySDM.physics import si
+from PySDM.physics.constants import PER_MILLE
+
+PLOT = False
 
 
 class TestMerlivatAndJouzel1979:
@@ -74,3 +78,59 @@ class TestMerlivatAndJouzel1979:
     @staticmethod
     def test_heilstone_expression():
         pass  # TODO #1206
+
+
+class TestGedzelmanAndArnold1994:
+    @staticmethod
+    def test_saturation_for_zero_dR_condition(plot=True):
+        # test unit?
+        # test expected values
+        # test values, plot?
+        # nan to the left of equilibrium
+
+        # arrange
+        formulae = Formulae(
+            drop_growth="Mason1971",
+            isotope_ratio_evolution="GedzelmanAndArnold1994",
+            isotope_diffusivity_ratios="HellmannAndHarvey2020",
+            isotope_equilibrium_fractionation_factors="MerlivatAndNief1967",
+        )
+        phase = "liquid"
+        const = formulae.constants
+        T = 283.25 * si.K
+        vsmow = const.VSMOW_R_2H
+
+        x = np.linspace(0.8, 1.1, 200)
+        alpha = formulae.isotope_equilibrium_fractionation_factors.alpha_l_2H(T)
+        delta = -200 * PER_MILLE
+        D_ratio_h2l = formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T)
+        Fk = formulae.drop_growth.Fk(T=T, K=const.K0, lv=const.l_tri)
+
+        iso_ratio_v = formulae.trivia.isotopic_delta_2_ratio(delta, vsmow)
+        iso_ratio_r = x * vsmow
+        iso_ratio_liq_eq = alpha * iso_ratio_v / vsmow
+
+        pvs = formulae.saturation_vapour_pressure.pvs_water(T)
+        D_light = const.D0
+
+        y = formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
+            diff_rat_light_to_heavy=1 / D_ratio_h2l,
+            iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
+            iso_ratio_r=iso_ratio_r,
+            iso_ratio_v=iso_ratio_v,
+            b=pvs * D_light * Fk,
+            alpha_w=alpha,
+        )
+        # act
+        if plot:
+            pyplot.plot(x, y, "r")
+            pyplot.plot(iso_ratio_liq_eq, 0, "ok")
+            pyplot.xlabel("")
+            pyplot.ylabel("saturation")
+            pyplot.ylim(0, 0.01)
+            pyplot.show()
+        else:
+            pyplot.close()
+
+        # assert
+        assert False

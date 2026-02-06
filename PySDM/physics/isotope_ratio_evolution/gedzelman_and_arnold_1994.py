@@ -1,5 +1,7 @@
 """
-eqs. (22) and (23) in [Gedzelman & Arnold 1994](https://doi.org/10.1029/93JD03518)
+saturation when no change in isotopic ratio
+in liquid eq 22 and in vapour eq 23
+in [Gedzelman & Arnold 1994](https://doi.org/10.1029/93JD03518)
 """
 
 
