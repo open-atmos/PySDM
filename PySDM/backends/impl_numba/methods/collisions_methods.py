@@ -1,4 +1,3 @@
-# pylint: disable=too-many-positional-arguments
 """
 CPU implementation of backend methods for particle collisions
 """
@@ -43,7 +42,9 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
+def coalesce(
+    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
+):  # pylint: disable=too-many-positional-arguments
     atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n > 0:
@@ -132,7 +133,7 @@ def round_multiplicities_to_ints_and_update_attributes(
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up(  # pylint: disable=c,too-many-locals
+def break_up(  # pylint: disable=c,too-many-locals,too-many-positional-arguments
     i,
     j,
     k,
@@ -189,7 +190,7 @@ def break_up_while(
     breakup_rate_deficit,
     warn_overflows,
     particle_mass,
-):  # pylint: disable=unused-argument,too-many-locals
+):  # pylint: disable=too-many-locals,too-many-positional-arguments
     gamma_deficit = gamma[i]
     overflow_flag = False
     while gamma_deficit > 0:
@@ -341,7 +342,7 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair,
             stats_n_substep,
             stats_dt_min,
-        ):  # pylint: disable=too-many-locals
+        ):  # pylint: disable=too-many-locals,too-many-positional-arguments
             """Modified parameters are: `dt_left[cell_id]`, `prob[pair_id]`,
             `stats_n_substep[cell_id]`, `stats_dt_min[cell_id]`;
             `dt_todo[cell_id]` is a local temporary array of time steps to be taken in each cell,
@@ -531,7 +532,7 @@ class CollisionsMethods(BackendMethods):
             collision_rate,
             is_first_in_pair,
             out,
-        ):  # pylint: disable=too-many-locals
+        ):  # pylint: disable=too-many-locals,too-many-positional-arguments
             """
             return in "out" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
             formula:
@@ -645,7 +646,9 @@ class CollisionsMethods(BackendMethods):
 
         return body
 
-    def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
+    def normalize(
+        self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv
+    ):  # pylint: disable=too-many-positional-arguments
         return self._normalize_body(
             prob.data,
             cell_id.data,

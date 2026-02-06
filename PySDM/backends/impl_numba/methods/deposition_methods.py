@@ -15,7 +15,6 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-methods
     @cached_property
     def _deposition(self):
-        # pylint: disable=too-many-positional-arguments
         assert self.formulae.particle_shape_and_density.supports_mixed_phase()
 
         formulae = self.formulae_flattened
@@ -125,7 +124,7 @@ class DepositionMethods(BackendMethods):  # pylint:disable=too-few-public-method
             multiplicity,
             sub_time_step,
             mass_of_dry_air,
-        ):
+        ):  # pylint: disable=too-many-positional-arguments
             latent_heat_sub = formulae.latent_heat_sublimation__ls(temperature)
             delta_rv = 0
             for i, ksi in enumerate(multiplicity):
