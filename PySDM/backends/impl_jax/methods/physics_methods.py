@@ -23,7 +23,7 @@ class PhysicsMethods(BackendMethods):
         # @numba.njit(**self.default_jit_flags)
         @jax.jit
         def body(volume, mass):
-            volume = ff.particle_shape_and_density__mass_to_volume(mass)
+            volume = ff.particle_shape_and_density__mass_to_volume.py_func(mass)
             # for i in range(volume.shape[0]):  # pylint: disable=not-an-iterable
             #     # volume.at[i].set(ff.particle_shape_and_density__mass_to_volume.py_func(mass[i]))
             #     volume = volume.at[i].set(ff.particle_shape_and_density__mass_to_volume(mass[i]))
