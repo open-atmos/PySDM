@@ -10,9 +10,8 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_Nr(
+def straub_Nr(  # pylint: disable=too-many-positional-arguments
     i,
-    *,
     Nr1,
     Nr2,
     Nr3,
@@ -34,8 +33,8 @@ def straub_Nr(
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_mass_remainder(
-    i, *, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, d34, Nr1, Nr2, Nr3, Nr4
+def straub_mass_remainder(  # pylint: disable=too-many-positional-arguments
+    i, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, d34, Nr1, Nr2, Nr3, Nr4
 ):
     # pylint: disable=too-many-arguments, too-many-locals
     Nr1[i] = Nr1[i] * np.exp(3 * mu1 + 9 * np.power(sigma1, 2) / 2)
@@ -329,8 +328,8 @@ class FragmentationMethods(BackendMethods):
 
         @numba.njit(**self.default_jit_flags)
         def body(
-            *, CW, gam, ds, v_max, frag_volume, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
-        ):  # pylint: disable=too-many-arguments,too-many-locals
+            CW, gam, ds, v_max, frag_volume, rand, Nr1, Nr2, Nr3, Nr4, Nrt, d34
+        ):  # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
                 straub_Nr(
                     i, Nr1=Nr1, Nr2=Nr2, Nr3=Nr3, Nr4=Nr4, Nrt=Nrt, CW=CW, gam=gam
@@ -389,8 +388,8 @@ class FragmentationMethods(BackendMethods):
 
         @numba.njit(**self.default_jit_flags)
         def body(
-            *, CKE, W, W2, St, ds, dl, dcoal, frag_volume, rand, Rf, Rs, Rd, tol
-        ):  # pylint: disable=too-many-branches,too-many-locals,too-many-statements
+            CKE, W, W2, St, ds, dl, dcoal, frag_volume, rand, Rf, Rs, Rd, tol
+        ):  # pylint: disable=too-many-branches,too-many-locals,too-many-statements,too-many-positional-arguments
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
                 if dl[i] <= 0.4e-3:
                     frag_volume[i] = dcoal[i] ** 3 * ff.constants.PI / 6
@@ -485,7 +484,7 @@ class FragmentationMethods(BackendMethods):
         ff = self.formulae_flattened
 
         @numba.njit(**self.default_jit_flags)
-        def body(*, mu, sigma, frag_volume, rand):  # pylint: disable=too-many-arguments
+        def body(mu, sigma, frag_volume, rand):  # pylint: disable=too-many-arguments
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
                 frag_volume[i] = mu + sigma * ff.trivia__erfinv_approx(rand[i])
 
@@ -497,7 +496,7 @@ class FragmentationMethods(BackendMethods):
 
         @numba.njit(**self.default_jit_flags)
         # pylint: disable=too-many-arguments
-        def body(*, scale, frag_volume, x_plus_y, rand, fragtol):
+        def body(scale, frag_volume, x_plus_y, rand, fragtol):
             for i in numba.prange(len(frag_volume)):  # pylint: disable=not-an-iterable
                 frag_volume[i] = ff.fragmentation_function__frag_volume(
                     scale, rand[i], x_plus_y[i], fragtol
