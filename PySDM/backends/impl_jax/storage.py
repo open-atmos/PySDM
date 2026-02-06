@@ -113,3 +113,6 @@ class Storage(StorageBase):
             # self.data[:] = other
             # self.data.at[:].set(other)
             self.data = other
+
+    def to_ndarray(self):
+        return np.array(self.data)

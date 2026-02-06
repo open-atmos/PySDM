@@ -385,9 +385,10 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         attr,
         rank,
         attr_bins,
-        attr_name="water mass",
+        attr_name,
         weighting_attribute="water mass",
         weighting_rank=0,
+        skip_division_by_m0=False,
     ):
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
@@ -403,6 +404,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
 
     def adaptive_sdm_end(self, dt_left):

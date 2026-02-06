@@ -117,6 +117,7 @@ class MomentsMethods(BackendMethods):
             x_attr,
             weighting_attribute,
             weighting_rank,
+            skip_division_by_m0,
         ):
 
             # pylint: disable=too-many-locals
@@ -141,14 +142,15 @@ class MomentsMethods(BackendMethods):
                             ),
                         )
                         break
-            return
-            for c_id in range(moment_0.shape[1]):
-                for k in range(x_bins.shape[0] - 1):
-                    moments[k, c_id] = (
-                        moments[k, c_id] / moment_0[k, c_id]
-                        if moment_0[k, c_id] != 0
-                        else 0
-                    )
+            # return
+            if not skip_division_by_m0:
+                for c_id in range(moment_0.shape[1]):
+                    for k in range(x_bins.shape[0] - 1):
+                        moments[k, c_id] = (
+                            moments[k, c_id] / moment_0[k, c_id]
+                            if moment_0[k, c_id] != 0
+                            else 0
+                        )
 
         return body
 
@@ -167,6 +169,7 @@ class MomentsMethods(BackendMethods):
         x_attr,
         weighting_attribute,
         weighting_rank,
+        skip_division_by_m0,
     ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
@@ -183,5 +186,6 @@ class MomentsMethods(BackendMethods):
             x_attr=x_attr.data,
             weighting_attribute=weighting_attribute.data,
             weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
         

@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 
 from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from PySDM.initialisation.sampling.spectral_sampling import Linear
@@ -71,8 +72,9 @@ class TestMaths:
         np.testing.assert_approx_equal(discr_mean_T_squared, 300.0**2, significant=6)
 
     @staticmethod
+    @pytest.mark.parametrize('skip_division_by_m0', (True, False))
     # pylint: disable=too-many-locals
-    def test_spectrum_moment_0d(backend_class):
+    def test_spectrum_moment_0d(backend_class_with_jax, skip_division_by_m0):
         # Arrange
         n_part = 100000
         v_mean = 2e-6
@@ -83,12 +85,12 @@ class TestMaths:
         v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
-        particulator = DummyParticulator(backend_class, n_sd)
+        particulator = DummyParticulator(backend_class_with_jax, n_sd)
         attribute = {"multiplicity": n, "volume": v, "heat": T * v}
         particulator.request_attribute("temperature")
         particulator.build(attribute)
 
-        v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)
+        v_bins = np.linspace(0, 4e-6, num=5, endpoint=True)
 
         # TODO #217 : add a moments_0 wrapper
         spectrum_moment_0 = particulator.backend.Storage.empty(
@@ -106,8 +108,10 @@ class TestMaths:
             moment_0=spectrum_moment_0,
             moments=spectrum_moments,
             attr="volume",
+            attr_name='volume',
             rank=1,
             attr_bins=v_bins_edges,
+            skip_division_by_m0=skip_division_by_m0,
         )
         actual = spectrum_moments.to_ndarray()
 
@@ -117,9 +121,13 @@ class TestMaths:
                 moment_0=moment_0,
                 moments=moments,
                 specs={"volume": (1,)},
+                attr_name='volume',
                 attr_range=(v_bins[i], v_bins[i + 1]),
+                skip_division_by_m0=skip_division_by_m0,
             )
-            expected[i, 0] = moments[0, 0]
+            expected[i, 0] = moments.to_ndarray()[0, 0]
 
         # Assert
+        assert any(expected > 0)
         np.testing.assert_array_almost_equal(actual, expected)
+        np.testing.assert_array_almost_equal(np.dot(v, n), sum(actual if skip_division_by_m0 else actual * spectrum_moment_0.to_ndarray()))
