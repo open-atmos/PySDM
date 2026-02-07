@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 GPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 """
@@ -33,13 +34,17 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         signed_water_mass="signed_water_mass[i]",
                         relative_humidity="relative_humidity[cell[i]]"
                     )}) {{
-                    auto rate_assuming_constant_temperature_within_dt = {self.formulae.heterogeneous_ice_nucleation_rate.j_het.c_inline(
-                        a_w_ice="a_w_ice[cell[i]]"
-                    )} * immersed_surface_area[i];
-                    auto prob = 1 - {self.formulae.trivia.poissonian_avoidance_function.c_inline(
-                        r="rate_assuming_constant_temperature_within_dt",
-                        dt="timestep"
-                    )};
+                    auto rate_assuming_constant_temperature_within_dt = {
+                        self.formulae.heterogeneous_ice_nucleation_rate.j_het.c_inline(
+                            a_w_ice="a_w_ice[cell[i]]"
+                        )
+                    } * immersed_surface_area[i];
+                    auto prob = 1 - {
+                        self.formulae.trivia.poissonian_avoidance_function.c_inline(
+                            r="rate_assuming_constant_temperature_within_dt",
+                            dt="timestep"
+                        )
+                    };
                     if (rand[i] < prob) {{
                         signed_water_mass[i] = -1 * signed_water_mass[i];
                     }}
@@ -107,7 +112,9 @@ class FreezingMethods(ThrustRTCBackendMethods):
                     {self.formulae.trivia.unfrozen_and_ice_saturated.c_inline(
                         signed_water_mass="signed_water_mass[i]",
                         relative_humidity_ice="relative_humidity_ice[cell[i]]"
-                    )} && temperature[cell[i]] <= {self.formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD}
+                    )} && temperature[cell[i]] <= {
+                        self.formulae.constants.HOMOGENEOUS_FREEZING_THRESHOLD
+                    }
                 ) {{
                     signed_water_mass[i] = -1 * signed_water_mass[i];
                 }}
@@ -134,20 +141,28 @@ class FreezingMethods(ThrustRTCBackendMethods):
                         relative_humidity_ice="relative_humidity_ice[cell[i]]"
                     )}) {{
                     auto da_w_ice = (relative_humidity_ice[cell[i]] - 1.0) * a_w_ice[cell[i]];
-                    if  ({self.formulae.homogeneous_ice_nucleation_rate.d_a_w_ice_within_range.c_inline(
-                        da_w_ice="da_w_ice"
-                    )}) {{
-                        auto da_w_ice = {self.formulae.homogeneous_ice_nucleation_rate.d_a_w_ice_maximum.c_inline(
+                    if  ({
+                        self.formulae.homogeneous_ice_nucleation_rate.d_a_w_ice_within_range.c_inline(
                             da_w_ice="da_w_ice"
-                        )};
-                        auto rate_assuming_constant_temperature_within_dt = {self.formulae.homogeneous_ice_nucleation_rate.j_hom.c_inline(
-                            T="temperature[cell[i]]",
-                            da_w_ice="da_w_ice"
-                        )} * volume[i];
-                        auto prob = 1 - {self.formulae.trivia.poissonian_avoidance_function.c_inline(
-                            r="rate_assuming_constant_temperature_within_dt",
-                            dt="timestep"
-                        )};
+                        )
+                    }) {{
+                        auto da_w_ice = {
+                            self.formulae.homogeneous_ice_nucleation_rate.d_a_w_ice_maximum.c_inline(
+                                da_w_ice="da_w_ice"
+                            )
+                        };
+                        auto rate_assuming_constant_temperature_within_dt = {
+                            self.formulae.homogeneous_ice_nucleation_rate.j_hom.c_inline(
+                                T="temperature[cell[i]]",
+                                da_w_ice="da_w_ice"
+                            )
+                        } * volume[i];
+                        auto prob = 1 - {
+                            self.formulae.trivia.poissonian_avoidance_function.c_inline(
+                                r="rate_assuming_constant_temperature_within_dt",
+                                dt="timestep"
+                            )
+                        };
                         if (rand[i] < prob) {{
                             signed_water_mass[i] = -1 * signed_water_mass[i];
                         }}

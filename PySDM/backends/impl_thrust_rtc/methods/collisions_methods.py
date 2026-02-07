@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 GPU implementation of backend methods for particle collisions
 """
@@ -337,7 +338,9 @@ class CollisionsMethods(
                 return;
             }}
 
-            Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
+            Commons::coalesce(
+                i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd
+            );
 
             Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
             """.replace("real_type", self._get_c_type()),
@@ -656,33 +659,51 @@ class CollisionsMethods(
             name_iter="i",
             body=f"""
                 {self.__straub_Nr_body}
-                auto sigma1 = {self.formulae.fragmentation_function.params_sigma1.c_inline(CW="CW[i]")};
-                auto mu1 = {self.formulae.fragmentation_function.params_mu1.c_inline(sigma1="sigma1")};
-                auto sigma2 = {self.formulae.fragmentation_function.params_sigma2.c_inline(CW="CW[i]")};
-                auto mu2 = {self.formulae.fragmentation_function.params_mu2.c_inline(ds="ds[i]")};
-                auto sigma3 = {self.formulae.fragmentation_function.params_sigma3.c_inline(CW="CW[i]")};
-                auto mu3 = {self.formulae.fragmentation_function.params_mu3.c_inline(ds="ds[i]")};
+                auto sigma1 = {
+                    self.formulae.fragmentation_function.params_sigma1.c_inline(CW="CW[i]")
+                };
+                auto mu1 = {
+                    self.formulae.fragmentation_function.params_mu1.c_inline(sigma1="sigma1")
+                };
+                auto sigma2 = {
+                    self.formulae.fragmentation_function.params_sigma2.c_inline(CW="CW[i]")
+                };
+                auto mu2 = {
+                    self.formulae.fragmentation_function.params_mu2.c_inline(ds="ds[i]")
+                };
+                auto sigma3 = {
+                    self.formulae.fragmentation_function.params_sigma3.c_inline(CW="CW[i]")
+                };
+                auto mu3 = {
+                    self.formulae.fragmentation_function.params_mu3.c_inline(ds="ds[i]")
+                };
                 {self.__straub_mass_remainder}
                 Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
 
                 if (rand[i] < Nr1[i] / Nrt[i]) {{
                     auto X = rand[i] * Nrt[i] / Nr1[i];
-                    auto lnarg = mu1 + sqrt(2.0) * sigma1 * {self.formulae.trivia.erfinv_approx.c_inline(
-                        c="X"
-                    )};
+                    auto lnarg = mu1 + sqrt(2.0) * sigma1 * {
+                        self.formulae.trivia.erfinv_approx.c_inline(
+                            c="X"
+                        )
+                    };
                     frag_volume[i] = exp(lnarg);
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i];
-                    frag_volume[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.trivia.erfinv_approx.c_inline(
-                        c="X"
-                    )};
+                    frag_volume[i] = mu2 + sqrt(2.0) * sigma2 * {
+                        self.formulae.trivia.erfinv_approx.c_inline(
+                            c="X"
+                        )
+                    };
                 }}
                 else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
-                    frag_volume[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.trivia.erfinv_approx.c_inline(
-                        c="X"
-                    )};
+                    frag_volume[i] = mu3 + sqrt(2.0) * sigma3 * {
+                        self.formulae.trivia.erfinv_approx.c_inline(
+                            c="X"
+                        )
+                    };
                 }}
                 else {{
                     frag_volume[i] = d34[i];
@@ -990,8 +1011,8 @@ class CollisionsMethods(
         )
 
     def slams_fragmentation(
-        self, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
-    ):  # pylint: disable=too-many-arguments
+        self, *, n_fragment, frag_volume, x_plus_y, probs, rand, vmin, nfmax
+    ):
         self.__slams_fragmentation_body.launch_n(
             n=(len(n_fragment)),
             args=(

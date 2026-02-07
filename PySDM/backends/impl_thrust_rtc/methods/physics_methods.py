@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """
 GPU implementation of backend methods wrapping basic physics formulae
 """
@@ -131,7 +132,8 @@ class PhysicsMethods(ThrustRTCBackendMethods):
             param_names=("output", "rhod", "water_vapour_mixing_ratio"),
             name_iter="i",
             body=f"""
-            output[i] = {self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio.c_inline(
+            output[i] = {
+            self.formulae.state_variable_triplet.rho_of_rhod_and_water_vapour_mixing_ratio.c_inline(
                 rhod="rhod[i]",
                 water_vapour_mixing_ratio="water_vapour_mixing_ratio[i]"
             )};
