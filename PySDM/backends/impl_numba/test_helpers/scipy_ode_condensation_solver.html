@@ -201,7 +201,7 @@
 </span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">jit_formulae</span><span class="o">.</span><span class="n">diffusion_coordinate__mass</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="n">m_d_mean</span>
 </span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">JIT_FLAGS</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_impl</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-positional-arguments,too-many-locals</span>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="n">dy_dt</span><span class="p">,</span>
 </span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>        <span class="n">x</span><span class="p">,</span>
 </span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="n">T</span><span class="p">,</span>
@@ -272,7 +272,7 @@
 </span><span id="L-166"><a href="#L-166"><span class="linenos">166</span></a>        <span class="p">)</span>
 </span><span id="L-167"><a href="#L-167"><span class="linenos">167</span></a>
 </span><span id="L-168"><a href="#L-168"><span class="linenos">168</span></a>    <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">JIT_FLAGS</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;parallel&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}})</span>
-</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_odesys</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+</span><span id="L-169"><a href="#L-169"><span class="linenos">169</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_odesys</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-positional-arguments,too-many-locals</span>
 </span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>        <span class="n">t</span><span class="p">,</span>
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a>        <span class="n">y</span><span class="p">,</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>        <span class="n">kappa</span><span class="p">,</span>
@@ -328,7 +328,7 @@
 </span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a>        <span class="p">)</span>
 </span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a>        <span class="k">return</span> <span class="n">dy_dt</span>
 </span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a>
-</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-locals,unused-argument</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-positional-arguments,too-many-locals,unused-argument</span>
 </span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a>        <span class="n">attributes</span><span class="p">,</span>
 </span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>        <span class="n">cell_idx</span><span class="p">,</span>
 </span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a>        <span class="n">thd</span><span class="p">,</span>
