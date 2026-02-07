@@ -77,6 +77,7 @@ def area_std(r, n, mask):
 )
 # pylint: disable=too-many-arguments
 def test_particle_size_product(
+    *,
     backend_class,
     r,
     n,

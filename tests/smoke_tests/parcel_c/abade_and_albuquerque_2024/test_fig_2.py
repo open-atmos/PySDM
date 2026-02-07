@@ -12,7 +12,6 @@ from PySDM_examples import Abade_and_Albuquerque_2024
 
 from PySDM.physics import si
 
-
 PLOT = False
 UPDRAFTS = (3.6, 0.4)
 N_SD = 64

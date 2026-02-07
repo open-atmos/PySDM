@@ -350,7 +350,8 @@ class ChemistryMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
-    def equilibrate_H_body(  # pylint: disable=too-many-arguments,too-many-locals
+    def equilibrate_H_body(  # pylint: disable=too-many-locals
+        *,
         within_tolerance,
         pH2H,
         H2pH,

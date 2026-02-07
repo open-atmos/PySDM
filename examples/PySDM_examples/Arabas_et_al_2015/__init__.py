@@ -6,5 +6,6 @@
 gui.ipynb:
 .. include:: ./gui.ipynb.badges.md
 """
+
 from .settings import Settings
 from .spin_up import SpinUp

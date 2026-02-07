@@ -19,7 +19,7 @@ from PySDM.environments.impl import register_environment
 @register_environment()
 class Kinematic2D(Moist):
     def __init__(self, *, dt, grid, size, rhod_of, mixed_phase=False):
-        super().__init__(dt, Mesh(grid, size), [], mixed_phase=mixed_phase)
+        super().__init__(dt, Mesh(grid=grid, size=size), [], mixed_phase=mixed_phase)
         self.rhod_of = rhod_of
         self.formulae = None
 

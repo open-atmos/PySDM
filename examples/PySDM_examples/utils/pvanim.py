@@ -117,9 +117,9 @@ def create_new_calculator(
     color_by1,
     color_by2,
     color_by3,
+    *,
     scalar_coloring=False,
     hide=False,
-    *,
     y,
     registrationame,
 ):
@@ -311,8 +311,8 @@ calculator2 = create_new_calculator(
     "CELLS",
     "Result",
     "Magnitude",
-    True,
-    True,
+    scalar_coloring=True,
+    hide=True,
     y=setup,
     registrationame="Calculator2",
 )
