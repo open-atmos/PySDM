@@ -85,7 +85,9 @@ class TestGedzelmanAndArnold1994:
     @staticmethod
     @pytest.mark.parametrize("phase", ("liquid", "vapour"))
     @pytest.mark.parametrize("isotope", ("2H", "18O", "17O"))
-    def test_saturation_for_zero_dR_condition(phase, isotope, plot=PLOT):
+    def test_saturation_for_zero_dR_condition(
+        phase, isotope, plot=PLOT
+    ):  # pylint: disable=too-many-locals
         # arrange
         formulae = Formulae(
             drop_growth="Mason1971",
@@ -105,10 +107,6 @@ class TestGedzelmanAndArnold1994:
             formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{isotope}"
         )(T)
 
-        Fk = formulae.drop_growth.Fk(T=T, K=const.K0, lv=const.l_tri)
-        rho_v = formulae.saturation_vapour_pressure.pvs_water(T) / T / const.Rv
-        b = rho_v * const.D0 * Fk
-
         iso_ratio_v = formulae.trivia.isotopic_delta_2_ratio(delta, vsmow)
         iso_ratio_liq_eq = alpha * iso_ratio_v / vsmow
 
@@ -122,7 +120,13 @@ class TestGedzelmanAndArnold1994:
             iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
             iso_ratio_r=iso_ratio_r,
             iso_ratio_v=iso_ratio_v,
-            b=b,
+            b=(
+                formulae.saturation_vapour_pressure.pvs_water(T)
+                / T
+                / const.Rv
+                * const.D0
+                * formulae.drop_growth.Fk(T=T, K=const.K0, lv=const.l_tri)
+            ),
             alpha_w=alpha,
         )
 
@@ -169,11 +173,12 @@ class TestGedzelmanAndArnold1994:
     @staticmethod
     @pytest.mark.parametrize("phase", ("liquid", "vapour"))
     def test_unit_saturation_for_zero_dR_condition(phase):
+        """test result of the  function is dimensionless"""
         with DimensionalAnalysis():
 
             # arrange
             formulae = Formulae(isotope_ratio_evolution="GedzelmanAndArnold1994")
-            si = constants_defaults.si
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
 
             iso_ratio_v = 0.2 * si.dimensionless
             iso_ratio_r = 0.1 * si.dimensionless
