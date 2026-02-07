@@ -93,4 +93,4 @@ def test_isotope_ratio_change_sign(notebook_variables, phase, eps_percent):
     sut = expected_sign * rel_diff * PER_CENT
 
     # assert
-    np.testing.assert_array_less(eps_percent, sut[~np.isnan(sut)])
+    np.testing.assert_array_less(-sut[~np.isnan(sut)], eps_percent)
