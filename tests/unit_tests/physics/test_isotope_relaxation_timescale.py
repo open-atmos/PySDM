@@ -72,7 +72,7 @@ def test_bolin1958_bolin_number_unit():
         assert value.check(si.dimensionless)
 
 
-class TestBoZabaEtAl:
+class TestBoZabaEtAl:  # pylint: disable=too-few-public-methods
     """tests for Bolin number implemented in zaba_et_al.py"""
 
     @staticmethod
