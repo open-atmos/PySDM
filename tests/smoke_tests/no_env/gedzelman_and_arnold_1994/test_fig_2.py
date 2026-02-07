@@ -68,7 +68,9 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
         ("vapour", 0.1),
     ),
 )
-def test_isotope_ratio_change(notebook_variables, phase, eps_percent):
+def test_isotope_ratio_change_sign(notebook_variables, phase, eps_percent):
+    """Verify sign of the isotopic ratio change against theoretical functions.
+    Values smaller than eps_percent are omitted."""
     # arrange
     cmn = notebook_variables["COMMONS"]
     rh = notebook_variables["RH"]
@@ -91,4 +93,4 @@ def test_isotope_ratio_change(notebook_variables, phase, eps_percent):
     sut = expected_sign * rel_diff * PER_CENT
 
     # assert
-    np.testing.assert_array_less(-sut[~np.isnan(sut)], eps_percent)
+    np.testing.assert_array_less(eps_percent, sut[~np.isnan(sut)])
