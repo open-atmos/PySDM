@@ -7,8 +7,9 @@ import pytest
 from matplotlib import pyplot
 
 from PySDM import Formulae
-from PySDM.physics import si
+from PySDM.physics import si, constants_defaults
 from PySDM.physics.constants import PER_MILLE, PER_CENT
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 PLOT = False
 
@@ -82,54 +83,111 @@ class TestMerlivatAndJouzel1979:
 
 class TestGedzelmanAndArnold1994:
     @staticmethod
-    def test_saturation_for_zero_dR_condition(plot=True):
-        # test unit?
-        # test expected values
-        # test values, plot?
-
+    @pytest.mark.parametrize("phase", ("liquid", "vapour"))
+    @pytest.mark.parametrize("isotope", ("2H", "18O", "17O"))
+    def test_saturation_for_zero_dR_condition(phase, isotope, plot=PLOT):
         # arrange
         formulae = Formulae(
             drop_growth="Mason1971",
             isotope_ratio_evolution="GedzelmanAndArnold1994",
             isotope_diffusivity_ratios="HellmannAndHarvey2020",
-            isotope_equilibrium_fractionation_factors="MerlivatAndNief1967",
+            isotope_equilibrium_fractionation_factors="VanHook1968",
         )
-        phase = "liquid"
         const = formulae.constants
         T = formulae.trivia.C2K(10) * si.K
-        vsmow = const.VSMOW_R_2H
+        vsmow = getattr(const, f"VSMOW_R_{isotope}")
+        delta = -200 * PER_MILLE
 
-        x = np.linspace(0.8, 1, 200)  # from GA
-        alpha = formulae.isotope_equilibrium_fractionation_factors.alpha_l_2H(T)
-        delta = -200 * PER_MILLE  # from GA
-        D_ratio_h2l = formulae.isotope_diffusivity_ratios.ratio_2H_heavy_to_light(T)
+        D_ratio_h2l = getattr(
+            formulae.isotope_diffusivity_ratios, f"ratio_{isotope}_heavy_to_light"
+        )(T)
+        alpha = getattr(
+            formulae.isotope_equilibrium_fractionation_factors, f"alpha_l_{isotope}"
+        )(T)
+
         Fk = formulae.drop_growth.Fk(T=T, K=const.K0, lv=const.l_tri)
+        rho_v = formulae.saturation_vapour_pressure.pvs_water(T) / T / const.Rv
+        b = rho_v * const.D0 * Fk
 
         iso_ratio_v = formulae.trivia.isotopic_delta_2_ratio(delta, vsmow)
-        iso_ratio_r = x * vsmow
         iso_ratio_liq_eq = alpha * iso_ratio_v / vsmow
 
-        pvs = formulae.saturation_vapour_pressure.pvs_water(T)
-        D_light = const.D0
+        x = np.linspace(iso_ratio_liq_eq - 0.5, iso_ratio_liq_eq + 0.5, 300)
+        dx = np.diff(x).mean()
+        iso_ratio_r = x * vsmow
 
+        # act
         y = formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition(
             diff_rat_light_to_heavy=1 / D_ratio_h2l,
-            iso_ratio_x=iso_ratio_r,  # if phase == "liquid" else iso_ratio_v,
+            iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
             iso_ratio_r=iso_ratio_r,
             iso_ratio_v=iso_ratio_v,
-            b=pvs / T / const.Rv * D_light * Fk,
+            b=b,
             alpha_w=alpha,
         )
-        # act
+
+        # plot
         if plot:
-            pyplot.plot(x, y / PER_CENT, "k")
+            pyplot.plot(x, y, "k")
             pyplot.plot(iso_ratio_liq_eq, 0, "or")
-            pyplot.xlabel("")
-            pyplot.ylabel("saturation [%]")
-            # pyplot.ylim(0, 0.01)
+            pyplot.xlabel("isotopic ratio in droplets / vsmow")
+            pyplot.ylabel("saturation")
+            pyplot.grid()
             pyplot.show()
         else:
-            pyplot.close()
-
+            pyplot.clf()
         # assert
-        assert False
+        eps = max(1e-2, 3 * dx)
+        outside_radius = max(0.025, 10 * dx, 2 * eps)
+
+        left_near = (x < iso_ratio_liq_eq) & (x >= iso_ratio_liq_eq - eps)
+        right_near = (x > iso_ratio_liq_eq) & (x <= iso_ratio_liq_eq + eps)
+        outside_mask = np.abs(x - iso_ratio_liq_eq) > outside_radius
+
+        assert left_near.any(), "No points found just left of equilibrium"
+        assert right_near.any(), "No points found just right of equilibrium"
+        assert outside_mask.any(), "No points found far from equilibrium"
+
+        np.testing.assert_array_less(
+            y[left_near],
+            0,
+            err_msg="Values immediately left of equilibrium should be negative",
+        )
+        np.testing.assert_array_less(
+            0,
+            y[right_near],
+            err_msg="Values immediately right of equilibrium should be positive",
+        )
+        np.testing.assert_allclose(
+            y[outside_mask],
+            0,
+            atol=1e-2,
+            rtol=1e-2,
+            err_msg="Values far from equilibrium should approach zero",
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize("phase", ("liquid", "vapour"))
+    def test_unit_saturation_for_zero_dR_condition(phase):
+        with DimensionalAnalysis():
+
+            # arrange
+            formulae = Formulae(isotope_ratio_evolution="GedzelmanAndArnold1994")
+            si = constants_defaults.si
+
+            iso_ratio_v = 0.2 * si.dimensionless
+            iso_ratio_r = 0.1 * si.dimensionless
+            sut = formulae.isotope_ratio_evolution.saturation_for_zero_dR_condition
+
+            # act
+            S = sut(
+                diff_rat_light_to_heavy=1.1 * si.dimensionless,
+                iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
+                iso_ratio_r=iso_ratio_r,
+                iso_ratio_v=iso_ratio_v,
+                b=1 * si.dimensionless,
+                alpha_w=1 * si.dimensionless,
+            )
+
+            # assert
+            assert S.check(si.dimensionless)

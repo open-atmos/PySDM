@@ -24,7 +24,7 @@ def notebook_variables_fixture():
 
 
 @pytest.mark.parametrize(
-    "x, y, phase",
+    "x, expected_y, phase",
     (
         (0.99, 0.27, "liquid"),
         (0.898, 0.62, "liquid"),
@@ -34,16 +34,27 @@ def notebook_variables_fixture():
         (0.85, 1, "vapour"),
     ),
 )
-def test_fig_2(notebook_variables, x, y, phase):
-    """given that the plot depends on a number of constants that are likely to cause
-    discrepancies, the comparison is rough and effectively just a regression test
-    (expected values roughly correspond to the paper plot, but are based on PySDM output)
+def test_fig_2(notebook_variables, x, expected_y, phase):
     """
-    plot_x = notebook_variables["molecular_R_liq"]
+    Verify values plotted in Figure 2.
+
+    The test selects the data point whose x-value is closest to ``x`` and
+    checks that the corresponding y-value matches ``expected_y``.
+    The (x, expected_y) pairs are arbitrary and chosen for coverage.
+    """
+
+    # arrange
     plot_y = notebook_variables["S_eq"][phase]
-    eps = (plot_x[1] - plot_x[0]) / 2
-    index = np.where(abs(plot_x - x) < eps)
-    np.testing.assert_allclose(actual=plot_y[index], desired=y, atol=0.01)
+    plot_x = notebook_variables["molecular_R_liq"]
+    plot_x_eps = (plot_x[1] - plot_x[0]) / 2
+
+    idx = np.where(abs(plot_x - x) < plot_x_eps)
+
+    # act
+    sut = plot_y[idx]
+
+    # assert
+    np.testing.assert_allclose(actual=sut, desired=expected_y, atol=0.01)
 
 
 @pytest.mark.parametrize(
@@ -58,7 +69,6 @@ def test_fig_2(notebook_variables, x, y, phase):
     ),
 )
 def test_isotope_ratio_change(notebook_variables, phase, eps_percent):
-    """test sign of the changes above theoretical equilibrium line"""
     # arrange
     cmn = notebook_variables["COMMONS"]
     rh = notebook_variables["RH"]
