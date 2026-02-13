@@ -135,3 +135,84 @@ class TestMoments:
             actual=sum(actual if skip_division_by_m0 else actual * spectrum_moment_0.to_ndarray()),
             significant=4,
         )
+
+
+    @staticmethod
+    @pytest.mark.parametrize('skip_division_by_m0', (True, False))
+    def test_spectrum_moment_0d_one_drop_outside_of_bins(backend_class_with_jax, skip_division_by_m0):
+        # Arrange
+        particulator = DummyParticulator(backend_class_with_jax, n_sd=1)
+        attribute = {
+            "multiplicity": np.ones(1),
+            "volume": np.ones(1),
+        }
+        particulator.build(attribute)
+
+        v_bins = np.linspace(0, .5, num=2, endpoint=True)
+
+        assert len(v_bins) == 2
+        spectrum_moment_0 = particulator.backend.Storage.empty(
+            (len(v_bins) - 1, 1), dtype=float
+        )
+        spectrum_moments = particulator.backend.Storage.empty(
+            (len(v_bins) - 1, 1), dtype=float
+        )
+        v_bins_edges = particulator.backend.Storage.from_ndarray(v_bins)
+
+        # Act
+        particulator.spectrum_moments(
+            moment_0=spectrum_moment_0,
+            moments=spectrum_moments,
+            attr="volume",
+            attr_name='volume',
+            rank=1,
+            attr_bins=v_bins_edges,
+            skip_division_by_m0=skip_division_by_m0,
+        )
+
+        # Assert
+        assert spectrum_moment_0.to_ndarray() == [0]
+        assert spectrum_moments.to_ndarray() == [0]
+
+    @staticmethod
+    def test_moment_1d(backend_class_with_jax):
+        # Arrange
+        grid=(2,)
+        particulator = DummyParticulator(
+            backend_class_with_jax,
+            n_sd=1,
+            grid=grid
+        )
+        
+        attribute = {
+            "multiplicity": np.ones(1),
+            "volume": np.ones(1),
+            "cell id": np.ones(1, dtype=int),
+        }
+        particulator.build(attribute)
+
+        v_bins = np.linspace(0, 2, num=2, endpoint=True)
+
+        assert len(v_bins) == 2
+        spectrum_moment_0 = particulator.backend.Storage.empty(
+            (len(v_bins) - 1, np.prod(grid)), dtype=float
+        )
+        spectrum_moments = particulator.backend.Storage.empty(
+            (len(v_bins) - 1, np.prod(grid)), dtype=float
+        )
+        v_bins_edges = particulator.backend.Storage.from_ndarray(v_bins)
+
+        # Act
+        particulator.spectrum_moments(
+            moment_0=spectrum_moment_0,
+            moments=spectrum_moments,
+            attr="volume",
+            attr_name='volume',
+            rank=1,
+            attr_bins=v_bins_edges,
+            skip_division_by_m0=True,
+        )
+
+        # Assert
+        assert np.prod(spectrum_moment_0.to_ndarray() == [0, 1])
+        assert np.prod(spectrum_moments.to_ndarray() == [0, 1])
