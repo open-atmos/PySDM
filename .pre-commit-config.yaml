@@ -29,7 +29,7 @@ repos:
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
   - repo: https://github.com/AgnieszkaZaba/devops_tests
-    rev: badges-hook
+    rev: 9f8e04a8d109df4bec58f7bf464147ec1277ce54
     hooks:
       - id: check-notebook-open-atmos-structure
         name: check notebook has open-atmos structure
