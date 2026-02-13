@@ -9,7 +9,7 @@ from PySDM.initialisation.spectra.lognormal import Lognormal
 from ..dummy_particulator import DummyParticulator
 
 
-class TestMaths:
+class TestMoments:
     @staticmethod
     # pylint: disable=too-many-locals
     def test_moment_0d(backend_class):
@@ -130,4 +130,8 @@ class TestMaths:
         # Assert
         assert any(expected > 0)
         np.testing.assert_array_almost_equal(actual, expected)
-        np.testing.assert_array_almost_equal(np.dot(v, n), sum(actual if skip_division_by_m0 else actual * spectrum_moment_0.to_ndarray()))
+        np.testing.assert_approx_equal(
+            desired=np.dot(v, n),
+            actual=sum(actual if skip_division_by_m0 else actual * spectrum_moment_0.to_ndarray()),
+            significant=4,
+        )
