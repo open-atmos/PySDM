@@ -120,10 +120,7 @@ class MomentsMethods(BackendMethods):
             attr_data,
             cell_id,
             idx,
-            length,
             rank,
-            x_bins,
-            x_attr,
             weighting_attribute,
             weighting_rank,
             bin_to_count,
@@ -131,7 +128,6 @@ class MomentsMethods(BackendMethods):
         ):
 
             i = idx[idx_i]
-
             moment_0 = moment_0.at[bin_to_count, cell_id[i]].add(multiplicity[i] * weighting_attribute[i] ** weighting_rank)
             moments = moments.at[bin_to_count, cell_id[i]].add(multiplicity[i] * weighting_attribute[i] ** weighting_rank * attr_data[i] ** rank)
 
@@ -170,34 +166,35 @@ class MomentsMethods(BackendMethods):
             return bin_to_calculate
         # TODO: what happens if k == x_bins.shape[0] - 1
 
-
-        moment_0.data = moment_0.data.at[:, :].set(0)
-        moments.data = moments.data.at[:,:].set(0)
+        new_moment_0 = jax.numpy.zeros((moment_0.shape[0]+1, moment_0.shape[1]))
+        new_moments = jax.numpy.zeros((moment_0.shape[0]+1, moment_0.shape[1]))
         idx_idxs = jax.numpy.arange(length)
 
         count_bins_func = jax.vmap(spectrum_moments_helper, (None, None, None, 0))
         bins_to_count = count_bins_func(x_bins.data, x_attr.data, idx.data, idx_idxs)
-        mapped_spectrum = jax.vmap(self._spectrum_moments_body, (None, None, None, None, None, None, None, None, None, None, None, None, 0, 0))
+        # TODO: bins_to_count > len()-1 is not handled
+        print(bins_to_count)
+        assert all(bins_to_count < new_moments.shape[0])
+        mapped_spectrum = jax.vmap(self._spectrum_moments_body, (None, None, None, None, None, None, None, None, None, 0, 0))
 
-        moment_0.data, moments.data = mapped_spectrum(
-            moment_0.data,
-            moments.data,            
+        new_moment_0, new_moments = mapped_spectrum(
+            new_moment_0,
+            new_moments,            
             multiplicity.data,
             attr_data.data,
             cell_id.data,
             idx.data,
-            length,
             rank,
-            x_bins.data,
-            x_attr.data,
             weighting_attribute.data,
             weighting_rank,
             bins_to_count,
             idx_idxs
         )
 
-        moments.data = moments.data.sum(0)
-        moment_0.data = moment_0.data.sum(0)
+        # moments.data = new_moments.sum(0)
+        # moment_0.data = new_moment_0.sum(0)
+        moments.data =  new_moments.at[:-1, :].sum(0)
+        moment_0.data =  new_moment_0.at[:-1, :].sum(0)
 
         if not skip_division_by_m0:
             moments.data = jax.numpy.where(moment_0.data != 0, moments.data / moment_0.data, 0.0)
