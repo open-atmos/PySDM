@@ -21,10 +21,6 @@ class Storage(StorageBase):
     INT = jnp.int64
     BOOL = jnp.bool_
 
-    def row_view(self, i):
-        return Storage(
-                StorageSignature(self.data[i], (*self.shape[1:],), self.dtype)
-            )
     
     def ravel(self, other):
         print("Begin ravel")

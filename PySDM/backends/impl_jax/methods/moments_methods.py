@@ -106,6 +106,9 @@ class MomentsMethods(BackendMethods):
         moments.data = moments.data.sum(0)
         moment_0.data = moment_0.data.sum(0)
 
+        if not skip_division_by_m0:
+            moments.data = jax.numpy.where(moment_0.data != 0, moments.data / moment_0.data, 0.0)
+
     @cached_property
     def _spectrum_moments_body(self):
         @jax.jit
@@ -132,15 +135,7 @@ class MomentsMethods(BackendMethods):
             moment_0 = moment_0.at[bin_to_count, cell_id[i]].add(multiplicity[i] * weighting_attribute[i] ** weighting_rank)
             moments = moments.at[bin_to_count, cell_id[i]].add(multiplicity[i] * weighting_attribute[i] ** weighting_rank * attr_data[i] ** rank)
 
-            # Thing 2 (moments = this thing in another func or sth, if we even want to parallelize it)
-            # np.divide(a, b, out=np.zeros_like(a), where=b!=0)
-            
             return moment_0, moments
-            # # This part below is only needed to scale it down, so focus on the first part working first
-
-            # for k in range(x_bins.shape[0] - 1):
-            #     moments = moments.at[k,:].divide(moment_0[k,:])
-            #     # moments = jax.numpy.divide(moments, moment_0)
     
 
         return body
@@ -203,3 +198,6 @@ class MomentsMethods(BackendMethods):
 
         moments.data = moments.data.sum(0)
         moment_0.data = moment_0.data.sum(0)
+
+        if not skip_division_by_m0:
+            moments.data = jax.numpy.where(moment_0.data != 0, moments.data / moment_0.data, 0.0)
