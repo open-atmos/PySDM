@@ -98,7 +98,7 @@ class IsotopeMethods(BackendMethods):
     def _bolin_number_body(self):
         ff = self.formulae_flattened
 
-        # @numba.njit(**self.default_jit_flags)
+        @numba.njit(**self.default_jit_flags)
         def body(
             output,
             cell_id,
