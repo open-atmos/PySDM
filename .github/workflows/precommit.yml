@@ -27,10 +27,14 @@ jobs:
           python-version: "3.10"
       - run: |
           pip install pre-commit
-          pre-commit clean
+          
+          # avoiding failures unrelated to PR contents 
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            pre-commit clean
+            pre-commit autoupddate
+          fi
+          
           pre-commit run --all-files --show-diff-on-failure
-      - if: ${{ failure() }}
-        run: git diff
 
   devops:
     runs-on: ubuntu-24.04
