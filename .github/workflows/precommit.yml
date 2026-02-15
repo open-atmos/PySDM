@@ -31,7 +31,7 @@ jobs:
           # avoiding failures unrelated to PR contents 
           if [ "${{ github.event_name }}" = "schedule" ]; then
             pre-commit clean
-            pre-commit autoupddate
+            pre-commit autoupdate
           fi
           
           pre-commit run --all-files --show-diff-on-failure
