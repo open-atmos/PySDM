@@ -110,5 +110,8 @@ class Storage(StorageBase):
             # self.data.at[:].set(other)
             self.data = other
 
+    def row_view(self, i):
+        return Storage(StorageSignature(self.data[i], (*self.shape[1:],), self.dtype))
+
     def to_ndarray(self):
         return np.array(self.data)

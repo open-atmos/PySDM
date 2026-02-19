@@ -59,10 +59,9 @@ class StorageBase:
     def fill(self, other):
         raise NotImplementedError()
 
+    @abstractmethod
     def row_view(self, i):
-        return self.__class__(
-            self, StorageSignature(self.data[i], (*self.shape[1:],), self.dtype)
-        )
+        raise NotImplementedError()
 
 
 def get_data_from_ndarray(array, storage_class: Type[StorageBase], copy_fun):

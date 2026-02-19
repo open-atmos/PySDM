@@ -206,6 +206,9 @@ class Storage(StorageBase):
         else:
             self.data[:] = other
 
+    def row_view(self, i):
+        return Storage(StorageSignature(self.data[i], (*self.shape[1:],), self.dtype))
+
     def exp(self):
         self.data[:] = np.exp(self.data)
 
