@@ -164,7 +164,6 @@ class MomentsMethods(BackendMethods):
             i = idx[idx_i]
             bin_to_calculate = jax.lax.while_loop(cond_fun, lambda k: k+1, 0)
             return bin_to_calculate
-        # TODO: what happens if k == x_bins.shape[0] - 1
 
         new_moment_0 = jax.numpy.zeros((moment_0.shape[0]+1, moment_0.shape[1]))
         new_moments = jax.numpy.zeros((moment_0.shape[0]+1, moment_0.shape[1]))
@@ -172,8 +171,6 @@ class MomentsMethods(BackendMethods):
 
         count_bins_func = jax.vmap(spectrum_moments_helper, (None, None, None, 0))
         bins_to_count = count_bins_func(x_bins.data, x_attr.data, idx.data, idx_idxs)
-        # TODO: bins_to_count > len()-1 is not handled
-        print(bins_to_count)
         assert all(bins_to_count < new_moments.shape[0])
         mapped_spectrum = jax.vmap(self._spectrum_moments_body, (None, None, None, None, None, None, None, None, None, 0, 0))
 
@@ -191,10 +188,8 @@ class MomentsMethods(BackendMethods):
             idx_idxs
         )
 
-        # moments.data = new_moments.sum(0)
-        # moment_0.data = new_moment_0.sum(0)
-        moments.data =  new_moments.at[:-1, :].sum(0)
-        moment_0.data =  new_moment_0.at[:-1, :].sum(0)
+        moments.data =  jax.numpy.sum(new_moments[:, :-1, :], axis=0)
+        moment_0.data =  jax.numpy.sum(new_moment_0[:, :-1, :], axis=0)
 
         if not skip_division_by_m0:
             moments.data = jax.numpy.where(moment_0.data != 0, moments.data / moment_0.data, 0.0)
