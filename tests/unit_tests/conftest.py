@@ -13,6 +13,7 @@ def backend_class(request):
 def backend_class_with_jax(request):
     return request.param
 
+
 @pytest.fixture(
     params=(pytest.param(CPU(), id="CPU"), pytest.param(GPU(), id="GPU")),
     scope="session",

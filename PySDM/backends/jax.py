@@ -1,6 +1,7 @@
 """
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 """
+
 import jax
 
 from PySDM.backends.impl_jax import methods
@@ -24,10 +25,10 @@ class Jax(
     def __init__(
         self, formulae=None, *, double_precision=True, override_jit_flags=None
     ):
-        jax.config.update('jax_enable_x64', True)
+        jax.config.update("jax_enable_x64", True)
         if not double_precision:
             raise NotImplementedError()
-        
+
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 
@@ -37,9 +38,7 @@ class Jax(
         #     **{"fastmath": self.formulae.fastmath, "parallel": parallel_default},
         #     **(override_jit_flags or {}),
         # }
-        self.default_jit_flags = {
-            "parallel": False
-        }
+        self.default_jit_flags = {"parallel": False}
 
         methods.CollisionsMethods.__init__(self)
         methods.PairMethods.__init__(self)

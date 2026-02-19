@@ -41,7 +41,7 @@ dependencies = [
     ),
     "pyevtk",
     "pyparsing" + ("==3.2.5" if CI else ""),
-    "Jax"
+    "Jax",
 ]
 
 optional_dependencies = {

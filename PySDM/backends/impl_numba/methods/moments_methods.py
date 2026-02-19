@@ -99,7 +99,6 @@ class MomentsMethods(BackendMethods):
             skip_division_by_m0=skip_division_by_m0,
         )
 
-
     @cached_property
     def _spectrum_moments_body(self):
         @numba.njit(**self.default_jit_flags)
@@ -188,4 +187,3 @@ class MomentsMethods(BackendMethods):
             weighting_rank=weighting_rank,
             skip_division_by_m0=skip_division_by_m0,
         )
-        

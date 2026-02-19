@@ -211,7 +211,9 @@ class Storage(StorageBase):
 
     def abs(self):
         self.data[:] = np.abs(self.data)
-    
+
     def at(self, index):
-        assert self.shape == (1,), "Cannot call at() on Storage of shape other than (1,)"
+        assert self.shape == (
+            1,
+        ), "Cannot call at() on Storage of shape other than (1,)"
         return self.data[index]

@@ -230,7 +230,6 @@ class CollisionsMethods(BackendMethods):
             dv,
         )
 
-
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments

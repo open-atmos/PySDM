@@ -21,7 +21,6 @@ class Storage(StorageBase):
     INT = jnp.int64
     BOOL = jnp.bool_
 
-    
     def ravel(self, other):
         print("Begin ravel")
         print(self.data)
@@ -33,7 +32,9 @@ class Storage(StorageBase):
         print("End ravel")
 
     def at(self, index):
-        assert self.shape == (1,), "Cannot call at() on Storage of shape other than (1,)"
+        assert self.shape == (
+            1,
+        ), "Cannot call at() on Storage of shape other than (1,)"
         return self.data[index]
 
     def __imul__(self, other):
@@ -81,7 +82,7 @@ class Storage(StorageBase):
 
     @staticmethod
     def _get_data_from_ndarray(array):
-        
+
         return get_data_from_ndarray(
             array=array,
             storage_class=Storage,
@@ -95,7 +96,6 @@ class Storage(StorageBase):
 
     def urand(self, generator):
         generator(self)
-
 
     def upload(self, data):
         self.fill(data)

@@ -72,7 +72,7 @@ class TestMoments:
         np.testing.assert_approx_equal(discr_mean_T_squared, 300.0**2, significant=6)
 
     @staticmethod
-    @pytest.mark.parametrize('skip_division_by_m0', (True, False))
+    @pytest.mark.parametrize("skip_division_by_m0", (True, False))
     # pylint: disable=too-many-locals
     def test_spectrum_moment_0d(backend_class_with_jax, skip_division_by_m0):
         # Arrange
@@ -108,7 +108,7 @@ class TestMoments:
             moment_0=spectrum_moment_0,
             moments=spectrum_moments,
             attr="volume",
-            attr_name='volume',
+            attr_name="volume",
             rank=1,
             attr_bins=v_bins_edges,
             skip_division_by_m0=skip_division_by_m0,
@@ -121,7 +121,7 @@ class TestMoments:
                 moment_0=moment_0,
                 moments=moments,
                 specs={"volume": (1,)},
-                attr_name='volume',
+                attr_name="volume",
                 attr_range=(v_bins[i], v_bins[i + 1]),
                 skip_division_by_m0=skip_division_by_m0,
             )
@@ -132,14 +132,19 @@ class TestMoments:
         np.testing.assert_array_almost_equal(actual, expected)
         np.testing.assert_approx_equal(
             desired=np.dot(v, n),
-            actual=sum(actual if skip_division_by_m0 else actual * spectrum_moment_0.to_ndarray()),
+            actual=sum(
+                actual
+                if skip_division_by_m0
+                else actual * spectrum_moment_0.to_ndarray()
+            ),
             significant=4,
         )
 
-
     @staticmethod
-    @pytest.mark.parametrize('skip_division_by_m0', (True, False))
-    def test_spectrum_moment_0d_one_drop_outside_of_bins(backend_class_with_jax, skip_division_by_m0):
+    @pytest.mark.parametrize("skip_division_by_m0", (True, False))
+    def test_spectrum_moment_0d_one_drop_outside_of_bins(
+        backend_class_with_jax, skip_division_by_m0
+    ):
         # Arrange
         particulator = DummyParticulator(backend_class_with_jax, n_sd=1)
         attribute = {
@@ -148,7 +153,7 @@ class TestMoments:
         }
         particulator.build(attribute)
 
-        v_bins = np.linspace(0, .5, num=2, endpoint=True)
+        v_bins = np.linspace(0, 0.5, num=2, endpoint=True)
 
         assert len(v_bins) == 2
         spectrum_moment_0 = particulator.backend.Storage.empty(
@@ -164,7 +169,7 @@ class TestMoments:
             moment_0=spectrum_moment_0,
             moments=spectrum_moments,
             attr="volume",
-            attr_name='volume',
+            attr_name="volume",
             rank=1,
             attr_bins=v_bins_edges,
             skip_division_by_m0=skip_division_by_m0,
@@ -177,13 +182,9 @@ class TestMoments:
     @staticmethod
     def test_moment_1d(backend_class_with_jax):
         # Arrange
-        grid=(2,)
-        particulator = DummyParticulator(
-            backend_class_with_jax,
-            n_sd=1,
-            grid=grid
-        )
-        
+        grid = (2,)
+        particulator = DummyParticulator(backend_class_with_jax, n_sd=1, grid=grid)
+
         attribute = {
             "multiplicity": np.ones(1),
             "volume": np.ones(1),
@@ -207,7 +208,7 @@ class TestMoments:
             moment_0=spectrum_moment_0,
             moments=spectrum_moments,
             attr="volume",
-            attr_name='volume',
+            attr_name="volume",
             rank=1,
             attr_bins=v_bins_edges,
             skip_division_by_m0=True,
