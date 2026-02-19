@@ -131,9 +131,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.stats_n_substep = self.particulator.Storage.empty(
             self.particulator.mesh.n_cell, dtype=int
         )
-        self.stats_n_substep[:] = 0 if self.adaptive else self.__substeps
+        self.stats_n_substep.fill(0 if self.adaptive else self.__substeps)
         self.stats_dt_min = self.particulator.Storage.empty(**empty_args_cellwise)
-        self.stats_dt_min[:] = np.nan
+        self.stats_dt_min.fill(np.nan)
 
         self.rnd_opt_coll.register(builder)
         self.collision_kernel.register(builder)
