@@ -22,14 +22,10 @@ class Storage(StorageBase):
     BOOL = jnp.bool_
 
     def ravel(self, other):
-        print("Begin ravel")
-        print(self.data)
         if isinstance(other, Storage):
             self.data = other.data.ravel()
         else:
             self.data = other.ravel()
-        print(self.data)
-        print("End ravel")
 
     def at(self, index):
         assert self.shape == (
@@ -56,8 +52,6 @@ class Storage(StorageBase):
             data = self.data.reshape(target.shape)
         else:
             data = self.data
-        # target = jnp.asarray(data)
-        # Not sure here?
         np.copyto(target, np.asarray(data), casting="safe")
 
     @staticmethod
@@ -102,12 +96,8 @@ class Storage(StorageBase):
 
     def fill(self, other):
         if isinstance(other, Storage):
-            # self.data[:] = other.data
-            # self.data.at[:].set(other.data)
             self.data = other.data
         else:
-            # self.data[:] = other
-            # self.data.at[:].set(other)
             self.data = other
 
     def row_view(self, i):

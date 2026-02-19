@@ -2,20 +2,16 @@
 CPU implementation of moment calculation backend methods
 """
 
-from functools import cached_property, partial
-import time
+from functools import cached_property
+
 import jax
 
-# import numba
-
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba.atomic_operations import atomic_add
 
 
 class MomentsMethods(BackendMethods):
     @cached_property
     def _moments_body(self):
-        # @numba.njit(**self.default_jit_flags)
         @jax.jit
         def body(
             moment_0,
@@ -24,18 +20,14 @@ class MomentsMethods(BackendMethods):
             attr_data,
             cell_id,
             idx,
-            length,
             ranks,
-            x_attr,
             weighting_attribute,
             weighting_rank,
             count_element_flags,
             idx_i,
-            skip_division_by_m0,
         ):
             assert len(ranks) == 1
             k = 0
-            # pylint: disable=too-many-locals
             i = idx[idx_i]
 
             moment_0 = moment_0.at[cell_id[i]].add(
@@ -51,15 +43,6 @@ class MomentsMethods(BackendMethods):
             )
 
             return moment_0, moments
-
-            # if not skip_division_by_m0:
-            #     for c_id in range(moment_0.shape[0]):
-            #         for k in range(ranks.shape[0]):
-            #             moments[k, c_id] = (
-            #                 moments[k, c_id] / moment_0[c_id]
-            #                 if moment_0[c_id] != 0
-            #                 else 0
-            #             )
 
         return body
 
@@ -105,10 +88,7 @@ class MomentsMethods(BackendMethods):
                 None,
                 None,
                 None,
-                None,
-                None,
                 0,
-                None,
             ),
         )
 
@@ -141,7 +121,6 @@ class MomentsMethods(BackendMethods):
     def _spectrum_moments_body(self):
         @jax.jit
         def body(
-            # *,
             moment_0,
             moments,
             multiplicity,
