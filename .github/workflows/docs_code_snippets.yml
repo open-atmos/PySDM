@@ -32,9 +32,6 @@ jobs:
           python -We readme.py
           sed -i -e 's/CPU/GPU/g' readme.py
           python -We readme.py
-          sed -i -e 's/GPU/JAX/g' readme.py
-          sed -i '/pyplot\.legend()/,$d' readme.py
-          python -We readme.py
       
       - name: artefacts
         if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest'
@@ -43,6 +40,17 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             readme.png
+      - run: |
+          rm readme.png
+          sed -i -e 's/GPU/JAX/g' readme.py
+          sed -i '/1200, 2400, 3600//g' readme.py
+          python -We readme.py
+      - name: jax-artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: jax
+          if-no-files-found: error
+          path: readme.png
 
   julia:
     runs-on: macos-latest
