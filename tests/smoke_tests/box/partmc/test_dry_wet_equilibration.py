@@ -12,7 +12,7 @@ import PyPartMC
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
 

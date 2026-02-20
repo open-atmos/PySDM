@@ -148,7 +148,7 @@ class Simulation:
                     PySDM_products.RipeningRate(name="ripening"),
                     PySDM_products.ActivatingRate(name="activating"),
                     PySDM_products.DeactivatingRate(name="deactivating"),
-                    PySDM_products.PeakSupersaturation(unit="%"),
+                    PySDM_products.PeakSaturation(),
                     PySDM_products.ParticleSizeSpectrumPerVolume(
                         name="dry spectrum",
                         radius_bins_edges=settings.r_bins_edges_dry,

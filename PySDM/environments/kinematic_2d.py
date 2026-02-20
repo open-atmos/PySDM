@@ -7,7 +7,7 @@ import numpy as np
 
 from PySDM.environments.impl.moist import Moist
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.equilibrate_wet_radii import (
+from PySDM.initialisation.hygroscopic_equilibrium import (
     default_rtol,
     equilibrate_wet_radii,
 )
@@ -19,7 +19,7 @@ from PySDM.environments.impl import register_environment
 @register_environment()
 class Kinematic2D(Moist):
     def __init__(self, *, dt, grid, size, rhod_of, mixed_phase=False):
-        super().__init__(dt, Mesh(grid, size), [], mixed_phase=mixed_phase)
+        super().__init__(dt, Mesh(grid=grid, size=size), [], mixed_phase=mixed_phase)
         self.rhod_of = rhod_of
         self.formulae = None
 
@@ -60,9 +60,9 @@ class Kinematic2D(Moist):
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_sampling(spectrum=dry_radius_spectrum).sample(
-                n_sd=n_sd, backend=self.particulator.backend
-            )
+            r_dry, n_per_kg = spectral_sampling(
+                spectrum=dry_radius_spectrum
+            ).sample_deterministic(n_sd=n_sd, backend=self.particulator.backend)
 
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]

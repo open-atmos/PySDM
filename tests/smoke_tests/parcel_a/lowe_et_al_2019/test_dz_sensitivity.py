@@ -1,4 +1,4 @@
-"""checks how parcel equilibrium supersaturation depends on dz"""
+"""checks how parcel equilibrium saturation depends on dz"""
 
 import numpy as np
 from matplotlib import pyplot
@@ -7,7 +7,6 @@ from PySDM_examples.Lowe_et_al_2019.aerosol_code import AerosolMarine
 from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
 from PySDM import Formulae
-from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
 FORMULAE = Formulae(constants=LOWE_CONSTS)
@@ -30,7 +29,6 @@ def test_dz_sensitivity(
             n_sd_per_mode=200,
             model=model,
             aerosol=aerosol,
-            spectral_sampling=spec_sampling.ConstantMultiplicity,
         )
         simulation = Simulation(settings)
         output[key] = simulation.run()
@@ -44,7 +42,10 @@ def test_dz_sensitivity(
     for idx, var in enumerate(vlist):
         for key, out_item in output.items():
             Y = np.asarray(out_item["z"])
-            X = out_item[var]
+            if var == "S_max":
+                X = (np.asarray(out_item[var]) - 1) * 100
+            else:
+                X = out_item[var]
             axs[idx].plot(
                 X, Y, label=f"dz={key} m", color=out_item["color"], linestyle="-"
             )

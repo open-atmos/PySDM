@@ -12,8 +12,9 @@ from PySDM_examples import Abade_and_Albuquerque_2024
 
 from PySDM.physics import si
 
-
 PLOT = False
+UPDRAFTS = (3.6, 0.4)
+N_SD = 64
 
 
 @pytest.fixture(scope="session", name="variables")
@@ -28,49 +29,75 @@ class TestFig2:
     @pytest.mark.parametrize(
         "model, key",
         (
-            ("Bulk", "total"),
-            ("Bulk", "water"),
-            ("Homogeneous", "total"),
+            *[(f"Bulk-{updraft}", "water") for updraft in UPDRAFTS],
+            *[
+                (f"Homogeneous-{im_freeze}-{N_SD}-{updraft}", "ice+water")
+                for updraft in UPDRAFTS
+                for im_freeze in ("ABIFM", "INAS")
+            ],
         ),
     )
-    def test_cloud_base(variables, key, model):
-        height = np.asarray(variables["output"][model]["height"])
-        assert (
-            variables["values"][model][key][height < 0.9 * si.km] < 0.01 * si.g / si.kg
-        ).all()
-        assert (
-            variables["values"][model][key][height > 1.1 * si.km] > 0.05 * si.g / si.kg
-        ).all()
+    def test_cloud_base(variables, model, key):
+        data = variables["datasets"][model]["realisations"][0]
+        height = np.asarray(data["height"])
+        assert (np.asarray(data[key])[height < 0.9 * si.km] < 0.01 * si.g / si.kg).all()
+        assert (np.asarray(data[key])[height > 1.1 * si.km] > 0.05 * si.g / si.kg).all()
 
     @staticmethod
     @pytest.mark.parametrize(
         "model, var_name, desired_value",
         (
-            ("Bulk", "total", 1.1 * si.g / si.kg),
-            ("Bulk", "ice", 0.16 * si.g / si.kg),
-            ("Bulk", "water", 0.90 * si.g / si.kg),
-            ("Homogeneous", "total", 1.1 * si.g / si.kg),
-            ("Homogeneous", "ice", 1.1 * si.g / si.kg),
-            ("Homogeneous", "water", 2.9e-9),
+            ("Bulk-3.6", "vapour", 0.45 * si.g / si.kg),
+            ("Bulk-3.6", "water", 1.05 * si.g / si.kg),
+            ("Bulk-0.4", "vapour", 0.42 * si.g / si.kg),
+            ("Bulk-0.4", "water", 1.08 * si.g / si.kg),
+            ("Homogeneous-INAS-64-3.6", "ice", 0.81 * si.g / si.kg),
+            ("Homogeneous-INAS-64-3.6", "water", 0.25 * si.g / si.kg),
+            ("Homogeneous-INAS-64-3.6", "vapour", 0.45 * si.g / si.kg),
+            ("Homogeneous-ABIFM-64-3.6", "ice", 0.20 * si.g / si.kg),
+            ("Homogeneous-ABIFM-64-3.6", "water", 0.86 * si.g / si.kg),
+            ("Homogeneous-ABIFM-64-3.6", "vapour", 0.45 * si.g / si.kg),
+            ("Homogeneous-INAS-64-0.4", "ice", 1.1 * si.g / si.kg),
+            ("Homogeneous-INAS-64-0.4", "water", 2.06e-9),
+            ("Homogeneous-INAS-64-0.4", "vapour", 0.33 * si.g / si.kg),
+            ("Homogeneous-ABIFM-64-0.4", "ice", 1.1 * si.g / si.kg),
+            ("Homogeneous-ABIFM-64-0.4", "water", 2.07e-9),
+            ("Homogeneous-ABIFM-64-0.4", "vapour", 0.34 * si.g / si.kg),
         ),
     )
-    def test_values_at_cloud_top_for(variables, model, var_name, desired_value):
+    def test_values_at_cloud_top(variables, model, var_name, desired_value):
         np.testing.assert_approx_equal(
             desired=desired_value,
-            actual=variables["values"][model][var_name][-1],
+            actual=variables["datasets"][model]["realisations"][0][var_name][-1],
             significant=2,
         )
 
     @staticmethod
     @pytest.mark.parametrize(
         "model, key",
-        (
-            ("Homogeneous", "total"),
-            ("Homogeneous", "ice"),
-            ("Bulk", "total"),
-            ("Bulk", "ice"),
-            ("Bulk", "water"),
-        ),
+        [
+            *[
+                (f"Bulk-{updraft}", key)
+                for updraft in UPDRAFTS
+                for key in ("water", "vapour")
+            ],
+            *[
+                (f"Homogeneous-{im_freeze}-{N_SD}-{updraft}", key)
+                for updraft in UPDRAFTS
+                for im_freeze in ("ABIFM", "INAS")
+                for key in ("water", "ice", "vapour", "ice+water", "total")
+            ],
+        ],
     )
     def test_monotonicity(variables, model, key):
-        assert (np.diff(variables["values"][model][key]) >= 0).all()
+        delta_mixing_ratio = np.diff(
+            variables["datasets"][model]["realisations"][0][key]
+        )
+        if key in ("ice", "ice+water"):
+            assert (delta_mixing_ratio >= 0).all()
+            assert (delta_mixing_ratio > 0).any()
+        elif key == "vapour":
+            assert (delta_mixing_ratio <= 0).all()
+            assert (delta_mixing_ratio < 0).any()
+        elif key == "total":
+            assert (delta_mixing_ratio < 5e-6).all()

@@ -35,8 +35,8 @@ class Common:
         self.breakup_efficiency = ConstEb(Eb=1.0)
         self.breakup_fragmentation = AlwaysN(n=2)
 
-        self.freezing_singular = True
-        self.freezing_thaw = False
+        self.freezing_immersion = "singular"
+        self.freezing_thaw = None
         self.freezing_inp_spec = None
 
         self.displacement_adaptive = displacement.DEFAULTS.adaptive

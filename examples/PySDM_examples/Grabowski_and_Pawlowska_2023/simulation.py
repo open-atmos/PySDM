@@ -6,7 +6,7 @@ from PySDM.backends import CPU
 from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics import si
 
@@ -17,7 +17,6 @@ class Simulation(BasicSimulation):
         settings,
         products=None,
         scipy_solver=False,
-        sampling_class=ConstantMultiplicity,
     ):
         builder = Builder(
             n_sd=settings.n_sd,
@@ -38,8 +37,8 @@ class Simulation(BasicSimulation):
             Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x)
         )
         for attribute in (
-            "critical supersaturation",
-            "equilibrium supersaturation",
+            "critical saturation",
+            "equilibrium saturation",
             "critical volume",
         ):
             builder.request_attribute(attribute)
@@ -55,7 +54,9 @@ class Simulation(BasicSimulation):
         kappa = tuple(settings.aerosol_modes_by_kappa.keys())[0]
         spectrum = settings.aerosol_modes_by_kappa[kappa]
 
-        r_dry, n_per_volume = sampling_class(spectrum).sample(settings.n_sd)
+        r_dry, n_per_volume = ConstantMultiplicity(spectrum).sample_deterministic(
+            settings.n_sd
+        )
         v_dry = settings.formulae.trivia.volume(radius=r_dry)
         attributes["multiplicity"] = np.append(
             attributes["multiplicity"], n_per_volume * volume
@@ -80,12 +81,8 @@ class Simulation(BasicSimulation):
         self.output_attributes = {
             "volume": tuple([] for _ in range(self.particulator.n_sd)),
             "dry volume": tuple([] for _ in range(self.particulator.n_sd)),
-            "critical supersaturation": tuple(
-                [] for _ in range(self.particulator.n_sd)
-            ),
-            "equilibrium supersaturation": tuple(
-                [] for _ in range(self.particulator.n_sd)
-            ),
+            "critical saturation": tuple([] for _ in range(self.particulator.n_sd)),
+            "equilibrium saturation": tuple([] for _ in range(self.particulator.n_sd)),
             "critical volume": tuple([] for _ in range(self.particulator.n_sd)),
             "multiplicity": tuple([] for _ in range(self.particulator.n_sd)),
         }

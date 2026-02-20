@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for water condensation/evaporation
-"""
+with adaptive timestepping as in [Bartman 2020 (MSc thesis, Section 3.3)](https://www.ap.uj.edu.pl/diplomas/attachments/file/download/125485)
+"""  # pylint: disable=line-too-long
 
 from collections import namedtuple
 import math
@@ -21,7 +22,7 @@ _Counters = namedtuple(
 _Attributes = namedtuple(
     typename="_Attributes",
     field_names=(
-        "water_mass",
+        "signed_water_mass",
         "v_cr",
         "multiplicity",
         "vdry",
@@ -60,7 +61,7 @@ class CondensationMethods(BackendMethods):
             n_cell=kwargs["n_cell"],
             cell_start_arg=kwargs["cell_start_arg"].data,
             attributes=_Attributes(
-                water_mass=kwargs["water_mass"].data,
+                signed_water_mass=kwargs["signed_water_mass"].data,
                 v_cr=kwargs["v_cr"].data,
                 multiplicity=kwargs["multiplicity"].data,
                 vdry=kwargs["vdry"].data,
@@ -254,7 +255,7 @@ class CondensationMethods(BackendMethods):
         calculate_ml_new,
     ):
         @numba.njit(**jit_flags)
-        def step_impl(  # pylint: disable=too-many-arguments,too-many-locals
+        def step_impl(  # pylint: disable=too-many-positional-arguments,too-many-locals
             attributes,
             cell_idx,
             thd,
@@ -273,7 +274,7 @@ class CondensationMethods(BackendMethods):
         ):
             timestep /= n_substeps
             ml_old = calculate_ml_old(
-                attributes.water_mass, attributes.multiplicity, cell_idx
+                attributes.signed_water_mass, attributes.multiplicity, cell_idx
             )
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
@@ -358,11 +359,11 @@ class CondensationMethods(BackendMethods):
     @staticmethod
     def make_calculate_ml_old(jit_flags):
         @numba.njit(**jit_flags)
-        def calculate_ml_old(water_mass, multiplicity, cell_idx):
+        def calculate_ml_old(signed_water_mass, multiplicity, cell_idx):
             result = 0
             for drop in cell_idx:
-                if water_mass[drop] > 0:
-                    result += multiplicity[drop] * water_mass[drop]
+                if signed_water_mass[drop] > 0:
+                    result += multiplicity[drop] * signed_water_mass[drop]
             return result
 
         return calculate_ml_old
@@ -376,7 +377,7 @@ class CondensationMethods(BackendMethods):
         RH_rtol,
     ):
         @numba.njit(**jit_flags)
-        def minfun(  # pylint: disable=too-many-arguments,too-many-locals
+        def minfun(  # pylint: disable=too-many-positional-arguments,too-many-locals
             x_new, x_old, timestep, kappa, f_org, rd3, temperature, RH, Fk, Fd
         ):
             """
@@ -406,7 +407,7 @@ class CondensationMethods(BackendMethods):
             )
 
         @numba.njit(**jit_flags)
-        def calculate_ml_new(  # pylint: disable=too-many-branches,too-many-arguments,too-many-locals
+        def calculate_ml_new(  # pylint: disable=too-many-branches,too-many-positional-arguments,too-many-locals
             attributes,
             timestep,
             fake,
@@ -429,12 +430,14 @@ class CondensationMethods(BackendMethods):
             lambdaK = formulae.diffusion_kinetics__lambdaK(T, p)
             lambdaD = formulae.diffusion_kinetics__lambdaD(DTp, T)
             for drop in cell_idx:
-                if attributes.water_mass[drop] <= 0:
+                if attributes.signed_water_mass[drop] <= 0:
                     continue
                 v_drop = formulae.particle_shape_and_density__mass_to_volume(
-                    attributes.water_mass[drop]
+                    attributes.signed_water_mass[drop]
                 )
-                x_old = formulae.diffusion_coordinate__x(attributes.water_mass[drop])
+                x_old = formulae.diffusion_coordinate__x(
+                    attributes.signed_water_mass[drop]
+                )
                 r_old = formulae.trivia__radius(v_drop)
                 x_insane = formulae.diffusion_coordinate__x(
                     formulae.particle_shape_and_density__volume_to_mass(
@@ -541,9 +544,9 @@ class CondensationMethods(BackendMethods):
                             b,
                             fa,
                             fb,
-                            rtol_x,
-                            max_iters,
-                            formulae.trivia__within_tolerance,
+                            rtol=rtol_x,
+                            max_iter=max_iters,
+                            within_tolerance=formulae.trivia__within_tolerance,
                         )
                         if iters_taken in (-1, max_iters):
                             if not fake:
@@ -559,13 +562,16 @@ class CondensationMethods(BackendMethods):
                 )
                 result += attributes.multiplicity[drop] * mass_new
                 if not fake:
-                    if mass_new > mass_cr and mass_new > attributes.water_mass[drop]:
+                    if (
+                        mass_new > mass_cr
+                        and mass_new > attributes.signed_water_mass[drop]
+                    ):
                         n_activated_and_growing += attributes.multiplicity[drop]
-                    if mass_new > mass_cr > attributes.water_mass[drop]:
+                    if mass_new > mass_cr > attributes.signed_water_mass[drop]:
                         n_activating += attributes.multiplicity[drop]
-                    if mass_new < mass_cr < attributes.water_mass[drop]:
+                    if mass_new < mass_cr < attributes.signed_water_mass[drop]:
                         n_deactivating += attributes.multiplicity[drop]
-                    attributes.water_mass[drop] = mass_new
+                    attributes.signed_water_mass[drop] = mass_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
             return result, success, n_activating, n_deactivating, n_ripening
 
@@ -637,7 +643,7 @@ class CondensationMethods(BackendMethods):
         step = CondensationMethods.make_step(jit_flags, step_impl)
 
         @numba.njit(**jit_flags)
-        def solve(  # pylint: disable=too-many-arguments,too-many-locals
+        def solve(  # pylint: disable=too-many-positional-arguments,too-many-locals
             attributes,
             cell_idx,
             thd,

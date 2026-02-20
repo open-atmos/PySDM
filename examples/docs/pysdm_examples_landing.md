@@ -86,14 +86,21 @@ Example notebooks include:
   - `PySDM_examples.Yang_et_al_2018`: polydisperse particle spectrum, activation/deactivation cycles
   - `PySDM_examples.Abdul_Razzak_Ghan_2000`: polydisperse activation, comparison against <mark>GCM parameterisation</mark>
   - `PySDM_examples.Pyrcel`: polydisperse activation, mimicking example test case from <mark>Pyrcel</mark> documentation
+  - `PySDM_examples.Strzabala_2025_BEng`: ParaView visualisation example
   - `PySDM_examples.Lowe_et_al_2019`: externally mixed polydisperse size spectrum with <mark>surface-active organics</mark> case
   - `PySDM_examples.Grabowski_and_Pawlowska_2023`: polydisperse activation, focus on <mark>ripening</mark>
   - `PySDM_examples.Jensen_and_Nugent_2017`: polydisperse activation featuring <mark>giant CCN</mark>
 - condensation and aqueous-chemistry
   - `PySDM_examples.Kreidenweis_et_al_2003`: <mark>Hoppel gap</mark> simulation setup (i.e. depiction of evolution of aerosol mass spectrum from a monomodal to bimodal due to aqueous‐phase SO2 oxidation)
   - `PySDM_examples.Jaruga_and_Pawlowska_2018`: exploration of numerical convergence using the above Hoppel-gap simulation setup
+- freezing
+  - `PySDM_examples.Spichtinger_et_al_2023`: <mark>homogeneous freezing</mark> and ice growth (<mark>Wegener-Bergeron-Findeisen process</mark>)
 
 The parcel environment is also featured in the <a href="https://open-atmos.github.io/PySDM/PySDM.html#tutorials">PySDM tutorials</a>.
+
+<center>
+  <img src="https://github.com/open-atmos/PySDM/releases/download/tip/parcel_animation_ubuntu-24.04.gif" style="width:80%" />
+</center>
 
 ## 0D box environment
 

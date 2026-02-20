@@ -4,7 +4,7 @@ default_stages: [pre-commit]
 
 repos:
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 26.1.0
     hooks:
       - id: black
 
@@ -14,10 +14,24 @@ repos:
 #      - id: isort
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: debug-statements
       - id: check-json
         files: '.json'
+
+  - repo: https://github.com/lk16/detect-missing-init
+    rev: v0.1.6
+    hooks:
+    - id: detect-missing-init
+      args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
+
+  # TODO #1794
+  # - repo: https://github.com/open-atmos/devops_tests
+  #   rev: v0.0.2
+  #   hooks:
+  #     - id: check-badges
+  #       name: check badges
+  #       args: [--fix-header, --repo-name=PySDM]

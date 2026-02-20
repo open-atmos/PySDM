@@ -8,6 +8,8 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_common.freezing_attributes import (
     SingularAttributes,
     TimeDependentAttributes,
+    TimeDependentHomogeneousAttributes,
+    ThresholdHomogeneousAndThawAttributes,
 )
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
@@ -28,6 +30,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.dynamics = {}
         self.products = {}
         self.observers = []
+        self.initialisers = []
 
         self.n_steps = 0
 
@@ -47,6 +50,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.null = self.Storage.empty(0, dtype=float)
 
     def run(self, steps):
+        if len(self.initialisers) > 0:
+            self._notify_initialisers()
         for _ in range(steps):
             for key, dynamic in self.dynamics.items():
                 with self.timers[key]:
@@ -58,6 +63,11 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         reversed_order_so_that_environment_is_last = reversed(self.observers)
         for observer in reversed_order_so_that_environment_is_last:
             observer.notify()
+
+    def _notify_initialisers(self):
+        for initialiser in self.initialisers:
+            initialiser.setup()
+        self.initialisers.clear()
 
     @property
     def Storage(self):
@@ -123,7 +133,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            water_mass=self.attributes["signed water mass"],
+            signed_water_mass=self.attributes["signed water mass"],
             multiplicity=self.attributes["multiplicity"],
             vdry=self.attributes["dry volume"],
             idx=self.attributes._ParticleAttributes__idx,
@@ -484,33 +494,29 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
-    def deposition(self):
+    def deposition(self, adaptive: bool):
         self.backend.deposition(
+            adaptive=adaptive,
             multiplicity=self.attributes["multiplicity"],
             signed_water_mass=self.attributes["signed water mass"],
-            current_temperature=self.environment["T"],
-            current_total_pressure=self.environment["p"],
-            current_relative_humidity=self.environment["RH"],
-            current_water_activity=self.environment["a_w_ice"],
             current_vapour_mixing_ratio=self.environment["water_vapour_mixing_ratio"],
             current_dry_air_density=self.environment["rhod"],
             current_dry_potential_temperature=self.environment["thd"],
             cell_volume=self.environment.mesh.dv,
             time_step=self.dt,
             cell_id=self.attributes["cell id"],
-            reynolds_number=self.attributes["Reynolds number"],
-            schmidt_number=self.environment["Schmidt number"],
             predicted_vapour_mixing_ratio=self.environment.get_predicted(
                 "water_vapour_mixing_ratio"
             ),
             predicted_dry_potential_temperature=self.environment.get_predicted("thd"),
+            predicted_dry_air_density=self.environment.get_predicted("rhod"),
         )
         self.attributes.mark_updated("signed water mass")
         # TODO #1524 - should we update here?
         # self.update_TpRH(only_if_not_last='VapourDepositionOnIce')
 
-    def immersion_freezing_time_dependent(self, *, thaw: bool, rand: Storage):
-        self.backend.freeze_time_dependent(
+    def immersion_freezing_time_dependent(self, *, rand: Storage):
+        self.backend.immersion_freezing_time_dependent(
             rand=rand,
             attributes=TimeDependentAttributes(
                 immersed_surface_area=self.attributes["immersed surface area"],
@@ -519,14 +525,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             timestep=self.dt,
             cell=self.attributes["cell id"],
             a_w_ice=self.environment["a_w_ice"],
-            temperature=self.environment["T"],
             relative_humidity=self.environment["RH"],
-            thaw=thaw,
         )
         self.attributes.mark_updated("signed water mass")
 
-    def immersion_freezing_singular(self, *, thaw: bool):
-        self.backend.freeze_singular(
+    def immersion_freezing_singular(self):
+        self.backend.immersion_freezing_singular(
             attributes=SingularAttributes(
                 freezing_temperature=self.attributes["freezing temperature"],
                 signed_water_mass=self.attributes["signed water mass"],
@@ -534,6 +538,38 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
             relative_humidity=self.environment["RH"],
             cell=self.attributes["cell id"],
-            thaw=thaw,
         )
         self.attributes.mark_updated("signed water mass")
+
+    def homogeneous_freezing_time_dependent(self, *, rand: Storage):
+        self.backend.homogeneous_freezing_time_dependent(
+            rand=rand,
+            attributes=TimeDependentHomogeneousAttributes(
+                volume=self.attributes["volume"],
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            timestep=self.dt,
+            cell=self.attributes["cell id"],
+            a_w_ice=self.environment["a_w_ice"],
+            temperature=self.environment["T"],
+            relative_humidity_ice=self.environment["RH_ice"],
+        )
+
+    def homogeneous_freezing_threshold(self):
+        self.backend.homogeneous_freezing_threshold(
+            attributes=ThresholdHomogeneousAndThawAttributes(
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            cell=self.attributes["cell id"],
+            temperature=self.environment["T"],
+            relative_humidity_ice=self.environment["RH_ice"],
+        )
+
+    def thaw_instantaneous(self):
+        self.backend.thaw_instantaneous(
+            attributes=ThresholdHomogeneousAndThawAttributes(
+                signed_water_mass=self.attributes["signed water mass"],
+            ),
+            cell=self.attributes["cell id"],
+            temperature=self.environment["T"],
+        )

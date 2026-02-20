@@ -2,13 +2,13 @@
 Zero-dimensional adiabatic parcel framework
 """
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import numpy as np
 
 from PySDM.environments.impl.moist import Moist
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.equilibrate_wet_radii import (
+from PySDM.initialisation.hygroscopic_equilibrium import (
     default_rtol,
     equilibrate_wet_radii,
 )
@@ -25,7 +25,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         p0: float,
         initial_water_vapour_mixing_ratio: float,
         T0: float,
-        w: [float, callable],
+        w: Union[float, callable],
         z0: float = 0,
         mixed_phase=False,
         variables: Optional[List[str]] = None,

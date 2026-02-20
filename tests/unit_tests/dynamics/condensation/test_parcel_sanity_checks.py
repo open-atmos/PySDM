@@ -7,10 +7,11 @@ from matplotlib import pyplot
 from scipy import signal
 
 from PySDM import Builder, Formulae, products
-from PySDM.backends import CPU, GPU
+from PySDM.backends import Numba, ThrustRTC
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation import discretise_multiplicities
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
@@ -18,7 +19,9 @@ from PySDM.physics import si
 FORMULAE = Formulae()
 SPECTRUM = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 N_SD = 64
-R_DRY, specific_concentration = spectral_sampling.Logarithmic(SPECTRUM).sample(N_SD)
+R_DRY, specific_concentration = spectral_sampling.Logarithmic(
+    SPECTRUM
+).sample_deterministic(N_SD)
 V_DRY = FORMULAE.trivia.volume(radius=R_DRY)
 KAPPA = 0.5
 CLOUD_RANGE = (0.5 * si.um, 25 * si.um)
@@ -30,9 +33,9 @@ class TestParcelSanityChecks:
     @pytest.mark.parametrize(
         "backend_class",
         (
-            CPU,
+            Numba,
             pytest.param(
-                GPU,
+                ThrustRTC,
                 marks=pytest.mark.xfail(
                     strict=True,
                     reason="TODO #1117 (works with CUDA!)",
@@ -40,7 +43,7 @@ class TestParcelSanityChecks:
             ),
         ),
     )
-    def test_noisy_supersaturation_profiles(backend_class, plot=False):
+    def test_noisy_saturation_profiles(backend_class, plot=False):
         """cases found using the README parcel snippet"""
         # arrange
         env = Parcel(
@@ -75,7 +78,7 @@ class TestParcelSanityChecks:
                 "volume": FORMULAE.trivia.volume(radius=r_wet),
             },
             products=(
-                products.PeakSupersaturation(name="S_max", unit="%"),
+                products.PeakSaturation(name="S_max_percent", unit="%"),
                 products.EffectiveRadius(
                     name="r_eff", unit="um", radius_range=CLOUD_RANGE
                 ),
@@ -117,8 +120,8 @@ class TestParcelSanityChecks:
             pyplot.clf()
 
         # assert
-        supersaturation_peaks, _ = signal.find_peaks(output["S_max"])
-        assert len(supersaturation_peaks) == 1
+        saturation_peaks, _ = signal.find_peaks(output["S_max_percent"])
+        assert len(saturation_peaks) == 1
 
     @staticmethod
     @pytest.mark.parametrize("update_thd", (True, False))

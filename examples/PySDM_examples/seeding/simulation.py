@@ -42,7 +42,9 @@ class Simulation:
 
         r_dry, n_in_dv = ConstantMultiplicity(
             settings.initial_aerosol_dry_radii
-        ).sample(n_sd=settings.n_sd_initial, backend=builder.particulator.backend)
+        ).sample_deterministic(
+            n_sd=settings.n_sd_initial, backend=builder.particulator.backend
+        )
         attributes = builder.particulator.environment.init_attributes(
             n_in_dv=n_in_dv, kappa=settings.initial_aerosol_kappa, r_dry=r_dry
         )

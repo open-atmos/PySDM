@@ -1,16 +1,16 @@
 import numpy as np
 
 import PySDM.products as PySDM_products
-from PySDM.backends import CPU
+from PySDM.backends import Numba
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation import equilibrate_wet_radii
+from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.physics import constants as const
 
 
 class Simulation:
-    def __init__(self, settings, backend=CPU):
+    def __init__(self, settings, backend=Numba):
         t_half = settings.z_half / settings.w_avg
 
         dt_output = (2 * t_half) / settings.n_output
@@ -23,7 +23,7 @@ class Simulation:
                 formulae=settings.formulae,
                 **(
                     {"override_jit_flags": {"parallel": False}}
-                    if backend == CPU
+                    if backend is Numba
                     else {}
                 ),
             ),
@@ -62,14 +62,14 @@ class Simulation:
             PySDM_products.MeanRadius(name="radius_m1", unit="um"),
             PySDM_products.CondensationTimestepMin(name="dt_cond_min"),
             PySDM_products.ParcelDisplacement(name="z"),
-            PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),
+            PySDM_products.AmbientRelativeHumidity(name="RH"),
+            PySDM_products.PeakSaturation(name="S_max"),
             PySDM_products.Time(name="t"),
             PySDM_products.ActivatingRate(unit="s^-1 mg^-1", name="activating_rate"),
             PySDM_products.DeactivatingRate(
                 unit="s^-1 mg^-1", name="deactivating_rate"
             ),
             PySDM_products.RipeningRate(unit="s^-1 mg^-1", name="ripening_rate"),
-            PySDM_products.PeakSupersaturation(unit="%", name="S_max"),
         ]
 
         self.particulator = builder.build(attributes, products)
@@ -85,7 +85,7 @@ class Simulation:
             self.particulator.products["dt_cond_min"].get()[cell_id]
         )
         output["z"].append(self.particulator.products["z"].get()[cell_id])
-        output["S"].append(self.particulator.products["RH"].get()[cell_id] / 100 - 1)
+        output["RH"].append(self.particulator.products["RH"].get()[cell_id])
         output["t"].append(self.particulator.products["t"].get())
 
         for event in ("activating", "deactivating", "ripening"):
@@ -96,7 +96,7 @@ class Simulation:
     def run(self):
         output = {
             "r": [],
-            "S": [],
+            "RH": [],
             "z": [],
             "t": [],
             "dt_cond_min": [],

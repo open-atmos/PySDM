@@ -31,7 +31,7 @@ class WaterMixingRatio(MomentProduct):
             filter_range=self.signed_mass_range,
             filter_attr="signed water mass",
         )
-        conc = self.buffer.copy()
+        number = self.buffer.copy()
 
         self._download_moment_to_buffer(
             attr="water mass",
@@ -40,7 +40,7 @@ class WaterMixingRatio(MomentProduct):
             filter_attr="signed water mass",
         )
         result = self.buffer.copy()
-        result[:] *= conc
+        result[:] *= number
         result[:] /= self.particulator.mesh.dv
 
         self._download_to_buffer(self.particulator.environment["rhod"])
