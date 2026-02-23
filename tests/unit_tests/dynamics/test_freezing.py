@@ -13,7 +13,7 @@ from PySDM.products import (
 )
 from PySDM.backends import ThrustRTC
 
-VERY_BIG_J_HET = 1e20
+VERY_BIG_RATE = 1e20
 EPSILON_RH = 1e-3
 
 
@@ -23,8 +23,16 @@ class TestDropletFreezing:
         "record_freezing_temperature",
         (pytest.param(True, id="recording"), pytest.param(False, id="not recording")),
     )
+    @pytest.mark.parametrize(
+        "freezing_mode",
+        (
+            {"immersion_freezing": "time-dependent", "homogeneous_freezing": None},
+            {"immersion_freezing": None, "homogeneous_freezing": "threshold"},
+            {"immersion_freezing": None, "homogeneous_freezing": "time-dependent"},
+        ),
+    )
     def test_record_freezing_temperature_on_time_dependent_freeze(
-        backend_class, record_freezing_temperature
+        backend_class, record_freezing_temperature, freezing_mode
     ):
         if backend_class is ThrustRTC and record_freezing_temperature:
             pytest.skip("TODO #1495")
@@ -33,7 +41,11 @@ class TestDropletFreezing:
         formulae = Formulae(
             particle_shape_and_density="MixedPhaseSpheres",
             heterogeneous_ice_nucleation_rate="Constant",
-            constants={"J_HET": VERY_BIG_J_HET},
+            homogeneous_ice_nucleation_rate="Constant",
+            constants={
+                "J_HET": VERY_BIG_RATE,
+                "J_HOM": VERY_BIG_RATE,
+            },
         )
         builder = Builder(
             n_sd=1,
@@ -41,7 +53,12 @@ class TestDropletFreezing:
             environment=Box(dt=1 * si.s, dv=1 * si.m**3),
         )
         builder.add_dynamic(
-            Freezing(immersion_freezing="time-dependent", thaw="instantaneous")
+            # Freezing(immersion_freezing="time-dependent", thaw="instantaneous")
+            Freezing(
+                immersion_freezing=freezing_mode["immersion_freezing"],
+                homogeneous_freezing=freezing_mode["homogeneous_freezing"],
+                thaw="instantaneous",
+            )
         )
         if record_freezing_temperature:
             builder.request_attribute("temperature of last freezing")
@@ -55,8 +72,9 @@ class TestDropletFreezing:
 
         temp_1 = 200 * si.K
         temp_2 = 250 * si.K
+        temp_3 = 220 * si.K
         particulator.environment["a_w_ice"] = np.nan
-        particulator.environment["T"] = temp_1
+        particulator.environment["T"] = temp_2
 
         # act & assert
         attr_name = "temperature of last freezing"
@@ -68,23 +86,30 @@ class TestDropletFreezing:
 
             # still not frozen since RH not greater than 100%
             particulator.environment["RH"] = 1.0
+            particulator.environment["RH_ice"] = 1.0
             particulator.run(steps=1)
             np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
 
             # should freeze and record T1
             particulator.environment["RH"] += EPSILON_RH
+            particulator.environment["RH_ice"] += EPSILON_RH
+            particulator.environment["T"] = temp_1
             particulator.run(steps=1)
+            assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
             assert all(particulator.attributes[attr_name].to_ndarray() == temp_1)
 
             # should thaw
             particulator.environment["T"] = 300 * si.K
             particulator.run(steps=1)
+            assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
             np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
 
             # should re-freeze and record T2
-            particulator.environment["T"] = temp_2
+            particulator.environment["T"] = temp_3
             particulator.run(steps=1)
-            assert all(particulator.attributes[attr_name].to_ndarray() == temp_2)
+            assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
+            assert all(particulator.attributes[attr_name].to_ndarray() == temp_3)
 
     # TODO #599
     def test_no_subsaturated_freezing(self):
