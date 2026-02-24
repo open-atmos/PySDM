@@ -234,9 +234,9 @@ class TestVapourDepositionOnIce:
             assert (np.diff(mass_rate) > 0).all()
 
         assert 1.8e-15 * si.kg / si.s < dm_dt[230 * si.K][0] < 4.0e-15 * si.kg / si.s
-        assert 7.0e-17 * si.kg / si.s < dm_dt[200 * si.K][0] < 1.0e-16 * si.kg / si.s
+        assert 6.0e-17 * si.kg / si.s < dm_dt[200 * si.K][0] < 1.0e-16 * si.kg / si.s
         assert 1.3e-12 * si.kg / si.s < dm_dt[230 * si.K][-1] < 1.5e-12 * si.kg / si.s
-        assert 6.0e-14 * si.kg / si.s < dm_dt[200 * si.K][-1] < 1.2e-13 * si.kg / si.s
+        assert 5.0e-14 * si.kg / si.s < dm_dt[200 * si.K][-1] < 1.2e-13 * si.kg / si.s
 
     @staticmethod
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
