@@ -1,14 +1,29 @@
 """
-Bolin number droplet attribute for heavy isotopes of water atoms
+Derived droplet attribute representing the Bolin number for heavy
+water isotopologues (D, 17O, 18O substitutions).
+
+The Bolin number is a dimensionless coefficient relating the
+heavy-isotope mole tendency to the bulk liquid-water mass tendency
+during phase change.
+Registered for all isotopes listed in ``HEAVY_ISOTOPES``.
 """
 
-# pylint: disable=missing-class-docstring, missing-function-docstring
 from PySDM.attributes.impl import DerivedAttribute, register_attribute
 from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES
 
 
 class BolinNumberImpl(DerivedAttribute):
+    """Backend-evaluated Bolin number for a selected heavy isotopologue."""
+
     def __init__(self, builder, *, heavy_isotope: str):
+        """
+        Parameters
+        ----------
+        builder
+            Attribute builder instance.
+        heavy_isotope : str
+            Heavy isotopologue identifier (entry of ``HEAVY_ISOTOPES``).
+        """
         self.moles_heavy = builder.get_attribute(f"moles_{heavy_isotope}")
         self.moles_light = builder.get_attribute("moles light water")
         self.cell_id = builder.get_attribute("cell id")
@@ -22,6 +37,7 @@ class BolinNumberImpl(DerivedAttribute):
         )
 
     def recalculate(self):
+        """Recomputes the Bolin number using backend implementation."""
         self.particulator.backend.bolin_number(
             output=self.data,
             cell_id=self.cell_id.data,
@@ -35,7 +51,10 @@ class BolinNumberImpl(DerivedAttribute):
 
 
 def make_bolin_number_factory(heavy_isotope: str):
+    """Returns an attribute factory for the given heavy isotopologue."""
+
     def _factory(builder):
+        """Instantiates ``BolinNumberImpl`` for the provided builder."""
         return BolinNumberImpl(builder, heavy_isotope=heavy_isotope)
 
     return _factory
