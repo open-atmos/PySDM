@@ -16,7 +16,7 @@ from PySDM.physics import si
 
 BASE_INITIAL_ATTRIBUTES = {
     "multiplicity": np.ones(1),
-    "dry volume": np.array(np.nan),
+    "dry volume": np.array(1),
     "kappa times dry volume": np.array(np.nan),
     "signed water mass": np.array(np.nan),
     **{f"moles_{isotope}": np.zeros(1) * si.mole for isotope in HEAVY_ISOTOPES},
@@ -34,7 +34,7 @@ def make_particulator(
     builder = Builder(
         n_sd=1,
         backend=backend_instance,
-        environment=Box(dv=1, dt=1 * si.s),
+        environment=Box(dv=np.ones(1), dt=1 * si.s),
     )
     for iso in isotopes_considered:
         if not attributes.get(f"moles_{iso}"):

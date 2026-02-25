@@ -25,7 +25,6 @@ class MoistBox(Box, Moist):
     def __init__(self, dt: float, dv: float, mixed_phase: bool = False):
         Box.__init__(self, dt, dv)
         Moist.__init__(self, dt, self.mesh, variables=["rhod"], mixed_phase=mixed_phase)
-        self.dv = self.mesh.dv
 
     def register(self, builder):
         Moist.register(self, builder)
