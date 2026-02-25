@@ -129,7 +129,7 @@ class IsotopeMethods(BackendMethods):
         """
         ff = self.formulae_flattened
 
-        # @numba.njit(**self.default_jit_flags)
+        @numba.njit(**self.default_jit_flags)
         def body(
             *,
             output,
