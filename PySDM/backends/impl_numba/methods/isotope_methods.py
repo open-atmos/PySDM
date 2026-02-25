@@ -105,7 +105,7 @@ class IsotopeMethods(BackendMethods):
         """Update heavy-isotope composition during droplet growth/evaporation."""
         self._isotopic_fractionation_body(
             cell_id=cell_id.data,
-            cell_volume=cell_volume,
+            cell_volume=cell_volume.data,
             multiplicity=multiplicity.data,
             dm_total=dm_total.data,
             signed_water_mass=signed_water_mass.data,
