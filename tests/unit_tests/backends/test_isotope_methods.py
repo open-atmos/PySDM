@@ -15,16 +15,8 @@ class TestIsotopeMethods:
         backend = backend_instance
         arr2storage = backend.Storage.from_ndarray
 
-        cell_id = arr2storage(np.array([0], dtype=int))
-        cell_volume = arr2storage(np.array([2.0]))
-        multiplicity = arr2storage(np.array([3.0]))
-        dm_total = arr2storage(np.array([0.2]))
-        signed_water_mass = arr2storage(np.array([1.0]))
-        dry_air_density = arr2storage(np.array([1.0]))
-        molar_mass_heavy = 2.0
         moles_heavy = arr2storage(np.array([0.5]))
-        bolin_number = arr2storage(np.array([2.0]))
-        molality_air = arr2storage(np.array([0.1]))
+        molality_in_dry_air = arr2storage(np.array([0.1]))
 
         expected_moles_heavy = 0.5 + 0.05
         mass_of_dry_air = 1.0 * 2.0
@@ -32,21 +24,21 @@ class TestIsotopeMethods:
 
         # act
         backend.isotopic_fractionation(
-            cell_id=cell_id,
-            cell_volume=cell_volume,
-            multiplicity=multiplicity,
-            dm_total=dm_total,
-            signed_water_mass=signed_water_mass,
-            dry_air_density=dry_air_density,
-            molar_mass_heavy_molecule=molar_mass_heavy,
+            cell_id=arr2storage(np.array([0], dtype=int)),
+            cell_volume=arr2storage(np.array([2.0])),
+            multiplicity=arr2storage(np.array([3.0])),
+            dm_total=arr2storage(np.array([0.2])),
+            signed_water_mass=arr2storage(np.array([1.0])),
+            dry_air_density=arr2storage(np.array([1.0])),
+            molar_mass_heavy_molecule=2.0,
             moles_heavy_molecule=moles_heavy,
-            bolin_number=bolin_number,
-            molality_in_dry_air=molality_air,
+            bolin_number=arr2storage(np.array([2.0])),
+            molality_in_dry_air=molality_in_dry_air,
         )
 
         # assert
         assert np.isclose(moles_heavy.to_ndarray()[0], expected_moles_heavy)
-        assert np.isclose(molality_air.to_ndarray()[0], expected_molality_air)
+        assert np.isclose(molality_in_dry_air.to_ndarray()[0], expected_molality_air)
 
     @staticmethod
     def test_isotopic_delta(backend_instance):

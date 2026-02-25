@@ -82,7 +82,7 @@ class IsotopeMethods(ThrustRTCBackendMethods):
         moles_heavy_molecule,
         bolin_number,
         molality_in_dry_air,
-    ):
+    ):  # pylint: disable=too-many-positional-arguments
         self.__isotopic_fractionation.launch_n(
             n=len(multiplicity),
             args=(
