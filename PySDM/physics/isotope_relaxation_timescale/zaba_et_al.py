@@ -22,7 +22,6 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def bolin_number(
-        *,
         D_ratio_heavy_to_light,
         alpha,
         D_light,
@@ -31,7 +30,8 @@ class ZabaEtAl:  # pylint: disable=too-few-public-methods
         R_liq,
         relative_humidity,
         rho_v,
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
+        # TODO #1809 Numba can't compile when * in bolin_number
         """Heavy to total isotopic-timescales ratio (tau_heavy/tau_total).
 
         Returns:

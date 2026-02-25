@@ -53,6 +53,7 @@ class IsotopeMethods(BackendMethods):
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def body(
+            *,
             cell_id,
             cell_volume,
             multiplicity,
@@ -103,16 +104,16 @@ class IsotopeMethods(BackendMethods):
     ):  # pylint: disable=too-many-positional-arguments
         """Update heavy-isotope composition during droplet growth/evaporation."""
         self._isotopic_fractionation_body(
-            cell_id.data,
-            cell_volume,
-            multiplicity.data,
-            dm_total.data,
-            signed_water_mass.data,
-            dry_air_density.data,
-            molar_mass_heavy_molecule,
-            moles_heavy_molecule.data,
-            bolin_number.data,
-            molality_in_dry_air.data,
+            cell_id=cell_id.data,
+            cell_volume=cell_volume,
+            multiplicity=multiplicity.data,
+            dm_total=dm_total.data,
+            signed_water_mass=signed_water_mass.data,
+            dry_air_density=dry_air_density.data,
+            molar_mass_heavy_molecule=molar_mass_heavy_molecule,
+            moles_heavy_molecule=moles_heavy_molecule.data,
+            bolin_number=bolin_number.data,
+            molality_in_dry_air=molality_in_dry_air.data,
         )
 
     @cached_property
@@ -132,6 +133,7 @@ class IsotopeMethods(BackendMethods):
 
         @numba.njit(**{**self.default_jit_flags, **{"parallel": False}})
         def body(
+            *,
             output,
             cell_id,
             relative_humidity,
@@ -140,8 +142,7 @@ class IsotopeMethods(BackendMethods):
             moles_light_molecule,
             moles_heavy,
             molality_in_dry_air,
-        ):  # pylint: disable=too-many-locals,too-many-positional-arguments
-
+        ):  # pylint: disable=too-many-locals
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
                 pvs_water = ff.saturation_vapour_pressure__pvs_water(T)
@@ -191,12 +192,12 @@ class IsotopeMethods(BackendMethods):
     ):
         """Bolin number per droplet"""
         self._bolin_number_body(
-            output.data,
-            cell_id.data,
-            relative_humidity.data,
-            temperature.data,
-            density_dry_air.data,
-            moles_light_molecule.data,
-            moles_heavy.data,
-            molality_in_dry_air.data,
+            output=output.data,
+            cell_id=cell_id.data,
+            relative_humidity=relative_humidity.data,
+            temperature=temperature.data,
+            density_dry_air=density_dry_air.data,
+            moles_light_molecule=moles_light_molecule.data,
+            moles_heavy=moles_heavy.data,
+            molality_in_dry_air=molality_in_dry_air.data,
         )
