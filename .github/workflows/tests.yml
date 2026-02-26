@@ -239,7 +239,7 @@ jobs:
             test-suite: "multi-process_e"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 30
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
     steps:
       - name: Debug contexts
         run: |
