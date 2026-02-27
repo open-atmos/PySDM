@@ -1011,5 +1011,13 @@
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
+  },
+  "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2" : {
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/long1974.py",
+      "examples/PySDM_examples/Long1974/fig10_11_13_14.ipynb"
+    ],
+    "label": "Long 1974 (J. Atmos. Sci. 31)",
+    "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
   }
 }
