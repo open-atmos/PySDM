@@ -15,6 +15,7 @@ class Settings:
         timestep: float,
         # default values correspond to paper settings
         singular: bool = True,
+        relaxed: bool = False,
         enable_immersion_freezing: bool = True,
         enable_vapour_deposition_on_ice: bool = True,
         inp_frac: float = 0.1,
@@ -27,6 +28,7 @@ class Settings:
         self.enable_immersion_freezing = enable_immersion_freezing
         self.enable_vapour_deposition_on_ice = enable_vapour_deposition_on_ice
         self.singular = singular
+        self.relaxed = relaxed
         self.initial_total_pressure = 1000 * si.hPa  # note: not given in the paper
 
         self.initial_water_vapour_mixing_ratio = 1.5 * si.g / si.kg

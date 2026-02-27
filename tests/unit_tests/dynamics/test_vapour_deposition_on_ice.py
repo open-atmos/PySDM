@@ -128,8 +128,9 @@ class TestVapourDepositionOnIce:
     @pytest.mark.parametrize("RHi", (1.1, 1.0, 0.9))
     @pytest.mark.parametrize("diffusion_coordinate", DIFFUSION_COORDINATES)
     @pytest.mark.parametrize("diffusion_ice_capacity", DIFFUSION_ICE_CAPACITIES)
+    @pytest.mark.parametrize("adaptive", (False, True))
     def test_iwc_differs_after_one_timestep(
-        *, water_mass, RHi, diffusion_coordinate, diffusion_ice_capacity
+        *, water_mass, RHi, diffusion_coordinate, diffusion_ice_capacity, adaptive
     ):
         """sanity checks for sign of changes in IWC and ambient thermodynamics"""
         # arrange
@@ -141,6 +142,7 @@ class TestVapourDepositionOnIce:
             signed_water_masses=[water_mass],
             RH_ice=RHi,
             dt=0.1 * si.s,
+            adaptive=adaptive,
         )
         rv0 = particulator.environment["water_vapour_mixing_ratio"][0]
         thd0 = particulator.environment["thd"][0]
