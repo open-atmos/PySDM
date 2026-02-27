@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for water condensation/evaporation
-"""
+with adaptive timestepping as in [Bartman 2020 (MSc thesis, Section 3.3)](https://www.ap.uj.edu.pl/diplomas/attachments/file/download/125485)
+"""  # pylint: disable=line-too-long
 
 from collections import namedtuple
 import math
@@ -254,7 +255,7 @@ class CondensationMethods(BackendMethods):
         calculate_ml_new,
     ):
         @numba.njit(**jit_flags)
-        def step_impl(  # pylint: disable=too-many-arguments,too-many-locals
+        def step_impl(  # pylint: disable=too-many-positional-arguments,too-many-locals
             attributes,
             cell_idx,
             thd,
@@ -376,7 +377,7 @@ class CondensationMethods(BackendMethods):
         RH_rtol,
     ):
         @numba.njit(**jit_flags)
-        def minfun(  # pylint: disable=too-many-arguments,too-many-locals
+        def minfun(  # pylint: disable=too-many-positional-arguments,too-many-locals
             x_new, x_old, timestep, kappa, f_org, rd3, temperature, RH, Fk, Fd
         ):
             """
@@ -406,7 +407,7 @@ class CondensationMethods(BackendMethods):
             )
 
         @numba.njit(**jit_flags)
-        def calculate_ml_new(  # pylint: disable=too-many-branches,too-many-arguments,too-many-locals
+        def calculate_ml_new(  # pylint: disable=too-many-branches,too-many-positional-arguments,too-many-locals
             attributes,
             timestep,
             fake,
@@ -543,9 +544,9 @@ class CondensationMethods(BackendMethods):
                             b,
                             fa,
                             fb,
-                            rtol_x,
-                            max_iters,
-                            formulae.trivia__within_tolerance,
+                            rtol=rtol_x,
+                            max_iter=max_iters,
+                            within_tolerance=formulae.trivia__within_tolerance,
                         )
                         if iters_taken in (-1, max_iters):
                             if not fake:
@@ -642,7 +643,7 @@ class CondensationMethods(BackendMethods):
         step = CondensationMethods.make_step(jit_flags, step_impl)
 
         @numba.njit(**jit_flags)
-        def solve(  # pylint: disable=too-many-arguments,too-many-locals
+        def solve(  # pylint: disable=too-many-positional-arguments,too-many-locals
             attributes,
             cell_idx,
             thd,

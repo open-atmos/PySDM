@@ -19,12 +19,18 @@ from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-from PySDM.dynamics.terminal_velocity import GunnKinzer1949, PowerSeries, RogersYau
+from PySDM.dynamics.terminal_velocity import (
+    GunnKinzer1949,
+    PowerSeries,
+    RogersYau,
+    ColumnarIceCrystal,
+    IceSphere,
+)
 from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import TpDependent
 
 
 class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes,too-many-statements
-    def __init__(  # pylint: disable=too-many-locals
+    def __init__(  # pylint: disable=too-many-locals,too-many-arguments
         self,
         *,
         constants: Optional[dict] = None,
@@ -61,6 +67,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         optical_depth: str = "Null",
         particle_shape_and_density: str = "LiquidSpheres",
         terminal_velocity: str = "GunnKinzer1949",
+        terminal_velocity_ice: str = "ColumnarIceCrystal",
         air_dynamic_viscosity: str = "ZografosEtAl1987",
         bulk_phase_partitioning: str = "Null",
         turbulent_relaxation_timescale: str = "Null",
@@ -105,6 +112,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.particle_shape_and_density = particle_shape_and_density
         self.air_dynamic_viscosity = air_dynamic_viscosity
         self.terminal_velocity = terminal_velocity
+        self.terminal_velocity_ice = terminal_velocity_ice
         self.bulk_phase_partitioning = bulk_phase_partitioning
         self.turbulent_relaxation_timescale = turbulent_relaxation_timescale
 
@@ -168,6 +176,10 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "TpDependent": TpDependent,
             "PowerSeries": PowerSeries,
         }[terminal_velocity]
+        self.terminal_velocity_ice_class = {
+            "ColumnarIceCrystal": ColumnarIceCrystal,
+            "IceSphere": IceSphere,
+        }[terminal_velocity_ice]
 
     def __str__(self):
         description = []

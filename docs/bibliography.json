@@ -172,7 +172,8 @@
   "https://doi.org/10.5194/acp-7-1961-2007": {
     "usages": [
       "PySDM/physics/hygroscopicity/kappa_koehler.py",
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/constants_defaults.py",
+      "examples/PySDM_examples/Jensen_and_Nugent_2017/settings.py"
     ],
     "label": "Petters & Kreidenweis 2007 (Atmos. Chem. Phys. 7)",
     "title": "A single parameter representation of hygroscopic growth and cloud condensation nucleus activity"
@@ -213,7 +214,8 @@
   },
   "https://doi.org/10.1175/1520-0469(1982)039%3C1607:CCABOR%3E2.0.CO;2": {
     "usages": [
-      "PySDM/dynamics/collisions/breakup_fragmentations/lowlist82.py"
+      "PySDM/dynamics/collisions/breakup_fragmentations/lowlist82.py",
+      "PySDM/dynamics/collisions/coalescence_efficiencies/lowlist1982.py"
     ],
     "label": "Low & List 1982 (J. Atmos. Sci. 39)",
     "title": "Collision, Coalescence and Breakup of Raindrops. Part II: Parameterization of Fragment Size Distributions"
@@ -294,6 +296,7 @@
     "usages": [
       "examples/PySDM_examples/deJong_Mackay_et_al_2023/fig_9.ipynb",
       "PySDM/dynamics/collisions/breakup_fragmentations/straub2010.py",
+      "PySDM/dynamics/collisions/coalescence_efficiencies/straub2010.py",
       "PySDM/physics/constants_defaults.py"
     ],
     "label": "Straub et al. 2010 (J. Atmos. Sci. 67)",
@@ -373,6 +376,7 @@
   },
   "https://doi.org/10.5194/gmd-16-4193-2023": {
     "usages": [
+      "README.md",
       "examples/docs/pysdm_examples_landing.md",
       "examples/PySDM_examples/deJong_Mackay_et_al_2023/__init__.py"
     ],
@@ -381,7 +385,7 @@
   },
   "https://doi.org/10.1142/p027": {
     "usages": [
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/trivia.py"
     ],
     "label": "Gat 2010",
     "title": "Isotope Hydrology: A Study of the Water Cycle"
@@ -527,7 +531,8 @@
       "examples/PySDM_examples/Berry_1967/figs_5_8_10.ipynb",
       "examples/PySDM_examples/Berry_1967/__init__.py",
       "PySDM/dynamics/collisions/collision_kernels/electric.py",
-      "PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py"
+      "PySDM/dynamics/collisions/collision_kernels/hydrodynamic.py",
+      "PySDM/dynamics/collisions/coalescence_efficiencies/berry1967.py"
     ],
     "label": "Berry 1967 (J. Atmos. Sci. 24)",
     "title": "Cloud Droplet Growth by Collection"
@@ -685,10 +690,10 @@
   },
   "https://digitallibrary.un.org/record/3892725": {
     "usages": [
-      "PySDM/physics/isotope_relaxation_timescale/bolin_1958.py",
       "PySDM/physics/constants_defaults.py",
-      "examples/PySDM_examples/Bolin_1958/table_1.ipynb",
+      "PySDM/physics/trivia.py",
       "examples/PySDM_examples/Bolin_1958/__init__.py",
+      "examples/PySDM_examples/Bolin_1958/table_1.ipynb",
       "examples/PySDM_examples/Zaba_et_al/timescales_comparison.ipynb"
     ],
     "label": "Bolin 1958 (Proc. 2nd UN Intl Conf. Peaceful Uses of Atomic Energy)",
@@ -744,7 +749,9 @@
       "PySDM/physics/terminal_velocity/rogers_yau.py",
       "PySDM/physics/drop_growth/fick.py",
       "PySDM/physics/drop_growth/howell_1949.py",
-      "PySDM/physics/drop_growth/mason_1971.py"
+      "PySDM/physics/drop_growth/mason_1971.py",
+      "PySDM/dynamics/terminal_velocity/rogers_and_yau.py",
+      "PySDM/dynamics/terminal_velocity/power_series.py"
     ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
@@ -783,12 +790,18 @@
     "label": "Cotton et al. 2011 (International Geophysics 99)"
   },
   "https://doi.org/10.1007/978-0-306-48100-0": {
-    "usages": ["PySDM/physics/constants_defaults.py"],
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py"
+    ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
   },
   "https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww": {
-    "usages": ["PySDM/physics/constants_defaults.py"],
+    "usages": [
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/physics/constants.py"
+    ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Seinfeld & Pandis 2006 (Wiley)"
   },
@@ -854,11 +867,14 @@
   },
   "https://doi.org/10.5194/acp-9-685-2009": {
     "usages": [
+      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py",
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/particle_shape_and_density/columnar_ice.py",
       "PySDM/physics/particle_shape_and_density/porous_spheroids.py",
-      "tests/unit_tests/physics/test_particle_shape_and_density.py",
-      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py"
+      "PySDM/physics/terminal_velocity_ice/columnar_ice_crystal.py",
+      "tests/unit_tests/dynamics/test_terminal_velocity.py",
+      "tests/unit_tests/dynamics/test_vapour_deposition_on_ice.py",
+      "tests/unit_tests/physics/test_particle_shape_and_density.py"
     ],
     "title": "Modelling of cirrus clouds – Part 1a: Model description and validation",
     "label": "Spichtinger & Gierens 2009 (Atmos. Chem. Phys. 9)"
@@ -949,5 +965,54 @@
     ],
     "title": "A physically constrained classical description of the homogeneous nucleation of ice in water",
     "label": "Koop and Murray 2016 (J. Chem. Phys. 145)"
+  },
+  "https://doi.org/10.5194/gmd-16-6211-2023": {
+    "title": "Overcoming computational challenges to realize meter- to submeter-scale resolution in cloud simulations using the super-droplet method",
+    "label": "Matsushima et al. 2023 (Geosci. Model Dev. 16)",
+    "usages": [
+      "PySDM/initialisation/sampling/spectral_sampling.py",
+      "examples/PySDM_examples/Matsushima_et_al_2023/figure_1.ipynb",
+      "examples/PySDM_examples/Matsushima_et_al_2023/__init__.py"
+    ]
+  },
+  "https://doi.org/10.48550/arXiv.2509.05536": {
+    "usages": [
+      "examples/PySDM_examples/Ware_et_al_2025/__init__.py",
+      "examples/PySDM_examples/Ware_et_al_2025/fig_10.ipynb"
+    ],
+    "title": "Adaptive time-stepping for the Super-Droplet Method Monte Carlo collision-coalescence scheme",
+    "label": "Ware et al. 2025 (arXiv)"
+  },
+  "https://doi.org/10.1175/1520-0469(2000)057%3C0916:CCTV%3E2.0.CO;2": {
+    "usages": [
+      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py",
+      "PySDM/physics/terminal_velocity_ice/columnar_ice_crystal.py"
+    ],
+    "label": "Heymsfield & Iaquinta 2000 (J. Atmos. Sci. 57)",
+    "title": "Cirrus Crystal Terminal Velocities"
+  },
+  "https://doi.org/10.1016/j.atmosres.2005.12.009": {
+    "usages": [
+      "PySDM/dynamics/terminal_velocity/columnar_ice_crystal.py",
+      "PySDM/physics/terminal_velocity_ice/columnar_ice_crystal.py"
+    ],
+    "label": "Barthazy and Schefold 2006 (Atmos. Res. 82)",
+    "title": "Fall velocity of snowflakes of different riming degree and crystal types"
+  },
+  "https://www.ap.uj.edu.pl/diplomas/attachments/file/download/125485": {
+    "usages": [
+      "PySDM/backends/impl_numba/methods/condensation_methods.py",
+      "PySDM/dynamics/condensation.py",
+      "PySDM/products/condensation/condensation_timestep.py"
+    ],
+    "label": "Bartman 2020 (MSc thesis)",
+    "title": "PySDM v1.0: Pythonic particle-based cloud microphysics package"
+  },
+    "https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf" : {
+    "usages": [
+      "tests/unit_tests/physics/test_constants.py"
+    ],
+    "label": "Hayes 2004",
+    "title": "An Introduction to Isotopic Calculations"
   }
 }

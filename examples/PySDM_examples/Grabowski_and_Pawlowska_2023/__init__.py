@@ -18,5 +18,6 @@ figure_4.ipynb:
 figure_ripening_rate.ipynb:
 .. include:: ./figure_ripening_rate.ipynb.badges.md
 """
+
 from .settings import Settings
 from .simulation import Simulation

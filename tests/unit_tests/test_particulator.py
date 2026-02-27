@@ -27,34 +27,23 @@ class TestParticulator:
         assert observer.steps == steps
 
     @staticmethod
-    @pytest.mark.parametrize("isotopes", (("1H",), ("1H", "2H"), ("16O", "17I", "18O")))
-    def test_isotopic_fractionation_marks_moles_as_updated(
-        backend_class, isotopes: tuple
-    ):
-        # arrange
-        class AttributesMock:
-            def __init__(self):
-                self.updated = []
+    def test_initialiser(backend_class):
+        class Initialiser:  # pylint: disable=too-few-public-methods
+            def __init__(self, particulator):
+                self.particulator = particulator
+                self.particulator.initialisers.append(self)
+                self.if_setup = False
 
-            def __getitem__(self, item):
-                return
+            def setup(self):
+                self.if_setup = True
 
-            def mark_updated(self, attr):
-                self.updated += [attr]
+        steps = -1
 
-        class DP(DummyParticulator):
-            pass
+        particulator = DummyParticulator(backend_class, 44)
+        initialiser = Initialiser(particulator)
+        particulator.run(steps)
 
-        particulator = DP(backend_class, 44)
-        particulator.attributes = AttributesMock()
-
-        # act
-        particulator.isotopic_fractionation(heavy_isotopes=isotopes)
-
-        # assert
-        assert particulator.attributes.updated == [
-            f"moles_{isotope}" for isotope in isotopes
-        ]
+        assert initialiser.if_setup
 
     @staticmethod
     def test_seeding_marks_modified_attributes_as_updated(backend_class):
@@ -121,7 +110,7 @@ class TestParticulator:
         assert particulator.attributes.sane
 
     @staticmethod
-    def test_seeding_fails_if_no_null_super_droplets_availale(backend_class):
+    def test_seeding_fails_if_no_null_super_droplets_available(backend_class):
         # arrange
         a_number = 44
 

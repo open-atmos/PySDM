@@ -7,7 +7,7 @@ from matplotlib import pyplot
 from scipy import signal
 
 from PySDM import Builder, Formulae, products
-from PySDM.backends import CPU, GPU
+from PySDM.backends import Numba, ThrustRTC
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation import discretise_multiplicities
@@ -19,7 +19,9 @@ from PySDM.physics import si
 FORMULAE = Formulae()
 SPECTRUM = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 N_SD = 64
-R_DRY, specific_concentration = spectral_sampling.Logarithmic(SPECTRUM).sample(N_SD)
+R_DRY, specific_concentration = spectral_sampling.Logarithmic(
+    SPECTRUM
+).sample_deterministic(N_SD)
 V_DRY = FORMULAE.trivia.volume(radius=R_DRY)
 KAPPA = 0.5
 CLOUD_RANGE = (0.5 * si.um, 25 * si.um)
@@ -31,9 +33,9 @@ class TestParcelSanityChecks:
     @pytest.mark.parametrize(
         "backend_class",
         (
-            CPU,
+            Numba,
             pytest.param(
-                GPU,
+                ThrustRTC,
                 marks=pytest.mark.xfail(
                     strict=True,
                     reason="TODO #1117 (works with CUDA!)",

@@ -7,6 +7,8 @@ import platform
 import warnings
 
 import numba
+from numba import prange
+import numpy as np
 
 from PySDM.backends.impl_numba import methods
 from PySDM.backends.impl_numba.random import Random as ImportedRandom
@@ -36,28 +38,52 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
     default_croupier = "local"
 
-    def __init__(self, formulae=None, double_precision=True, override_jit_flags=None):
+    def __init__(
+        self, formulae=None, *, double_precision=True, override_jit_flags=None
+    ):
         if not double_precision:
             raise NotImplementedError()
         self.formulae = formulae or Formulae()
         self.formulae_flattened = self.formulae.flatten
 
         parallel_default = True
-        if platform.machine() == "arm64":
-            if "CI" not in os.environ:
-                warnings.warn(
-                    "Disabling Numba threading due to ARM64 CPU (atomics do not work yet)"
-                )
-            parallel_default = False  # TODO #1183 - atomics don't work on ARM64!
 
-        try:
-            numba.parfors.parfor.ensure_parallel_support()
-        except numba.core.errors.UnsupportedParforsError:
-            if "CI" not in os.environ:
-                warnings.warn(
-                    "Numba version used does not support parallel for (32 bits?)"
-                )
-            parallel_default = False
+        if override_jit_flags is not None and "parallel" in override_jit_flags:
+            parallel_default = override_jit_flags["parallel"]
+
+        if parallel_default:
+            if platform.machine() == "arm64":
+                if "CI" not in os.environ:
+                    warnings.warn(
+                        "Disabling Numba threading due to ARM64 CPU (atomics do not work yet)"
+                    )
+                parallel_default = False  # TODO #1183 - atomics don't work on ARM64!
+
+            try:
+                numba.parfors.parfor.ensure_parallel_support()
+            except numba.core.errors.UnsupportedParforsError:
+                if "CI" not in os.environ:
+                    warnings.warn(
+                        "Numba version used does not support parallel for (32 bits?)"
+                    )
+                parallel_default = False
+
+            if not numba.config.DISABLE_JIT:  # pylint: disable=no-member
+
+                @numba.jit(parallel=True, nopython=True)
+                def fill_array_with_thread_id(arr):
+                    """writes thread id to corresponding array element"""
+                    for i in prange(  # pylint: disable=not-an-iterable
+                        numba.get_num_threads()
+                    ):
+                        arr[i] = numba.get_thread_id()
+
+                fill_array_with_thread_id(arr := np.full(numba.get_num_threads(), -1))
+                if not max(arr) == arr[-1] == numba.get_num_threads() - 1:
+                    raise ValueError(
+                        "Numba threading enabled but does not work"
+                        " (try other setting of the NUMBA_THREADING_LAYER env var?)"
+                    )
 
         assert "fastmath" not in (override_jit_flags or {})
         self.default_jit_flags = {

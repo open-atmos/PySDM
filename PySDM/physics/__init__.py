@@ -52,6 +52,7 @@ from . import (
     ventilation,
     air_dynamic_viscosity,
     terminal_velocity,
+    terminal_velocity_ice,
     bulk_phase_partitioning,
     turbulent_relaxation_timescale,
 )

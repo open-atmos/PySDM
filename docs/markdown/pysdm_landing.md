@@ -71,7 +71,7 @@ In these cases, non-SI units should be always indicated in variable names,
   - `pressure_hPa` to use hectopascals.
 
 However, such conversions are best to be done
-  on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`.
+  on-the-fly avoiding storage of non-SI values in variables (e.g., `plot(pressure / si.hPa)`).
 
 ### Dimensional Analysis
 By default, the `si` object contains bare multipliers corresponding to SI prefixes.
@@ -96,7 +96,6 @@ It is a [`Coalescence`](https://open-atmos.github.io/PySDM/PySDM/dynamics/collis
 
 ```Julia
 Pkg.add("Plots")
-Pkg.add("PlotlyJS")
 
 ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
 Exponential = pyimport("PySDM.initialisation.spectra").Exponential
@@ -104,7 +103,7 @@ Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(spectrum=initial_spectrum).sample_deterministic(n_sd)
 ```
 </details>
 <details>
@@ -120,7 +119,7 @@ initial_spectrum = Exponential(pyargs(...
     'norm_factor', 8.39e12, ...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
-tmp = ConstantMultiplicity(initial_spectrum).sample(int32(n_sd));
+tmp = ConstantMultiplicity(initial_spectrum).sample_deterministic(int32(n_sd));
 attributes = py.dict(pyargs('volume', tmp{1}, 'multiplicity', tmp{2}));
 ```
 </details>
@@ -134,7 +133,7 @@ from PySDM.initialisation.spectra.exponential import Exponential
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['multiplicity'] = ConstantMultiplicity(initial_spectrum).sample_deterministic(n_sd)
 ```
 </details>
 
@@ -229,7 +228,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-using Plots; plotlyjs()
+using Plots; gr()
 
 for step = 0:1200:3600
     particulator.run(step - particulator.n_steps)
@@ -324,7 +323,7 @@ The component submodules used to create this simulation are visualized below:
     IS["initial_spectrum :Exponential"] -->|passed as arg to| CM_INIT
     CM_INIT(["ConstantMultiplicity.__init__()"]) -->|instantiates| CM_INSTANCE
     CM_INSTANCE[":ConstantMultiplicity"] -.-|has a method| SAMPLE
-    SAMPLE(["ConstantMultiplicity.sample()"]) -->|returns| n
+    SAMPLE(["ConstantMultiplicity.sample_deterministic()"]) -->|returns| n
     SAMPLE -->|returns| volume
     n -->|added as element of| ATTRIBUTES
     PARTICULATOR_INSTANCE -.-|has a method| PARTICULATOR_RUN(["Particulator.run()"])
@@ -381,7 +380,7 @@ and the
 
 ```Julia
 using PyCall
-using Plots; plotlyjs()
+using Plots; gr()
 si = pyimport("PySDM.physics").si
 spectral_sampling = pyimport("PySDM.initialisation.sampling").spectral_sampling
 discretise_multiplicities = pyimport("PySDM.initialisation").discretise_multiplicities
@@ -415,7 +414,7 @@ builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
@@ -496,7 +495,7 @@ builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environ
 builder.add_dynamic(AmbientThermodynamics());
 builder.add_dynamic(Condensation());
 
-tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
+tmp = spectral_sampling.Logarithmic(spectrum).sample_deterministic(int32(n_sd));
 r_dry = tmp{1};
 v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
@@ -597,7 +596,7 @@ builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=builder.particulator.environment, kappa_times_dry_volume=kappa * v_dry)
 
@@ -663,8 +662,8 @@ mindmap
         ...
       (...)
     ((backends))
-      CPU
-      GPU
+      Numba
+      ThrustRTC
     ((dynamics))
       AqueousChemistry
       Collision
@@ -727,7 +726,7 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - PALM LES (Fortran):
   https://gitlab.palm-model.org/releases/palm_model_system/-/blob/master/packages/palm/model/src/lagrangian_particle_model_mod.f90
 - libcloudph++ (C++):
-  https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
+  https://github.com/igfuw/libcloudphxx/blob/master/src/impl/coalescence/particles_impl_coal.ipp
 - LCM1D (Python)
   https://github.com/SimonUnterstrasser/ColumnModel
 - superdroplet (Cython/Numba/C++11/Fortran 2008/Julia)
