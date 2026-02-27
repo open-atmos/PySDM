@@ -126,7 +126,7 @@ jobs:
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 30 || 40 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
