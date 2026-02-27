@@ -201,7 +201,6 @@ class GUISettings:
         self.kernel = settings.kernel
         self.spectrum_per_mass_of_dry_air = settings.spectrum_per_mass_of_dry_air
         self.coalescence_dt_coal_range = settings.coalescence_dt_coal_range
-        self.coalescence_optimized_random = settings.coalescence_optimized_random
         self.coalescence_substeps = settings.coalescence_substeps
         self.freezing_inp_frac = settings.freezing_inp_frac
         self.coalescence_efficiency = settings.coalescence_efficiency
