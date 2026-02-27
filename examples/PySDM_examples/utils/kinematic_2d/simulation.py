@@ -21,11 +21,11 @@ from PySDM.initialisation.sampling import spatial_sampling
 
 
 class Simulation:
-    def __init__(self, settings, storage, SpinUp, backend_class=CPU):
+    def __init__(self, settings, storage, SpinUp, backend=None):
         self.settings = settings
         self.storage = storage
         self.particulator = None
-        self.backend_class = backend_class
+        self.backend = backend or CPU()
         self.SpinUp = SpinUp
 
     @property
@@ -34,7 +34,7 @@ class Simulation:
 
     def reinit(self, products=None):
         formulae = self.settings.formulae
-        backend = self.backend_class(formulae=formulae)
+        backend = self.backend
         environment = Kinematic2D(
             dt=self.settings.dt,
             grid=self.settings.grid,

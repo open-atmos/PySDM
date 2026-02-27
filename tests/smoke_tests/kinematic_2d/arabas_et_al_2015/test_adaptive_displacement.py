@@ -6,7 +6,6 @@ from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM_examples.utils.kinematic_2d import Simulation
 
 from PySDM import Formulae
-from PySDM.backends import CPU
 from PySDM.physics import si
 from PySDM.products import SuperDropletCountPerGridbox
 
@@ -41,7 +40,7 @@ def test_adaptive_displacement(rtol, plot=False):
     settings.processes["condensation"] = False
 
     storage = DummyStorage()
-    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend_class=CPU)
+    simulation = Simulation(settings, storage, SpinUp=SpinUp)
     simulation.reinit(products=[SuperDropletCountPerGridbox()])
 
     # Act
