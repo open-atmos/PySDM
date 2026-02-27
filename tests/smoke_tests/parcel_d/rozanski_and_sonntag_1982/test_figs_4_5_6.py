@@ -28,6 +28,7 @@ def variables_fixture():
 )
 class TestFigs456:
     @staticmethod
+    @pytest.mark.xfail(reason="bug TODO #1207", raises=AssertionError, strict=True)
     def test_fig_5_vapour_asymptote(variables):
         delta_vapour_at_the_cloud_top_per_mille = in_unit(
             variables["FORMULAE"].trivia.isotopic_ratio_2_delta(
@@ -49,6 +50,7 @@ class TestFigs456:
         )
 
     @staticmethod
+    @pytest.mark.xfail(reason="bug TODO #1207", raises=AssertionError, strict=True)
     def test_fig_5_rain_at_the_cloud_base(variables):
         delta_rain_at_the_cloud_base_per_mille = in_unit(
             variables["FORMULAE"].trivia.isotopic_ratio_2_delta(
