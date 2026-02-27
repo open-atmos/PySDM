@@ -899,7 +899,8 @@
       "examples/PySDM_examples/Jouzel_and_Merlivat_1984/fig_8_9.ipynb",
       "examples/PySDM_examples/Jouzel_and_Merlivat_1984/thermodynamic_profiles.py",
       "tests/unit_tests/physics/test_isotope_kinetic_fractionation_factors.py",
-      "examples/PySDM_examples/Fisher_1991/__init__.py"
+      "examples/PySDM_examples/Fisher_1991/__init__.py",
+      "tests/smoke_tests/no_env/jouzel_and_merlivat_1984/test_fig_8.py"
     ],
     "title": "Deuterium and oxygen 18 in precipitation: Modeling of the isotopic effects during snow formation",
     "label": "Jouzel & Merlivat 1984 (J. Geophys. Res. Atmos. 89)"
