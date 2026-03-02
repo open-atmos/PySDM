@@ -555,7 +555,8 @@
   "https://doi.org/10.1175/1520-0493(1980)108%3C1046:TCOEPT%3E2.0.CO;2": {
     "usages": [
       "PySDM/physics/saturation_vapour_pressure/bolton_1980.py",
-      "PySDM/physics/constants_defaults.py"
+      "PySDM/physics/constants_defaults.py",
+      "examples/PySDM_examples/Dziekan_et_al_2026/adaptive_substepping/adaptive_substepping.ipynb"
     ],
     "label": "Bolton 1980 (Mon. Weather Rev. 108)",
     "title": "The Computation of Equivalent Potential Temperature"
