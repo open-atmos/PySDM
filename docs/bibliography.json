@@ -789,7 +789,8 @@
   "https://doi.org/10.1007/978-0-306-48100-0": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py"
+      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py",
+      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2005.py"
     ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
