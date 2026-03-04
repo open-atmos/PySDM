@@ -1,5 +1,5 @@
 """
-as in Pruppacher and Klett 2005 (eq. 13-14)
+as in [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) (eq. 13-14)
 with reference to [Okuyama and Zung 1967](https://doi.org/10.1063/1.1840906)
 """
 
