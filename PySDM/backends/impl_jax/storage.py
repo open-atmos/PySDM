@@ -4,8 +4,6 @@ CPU Numpy-based implementation of Storage class
 
 import jax.numpy as jnp
 import numpy as np
-import jax
-import time
 
 from PySDM.backends.impl_common.storage_utils import (
     StorageBase,
