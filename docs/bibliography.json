@@ -251,7 +251,7 @@
   },
   "https://doi.org/10.1063/1.1840906": {
     "usages": [
-      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2005.py"
+      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2010.py"
     ],
     "label": "Okuyama & Zung 1967 (J. Chem. Phys. 1967)",
     "title": "Evaporation—Condensation Coefficient for Small Droplets"
@@ -790,7 +790,7 @@
     "usages": [
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py",
-      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2005.py"
+      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2010.py"
     ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
