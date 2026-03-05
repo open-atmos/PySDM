@@ -5,7 +5,7 @@ Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 import jax
 
 from PySDM.backends.impl_jax import methods
-from PySDM.backends.impl_numba.random import Random as ImportedRandom
+from PySDM.backends.impl_jax.random import Random as ImportedRandom
 from PySDM.backends.impl_jax.storage import Storage as ImportedStorage
 from PySDM.formulae import Formulae
 
