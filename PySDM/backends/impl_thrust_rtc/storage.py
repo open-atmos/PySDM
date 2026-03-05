@@ -564,7 +564,8 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             return self
 
         def row_view(self, i):
-            raise NotImplementedError()
+            return self.data.view(self.shape[1] * i, self.shape[1] * (i + 1))
+            # raise NotImplementedError()
 
         def exp(self):
             Impl.exp(self)
