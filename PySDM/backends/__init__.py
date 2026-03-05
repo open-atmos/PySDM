@@ -11,11 +11,14 @@ import warnings
 from numba import cuda
 
 from . import numba as _numba
+from . import jax as _jax
 
 # for pdoc
 CPU = None
 GPU = None
+JAX = None
 Numba = _numba.Numba
+Jax = _jax.Jax
 ThrustRTC = None
 
 
@@ -93,3 +96,5 @@ CPU = partial(_cached_backend, backend_class=Numba)
 
 GPU = partial(_cached_backend, backend_class=ThrustRTC)
 """ returns a cached instance of the ThrustRTC backend (cache key including formulae parameters) """
+
+JAX = partial(_cached_backend, backend_class=Jax)
