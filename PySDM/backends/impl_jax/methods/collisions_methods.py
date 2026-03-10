@@ -96,19 +96,33 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme="default"):
-        return None
+        class DummyCaretaker:
+            def __call__(self, *args, **kwds):
+                return
+
+        return DummyCaretaker()
 
     @cached_property
     def _normalize_body(self):
         # pylint: disable=too-many-arguments
-        def body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-            raise NotImplementedError()
+        def body(prob, cell_start, timestep, dv, i):
+            sd_num = cell_start[1] - cell_start[0]
+            norm_factor = timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+            prob.at[i].set(norm_factor)
+            return prob
 
         return body
 
     # pylint: disable=too-many-arguments
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-        raise NotImplementedError()
+        indices = jax.numpy.arange(prob.shape[0])
+        temp_prob = jax.numpy.empty(prob.shape)
+
+        normalize_func = jax.vmap(self._normalize_body, (None, None, None, None, 0))
+
+        temp_prob = normalize_func(temp_prob, cell_start.data, timestep, dv, indices)
+
+        prob.data = jax.numpy.sum(temp_prob, axis=0)
 
     @staticmethod
     # pylint: disable=too-many-arguments

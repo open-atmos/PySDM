@@ -15,6 +15,7 @@ class IndexMethods(BackendMethods):
     def shuffle_local(self):
         @jax.jit
         def body(idx, u01, cell_start):
-            raise NotImplementedError()
+            # IMPLEMENT
+            return
 
         return body

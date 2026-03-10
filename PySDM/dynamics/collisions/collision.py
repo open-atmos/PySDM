@@ -275,7 +275,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
                 warnings.warn("adaptive time-step reached dt_min")
-        else:
+        elif self.__substeps > 1:
             prob /= self.__substeps
 
         self.particulator.backend.compute_gamma(

@@ -39,10 +39,7 @@ class Storage(StorageBase):
         return self
 
     def __itruediv__(self, other):
-        if hasattr(other, "data"):
-            self.data[:] /= other.data[:]
-        else:
-            self.data[:] /= other
+        # IMPLEMENT
         return self
 
     def download(self, target, reshape=False):
