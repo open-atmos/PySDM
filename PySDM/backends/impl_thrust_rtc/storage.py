@@ -563,6 +563,10 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 trtc.Fill(self.data, dvalue)
             return self
 
+        def row_view(self, i):
+            return self.data.view(self.shape[1] * i, self.shape[1] * (i + 1))
+            # raise NotImplementedError()
+
         def exp(self):
             Impl.exp(self)
             return self
