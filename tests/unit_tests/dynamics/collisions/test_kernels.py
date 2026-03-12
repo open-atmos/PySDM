@@ -4,7 +4,11 @@ import pytest
 
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.dynamics.collisions.collision_kernels import Golovin, SimpleGeometric
+from PySDM.dynamics.collisions.collision_kernels import (
+    Golovin,
+    SimpleGeometric,
+    Long1974,
+)
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
 
@@ -86,3 +90,37 @@ class TestKernels:
             np.testing.assert_array_equal([0.0, 0.0], output.to_ndarray())
         else:
             np.testing.assert_array_less([0.0, 0.0], output.to_ndarray())
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "radius", (np.array([49e-6, 1e-6]), np.array([50e-6, 1e-6]))
+    )
+    def test_long1974_regimes(radius, backend_class):
+        # arrange
+        env = Box(dv=None, dt=None)
+        builder = Builder(backend=backend_class(), n_sd=radius.size, environment=env)
+        sut = Long1974()
+        sut.register(builder)
+        volume = 4 / 3 * np.pi * radius**3
+        _ = builder.build(
+            attributes={"volume": volume, "multiplicity": np.ones_like(volume)}
+        )
+
+        _PairwiseStorage = builder.particulator.PairwiseStorage
+        _Indicator = builder.particulator.PairIndicator
+        output = _PairwiseStorage.from_ndarray(np.array([0.0]))
+        is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
+
+        # act
+        sut(output, is_first_in_pair=is_first_in_pair)
+
+        radius_lg = np.max(radius.data)
+
+        # assert
+        if radius_lg < 50e-6:
+            np.testing.assert_array_less(output.to_ndarray(), [3.0e-9])
+        else:
+            np.testing.assert_array_less([3.0e-9], output.to_ndarray())
