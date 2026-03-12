@@ -14,9 +14,9 @@ class Simulation:
         self,
         *,
         cases,
-        n_sd=100,
+        n_sd=1000,
         n_runs_per_case=1,
-        time_step=1 * si.s,
+        temperature_step=0.1 * si.K,
         droplet_radius=10 * si.um,
         homogeneous_ice_nucleation_rate="KoopMurray2016",
         temperature_range=None,
@@ -24,7 +24,7 @@ class Simulation:
         self.cases = cases
         self.n_sd = n_sd
         self.n_runs_per_case = n_runs_per_case
-        self.time_step = time_step
+        self.temperature_step = temperature_step
         self.droplet_radius = droplet_radius
         self.homogeneous_ice_nucleation_rate = homogeneous_ice_nucleation_rate
         if temperature_range is None:
@@ -42,12 +42,14 @@ class Simulation:
             total_time = (
                 np.diff(np.asarray(self.temperature_range)) / case["cooling_rate"]
             )
+            time_step = self.temperature_step / case["cooling_rate"]
+
             self.output[key] = []
             for i in range(self.n_runs_per_case):
                 T_frz = simulation(
                     seed=i,
                     n_sd=self.n_sd,
-                    time_step=self.time_step,
+                    time_step=time_step,
                     volume=self.volume,
                     droplet_radius=self.droplet_radius,
                     cooling_rate=case["cooling_rate"],
@@ -94,9 +96,9 @@ class Simulation:
                 + "µm"
                 + r"   $\mathrm{N_{sd}}:$ "
                 + str(self.n_sd)
-                + "   dt: "
-                + f"{self.time_step:.2f}"
-                + "s"
+                + "   dT: "
+                + f"{self.temperature_step:.2f}"
+                + "K"
             )
         pyplot.title(title, pad=15)
         pyplot.xlim(*self.temperature_range)
