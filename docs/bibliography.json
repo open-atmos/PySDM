@@ -1012,5 +1012,13 @@
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
+  },
+    "https://doi.org/10.1039/c003297b": {
+    "usages": [
+      "examples/PySDM_examples/Murray_et_al_2010/fig_3.ipynb",
+      "examples/PySDM_examples/Murray_et_al_2010/__init__.py"
+    ],
+    "title": "Kinetics of the homogeneous freezing of water",
+    "label": "Murray et al. 2010 (Phys. Chem. Chem. Phys. 12)"
   }
 }
