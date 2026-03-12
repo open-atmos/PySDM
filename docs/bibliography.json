@@ -940,6 +940,7 @@
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
+      "PySDM/physics/homogeneous_ice_nucleation_rate/koop_murray_dwa_adaption.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/fig_B1.ipynb",
@@ -1012,5 +1013,13 @@
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
+  },
+    "https://doi.org/10.1039/c003297b": {
+    "usages": [
+      "examples/PySDM_examples/Murray_et_al_2010/fig_3.ipynb",
+      "examples/PySDM_examples/Murray_et_al_2010/__init__.py"
+    ],
+    "title": "Kinetics of the homogeneous freezing of water",
+    "label": "Murray et al. 2010 (Phys. Chem. Chem. Phys. 12)"
   }
 }
