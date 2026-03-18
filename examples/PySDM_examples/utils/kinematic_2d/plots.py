@@ -14,7 +14,7 @@ class _ImagePlot(_Plot):
     line_args = {"color": "red", "alpha": 0.666, "linestyle": ":", "linewidth": 3}
 
     def __init__(
-        self, fig, ax, grid, size, product, show=False, lines=False, cmap="YlGnBu"
+        self, fig, ax, grid, size, product, *, show=False, lines=False, cmap="YlGnBu"
     ):
         super().__init__(fig, ax)
         self.nans = np.full(grid, np.nan)
