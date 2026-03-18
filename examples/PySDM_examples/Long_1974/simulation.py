@@ -1,4 +1,3 @@
-import numpy as np
 from PySDM_examples.utils import BasicSimulation
 
 from PySDM.backends import CPU
