@@ -307,24 +307,24 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             )
 
         __where_body = trtc.For(
-            param_names=("output", "condition", "true_value", "false_value"),
+            param_names=("output", "condition", "t_value", "f_value"),
             name_iter="i",
             body="""
             if (condition[i]) {
-                output[i] = true_value[i]
+                output[i] = t_value[i]
             }
             else {
-                output[i] = false_value[i]
+                output[i] = f_value[i]
             }
             """,
         )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
-        def where(output, condition, true_value, false_value):
+        def where(output, condition, t_value, f_value):
             Impl.__where_body.launch_n(
                 n=(output.shape[0]),
-                args=(Impl.thrust((output, condition, true_value, false_value))),
+                args=(Impl.thrust((output, condition, t_value, f_value))),
             )
 
         __isless_body = trtc.For(
@@ -589,6 +589,14 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
 
         def divide_if_not_zero(self, divisor):
             Impl.divide_if_not_zero(self, divisor)
+            return self
+        
+        def where(self, condition, t_value, f_value):
+            Impl.where(self, condition, t_value, f_value)
+            return self
+        
+        def isless(self, comparison, value):
+            Impl.isless(self, comparison, value)
             return self
 
         def fill(self, other):
