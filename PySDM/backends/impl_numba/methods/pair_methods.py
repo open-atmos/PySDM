@@ -145,9 +145,8 @@ class PairMethods(BackendMethods):
         def body(data_out, data_in, is_first_in_pair, idx, length):
             data_out[:] = 0
             for i in numba.prange(length):  # pylint: disable=not-an-iterable
-                data_out[i // 2] = (
-                    data_in[idx[i]] + data_in[idx[i + 1]]
-                ) * is_first_in_pair[i]
+                if is_first_in_pair[i]:
+                    data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]
 
         return body
 
