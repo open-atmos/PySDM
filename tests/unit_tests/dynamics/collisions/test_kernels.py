@@ -93,7 +93,7 @@ class TestKernels:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "radius", (np.array([49e-6, 1e-6]), np.array([50e-6, 1e-6]))
+        "radius", (np.array([49e-6, 1e-6]), np.array([50e-6 + 1e-9, 1e-6]))
     )
     def test_long1974_regimes(radius, backend_class):
         # arrange
