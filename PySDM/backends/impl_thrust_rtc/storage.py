@@ -590,11 +590,11 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
         def divide_if_not_zero(self, divisor):
             Impl.divide_if_not_zero(self, divisor)
             return self
-        
+
         def where(self, condition, t_value, f_value):
             Impl.where(self, condition, t_value, f_value)
             return self
-        
+
         def isless(self, comparison, value):
             Impl.isless(self, comparison, value)
             return self
