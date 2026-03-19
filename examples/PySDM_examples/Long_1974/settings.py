@@ -1,5 +1,4 @@
 import numpy as np
-from PySDM import Formulae
 from PySDM.physics import si
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.initialisation.spectra import Gamma
