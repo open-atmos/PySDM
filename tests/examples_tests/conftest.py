@@ -136,6 +136,7 @@ TEST_SUITES = {
         "Spichtinger_et_al_2023",
         "Ware_et_al_2025",
         "Matsushima_et_al_2023",
+        "Long_1974",
     ],
     "multi-process_a": [
         "Arabas_et_al_2015",
