@@ -13,7 +13,7 @@ class Simulation(BasicSimulation):
     def __init__(self, settings, products=None):
         builder = Builder(
             n_sd=settings.n_sd,
-            backend=CPU(settings.formulae),
+            backend=CPU(),
             environment=Box(dv=settings.dv, dt=settings.dt),
         )
         builder.particulator.environment["rhod"] = settings.rhod
