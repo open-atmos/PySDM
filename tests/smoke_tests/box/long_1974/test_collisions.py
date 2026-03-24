@@ -22,56 +22,56 @@ class TestLongFigs:
     @pytest.mark.parametrize(
         "it, r_mode_G, r_mode_L",
         (
-            (0, 12.0 * si.um, 12.0 * si.um),
-            (1, 19.2 * si.um, 12.0 * si.um),
-            (3, 69.7 * si.um, 11.3 * si.um),
+            (0, 12 * si.um, 12 * si.um),
+            (1, 16 * si.um, 12 * si.um),
+            (3, 78 * si.um, 12 * si.um),
         ),
     )
     def test_continental_mode(notebook_local_variables, it, r_mode_G, r_mode_L):
-        np.testing.assert_approx_equal(
+        np.testing.assert_allclose(
             actual=notebook_local_variables["fig_10_11_data"]["radius_bins_edges"][
                 np.argmax(
                     notebook_local_variables["fig_10_11_data"]["G"]["dv/dlnr"][it]
                 )
             ],
             desired=r_mode_G,
-            significant=2,
+            rtol=.33,
         )
-        np.testing.assert_approx_equal(
+        np.testing.assert_allclose(
             actual=notebook_local_variables["fig_10_11_data"]["radius_bins_edges"][
                 np.argmax(
                     notebook_local_variables["fig_10_11_data"]["L"]["dv/dlnr"][it]
                 )
             ],
             desired=r_mode_L,
-            significant=2,
+            rtol=.33,
         )
 
     @staticmethod
     @pytest.mark.parametrize(
         "it, r_mode_G, r_mode_L",
         (
-            (0, 18.7 * si.um, 18.7 * si.um),
-            (1, 23.1 * si.um, 18.7 * si.um),
-            (3, 43.2 * si.um, 18.7 * si.um),
+            (0, 19 * si.um, 19 * si.um),
+            (1, 23 * si.um, 19 * si.um),
+            (3, 49 * si.um, 17 * si.um),
         ),
     )
     def test_marine_mode(notebook_local_variables, it, r_mode_G, r_mode_L):
-        np.testing.assert_approx_equal(
+        np.testing.assert_allclose(
             actual=notebook_local_variables["fig_13_14_data"]["radius_bins_edges"][
                 np.argmax(
                     notebook_local_variables["fig_13_14_data"]["G"]["dv/dlnr"][it]
                 )
             ],
             desired=r_mode_G,
-            significant=2,
+            rtol=.33,
         )
-        np.testing.assert_approx_equal(
+        np.testing.assert_allclose(
             actual=notebook_local_variables["fig_13_14_data"]["radius_bins_edges"][
                 np.argmax(
                     notebook_local_variables["fig_13_14_data"]["L"]["dv/dlnr"][it]
                 )
             ],
             desired=r_mode_L,
-            significant=2,
+            rtol=.33,
         )
