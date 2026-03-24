@@ -35,7 +35,7 @@ class TestLongFigs:
                 )
             ],
             desired=r_mode_G,
-            rtol=.33,
+            rtol=0.33,
         )
         np.testing.assert_allclose(
             actual=notebook_local_variables["fig_10_11_data"]["radius_bins_edges"][
@@ -44,7 +44,7 @@ class TestLongFigs:
                 )
             ],
             desired=r_mode_L,
-            rtol=.33,
+            rtol=0.33,
         )
 
     @staticmethod
@@ -64,7 +64,7 @@ class TestLongFigs:
                 )
             ],
             desired=r_mode_G,
-            rtol=.33,
+            rtol=0.33,
         )
         np.testing.assert_allclose(
             actual=notebook_local_variables["fig_13_14_data"]["radius_bins_edges"][
@@ -73,5 +73,5 @@ class TestLongFigs:
                 )
             ],
             desired=r_mode_L,
-            rtol=.33,
+            rtol=0.33,
         )
