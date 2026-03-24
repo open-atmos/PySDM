@@ -30,7 +30,9 @@ class Settings:  # pylint: disable=too-many-instance-attributes,too-few-public-m
         self.k = 2.0
 
         self.X0 = L / self.k / self.n_part
-        self.spectrum = Gamma(norm_factor=self.n_part * self.dv, k=self.k, theta=self.X0)
+        self.spectrum = Gamma(
+            norm_factor=self.n_part * self.dv, k=self.k, theta=self.X0
+        )
         self.radius_bins_edges = radius_bins_edges
 
     @property

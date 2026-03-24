@@ -29,14 +29,22 @@ class TestLongFigs:
     )
     def test_continental_mode(notebook_local_variables, it, r_mode_G, r_mode_L):
         np.testing.assert_approx_equal(
-            actual=notebook_local_variables['fig_10_11_data']['radius_bins_edges'][np.argmax(notebook_local_variables['fig_10_11_data']['G']['dv/dlnr'][it])],
-            desired=r_mode_G, 
-            significant=2
+            actual=notebook_local_variables["fig_10_11_data"]["radius_bins_edges"][
+                np.argmax(
+                    notebook_local_variables["fig_10_11_data"]["G"]["dv/dlnr"][it]
+                )
+            ],
+            desired=r_mode_G,
+            significant=2,
         )
         np.testing.assert_approx_equal(
-            actual=notebook_local_variables['fig_10_11_data']['radius_bins_edges'][np.argmax(notebook_local_variables['fig_10_11_data']['L']['dv/dlnr'][it])],
-            desired=r_mode_L, 
-            significant=2
+            actual=notebook_local_variables["fig_10_11_data"]["radius_bins_edges"][
+                np.argmax(
+                    notebook_local_variables["fig_10_11_data"]["L"]["dv/dlnr"][it]
+                )
+            ],
+            desired=r_mode_L,
+            significant=2,
         )
 
     @staticmethod
@@ -50,12 +58,20 @@ class TestLongFigs:
     )
     def test_marine_mode(notebook_local_variables, it, r_mode_G, r_mode_L):
         np.testing.assert_approx_equal(
-            actual=notebook_local_variables['fig_13_14_data']['radius_bins_edges'][np.argmax(notebook_local_variables['fig_13_14_data']['G']['dv/dlnr'][it])],
-            desired=r_mode_G, 
-            significant=2
+            actual=notebook_local_variables["fig_13_14_data"]["radius_bins_edges"][
+                np.argmax(
+                    notebook_local_variables["fig_13_14_data"]["G"]["dv/dlnr"][it]
+                )
+            ],
+            desired=r_mode_G,
+            significant=2,
         )
         np.testing.assert_approx_equal(
-            actual=notebook_local_variables['fig_13_14_data']['radius_bins_edges'][np.argmax(notebook_local_variables['fig_13_14_data']['L']['dv/dlnr'][it])],
-            desired=r_mode_L, 
-            significant=2
+            actual=notebook_local_variables["fig_13_14_data"]["radius_bins_edges"][
+                np.argmax(
+                    notebook_local_variables["fig_13_14_data"]["L"]["dv/dlnr"][it]
+                )
+            ],
+            desired=r_mode_L,
+            significant=2,
         )
