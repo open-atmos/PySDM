@@ -13,7 +13,7 @@ PLOT = False
 @pytest.fixture(scope="session", name="notebook_local_variables")
 def notebook_local_variables_fixture():
     return notebook_vars(
-        Path(Long_1974.__file__).parent / "figure_10_11_13_14.ipynb", plot=PLOT
+        Path(Long_1974.__file__).parent / "fig10_11_13_14.ipynb", plot=PLOT
     )
 
 
