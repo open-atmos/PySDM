@@ -41,7 +41,7 @@ setup(
         "CI_version_pins": [
             "PySDM[CI_version_pins]",
             "PyMPDATA==1.7.0",
-            "open-atmos-jupyter-utils==1.3.0",
+            "open-atmos-jupyter-utils==1.5.0",
             "pystrict==1.3",
             "matplotlib!=3.9.1",
             "joblib==1.5.3",
