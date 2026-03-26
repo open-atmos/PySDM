@@ -101,8 +101,8 @@ def plot_thermodynamics_and_bulk(
     iax = 0
     ax = axs[iax]
 
-    ax.plot(time, RH, color="red", linestyle="dashdot", label=r"$S_{w}$")
-    ax.plot(time, RHi, color="blue", linestyle="--", label=r"$S_{i}$")
+    ax.plot(time, RH, color="red", linestyle="dashdot", label=r"$S_\text{w}$")
+    ax.plot(time, RHi, color="blue", linestyle="--", label=r"$S_\text{i}$")
     ax.set_ylabel("saturation ratio", fontsize=ax_lab_fsize)
     ax.legend(loc="center left", fontsize=ax_lab_fsize)
     ax.set_xlim(time[0], t_lim)
@@ -118,16 +118,16 @@ def plot_thermodynamics_and_bulk(
     twin.legend(loc="upper left", fontsize=ax_lab_fsize)
     twin.tick_params(labelsize=tick_fsize)
 
-    # Mass content and number concentration
+    # mixing ratio and number concentration
     iax = 1
     ax = axs[iax]
-    ax.plot(time, qc, color="red", linestyle="dashdot", label="water")
-    ax.plot(time, qi, color="blue", linestyle="--", label="ice")
-    ax.plot(time, qv, color="black", linestyle="-", label="vapor")
+    ax.plot(time, qc, color="red", linestyle="dashdot", label=r"$q_\text{w}$")
+    ax.plot(time, qi, color="blue", linestyle="--", label=r"$q_\text{i}$")
+    ax.plot(time, qv, color="black", linestyle="-", label=r"$q_\text{v}$")
     ax.set_yscale("log")
     ax.set_ylim(1e-5, 1e-2)
     ax.set_xlabel("time [s]", fontsize=ax_lab_fsize)
-    ax.set_ylabel(r"mass content [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize)
+    ax.set_ylabel(r"mixing ratio [$\mathrm{kg \, kg^{-1}}$]", fontsize=ax_lab_fsize)
     ax.legend(fontsize=ax_lab_fsize)
     ax.tick_params(labelsize=tick_fsize)
     ax.set_xlim(time[0], t_lim)
@@ -193,14 +193,14 @@ def plot_thermodynamics_and_bulk(
             koop_murray_2016,
             color="blue",
             linestyle=lin_s_KM2016,
-            label="KM16",
+            label="JHOM-T",
         )
         ax.plot(
             time,
             spichtinger_2023,
             color="red",
             linestyle=lin_s_SP2023,
-            label="SP23",
+            label="JHOM-DWA",
         )
 
         ax.set_ylabel(
@@ -314,7 +314,7 @@ def plot_freezing_temperatures_histogram_allinone(
             mean_line,
             color=colors[k],
             linestyle=linestyles[k],
-            label=r"$N_{sd}$: " + f"{int(n_sd):5.0f}",
+            label=r"$n_\text{sd}$: " + f"{int(n_sd):5.0f}",
         )
         ax.fill_between(
             T_frz_bins_center, min_line, max_line, color=colors[k], alpha=0.2
@@ -382,7 +382,8 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     y_label, y_label_sec = "", ""
     if ens_variable_name == "w_updraft":
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
-        y_label_sec = r"cooling rate [$\mathrm{K \, s^{-1}}$]"
+        y_label_sec = r"cooling rate [$\mathrm{mK \, s^{-1}}$]"
+        ens_variable_sec = ens_variable_sec * 1e3
         binwidth = 0.25
     elif ens_variable_name == "n_ccn":
         y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
@@ -398,16 +399,15 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
 
     ens_variable_label = np.unique(np.sort(ens_variable))
 
-    xlim = (231.5, 240)
+    xlim = (232.5, 240)
     h = sns.JointGrid(
         x=T_frz_hist,
         y=ens_variable,
         xlim=xlim,
-        # ylim=(np.min(ens_variable), np.max(ens_variable)),
     )
     if y_log:
         h.ax_joint.set(yscale="log")
-    ax = h.figure.add_axes([0.15, 0.1, 0.02, 0.2])
+    # ax = h.figure.add_axes([0.15, 0.1, 0.02, 0.2])
 
     h.plot_joint(
         sns.histplot,
@@ -415,8 +415,8 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         binwidth=binwidth,
         discrete=(False, False),
         pmax=0.8,
-        cbar=True,
-        cbar_ax=ax,
+        # cbar=False,
+        # cbar_ax=ax,
     )
 
     h.plot_marginals(
@@ -434,14 +434,15 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     h.ax_marg_x.tick_params(labelsize=tick_fsize)
     h.ax_marg_y.tick_params(labelsize=tick_fsize)
 
-    h.ax_joint.xaxis.set_major_locator(ticker.MultipleLocator(1))
+    h.ax_joint.xaxis.set_major_locator(ticker.MultipleLocator(2, offset=1))
+    h.ax_joint.xaxis.set_minor_locator(ticker.MultipleLocator(1, offset=1))
     h.ax_marg_y.remove()
 
     if second_axis:
 
         ax2 = h.ax_joint.secondary_yaxis("right", functions=(lambda y: y, lambda y: y))
         ax2.set_yticks(ens_variable_label)
-        ax2.set_yticklabels([f"{v:.3f}" for v in ens_variable_sec])
+        ax2.set_yticklabels([f"{v:.1f}" for v in ens_variable_sec])
         ax2.minorticks_off()
         ax2.tick_params(
             axis="y",
@@ -455,7 +456,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
 
     h.fig.set_size_inches(width, height)
 
-    return ax
+    return
 
 
 def plot_ensemble_bulk(
@@ -523,22 +524,22 @@ def plot_ensemble_bulk(
     if var_name == "ni":
         ax.set_xscale("log")
         x_label = r"ice number concentration [$\mathrm{kg^{-1}}$]"
-        title = r"$n_{i}$"
+        title = r"$n_\text{i}$"
         ax.set_xlim(1e6, 1e10)
     elif var_name == "IWC":
         ax.set_xscale("log")
-        x_label = r"mass content [$\mathrm{kg \, kg^{-1}}$]"
-        title = "ice mass content"
+        x_label = r"mixing ratio [$\mathrm{kg \, kg^{-1}}$]"
+        title = "ice mixing ratio"
         ax.set_xlim(1e-4, 1e-3)
     elif var_name == "freezing_fraction":
-        title = r"$n_{frz}$"
+        title = r"$n_\text{frz}$"
         x_label = r"frozen fraction [$\mathrm{\%}$]"
         ax.set_xlim(0, 20)
 
     if ens_var_name == "n_ccn":
         ax.set_yscale("log")
         y_label = r"ccn concentration [$\mathrm{cm^{-3}}$]"
-        ens_label = r"$n_{ccn}$ ensemble"
+        ens_label = r"$n_\text{ccn}$ ensemble"
     elif ens_var_name == "w_updraft":
         ax.set_yscale("log")
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
@@ -549,7 +550,7 @@ def plot_ensemble_bulk(
     elif ens_var_name == "n_sd":
         ax.set_yscale("log")
         y_label = "number of super-particles"
-        ens_label = r"$n_{sd}$ ensemble"
+        ens_label = r"$n_\text{sd}$ ensemble"
 
     ax.set_title(title_add + " " + title + " for " + ens_label, fontsize=ax_lab_fsize)
     ax.set_xlabel(x_label, fontsize=ax_lab_fsize)

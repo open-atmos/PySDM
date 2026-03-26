@@ -16,7 +16,7 @@ class Simulation:
         cases,
         n_sd=1000,
         n_runs_per_case=1,
-        temperature_step=0.1 * si.K,
+        temperature_step=0.01 * si.K,
         droplet_radius=10 * si.um,
         homogeneous_ice_nucleation_rate="KoopMurray2016",
         temperature_range=None,
@@ -104,7 +104,7 @@ class Simulation:
         pyplot.xlim(*self.temperature_range)
         pyplot.ylim(-0.05, 1.05)
         pyplot.xlabel("Temperature / K")
-        pyplot.ylabel("Fraction of droplets froze")
+        pyplot.ylabel("Fraction of droplets frozen")
         pyplot.minorticks_on()
         pyplot.tick_params(axis="both", which="both", top=True, right=True)
         pyplot.gca().yaxis.set_minor_locator(MultipleLocator(0.1))

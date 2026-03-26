@@ -40,16 +40,9 @@ class Simulation:
         )
 
         builder.add_dynamic(AmbientThermodynamics())
-        if settings.condensation_enable:
-            builder.add_dynamic(Condensation(adaptive=True))
-        if settings.coalescence_enable:
-            builder.add_dynamic(
-                Coalescence(collision_kernel=settings.collision_kernel, adaptive=False)
-            )
+        builder.add_dynamic(Condensation(adaptive=True))
         if settings.deposition_enable:
-            builder.add_dynamic(
-                VapourDepositionOnIce(adaptive=settings.deposition_adaptive)
-            )
+            builder.add_dynamic(VapourDepositionOnIce(adaptive=True))
         builder.add_dynamic(
             Freezing(
                 homogeneous_freezing=settings.hom_freezing_type, immersion_freezing=None
@@ -121,8 +114,6 @@ class Simulation:
         ]
 
         self.particulator = builder.build(attributes, products)
-        if settings.scipy_solver:
-            scipy_ode_condensation_solver.patch_particulator(self.particulator)
 
         self.n_output = settings.n_output
         if settings.n_output == 1:

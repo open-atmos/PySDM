@@ -84,9 +84,7 @@ def hom_pure_droplet_freezing_standard_setup():
         "type_droplet_distribution": "monodisperse",
         "RH_0": 0.995,
         "p0": 500 * si.hectopascals,
-        "condensation_enable": True,
         "deposition_enable": True,
-        "deposition_adaptive": True,
         "number_of_ensemble_runs": 1,
         "silent": True,
     }

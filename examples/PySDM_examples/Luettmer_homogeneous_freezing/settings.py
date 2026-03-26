@@ -23,14 +23,10 @@ class Settings:
         p0: float = 200 * si.hectopascals,
         RH_0: float = 1.0,
         kappa: float = 0.64,
-        condensation_enable: bool = True,
         deposition_enable: bool = True,
-        coalescence_enable: bool = False,
-        deposition_adaptive: bool = True,
         silent: bool = True,
         n_output: int = 30,
         backend=None,
-        scipy_solver=False,
         number_of_ensemble_runs=1,
     ):
         self.backend = backend
@@ -51,20 +47,13 @@ class Settings:
         self.r_ccn = r_ccn
         self.sigma_droplet_distribution = sigma_droplet_distribution
         self.type_droplet_distribution = type_droplet_distribution
-
         self.mass_of_dry_air = 1000 * si.kilogram
         self.initial_pressure = p0
         self.initial_water_supersaturation = RH_0
         self.kappa = kappa
         self.initial_temperature = T0
-
-        self.condensation_enable = condensation_enable
-        self.coalescence_enable = coalescence_enable
         self.deposition_enable = deposition_enable
-        self.deposition_adaptive = deposition_adaptive
-        self.scipy_solver = scipy_solver
         self.silent = silent
-        self.collision_kernel = Geometric()
 
         if hom_freezing == "threshold":
             self.hom_freezing_type = "threshold"
@@ -80,12 +69,11 @@ class Settings:
         self.initial_water_vapour_mixing_ratio = const.eps / (
             self.initial_pressure / self.initial_water_supersaturation / pvs_w - 1
         )
-
         dry_air_density = (
             self.formulae.trivia.p_d(
-                self.initial_pressure, self.initial_water_vapour_mixing_ratio
+                const.p_STP, self.initial_water_vapour_mixing_ratio
             )
-            / self.initial_temperature
+            / const.T_STP
             / const.Rd
         )
 
@@ -94,11 +82,6 @@ class Settings:
             self.specific_concentration = (
                 np.ones(self.n_sd) * n_ccn / self.n_sd / dry_air_density
             )
-            if coalescence_enable:  # do lucky droplet method
-                v_small = self.formulae.trivia.volume(radius=r_ccn)
-                self.r_wet[0 : int(self.n_sd * 0.1)] = self.formulae.trivia.radius(
-                    volume=2 * v_small
-                )
         elif self.type_droplet_distribution == ("lognormal"):
             spectrum = Lognormal(
                 norm_factor=n_ccn / dry_air_density,
