@@ -119,14 +119,3 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
             # note: this makes order of dynamics matter
             #       (e.g., condensation after chemistry or before)
             self.particulator.update_TpRH()
-
-            if self.adaptive:
-                self.counters["n_substeps"][:] = np.maximum(
-                    self.counters["n_substeps"][:],
-                    int(self.particulator.dt / self.dt_cond_range[1]),
-                )
-                if self.dt_cond_range[0] != 0:
-                    self.counters["n_substeps"][:] = np.minimum(
-                        self.counters["n_substeps"][:],
-                        int(self.particulator.dt / self.dt_cond_range[0]),
-                    )
