@@ -13,20 +13,17 @@ from PySDM_examples.utils.widgets import IntSlider
 from scipy.io import netcdf_file
 
 from PySDM import Formulae
-from PySDM.backends import CPU
 from PySDM.exporters import NetCDFExporter, VTKExporter
 
 
-def test_export(backend_class, tmp_path):
+def test_export(backend_instance, tmp_path):
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt
     settings.output_interval = settings.dt
 
     storage = Storage()
-    simulator = Simulation(
-        settings, storage, SpinUp=SpinUp, backend_class=backend_class
-    )
+    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_instance)
     _, temp_file = tempfile.mkstemp(dir=tmp_path, suffix=".nc")
     sut = NetCDFExporter(storage, settings, simulator, temp_file)
 
@@ -58,9 +55,7 @@ def test_export_with_gui_settings():
     assert len(settings.output_steps) == 2 and settings.output_steps[-1] == 1
 
     storage = Storage()
-    simulator = Simulation(
-        settings=settings, storage=storage, SpinUp=SpinUp, backend_class=CPU
-    )
+    simulator = Simulation(settings=settings, storage=storage, SpinUp=SpinUp)
     file = TemporaryFile()
     ncdf_exporter = NetCDFExporter(
         storage=storage,
