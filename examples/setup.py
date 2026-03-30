@@ -36,6 +36,7 @@ setup(
         "pyrcel",
         "pyvinecopulib",
         "networkx",
+        "mendeleev",
     ],
     extras_require={
         "CI_version_pins": [
