@@ -24,7 +24,7 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
         v = np.ones_like(n)
         env = Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
         grid = (25, 25)
-        env.mesh = Mesh(grid, size=grid)
+        env.mesh = Mesh(grid=grid, size=grid)
         particulator, sut = get_dummy_particulator_and_coalescence(
             backend_class, len(n), environment=env
         )

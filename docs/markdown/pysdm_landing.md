@@ -726,7 +726,7 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - PALM LES (Fortran):
   https://gitlab.palm-model.org/releases/palm_model_system/-/blob/master/packages/palm/model/src/lagrangian_particle_model_mod.f90
 - libcloudph++ (C++):
-  https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
+  https://github.com/igfuw/libcloudphxx/blob/master/src/impl/coalescence/particles_impl_coal.ipp
 - LCM1D (Python)
   https://github.com/SimonUnterstrasser/ColumnModel
 - superdroplet (Cython/Numba/C++11/Fortran 2008/Julia)

@@ -449,8 +449,27 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             )
 
     def isotopic_fractionation(self, heavy_isotopes: tuple):
-        self.backend.isotopic_fractionation()
         for isotope in heavy_isotopes:
+            self.backend.isotopic_fractionation(
+                cell_id=self.attributes["cell id"],
+                cell_volume=self.environment.mesh.dv,
+                multiplicity=self.attributes["multiplicity"],
+                dm_total=self.attributes["diffusional growth mass change"],
+                signed_water_mass=self.attributes["signed water mass"],
+                dry_air_density=self.environment["dry_air_density"],
+                molar_mass_heavy_molecule=getattr(
+                    self.formulae.constants,
+                    {
+                        "2H": "M_2H_1H_16O",
+                        "3H": "M_3H_1H_16O",
+                        "17O": "M_1H2_17O",
+                        "18O": "M_1H2_18O",
+                    }[isotope],
+                ),
+                moles_heavy_molecule=self.attributes[f"moles_{isotope}"],  # TODO #1787
+                molality_in_dry_air=self.environment[f"molality {isotope} in dry air"],
+                bolin_number=self.attributes[f"Bolin number for {isotope}"],
+            )
             self.attributes.mark_updated(f"moles_{isotope}")
 
     def seeding(
