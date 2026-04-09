@@ -39,7 +39,10 @@ class Storage(StorageBase):
         return self
 
     def __itruediv__(self, other):
-        # IMPLEMENT
+        if hasattr(other, "data"):
+            self.data = jnp.true_divide(self.data, other.data)
+        else:
+            self.data = jnp.true_divide(self.data, other)
         return self
 
     def download(self, target, reshape=False):
