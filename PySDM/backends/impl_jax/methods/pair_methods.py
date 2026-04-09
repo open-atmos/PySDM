@@ -92,7 +92,13 @@ class PairMethods(BackendMethods):
 
     def sort_within_pair_by_attr(self, idx, is_first_in_pair, attr):
 
-        # IMPLEMENT
+        indices = jnp.arange(len(idx)-1)
+        mapped_sort_within_pair_by_attr = jax.vmap(
+            self._sort_within_pair_by_attr_body,
+            (None, None, None, 0),
+        )
+        # We have to split the elements of idx pair-wise, and then merge them later
+
         return
 
     @cached_property
