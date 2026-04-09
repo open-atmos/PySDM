@@ -148,7 +148,6 @@ class IsotopeMethods(BackendMethods):
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
-                rho_v = pvs_water / T / ff.constants.Rv
 
                 isotopic_fraction = ff.trivia__isotopic_fraction(
                     molality_in_dry_air=molality_in_dry_air[cell_id[i]],
@@ -161,16 +160,19 @@ class IsotopeMethods(BackendMethods):
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
                     D_ratio_heavy_to_light=D_ratio_heavy_to_light,
                     alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
-                    D_light=ff.constants.D0,
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
+                    ),
+                    Fd=ff.drop_growth__Fd(
+                        T=T,
+                        D=ff.constants.D0,
+                        pvs=pvs_water,
                     ),
                     R_vap=ff.trivia__isotopic_ratio_assuming_single_heavy_isotope(
                         isotopic_fraction
                     ),
                     R_liq=moles_heavy_atom / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
-                    rho_v=rho_v,
                 )
 
         return body
