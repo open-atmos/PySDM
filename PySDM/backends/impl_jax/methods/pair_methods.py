@@ -5,6 +5,7 @@ CPU implementation of pairwise operations backend methods
 from functools import cached_property
 
 import jax
+import jax.numpy as jnp
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
@@ -27,13 +28,13 @@ class PairMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
 
-        indices = jax.numpy.arange(len(idx) - 1)
+        indices = jnp.arange(len(idx) - 1)
 
         mapped_find_pairs = jax.vmap(
             self._find_pairs_body,
             (None, None, None, None, 0),
         )
-        is_first_in_pair.indicator.data = jax.numpy.append(
+        is_first_in_pair.indicator.data = jnp.append(
             mapped_find_pairs(
                 cell_start.data,
                 cell_id.data,
@@ -41,7 +42,7 @@ class PairMethods(BackendMethods):
                 idx.data,
                 indices,
             ),
-            jax.numpy.array([False]),
+            jnp.array([False]),
         )
 
     @cached_property
@@ -49,7 +50,7 @@ class PairMethods(BackendMethods):
         @jax.jit
         def body(data_out, data_in, is_first_in_pair, idx, i):
             data_out.at[i // 2].set(
-                jax.numpy.maximum(data_in[idx[i]], data_in[idx[i + 1]])
+                jnp.maximum(data_in[idx[i]], data_in[idx[i + 1]])
                 * is_first_in_pair[i]
             )
             return data_out
@@ -57,8 +58,8 @@ class PairMethods(BackendMethods):
         return body
 
     def max_pair(self, data_out, data_in, is_first_in_pair, idx):
-        temp_data_out = jax.numpy.empty(data_out.shape)
-        indices = jax.numpy.arange(len(idx))
+        temp_data_out = jnp.empty(data_out.shape)
+        indices = jnp.arange(len(idx))
 
         mapped_max_pair = jax.vmap(
             self._max_pair_body,
@@ -72,7 +73,7 @@ class PairMethods(BackendMethods):
             indices,
         )
 
-        data_out.data = jax.numpy.sum(temp_data_out, axis=0)
+        data_out.data = jnp.sum(temp_data_out, axis=0)
 
     @cached_property
     def _sort_within_pair_by_attr_body(self):
@@ -106,9 +107,9 @@ class PairMethods(BackendMethods):
         return body
 
     def sum_pair(self, data_out, data_in, is_first_in_pair, idx):
-        # temp_data_out = jax.numpy.zeros(data_out.shape)
-        temp_data_out = jax.numpy.empty(data_out.shape)
-        indices = jax.numpy.arange(len(idx) - 1)
+        # temp_data_out = jnp.zeros(data_out.shape)
+        temp_data_out = jnp.empty(data_out.shape)
+        indices = jnp.arange(len(idx) - 1)
 
         mapped_sum_pair = jax.vmap(
             self._sum_pair_body,
@@ -122,4 +123,4 @@ class PairMethods(BackendMethods):
             indices,
         )
 
-        data_out.data = jax.numpy.sum(temp_data_out, axis=0)
+        data_out.data = jnp.sum(temp_data_out, axis=0)
