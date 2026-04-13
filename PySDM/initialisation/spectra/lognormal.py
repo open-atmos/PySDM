@@ -24,8 +24,8 @@ class Lognormal(Spectrum):
         return math.exp(self.distribution_params[0])
 
     @property
-    def m_mode(self):
-        raise NotImplementedError()
+    def mode(self):
+        return self.median / math.exp(self.s_geom**2)
 
     @property
     def geometric_mean(self):

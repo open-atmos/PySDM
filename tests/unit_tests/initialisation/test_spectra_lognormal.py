@@ -53,14 +53,16 @@ class TestSpectraLognormal:
 
     @staticmethod
     def test_mode():
-        # TODO
-        spectrum = Lognormal(median=...)
-        assert False
+        # arrange
+        spectrum = Lognormal(mode=44, s_geom=1.2, norm_factor=666)
+
+        # assert
+        assert spectrum.mode == 44
 
     @staticmethod
     def test_instantiation_passing_mode():
         # arrange & act
         spectrum = Lognormal(mode=1, s_geom=1, norm_factor=1)
 
-        # act
-        np.testing.assert_approx_equal(actual=spectrum.median, desired=1)
+        # assert
+        np.testing.assert_approx_equal(actual=spectrum.median, desired=np.e)
