@@ -402,7 +402,7 @@ env = Parcel(
     T0=300 * si.K,
     w= 2.5 * si.m / si.s
 )
-spectrum = Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.4)
+spectrum = Lognormal(norm_factor=1e4/si.mg, median=50*si.nm, s_geom=1.4)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
@@ -483,7 +483,7 @@ env = Parcel(pyargs( ...
     'T0', 300 * si.K, ...
     'w', 2.5 * si.m / si.s ...
 ));
-spectrum = Lognormal(pyargs('norm_factor', 1e4/si.mg, 'm_mode', 50 * si.nm, 's_geom', 1.4));
+spectrum = Lognormal(pyargs('norm_factor', 1e4/si.mg, 'median', 50 * si.nm, 's_geom', 1.4));
 kappa = .5;
 cloud_range = py.tuple({.5 * si.um, 25 * si.um});
 output_interval = 4;
@@ -584,7 +584,7 @@ env = Parcel(
   T0=300 * si.K,
   w=2.5 * si.m / si.s
 )
-spectrum = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
+spectrum = Lognormal(norm_factor=1e4 / si.mg, median=50 * si.nm, s_geom=1.5)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
