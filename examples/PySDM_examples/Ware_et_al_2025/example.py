@@ -1,13 +1,15 @@
 import os
 from typing import Optional
+from packaging import version
 
 import numpy as np
+import matplotlib
+from matplotlib import pyplot
+from open_atmos_jupyter_utils import show_plot
 
-from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
-from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.products import (
     ParticleVolumeVersusRadiusLogarithmSpectrum,
     WallTime,
@@ -19,14 +21,6 @@ from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.initialisation import spectra
 from PySDM.physics import si
 
-
-import matplotlib
-from matplotlib import pyplot
-from open_atmos_jupyter_utils import show_plot
-from packaging import version
-
-from PySDM.physics.constants import si
-
 _matplotlib_version_3_3_3 = version.parse("3.3.0")
 _matplotlib_version_actual = version.parse(matplotlib.__version__)
 
@@ -35,7 +29,6 @@ def error_measure(y, y_true, _):
     return np.sqrt(np.mean(np.square(y - y_true)))
 
 
-# @strict
 class Settings:
     def __init__(self: int, steps: Optional[list] = None):
         steps = steps or [0, 1200, 2400, 3600]
@@ -251,28 +244,3 @@ def run(settings, backend, observers=(), sampling_method="deterministic"):
 
     exec_time = particulator.products["wall time"].get()
     return vals, exec_time, deficit
-
-
-def main(plot: bool, save: Optional[str]):
-    with np.errstate(all="raise"):
-        settings = Settings()
-
-        settings.n_sd = 2**15
-
-        states, _ = run(settings)
-
-    with np.errstate(invalid="ignore"):
-        plotter = SpectrumPlotter(settings)
-        plotter.smooth = True
-        for step, vals in states.items():
-            _ = plotter.plot(vals, step * settings.dt)
-            # assert _ < 200  # TODO #327
-        if save is not None:
-            n_sd = settings.n_sd
-            plotter.save(save + "/" + f"{n_sd}_shima_fig_2" + "." + plotter.format)
-        if plot:
-            plotter.show()
-
-
-if __name__ == "__main__":
-    main(plot="CI" not in os.environ, save=None)
