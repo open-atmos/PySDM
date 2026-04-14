@@ -10,7 +10,6 @@ import pytest
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Gedzelman_and_Arnold_1994
 
-from PySDM import Formulae
 from PySDM.physics.constants import PER_CENT
 
 PLOT = False
@@ -66,6 +65,8 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
     ),
 )
 def test_dR_zero_condition(notebook_variables, phase, condition, atol):
+    """Test values plotted with color in Fig 1.
+    Points (x, y) for which z equals condition should match theoretical lines."""
     # arrange
     cmn = notebook_variables["cmn"]
 
@@ -93,5 +94,5 @@ def test_dR_zero_condition(notebook_variables, phase, condition, atol):
     )
 
     # assert
-    assert np.any(within == True)
+    assert np.sum(within) > 0
     np.testing.assert_allclose(y_to_check, expected_y, atol=atol)
