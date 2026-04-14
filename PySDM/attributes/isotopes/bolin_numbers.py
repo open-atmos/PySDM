@@ -25,7 +25,7 @@ class BolinNumberImpl(DerivedAttribute):
             Heavy isotopologue identifier (entry of ``HEAVY_ISOTOPES``).
         """
         self.moles_heavy = builder.get_attribute(f"moles_{heavy_isotope}")
-        self.moles_light = builder.get_attribute("moles light water")  # TODO
+        self.moles_light = builder.get_attribute("moles light water")  # TODO #1787
         self.cell_id = builder.get_attribute("cell id")
         self.molality_in_dry_air = builder.particulator.environment[
             f"molality {heavy_isotope} in dry air"
