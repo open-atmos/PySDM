@@ -1,4 +1,4 @@
-name: readme_snippets
+name: tutorial_code
 
 defaults:
   run:
@@ -26,12 +26,12 @@ jobs:
       - run: python -m pip install $PIP_INSTALL_ARGS -e .[CI_version_pins]
       - run: python -m pip install $PIP_INSTALL_ARGS pytest-codeblocks pytest
       - run: |
-          python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
-      - run: cat -n readme.py
+          python -c "import os,pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.py', 'w', encoding='utf-8'); f.write('# coding: utf-8'+os.linesep); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
+      - run: cat -n tutorial_code.py
       - run: |
-          python -We readme.py
-          sed -i -e 's/CPU/GPU/g' readme.py
-          python -We readme.py
+          python -We tutorial_code.py
+          sed -i -e 's/CPU/GPU/g' tutorial_code.py
+          python -We tutorial_code.py
       
       - name: artefacts
         if: github.ref == 'refs/heads/main' && matrix.platform == 'ubuntu-latest'
@@ -50,13 +50,13 @@ jobs:
           python-version: "3.10"
       - run: pip install -e .[CI_version_pins]
       - run: pip install pytest-codeblocks pytest
-      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
       - uses: julia-actions/setup-julia@v2
-      - run: cat -n readme.jl
+      - run: cat -n tutorial_code.jl
       - run: echo PYTHON=`which python` >> $GITHUB_ENV
-      - run: julia readme.jl
-      - run: sed -i -e 's/CPU/GPU/g' readme.jl
-      - run: julia readme.jl
+      - run: julia tutorial_code.jl
+      - run: sed -i -e 's/CPU/GPU/g' tutorial_code.jl
+      - run: julia tutorial_code.jl
 
   matlab:
     runs-on: ubuntu-latest
@@ -70,19 +70,19 @@ jobs:
 
       - run: pip install -e .[CI_version_pins]
       - run: pip install pytest-codeblocks pytest
-      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
-      - run: cat -n readme.m
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
+      - run: cat -n tutorial_code.m
       - uses: matlab-actions/setup-matlab@v2.1.0
         with:
           release: R2024b
           cache: true
       - uses: matlab-actions/run-command@v2.1.0
         with:
-          command: readme
-      - run: sed -i -e 's/CPU/GPU/g' readme.m
+          command: tutorial_code
+      - run: sed -i -e 's/CPU/GPU/g' tutorial_code.m
       - uses: matlab-actions/run-command@v2.1.0
         with:
-          command: readme
+          command: tutorial_code
 
       - name: artefacts
         if: github.ref == 'refs/heads/main'
