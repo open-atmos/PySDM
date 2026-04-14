@@ -10,6 +10,7 @@ import pytest
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Gedzelman_and_Arnold_1994
 
+from PySDM import Formulae
 from PySDM.physics.constants import PER_CENT
 
 PLOT = False
@@ -26,12 +27,12 @@ def notebook_variables_fixture():
 @pytest.mark.parametrize(
     "x, expected_y, phase",
     (
-        (0.99, 0.27, "liquid"),
-        (0.898, 0.62, "liquid"),
-        (0.875, 0.95, "liquid"),
-        (0.8875, 0, "vapour"),
-        (0.88, 0.32, "vapour"),
-        (0.85, 1, "vapour"),
+        (1.0, 0.31, "liquid"),
+        (0.93, 0.5, "liquid"),
+        (0.85, 1.0, "liquid"),
+        (0.9, 0.0, "vapour"),
+        (0.8875, 0.5, "vapour"),
+        (0.85, 1.0, "vapour"),
     ),
 )
 def test_fig_2(notebook_variables, x, expected_y, phase):
@@ -40,15 +41,15 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
 
     The test selects the data point whose x-value is closest to ``x`` and
     checks that the corresponding y-value matches ``expected_y``.
-    The (x, expected_y) pairs are arbitrary and chosen for coverage.
+    The (x, expected_y) pairs are approximated from Fig 2 in paper.
     """
 
     # arrange
-    plot_y = notebook_variables["S_eq"][phase]
-    plot_x = notebook_variables["molecular_R_liq"]
+    xy_data = notebook_variables["PLOT_LINE"][phase][0].get_xydata()
+    plot_x, plot_y = xy_data[:, 0], xy_data[:, 1] * PER_CENT
     plot_x_eps = (plot_x[1] - plot_x[0]) / 2
 
-    idx = np.where(abs(plot_x - x) < plot_x_eps)
+    idx = np.where(abs(plot_x - x) <= plot_x_eps)
 
     # act
     sut = plot_y[idx]
@@ -58,39 +59,39 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
 
 
 @pytest.mark.parametrize(
-    "phase, eps_percent",
+    "phase, condition, atol",
     (
-        pytest.param("liquid", 1.0, marks=pytest.mark.xfail(strict=True)),
-        ("liquid", 1.1),
-        ("liquid", 1.2),
-        pytest.param("vapour", 0.05, marks=pytest.mark.xfail(strict=True)),
-        ("vapour", 0.09),
-        ("vapour", 0.1),
+        ("vapour", 0, 0.2),
+        ("liquid", 1, 0.02),
     ),
 )
-def test_isotope_ratio_change_sign(notebook_variables, phase, eps_percent):
-    """Verify sign of the isotopic ratio change against theoretical functions.
-    Values smaller than eps_percent are omitted."""
+def test_dR_zero_condition(notebook_variables, phase, condition, atol):
     # arrange
-    cmn = notebook_variables["COMMONS"]
-    rh = notebook_variables["RH"]
-    s_eq = notebook_variables["S_eq"][phase]
-    x_axis_size1 = notebook_variables["x"]
-    x_axis_size2 = notebook_variables["molecular_R_liq"]
+    cmn = notebook_variables["cmn"]
 
-    eq_line_x_idx = np.abs(x_axis_size1[:, None] - x_axis_size2[None, :]).argmin(axis=0)
-    s_eq_iso = s_eq[eq_line_x_idx]
+    X_eq = notebook_variables["X_eq"]
+    iso_ratio_v = notebook_variables["ISO_RATIO_V"]
 
-    above_eq_line = (rh[:, None] > s_eq_iso[None, :]) & (
-        x_axis_size2[None, :] > cmn.ratios.iso_ratio_liq_eq
-    )
+    X, Y = np.meshgrid(notebook_variables["X"], notebook_variables["Y"] * PER_CENT)
+    pcm_data = notebook_variables["PCM"][phase].get_array()
 
     # act
-    rel_diff = notebook_variables[f"rel_diff_{phase[:3]}"][::-1, :]
-    expected_sign = np.where(above_eq_line, -1.0, 1.0)
-    if phase == "vapour":
-        expected_sign *= -1
-    sut = expected_sign * rel_diff * PER_CENT
+    within = (
+        (condition - 0.005 < pcm_data) & (pcm_data < condition + 0.005) & (X >= X_eq)
+    )
+
+    x_to_check = X[within]
+    y_to_check = Y[within]
+    iso_ratio_r = x_to_check * cmn.params.vsmow
+    expected_y = cmn.f.isotope_ratio_evolution.saturation_for_zero_dR_condition(
+        iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
+        diff_rat_light_to_heavy=(cmn.params.f_ratio / cmn.params.D_ratio),
+        b=cmn.params.b,
+        alpha_w=cmn.params.alpha_w,
+        iso_ratio_r=iso_ratio_r,
+        iso_ratio_v=iso_ratio_v,
+    )
 
     # assert
-    np.testing.assert_array_less(-sut[~np.isnan(sut)], eps_percent)
+    assert np.any(within == True)
+    np.testing.assert_allclose(y_to_check, expected_y, atol=atol)
