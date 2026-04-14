@@ -64,7 +64,7 @@ class IsotopeMethods(BackendMethods):
             moles_heavy_molecule,
             bolin_number,
             molality_in_dry_air,
-        ):
+        ):  # pylint: disable=too-many-locals
             for sd_id in range(multiplicity.shape[0]):
                 Bo = bolin_number[sd_id]
                 mass_ratio_heavy_to_total = (
