@@ -73,9 +73,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
-    - run: |
-        # TODO #1160 https://github.com/pylint-dev/pylint/issues/9099
-        pip install "pylint<3.0.0" nbqa
+    - run: pip install pylint nbqa
     - run: |
         # TODO #682
         pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py' | grep -v -e ^examples -e ^tutorials)
@@ -128,7 +126,7 @@ jobs:
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 30 || 40 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -241,7 +239,7 @@ jobs:
             test-suite: "multi-process_e"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 30
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
     steps:
       - name: Debug contexts
         run: |

@@ -251,7 +251,7 @@
   },
   "https://doi.org/10.1063/1.1840906": {
     "usages": [
-      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2005.py"
+      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2010.py"
     ],
     "label": "Okuyama & Zung 1967 (J. Chem. Phys. 1967)",
     "title": "Evaporation—Condensation Coefficient for Small Droplets"
@@ -789,7 +789,8 @@
   "https://doi.org/10.1007/978-0-306-48100-0": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py"
+      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py",
+      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2010.py"
     ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"
@@ -1015,5 +1016,14 @@
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
+  },
+  "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2" : {
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/long1974.py",
+      "examples/PySDM_examples/Long_1974/__init__.py",
+      "examples/PySDM_examples/Long_1974/fig10_11_13_14.ipynb"
+    ],
+    "label": "Long 1974 (J. Atmos. Sci. 31)",
+    "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
   }
 }
