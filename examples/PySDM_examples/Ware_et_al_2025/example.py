@@ -1,4 +1,3 @@
-import os
 from typing import Optional
 from packaging import version
 
@@ -81,9 +80,16 @@ class SpectrumPlotter:
         self.xlabel = "particle radius [µm]"
         self.ylabel = "dm/dlnr [g/m^3/(unit dr/r)]"
         self.log_base = log_base
-        self.ax = pyplot
-        self.fig = pyplot
+        self._ax = None
         self.finished = False
+
+    @property
+    def ax(self):
+        return self._ax or pyplot.gca()
+
+    @ax.setter
+    def ax(self, value):
+        self._ax = value
 
     def finish(self):
         if self.finished:
@@ -99,18 +105,10 @@ class SpectrumPlotter:
             ): self.log_base
         }
         if self.title is not None:
-            try:
-                self.ax.title(self.title)
-            except TypeError:
-                self.ax.set_title(self.title)
-        try:
-            self.ax.xscale("log", **base_arg)
-            self.ax.xlabel(self.xlabel)
-            self.ax.ylabel(self.ylabel)
-        except AttributeError:
-            self.ax.set_xscale("log", **base_arg)
-            self.ax.set_xlabel(self.xlabel)
-            self.ax.set_ylabel(self.ylabel)
+            self.ax.set_title(self.title)
+        self.ax.set_xscale("log", **base_arg)
+        self.ax.set_xlabel(self.xlabel)
+        self.ax.set_ylabel(self.ylabel)
         if self.legend:
             self.ax.legend()
 
