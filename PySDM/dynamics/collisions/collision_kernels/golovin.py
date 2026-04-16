@@ -1,6 +1,6 @@
 """
 Safranov-Golovin kernel with analytic solution 
-(see [Safranov 1962](https://mathnet.ru/dan27172),
+(see [Safranov 1962](http://mathnet.ru/dan27172),
 [Golovin 1963](http://mi.mathnet.ru/dan27630))
 """
 
