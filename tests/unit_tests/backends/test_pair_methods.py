@@ -145,6 +145,24 @@ class TestPairMethods:
                 [0, 2, 1],
                 [False, True, False],
             ),
+            pytest.param(
+                [100.0, 10.0, 10.0, 100.0, 10.0, 100.0],
+                [0, 1, 2, 3, 4, 5],
+                [0, 1, 3, 2, 5, 4],
+                [True, False, True, False, True, False],
+            ),
+            pytest.param(
+                [100.0, 10.0, 10.0, 100.0],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [False, False, False, False],
+            ),
+            pytest.param(
+                [100.0, 10.0, 10.0, 100.0],
+                [1, 0, 3, 2],
+                [0, 1, 3, 2],
+                [True, False, True, False],
+            ),
         ),
     )
     def test_sort_within_pair_by_attr(
