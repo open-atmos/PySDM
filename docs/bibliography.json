@@ -705,7 +705,7 @@
     "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
     "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
   },
-  "https://mathnet.ru/dan27172": {
+  "http://mathnet.ru/dan27172": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/golovin.py",
       "tutorials/README.md",
