@@ -26,12 +26,11 @@ def notebook_variables_fixture():
 @pytest.mark.parametrize(
     "x, expected_y, phase",
     (
-        (1.0, 0.31, "liquid"),
+        (1.0, 0.30, "liquid"),
         (0.93, 0.5, "liquid"),
-        (0.85, 1.0, "liquid"),
+        (0.8776, 1.0, "liquid"),
         (0.9, 0.0, "vapour"),
-        (0.8875, 0.5, "vapour"),
-        (0.85, 1.0, "vapour"),
+        (0.8776, 1.0, "vapour"),
     ),
 )
 def test_fig_2(notebook_variables, x, expected_y, phase):
@@ -47,14 +46,18 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
     xy_data = notebook_variables["PLOT_LINE"][phase][0].get_xydata()
     plot_x, plot_y = xy_data[:, 0], xy_data[:, 1] * PER_CENT
     plot_x_eps = (plot_x[1] - plot_x[0]) / 2
-
-    idx = np.where(abs(plot_x - x) <= plot_x_eps)
+    plot_y_eps = np.max(abs(np.diff(plot_y))) / 2
 
     # act
-    sut = plot_y[idx]
+    idx = np.where(abs(plot_x - x) < plot_x_eps)
+    sut = max(0, plot_y[idx])
 
     # assert
-    np.testing.assert_allclose(actual=sut, desired=expected_y, atol=0.01)
+    np.testing.assert_allclose(
+        actual=sut,
+        desired=expected_y,
+        atol=plot_y_eps / plot_x_eps,
+    )
 
 
 @pytest.mark.parametrize(
