@@ -8,6 +8,25 @@ from PySDM.physics import si
 
 condensation_tolerance = condensation.DEFAULTS.rtol_thd / 100
 
+DRY_SPECTRA = {
+    "pristine": {
+        1.28: Sum(
+            (
+                Lognormal(norm_factor=125 / si.cm**3, m_mode=11 * si.nm, s_geom=1.2),
+                Lognormal(norm_factor=65 / si.cm**3, m_mode=60 * si.nm, s_geom=1.7),
+            )
+        )
+    },
+    "polluted": {
+        1.28: Sum(
+            (
+                Lognormal(norm_factor=160 / si.cm**3, m_mode=29 * si.nm, s_geom=1.36),
+                Lognormal(norm_factor=380 / si.cm**3, m_mode=71 * si.nm, s_geom=1.57),
+            )
+        )
+    },
+}
+
 
 @strict
 class Settings:
@@ -28,32 +47,7 @@ class Settings:
     ):
         self.formulae = Formulae(constants={"MAC": mass_accommodation_coefficient})
         self.n_sd = n_sd
-        self.aerosol_modes_by_kappa = {
-            "pristine": {
-                1.28: Sum(
-                    (
-                        Lognormal(
-                            norm_factor=125 / si.cm**3, m_mode=11 * si.nm, s_geom=1.2
-                        ),
-                        Lognormal(
-                            norm_factor=65 / si.cm**3, m_mode=60 * si.nm, s_geom=1.7
-                        ),
-                    )
-                )
-            },
-            "polluted": {
-                1.28: Sum(
-                    (
-                        Lognormal(
-                            norm_factor=160 / si.cm**3, m_mode=29 * si.nm, s_geom=1.36
-                        ),
-                        Lognormal(
-                            norm_factor=380 / si.cm**3, m_mode=71 * si.nm, s_geom=1.57
-                        ),
-                    )
-                )
-            },
-        }[aerosol]
+        self.aerosol_modes_by_kappa = DRY_SPECTRA[aerosol]
 
         const = self.formulae.constants
         self.vertical_velocity = vertical_velocity
