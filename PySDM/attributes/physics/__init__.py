@@ -18,4 +18,5 @@ from .temperature import Temperature
 from .terminal_velocity import TerminalVelocity
 from .volume import Volume
 from .reynolds_number import ReynoldsNumber
+from . import local_thermodynamics
 from .diffusional_growth_mass_change import DiffusionalGrowthMassChange
