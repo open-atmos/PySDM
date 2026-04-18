@@ -103,7 +103,7 @@ MAC_ice = 0.5
 [Kaercher & Lohmann 2002](https://doi.org/10.1029/2001JD000470) """
 HAC_ice = 1.0
 """ thermal accommodation coefficient for vapour deposition as recommended in
-[Pruppacher & Klett 2010](https://doi.org/10.1007/978-0-306-48100-0) """
+[Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
 C_cunn = 0.7
 """ Cunningham correction factor as used in
@@ -222,12 +222,12 @@ k_l19_c = 0.017 / si.kelvin
 """ 〃 """
 
 dv_pk05 = 0.0 * si.metres
-""" Delta v for diffusivity in [Pruppacher & Klett 2010](https://doi.org/10.1007/978-0-306-48100-0)
+""" Delta v for diffusivity in [Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0)
 eq. 13-14 """
 
 lmbd_w_0 = 6.6e-8 * si.metre
 """ Mean free path of water molecules as in table 13.1 in
-[Pruppacher & Klett 2010](https://doi.org/10.1007/978-0-306-48100-0) """
+[Pruppacher & Klett](https://doi.org/10.1007/978-0-306-48100-0) """
 
 d_l19_a = 0.211e-4 * si.metre**2 / si.second
 """ [Seinfeld & Pandis](https://archive.org/details/0237-pdf-atmospheric-chemistry-and-physics-2nd-ed-j.-seinfeld-s.-pandis-wiley-2006-ww)
