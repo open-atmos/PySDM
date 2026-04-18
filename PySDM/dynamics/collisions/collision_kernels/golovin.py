@@ -1,5 +1,5 @@
 """
-Safranov-Golovin kernel with analytic solution 
+Safranov-Golovin kernel with analytic solution
 (see [Safranov 1962](http://mi.mathnet.ru/dan27172),
 [Golovin 1963](http://mi.mathnet.ru/dan27630))
 """
