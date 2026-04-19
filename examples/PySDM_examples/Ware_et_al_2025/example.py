@@ -24,8 +24,14 @@ _matplotlib_version_3_3_3 = version.parse("3.3.0")
 _matplotlib_version_actual = version.parse(matplotlib.__version__)
 
 
-def error_measure(y, y_true, _):
-    return np.sqrt(np.mean(np.square(y - y_true)))
+def error_measure(y, y_true, x):
+    # The length of each bin on a logarithmic scale.
+    dlnr = np.gradient(np.log(x))
+
+    F = np.cumsum(y * dlnr)
+    CDF_Golovin = np.cumsum(y_true * dlnr)
+
+    return np.trapz(np.abs(CDF_Golovin - F), np.log(x))
 
 
 class Settings:
