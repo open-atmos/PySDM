@@ -64,19 +64,16 @@ class IsotopeMethods(BackendMethods):
             moles_heavy_molecule,
             bolin_number,
             molality_in_dry_air,
-        ):
+        ):  # pylint: disable=too-many-locals
             for sd_id in range(multiplicity.shape[0]):
+                Bo = bolin_number[sd_id]
                 mass_ratio_heavy_to_total = (
                     moles_heavy_molecule[sd_id] * molar_mass_heavy_molecule
                 ) / signed_water_mass[sd_id]
-                if bolin_number[sd_id] == 0:
+                if Bo == 0:
                     dm_heavy = 0
                 else:
-                    dm_heavy = (
-                        dm_total[sd_id]
-                        / bolin_number[sd_id]
-                        * mass_ratio_heavy_to_total
-                    )
+                    dm_heavy = dm_total[sd_id] / Bo * mass_ratio_heavy_to_total
                 dn_heavy_molecule = dm_heavy / molar_mass_heavy_molecule
                 moles_heavy_molecule[sd_id] += dn_heavy_molecule
                 mass_of_dry_air = (
