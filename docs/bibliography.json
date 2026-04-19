@@ -705,6 +705,15 @@
     "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
     "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
   },
+  "http://mi.mathnet.ru/dan27172": {
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/golovin.py",
+      "tutorials/README.md",
+      "tutorials/wikipedia/sdm.ipynb"
+    ],
+    "label": "Safranov 1962 (Dokl. Akad. Nauk SSSR 147)",
+    "title": "Частный случай решения уравнения коагуляции (A particular solution of the coagulation equation)"
+  },
   "https://doi.org/10.5194/acp-16-1693-2016": {
     "usages": ["PySDM/backends/impl_numba/methods/chemistry_methods.py"],
     "label": "Hoyle et al. 2016 (Atmos. Chem. Phys. 16)",
@@ -1011,5 +1020,14 @@
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
+  },
+  "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2" : {
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/long1974.py",
+      "examples/PySDM_examples/Long_1974/__init__.py",
+      "examples/PySDM_examples/Long_1974/fig10_11_13_14.ipynb"
+    ],
+    "label": "Long 1974 (J. Atmos. Sci. 31)",
+    "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
   }
 }
