@@ -11,14 +11,14 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def alpha_kinetic(alpha_equilibrium, saturation, D_ratio_heavy_to_light):
+    def alpha_kinetic(alpha_equilibrium, relative_humidity, D_ratio_heavy_to_light):
         """eq. (11)
 
         Parameters
         ----------
         alpha_equilibrium
             Equilibrium fractionation factor.
-        saturation
+        relative_humidity
             Over liquid water or ice.
         D_ratio_heavy_to_light
             Diffusivity ratio for heavy to light isotope.
@@ -27,6 +27,6 @@ class JouzelAndMerlivat1984:  # pylint: disable=too-few-public-methods
         ----------
         alpha_kinetic
             Kinetic fractionation factor for liquid water or ice."""
-        return saturation / (
-            alpha_equilibrium / D_ratio_heavy_to_light * (saturation - 1) + 1
+        return relative_humidity / (
+            alpha_equilibrium / D_ratio_heavy_to_light * (relative_humidity - 1) + 1
         )
