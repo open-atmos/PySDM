@@ -42,7 +42,7 @@ class Simulation(BasicSimulation):
                 dt=settings.dt,
                 mass_of_dry_air=666 * si.kg,
                 p0=settings.p0,
-                initial_relative_humidity = settings.RH0,
+                initial_relative_humidity=settings.RH0,
                 T0=settings.T0,
                 w=settings.vertical_velocity,
                 z0=settings.z0,

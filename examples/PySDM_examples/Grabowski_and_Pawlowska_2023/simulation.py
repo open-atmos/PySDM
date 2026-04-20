@@ -26,7 +26,7 @@ class Simulation(BasicSimulation):
             environment=Parcel(
                 dt=settings.timestep,
                 p0=settings.initial_pressure,
-                initial_relative_humidity = settings.initial_relative_humidity,
+                initial_relative_humidity=settings.initial_relative_humidity,
                 T0=settings.initial_temperature,
                 w=settings.vertical_velocity,
                 mass_of_dry_air=44 * si.kg,
