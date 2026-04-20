@@ -31,7 +31,6 @@ def cumulative_histogram(data, bins, reverse=False, density=True):
     if density:
         cum_hist = cum_hist / cum_hist_0
 
-    # Compute bin centers
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
 
     return cum_hist, bin_centers
@@ -56,7 +55,6 @@ def plot_thermodynamics_and_bulk(
     qc = np.asarray(output["LWC"])
     qi = np.asarray(output["IWC"])
     qv = np.asarray(output["qv"])
-    qt = qc + qv + qi
     T_frz = np.asarray(output["T_frz"])
     if show_conc:
         nc = np.asarray(output["ns"])
@@ -308,7 +306,6 @@ def plot_freezing_temperatures_histogram_allinone(
         mean_line = np.mean(histogram_list, axis=0)
         min_line = np.min(histogram_list, axis=0)
 
-        # color = colors[k]
         ax.plot(
             T_frz_bins_center,
             mean_line,
@@ -407,7 +404,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     )
     if y_log:
         h.ax_joint.set(yscale="log")
-    # ax = h.figure.add_axes([0.15, 0.1, 0.02, 0.2])
 
     h.plot_joint(
         sns.histplot,
@@ -415,8 +411,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         binwidth=binwidth,
         discrete=(False, False),
         pmax=0.8,
-        # cbar=False,
-        # cbar_ax=ax,
     )
 
     h.plot_marginals(
@@ -455,8 +449,6 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         ax2.set_ylabel(y_label_sec, fontsize=ax_lab_fsize)
 
     h.fig.set_size_inches(width, height)
-
-    return
 
 
 def plot_ensemble_bulk(
@@ -557,5 +549,4 @@ def plot_ensemble_bulk(
     ax.set_ylabel(y_label, fontsize=ax_lab_fsize)
     ax.grid(visible=True)
     ax.legend(fontsize=ax_lab_fsize)
-
     return ax

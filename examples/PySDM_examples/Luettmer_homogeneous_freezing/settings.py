@@ -4,7 +4,6 @@ import numpy as np
 from PySDM.physics.constants import si
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.sampling import spectral_sampling
-from PySDM.dynamics.collisions.collision_kernels import Geometric
 
 
 class Settings:

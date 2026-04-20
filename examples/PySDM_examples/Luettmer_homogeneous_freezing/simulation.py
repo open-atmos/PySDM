@@ -6,12 +6,10 @@ from PySDM.dynamics import (
     Condensation,
     Freezing,
     VapourDepositionOnIce,
-    Coalescence,
 )
 from PySDM.environments import Parcel
 from PySDM.initialisation import discretise_multiplicities
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_dry_radii
-from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 
 
 class Simulation:

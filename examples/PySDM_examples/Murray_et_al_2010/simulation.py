@@ -89,7 +89,7 @@ class Simulation:
                     label=label,
                 )
 
-        if title == None:
+        if title is None:
             title = (
                 r"$r_\mathrm{drop}:$ "
                 + f"{self.droplet_radius/si.micrometer:.2f}"
