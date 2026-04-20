@@ -251,7 +251,7 @@
   },
   "https://doi.org/10.1063/1.1840906": {
     "usages": [
-      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2010.py"
+      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2005.py"
     ],
     "label": "Okuyama & Zung 1967 (J. Chem. Phys. 1967)",
     "title": "Evaporation—Condensation Coefficient for Small Droplets"
@@ -705,6 +705,15 @@
     "label": "Golovin 1963 (Dokl. Akad. Nauk SSSR 148)",
     "title": "К вопросу о решении уравнения коагуляции дождевых капель с учетом конденсации (On solving the equation of rain drop coagulation with allowance for condensation)"
   },
+  "http://mi.mathnet.ru/dan27172": {
+    "usages": [
+      "PySDM/dynamics/collisions/collision_kernels/golovin.py",
+      "tutorials/README.md",
+      "tutorials/wikipedia/sdm.ipynb"
+    ],
+    "label": "Safranov 1962 (Dokl. Akad. Nauk SSSR 147)",
+    "title": "Частный случай решения уравнения коагуляции (A particular solution of the coagulation equation)"
+  },
   "https://doi.org/10.5194/acp-16-1693-2016": {
     "usages": ["PySDM/backends/impl_numba/methods/chemistry_methods.py"],
     "label": "Hoyle et al. 2016 (Atmos. Chem. Phys. 16)",
@@ -789,8 +798,7 @@
   "https://doi.org/10.1007/978-0-306-48100-0": {
     "usages": [
       "PySDM/physics/constants_defaults.py",
-      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py",
-      "PySDM/physics/diffusion_kinetics/pruppacher_and_klett_2010.py"
+      "PySDM/physics/diffusion_kinetics/lowe_et_al_2019.py"
     ],
     "title": "Microphysics of Clouds and Precipitation",
     "label": "Pruppacher & Klett 2010 (Springer Dordrecht)"

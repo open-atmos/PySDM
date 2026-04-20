@@ -759,3 +759,4 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 
 - DustPy: https://stammler.github.io/dustpy
 - Cloudy.jl: https://github.com/CliMA/Cloudy.jl
+- BinMod1D-PARS: https://github.com/NOAA-National-Severe-Storms-Laboratory/BinMod1D-PARS
