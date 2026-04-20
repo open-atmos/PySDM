@@ -26,13 +26,7 @@ class Simulation:
             dt=dt_output / self.n_substeps,
             mass_of_dry_air=settings.mass_of_dry_air,
             p0=settings.p0,
-            initial_water_vapour_mixing_ratio=self.formulae.constants.eps
-            / (
-                settings.p0
-                / settings.RH0
-                / self.formulae.saturation_vapour_pressure.pvs_water(settings.T0)
-                - 1
-            ),
+            initial_relative_humidity = settings.RH0,
             T0=settings.T0,
             w=settings.w,
             z0=settings.z0,

@@ -59,11 +59,7 @@ class Settings:
         self.vertical_velocity = vertical_velocity
         self.initial_pressure = initial_pressure
         self.initial_temperature = initial_temperature
-        pv0 = (
-            initial_relative_humidity
-            * self.formulae.saturation_vapour_pressure.pvs_water(initial_temperature)
-        )
-        self.initial_vapour_mixing_ratio = const.eps * pv0 / (initial_pressure - pv0)
+        self.initial_relative_humidity = initial_relative_humidity
         self.t_max = displacement / vertical_velocity
         self.timestep = dt
         self.output_interval = self.timestep

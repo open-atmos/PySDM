@@ -30,9 +30,6 @@ class Simulation(BasicSimulation):
     ):
         const = settings.formulae.constants
         pvs_water = settings.formulae.saturation_vapour_pressure.pvs_water
-        initial_water_vapour_mixing_ratio = const.eps / (
-            settings.p0 / settings.RH0 / pvs_water(settings.T0) - 1
-        )
 
         n_gccn = np.count_nonzero(table_3.NA) if gccn else 0
 
@@ -45,7 +42,7 @@ class Simulation(BasicSimulation):
                 dt=settings.dt,
                 mass_of_dry_air=666 * si.kg,
                 p0=settings.p0,
-                initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
+                initial_relative_humidity = settings.RH0,
                 T0=settings.T0,
                 w=settings.vertical_velocity,
                 z0=settings.z0,
