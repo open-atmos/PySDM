@@ -31,7 +31,9 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         initial_water_vapour_mixing_ratio: float = None,
         initial_relative_humidity: float = None,
     ):
-        assert (initial_water_vapour_mixing_ratio is not None) ^ (initial_relative_humidity is not None)
+        assert (initial_water_vapour_mixing_ratio is not None) ^ (
+            initial_relative_humidity is not None
+        )
         variables = (variables or []) + ["rhod", "z"]
         super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
@@ -43,7 +45,6 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         self.mass_of_dry_air = mass_of_dry_air
         self.w = w if callable(w) else lambda _: w
         self.delta_liquid_water_mixing_ratio = np.nan
-        
 
     @property
     def dv(self):
@@ -55,9 +56,8 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def register(self, builder):
         formulae = builder.particulator.formulae
 
-        if self.initial_relative_humidity: 
-            self.initial_water_vapour_mixing_ratio=formulae.constants.eps
-            (
+        if self.initial_relative_humidity:
+            self.initial_water_vapour_mixing_ratio = formulae.constants.eps / (
                 self.p0
                 / self.initial_relative_humidity
                 / formulae.saturation_vapour_pressure.pvs_water(self.T0)
