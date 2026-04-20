@@ -55,7 +55,6 @@ class Settings:
             },
         }[aerosol]
 
-        const = self.formulae.constants
         self.vertical_velocity = vertical_velocity
         self.initial_pressure = initial_pressure
         self.initial_temperature = initial_temperature
@@ -65,6 +64,17 @@ class Settings:
         self.output_interval = self.timestep
         self.rtol_thd = rtol_thd
         self.rtol_x = rtol_x
+
+    @property
+    def initial_vapour_mixing_ratio(self):
+        const = self.formulae.constants
+        pvs = self.formulae.saturation_vapour_pressure.pvs_water(
+            self.initial_temperature
+        )
+
+        pv = self.initial_relative_humidity * pvs
+
+        return const.eps / (self.initial_pressure / pv - 1)
 
     @property
     def initial_air_density(self):
