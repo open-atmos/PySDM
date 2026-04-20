@@ -6,6 +6,7 @@ from functools import cached_property
 import numpy as np
 
 import jax
+import jax.numpy as jnp
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba import conf
@@ -13,16 +14,14 @@ from PySDM.backends.impl_jax.storage import Storage
 
 
 def pair_indices(i, idx, is_first_in_pair, prob_like):
-    raise NotImplementedError()
+    offset = 1 - is_first_in_pair[2 * i]
+    j = idx[2 * i + offset]
+    k = idx[2 * i + 1 + offset]
+
+    return j, k, False
 
 
 def flag_zero_multiplicity(j, k, multiplicity, healthy):
-    raise NotImplementedError()
-
-
-def coalesce(  # pylint: disable=too-many-arguments
-    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
-):
     raise NotImplementedError()
 
 
@@ -31,18 +30,28 @@ class CollisionsMethods(BackendMethods):
     def _collision_coalescence_body(self):
         @jax.jit
         def body(
-            *,
             multiplicity,
             idx,
-            length,
             attributes,
             gamma,
-            healthy,
-            cell_id,
-            coalescence_rate,
             is_first_in_pair,
+            i,
         ):
-            raise NotImplementedError()
+            offset = 1 - is_first_in_pair[2 * i]
+            j = idx[2 * i + offset]
+            k = idx[2 * i + 1 + offset]
+            new_n = multiplicity[j] - gamma[i] * multiplicity[k]
+            if new_n > 0:
+                multiplicity[j] = new_n
+                for a in range(len(attributes)):
+                    attributes[a, k] += gamma[i] * attributes[a, j]
+            else:  # new_n == 0
+                multiplicity[j] = multiplicity[k] // 2
+                multiplicity[k] = multiplicity[k] - multiplicity[j]
+                for a in range(len(attributes)):
+                    attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
+                    attributes[a, k] = attributes[a, j]
+            return multiplicity, attributes
 
         return body
 
@@ -58,25 +67,31 @@ class CollisionsMethods(BackendMethods):
         coalescence_rate,
         is_first_in_pair,
     ):
-        raise NotImplementedError()
+        indices = jnp.arange(len(multiplicity) // 2)
+        mapped_collision_coalescence = jax.vmap(
+            self._collision_coalescence_body, (None, None, None, None, None, 0)
+        )
+        mapped_collision_coalescence(
+            multiplicity.data,
+            idx.data,
+            attributes.data,
+            gamma.data,
+            is_first_in_pair.indicator.data,
+            indices,
+        )
 
     @cached_property
     def _compute_gamma_body(self):
         # pylint: disable=too-many-arguments,too-many-locals
         @jax.jit
-        def body(
-            prob,
-            rand,
-            idx,
-            length,
-            multiplicity,
-            cell_id,
-            collision_rate_deficit,
-            collision_rate,
-            is_first_in_pair,
-            out,
-        ):
-            raise NotImplementedError()
+        def body(prob, rand, idx, multiplicity, is_first_in_pair, i):
+            out = jnp.ceil(prob[i] - rand[i])
+            offset = 1 - is_first_in_pair[2 * i]
+            j = idx[2 * i + offset]
+            k = idx[2 * i + 1 + offset]
+
+            prop = multiplicity[j] // multiplicity[k]
+            return jnp.minimum(out.astype(int), prop)
 
         return body
 
@@ -92,7 +107,18 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         out,
     ):
-        raise NotImplementedError()
+        indices = jnp.arange(len(multiplicity) // 2)
+        mapped_compute_gamma_body = jax.vmap(
+            self._compute_gamma_body, (None, None, None, None, None, 0)
+        )
+        out.data = mapped_compute_gamma_body(
+            prob.data,
+            rand.data,
+            multiplicity.idx.data,
+            multiplicity.data,
+            is_first_in_pair.indicator.data,
+            indices,
+        )
 
     @staticmethod
     def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme="default"):

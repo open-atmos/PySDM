@@ -213,9 +213,9 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
-    def test_compute_gamma(backend_instance):
+    def test_compute_gamma(backend_instance_with_jax):
         # Arrange
-        backend = backend_instance
+        backend = backend_instance_with_jax
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
@@ -239,7 +239,7 @@ class TestSDMSingleCell:
                 )
 
                 indicator = make_PairIndicator(backend)(n_sd)
-                indicator.indicator[:] = backend.Storage.from_ndarray(
+                indicator.indicator = backend.Storage.from_ndarray(
                     np.asarray((True, False))
                 )
 
