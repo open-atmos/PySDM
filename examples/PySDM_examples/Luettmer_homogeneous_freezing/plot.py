@@ -32,7 +32,6 @@ def cumulative_histogram(data, bins, reverse=False, density=True):
         cum_hist = cum_hist / cum_hist_0
 
     bin_centers = 0.5 * (bin_edges[:-1] + bin_edges[1:])
-
     return cum_hist, bin_centers
 
 
@@ -277,7 +276,6 @@ def plot_freezing_temperatures_histogram(ax, simulation):
         ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
         ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
         ax.tick_params(labelsize=tick_fsize)
-
     return ax
 
 
@@ -326,7 +324,6 @@ def plot_freezing_temperatures_histogram_allinone(
     ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
     ax.grid(visible=True)
     ax.legend(loc=lloc, fontsize=ax_lab_fsize)
-
     return ax
 
 
