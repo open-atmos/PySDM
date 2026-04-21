@@ -115,8 +115,8 @@ class TestHomogeneousIceNucleationRate:
 
         def sat_T(temperature, S_i=1.5):
             return (
-                formulae.saturation_vapour_pressure.pvs_water(temperature)
-                / formulae.saturation_vapour_pressure.pvs_ice(temperature)
+                formulae.saturation_vapour_pressure.pvs_water.py_func(temperature)
+                / formulae.saturation_vapour_pressure.pvs_ice.py_func(temperature)
                 - S_i
             )
 
