@@ -119,7 +119,7 @@ class TestHomogeneousIceNucleationRate:
                 k: getattr(formulae.saturation_vapour_pressure, f"pvs_{k}")
                 for k in ("water", "ice")
             }
-            if not numba.config.DISABLE_JIT:
+            if not numba.config.DISABLE_JIT:  # pylint: disable=no-member
                 pvs = {k: v.py_func for k, v in pvs.items()}
             return pvs["water"](temperature) / pvs["ice"](temperature) - S_i
 
