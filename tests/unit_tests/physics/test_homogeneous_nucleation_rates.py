@@ -7,6 +7,7 @@ import re
 import pytest
 from matplotlib import pyplot
 import numpy as np
+import numba
 from scipy.optimize import elementwise
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics import homogeneous_ice_nucleation_rate
@@ -114,11 +115,13 @@ class TestHomogeneousIceNucleationRate:
         S_i = -1.0 / (d_aw_ice - 1.0)
 
         def sat_T(temperature, S_i=1.5):
-            return (
-                formulae.saturation_vapour_pressure.pvs_water.py_func(temperature)
-                / formulae.saturation_vapour_pressure.pvs_ice.py_func(temperature)
-                - S_i
-            )
+            pvs = {
+                k: getattr(formulae.saturation_vapour_pressure, f"pvs_{k}")
+                for k in ("water", "ice")
+            }
+            if not numba.config.DISABLE_JIT:
+                pvs = {k: v.py_func for k, v in pvs.items()}
+            return pvs["water"](temperature) / pvs["ice"](temperature) - S_i
 
         temperature = elementwise.find_root(sat_T, (210.0, 260.0), args=(S_i,)).x
 
