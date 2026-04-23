@@ -28,10 +28,9 @@ repos:
     - id: detect-missing-init
       args: ['--create', "--track", "--python-folders", "tests,PySDM,examples/PySDM_examples"]
 
-  # TODO #1794
-  # - repo: https://github.com/open-atmos/devops_tests
-  #   rev: v0.0.2
-  #   hooks:
-  #     - id: check-badges
-  #       name: check badges
-  #       args: [--fix-header, --repo-name=PySDM]
+  - repo: https://github.com/AgnieszkaZaba/devops_tests
+    rev: 6260ff80f0fb46f72de26dcbe173ce5564f236de
+    hooks:
+      - id: check-notebook-open-atmos-structure
+        name: check notebook has open-atmos structure
+        args: [--repo-name=PySDM]
