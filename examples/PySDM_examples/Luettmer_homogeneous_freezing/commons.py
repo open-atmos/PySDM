@@ -34,7 +34,6 @@ def hom_pure_droplet_freezing_backend():
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="Null",
                 saturation_vapour_pressure="MurphyKoop2005",
-                seed=time.time_ns(),
             )
         ),
         "KoopMurray2016": CPU(
@@ -42,7 +41,6 @@ def hom_pure_droplet_freezing_backend():
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="KoopMurray2016",
                 saturation_vapour_pressure="MurphyKoop2005",
-                seed=time.time_ns(),
             )
         ),
         "Spichtinger2023": CPU(
@@ -50,7 +48,6 @@ def hom_pure_droplet_freezing_backend():
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="Koop_Correction",
                 saturation_vapour_pressure="MurphyKoop2005",
-                seed=time.time_ns(),
             )
         ),
         "Koop2000": CPU(
@@ -58,7 +55,6 @@ def hom_pure_droplet_freezing_backend():
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="Koop2000",
                 saturation_vapour_pressure="MurphyKoop2005",
-                seed=time.time_ns(),
             )
         ),
         "KoopMurray2016_DWA": CPU(
@@ -66,7 +62,6 @@ def hom_pure_droplet_freezing_backend():
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="KoopMurray2016_DWA",
                 saturation_vapour_pressure="MurphyKoop2005",
-                seed=time.time_ns(),
             )
         ),
     }
