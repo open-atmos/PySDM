@@ -1,6 +1,5 @@
 """commons for homogeneous freezing notebooks"""
 
-import time
 from PySDM_examples.Luettmer_homogeneous_freezing.settings import Settings
 from PySDM_examples.Luettmer_homogeneous_freezing.simulation import Simulation
 from PySDM import Formulae
