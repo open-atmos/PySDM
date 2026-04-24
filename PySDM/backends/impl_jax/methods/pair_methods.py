@@ -103,6 +103,8 @@ class PairMethods(BackendMethods):
 
             return swapped_idx
 
+        body
+
         return body
 
     def sort_within_pair_by_attr(self, idx, is_first_in_pair, attr):

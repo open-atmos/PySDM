@@ -35,23 +35,70 @@ class CollisionsMethods(BackendMethods):
             attributes,
             gamma,
             is_first_in_pair,
-            i,
         ):
+            i = jnp.arange(len(multiplicity) // 2)
+
             offset = 1 - is_first_in_pair[2 * i]
-            j = idx[2 * i + offset]
+            j = idx[2 * 1 + offset]
             k = idx[2 * i + 1 + offset]
-            new_n = multiplicity[j] - gamma[i] * multiplicity[k]
-            if new_n > 0:
-                multiplicity[j] = new_n
-                for a in range(len(attributes)):
-                    attributes[a, k] += gamma[i] * attributes[a, j]
-            else:  # new_n == 0
-                multiplicity[j] = multiplicity[k] // 2
-                multiplicity[k] = multiplicity[k] - multiplicity[j]
-                for a in range(len(attributes)):
-                    attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
-                    attributes[a, k] = attributes[a, j]
+
+            mj = multiplicity[j]
+            mk = multiplicity[k]
+
+            new_n = mj - gamma[i] * mk
+
+            pos_mask = new_n > 0
+            zero_mask = ~pos_mask
+
+
+            # CASE new_n > 0
+            mult_pos_updates = jnp.where(pos_mask, new_n, multiplicity[j])
+            attr_pos_delta = gamma[i] * attributes[:, j]
+            attr_pos_delta = attr_pos_delta * pos_mask
+
+            # CASE new_n <= 0
+            mj_new = mk // 2
+            mk_new = mk - mj_new
+
+            mult_j_zero = jnp.where(zero_mask, mj_new, multiplicity[j])
+            mult_k_zero = jnp.where(zero_mask, mk_new, multiplicity[k])
+
+            new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
+            new_attr = new_attr * zero_mask
+
+            multiplicity = multiplicity.at[j].set(
+                jnp.where(pos_mask, mult_pos_updates, mult_j_zero)
+            )
+            multiplicity = multiplicity.at[k].set(
+                jnp.where(zero_mask, mult_k_zero, multiplicity[k])
+            )
+
+            attributes = attributes.at[:, k].add(attr_pos_delta)
+
+            attributes = attributes.at[:, j].set(
+                jnp.where(zero_mask, new_attr, attributes[:, j])
+            )
+            attributes = attributes.at[:, k].set(
+                jnp.where(zero_mask, new_attr, attributes[:, k])
+            )
+
             return multiplicity, attributes
+
+            # if new_n > 0:
+            #     multiplicity[j] = new_n
+            #     for a in range(len(attributes)):
+            #         attributes[a, k] += gamma[i] * attributes[a, j]
+            # else:  # new_n == 0
+            #     multiplicity[j] = multiplicity[k] // 2
+            #     multiplicity[k] = multiplicity[k] - multiplicity[j]
+            #     for a in range(len(attributes)):
+            #         attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
+            #         attributes[a, k] = attributes[a, j]
+            # return multiplicity, attributes
+
+
+
+            # return multiplicity, attributes
 
         return body
 
@@ -67,17 +114,26 @@ class CollisionsMethods(BackendMethods):
         coalescence_rate,
         is_first_in_pair,
     ):
-        indices = jnp.arange(len(multiplicity) // 2)
-        mapped_collision_coalescence = jax.vmap(
-            self._collision_coalescence_body, (None, None, None, None, None, 0)
-        )
-        mapped_collision_coalescence(
+        # pass
+        # indices = jnp.arange(len(multiplicity) // 2)
+        # mapped_collision_coalescence = jax.vmap(
+        #     self._collision_coalescence_body, (None, None, None, None, None, 0)
+        # )
+        # multiplicity.data, attributes.data = mapped_collision_coalescence(
+        #     multiplicity.data,
+        #     idx.data,
+        #     attributes.data,
+        #     gamma.data,
+        #     is_first_in_pair.indicator.data,
+        #     indices,
+        # )
+
+        multiplicity.data, attributes.data = self._collision_coalescence_body(
             multiplicity.data,
             idx.data,
             attributes.data,
             gamma.data,
             is_first_in_pair.indicator.data,
-            indices,
         )
 
     @cached_property
@@ -133,14 +189,16 @@ class CollisionsMethods(BackendMethods):
         # pylint: disable=too-many-arguments
         def body(prob, cell_start, timestep, dv, i):
             sd_num = cell_start[1] - cell_start[0]
-            norm_factor = timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-            prob.at[i].set(norm_factor)
+            # Fixed this with (sd_num >= 2), need to add the n_cell loop, and then the normalization pass
+            norm_factor = (sd_num >= 2) * (timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2))
+            prob = prob.at[i].set(norm_factor)
             return prob
 
         return body
 
     # pylint: disable=too-many-arguments
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
+        # FIX THIS FUNCTION!!!
         indices = jax.numpy.arange(prob.shape[0])
         temp_prob = jax.numpy.empty(prob.shape)
 
