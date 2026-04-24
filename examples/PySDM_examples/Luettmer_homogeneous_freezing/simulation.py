@@ -73,6 +73,7 @@ class Simulation:
         }
         builder.request_attribute("temperature of last freezing")
         builder.request_attribute("radius")
+        builder.request_attribute("wet to critical volume ratio")
 
         products = [
             PySDM_products.ParcelDisplacement(name="z"),
@@ -158,7 +159,13 @@ class Simulation:
             self.particulator.run(self.n_substeps)
             self.save(output)
 
-            if output["LWC"][-1] <= output["LWC"][0] * 0.9:
+            w_cr_v_ratio = self.particulator.attributes[
+                "wet to critical volume ratio"
+            ].data
+            sig_mass = self.particulator.attributes["signed water mass"].data
+            frozen = sig_mass < 0
+            unactivated = w_cr_v_ratio < 1
+            if any(frozen) and all(np.logical_or(frozen, unactivated)):
                 if not self.silent:
                     print("all particles frozen or evaporated")
                 # Assert for water saturation

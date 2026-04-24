@@ -256,7 +256,6 @@ def plot_freezing_temperatures_histogram(ax, simulation):
     for i in range(number_of_ensemble_runs):
         output = simulation["ensemble_member_outputs"][i]
         T_frz = np.asarray(output["T_frz"])
-
         title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
 
         # Freezing temperatures
