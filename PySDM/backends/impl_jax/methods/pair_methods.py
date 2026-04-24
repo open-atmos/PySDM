@@ -21,6 +21,7 @@ class PairMethods(BackendMethods):
             is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
             is_first_in_pair = is_in_same_cell & is_even_index
 
+            return jnp.array([True])
             return is_first_in_pair
 
         return body

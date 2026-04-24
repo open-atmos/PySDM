@@ -39,9 +39,8 @@ class CollisionsMethods(BackendMethods):
             i = jnp.arange(len(multiplicity) // 2)
 
             offset = 1 - is_first_in_pair[2 * i]
-            j = idx[2 * 1 + offset]
+            j = idx[2 * i + offset]
             k = idx[2 * i + 1 + offset]
-
             mj = multiplicity[j]
             mk = multiplicity[k]
 
@@ -50,11 +49,10 @@ class CollisionsMethods(BackendMethods):
             pos_mask = new_n > 0
             zero_mask = ~pos_mask
 
-
             # CASE new_n > 0
             mult_pos_updates = jnp.where(pos_mask, new_n, multiplicity[j])
-            attr_pos_delta = gamma[i] * attributes[:, j]
-            attr_pos_delta = attr_pos_delta * pos_mask
+            # attr_pos_delta = gamma[i] * attributes[:, j]
+            # attr_pos_delta = attr_pos_delta * pos_mask
 
             # CASE new_n <= 0
             mj_new = mk // 2
@@ -63,26 +61,26 @@ class CollisionsMethods(BackendMethods):
             mult_j_zero = jnp.where(zero_mask, mj_new, multiplicity[j])
             mult_k_zero = jnp.where(zero_mask, mk_new, multiplicity[k])
 
-            new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
-            new_attr = new_attr * zero_mask
+            # new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
+            # new_attr = new_attr * zero_mask
 
-            multiplicity = multiplicity.at[j].set(
-                jnp.where(pos_mask, mult_pos_updates, mult_j_zero)
-            )
-            multiplicity = multiplicity.at[k].set(
-                jnp.where(zero_mask, mult_k_zero, multiplicity[k])
-            )
+            mult_j = jnp.where(pos_mask, mult_pos_updates, mult_j_zero)
+            mult_k = jnp.where(zero_mask, mult_k_zero, multiplicity[k])
 
-            attributes = attributes.at[:, k].add(attr_pos_delta)
+            multiplicity = multiplicity.at[j].set(mult_j)
 
-            attributes = attributes.at[:, j].set(
-                jnp.where(zero_mask, new_attr, attributes[:, j])
-            )
-            attributes = attributes.at[:, k].set(
-                jnp.where(zero_mask, new_attr, attributes[:, k])
-            )
+            multiplicity = multiplicity.at[k].set(mult_k)
 
-            return multiplicity, attributes
+            # return mult_j, mult_k
+            # attributes = attributes.at[:, k].add(attr_pos_delta)
+
+            # attributes = attributes.at[:, j].set(
+            #     jnp.where(zero_mask, new_attr, attributes[:, j])
+            # )
+            # attributes = attributes.at[:, k].set(
+            #     jnp.where(zero_mask, new_attr, attributes[:, k])
+            # )
+            return multiplicity
 
             # if new_n > 0:
             #     multiplicity[j] = new_n
@@ -95,8 +93,6 @@ class CollisionsMethods(BackendMethods):
             #         attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
             #         attributes[a, k] = attributes[a, j]
             # return multiplicity, attributes
-
-
 
             # return multiplicity, attributes
 
@@ -128,13 +124,15 @@ class CollisionsMethods(BackendMethods):
         #     indices,
         # )
 
-        multiplicity.data, attributes.data = self._collision_coalescence_body(
+        multiplicity.data = self._collision_coalescence_body(
             multiplicity.data,
             idx.data,
             attributes.data,
             gamma.data,
             is_first_in_pair.indicator.data,
         )
+
+        # print(f"{mult_pos_updates=} \n {mult_j_zero=} \n {mult_k_zero=} \n {mult_k=} \n {pos_mask=}")
 
     @cached_property
     def _compute_gamma_body(self):
@@ -190,7 +188,9 @@ class CollisionsMethods(BackendMethods):
         def body(prob, cell_start, timestep, dv, i):
             sd_num = cell_start[1] - cell_start[0]
             # Fixed this with (sd_num >= 2), need to add the n_cell loop, and then the normalization pass
-            norm_factor = (sd_num >= 2) * (timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2))
+            norm_factor = (sd_num >= 2) * (
+                timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+            )
             prob = prob.at[i].set(norm_factor)
             return prob
 
