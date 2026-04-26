@@ -65,16 +65,15 @@ class Settings:
         self.rtol_thd = rtol_thd
         self.rtol_x = rtol_x
 
-    @property
-    def initial_vapour_mixing_ratio(self):
-        const = self.formulae.constants
-        pvs = self.formulae.saturation_vapour_pressure.pvs_water(
-            self.initial_temperature
+        self.initial_vapour_mixing_ratio = (
+            self.formulae.trivia.water_vapour_mixing_ratio(
+                self.initial_pressure,
+                self.initial_relative_humidity,
+                self.formulae.saturation_vapour_pressure.pvs_water(
+                    self.initial_temperature
+                ),
+            )
         )
-
-        pv = self.initial_relative_humidity * pvs
-
-        return const.eps / (self.initial_pressure / pv - 1)
 
     @property
     def initial_air_density(self):

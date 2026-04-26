@@ -57,11 +57,12 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         formulae = builder.particulator.formulae
 
         if self.initial_relative_humidity:
-            self.initial_water_vapour_mixing_ratio = formulae.constants.eps / (
-                self.p0
-                / self.initial_relative_humidity
-                / formulae.saturation_vapour_pressure.pvs_water(self.T0)
-                - 1
+            self.initial_water_vapour_mixing_ratio = (
+                formulae.trivia.water_vapour_mixing_ratio(
+                    self.p0,
+                    self.initial_relative_humidity,
+                    formulae.saturation_vapour_pressure.pvs_water(self.T0),
+                )
             )
 
         pd0 = formulae.trivia.p_d(self.p0, self.initial_water_vapour_mixing_ratio)
