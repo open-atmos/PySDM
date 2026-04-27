@@ -17,7 +17,7 @@ from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSp
 
 
 class Builder:
-    def __init__(self, n_sd, backend, environment=None):
+    def __init__(self, n_sd, backend, environment=None, dynamics=None):
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
@@ -26,11 +26,14 @@ class Builder:
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
         self.particulator.environment = environment.instantiate(builder=self)
+        if dynamics is not None:
+            for dynamic in dynamics:
+                self._register_dynamic(dynamic)
 
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
-    def add_dynamic(self, dynamic):
+    def _register_dynamic(self, dynamic):
         assert self.particulator.environment is not None
         key = inspect.getmro(type(dynamic))[-2].__name__
         assert key not in self.particulator.dynamics

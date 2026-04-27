@@ -36,16 +36,16 @@ class Simulation:
                 T0=settings.T0,
                 w=settings.w,
             ),
+            dynamics=[
+                AmbientThermodynamics(),
+                Condensation(
+                    rtol_x=settings.rtol_x,
+                    rtol_thd=settings.rtol_thd,
+                    dt_cond_range=settings.dt_cond_range,
+                ),
+            ],
         )
 
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(
-            Condensation(
-                rtol_x=settings.rtol_x,
-                rtol_thd=settings.rtol_thd,
-                dt_cond_range=settings.dt_cond_range,
-            )
-        )
         attributes = {}
         r_dry = np.array([settings.r_dry])
         attributes["dry volume"] = settings.formulae.trivia.volume(radius=r_dry)

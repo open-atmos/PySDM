@@ -8,17 +8,6 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
 def make_core(settings, coal_eff):
     backend = CPU
-
-    builder = Builder(
-        n_sd=settings.n_sd,
-        backend=backend(settings.formulae),
-        environment=Box(dv=settings.dv, dt=settings.dt),
-    )
-    builder.particulator.environment["rhod"] = 1.0
-    attributes = {}
-    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
-        settings.spectrum
-    ).sample_deterministic(settings.n_sd)
     collision = Collision(
         collision_kernel=settings.kernel,
         coalescence_efficiency=coal_eff,
@@ -26,7 +15,17 @@ def make_core(settings, coal_eff):
         fragmentation_function=settings.fragmentation,
         adaptive=settings.adaptive,
     )
-    builder.add_dynamic(collision)
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=backend(settings.formulae),
+        environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=[collision],
+    )
+    builder.particulator.environment["rhod"] = 1.0
+    attributes = {}
+    attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
+        settings.spectrum
+    ).sample_deterministic(settings.n_sd)
     common_args = {
         "attr": "volume",
         "attr_unit": "m^3",
