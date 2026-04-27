@@ -307,3 +307,12 @@ class TestTrivia:
                 total_vap_concentration=1 * si.mole / si.m**3,
             )
             assert molality.check(si.mole / si.kg)
+
+    @staticmethod
+    def test_water_vapour_mixing_ratio_unit():
+        with DimensionalAnalysis():
+            si = constants_defaults.si  # pylint: disable=redefined-outer-name
+            r = Trivia.water_vapour_mixing_ratio(
+                const=CONST, p=1 * si.atm, RH=0.5, pvs=0.1 * si.atm
+            )
+            assert r.check(si.dimensionless)
