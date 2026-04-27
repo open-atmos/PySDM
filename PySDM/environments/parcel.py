@@ -56,7 +56,7 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def register(self, builder):
         formulae = builder.particulator.formulae
 
-        if self.initial_relative_humidity:
+        if self.initial_relative_humidity is not None:
             self.initial_water_vapour_mixing_ratio = (
                 formulae.trivia.water_vapour_mixing_ratio(
                     self.p0,
