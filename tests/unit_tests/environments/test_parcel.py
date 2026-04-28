@@ -1,10 +1,10 @@
 """test for the parcel environment"""
 
 import pytest
+import numpy as np
 from PySDM.environments import Parcel
 from PySDM.physics import si
 from PySDM.builder import Builder
-import numpy as np
 
 
 def test_exclussive_for_rh0_and_r0():
