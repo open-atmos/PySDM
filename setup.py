@@ -35,7 +35,7 @@ optional_dependencies = {
     "unit-tests": ["pytest", "pytest-timeout", "matplotlib!=3.9.1"],
     "nonunit-tests": ["pytest", "PySDM-examples", "PyPartMC"],
     "CI_version_pins": [
-        "PyPartMC==2.0.4",
+        "PyPartMC==2.0.6",
         "numba==0.60.0",
         "CURandRTC==0.1.7",
         "Pint==0.24.4",
