@@ -39,7 +39,7 @@ optional_dependencies = {
         "numba==0.60.0",
         "CURandRTC==0.1.7",
         "Pint==0.24.4",
-        "chempy==0.8.3",
+        "chempy==0.10.1",
         "pyevtk==1.6.0",
     ],
 }
