@@ -52,7 +52,9 @@ class Simulation:
         builder.add_dynamic(IsotopicFractionation(isotopes=(isotope,)))
 
         rho_d = const.p_STP / const.Rd / T
-        builder.particulator.environment["dry_air_density"] = rho_d
+        # builder.particulator.environment["dry_air_density"] = rho_d
+        builder.particulator.environment["rhod"] = rho_d
+
         builder.particulator.environment["RH"] = relative_humidity
         builder.particulator.environment["T"] = T
         initial_conc_vap = (
@@ -123,7 +125,7 @@ class Simulation:
         )
         particulator.dynamics["IsotopicFractionation"]()
 
-        # FIXME
+        # TODO
         # total_vap_conc = n/V
         # molality = n'/m_d
         # isotopic_conc  = n'/n
