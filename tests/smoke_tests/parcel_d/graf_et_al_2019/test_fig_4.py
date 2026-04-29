@@ -63,4 +63,4 @@ class TestFig4:
         actual = variables["d_excess"] / PER_MILLE
 
         # assert
-        np.testing.assert_array_almost_equal(actual, desired, 0.1)
+        np.testing.assert_allclose(actual, desired, rtol=4e-2)
