@@ -52,7 +52,6 @@ class Simulation:
         builder.add_dynamic(IsotopicFractionation(isotopes=(isotope,)))
 
         rho_d = const.p_STP / const.Rd / T
-        # builder.particulator.environment["dry_air_density"] = rho_d
         builder.particulator.environment["rhod"] = rho_d
 
         builder.particulator.environment["RH"] = relative_humidity
@@ -103,7 +102,7 @@ class Simulation:
 
         isotopic_fraction = ff.trivia.isotopic_fraction(
             particulator.environment[f"molality {isotope} in dry air"][0],
-            particulator.environment["dry_air_density"][0],
+            particulator.environment["rhod"][0],
             initial_conc_vap,
         )
         R_vap = ff.trivia.isotopic_ratio_assuming_single_heavy_isotope(
@@ -145,7 +144,7 @@ class Simulation:
         )
         new_isotopic_fraction = ff.trivia.isotopic_fraction(
             particulator.environment[f"molality {isotope} in dry air"][0],
-            particulator.environment["dry_air_density"][0],
+            particulator.environment["rhod"][0],
             total_vap_conc,
         )
 
