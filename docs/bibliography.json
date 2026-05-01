@@ -1029,5 +1029,13 @@
     ],
     "label": "Long 1974 (J. Atmos. Sci. 31)",
     "title": "Solutions to the Droplet Collection Equation for Polynomial Kernels"
+  },
+  "https://doi.org/10.5194/gmd-4-15-2011" : {
+    "usages": [
+      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/__init__.py",
+      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/fig_2.ipynb"
+    ],
+    "label": "Arabas & Pawlowska 2011",
+    "title": "Adaptive method of lines for multi-component aerosol condensational growth and CCN activation"
   }
 }

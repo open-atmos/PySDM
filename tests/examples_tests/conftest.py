@@ -115,6 +115,7 @@ TEST_SUITES = {
         "Lowe_et_al_2019",
         "Singer_Ward",
         "Rogers_1975",
+        "Arabas_and_Pawlowska_2011",
     ],
     "condensation_b": [
         "Abdul_Razzak_Ghan_2000",

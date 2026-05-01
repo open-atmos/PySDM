@@ -260,3 +260,8 @@ class Trivia:  # pylint: disable=too-many-public-methods
             = molality in dry air / total vapour concentration * dry air density
         """
         return molality_in_dry_air / total_vap_concentration * density_dry_air
+
+    @staticmethod
+    def water_vapour_mixing_ratio(const, p, RH, pvs):
+        e = RH * pvs
+        return const.eps * e / (p - e)
