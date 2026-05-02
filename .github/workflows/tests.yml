@@ -37,6 +37,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          install-from-pypi: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
 
   env-nonunit-tests-setup:
     strategy:
@@ -56,6 +57,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          install-from-pypi: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
 
   pylint:
     needs: env-nonunit-tests-setup
@@ -73,6 +75,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+        install-from-pypi: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
     - run: pip install pylint nbqa
     - run: |
         # TODO #682
@@ -103,6 +106,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+        install-from-pypi: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
     - name: Generate coverage report
       run: |
         python -m pip install pytest-cov
@@ -136,6 +140,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           setup-name: unit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          install-from-pypi: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -195,6 +200,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          install-from-pypi: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
       - name: Run pytest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -256,6 +262,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           setup-name: nonunit-tests-${{ matrix.platform }}-${{ matrix.python-version }}
+          install-from-pypi: ${{ github.event_name == 'schedule' && 'true' || 'false' }}
           # https://github.com/numba/numba/issues/6350#issuecomment-728174860
 
       - if: startsWith(matrix.platform, 'ubuntu-') && (contains(matrix.test-suite, 'multi-process_a') || contains(matrix.test-suite, 'multi-process_b'))
