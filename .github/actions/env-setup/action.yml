@@ -25,7 +25,7 @@ runs:
         lookup-only: true
 
     - name: pip-install (-e) PySDM and PySDM-examples
-      if: ${{ inputs.install-from-pypi != 'true' && steps.cache.outputs.cache-hit != 'true' && (! startsWith(inputs.setup-name, 'unit-tests')) }}
+      if: ${{ inputs.install-from-pypi == 'true' && steps.cache.outputs.cache-hit != 'true' && (! startsWith(inputs.setup-name, 'unit-tests')) }}
       run: |
         python -m pip install -e .[nonunit-tests,CI_version_pins] -e ./examples[CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
@@ -33,7 +33,7 @@ runs:
       shell: bash
 
     - name: pip-install PySDM and PySDM-examples from PyPi
-      if: ${{ inputs.install-from-pypi == 'true' && steps.cache.outputs.cache-hit != 'true' && (! startsWith(inputs.setup-name, 'unit-tests')) }}
+      if: ${{ inputs.install-from-pypi != 'true' && steps.cache.outputs.cache-hit != 'true' && (! startsWith(inputs.setup-name, 'unit-tests')) }}
       run: |
         python -m pip install PySDM-examples
         python -m pip install -r tests/devops_tests/requirements.txt
@@ -41,7 +41,7 @@ runs:
       shell: bash
 
     - name: pip-install (-e) PySDM
-      if: ${{ inputs.install-from-pypi != 'true' && steps.cache.outputs.cache-hit != 'true' && startsWith(inputs.setup-name, 'unit-tests') }}
+      if: ${{ inputs.install-from-pypi == 'true' && steps.cache.outputs.cache-hit != 'true' && startsWith(inputs.setup-name, 'unit-tests') }}
       run: |
         python -m pip install -e .[unit-tests,CI_version_pins]
         python -m pip install -r tests/devops_tests/requirements.txt
@@ -55,7 +55,7 @@ runs:
       shell: bash
       
     - name: pip-install PySDM from PyPI
-      if: ${{ inputs.install-from-pypi == 'true' && steps.cache.outputs.cache-hit != 'true' && startsWith(inputs.setup-name, 'unit-tests') }}
+      if: ${{ inputs.install-from-pypi != 'true' && steps.cache.outputs.cache-hit != 'true' && startsWith(inputs.setup-name, 'unit-tests') }}
       run: |
         python -m pip install PySDM
         python -m pip install -r tests/devops_tests/requirements.txt
