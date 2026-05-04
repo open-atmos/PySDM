@@ -36,6 +36,7 @@ setup(
         "pyrcel",
         "pyvinecopulib",
         "networkx",
+        "PyVista",
     ],
     extras_require={
         "CI_version_pins": [
