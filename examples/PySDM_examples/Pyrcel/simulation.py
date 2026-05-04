@@ -15,6 +15,7 @@ class Simulation(BasicSimulation):
     def __init__(
         self,
         settings,
+        *,
         products=None,
         scipy_solver=False,
         rtol_thd=1e-10,
