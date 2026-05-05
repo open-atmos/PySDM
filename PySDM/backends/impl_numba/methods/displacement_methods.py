@@ -14,12 +14,15 @@ from ...impl_common.backend_methods import BackendMethods
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def calculate_displacement_body_common(
-    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, n_substeps
+    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, cell_id, n_substeps, enable_monte_carlo, u01
 ):
     displacement[dim, droplet] = scheme(
         position_in_cell[dim, droplet],
+        cell_id[droplet],
         courant[_l] / n_substeps,
         courant[_r] / n_substeps,
+        enable_monte_carlo,
+        u01
     )
 
 
@@ -27,13 +30,14 @@ class DisplacementMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
     def calculate_displacement_body_1d(
-        dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
+        dim, scheme, displacement, courant, cell_origin, position_in_cell, cell_id, n_substeps, enable_monte_carlo, rng
     ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
             _l = cell_origin[0, droplet]
             _r = cell_origin[0, droplet] + 1
+            u01 = rng[droplet]
             calculate_displacement_body_common(
                 dim,
                 droplet,
@@ -43,13 +47,16 @@ class DisplacementMethods(BackendMethods):
                 displacement,
                 courant,
                 position_in_cell,
+                cell_id,
                 n_substeps,
+                enable_monte_carlo,
+                u01,
             )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
     def calculate_displacement_body_2d(
-        dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
+        dim, scheme, displacement, courant, cell_origin, position_in_cell, cell_id, n_substeps, enable_monte_carlo, rng
     ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
@@ -62,6 +69,7 @@ class DisplacementMethods(BackendMethods):
                 cell_origin[0, droplet] + 1 * (dim == 0),
                 cell_origin[1, droplet] + 1 * (dim == 1),
             )
+            u01 = rng[droplet]
             calculate_displacement_body_common(
                 dim,
                 droplet,
@@ -71,13 +79,16 @@ class DisplacementMethods(BackendMethods):
                 displacement,
                 courant,
                 position_in_cell,
+                cell_id,
                 n_substeps,
+                enable_monte_carlo,
+                u01,
             )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
     def calculate_displacement_body_3d(
-        dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
+        dim, scheme, displacement, courant, cell_origin, position_in_cell, cell_id, n_substeps, enable_monte_carlo, rng
     ):
         n_sd = displacement.shape[1]
         for droplet in numba.prange(n_sd):  # pylint: disable=not-an-iterable
@@ -92,6 +103,7 @@ class DisplacementMethods(BackendMethods):
                 cell_origin[1, droplet] + 1 * (dim == 1),
                 cell_origin[2, droplet] + 1 * (dim == 2),
             )
+            u01 = rng[droplet]
             calculate_displacement_body_common(
                 dim,
                 droplet,
@@ -101,11 +113,14 @@ class DisplacementMethods(BackendMethods):
                 displacement,
                 courant,
                 position_in_cell,
+                cell_id,
                 n_substeps,
+                enable_monte_carlo,
+                u01,
             )
 
     def calculate_displacement(
-        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, cell_id, n_substeps, enable_monte_carlo, rng
     ):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
@@ -117,7 +132,10 @@ class DisplacementMethods(BackendMethods):
                 courant.data,
                 cell_origin.data,
                 position_in_cell.data,
+                cell_id.data,
                 n_substeps,
+                enable_monte_carlo,
+                rng.uniform(0., 1., displacement.data.shape[1]),
             )
         elif n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
@@ -127,7 +145,10 @@ class DisplacementMethods(BackendMethods):
                 courant.data,
                 cell_origin.data,
                 position_in_cell.data,
+                cell_id.data,
                 n_substeps,
+                enable_monte_carlo,
+                rng.uniform(0., 1., displacement.data.shape[1]),
             )
         elif n_dims == 3:
             DisplacementMethods.calculate_displacement_body_3d(
@@ -137,7 +158,10 @@ class DisplacementMethods(BackendMethods):
                 courant.data,
                 cell_origin.data,
                 position_in_cell.data,
+                cell_id.data,
                 n_substeps,
+                enable_monte_carlo,
+                rng.uniform(0., 1., displacement.data.shape[1]),
             )
         else:
             raise NotImplementedError()
@@ -169,7 +193,8 @@ class DisplacementMethods(BackendMethods):
                     # and crossed precip-counting level
                     position_within_column < precipitation_counting_level_index
                 ):
-                    rainfall_mass += abs(water_mass[idx[i]]) * multiplicity[idx[i]]
+                    rainfall_mass += abs(water_mass[idx[i]]) * \
+                        multiplicity[idx[i]]
                     idx[i] = flag
                     healthy[0] = 0
             return rainfall_mass
