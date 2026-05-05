@@ -37,21 +37,24 @@ class TestFig4:
         assert abs(expected_height - actual) < tolerance
 
     @staticmethod
-    @pytest.mark.parametrize("R_name", ("R_Rayleigh_eql", "R_Rayleigh_kin"))
-    def test_fig_4c(variables, R_name):
+    @pytest.mark.parametrize("fractionation_type", ("eql", "kin"))
+    @pytest.mark.parametrize("isotope", ("2H", "18O"))
+    def test_fig_4c(variables, fractionation_type, isotope):
         # arrange
         below_cloud = (
             variables["z"] < variables["levels"]["CB"] + variables["alt_initial"]
         )
+        deltas = variables["deltas_Rayleigh"]
 
         # act
-        actual = variables[R_name][below_cloud]
-        desired = variables["R0_2H"]
+        actual = deltas[isotope][fractionation_type][below_cloud]
+        desired = variables[f"delta0_{isotope}"]
 
         # assert
-        np.testing.assert_array_almost_equal(
+        np.testing.assert_allclose(
             actual,
             desired,
+            rtol=2e-5,
         )
 
     @staticmethod
