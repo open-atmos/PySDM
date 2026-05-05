@@ -76,11 +76,11 @@ jobs:
         with:
           release: R2024b
           cache: true
-      - uses: matlab-actions/run-command@v2.1.0
+      - uses: matlab-actions/run-command@v3.1.0
         with:
           command: tutorial_code
       - run: sed -i -e 's/CPU/GPU/g' tutorial_code.m
-      - uses: matlab-actions/run-command@v2.1.0
+      - uses: matlab-actions/run-command@v3.1.0
         with:
           command: tutorial_code
 
