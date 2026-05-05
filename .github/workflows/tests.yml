@@ -118,7 +118,7 @@ jobs:
     needs: [ pylint, unit-tests-without-jit-plus-codecov ]
     strategy:
       matrix:
-        platform: [ ubuntu-24.04, macos-14, windows-latest ]
+        platform: [ ubuntu-24.04, macos-14, windows-latest, ubuntu-24.04-arm ]
         python-version: [ "3.12" ]
         test-suite: [ "unit_tests/!(dynamics)", "unit_tests/dynamics/!(condensation|collisions)", "unit_tests/dynamics/condensation", "unit_tests/dynamics/collisions" ]
         exclude:
