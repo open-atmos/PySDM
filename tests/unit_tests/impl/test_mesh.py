@@ -28,9 +28,9 @@ class TestMesh:
         n_sd = 666
         positions = random_positions(grid, n_sd)
         size = 44 * np.asarray(grid)
-        cell_id_expected, cell_origins, _ = Mesh(grid, size).cellular_attributes(
-            positions
-        )
+        cell_id_expected, cell_origins, _ = Mesh(
+            grid=grid, size=size
+        ).cellular_attributes(positions)
 
         # act
         strides = Mesh._Mesh__strides(grid)

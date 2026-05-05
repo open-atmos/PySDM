@@ -130,7 +130,7 @@ class FreezingMethods(BackendMethods):
         )
 
         @numba.njit(**self.default_jit_flags)
-        def body(  # pylint: disable=unused-argument,too-many-arguments
+        def body(  # pylint: disable=unused-argument,too-many-positional-arguments
             rand,
             attributes,
             timestep,

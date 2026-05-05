@@ -1,3 +1,4 @@
+# pylint: disable=too-many-public-methods
 """
 CPU Numpy-based implementation of Storage class
 """
@@ -180,6 +181,13 @@ class Storage(StorageBase):
     def divide_if_not_zero(self, divisor):
         impl.divide_if_not_zero(self.data, divisor.data)
         return self
+
+    def where(self, condition, true_value, false_value):
+        impl.where(self.data, condition.data, true_value.data, false_value.data)
+        return self
+
+    def isless(self, comparison, value):
+        impl.isless(self.data, comparison.data, value)
 
     def sum(self, arg_a, arg_b):
         impl.sum_out_of_place(self.data, arg_a.data, arg_b.data)
