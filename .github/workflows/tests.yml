@@ -295,8 +295,11 @@ jobs:
           ls /tmp/pytest/test_run_notebooks_*/
           ls /tmp/pytest/test_run_notebooks_*/output/
           mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
-          for anim_name in docs_intro_animation parcel_animation; do
+          for anim_name in docs_intro_animation; do
               ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/${anim_name}.ogv -loop 0 -vf "fps=10,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}.gif
+          done
+          for anim_name in parcel_animation; do
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}.gif $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}.gif
           done
           ls $HOME/work/_temp/_github_home/figures
 
