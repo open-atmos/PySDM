@@ -10,43 +10,59 @@ class TestSpectraLognormal:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "m_mode, s_geom",
+        "median, s_geom",
         (
             (0.01, 1.5),
             (0.1, 1.1),
             (1, 1.01),
         ),
     )
-    def test_median(m_mode, s_geom):
+    def test_median(median, s_geom):
         # arrange
-        sut = Lognormal(m_mode=m_mode, norm_factor=1, s_geom=s_geom)
+        sut = Lognormal(median=median, norm_factor=1, s_geom=s_geom)
 
         # act
         median = sut.percentiles(0.5)
 
         # assert
-        assert median == m_mode
+        assert median == median
 
     @staticmethod
     @pytest.mark.parametrize(
-        "m_mode, s_geom",
+        "median, s_geom",
         (
             (0.01, 3.5),
             (0.1, 2.1),
             (1, 1.5),
         ),
     )
-    def test_mean(m_mode, s_geom):
+    def test_mean(median, s_geom):
         # arrange
-        sut = Lognormal(m_mode=m_mode, norm_factor=1, s_geom=s_geom)
-        x = np.linspace(m_mode / 1000, m_mode * 1000, num=10000)
+        sut = Lognormal(median=median, norm_factor=1, s_geom=s_geom)
+        x = np.linspace(median / 1000, median * 1000, num=10000)
 
         # act
         mean = np.sum(sut.pdf(x) * x) / np.sum(sut.pdf(x))
 
         # assert
         np.testing.assert_approx_equal(
-            actual=np.log(m_mode) + 0.5 * np.log(s_geom) ** 2,
+            actual=np.log(median) + 0.5 * np.log(s_geom) ** 2,
             desired=np.log(mean),
             significant=3,
         )
+
+    @staticmethod
+    def test_mode():
+        # arrange
+        spectrum = Lognormal(mode=44, s_geom=1.2, norm_factor=666)
+
+        # assert
+        assert spectrum.mode == 44
+
+    @staticmethod
+    def test_instantiation_passing_mode():
+        # arrange & act
+        spectrum = Lognormal(mode=1, s_geom=1, norm_factor=1)
+
+        # assert
+        np.testing.assert_approx_equal(actual=spectrum.median, desired=np.e)
