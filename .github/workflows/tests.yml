@@ -302,14 +302,14 @@ jobs:
 
       - name: animation movie upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: animation-movie-${{ matrix.platform }}
           if-no-files-found: error
           path: ~/work/_temp/_github_home/figures/*.gif
       - name: animation frame upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: animation-frame-${{ matrix.platform }}
           if-no-files-found: error
