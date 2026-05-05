@@ -145,6 +145,8 @@ TEST_SUITES = {
     ],
     "multi-process_b": [
         "Arabas_et_al_2025",
+        "Luettmer_homogeneous_freezing",
+        "Murray_et_al_2010",
     ],
     "multi-process_c_breakup": [
         "Bartman_2020_MasterThesis",

@@ -948,6 +948,7 @@
       "PySDM/physics/constants_defaults.py",
       "PySDM/physics/diffusion_ice_capacity/columnar.py",
       "PySDM/physics/homogeneous_ice_nucleation_rate/koop_corr.py",
+      "PySDM/physics/homogeneous_ice_nucleation_rate/koop_murray_dwa_adaption.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/__init__.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/data/reference_bulk.py",
       "examples/PySDM_examples/Spichtinger_et_al_2023/fig_B1.ipynb",
@@ -1014,14 +1015,22 @@
     "label": "Bartman 2020 (MSc thesis)",
     "title": "PySDM v1.0: Pythonic particle-based cloud microphysics package"
   },
-    "https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf" : {
+  "https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf" : {
     "usages": [
       "tests/unit_tests/physics/test_constants.py"
     ],
     "label": "Hayes 2004",
     "title": "An Introduction to Isotopic Calculations"
   },
-  "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2" : {
+  "https://doi.org/10.1039/c003297b": {
+    "usages": [
+      "examples/PySDM_examples/Murray_et_al_2010/fig_3.ipynb",
+      "examples/PySDM_examples/Murray_et_al_2010/__init__.py"
+    ],
+    "title": "Kinetics of the homogeneous freezing of water",
+    "label": "Murray et al. 2010 (Phys. Chem. Chem. Phys. 12)"
+  },
+  "https://doi.org/10.1175/1520-0469%281974%29031%3C1040%3ASTTDCE%3E2.0.CO%3B2": {
     "usages": [
       "PySDM/dynamics/collisions/collision_kernels/long1974.py",
       "examples/PySDM_examples/Long_1974/__init__.py",
