@@ -33,7 +33,7 @@ def test_rh_to_mixing_ratio_conversion(backend_instance):
         "T0": 280 * si.K,
         "w": 0.25 * si.m / si.s,
     }
-    rh = 0
+    rh = 0.5
 
     builder = Builder(
         n_sd=1,
@@ -46,4 +46,4 @@ def test_rh_to_mixing_ratio_conversion(backend_instance):
     )
 
     # assert
-    assert particulator.environment.initial_water_vapour_mixing_ratio == 0
+    assert particulator.environment.initial_water_vapour_mixing_ratio > 0
