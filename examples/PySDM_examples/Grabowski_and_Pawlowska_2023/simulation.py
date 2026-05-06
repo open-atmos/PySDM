@@ -31,10 +31,10 @@ class Simulation(BasicSimulation):
                 w=settings.vertical_velocity,
                 mass_of_dry_air=44 * si.kg,
             ),
-        )
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(
-            Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x)
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(rtol_thd=settings.rtol_thd, rtol_x=settings.rtol_x),
+            ),
         )
         for attribute in (
             "critical saturation",

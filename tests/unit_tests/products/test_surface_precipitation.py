@@ -19,9 +19,11 @@ class TestSurfacePrecipitation:
         precipitation product with a zero-dimensional environment"""
         # arrange
         builder = Builder(
-            n_sd=1, backend=backend_instance, environment=Box(dt=np.nan, dv=np.nan)
+            n_sd=1,
+            backend=backend_instance,
+            environment=Box(dt=np.nan, dv=np.nan),
+            dynamics=(Displacement(),),
         )
-        builder.add_dynamic(Displacement())
 
         # act
         with pytest.raises(AssertionError) as ex:
@@ -67,8 +69,8 @@ class TestSurfacePrecipitation:
             n_sd=n_sd,
             backend=backend_instance,
             environment=env_class(**env_ctor_args, dt=dt),
+            dynamics=(Displacement(enable_sedimentation=True),),
         )
-        builder.add_dynamic(Displacement(enable_sedimentation=True))
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray([multiplicity] * n_sd),

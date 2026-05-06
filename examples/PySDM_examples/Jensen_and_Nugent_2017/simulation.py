@@ -36,32 +36,48 @@ class Simulation(BasicSimulation):
 
         n_gccn = np.count_nonzero(table_3.NA) if gccn else 0
 
-        builder = Builder(
-            n_sd=N_SD_NON_GCCN + n_gccn,
-            backend=CPU(
-                formulae=settings.formulae, override_jit_flags={"parallel": False}
-            ),
-            environment=Parcel(
-                dt=settings.dt,
-                mass_of_dry_air=666 * si.kg,
-                p0=settings.p0,
-                initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
-                T0=settings.T0,
-                w=settings.vertical_velocity,
-                z0=settings.z0,
-            ),
-        )
+        if gravitational_coalsecence:
+            builder = Builder(
+                n_sd=N_SD_NON_GCCN + n_gccn,
+                backend=CPU(
+                    formulae=settings.formulae, override_jit_flags={"parallel": False}
+                ),
+                environment=Parcel(
+                    dt=settings.dt,
+                    mass_of_dry_air=666 * si.kg,
+                    p0=settings.p0,
+                    initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
+                    T0=settings.T0,
+                    w=settings.vertical_velocity,
+                    z0=settings.z0,
+                ),
+                dynamics=(
+                    AmbientThermodynamics(),
+                    Condensation(),
+                    Coalescence(collision_kernel=Geometric()),
+                ),
+            )
+        else:
+            builder = Builder(
+                n_sd=N_SD_NON_GCCN + n_gccn,
+                backend=CPU(
+                    formulae=settings.formulae, override_jit_flags={"parallel": False}
+                ),
+                environment=Parcel(
+                    dt=settings.dt,
+                    mass_of_dry_air=666 * si.kg,
+                    p0=settings.p0,
+                    initial_water_vapour_mixing_ratio=initial_water_vapour_mixing_ratio,
+                    T0=settings.T0,
+                    w=settings.vertical_velocity,
+                    z0=settings.z0,
+                ),
+                dynamics=(AmbientThermodynamics(), Condensation()),
+            )
 
         additional_derived_attributes = ("radius", "equilibrium saturation")
         for additional_derived_attribute in additional_derived_attributes:
             builder.request_attribute(additional_derived_attribute)
-
-        builder.add_dynamic(
-            AmbientThermodynamics()
-        )  # TODO #1266: order matters here, but error message is not saying it!
-        builder.add_dynamic(Condensation())
-        if gravitational_coalsecence:
-            builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
 
         self.r_dry, n_in_unit_volume = Logarithmic(
             spectrum=settings.dry_radii_spectrum,

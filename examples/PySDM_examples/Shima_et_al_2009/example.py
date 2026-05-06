@@ -19,6 +19,7 @@ def run(settings, backend=CPU, observers=()):
         n_sd=settings.n_sd,
         backend=backend(formulae=settings.formulae),
         environment=env,
+        dynamics=(coalescence,),
     )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
@@ -28,7 +29,6 @@ def run(settings, backend=CPU, observers=()):
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
     )
-    builder.add_dynamic(coalescence)
     products = (
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             settings.radius_bins_edges, name="dv/dlnr"

@@ -31,6 +31,7 @@ def run_box_breakup(
         n_sd=settings.n_sd,
         backend=backend_class(settings.formulae),
         environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=(breakup,),
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
@@ -52,7 +53,6 @@ def run_box_breakup(
         adaptive=settings.adaptive,
         warn_overflows=settings.warn_overflows,
     )
-    builder.add_dynamic(breakup)
     products = (
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             radius_bins_edges=settings.radius_bins_edges, name="dv/dlnr"
@@ -95,6 +95,7 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
         n_sd=settings.n_sd,
         backend=backend_class(settings.formulae),
         environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=(coal,),
     )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
@@ -106,7 +107,6 @@ def run_box_NObreakup(settings, steps=None, backend_class=CPU):
         coalescence_efficiency=settings.coal_eff,
         adaptive=settings.adaptive,
     )
-    builder.add_dynamic(coal)
     products = (
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             radius_bins_edges=settings.radius_bins_edges, name="dv/dlnr"

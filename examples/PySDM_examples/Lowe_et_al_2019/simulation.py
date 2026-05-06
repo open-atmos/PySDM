@@ -24,6 +24,7 @@ class Simulation(BasicSimulation):
                 T0=settings.T0,
                 w=settings.w,
             ),
+            dynamics=(AmbientThermodynamics(), Condensation()),
         )
 
         attributes = {
@@ -72,9 +73,6 @@ class Simulation(BasicSimulation):
 
         if settings.model == "Constant":
             del attributes["dry volume organic"]
-
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
 
         products = products or (
             PySDM_products.ParcelDisplacement(name="z"),
