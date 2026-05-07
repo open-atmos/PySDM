@@ -1,6 +1,6 @@
 """
 Derived droplet attribute representing the Bolin number for heavy
-water isotopologues (D, 17O, 18O substitutions).
+water isotopologues (2H, 17O, 18O substitutions).
 
 The Bolin number is a dimensionless coefficient relating the
 heavy-isotope mole tendency to the bulk liquid-water mass tendency
@@ -24,6 +24,7 @@ class BolinNumberImpl(DerivedAttribute):
         heavy_isotope : str
             Heavy isotopologue identifier (entry of ``HEAVY_ISOTOPES``).
         """
+        self.isotope = heavy_isotope
         self.moles_heavy = builder.get_attribute(f"moles_{heavy_isotope}")
         self.moles_light = builder.get_attribute("moles light water")  # TODO #1787
         self.cell_id = builder.get_attribute("cell id")
@@ -47,6 +48,14 @@ class BolinNumberImpl(DerivedAttribute):
             moles_light_molecule=self.moles_light.data,
             moles_heavy=self.moles_heavy.data,
             molality_in_dry_air=self.molality_in_dry_air,
+            D_ratio_heavy_to_light=getattr(
+                self.formulae.isotope_diffusivity_ratios,
+                f"ratio_{self.isotope}_heavy_to_light",
+            ),
+            alpha_l=getattr(
+                self.formulae.isotope_equilibrium_fractionation_factors,
+                f"alpha_l_{self.isotope}",
+            ),
         )
 
 

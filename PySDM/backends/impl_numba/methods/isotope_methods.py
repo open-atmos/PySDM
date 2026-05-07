@@ -139,6 +139,8 @@ class IsotopeMethods(BackendMethods):
             moles_light_molecule,
             moles_heavy,
             molality_in_dry_air,
+            D_ratio_heavy_to_light,
+            alpha_l,
         ):  # pylint: disable=too-many-locals
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
@@ -148,18 +150,14 @@ class IsotopeMethods(BackendMethods):
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
-
                 isotopic_fraction = ff.trivia__isotopic_fraction(
                     molality_in_dry_air=molality_in_dry_air[cell_id[i]],
                     density_dry_air=density_dry_air[cell_id[i]],
                     total_vap_concentration=conc_vap_total,
                 )
-                D_ratio_heavy_to_light = (
-                    ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
-                )
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=D_ratio_heavy_to_light,
-                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
+                    D_ratio_heavy_to_light=D_ratio_heavy_to_light(T),
+                    alpha=alpha_l(T),
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
                     ),
@@ -188,6 +186,8 @@ class IsotopeMethods(BackendMethods):
         moles_light_molecule,
         moles_heavy,
         molality_in_dry_air,
+        D_ratio_heavy_to_light,
+        alpha_l,
     ):
         """Bolin number per droplet"""
         self._bolin_number_body(
@@ -199,4 +199,6 @@ class IsotopeMethods(BackendMethods):
             moles_light_molecule=moles_light_molecule.data,
             moles_heavy=moles_heavy.data,
             molality_in_dry_air=molality_in_dry_air.data,
+            D_ratio_heavy_to_light=D_ratio_heavy_to_light,
+            alpha_l=alpha_l,
         )
