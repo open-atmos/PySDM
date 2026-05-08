@@ -97,7 +97,6 @@ def plot_thermodynamics_and_bulk(
     # Temperture profile
     iax = 0
     ax = axs[iax]
-
     ax.plot(time, RH, color="red", linestyle="dashdot", label=r"$S_\text{w}$")
     ax.plot(time, RHi, color="blue", linestyle="--", label=r"$S_\text{i}$")
     ax.set_ylabel("saturation ratio", fontsize=ax_lab_fsize)
@@ -175,8 +174,8 @@ def plot_thermodynamics_and_bulk(
         ax.axvline(x=first_ice_time, color="black", linestyle=":")
         ax.set_title(title_add[iax] + r" mean radius", fontsize=ax_lab_fsize)
 
-    iax = 3
     # Water activity difference profile
+    iax = 3
     ax = axs[iax]
     if show_jhom:
         lin_s_SP2023 = "--"
@@ -199,7 +198,6 @@ def plot_thermodynamics_and_bulk(
             linestyle=lin_s_SP2023,
             label="JHOM-DWA",
         )
-
         ax.set_ylabel(
             r"nucleation rate [$\mathrm{m^{-3} \, s^{-1}}$]", fontsize=ax_lab_fsize
         )
@@ -313,7 +311,6 @@ def plot_freezing_temperatures_histogram_allinone(
         ax.fill_between(
             T_frz_bins_center, min_line, max_line, color=colors[k], alpha=0.2
         )
-
     ax.set_xlim(left=234.5, right=239)
     ax.set_title(title, fontsize=ax_lab_fsize)
     ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
@@ -408,7 +405,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         stat="probability",
         binwidth=binwidth,
         discrete=(False, False),
-        # weights=multiplicity_hist,
+        weights=multiplicity_hist,
         pmax=0.8,
     )
 
@@ -471,7 +468,6 @@ def plot_ensemble_bulk(
             ens_var_scale = 1.0 / 1e6
         else:
             ens_var_scale = 1.0
-
         if ens_var_name == "sig":
             ens_var_name = "sigma_droplet_distribution"
 
@@ -542,7 +538,6 @@ def plot_ensemble_bulk(
         ax.set_yscale("log")
         y_label = "number of super-particles"
         ens_label = r"$n_\text{sd}$ ensemble"
-
     ax.set_title(title_add + " " + title + " for " + ens_label, fontsize=ax_lab_fsize)
     ax.set_xlabel(x_label, fontsize=ax_lab_fsize)
     ax.set_ylabel(y_label, fontsize=ax_lab_fsize)
