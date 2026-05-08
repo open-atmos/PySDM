@@ -345,6 +345,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
     ens_variable = []
     ens_variable_sec = []
     T_frz_hist = []
+    multiplicity_hist = []
 
     for simulation in simulations:
         if ens_variable_name == "sig":
@@ -355,6 +356,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         output = simulation["ensemble_member_outputs"][0]
         qi = np.asarray(output["IWC"])
         T_frz = np.asarray(output["T_frz"])
+        multiplicity = np.asarray(output["multiplicity"])
         first_ice_idx = np.where(qi > 1e-7)[0][0]
 
         if ens_variable_name == "n_ccn":
@@ -366,12 +368,12 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
             ens_variable_sec_value = abs(np.mean(np.diff(T) / np.diff(time)))
 
         T_frz_hist.extend(T_frz)
+        multiplicity_hist.extend(multiplicity)
         ens_variable.extend(np.full_like(T_frz, ens_variable_value))
         ens_variable_sec.append(ens_variable_sec_value)
 
     ens_variable = np.array(ens_variable)
     ens_variable_sec = np.array(ens_variable_sec)
-
     y_label, y_label_sec = "", ""
     if ens_variable_name == "w_updraft":
         y_label = r"vertical updraft [$\mathrm{m \, s^{-1}}$]"
@@ -406,6 +408,7 @@ def plot_freezing_temperatures_2d_histogram_seaborn(
         stat="probability",
         binwidth=binwidth,
         discrete=(False, False),
+        # weights=multiplicity_hist,
         pmax=0.8,
     )
 
