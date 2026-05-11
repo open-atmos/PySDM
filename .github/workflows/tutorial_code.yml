@@ -51,7 +51,7 @@ jobs:
       - run: pip install -e .[CI_version_pins]
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@v3
       - run: cat -n tutorial_code.jl
       - run: echo PYTHON=`which python` >> $GITHUB_ENV
       - run: julia tutorial_code.jl
