@@ -51,8 +51,8 @@ class CollisionsMethods(BackendMethods):
 
             # CASE new_n > 0
             mult_pos_updates = jnp.where(pos_mask, new_n, multiplicity[j])
-            # attr_pos_delta = gamma[i] * attributes[:, j]
-            # attr_pos_delta = attr_pos_delta * pos_mask
+            attr_pos_delta = gamma[i] * attributes[:, j]
+            attr_pos_delta = attr_pos_delta * pos_mask
 
             # CASE new_n <= 0
             mj_new = mk // 2
@@ -61,8 +61,8 @@ class CollisionsMethods(BackendMethods):
             mult_j_zero = jnp.where(zero_mask, mj_new, multiplicity[j])
             mult_k_zero = jnp.where(zero_mask, mk_new, multiplicity[k])
 
-            # new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
-            # new_attr = new_attr * zero_mask
+            new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
+            new_attr = new_attr * zero_mask
 
             mult_j = jnp.where(pos_mask, mult_pos_updates, mult_j_zero)
             mult_k = jnp.where(zero_mask, mult_k_zero, multiplicity[k])
@@ -72,15 +72,15 @@ class CollisionsMethods(BackendMethods):
             multiplicity = multiplicity.at[k].set(mult_k)
 
             # return mult_j, mult_k
-            # attributes = attributes.at[:, k].add(attr_pos_delta)
+            attributes = attributes.at[:, k].add(attr_pos_delta)
 
-            # attributes = attributes.at[:, j].set(
-            #     jnp.where(zero_mask, new_attr, attributes[:, j])
-            # )
-            # attributes = attributes.at[:, k].set(
-            #     jnp.where(zero_mask, new_attr, attributes[:, k])
-            # )
-            return multiplicity
+            attributes = attributes.at[:, j].set(
+                jnp.where(zero_mask, new_attr, attributes[:, j])
+            )
+            attributes = attributes.at[:, k].set(
+                jnp.where(zero_mask, new_attr, attributes[:, k])
+            )
+            # return multiplicity
 
             # if new_n > 0:
             #     multiplicity[j] = new_n
@@ -92,7 +92,7 @@ class CollisionsMethods(BackendMethods):
             #     for a in range(len(attributes)):
             #         attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
             #         attributes[a, k] = attributes[a, j]
-            # return multiplicity, attributes
+            return multiplicity, attributes
 
             # return multiplicity, attributes
 
@@ -124,6 +124,7 @@ class CollisionsMethods(BackendMethods):
         #     indices,
         # )
 
+        print(f"pre-coalescence: {multiplicity.data=}")
         multiplicity.data = self._collision_coalescence_body(
             multiplicity.data,
             idx.data,
@@ -131,6 +132,8 @@ class CollisionsMethods(BackendMethods):
             gamma.data,
             is_first_in_pair.indicator.data,
         )
+        print(f"post-coalescence: {multiplicity.data=}")
+
 
         # print(f"{mult_pos_updates=} \n {mult_j_zero=} \n {mult_k_zero=} \n {mult_k=} \n {pos_mask=}")
 

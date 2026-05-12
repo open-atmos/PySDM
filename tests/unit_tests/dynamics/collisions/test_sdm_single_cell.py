@@ -36,6 +36,11 @@ class TestSDMSingleCell:
 
         # Assert
         particles = particulator.attributes
+        print(f"{particles['multiplicity'].to_ndarray()=}")
+        # print(f"{np.sum(particles['multiplicity'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray())=}")
+        print(f"{particles['temperature'].to_ndarray()=}")
+        print(f"{np.sum(particles['multiplicity'].to_ndarray() * particles['volume'].to_ndarray())=}")
+        
         np.testing.assert_approx_equal(
             const
             * np.sum(
