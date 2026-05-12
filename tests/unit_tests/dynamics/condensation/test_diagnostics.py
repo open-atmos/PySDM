@@ -5,7 +5,7 @@ import re
 
 import numpy as np
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics.condensation import Condensation
 from PySDM.impl.mesh import Mesh
@@ -79,7 +79,8 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             rho=rho,
             eta=eta,
         )
-        builder = Builder(n_sd=n_sd, backend=backend(), environment=env)
+        formulae = Formulae(saturation_vapour_pressure="FlatauWalkoCotton")
+        builder = Builder(n_sd=n_sd, backend=backend(formulae), environment=env)
 
         builder.add_dynamic(Condensation(max_iters=max_iters))
         self.particulator = builder.build(
