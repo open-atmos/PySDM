@@ -26,7 +26,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
-      - uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.12"
 
@@ -49,7 +49,7 @@ jobs:
           set -x
           [ `ls ${{ matrix.packages-dir }}/dist | fgrep + | tee /dev/stderr | wc -l` -ne 0 ] && exit 1 || echo OK
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           path: ${{ matrix.packages-dir }}/dist
           name: dist-${{ matrix.packages-dir }}
@@ -62,7 +62,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     needs: [ package ]
     steps:
-      - uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v4
@@ -87,14 +87,14 @@ jobs:
           path: dist
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: pypa/gh-action-pypi-publish@release/v1.12
+        uses: pypa/gh-action-pypi-publish@release/v1.14
         with:
           attestations: false
           repository_url: https://test.pypi.org/legacy/
           packages-dir: dist
 
       - if: startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@release/v1.12
+        uses: pypa/gh-action-pypi-publish@release/v1.14
         with:
           attestations: false
           packages-dir: dist

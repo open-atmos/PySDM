@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.10"
       - run: python -m pip install $PIP_INSTALL_ARGS -e .[CI_version_pins]
@@ -45,13 +45,13 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.10"
       - run: pip install -e .[CI_version_pins]
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
-      - uses: julia-actions/setup-julia@v2
+      - uses: julia-actions/setup-julia@v3
       - run: cat -n tutorial_code.jl
       - run: echo PYTHON=`which python` >> $GITHUB_ENV
       - run: julia tutorial_code.jl
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.12"
 
@@ -72,15 +72,15 @@ jobs:
       - run: pip install pytest-codeblocks pytest
       - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('docs/markdown/pysdm_landing.md'); f=open('tutorial_code.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - run: cat -n tutorial_code.m
-      - uses: matlab-actions/setup-matlab@v2.1.0
+      - uses: matlab-actions/setup-matlab@v3.0.1
         with:
           release: R2024b
           cache: true
-      - uses: matlab-actions/run-command@v2.1.0
+      - uses: matlab-actions/run-command@v3.1.1
         with:
           command: tutorial_code
       - run: sed -i -e 's/CPU/GPU/g' tutorial_code.m
-      - uses: matlab-actions/run-command@v2.1.0
+      - uses: matlab-actions/run-command@v3.1.1
         with:
           command: tutorial_code
 
