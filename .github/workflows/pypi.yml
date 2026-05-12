@@ -26,7 +26,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0  # https://github.com/pypa/setuptools_scm/issues/480
-      - uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.12"
 
@@ -62,7 +62,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     needs: [ package ]
     steps:
-      - uses: actions/setup-python@v5.0.0
+      - uses: actions/setup-python@v6.2.0
         with:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v4
