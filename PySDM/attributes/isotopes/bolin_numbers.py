@@ -42,20 +42,13 @@ class BolinNumberImpl(DerivedAttribute):
         self.particulator.backend.bolin_number(
             output=self.data,
             cell_id=self.cell_id.data,
+            isotope=self.isotope,
             relative_humidity=self.particulator.environment["RH"],
             temperature=self.particulator.environment["T"],
             density_dry_air=self.particulator.environment["rhod"],
             moles_light_molecule=self.moles_light.data,
             moles_heavy=self.moles_heavy.data,
             molality_in_dry_air=self.molality_in_dry_air,
-            D_ratio_heavy_to_light=getattr(
-                self.formulae.isotope_diffusivity_ratios,
-                f"ratio_{self.isotope}_heavy_to_light",
-            ),
-            alpha_l=getattr(
-                self.formulae.isotope_equilibrium_fractionation_factors,
-                f"alpha_l_{self.isotope}",
-            ),
         )
 
 
