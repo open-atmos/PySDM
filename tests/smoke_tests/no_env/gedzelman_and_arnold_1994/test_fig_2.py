@@ -29,8 +29,8 @@ def notebook_variables_fixture():
         (1.0, 0.30, "liquid"),
         (0.93, 0.5, "liquid"),
         (0.8776, 1.0, "liquid"),
-        (0.9, 0.0, "vapour"),
-        (0.8776, 1.0, "vapour"),
+        (0.9, 0.0, "vapor"),
+        (0.8776, 1.0, "vapor"),
     ),
 )
 def test_fig_2(notebook_variables, x, expected_y, phase):
@@ -43,8 +43,8 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
     """
 
     # arrange
-    xy_data = notebook_variables["PLOT_LINE"][phase][0].get_xydata()
-    plot_x, plot_y = xy_data[:, 0], xy_data[:, 1] * PER_CENT
+    plot_x = notebook_variables["cases"][phase]["x"]
+    plot_y = notebook_variables["cases"][phase]["y"]
     plot_x_eps = (plot_x[1] - plot_x[0]) / 2
     plot_y_eps = np.max(abs(np.diff(plot_y))) / 2
 
@@ -56,7 +56,7 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
     np.testing.assert_allclose(
         actual=sut,
         desired=expected_y,
-        atol=plot_y_eps / plot_x_eps,
+        rtol=plot_y_eps,
     )
 
 
