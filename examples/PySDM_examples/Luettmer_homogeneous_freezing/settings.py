@@ -27,6 +27,7 @@ class Settings:
         n_output: int = 30,
         backend=None,
         number_of_ensemble_runs=1,
+        t_max_duration=10000,
     ):
         self.backend = backend
         if not silent:
@@ -93,6 +94,6 @@ class Settings:
 
         self.number_of_ensemble_runs = number_of_ensemble_runs
         self.dz = dz
-        self.t_max_duration = 10000
+        self.t_max_duration = t_max_duration
         self.dt = dz / self.w_updraft
         self.n_output = n_output

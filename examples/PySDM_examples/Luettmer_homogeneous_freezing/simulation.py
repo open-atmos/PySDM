@@ -15,7 +15,7 @@ from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_dry_radii
 class Simulation:
     def __init__(self, settings):
 
-        dt = settings.dt
+        self.dt = settings.dt
 
         formulae = settings.formulae
 
@@ -23,7 +23,7 @@ class Simulation:
 
         env = Parcel(
             mixed_phase=True,
-            dt=dt,
+            dt=self.dt,
             mass_of_dry_air=settings.mass_of_dry_air,
             p0=settings.initial_pressure,
             initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
@@ -118,7 +118,7 @@ class Simulation:
         if settings.n_output == 1:
             self.n_substeps = 1
         else:
-            self.n_substeps = int(self.n_output / dt)
+            self.n_substeps = int(self.n_output / self.dt)
         self.t_max_duration = settings.t_max_duration
 
     def save(self, output):
@@ -184,7 +184,7 @@ class Simulation:
                     )
 
                 break
-            if output["t"][-1] >= self.t_max_duration:
+            if output["t"][-1] >= self.t_max_duration * self.dt:
                 print("time exceeded")
                 break
 
