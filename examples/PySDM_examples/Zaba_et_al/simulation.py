@@ -124,16 +124,6 @@ class Simulation:
         )
         particulator.dynamics["IsotopicFractionation"]()
 
-        # TODO
-        # total_vap_conc = n/V
-        # molality = n'/m_d
-        # isotopic_conc  = n'/n
-        # wvmr = m_vap/m_d = n_vap * Mv / m_d
-        #       => n_vap = wvmr * m_d / Mv
-        # R_vap = n'_vap / n_vap = molality * m_d / n_vap
-        #       = molality * m_d / wvmr / m_d * Mv
-        #       = molality / wvmr * Mv
-
         total_vap_conc = (
             initial_conc_vap
             - dm_dt_per_droplet
