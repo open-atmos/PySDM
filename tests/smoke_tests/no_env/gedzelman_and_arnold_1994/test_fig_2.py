@@ -29,8 +29,8 @@ def notebook_variables_fixture():
         (1.0, 0.30, "liquid"),
         (0.93, 0.5, "liquid"),
         (0.8776, 1.0, "liquid"),
-        (0.9, 0.0, "vapor"),
-        (0.8776, 1.0, "vapor"),
+        (0.9, 0.0, "vapour"),
+        (0.8776, 1.0, "vapour"),
     ),
 )
 def test_fig_2(notebook_variables, x, expected_y, phase):
