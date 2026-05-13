@@ -43,7 +43,7 @@ def make_particulator(
         builder.request_attribute(f"delta_{iso}")
     builder.particulator.environment["RH"] = np.array(rh)
     builder.particulator.environment["T"] = np.array(t)
-    builder.particulator.environment["dry_air_density"] = np.array(1)
+    builder.particulator.environment["rhod"] = np.array(1)
     builder.add_dynamic(Condensation())
     builder.add_dynamic(IsotopicFractionation(isotopes=isotopes_considered))
 

@@ -134,7 +134,7 @@ class TestIsotopes:
         any_positive_number = 44.0
         ff = Formulae(
             isotope_relaxation_timescale=variant,
-            isotope_diffusivity_ratios="HellmannAndHarvey2020",
+            isotope_diffusivity_ratios="HellmannAndHarvey2020+GrahamsLaw",
             isotope_equilibrium_fractionation_factors="VanHook1968",
         )
         n_sd = 1
@@ -165,7 +165,7 @@ class TestIsotopes:
         particulator = builder.build(attributes=attr)
         particulator.environment["RH"] = relative_humidity
         particulator.environment["T"] = any_positive_number
-        particulator.environment["dry_air_density"] = any_positive_number
+        particulator.environment["rhod"] = any_positive_number
 
         # act
         value = particulator.attributes[attribute_name].data
