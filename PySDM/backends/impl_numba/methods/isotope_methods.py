@@ -133,14 +133,13 @@ class IsotopeMethods(BackendMethods):
             *,
             output,
             cell_id,
+            isotope,
             relative_humidity,
             temperature,
             density_dry_air,
             moles_light_molecule,
             moles_heavy,
             molality_in_dry_air,
-            D_ratio_heavy_to_light,
-            alpha_l,
         ):  # pylint: disable=too-many-locals
             for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
                 T = temperature[cell_id[i]]
@@ -155,9 +154,30 @@ class IsotopeMethods(BackendMethods):
                     density_dry_air=density_dry_air[cell_id[i]],
                     total_vap_concentration=conc_vap_total,
                 )
+                if isotope == "2H":
+                    D_ratio_fun = ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light
+                    alpha_fun = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H
+                if isotope == "3H":
+                    D_ratio_fun = ff.isotope_diffusivity_ratios__ratio_3H_heavy_to_light
+                    alpha_fun = ff.isotope_equilibrium_fractionation_factors__alpha_l_3H
+                elif isotope == "18O":
+                    D_ratio_fun = (
+                        ff.isotope_diffusivity_ratios__ratio_18O_heavy_to_light
+                    )
+                    alpha_fun = (
+                        ff.isotope_equilibrium_fractionation_factors__alpha_l_18O
+                    )
+                elif isotope == "17O":
+                    D_ratio_fun = (
+                        ff.isotope_diffusivity_ratios__ratio_17O_heavy_to_light
+                    )
+                    alpha_fun = (
+                        ff.isotope_equilibrium_fractionation_factors__alpha_l_17O
+                    )
+
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=D_ratio_heavy_to_light(T),
-                    alpha=alpha_l(T),
+                    D_ratio_heavy_to_light=D_ratio_fun(T),
+                    alpha=alpha_fun(T),
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
                     ),
@@ -180,25 +200,23 @@ class IsotopeMethods(BackendMethods):
         *,
         output,
         cell_id,
+        isotope,
         relative_humidity,
         temperature,
         density_dry_air,
         moles_light_molecule,
         moles_heavy,
         molality_in_dry_air,
-        D_ratio_heavy_to_light,
-        alpha_l,
     ):
         """Bolin number per droplet"""
         self._bolin_number_body(
             output=output.data,
             cell_id=cell_id.data,
+            isotope=isotope,
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
             density_dry_air=density_dry_air.data,
             moles_light_molecule=moles_light_molecule.data,
             moles_heavy=moles_heavy.data,
             molality_in_dry_air=molality_in_dry_air.data,
-            D_ratio_heavy_to_light=D_ratio_heavy_to_light,
-            alpha_l=alpha_l,
         )
