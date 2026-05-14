@@ -168,5 +168,4 @@ class TestIsotopeDiffusivityRatios:
             pyplot.clf()
 
         # assert
-        print(max_value, min_value)
         assert 0.985 > max_value > min_value > 0.948
