@@ -76,9 +76,7 @@ class IsotopeMethods(BackendMethods):
                     dm_heavy = dm_total[sd_id] / Bo * mass_ratio_heavy_to_total
                 dn_heavy_molecule = dm_heavy / molar_mass_heavy_molecule
                 moles_heavy_molecule[sd_id] += dn_heavy_molecule
-                mass_of_dry_air = (
-                    dry_air_density[cell_id[sd_id]] * cell_volume[cell_id[sd_id]]
-                )
+                mass_of_dry_air = dry_air_density[cell_id[sd_id]] * cell_volume
                 molality_in_dry_air[cell_id[sd_id]] -= (
                     dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
                 )
@@ -102,7 +100,7 @@ class IsotopeMethods(BackendMethods):
         """Update heavy-isotope composition during droplet growth/evaporation."""
         self._isotopic_fractionation_body(
             cell_id=cell_id.data,
-            cell_volume=cell_volume.data,
+            cell_volume=cell_volume,
             multiplicity=multiplicity.data,
             dm_total=dm_total.data,
             signed_water_mass=signed_water_mass.data,
