@@ -34,7 +34,7 @@ def make_particulator(
     builder = Builder(
         n_sd=1,
         backend=backend_instance,
-        environment=Box(dv=np.ones(1), dt=1 * si.s),
+        environment=Box(dv=np.nan, dt=1 * si.s),
     )
     for iso in isotopes_considered:
         if not attributes.get(f"moles_{iso}"):
