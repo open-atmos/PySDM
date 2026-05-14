@@ -2,7 +2,7 @@
 Zero-dimensional adiabatic parcel framework
 """
 
-from typing import List, Optional, Union
+from typing import Sequence, Optional, Union
 
 import numpy as np
 
@@ -28,9 +28,9 @@ class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
         w: Union[float, callable],
         z0: float = 0,
         mixed_phase=False,
-        variables: Optional[List[str]] = None,
+        variables: Optional[Sequence[str]] = None,
     ):
-        variables = (variables or []) + ["rhod", "z"]
+        variables = (list(variables) or []) + ["rhod", "z"]
         super().__init__(dt, Mesh.mesh_0d(), variables, mixed_phase=mixed_phase)
 
         self.p0 = p0
