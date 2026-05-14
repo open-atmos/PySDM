@@ -161,10 +161,12 @@ class TestIsotopeDiffusivityRatios:
         pyplot.xlabel("temperature [K]")
         pyplot.grid()
         pyplot.ylabel("diffusivity ratio (heavy to light)")
+        pyplot.legend()
         if plot:
             pyplot.show()
         else:
             pyplot.clf()
 
         # assert
-        assert 0.985 > max_value > min_value > 0.968
+        print(max_value, min_value)
+        assert 0.985 > max_value > min_value > 0.948

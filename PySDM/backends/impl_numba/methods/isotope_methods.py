@@ -133,6 +133,7 @@ class IsotopeMethods(BackendMethods):
             *,
             output,
             cell_id,
+            isotope,
             relative_humidity,
             temperature,
             density_dry_air,
@@ -148,29 +149,40 @@ class IsotopeMethods(BackendMethods):
                 conc_vap_total = (
                     pvs_water * relative_humidity[cell_id[i]] / ff.constants.R_str / T
                 )
-                rho_v = pvs_water / T / ff.constants.Rv
-
                 isotopic_fraction = ff.trivia__isotopic_fraction(
                     molality_in_dry_air=molality_in_dry_air[cell_id[i]],
                     density_dry_air=density_dry_air[cell_id[i]],
                     total_vap_concentration=conc_vap_total,
                 )
-                D_ratio_heavy_to_light = (
-                    ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
-                )
+                if isotope == "2H":
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T)
+                if isotope == "3H":
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_3H_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_3H(T)
+                elif isotope == "18O":
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_18O_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_18O(T)
+                elif isotope == "17O":
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_17O_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_17O(T)
+
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=D_ratio_heavy_to_light,
-                    alpha=ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T),
-                    D_light=ff.constants.D0,
+                    D_ratio_heavy_to_light=D_ratio,
+                    alpha=alpha,
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
+                    ),
+                    Fd=ff.drop_growth__Fd(
+                        T=T,
+                        D=ff.constants.D0,
+                        pvs=pvs_water,
                     ),
                     R_vap=ff.trivia__isotopic_ratio_assuming_single_heavy_isotope(
                         isotopic_fraction
                     ),
                     R_liq=moles_heavy_atom / moles_light_isotope,
                     relative_humidity=relative_humidity[cell_id[i]],
-                    rho_v=rho_v,
                 )
 
         return body
@@ -180,6 +192,7 @@ class IsotopeMethods(BackendMethods):
         *,
         output,
         cell_id,
+        isotope,
         relative_humidity,
         temperature,
         density_dry_air,
@@ -191,6 +204,7 @@ class IsotopeMethods(BackendMethods):
         self._bolin_number_body(
             output=output.data,
             cell_id=cell_id.data,
+            isotope=isotope,
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
             density_dry_air=density_dry_air.data,

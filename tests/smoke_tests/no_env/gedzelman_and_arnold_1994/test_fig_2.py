@@ -10,8 +10,6 @@ import pytest
 from open_atmos_jupyter_utils import notebook_vars
 from PySDM_examples import Gedzelman_and_Arnold_1994
 
-from PySDM.physics.constants import PER_CENT
-
 PLOT = False
 
 
@@ -43,8 +41,8 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
     """
 
     # arrange
-    xy_data = notebook_variables["PLOT_LINE"][phase][0].get_xydata()
-    plot_x, plot_y = xy_data[:, 0], xy_data[:, 1] * PER_CENT
+    plot_x = notebook_variables["plots"][phase]["x"]
+    plot_y = notebook_variables["plots"][phase]["y"]
     plot_x_eps = (plot_x[1] - plot_x[0]) / 2
     plot_y_eps = np.max(abs(np.diff(plot_y))) / 2
 
@@ -56,37 +54,37 @@ def test_fig_2(notebook_variables, x, expected_y, phase):
     np.testing.assert_allclose(
         actual=sut,
         desired=expected_y,
-        atol=plot_y_eps / plot_x_eps,
+        rtol=plot_y_eps,
     )
 
 
 @pytest.mark.parametrize(
-    "phase, condition, atol",
+    "phase, condition, rtol, eps",
     (
-        ("vapour", 0, 0.2),
-        ("liquid", 1, 0.02),
+        ("vapour", 0.0, 0.1, 1e-3),
+        ("liquid", 1.0, 0.1, 1e-2),
     ),
 )
-def test_dR_zero_condition(notebook_variables, phase, condition, atol):
+def test_dR_zero_condition(notebook_variables, phase, condition, rtol, eps):
     """Test values plotted with color in Fig 1.
     Points (x, y) for which z equals condition should match theoretical lines."""
     # arrange
-    cmn = notebook_variables["cmn"]
-
-    X_eq = notebook_variables["X_eq"]
+    cmn = notebook_variables["CMN_FOR_TEST"]
     iso_ratio_v = notebook_variables["ISO_RATIO_V"]
 
-    X, Y = np.meshgrid(notebook_variables["X"], notebook_variables["Y"] * PER_CENT)
-    pcm_data = notebook_variables["PCM"][phase].get_array()
+    Y = notebook_variables["YY"]
+    X = notebook_variables["XX"]
+
+    pcm_data = notebook_variables["cases"][phase]["pcolormesh"].get_array()
+    within = (
+        (condition - eps < pcm_data)
+        & (pcm_data < condition + eps)
+        & (X > notebook_variables["X_eq"])
+    )
+    assert np.sum(within) > 0
 
     # act
-    within = (
-        (condition - 0.005 < pcm_data) & (pcm_data < condition + 0.005) & (X >= X_eq)
-    )
-
-    x_to_check = X[within]
-    y_to_check = Y[within]
-    iso_ratio_r = x_to_check * cmn.params.vsmow
+    iso_ratio_r = X[within] * cmn.params.vsmow
     expected_y = cmn.f.isotope_ratio_evolution.saturation_for_zero_dR_condition(
         iso_ratio_x=iso_ratio_r if phase == "liquid" else iso_ratio_v,
         diff_rat_light_to_heavy=(cmn.params.f_ratio / cmn.params.D_ratio),
@@ -97,5 +95,4 @@ def test_dR_zero_condition(notebook_variables, phase, condition, atol):
     )
 
     # assert
-    assert np.sum(within) > 0
-    np.testing.assert_allclose(y_to_check, expected_y, atol=atol)
+    np.testing.assert_allclose(Y[within], expected_y, rtol=rtol)
