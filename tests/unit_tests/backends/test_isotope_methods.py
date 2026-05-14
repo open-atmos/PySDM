@@ -28,7 +28,7 @@ class TestIsotopeMethods:
         # act
         backend.isotopic_fractionation(
             cell_id=arr2storage(np.array([0], dtype=int)),
-            cell_volume=arr2storage(np.array([2.0])),
+            cell_volume=2.0,
             multiplicity=arr2storage(np.array([3.0])),
             dm_total=arr2storage(np.array([0.2])),
             signed_water_mass=arr2storage(np.array([1.0])),
