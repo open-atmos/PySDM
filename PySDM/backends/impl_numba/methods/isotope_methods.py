@@ -155,29 +155,21 @@ class IsotopeMethods(BackendMethods):
                     total_vap_concentration=conc_vap_total,
                 )
                 if isotope == "2H":
-                    D_ratio_fun = ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light
-                    alpha_fun = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T)
                 if isotope == "3H":
-                    D_ratio_fun = ff.isotope_diffusivity_ratios__ratio_3H_heavy_to_light
-                    alpha_fun = ff.isotope_equilibrium_fractionation_factors__alpha_l_3H
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_3H_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_3H(T)
                 elif isotope == "18O":
-                    D_ratio_fun = (
-                        ff.isotope_diffusivity_ratios__ratio_18O_heavy_to_light
-                    )
-                    alpha_fun = (
-                        ff.isotope_equilibrium_fractionation_factors__alpha_l_18O
-                    )
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_18O_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_18O(T)
                 elif isotope == "17O":
-                    D_ratio_fun = (
-                        ff.isotope_diffusivity_ratios__ratio_17O_heavy_to_light
-                    )
-                    alpha_fun = (
-                        ff.isotope_equilibrium_fractionation_factors__alpha_l_17O
-                    )
+                    D_ratio = ff.isotope_diffusivity_ratios__ratio_17O_heavy_to_light(T)
+                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_17O(T)
 
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=D_ratio_fun(T),
-                    alpha=alpha_fun(T),
+                    D_ratio_heavy_to_light=D_ratio,
+                    alpha=alpha,
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
                     ),
