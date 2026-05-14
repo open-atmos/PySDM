@@ -27,7 +27,7 @@ def run_simulations(setting):
 
 
 def hom_pure_droplet_freezing_backend():
-    cmd = {"override_jit_flags": {"parallel": False}}
+    cmn = {"override_jit_flags": {"parallel": False}}
     backends = {
         "threshold": CPU(
             formulae=Formulae(
