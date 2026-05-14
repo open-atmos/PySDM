@@ -27,41 +27,47 @@ def run_simulations(setting):
 
 
 def hom_pure_droplet_freezing_backend():
+    cmd = {"override_jit_flags": {"parallel": False}}
     backends = {
         "threshold": CPU(
             formulae=Formulae(
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="Null",
                 saturation_vapour_pressure="MurphyKoop2005",
-            )
+            ),
+            **cmn,
         ),
         "KoopMurray2016": CPU(
             formulae=Formulae(
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="KoopMurray2016",
                 saturation_vapour_pressure="MurphyKoop2005",
-            )
+            ),
+            **cmn,
         ),
         "Spichtinger2023": CPU(
             formulae=Formulae(
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="Koop_Correction",
                 saturation_vapour_pressure="MurphyKoop2005",
-            )
+            ),
+            **cmn,
         ),
         "Koop2000": CPU(
             formulae=Formulae(
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="Koop2000",
                 saturation_vapour_pressure="MurphyKoop2005",
-            )
+            ),
+            **cmn,
         ),
         "KoopMurray2016_DWA": CPU(
             formulae=Formulae(
                 particle_shape_and_density="MixedPhaseSpheres",
                 homogeneous_ice_nucleation_rate="KoopMurray2016_DWA",
                 saturation_vapour_pressure="MurphyKoop2005",
-            )
+            ),
+            **cmn,
         ),
     }
     return backends
