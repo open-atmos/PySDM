@@ -9,3 +9,6 @@ fig_1.ipynb:
 fig_2.ipynb:
 .. include:: ./fig_2.ipynb.badges.md
 """
+
+from .simulation import Simulation
+from .settings import Settings
