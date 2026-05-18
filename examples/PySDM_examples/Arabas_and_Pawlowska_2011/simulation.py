@@ -9,7 +9,6 @@ from PySDM.environments import Parcel
 from PySDM.initialisation import discretise_multiplicities
 from PySDM.initialisation.hygroscopic_equilibrium import equilibrate_wet_radii
 from PySDM.initialisation.sampling import spectral_sampling
-from PySDM.physics import si
 
 
 class Simulation(BasicSimulation):
