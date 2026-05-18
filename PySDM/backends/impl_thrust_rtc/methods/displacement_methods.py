@@ -56,9 +56,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                     c_r="courant[_r] / n_substeps"
                 )
             };
-            """.replace(
-                    "real_type", self._get_c_type()
-                ),
+            """.replace("real_type", self._get_c_type()),
             )
             for n_dims in (1, 2, 3)
         }
@@ -89,9 +87,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 idx[i] = n_sd;
                 healthy[0] = 0;
             }
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

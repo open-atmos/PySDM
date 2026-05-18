@@ -44,9 +44,7 @@ class CondensationMethods(
             name_iter="i",
             body="""
             atomicAdd((real_type*) &ml[cell_id[i]], multiplicity[i] * signed_water_mass[i]);
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     def __init__(self):
@@ -92,7 +90,9 @@ class CondensationMethods(
                         return {arg("x_old")} - x_new;
                     }}
                     auto m_new = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
-                    auto v_new = {phys.particle_shape_and_density.mass_to_volume.c_inline(mass="m_new")};
+                    auto v_new = {
+                        phys.particle_shape_and_density.mass_to_volume.c_inline(mass="m_new")
+                    };
                     auto r_new = {phys.trivia.radius.c_inline(volume="v_new")};
                     auto sgm = {phys.surface_tension.sigma.c_inline(
                         T=arg('_T'),
@@ -137,9 +137,13 @@ class CondensationMethods(
             auto v_old = {phys.particle_shape_and_density.mass_to_volume.c_inline(
                 mass="signed_water_mass[i]"
             )};
-            auto x_old = {phys.diffusion_coordinate.x.c_inline(mass="signed_water_mass[i]")};
+            auto x_old = {
+                phys.diffusion_coordinate.x.c_inline(mass="signed_water_mass[i]")
+            };
             auto r_old = {phys.trivia.radius.c_inline(volume="v_old")};
-            auto m_insane = {phys.particle_shape_and_density.volume_to_mass.c_inline(volume="vdry[i] / 100")};
+            auto m_insane = {
+                phys.particle_shape_and_density.volume_to_mass.c_inline(volume="vdry[i] / 100")
+            };
             auto x_insane = {phys.diffusion_coordinate.x.c_inline(mass="m_insane")};
             auto rd3 = vdry[i] / {const.PI_4_3};
             auto sgm = {phys.surface_tension.sigma.c_inline(
@@ -159,8 +163,12 @@ class CondensationMethods(
             if ( ! {phys.trivia.within_tolerance.c_inline(
                 return_type='bool', error_estimate="abs(_RH - RH_eq)", value="_RH", rtol="RH_rtol"
             )}) {{
-                auto Dr = {phys.diffusion_kinetics.D.c_inline(D="_DTp", r="r_old", lmbd="_lambdaD")};
-                auto Kr = {phys.diffusion_kinetics.K.c_inline(K="_KTp", r="r_old", lmbd="_lambdaK")};
+                auto Dr = {
+                    phys.diffusion_kinetics.D.c_inline(D="_DTp", r="r_old", lmbd="_lambdaD")
+                };
+                auto Kr = {
+                    phys.diffusion_kinetics.K.c_inline(K="_KTp", r="r_old", lmbd="_lambdaK")
+                };
                 auto qrt_re_times_cbrt_sc={phys.trivia.sqrt_re_times_cbrt_sc.c_inline(
                     Re="reynolds_number[i]",
                     Sc="_schmidt_number",
@@ -185,7 +193,9 @@ class CondensationMethods(
                     Fk="Fk",
                     Fd="Fd",
                 )};
-                dm_dt_old = {phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")};
+                dm_dt_old = {
+                    phys.particle_shape_and_density.dm_dt.c_inline(r="r_old", r_dr_dt="r_dr_dt_old")
+                };
                 dx_old = dt * {phys.diffusion_coordinate.dx_dt.c_inline(
                     m="signed_water_mass[i]", dm_dt="dm_dt_old"
                 )};
@@ -242,9 +252,7 @@ class CondensationMethods(
                 }}
             }}
             signed_water_mass[i] = {phys.diffusion_coordinate.mass.c_inline(x="x_new")};
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -335,9 +343,7 @@ class CondensationMethods(
                 diffusivity="DTp[i]",
                 density="air_density[i]",
             )};
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -374,9 +380,7 @@ class CondensationMethods(
             );
             rhod_copy[i] += dt * drhod_dt_pred[i] / 2;
             ml_old[i] = ml_new[i];
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     def calculate_m_l(self, ml, signed_water_mass, multiplicity, cell_id):
@@ -386,7 +390,7 @@ class CondensationMethods(
             args=(ml.data, signed_water_mass.data, multiplicity.data, cell_id.data),
         )
 
-    # pylint: disable=unused-argument,too-many-locals
+    # pylint: disable=unused-argument,too-many-locals,too-many-arguments
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
         self,

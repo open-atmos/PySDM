@@ -16,7 +16,9 @@ def run(settings, backend):
     builder = Builder(n_sd=settings.n_sd, backend=backend, environment=env)
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
-    attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)
+    attributes["volume"], attributes["multiplicity"] = sampling.sample_deterministic(
+        settings.n_sd
+    )
     builder.add_dynamic(Coalescence(collision_kernel=settings.kernel))
     particles = builder.build(attributes, products=(WallTime(),))
 

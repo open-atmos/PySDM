@@ -18,7 +18,7 @@ def make_core(settings, coal_eff):
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         settings.spectrum
-    ).sample(settings.n_sd)
+    ).sample_deterministic(settings.n_sd)
     collision = Collision(
         collision_kernel=settings.kernel,
         coalescence_efficiency=coal_eff,

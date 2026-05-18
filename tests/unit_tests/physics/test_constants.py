@@ -116,11 +116,44 @@ class TestConstants:
         )
 
     @staticmethod
-    def test_isotope_molar_masses_vsmow_vs_mean_water_molar_mass():
+    def test_vsmow_derived_molar_mass_vs_chempy_mean_water_molar_mass():
         np.testing.assert_approx_equal(
             actual=Formulae().constants.Mv,
             desired=Substance.from_formula("H2O").mass * si.gram / si.mole,
             significant=5.5,
+        )
+
+    @staticmethod
+    def test_vsmow_derived_molar_mass():
+        """fractional abundances (x_i) are calculated assuming
+        n_H_tot = n_1H + n_2H + n_3H
+        n_O_tot = n_16O + n_17O + n_18O
+        see [Hayes 2004](https://web.archive.org/web/20220629123450/https://web.gps.caltech.edu/~als/research-articles/other_stuff/hayes-2004-3.pdf)
+        """  # pylint: disable=line-too-long
+        const = Formulae().constants
+        trivia = Formulae().trivia
+        x_16O = trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=1 / (const.VSMOW_R_17O + const.VSMOW_R_18O)
+        )
+        x_17O = const.VSMOW_R_17O * x_16O
+        x_18O = const.VSMOW_R_18O * x_16O
+
+        x_1H = trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=1 / (const.VSMOW_R_2H + const.VSMOW_R_3H)
+        )
+        x_2H = const.VSMOW_R_2H * x_1H
+        x_3H = const.VSMOW_R_3H * x_1H
+
+        Mv = (
+            2 * (x_1H * const.M_1H + x_2H * const.M_2H + x_3H * const.M_3H)
+            + x_16O * const.M_16O
+            + x_17O * const.M_17O
+            + x_18O * const.M_18O
+        )
+        np.testing.assert_approx_equal(
+            actual=Formulae().constants.Mv,
+            desired=Mv,
+            significant=5,
         )
 
     @staticmethod

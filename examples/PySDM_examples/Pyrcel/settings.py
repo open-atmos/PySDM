@@ -11,6 +11,7 @@ from PySDM.initialisation.impl.spectrum import Spectrum
 class Settings:
     def __init__(
         self,
+        *,
         dz: float,
         n_sd_per_mode: tuple,
         aerosol_modes_by_kappa: Dict[float, Spectrum],

@@ -9,4 +9,4 @@ def sampled_ccn_diameter_number_concentration_spectrum(
     return Logarithmic(
         spectrum=Lognormal(s_geom=1.4, m_mode=0.04 * si.um, norm_factor=100 / si.cm**3),
         size_range=size_range,
-    ).sample(n_sd)
+    ).sample_deterministic(n_sd)

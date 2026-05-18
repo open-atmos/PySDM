@@ -1,6 +1,10 @@
 """
-minimum and maximum condensation timestep (fetching a value resets the counter)
-"""
+minimum and maximum condensation timestep in between product get() calls
+(fetching a value resets the counter)
+The time step is variable when adaptive timestepping is enabled
+(see Fig. 5 and Fig. 8 in [Bartman 2020 (MSc thesis, Section 3.3)](https://www.ap.uj.edu.pl/diplomas/attachments/file/download/125485)
+for sample plots of this product)
+"""  # pylint: disable=line-too-long
 
 import numpy as np
 

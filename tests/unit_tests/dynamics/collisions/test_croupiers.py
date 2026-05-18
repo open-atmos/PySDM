@@ -24,7 +24,9 @@ def test_final_state(croupier, backend_class):
 
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
-    attributes["volume"], attributes["multiplicity"] = Linear(spectrum).sample(n_sd)
+    attributes["volume"], attributes["multiplicity"] = Linear(
+        spectrum
+    ).sample_deterministic(n_sd)
     particulator = DummyParticulator(backend_class, n_sd, grid=(x, y))
     particulator.croupier = croupier
 

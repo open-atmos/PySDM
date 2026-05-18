@@ -62,7 +62,7 @@ def test_lwc_constant(backend_class, croupier, adaptive):
     attributes = {}
     attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
         spectrum
-    ).sample(n_sd)
+    ).sample_deterministic(n_sd)
     builder.add_dynamic(
         Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive)
     )

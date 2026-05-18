@@ -53,7 +53,7 @@ class Settings:
                 m_mode=1 * si.um,
                 s_geom=1.1,
             )
-        ).sample(
+        ).sample_deterministic(
             n_sd=n_sd_seeding
         )  # TODO #1387: does not to be the same?
         v_dry = self.formulae.trivia.volume(radius=r_dry)

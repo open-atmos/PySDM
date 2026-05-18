@@ -59,7 +59,7 @@ class Settings:
 
         self.r_dry, self.specific_concentration = spectral_sampling.Linear(
             spectrum
-        ).sample(n_sd)
+        ).sample_deterministic(n_sd)
 
         self.t_duration = 7200
         self.dt = dt

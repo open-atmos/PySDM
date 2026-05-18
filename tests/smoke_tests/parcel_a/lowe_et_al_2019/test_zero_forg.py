@@ -6,7 +6,6 @@ from PySDM_examples.Lowe_et_al_2019.aerosol import AerosolBoreal, AerosolMarine
 from PySDM_examples.Lowe_et_al_2019.constants_def import LOWE_CONSTS
 
 from PySDM import Formulae
-from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
 FORMULAE = Formulae(constants=LOWE_CONSTS)
@@ -53,7 +52,6 @@ def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
                         ),
                     }[subplot],
                     w=w * si.m / si.s,
-                    spectral_sampling=spec_sampling.ConstantMultiplicity,
                 )
                 simulation = Simulation(settings)
                 output = simulation.run()

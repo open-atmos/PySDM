@@ -22,7 +22,9 @@ def run(settings, backend=CPU, observers=()):
     )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
-    attributes["volume"], attributes["multiplicity"] = sampling.sample(settings.n_sd)
+    attributes["volume"], attributes["multiplicity"] = sampling.sample_deterministic(
+        settings.n_sd
+    )
     coalescence = Coalescence(
         collision_kernel=settings.kernel, adaptive=settings.adaptive
     )

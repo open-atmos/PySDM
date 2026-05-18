@@ -5,7 +5,6 @@ import numpy as np
 from PySDM.physics import si
 from PySDM import Formulae
 
-
 TRIVIA = Formulae().trivia
 
 # from Wikipedia

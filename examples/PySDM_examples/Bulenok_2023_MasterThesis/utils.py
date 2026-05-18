@@ -76,6 +76,7 @@ def go_benchmark(
     n_sds,
     n_steps,
     seeds,
+    *,
     numba_n_threads=None,
     double_precision=True,
     sim_run_filename=None,

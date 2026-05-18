@@ -135,6 +135,18 @@ class Trivia:  # pylint: disable=too-many-public-methods
         return mixing_ratio / (1 + mixing_ratio)
 
     @staticmethod
+    def isotopic_fraction_assuming_single_heavy_isotope(*, isotopic_ratio):
+        """
+        isotopic ratio = n1/n2
+        isotopic fraction = n1/n_total = n1 / (n1 + n2) = isotopic_ratio / (1 + isotopic_ratio)
+        """
+        return isotopic_ratio / (1 + isotopic_ratio)
+
+    @staticmethod
+    def isotopic_ratio_assuming_single_heavy_isotope(isotopic_fraction):
+        return isotopic_fraction / (1 - isotopic_fraction)
+
+    @staticmethod
     def dn_dlogr(r, dn_dr):
         return np.log(10) * r * dn_dr
 
@@ -168,3 +180,83 @@ class Trivia:  # pylint: disable=too-many-public-methods
         see text above Table 1 [Bolin 1958](https://digitallibrary.un.org/record/3892725)
         """
         return 1 / Bo / dm_dt_over_m
+
+    @staticmethod
+    def moles_heavy_atom(
+        *,
+        atoms_per_heavy_molecule,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+        molar_mass_heavy_molecule,
+        molecular_isotopic_ratio,
+    ):
+        """
+        Calculate moles of heavy atoms (e.g. deuterium, oxygen-17, oxygen-18)
+        from molecular isotope ratios (e.g. moles of HDO to moles of H2O),
+        using total mass and mass of other heavy isotopes.
+        """
+        return (
+            (mass_total - mass_other_heavy_isotopes)
+            / (
+                molar_mass_light_molecule / molecular_isotopic_ratio
+                + molar_mass_heavy_molecule
+            )
+            / atoms_per_heavy_molecule
+        )
+
+    @staticmethod
+    def molecular_isotopic_ratio(
+        *,
+        moles_heavy_molecule,
+        mass_total,
+        mass_other_heavy_isotopes,
+        molar_mass_light_molecule,
+        molar_mass_heavy_molecule,
+    ):
+        """
+        Molecular isotope ratio (e.g. moles of HDO to moles of H2O):
+            n_{heavy molecule}/n_{light molecule},
+        in contrast to (atomic) isotopic ratio as in VSMOW standard:
+            n_{heavy atom}/n_{light atom};
+
+        calculated with:
+            m_light = m_total - m_considered_heavy_isotope - m_other_heavy_isotopes
+        """
+        return (
+            moles_heavy_molecule
+            * molar_mass_light_molecule
+            / (
+                mass_total
+                - moles_heavy_molecule * molar_mass_heavy_molecule
+                - mass_other_heavy_isotopes
+            )
+        )
+
+    @staticmethod
+    def molality_in_dry_air(
+        isotopic_fraction, density_dry_air, total_vap_concentration
+    ):
+        """
+        n'/m_d [number of moles of isotopic molecules]/[mass of dry air] - molality in dry air
+        n/V - total vapour concentration
+
+        molality_in_dry_air = n'/m_d =
+            = n'/(rho_d * V) = isotopic_concentration / rho_d
+        isotopic_concentration = n'/V = n/V * n'/n =
+            = total vapour concentration * isotopic_fraction
+
+        where n'/n is an isotopic fraction (referred to as isotopic concentration (C)
+        on p. 10 in [Gat 2010](https://doi.org/10.1142/p027)
+        """
+        return total_vap_concentration * isotopic_fraction / density_dry_air
+
+    @staticmethod
+    def isotopic_fraction(
+        molality_in_dry_air, density_dry_air, total_vap_concentration
+    ):
+        """
+        isotopic_fraction: n'/n = n'/m_d / (n/V) * rho_d
+            = molality in dry air / total vapour concentration * dry air density
+        """
+        return molality_in_dry_air / total_vap_concentration * density_dry_air

@@ -65,7 +65,7 @@ def test_single_saturation_peak(
         )
     )
 
-    r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
+    r_dry, concentration = ConstantMultiplicity(spectrum).sample_deterministic(n_sd)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
     r_wet = equilibrate_wet_radii(
         r_dry=r_dry,

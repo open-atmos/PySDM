@@ -7,7 +7,6 @@ from pystrict import strict
 from PySDM import Formulae
 from PySDM.backends import CPU
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
-from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
 
@@ -36,7 +35,6 @@ class Settings:
         n_sd_per_mode: int,
         aerosol: DryAerosolMixture,
         model: str,
-        spectral_sampling: type(spec_sampling.SpectralSampling),
         w: float = 0.32 * si.m / si.s,
     ):
         assert model in ("Constant", "CompressedFilmOvadnevaite")
@@ -46,7 +44,6 @@ class Settings:
         self.formulae = self.backend.formulae
         const = self.formulae.constants
         self.aerosol = aerosol
-        self.spectral_sampling = spectral_sampling
 
         max_altitude = 200 * si.m
         self.w = w

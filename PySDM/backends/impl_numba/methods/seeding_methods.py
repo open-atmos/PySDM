@@ -11,7 +11,7 @@ class SeedingMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     @cached_property
     def _seeding(self):
         @numba.njit(**{**self.default_jit_flags, "parallel": False})
-        def body(  # pylint: disable=too-many-arguments
+        def body(  # pylint: disable=too-many-positional-arguments
             idx,
             multiplicity,
             extensive_attributes,

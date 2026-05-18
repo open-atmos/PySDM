@@ -33,8 +33,8 @@ class CloudWaterContent(MomentProduct):
             self._download_moment_to_buffer(
                 attr="water mass", rank=0, filter_range=(0, np.inf)
             )
-            conc = self.buffer
-            cwc += mass * conc / self.particulator.mesh.dv
+            number = self.buffer
+            cwc += mass * number / self.particulator.mesh.dv
 
         if self.ice:
             self._download_moment_to_buffer(
@@ -51,8 +51,8 @@ class CloudWaterContent(MomentProduct):
                 filter_range=(-np.inf, 0),
                 filter_attr="signed water mass",
             )
-            conc = self.buffer
-            cwc += mass * conc / self.particulator.mesh.dv
+            number = self.buffer
+            cwc += mass * number / self.particulator.mesh.dv
 
         if self.specific:
             self._download_to_buffer(self.particulator.environment["rhod"])

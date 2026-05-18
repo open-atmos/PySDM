@@ -84,10 +84,10 @@ class Simulation:
         _sp = self.particulator
         cell_id = 0
         output["r_bins_values"].append(
-            _sp.products["Particles Wet Size Spectrum"].get()
+            (_sp.products["Particles Wet Size Spectrum"].get()).T
         )
         volume = _sp.attributes["volume"].to_ndarray()
-        output["r"].append(self.formulae.trivia.radius(volume=volume))
+        output["r"].append((self.formulae.trivia.radius(volume=volume)).T)
         output["S"].append(_sp.environment["RH"][cell_id] - 1)
         output["t"].append(_sp.products["t"].get())
         for key in ("water_vapour_mixing_ratio", "T", "z"):
@@ -124,4 +124,6 @@ class Simulation:
         for _ in range(self.n_steps):
             self.particulator.run(self.n_substeps)
             self.save(output)
+        for k, v in output.items():
+            output[k] = np.asarray(v)
         return output

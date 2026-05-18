@@ -8,7 +8,7 @@ from PySDM.physics import si
 
 class Mesh:
     # pylint: disable=too-many-arguments
-    def __init__(self, grid, size, n_cell=None, dv=None, n_dims=None, strides=None):
+    def __init__(self, *, grid, size, n_cell=None, dv=None, n_dims=None, strides=None):
         """sizes of dimensions not specified in grid/size are assumed to be of 1 m"""
         self.grid = grid
         self.size = size

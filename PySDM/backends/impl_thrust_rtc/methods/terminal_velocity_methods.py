@@ -63,9 +63,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
                     }
                 }
             }
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -165,9 +163,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
             values[i] = {self.formulae.terminal_velocity.v_term.c_inline(
                 radius="radius[i]"
             )};
-            """.replace(
-                "real_type", self._get_c_type()
-            ),
+            """.replace("real_type", self._get_c_type()),
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

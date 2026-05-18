@@ -8,23 +8,33 @@ from scipy.signal import find_peaks
 from PySDM.initialisation.sampling.spectral_sampling import (
     ConstantMultiplicity,
     Logarithmic,
-    UniformRandom,
+    Linear,
 )
 from PySDM.physics import si
 
 
 @pytest.mark.parametrize(
-    "spectral_sampling",
+    "spectral_sampling, method",
     [
-        pytest.param(ConstantMultiplicity, marks=pytest.mark.xfail(strict=True)),
-        Logarithmic,
-        pytest.param(UniformRandom, marks=pytest.mark.xfail(strict=True)),
+        pytest.param(
+            ConstantMultiplicity,
+            "sample_deterministic",
+            marks=pytest.mark.xfail(strict=True),
+        ),
+        (Logarithmic, "sample_deterministic"),
+        pytest.param(
+            Linear, "sample_pseudorandom", marks=pytest.mark.xfail(strict=True)
+        ),
     ],
 )
-def test_spectrum_at_t_0(spectral_sampling, plot=False):
+def test_spectrum_at_t_0(spectral_sampling, method, plot=False):
     # Arrange
     settings = Settings(
-        n_sd=64, dt=1 * si.s, n_substep=1, spectral_sampling=spectral_sampling
+        n_sd=64,
+        dt=1 * si.s,
+        n_substep=1,
+        spectral_sampling_class=spectral_sampling,
+        spectral_sampling_method=method,
     )
     settings.t_max = 0
     simulation = Simulation(settings)

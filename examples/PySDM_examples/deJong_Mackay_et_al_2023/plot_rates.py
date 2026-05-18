@@ -15,6 +15,7 @@ def plot_ax(
     var,
     qlabel,
     output,
+    *,
     contour_var1=None,
     contour_lvl1=None,
     contour_var2=None,

@@ -1,5 +1,6 @@
 """
-Rogers & Yau, equations: (8.5), (8.6), (8.8)
+[Rogers & Yau](https://archive.org/details/shortcourseinclo0000roge_m3k2),
+equations: (8.5), (8.6), (8.8)
 """
 
 

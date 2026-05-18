@@ -65,7 +65,7 @@ class Simulation(BasicSimulation):
 
         self.r_dry, n_in_unit_volume = Logarithmic(
             spectrum=settings.dry_radii_spectrum,
-        ).sample(builder.particulator.n_sd - n_gccn)
+        ).sample_deterministic(builder.particulator.n_sd - n_gccn)
 
         if gccn:
             nonzero_concentration_mask = np.nonzero(table_3.NA)

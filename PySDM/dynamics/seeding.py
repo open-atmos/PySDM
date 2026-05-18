@@ -1,4 +1,4 @@
-"""particle injection handling, requires initalising a simulation with
+"""particle injection handling, requires initialising a simulation with
 enough particles flagged with NaN multiplicity (translated to zeros
 at multiplicity discretisation"""
 
