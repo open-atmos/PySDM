@@ -91,7 +91,7 @@ def findfiles(path, regex):
 
 
 TEST_SUITES = {
-    "isotopes_chemistry_extraterrestrial_homfreeze": [
+    "isotopes_chemistry_extraterrestrial": [
         "Bolot_et_al_2013",
         "Merlivat_and_Nief_1967",
         "Van_Hook_1968",
@@ -110,9 +110,11 @@ TEST_SUITES = {
         "Jaruga_and_Pawlowska_2018",
         "Kreidenweis_et_al_2003",
         "Toon_et_al_1980",
+    ],
+    "homogeneous_freezing": [
         "Luettmer_homogeneous_freezing",
         "Murray_et_al_2010",
-    ],
+    ]
     "condensation_a": [
         "Lowe_et_al_2019",
         "Singer_Ward",
@@ -129,7 +131,7 @@ TEST_SUITES = {
         "Jensen_and_Nugent_2017",
         "Abade_and_Albuquerque_2024",
     ],
-    "coagulation_immfreeze": [
+    "coagulation_immersion_freezing": [
         "Berry_1967",
         "Shima_et_al_2009",
         "Alpert_and_Knopf_2016",

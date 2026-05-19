@@ -211,8 +211,9 @@ jobs:
         platform: [ubuntu-24.04, macos-14, windows-latest]
         python-version: ["3.12"]
         test-suite:
-          - "isotopes_chemistry_extraterrestrial_homfreeze"
-          - "coagulation_immfreeze"
+          - "isotopes_chemistry_extraterrestrial"
+          - "homogeneous_freezing"
+          - "coagulation_immersion_freezing"
           - "condensation_a"
           - "condensation_b"
           - "condensation_c"
