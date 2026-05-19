@@ -1025,6 +1025,7 @@
   "https://doi.org/10.5194/gmd-4-15-2011" : {
     "usages": [
       "examples/PySDM_examples/Arabas_and_Pawlowska_2011/__init__.py",
+      "examples/PySDM_examples/Arabas_and_Pawlowska_2011/fig_1.ipynb",
       "examples/PySDM_examples/Arabas_and_Pawlowska_2011/fig_2.ipynb"
     ],
     "label": "Arabas & Pawlowska 2011",
