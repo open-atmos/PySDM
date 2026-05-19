@@ -114,7 +114,7 @@ TEST_SUITES = {
     "homogeneous_freezing": [
         "Luettmer_homogeneous_freezing",
         "Murray_et_al_2010",
-    ]
+    ],
     "condensation_a": [
         "Lowe_et_al_2019",
         "Singer_Ward",
