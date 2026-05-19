@@ -282,7 +282,7 @@ jobs:
           pvpython -c "from paraview import simple"
 
       - if: startsWith(matrix.platform, 'windows-') && (contains(matrix.test-suite, 'multi-process_a') || contains(matrix.test-suite, 'multi-process_b'))
-        uses: pyvista/setup-headless-display-action@v3
+        uses: pyvista/setup-headless-display-action@v4
 
       - run: |
           python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
