@@ -32,6 +32,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     methods.IsotopeMethods,
     methods.SeedingMethods,
     methods.DepositionMethods,
+    methods.SedimentationRemovalMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
