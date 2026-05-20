@@ -188,6 +188,9 @@
                         <li>
                                 <a class="function" href="#Trivia.isotopic_fraction">isotopic_fraction</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Trivia.water_vapour_mixing_ratio">water_vapour_mixing_ratio</a>
+                        </li>
                 </ul>
 
             </li>
@@ -478,6 +481,11 @@
 </span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a><span class="sd">            = molality in dry air / total vapour concentration * dry air density</span>
 </span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a>        <span class="k">return</span> <span class="n">molality_in_dry_air</span> <span class="o">/</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">density_dry_air</span>
+</span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>
+</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">water_vapour_mixing_ratio</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">pvs</span><span class="p">):</span>
+</span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a>        <span class="n">e</span> <span class="o">=</span> <span class="n">RH</span> <span class="o">*</span> <span class="n">pvs</span>
+</span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="n">e</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -746,6 +754,11 @@
 </span><span id="Trivia-261"><a href="#Trivia-261"><span class="linenos">261</span></a><span class="sd">            = molality in dry air / total vapour concentration * dry air density</span>
 </span><span id="Trivia-262"><a href="#Trivia-262"><span class="linenos">262</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="Trivia-263"><a href="#Trivia-263"><span class="linenos">263</span></a>        <span class="k">return</span> <span class="n">molality_in_dry_air</span> <span class="o">/</span> <span class="n">total_vap_concentration</span> <span class="o">*</span> <span class="n">density_dry_air</span>
+</span><span id="Trivia-264"><a href="#Trivia-264"><span class="linenos">264</span></a>
+</span><span id="Trivia-265"><a href="#Trivia-265"><span class="linenos">265</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia-266"><a href="#Trivia-266"><span class="linenos">266</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">water_vapour_mixing_ratio</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">pvs</span><span class="p">):</span>
+</span><span id="Trivia-267"><a href="#Trivia-267"><span class="linenos">267</span></a>        <span class="n">e</span> <span class="o">=</span> <span class="n">RH</span> <span class="o">*</span> <span class="n">pvs</span>
+</span><span id="Trivia-268"><a href="#Trivia-268"><span class="linenos">268</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="n">e</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -1709,6 +1722,28 @@ on p. 10 in <a href="https://doi.org/10.1142/p027">Gat 2010</a></p>
     = molality in dry air / total vapour concentration * dry air density</p>
 </div>
 
+
+                            </div>
+                            <div id="Trivia.water_vapour_mixing_ratio" class="classattr">
+                                        <input id="Trivia.water_vapour_mixing_ratio-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">water_vapour_mixing_ratio</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">p</span>, </span><span class="param"><span class="n">RH</span>, </span><span class="param"><span class="n">pvs</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Trivia.water_vapour_mixing_ratio-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Trivia.water_vapour_mixing_ratio"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Trivia.water_vapour_mixing_ratio-265"><a href="#Trivia.water_vapour_mixing_ratio-265"><span class="linenos">265</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="Trivia.water_vapour_mixing_ratio-266"><a href="#Trivia.water_vapour_mixing_ratio-266"><span class="linenos">266</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">water_vapour_mixing_ratio</span><span class="p">(</span><span class="n">const</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">RH</span><span class="p">,</span> <span class="n">pvs</span><span class="p">):</span>
+</span><span id="Trivia.water_vapour_mixing_ratio-267"><a href="#Trivia.water_vapour_mixing_ratio-267"><span class="linenos">267</span></a>        <span class="n">e</span> <span class="o">=</span> <span class="n">RH</span> <span class="o">*</span> <span class="n">pvs</span>
+</span><span id="Trivia.water_vapour_mixing_ratio-268"><a href="#Trivia.water_vapour_mixing_ratio-268"><span class="linenos">268</span></a>        <span class="k">return</span> <span class="n">const</span><span class="o">.</span><span class="n">eps</span> <span class="o">*</span> <span class="n">e</span> <span class="o">/</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
 
                             </div>
                 </section>
