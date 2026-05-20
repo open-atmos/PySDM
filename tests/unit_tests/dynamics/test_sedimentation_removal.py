@@ -17,8 +17,8 @@ class TestSedimentationRemoval:
         dts = 5 * si.s, 0.5 * si.s
         dvs = 1e2 * si.m**3, 1e3 * si.m**3, 1e4 * si.m**3
         t_max = 500 * si.s
-        multiplicities = 1e5, 1e6, 1e7, 1e8
-        water_masses = 1 * si.ug, 2 * si.ug, 3 * si.ug, 4 * si.ug
+        multiplicities = 1e5, 1e6, 1e7, 1e8, 1e5
+        water_masses = 1 * si.ug, 2 * si.ug, 3 * si.ug, 4 * si.ug, -1 * si.ug
         backend_instance = CPU()
 
         # act
