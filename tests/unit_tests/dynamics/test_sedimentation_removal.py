@@ -11,7 +11,7 @@ import numpy as np
 
 class TestSedimentationRemoval:
     @staticmethod
-    @pytest.mark.parametrize("stochastic", (True,))
+    @pytest.mark.parametrize("stochastic", (True, False))
     def test_convergence_wrt_dt(stochastic, plot=True):
         # arrange
         dts = 5 * si.s, 0.5 * si.s

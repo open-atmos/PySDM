@@ -1,13 +1,14 @@
 """deposition removal logic for zero-dimensional environments"""
 
+from typing import Optional
 from PySDM.dynamics.impl import register_dynamic
 import numpy as np
 
 
 @register_dynamic()
 class SedimentationRemoval:
-    def __init__(self, *, stochastic_deposition_removal: bool):
-        """stochastic ("all or nothing") or deterministic (multiplicity altering) removal"""
+    def __init__(self, *, stochastic_deposition_removal: Optional[bool] = True):
+        """stochastic or deterministic removal"""
         self.stochastic_deposition_removal = stochastic_deposition_removal
         self.length_scale = None
 
@@ -18,7 +19,7 @@ class SedimentationRemoval:
         self.length_scale = np.cbrt(self.particulator.environment.mesh.dv)
 
     def __call__(self):
-        """see, e.g., the naive scheme in Algorithm 1 in
+        """for stochastic removal, see, e.g., the naive scheme in Algorithm 1 in
         [Curtis et al. 2016](https://doi.org/10.1016/j.jcp.2016.06.029)"""
         self.particulator.sedimentation_removal(
             stochastic_deposition_removal=self.stochastic_deposition_removal,

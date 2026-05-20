@@ -17,7 +17,8 @@ class SedimentationRemovalMethods(BackendMethods):
 
         @numba.njit(**self.default_jit_flags)
         def body(relative_fall_velocity, multiplicity, length_scale, timestep):
-            pass
+            for i, velocity in enumerate(relative_fall_velocity):
+                multiplicity[i] -= multiplicity[i] * velocity * timestep / length_scale
 
         return body
 
