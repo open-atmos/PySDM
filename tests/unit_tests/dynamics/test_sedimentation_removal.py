@@ -12,11 +12,11 @@ import numpy as np
 class TestSedimentationRemoval:
     @staticmethod
     @pytest.mark.parametrize("stochastic", (True, False))
-    def test_convergence_wrt_dt(stochastic, plot=True):
+    def test_convergence_wrt_dt(stochastic, plot=False):
         # arrange
-        dts = 5 * si.s, 0.5 * si.s
+        dts = 0.5 * si.s, 5 * si.s
         dvs = 1e2 * si.m**3, 1e3 * si.m**3, 1e4 * si.m**3
-        t_max = 500 * si.s
+        t_max = 600 * si.s
         multiplicities = 1e5, 1e6, 1e7, 1e8, 1e5
         water_masses = 1 * si.ug, 2 * si.ug, 3 * si.ug, 4 * si.ug, -1 * si.ug
         backend_instance = CPU()
@@ -76,4 +76,26 @@ class TestSedimentationRemoval:
             pyplot.clf()
 
         # assert
-        # TODO!
+        for dt in dts:
+            for dv in dvs:
+                key = f"{dt=} {dv=}"
+                particle_concentration = np.asarray(
+                    output[key]["particle concentration"]
+                )
+                assert particle_concentration[-1] == 0.0
+
+        for dv in dvs:
+            time_compare = 0
+            for dt in dts:
+                key = f"{dt=} {dv=}"
+                time_end = np.asarray(output[key]["time"])[-1]
+                assert time_end >= time_compare
+                time_compare = time_end
+
+        for dt in dts:
+            time_compare = 0
+            for dv in dvs:
+                key = f"{dt=} {dv=}"
+                time_end = np.asarray(output[key]["time"])[-1]
+                assert time_end >= time_compare
+                time_compare = time_end
