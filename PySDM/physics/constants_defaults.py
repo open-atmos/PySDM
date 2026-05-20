@@ -767,6 +767,12 @@ PICCIOTTO_18O_TO_2H_SLOPE_COEFF = 0.8 * PER_CENT / PER_MILLE
 PICCIOTTO_18O_TO_2H_INTERCEPT_COEFF = -1.8 * PER_CENT
 """〃"""
 
+TURBULENT_RELAXATION_TIMESCALE_FOR_TESTS = np.nan
+""" for use in unit tests """
+
+TURBULENT_RELAXATION_TIMESCALE_MULTIPLIER = np.nan
+""" C_tau in eq. 17 in [Abade and Albuquerque 2024](https://doi.org/10.1002/qj.4775) """
+
 
 def compute_derived_values(c: dict):
     """

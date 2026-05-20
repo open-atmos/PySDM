@@ -14,7 +14,9 @@ class VapourDepositionOnIce:
         """called by the builder"""
         self.particulator = builder.particulator
         assert builder.formulae.particle_shape_and_density.supports_mixed_phase()
-        builder.request_attribute("Reynolds number")
+        for var in ("water vapour mixing ratio", "dry air potential temperature"):
+            builder.request_attribute(f"dropwise {var}")
+            builder.request_attribute(f"dropwise {var} tendency")
 
     def __call__(self):
         """called by the particulator during simulation"""

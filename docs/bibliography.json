@@ -99,7 +99,10 @@
   "https://doi.org/10.1002/qj.4775": {
     "usages": [
       "examples/PySDM_examples/Abade_and_Albuquerque_2024/fig_2.ipynb",
-      "examples/PySDM_examples/Abade_and_Albuquerque_2024/__init__.py"
+      "examples/PySDM_examples/Abade_and_Albuquerque_2024/__init__.py",
+      "PySDM/physics/turbulent_relaxation_timescale/kolmogorov_inertial_range_scaled.py",
+      "PySDM/physics/constants_defaults.py",
+      "PySDM/attributes/physics/local_thermodynamics.py"
     ],
     "label": "Abade & Albuquerque 2024 (Q. J. R. Meteorol. Soc. 150)",
     "title": "Persistent mixed-phase states in adiabatic cloud parcels under idealised conditions"
