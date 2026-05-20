@@ -25,14 +25,6 @@ class Settings:
         self.kappa_sea_salt = 1.28 * si.dimensionless
         self.kappa_sulphate = 0.61 * si.dimensionless
 
-        self.sea_salt_concentration = (
-            51.1 / si.cm**3 + 2.21 / si.cm**3 + 1e-5 / si.cm**3
-        )
-        self.sulphate_concentration = 100 / si.cm**3
-        self.total_aerosol_concentration = (
-            self.sea_salt_concentration + self.sulphate_concentration
-        )
-
         sea_salt_spectrum = Sum(
             (
                 Lognormal(
@@ -57,6 +49,10 @@ class Settings:
             norm_factor=100 / si.cm**3,
             m_mode=0.08 * si.um,
             s_geom=1.45,
+        )
+
+        self.total_aerosol_concentration = (
+            sea_salt_spectrum.norm_factor + sulphate_spectrum.norm_factor
         )
 
         self.aerosol_modes_by_kappa = {
