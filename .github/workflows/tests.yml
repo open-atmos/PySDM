@@ -238,6 +238,11 @@ jobs:
             test-suite: "multi-process_d"
           - platform: "macos-14"
             test-suite: "multi-process_e"
+          # TODO #1870
+          - platform: "ubuntu-24.04"
+            test-suite: "homogeneous_freezing"
+          - platform: "windows-latest"
+            test-suite: "homogeneous_freezing"
       fail-fast: false
     runs-on: ${{ matrix.platform }}
     timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
