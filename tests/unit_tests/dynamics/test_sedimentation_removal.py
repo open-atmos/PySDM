@@ -11,8 +11,8 @@ import numpy as np
 
 class TestSedimentationRemoval:
     @staticmethod
-    @pytest.mark.parametrize("all_or_nothing", (False,))
-    def test_convergence_wrt_dt(all_or_nothing, plot=True):
+    @pytest.mark.parametrize("stochastic", (True,))
+    def test_convergence_wrt_dt(stochastic, plot=True):
         # arrange
         dts = 5 * si.s, 0.5 * si.s
         dvs = 1e2 * si.m**3, 1e3 * si.m**3, 1e4 * si.m**3
@@ -30,7 +30,9 @@ class TestSedimentationRemoval:
                     environment=Box(dv=dv, dt=dt),
                     backend=backend_instance,
                 )
-                builder.add_dynamic(SedimentationRemoval(all_or_nothing=all_or_nothing))
+                builder.add_dynamic(
+                    SedimentationRemoval(stochastic_deposition_removal=stochastic)
+                )
                 particulator = builder.build(
                     attributes={
                         "multiplicity": np.asarray(multiplicities),
@@ -51,7 +53,7 @@ class TestSedimentationRemoval:
                         output[key][name].append(product.get() + 0)
 
         # plot
-        pyplot.title(f"{all_or_nothing=}")
+        pyplot.title(f"{stochastic=}")
         pyplot.xlabel("time [s]")
         pyplot.ylabel("particle concentration [m$^{-3}$]")
         for dt in dts:
