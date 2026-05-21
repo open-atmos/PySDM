@@ -1,7 +1,7 @@
 """deposition removal logic for zero-dimensional environments"""
 
-import numpy as np
 from typing import Optional
+import numpy as np
 from PySDM.dynamics.impl import register_dynamic
 
 

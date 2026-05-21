@@ -5,7 +5,7 @@ import numpy as np
 from PySDM.dynamics import ParcelEnvironmentSedimentationRemoval
 from PySDM.physics import si
 from PySDM.environments import Box
-from PySDM import Builder, Formulae
+from PySDM import Builder
 from PySDM.backends import ThrustRTC
 from PySDM.products import ParticleConcentration, SuperDropletCountPerGridbox, Time
 
