@@ -29,7 +29,7 @@ class BolinNumberImpl(DerivedAttribute):
         self.moles_light = builder.get_attribute("moles light water")  # TODO #1787
         self.cell_id = builder.get_attribute("cell id")
         self.molality_in_dry_air = builder.particulator.environment[
-            f"molality_{heavy_isotope}_in_dry_air"
+            f"molality {heavy_isotope} in dry air"
         ]
         super().__init__(
             builder,

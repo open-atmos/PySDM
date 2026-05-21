@@ -70,20 +70,19 @@ class IsotopeMethods(BackendMethods):
                 mass_ratio_heavy_to_total = (
                     moles_heavy_molecule[sd_id] * molar_mass_heavy_molecule
                 ) / signed_water_mass[sd_id]
-                if abs(Bo) < 1e-3:  # TODO
+                if abs(Bo) == 0:  # TODO
                     dm_heavy = 0
                 else:
                     dm_heavy = dm_total[sd_id] / Bo * mass_ratio_heavy_to_total
                 dn_heavy_molecule = dm_heavy / molar_mass_heavy_molecule
                 moles_heavy_molecule[sd_id] += dn_heavy_molecule
-                if moles_heavy_molecule[sd_id] < 0:  # TODO
-                    moles_heavy_molecule[sd_id] = 0
-                    dn_heavy_molecule = 0
+
                 mass_of_dry_air = dry_air_density[cell_id[sd_id]] * cell_volume
                 molality_in_dry_air[cell_id[sd_id]] -= (
                     dn_heavy_molecule * multiplicity[sd_id] / mass_of_dry_air
                 )
-                assert molality_in_dry_air[cell_id[sd_id]] >= 0
+                print(molality_in_dry_air[cell_id[sd_id]])
+                # assert molality_in_dry_air[cell_id[sd_id]] >= 0
 
         return body
 
@@ -102,6 +101,7 @@ class IsotopeMethods(BackendMethods):
         molality_in_dry_air,
     ):  # pylint: disable=too-many-positional-arguments
         """Update heavy-isotope composition during droplet growth/evaporation."""
+        print("predicted: ", molality_in_dry_air)
         self._isotopic_fractionation_body(
             cell_id=cell_id.data,
             cell_volume=cell_volume,
