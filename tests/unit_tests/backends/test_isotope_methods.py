@@ -4,8 +4,13 @@ unit tests for backend isotope-related routines
 
 import numpy as np
 import pytest
+from PySDM.backends import CPU
 
 from PySDM import Formulae
+from PySDM.environments import Parcel
+from PySDM import Builder
+from PySDM.physics import si
+from PySDM.dynamics import Condensation, IsotopicFractionation, AmbientThermodynamics
 
 
 class TestIsotopeMethods:
@@ -42,6 +47,40 @@ class TestIsotopeMethods:
         # assert
         assert np.isclose(moles_heavy.to_ndarray()[0], expected_moles_heavy)
         assert np.isclose(molality_in_dry_air.to_ndarray()[0], expected_molality_air)
+
+    @staticmethod
+    @pytest.mark.parametrize("isotope", ("2H",))
+    def test_ambient_isotopes_in_parcel(
+        isotope, backend_class=CPU, initial_molality=1e-5 * si.mol / si.kg
+    ):
+        # arrange
+        ambient_var = f"molality {isotope} in dry air"
+        builder = Builder(
+            environment=Parcel(dt=1 * si.s, mass_of_dry_air=1 * si.kg),
+            backend=backend_class(
+                formulae=Formulae(
+                    isotope_relaxation_timescale="ZabaEtAl",
+                    isotope_equilibrium_fractionation_factors="MerlivatAndNief1967+VanHook1968",
+                    isotope_diffusivity_ratios="Stewart1975+GrahamsLaw",
+                ),
+            ),
+            n_sd=1,
+        )
+        particulator = builder.build(
+            attributes={},
+            products=(),
+        )
+        particulator.add_dynamic(AmbientThermodynamics())
+        particulator.add_dynamic(Condensation())
+        particulator.add_dynamic(IsotopicFractionation((isotope,)))
+        particulator.environment[ambient_var] = initial_molality
+
+        # act
+        particulator.run(nsteps=1)
+
+        # assert
+        new_molality = particulator.environment[ambient_var]
+        assert new_molality != initial_molality
 
     @staticmethod
     def test_isotopic_delta(backend_instance):
