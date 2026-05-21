@@ -593,8 +593,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             temperature=self.environment["T"],
         )
 
-    def sedimentation_removal(self, *, stochastic_deposition_removal, length_scale):
-        if stochastic_deposition_removal:
+    def sedimentation_removal(self, *, stochastic_sedimentation_removal, length_scale):
+        if stochastic_sedimentation_removal:
             self.backend.sedimentation_removal_stochastic(
                 relative_fall_velocity=self.attributes["relative fall velocity"].data,
                 multiplicity=self.attributes["multiplicity"].data,

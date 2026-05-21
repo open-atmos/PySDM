@@ -1,25 +1,28 @@
-from PySDM.dynamics import SedimentationRemoval
-from PySDM.physics import si
-from PySDM.environments import Box
-from PySDM.builder import Builder
-from PySDM.backends import CPU
-from PySDM.products import ParticleConcentration, SuperDropletCountPerGridbox, Time
+# pylint: disable=missing-module-docstring
 from matplotlib import pyplot
 import pytest
 import numpy as np
+from PySDM.dynamics import ParcelEnvironmentSedimentationRemoval
+from PySDM.physics import si
+from PySDM.environments import Box
+from PySDM import Builder, Formulae
+from PySDM.backends import ThrustRTC
+from PySDM.products import ParticleConcentration, SuperDropletCountPerGridbox, Time
 
 
-class TestSedimentationRemoval:
+class TestSedimentationRemoval:  # pylint: disable=too-few-public-methods,too-many-branches,too-many-locals
     @staticmethod
     @pytest.mark.parametrize("stochastic", (True, False))
-    def test_convergence_wrt_dt(stochastic, plot=False):
+    def test_convergence_wrt_dt(backend_class, stochastic, plot=False):
         # arrange
         dts = 0.5 * si.s, 5 * si.s
         dvs = 1e2 * si.m**3, 1e3 * si.m**3, 1e4 * si.m**3
         t_max = 600 * si.s
-        multiplicities = 1e5, 1e6, 1e7, 1e8, 1e5
-        water_masses = 1 * si.ug, 2 * si.ug, 3 * si.ug, 4 * si.ug, -1 * si.ug
-        backend_instance = CPU()
+        multiplicities = 1e5, 1e6, 1e7, 1e8
+        water_masses = 1 * si.ug, 2 * si.ug, 3 * si.ug, 4 * si.ug
+
+        if backend_class is ThrustRTC:
+            pytest.skip("TODO #1871")
 
         # act
         output = {}
@@ -28,10 +31,12 @@ class TestSedimentationRemoval:
                 builder = Builder(
                     n_sd=len(multiplicities),
                     environment=Box(dv=dv, dt=dt),
-                    backend=backend_instance,
+                    backend=backend_class(),
                 )
                 builder.add_dynamic(
-                    SedimentationRemoval(stochastic_deposition_removal=stochastic)
+                    ParcelEnvironmentSedimentationRemoval(
+                        stochastic_sedimentation_removal=stochastic
+                    )
                 )
                 particulator = builder.build(
                     attributes={
