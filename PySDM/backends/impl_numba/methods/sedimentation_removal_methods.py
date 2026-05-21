@@ -17,8 +17,14 @@ class SedimentationRemovalMethods(BackendMethods):
 
         @numba.njit(**self.default_jit_flags)
         def body(relative_fall_velocity, multiplicity, length_scale, timestep):
-            for i, velocity in enumerate(relative_fall_velocity):
-                multiplicity[i] -= multiplicity[i] * velocity * timestep / length_scale
+            n_sd = len(relative_fall_velocity)
+            for i in numba.prange(n_sd):
+                multiplicity[i] -= (
+                    multiplicity[i]
+                    * relative_fall_velocity[i]
+                    * timestep
+                    / length_scale
+                )
 
         return body
 
@@ -29,8 +35,9 @@ class SedimentationRemovalMethods(BackendMethods):
 
         @numba.njit(**self.default_jit_flags)
         def body(relative_fall_velocity, multiplicity, length_scale, timestep):
-            for i, velocity in enumerate(relative_fall_velocity):
-                removal_rate = velocity / length_scale
+            n_sd = len(relative_fall_velocity)
+            for i in numba.prange(n_sd):
+                removal_rate = relative_fall_velocity[i] / length_scale
                 survive_prob = prob_zero_events(r=removal_rate, dt=timestep)
                 assert 0 <= survive_prob <= 1
                 multiplicity[i] *= survive_prob
