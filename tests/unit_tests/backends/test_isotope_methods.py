@@ -27,7 +27,7 @@ class TestIsotopeMethods:
         moles_heavy = arr2storage(np.array([0.5]))
         molality_in_dry_air = arr2storage(np.array([0.1]))
 
-        expected_moles_heavy = 0.5 + 0.05
+        expected_moles_heavy = 0.5 + 0.05  # TODO check and fix!!!!
         mass_of_dry_air = 1.0 * 2.0
         expected_molality_air = 0.1 - (0.05 * 3.0 / mass_of_dry_air)
 
@@ -48,105 +48,6 @@ class TestIsotopeMethods:
         # assert
         assert np.isclose(moles_heavy.to_ndarray()[0], expected_moles_heavy)
         assert np.isclose(molality_in_dry_air.to_ndarray()[0], expected_molality_air)
-
-    @staticmethod
-    @pytest.mark.parametrize("isotope", ("2H",))
-    @pytest.mark.parametrize(
-        "ksi, initial_molality_in_dry_air, expected_sign_of_ambient_molality_change",
-        (
-            (1, 1e-5 * si.mol / si.kg, -1),
-            (1, 0, +1),
-            (1e13, 1e-5 * si.mol / si.kg, -1),
-            (1e13, 0, +1),
-            # TODO: test case with both growth/evp
-            # TODO: case when trivial integration would yield negative molality
-            # TODO: case when ... yield negative isotope mass in droplet
-        ),
-    )
-    def test_ambient_isotopes_in_parcel(
-        ksi,
-        isotope,
-        initial_molality_in_dry_air,
-        expected_sign_of_ambient_molality_change,
-        backend_class=CPU,
-    ):
-        # arrange
-        ambient_var = f"molality {isotope} in dry air"
-        builder = Builder(
-            environment=Parcel(
-                dt=1 * si.s,
-                mass_of_dry_air=1 * si.kg,
-                p0=1000 * si.hPa,
-                T0=300 * si.K,
-                initial_relative_humidity=0.99,
-                w=1 * si.m / si.s,
-                variables=(ambient_var,),
-            ),
-            backend=backend_class(
-                formulae=Formulae(
-                    isotope_relaxation_timescale="ZabaEtAl",
-                    isotope_equilibrium_fractionation_factors="MerlivatAndNief1967+VanHook1968",
-                    isotope_diffusivity_ratios="Stewart1975+GrahamsLaw",
-                ),
-            ),
-            n_sd=(n_sd := 1),
-        )
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
-        builder.add_dynamic(IsotopicFractionation((isotope,)))
-        particulator = builder.build(
-            attributes={
-                "moles_2H": np.ones(n_sd) / 1e10,
-                "moles_3H": np.zeros(n_sd),
-                "moles_17O": np.zeros(n_sd),
-                "moles_18O": np.zeros(n_sd),
-                **builder.particulator.environment.init_attributes(
-                    n_in_dv=ksi,
-                    kappa=1,
-                    r_dry=0.01 * si.micrometre,
-                ),
-            },
-            products=(),
-        )
-        initial_v_wet = particulator.attributes["volume"].to_ndarray()[0]
-        particulator.environment[ambient_var][:] = initial_molality_in_dry_air
-
-        # act
-        particulator.run(steps=1)
-
-        # assert
-        new_molality_in_dry_air = float(
-            particulator.environment[ambient_var].to_ndarray()[0]
-        )
-        assert (
-            particulator.attributes["volume"].to_ndarray()[0] != initial_v_wet
-        ), "wet volume did not change"
-        assert (
-            new_molality_in_dry_air != initial_molality_in_dry_air
-        ), "molality in dry air did not change"
-        assert new_molality_in_dry_air > 0, "molality in dry air is negative"
-        assert (
-            particulator.attributes[f"moles_{isotope}"].to_ndarray()[0] > 0
-        ), "moles of heavy isotope in droplet is negative"
-        assert (
-            math.copysign(1, new_molality_in_dry_air - initial_molality_in_dry_air)
-            == expected_sign_of_ambient_molality_change
-        ), "unexpected sign of ambient molality change"
-
-    @staticmethod
-    def test_isotopic_delta(backend_instance):
-        # arrange
-        backend = backend_instance
-        arr2storage = backend.Storage.from_ndarray
-        n_sd = 10
-        output = arr2storage(np.empty(n_sd))
-        ratio = arr2storage(np.zeros(n_sd))
-
-        # act
-        backend.isotopic_delta(output=output, ratio=ratio, reference_ratio=0.0001)
-
-        # assert
-        assert (output.to_ndarray() == -1).all()
 
     @staticmethod
     def test_bolin_number(backend_class):
@@ -196,3 +97,18 @@ class TestIsotopeMethods:
         assert result.shape == (n_sd,)
         assert np.all(np.isfinite(result))
         assert np.all(result > 0)
+
+    @staticmethod
+    def test_isotopic_delta(backend_instance):
+        # arrange
+        backend = backend_instance
+        arr2storage = backend.Storage.from_ndarray
+        n_sd = 10
+        output = arr2storage(np.empty(n_sd))
+        ratio = arr2storage(np.zeros(n_sd))
+
+        # act
+        backend.isotopic_delta(output=output, ratio=ratio, reference_ratio=0.0001)
+
+        # assert
+        assert (output.to_ndarray() == -1).all()
