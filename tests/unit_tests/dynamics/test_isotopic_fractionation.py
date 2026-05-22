@@ -6,13 +6,16 @@ unit tests for the IsotopicFractionation dynamic
 from contextlib import nullcontext
 
 import numpy as np
+import math
 import pytest
 
+
 from PySDM import Builder, Formulae
-from PySDM.dynamics import Condensation, IsotopicFractionation
-from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES, LIGHT_ISOTOPES
-from PySDM.environments import Box
 from PySDM.physics import si
+from PySDM.environments import Box, Parcel
+from PySDM.dynamics import Condensation, IsotopicFractionation, AmbientThermodynamics
+from PySDM.dynamics.isotopic_fractionation import HEAVY_ISOTOPES, LIGHT_ISOTOPES
+from PySDM.backends import CPU
 
 BASE_INITIAL_ATTRIBUTES = {
     "multiplicity": np.ones(1),
@@ -259,3 +262,88 @@ class TestIsotopicFractionation:
             rtol=1e-10,
             atol=0,
         )
+
+    @staticmethod
+    @pytest.mark.parametrize("isotope", ("2H",))
+    @pytest.mark.parametrize(
+        "ksi, initial_molality_in_dry_air, expected_sign_of_ambient_molality_change",
+        (
+            (1, 1e-5 * si.mol / si.kg, -1),
+            (1, 0, +1),
+            (1e6, 1e-5 * si.mol / si.kg, -1),
+            (1e13, 1e-5 * si.mol / si.kg, -1),
+            (1e13, 0, +1),
+            # TODO: test case with both growth/evp
+            # TODO: case when trivial integration would yield negative molality
+            # TODO: case when ... yield negative isotope mass in droplet
+        ),
+    )
+    def test_ambient_isotopes_in_parcel(
+        ksi,
+        isotope,
+        initial_molality_in_dry_air,
+        expected_sign_of_ambient_molality_change,
+        backend_class=CPU,
+    ):
+        # arrange
+        ambient_var = f"molality {isotope} in dry air"
+        builder = Builder(
+            environment=Parcel(
+                dt=1 * si.s,
+                mass_of_dry_air=1 * si.kg,
+                p0=1000 * si.hPa,
+                T0=300 * si.K,
+                initial_relative_humidity=0.99,
+                w=1 * si.m / si.s,
+                variables=(ambient_var,),
+            ),
+            backend=backend_class(
+                formulae=Formulae(
+                    isotope_relaxation_timescale="ZabaEtAl",
+                    isotope_equilibrium_fractionation_factors="MerlivatAndNief1967+VanHook1968",
+                    isotope_diffusivity_ratios="Stewart1975+GrahamsLaw",
+                ),
+            ),
+            n_sd=(n_sd := 1),
+        )
+        builder.add_dynamic(AmbientThermodynamics())
+        builder.add_dynamic(Condensation())
+        builder.add_dynamic(IsotopicFractionation((isotope,)))
+        particulator = builder.build(
+            attributes={
+                "moles_2H": np.ones(n_sd) / 1e10,
+                "moles_3H": np.zeros(n_sd),
+                "moles_17O": np.zeros(n_sd),
+                "moles_18O": np.zeros(n_sd),
+                **builder.particulator.environment.init_attributes(
+                    n_in_dv=ksi,
+                    kappa=1,
+                    r_dry=0.01 * si.micrometre,
+                ),
+            },
+            products=(),
+        )
+        initial_v_wet = particulator.attributes["volume"].to_ndarray()[0]
+        particulator.environment[ambient_var][:] = initial_molality_in_dry_air
+
+        # act
+        particulator.run(steps=1)
+
+        # assert
+        new_molality_in_dry_air = float(
+            particulator.environment[ambient_var].to_ndarray()[0]
+        )
+        assert (
+            particulator.attributes["volume"].to_ndarray()[0] != initial_v_wet
+        ), "wet volume did not change"
+        assert (
+            new_molality_in_dry_air != initial_molality_in_dry_air
+        ), "molality in dry air did not change"
+        assert new_molality_in_dry_air > 0, "molality in dry air is negative"
+        assert (
+            particulator.attributes[f"moles_{isotope}"].to_ndarray()[0] > 0
+        ), "moles of heavy isotope in droplet is negative"
+        assert (
+            math.copysign(1, new_molality_in_dry_air - initial_molality_in_dry_air)
+            == expected_sign_of_ambient_molality_change
+        ), "unexpected sign of ambient molality change"
