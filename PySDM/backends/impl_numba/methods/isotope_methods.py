@@ -141,7 +141,6 @@ class IsotopeMethods(BackendMethods):
             isotope,
             relative_humidity,
             temperature,
-            density_dry_air,
             water_vapour_mixing_ratio,
             moles_light_molecule,
             moles_heavy,
@@ -153,12 +152,12 @@ class IsotopeMethods(BackendMethods):
                 moles_heavy_atom = moles_heavy[i]
                 moles_light_isotope = moles_light_molecule[i]  # TODO #1787
 
-                conc_vap_total = water_vapour_mixing_ratio * rhod / const.Mv
-                isotopic_fraction = ff.trivia__isotopic_fraction(
-                    molality_in_dry_air=molality_in_dry_air[cell_id[i]],
-                    density_dry_air=density_dry_air[cell_id[i]],
-                    total_vap_concentration=conc_vap_total,
+                isotopic_fraction = (  # TODO calculations (do not use trivia, rhod not needed
+                    molality_in_dry_air[cell_id[i]]
+                    / water_vapour_mixing_ratio[cell_id[i]]
+                    * ff.constants.Mv
                 )
+
                 if isotope == "2H":
                     D_ratio = ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
                     alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T)
@@ -200,7 +199,7 @@ class IsotopeMethods(BackendMethods):
         isotope,
         relative_humidity,
         temperature,
-        density_dry_air,
+        water_vapour_mixing_ratio,
         moles_light_molecule,
         moles_heavy,
         molality_in_dry_air,
@@ -212,7 +211,7 @@ class IsotopeMethods(BackendMethods):
             isotope=isotope,
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
-            density_dry_air=density_dry_air.data,
+            water_vapour_mixing_ratio=water_vapour_mixing_ratio.data,
             moles_light_molecule=moles_light_molecule.data,
             moles_heavy=moles_heavy.data,
             molality_in_dry_air=molality_in_dry_air.data,
