@@ -356,6 +356,16 @@ KOOP_MURRAY_C5 = -1.71736e-4 / si.K**5
 KOOP_MURRAY_C6 = -7.46953e-7 / si.K**6
 """ 〃 """
 
+KOOP_MURRAY_DAW_C0 = -273.111686
+""" homogeneous ice nucleation rate for pure water droplets adapted
+for DAW ([Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)) """
+KOOP_MURRAY_DAW_C1 = 1689.25134
+""" 〃 """
+KOOP_MURRAY_DAW_C2 = -2449.65042
+""" 〃 """
+KOOP_MURRAY_DAW_UNIT = 1 / si.m**3 / si.s
+""" 〃 """
+
 J_HET = np.nan
 J_HOM = np.nan
 """ constant ice nucleation rates """
