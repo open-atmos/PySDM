@@ -78,9 +78,9 @@ class TestPairMethods:
             ),
         ),
     )
-    def test_sum_pair(_data_in, _data_out, _idx, backend_instance):
+    def test_sum_pair(_data_in, _data_out, _idx, backend_instance_with_jax):
         # Arrange
-        backend = backend_instance
+        backend = backend_instance_with_jax
 
         data_out = backend.Storage.from_ndarray(np.asarray(_data_out))
         data_in = backend.Storage.from_ndarray(np.asarray(_data_in))
@@ -98,13 +98,13 @@ class TestPairMethods:
         backend.sum_pair(data_out, data_in, is_first_in_pair, idx)
 
         # Assert
-        np.testing.assert_array_equal(data_out, [44.0 + 666.0])
+        np.testing.assert_array_equal(data_out.to_ndarray(), [44.0 + 666.0])
 
     @staticmethod
     @pytest.mark.parametrize("length", (1, 2, 3, 4))
-    def test_find_pairs_length(backend_instance, length):
+    def test_find_pairs_length(backend_instance_with_jax, length):
         # arrange
-        backend = backend_instance
+        backend = backend_instance_with_jax
         n_sd = 4
 
         cell_start = backend.Storage.from_ndarray(np.asarray([0, 0, 0, 0]))
@@ -121,4 +121,67 @@ class TestPairMethods:
         backend.find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx)
 
         # assert
-        assert not is_first_in_pair.indicator[length - 1]
+        assert not is_first_in_pair.indicator.to_ndarray()[length - 1]
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "_attr, _idx, _expected_idx, _is_first_in_pair",
+        (
+            pytest.param(
+                [44.0, 666.0],
+                [0, 1],
+                [1, 0],
+                [True, False],
+            ),
+            pytest.param(
+                [100.0, 10.0, 10.0, 100.0],
+                [0, 1, 2, 3],
+                [0, 1, 3, 2],
+                [True, False, True, False],
+            ),
+            pytest.param(
+                [5, 6, 7],
+                [0, 1, 2],
+                [0, 2, 1],
+                [False, True, False],
+            ),
+            pytest.param(
+                [100.0, 10.0, 10.0, 100.0, 10.0, 100.0],
+                [0, 1, 2, 3, 4, 5],
+                [0, 1, 3, 2, 5, 4],
+                [True, False, True, False, True, False],
+            ),
+            pytest.param(
+                [100.0, 10.0, 10.0, 100.0],
+                [0, 1, 2, 3],
+                [0, 1, 2, 3],
+                [False, False, False, False],
+            ),
+            pytest.param(
+                [100.0, 10.0, 10.0, 100.0],
+                [1, 0, 3, 2],
+                [0, 1, 3, 2],
+                [True, False, True, False],
+            ),
+        ),
+    )
+    def test_sort_within_pair_by_attr(
+        _attr, _idx, _expected_idx, _is_first_in_pair, backend_instance_with_jax
+    ):
+        # Arrange
+        backend = backend_instance_with_jax
+
+        attr = backend.Storage.from_ndarray(np.asarray(_attr))
+
+        is_first_in_pair = make_PairIndicator(backend)(len(_attr))
+        is_first_in_pair.indicator = backend.Storage.from_ndarray(
+            np.asarray(_is_first_in_pair)
+        )
+
+        idx = backend.Storage.from_ndarray(np.asarray(_idx))
+
+        # Act
+        backend.sort_within_pair_by_attr(idx, is_first_in_pair, attr)
+
+        # Assert
+        np.testing.assert_array_equal(idx.to_ndarray(), _expected_idx)
