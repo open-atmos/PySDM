@@ -15,11 +15,13 @@ class Simulation(BasicSimulation):
     def __init__(
         self,
         settings,
+        *,
         products=None,
         scipy_solver=False,
         rtol_thd=1e-10,
         rtol_x=1e-10,
         mass_of_dry_air=44 * si.kg,
+        additional_attributes=None,
     ):
         n_sd = sum(settings.n_sd_per_mode)
         builder = Builder(
@@ -40,6 +42,9 @@ class Simulation(BasicSimulation):
                 Condensation(rtol_thd=rtol_thd, rtol_x=rtol_x),
             ),
         )
+        if additional_attributes is not None:
+            for attribute in additional_attributes:
+                builder.request_attribute(attribute)
 
         volume = (
             builder.particulator.environment.mass_of_dry_air
@@ -76,7 +81,9 @@ class Simulation(BasicSimulation):
             scipy_ode_condensation_solver.patch_particulator(self.particulator)
 
         self.output_attributes = {
-            "volume": tuple([] for _ in range(self.particulator.n_sd))
+            attr: tuple([] for _ in range(self.particulator.n_sd))
+            for attr in ["volume"]
+            + (list(additional_attributes) if additional_attributes is not None else [])
         }
         self.settings = settings
 
