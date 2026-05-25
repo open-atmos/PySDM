@@ -26,20 +26,16 @@ class Simulation:
         const = ff.constants
         if isotope == "2H":
             molar_mass_heavy = const.M_2H_1H_16O
-            atoms_per_heavy_molecule = 1
         elif isotope[-1] == "O":
             molar_mass_heavy = getattr(const, f"M_1H2_{isotope}")
-            atoms_per_heavy_molecule = 1
         else:
             molar_mass_heavy = 0
-            atoms_per_heavy_molecule = 0
         attributes[f"moles_{isotope}"] = ff.trivia.moles_heavy_atom(
             mass_total=attributes["signed water mass"],
             mass_other_heavy_isotopes=0,
             molar_mass_light_molecule=const.M_1H2_16O,
             molar_mass_heavy_molecule=molar_mass_heavy,
             molecular_isotopic_ratio=molecular_isotopic_ratio,
-            atoms_per_heavy_molecule=atoms_per_heavy_molecule,
         )
         builder = Builder(
             n_sd=n_sd,

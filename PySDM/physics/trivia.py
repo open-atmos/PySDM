@@ -199,8 +199,7 @@ class Trivia:  # pylint: disable=too-many-public-methods
         in heavy molecule which in all considered cases is 1.
         Hence, it is omitted in equation.
         """
-        atoms_per_heavy_mole
-        return (mass_total - mass_other_heavy_isotopes) / (  # TODO
+        return (mass_total - mass_other_heavy_isotopes) / (
             molar_mass_light_molecule / molecular_isotopic_ratio
             + molar_mass_heavy_molecule
         )

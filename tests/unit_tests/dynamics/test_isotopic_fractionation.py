@@ -233,7 +233,6 @@ class TestIsotopicFractionation:
             molar_mass_light_molecule=const.M_1H2_16O,
             molar_mass_heavy_molecule=const.M_2H_1H_16O,
             molecular_isotopic_ratio=molecular_R_liq,
-            atoms_per_heavy_molecule=1,
         )
 
         particulator = make_particulator(
