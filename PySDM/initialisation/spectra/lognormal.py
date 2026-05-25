@@ -17,7 +17,7 @@ class Lognormal(Spectrum):
         `m_mode` is the median value, `s_geom` is the geometric standard deviation"""
         assert (median is None) ^ (mode is None)
         self.median = median or mode * math.exp(s_geom**2)
-        super().__init__(lognorm, (math.log(s_geom), 0, median), norm_factor)
+        super().__init__(lognorm, (math.log(s_geom), 0, self.median), norm_factor)
 
     @property
     def s_geom(self):

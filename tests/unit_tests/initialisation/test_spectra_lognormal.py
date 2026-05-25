@@ -22,10 +22,10 @@ class TestSpectraLognormal:
         sut = Lognormal(median=median, norm_factor=1, s_geom=s_geom)
 
         # act
-        median = sut.percentiles(0.5)
+        actual = sut.percentiles(0.5)
 
         # assert
-        assert median == median
+        assert median == actual
 
     @staticmethod
     @pytest.mark.parametrize(
