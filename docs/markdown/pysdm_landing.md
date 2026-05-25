@@ -299,12 +299,11 @@ The resultant plot (generated with the Python code) looks as follows:
 The component submodules used to create this simulation are visualized below:
 ```mermaid
  graph
-    COAL[":Coalescence"] --->|passed as arg to| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
+    COAL[":Coalescence"] --->|passed as arg to| BUILDER_INIT(["Builder.__init__()"])
     BUILDER_INSTANCE["builder :Builder"] -...-|has a method| BUILDER_BUILD(["Builder.build()"])
     ATTRIBUTES[attributes: dict] -->|passed as arg to| BUILDER_BUILD
     N_SD["n_sd :int"] ---->|passed as arg to| BUILDER_INIT
     BUILDER_INIT(["Builder.__init__()"]) --->|instantiates| BUILDER_INSTANCE
-    BUILDER_INSTANCE -..-|has a method| BUILDER_ADD_DYN(["Builder.add_dynamic()"])
     ENV_INIT(["Box.__init__()"]) -->|instantiates| ENV
     DT[dt :float] -->|passed as arg to| ENV_INIT
     DV[dv :float] -->|passed as arg to| ENV_INIT
@@ -337,7 +336,6 @@ The component submodules used to create this simulation are visualized below:
     click COAL "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision.html#Coalescence"
     click BUILDER_INSTANCE "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click BUILDER_INIT "https://open-atmos.github.io/PySDM/PySDM/builder.html"
-    click BUILDER_ADD_DYN "https://open-atmos.github.io/PySDM/PySDM/builder.html"
     click ENV_INIT "https://open-atmos.github.io/PySDM/PySDM/environments.html"
     click ENV "https://open-atmos.github.io/PySDM/PySDM/environments.html"
     click KERNEL_INIT "https://open-atmos.github.io/PySDM/PySDM/dynamics/collisions/collision_kernels.html"
@@ -407,9 +405,10 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env, dynamics=(
+    AmbientThermodynamics(),
+    Condensation(),
+))
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
@@ -488,9 +487,12 @@ output_points = 40;
 n_sd = 256;
 
 formulae = Formulae();
-builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd), 'environment', env));
-builder.add_dynamic(AmbientThermodynamics());
-builder.add_dynamic(Condensation());
+builder = Builder(pyargs( ...
+    'backend', CPU(formulae), ...
+     'n_sd', int32(n_sd), ...
+      'environment', env, ...
+      'dynamics', py.tuple({AmbientThermodynamics(), Condensation()}) ...
+));
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample_deterministic(int32(n_sd));
 r_dry = tmp{1};
@@ -589,9 +591,10 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env)
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder = Builder(backend=CPU(formulae), n_sd=n_sd, environment=env, dynamics=(
+    AmbientThermodynamics(),
+    Condensation(),
+))
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample_deterministic(n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
