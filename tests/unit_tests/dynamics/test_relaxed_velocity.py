@@ -156,12 +156,13 @@ def test_timescale(default_attributes, c, constant_timescale, backend_instance):
 
     The constant timescale should be constant.
     """
+    dyn = RelaxedVelocity(c=c, constant=constant_timescale)
     env = Box(dt=1, dv=1)
     builder = Builder(
         n_sd=len(default_attributes["multiplicity"]),
         backend=backend_instance,
         environment=env,
-        dynamics=(RelaxedVelocity(c=c, constant=constant_timescale),),
+        dynamics=(dyn,),
     )
 
     default_attributes["relative fall momentum"] = np.zeros_like(
