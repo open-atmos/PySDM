@@ -34,9 +34,11 @@ def test_parcel_liquid_water_path(
             T0=300 * si.K,
             w=dz / dt,
         ),
+        dynamics=(
+            AmbientThermodynamics(),
+            Condensation(),
+        ),
     )
-    builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(Condensation())
     particulator = builder.build(
         attributes=builder.particulator.environment.init_attributes(
             n_in_dv=np.asarray([1000]), kappa=0.666, r_dry=np.asarray([0.01 * si.um])

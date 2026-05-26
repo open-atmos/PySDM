@@ -36,22 +36,19 @@ class TestDiffusionalGrowthMassChange:
         strict=True,
     )
     def test_if_collision(backend_class):
-        # arrange
         particulator = DummyParticulator(backend_class)
         particulator.request_attribute("diffusional growth mass change")
-
-        # act
-        particulator.add_dynamic(
-            Collision(
-                collision_kernel=np.nan,
-                breakup_efficiency=np.nan,
-                coalescence_efficiency=np.nan,
-                fragmentation_function=np.nan,
-            )
+        particulator.build(
+            attributes={},
+            dynamics=(
+                Collision(
+                    collision_kernel=np.nan,
+                    breakup_efficiency=np.nan,
+                    coalescence_efficiency=np.nan,
+                    fragmentation_function=np.nan,
+                ),
+            ),
         )
-
-        # assert
-        particulator.build(attributes={})
 
     @staticmethod
     @pytest.mark.parametrize("steps", (0, 1, 2))

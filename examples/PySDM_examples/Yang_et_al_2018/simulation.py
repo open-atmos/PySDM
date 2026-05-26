@@ -31,23 +31,27 @@ class Simulation:
             w=settings.w,
             z0=settings.z0,
         )
-        builder = Builder(
-            backend=backend(
-                formulae=self.formulae, override_jit_flags={"parallel": False}
-            ),
-            n_sd=settings.n_sd,
-            environment=env,
-        )
 
-        environment = builder.particulator.environment
-        builder.add_dynamic(AmbientThermodynamics())
         condensation = Condensation(
             adaptive=settings.adaptive,
             rtol_x=settings.rtol_x,
             rtol_thd=settings.rtol_thd,
             dt_cond_range=settings.dt_cond_range,
         )
-        builder.add_dynamic(condensation)
+
+        builder = Builder(
+            backend=backend(
+                formulae=self.formulae, override_jit_flags={"parallel": False}
+            ),
+            n_sd=settings.n_sd,
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                condensation,
+            ),
+        )
+
+        environment = builder.particulator.environment
 
         products = [
             PySDM_products.ParticleSizeSpectrumPerVolume(

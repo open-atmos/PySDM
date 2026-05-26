@@ -59,8 +59,8 @@ class TestSDMBreakup:
             n_sd,
             backend_class(Formulae(fragmentation_function="AlwaysN")),
             environment=env,
+            dynamics=(breakup,),
         )
-        builder.add_dynamic(breakup)
         particulator = builder.build(attributes=attributes, products=())
 
         # Act
@@ -793,7 +793,7 @@ class TestSDMBreakup:
         dv = 1 * si.m**3
         dt = 1 * si.s
         env = Box(dv=dv, dt=dt)
-        builder = Builder(n_sd=n_sd, backend=backend, environment=env)
+        # builder = Builder(n_sd=n_sd, backend=backend, environment=env)
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
@@ -815,7 +815,9 @@ class TestSDMBreakup:
             fragmentation_function=fragmentation,
             warn_overflows=False,
         )
-        builder.add_dynamic(breakup)
+        builder = Builder(
+            n_sd=n_sd, backend=backend, environment=env, dynamics=(breakup,)
+        )
 
         radius_bins_edges = np.logspace(
             np.log10(0.01 * si.um), np.log10(5000 * si.um), num=64, endpoint=True

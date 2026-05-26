@@ -27,9 +27,11 @@ def _make_particulator(backend):
             T0=285 * si.K,
             w=1 * si.m / si.s,
         ),
+        dynamics=(
+            AmbientThermodynamics(),
+            Condensation(),
+        ),
     )
-    builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(Condensation())
     return builder.build(
         attributes={
             "multiplicity": np.ones(1),
