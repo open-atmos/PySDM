@@ -7,7 +7,6 @@ from contextlib import nullcontext
 
 import numpy as np
 import pytest
-from quantities.units.acceleration import dynamic
 
 from PySDM import Builder, Formulae
 from PySDM.dynamics import Condensation, IsotopicFractionation
