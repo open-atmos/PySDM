@@ -48,7 +48,9 @@ class Simulation(BasicSimulation):
                 AmbientThermodynamics(),
                 Condensation(),
                 VapourDepositionOnIce(),
-                Freezing(homogenous_freezing="time-dependent", immersion_freezing=None),
+                Freezing(
+                    homogeneous_freezing="time-dependent", immersion_freezing=None
+                ),
             ),
         )
 

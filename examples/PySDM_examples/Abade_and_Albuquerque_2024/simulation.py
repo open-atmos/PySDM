@@ -1,6 +1,5 @@
 import numpy as np
 
-from PySDM_examples.Arabas_et_al_2015 import settings
 from PySDM_examples.utils import BasicSimulation
 
 from PySDM import Builder

@@ -14,55 +14,43 @@ from PySDM.physics import si
 
 class Simulation:
     def __init__(self, settings: Settings):
-        if settings.enable_collisions:
-            builder = Builder(
-                n_sd=settings.n_sd_seeding + settings.n_sd_initial,
-                backend=CPU(
-                    formulae=settings.formulae, override_jit_flags={"parallel": False}
-                ),
-                environment=Parcel(
-                    dt=settings.timestep,
-                    mass_of_dry_air=settings.mass_of_dry_air,
-                    w=settings.updraft,
-                    initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                    p0=settings.initial_total_pressure,
-                    T0=settings.initial_temperature,
-                ),
-                dynamics=(
-                    AmbientThermodynamics(),
-                    Condensation(),
+        builder = Builder(
+            n_sd=settings.n_sd_seeding + settings.n_sd_initial,
+            backend=CPU(
+                formulae=settings.formulae, override_jit_flags={"parallel": False}
+            ),
+            environment=Parcel(
+                dt=settings.timestep,
+                mass_of_dry_air=settings.mass_of_dry_air,
+                w=settings.updraft,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+                p0=settings.initial_total_pressure,
+                T0=settings.initial_temperature,
+            ),
+            dynamics=[
+                AmbientThermodynamics(),
+                Condensation(),
+            ]
+            + (
+                []
+                if not settings.enable_collisions
+                else [
                     Coalescence(collision_kernel=Geometric()),
-                    Seeding(
-                        super_droplet_injection_rate=settings.super_droplet_injection_rate,
-                        seeded_particle_multiplicity=settings.seeded_particle_multiplicity,
-                        seeded_particle_extensive_attributes=settings.seeded_particle_extensive_attributes,
-                    ),
-                ),
+                ]
             )
-        else:
-            builder = Builder(
-                n_sd=settings.n_sd_seeding + settings.n_sd_initial,
-                backend=CPU(
-                    formulae=settings.formulae, override_jit_flags={"parallel": False}
+            + [
+                Seeding(
+                    **{
+                        k: getattr(settings, k)
+                        for k in (
+                            "super_droplet_injection_rate",
+                            "seeded_particle_multiplicity",
+                            "seeded_particle_extensive_attributes",
+                        )
+                    }
                 ),
-                environment=Parcel(
-                    dt=settings.timestep,
-                    mass_of_dry_air=settings.mass_of_dry_air,
-                    w=settings.updraft,
-                    initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-                    p0=settings.initial_total_pressure,
-                    T0=settings.initial_temperature,
-                ),
-                dynamics=(
-                    AmbientThermodynamics(),
-                    Condensation(),
-                    Seeding(
-                        super_droplet_injection_rate=settings.super_droplet_injection_rate,
-                        seeded_particle_multiplicity=settings.seeded_particle_multiplicity,
-                        seeded_particle_extensive_attributes=settings.seeded_particle_extensive_attributes,
-                    ),
-                ),
-            )
+            ],
+        )
 
         r_dry, n_in_dv = ConstantMultiplicity(
             settings.initial_aerosol_dry_radii
