@@ -137,7 +137,7 @@ def simulation(
         backend=CPU(formulae=formulae),
         environment=Box(dt=time_step, dv=volume),
         dynamics=(
-            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None)
+            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None),
         ),
     )
 
