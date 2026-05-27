@@ -21,9 +21,7 @@ class TestDiffusionalGrowthMassChange:
 
         # act
         particulator.build(
-            attributes={
-                "multiplicity": np.ones(1), "water mass": np.ones(1)
-            }
+            attributes={"multiplicity": np.ones(1), "water mass": np.ones(1)}
         )
 
         # assert
