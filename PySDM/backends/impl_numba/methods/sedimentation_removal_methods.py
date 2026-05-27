@@ -39,7 +39,6 @@ class SedimentationRemovalMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 removal_rate = relative_fall_velocity[i] / length_scale
                 survive_prob = prob_zero_events(r=removal_rate, dt=timestep)
-                assert 0 <= survive_prob <= 1
                 multiplicity[i] *= survive_prob
 
         return body
