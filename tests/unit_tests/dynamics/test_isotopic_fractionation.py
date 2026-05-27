@@ -94,7 +94,7 @@ class TestIsotopicFractionation:
             n_sd=1,
             backend=backend_instance,
             environment=Box(dv=np.nan, dt=1 * si.s),
-            dynamics=(dynamics,),
+            dynamics=dynamics,
         )
         builder.particulator.environment["molality 2H in dry air"] = np.nan
 
