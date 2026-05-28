@@ -13,7 +13,7 @@ class TestDiffusionalGrowthMassChange:
     @staticmethod
     def test_initialisation(backend_class):
         if backend_class.__name__ != "Numba":
-            pytest.skip("only Numba supporter - TODO #1438")
+            pytest.skip("only Numba supported - TODO #1438")
 
         # arrange
         particulator = DummyParticulator(backend_class)
@@ -36,28 +36,25 @@ class TestDiffusionalGrowthMassChange:
         strict=True,
     )
     def test_if_collision(backend_class):
-        # arrange
-        particulator = DummyParticulator(backend_class)
-        particulator.request_attribute("diffusional growth mass change")
-
-        # act
-        particulator.add_dynamic(
-            Collision(
-                collision_kernel=np.nan,
-                breakup_efficiency=np.nan,
-                coalescence_efficiency=np.nan,
-                fragmentation_function=np.nan,
-            )
+        particulator = DummyParticulator(
+            backend_class,
+            dynamics=(
+                Collision(
+                    collision_kernel=np.nan,
+                    breakup_efficiency=np.nan,
+                    coalescence_efficiency=np.nan,
+                    fragmentation_function=np.nan,
+                ),
+            ),
         )
-
-        # assert
+        particulator.request_attribute("diffusional growth mass change")
         particulator.build(attributes={})
 
     @staticmethod
     @pytest.mark.parametrize("steps", (0, 1, 2))
     def test_methods(backend_class, steps):
         if backend_class.__name__ != "Numba":
-            pytest.skip("only Numba supporter - TODO #1438")
+            pytest.skip("only Numba supported - TODO #1438")
 
         # arrange
         n_sd = 1

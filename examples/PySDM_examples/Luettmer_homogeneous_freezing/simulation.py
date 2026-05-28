@@ -35,16 +35,23 @@ class Simulation:
             backend=settings.backend,
             n_sd=settings.n_sd,
             environment=env,
-        )
-
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation(adaptive=True))
-        if settings.deposition_enable:
-            builder.add_dynamic(VapourDepositionOnIce(adaptive=True))
-        builder.add_dynamic(
-            Freezing(
-                homogeneous_freezing=settings.hom_freezing_type, immersion_freezing=None
-            )
+            dynamics=(
+                [
+                    AmbientThermodynamics(),
+                    Condensation(adaptive=True),
+                ]
+                + (
+                    [VapourDepositionOnIce(adaptive=True)]
+                    if settings.deposition_enable
+                    else []
+                )
+                + [
+                    Freezing(
+                        homogeneous_freezing=settings.hom_freezing_type,
+                        immersion_freezing=None,
+                    )
+                ]
+            ),
         )
 
         self.n_sd = settings.n_sd
