@@ -142,12 +142,14 @@ class TestDropletFreezing:
         )
         env = Box(dt=1 * si.s, dv=1 * si.m**3)
         builder = Builder(
-            n_sd=1, backend=backend_class(formulae=formulae), environment=env
-        )
-        builder.add_dynamic(
-            Freezing(
-                thaw=thaw,
-            )
+            n_sd=1,
+            backend=backend_class(formulae=formulae),
+            environment=env,
+            dynamics=(
+                Freezing(
+                    thaw=thaw,
+                ),
+            ),
         )
         particulator = builder.build(
             products=(IceWaterContent(),),
@@ -182,9 +184,11 @@ class TestDropletFreezing:
         formulae = Formulae(particle_shape_and_density="MixedPhaseSpheres")
         env = Box(dt=1 * si.s, dv=dv)
         builder = Builder(
-            n_sd=n_sd, backend=backend_class(formulae=formulae), environment=env
+            n_sd=n_sd,
+            backend=backend_class(formulae=formulae),
+            environment=env,
+            dynamics=(Freezing(immersion_freezing="singular"),),
         )
-        builder.add_dynamic(Freezing(immersion_freezing="singular"))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
             "freezing temperature": np.full(n_sd, T_fz),
@@ -222,8 +226,8 @@ class TestDropletFreezing:
             n_sd=n_sd,
             backend=backend_class(formulae=formulae),
             environment=Box(dt=1 * si.s, dv=dv),
+            dynamics=(Freezing(homogeneous_freezing="threshold"),),
         )
-        builder.add_dynamic(Freezing(homogeneous_freezing="threshold"))
         attributes = {
             "multiplicity": np.full(n_sd, multiplicity),
             "signed water mass": np.full(n_sd, water_mass),
@@ -339,12 +343,12 @@ class TestDropletFreezing:
                     formulae=formulae, double_precision=double_precision
                 ),
                 environment=env,
-            )
-            builder.add_dynamic(
-                Freezing(
-                    immersion_freezing=immersion_freezing,
-                    homogeneous_freezing=homogeneous_freezing,
-                )
+                dynamics=(
+                    Freezing(
+                        immersion_freezing=immersion_freezing,
+                        homogeneous_freezing=homogeneous_freezing,
+                    ),
+                ),
             )
             attributes = {
                 "multiplicity": np.full(n_sd, int(case["N"])),
