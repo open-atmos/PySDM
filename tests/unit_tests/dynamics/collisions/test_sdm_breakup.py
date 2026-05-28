@@ -793,7 +793,6 @@ class TestSDMBreakup:
         dv = 1 * si.m**3
         dt = 1 * si.s
         env = Box(dv=dv, dt=dt)
-        # builder = Builder(n_sd=n_sd, backend=backend, environment=env)
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)

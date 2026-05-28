@@ -52,7 +52,6 @@ class TestDropletFreezing:
             backend=backend_class(formulae=formulae),
             environment=Box(dt=1 * si.s, dv=1 * si.m**3),
             dynamics=(
-                # Freezing(immersion_freezing="time-dependent", thaw="instantaneous")
                 Freezing(
                     immersion_freezing=freezing_mode["immersion_freezing"],
                     homogeneous_freezing=freezing_mode["homogeneous_freezing"],
