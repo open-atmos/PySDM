@@ -46,18 +46,21 @@ class Simulation(BasicSimulation):
                 w=settings.vertical_velocity,
                 z0=settings.z0,
             ),
+            dynamics=[
+                # TODO #1266: order matters here, but error message is not saying it!
+                AmbientThermodynamics(),
+                Condensation(),
+            ]
+            + (
+                []
+                if not gravitational_coalsecence
+                else [Coalescence(collision_kernel=Geometric())]
+            ),
         )
 
         additional_derived_attributes = ("radius", "equilibrium saturation")
         for additional_derived_attribute in additional_derived_attributes:
             builder.request_attribute(additional_derived_attribute)
-
-        builder.add_dynamic(
-            AmbientThermodynamics()
-        )  # TODO #1266: order matters here, but error message is not saying it!
-        builder.add_dynamic(Condensation())
-        if gravitational_coalsecence:
-            builder.add_dynamic(Coalescence(collision_kernel=Geometric()))
 
         self.r_dry, n_in_unit_volume = Logarithmic(
             spectrum=settings.dry_radii_spectrum,

@@ -32,10 +32,11 @@ class Simulation(BasicSimulation):
             backend=CPU(settings.formulae),
             n_sd=settings.n_sd,
             environment=environment,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+            ),
         )
-
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
 
         builder.request_attribute("radius")
 

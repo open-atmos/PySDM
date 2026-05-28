@@ -57,9 +57,15 @@ class TestParcelSanityChecks:
         output_interval = 2
         output_points = 20
 
-        builder = Builder(backend=backend_class(FORMULAE), n_sd=N_SD, environment=env)
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
+        builder = Builder(
+            backend=backend_class(FORMULAE),
+            n_sd=N_SD,
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+            ),
+        )
 
         r_wet = equilibrate_wet_radii(
             r_dry=R_DRY,
@@ -138,15 +144,20 @@ class TestParcelSanityChecks:
             T0=300 * si.K,
             w=1 * si.m / si.s,
         )
-        builder = Builder(n_sd=10, backend=backend_class(), environment=env)
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(
-            Condensation(
-                update_thd=update_thd,
-                substeps=substeps,
-                adaptive=False,
-            )
+        builder = Builder(
+            n_sd=10,
+            backend=backend_class(),
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(
+                    update_thd=update_thd,
+                    substeps=substeps,
+                    adaptive=False,
+                ),
+            ),
         )
+
         particulator = builder.build(
             products=(),
             attributes=builder.particulator.environment.init_attributes(
@@ -198,9 +209,15 @@ class TestParcelSanityChecks:
             T0=np.nan * si.K,
             w=np.nan * si.m / si.s,
         )
-        builder = Builder(n_sd=1, backend=backend_class(), environment=env)
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
+        builder = Builder(
+            n_sd=1,
+            backend=backend_class(),
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+            ),
+        )
 
         # act
         particulator = builder.build(

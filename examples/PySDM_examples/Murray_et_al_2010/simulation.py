@@ -136,10 +136,11 @@ def simulation(
         n_sd=n_sd,
         backend=CPU(formulae=formulae),
         environment=Box(dt=time_step, dv=volume),
+        dynamics=(
+            Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None),
+        ),
     )
-    builder.add_dynamic(
-        Freezing(homogeneous_freezing="time-dependent", immersion_freezing=None)
-    )
+
     builder.request_attribute("temperature of last freezing")
     builder.request_attribute("volume")
     droplet_volume = formulae.trivia.volume(radius=droplet_radius)
