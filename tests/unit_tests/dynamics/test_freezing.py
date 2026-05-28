@@ -53,7 +53,6 @@ class TestDropletFreezing:
             environment=Box(dt=1 * si.s, dv=1 * si.m**3),
         )
         builder.add_dynamic(
-            # Freezing(immersion_freezing="time-dependent", thaw="instantaneous")
             Freezing(
                 immersion_freezing=freezing_mode["immersion_freezing"],
                 homogeneous_freezing=freezing_mode["homogeneous_freezing"],
@@ -62,6 +61,7 @@ class TestDropletFreezing:
         )
         if record_freezing_temperature:
             builder.request_attribute("temperature of last freezing")
+            builder.request_attribute("supersaturation of last freezing")
         particulator = builder.build(
             attributes={
                 "multiplicity": np.asarray([1]),
@@ -75,41 +75,49 @@ class TestDropletFreezing:
         temp_3 = 220 * si.K
         particulator.environment["a_w_ice"] = np.nan
         particulator.environment["T"] = temp_2
+        particulator.environment["RH_ice"] = 0.9
 
         # act & assert
-        attr_name = "temperature of last freezing"
+        attr_names = (
+            "temperature of last freezing",
+            "supersaturation of last freezing",
+        )
         if not record_freezing_temperature:
-            assert attr_name not in particulator.attributes
+            for attr_name in attr_names:
+                assert attr_name not in particulator.attributes
         else:
             # never frozen yet
-            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            for attr_name in attr_names:
+                np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
 
             # still not frozen since RH not greater than 100%
             particulator.environment["RH"] = 1.0
             particulator.environment["RH_ice"] = 1.0
             particulator.run(steps=1)
-            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            for attr_name in attr_names:
+                np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
             assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
 
             # should freeze and record T1
             particulator.environment["RH"] += EPSILON_RH
-            particulator.environment["RH_ice"] += EPSILON_RH
+            particulator.environment["RH_ice"] = 1.1
             particulator.environment["T"] = temp_1
             particulator.run(steps=1)
             assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
-            assert all(particulator.attributes[attr_name].to_ndarray() == temp_1)
+            assert all(particulator.attributes[attr_names[0]].to_ndarray() == temp_1)
 
             # should thaw
             particulator.environment["T"] = 300 * si.K
             particulator.run(steps=1)
             assert all(particulator.attributes["signed water mass"].to_ndarray() > 0)
-            np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
+            for attr_name in attr_names:
+                np.isnan(particulator.attributes[attr_name].to_ndarray()).all()
 
             # should re-freeze and record T2
             particulator.environment["T"] = temp_3
             particulator.run(steps=1)
             assert all(particulator.attributes["signed water mass"].to_ndarray() < 0)
-            assert all(particulator.attributes[attr_name].to_ndarray() == temp_3)
+            assert all(particulator.attributes[attr_names[0]].to_ndarray() == temp_3)
 
     # TODO #599
     def test_no_subsaturated_freezing(self):
