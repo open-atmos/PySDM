@@ -247,30 +247,40 @@ def plot_thermodynamics_and_bulk(
     ax.grid(visible=True)
 
 
-def plot_freezing_temperatures_histogram(ax, simulation):
+def plot_freezing_temperatures_histogram(ax, simulation, plot_rhi=False):
 
     number_of_ensemble_runs = simulation["settings"]["number_of_ensemble_runs"]
 
     for i in range(number_of_ensemble_runs):
         output = simulation["ensemble_member_outputs"][i]
-        T_frz = np.asarray(output["T_frz"])
+        if plot_rhi:
+            var = np.asarray(output["RHi_frz"])
+            bins = np.linspace(1, 1.6, num=60, endpoint=True)
+            cumulative = 1
+        else:
+            var = np.asarray(output["T_frz"])
+            bins = T_frz_bins_kelvin
+            cumulative = -1
         title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
 
-        # Freezing temperatures
         ax.hist(
-            T_frz,
-            bins=T_frz_bins_kelvin,
+            var,
+            bins=bins,
             density=True,
-            cumulative=-1,
+            cumulative=cumulative,
             alpha=1.0,
             histtype="step",
             linewidth=1.5,
         )
 
-        ax.set_xlim(left=234, right=239)
-        ax.axvline(x=235, color="k", linestyle="--")
+        if plot_rhi:
+            ax.set_xlim(left=1.0, right=1.6)
+            ax.set_xlabel("freezing supersaturation wrt ice", fontsize=ax_lab_fsize)
+        else:
+            ax.set_xlim(left=234, right=239)
+            ax.axvline(x=235, color="k", linestyle="--")
+            ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
         ax.set_title(title, fontsize=ax_lab_fsize)
-        ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
         ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
         ax.tick_params(labelsize=tick_fsize)
     return ax

@@ -55,13 +55,15 @@ class TestDropletFreezing:
             n_sd=1,
             backend=backend_class(formulae=formulae),
             environment=Box(dt=1 * si.s, dv=1 * si.m**3),
-        )
-        builder.add_dynamic(
-            Freezing(
-                immersion_freezing=freezing_mode["immersion_freezing"],
-                homogeneous_freezing=freezing_mode["homogeneous_freezing"],
-                thaw="instantaneous",
-            )
+            dynamics=(
+                [
+                    Freezing(
+                        immersion_freezing=freezing_mode["immersion_freezing"],
+                        homogeneous_freezing=freezing_mode["homogeneous_freezing"],
+                        thaw="instantaneous",
+                    )
+                ]
+            ),
         )
         if record_freezing_temperature:
             for attr_name in attr_names:
