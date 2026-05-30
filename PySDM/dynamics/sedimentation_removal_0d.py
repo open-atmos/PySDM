@@ -6,7 +6,7 @@ from PySDM.dynamics.impl import register_dynamic
 
 
 @register_dynamic()
-class ParcelEnvironmentSedimentationRemoval:
+class SedimentationRemoval0D:
     def __init__(self, *, stochastic_sedimentation_removal: Optional[bool] = True):
         """stochastic or deterministic removal"""
         self.stochastic_sedimentation_removal = stochastic_sedimentation_removal

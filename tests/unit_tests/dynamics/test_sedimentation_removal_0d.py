@@ -2,7 +2,7 @@
 from matplotlib import pyplot
 import pytest
 import numpy as np
-from PySDM.dynamics import ParcelEnvironmentSedimentationRemoval
+from PySDM.dynamics import SedimentationRemoval0D
 from PySDM.physics import si
 from PySDM.environments import Box
 from PySDM import Builder
@@ -10,7 +10,7 @@ from PySDM.backends import ThrustRTC
 from PySDM.products import ParticleConcentration, SuperDropletCountPerGridbox, Time
 
 
-class TestSedimentationRemoval:  # pylint: disable=too-few-public-methods,too-many-branches,too-many-locals
+class TestSedimentationRemoval0D:  # pylint: disable=too-few-public-methods,too-many-branches,too-many-locals
     @staticmethod
     @pytest.mark.parametrize("stochastic", (True, False))
     def test_convergence_wrt_dt(backend_class, stochastic, plot=False):
@@ -32,11 +32,11 @@ class TestSedimentationRemoval:  # pylint: disable=too-few-public-methods,too-ma
                     n_sd=len(multiplicities),
                     environment=Box(dv=dv, dt=dt),
                     backend=backend_class(),
-                )
-                builder.add_dynamic(
-                    ParcelEnvironmentSedimentationRemoval(
-                        stochastic_sedimentation_removal=stochastic
-                    )
+                    dynamics=(
+                        SedimentationRemoval0D(
+                            stochastic_sedimentation_removal=stochastic
+                        ),
+                    ),
                 )
                 particulator = builder.build(
                     attributes={

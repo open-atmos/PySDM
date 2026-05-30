@@ -17,4 +17,4 @@ from PySDM.dynamics.freezing import Freezing
 from PySDM.dynamics.relaxed_velocity import RelaxedVelocity
 from PySDM.dynamics.seeding import Seeding
 from PySDM.dynamics.vapour_deposition_on_ice import VapourDepositionOnIce
-from PySDM.dynamics.sedimentation_removal import ParcelEnvironmentSedimentationRemoval
+from PySDM.dynamics.sedimentation_removal_0d import SedimentationRemoval0D

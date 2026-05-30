@@ -10,7 +10,7 @@ import numba
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
-class SedimentationRemovalMethods(BackendMethods):
+class SedimentationRemoval0DMethods(BackendMethods):
 
     @cached_property
     def _sedimentation_removal_deterministic_body(self):
