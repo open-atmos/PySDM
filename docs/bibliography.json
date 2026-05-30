@@ -1050,7 +1050,7 @@
   },
   "https://doi.org/10.1016/j.jcp.2016.06.029": {
     "usages": [
-      "PySDM/dynamics/sedimentation_removal.py"
+      "PySDM/dynamics/sedimentation_removal_0d.py"
     ],
     "label": "Curtis et al. 2016 (J. Comp. Phys. 322)",
     "title": "Accelerated simulation of stochastic particle removal processes in particle-resolved aerosol models"
