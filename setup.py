@@ -40,7 +40,7 @@ optional_dependencies = {
         "CURandRTC==0.1.7",
         "Pint==0.24.4",
         "chempy==0.10.1",
-        "pyevtk==1.6.0",
+        "pyevtk==1.7.0",
     ],
 }
 
