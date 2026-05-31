@@ -34,8 +34,9 @@ class Simulation:
             ),
             n_sd=n_sd,
             environment=env,
+            dynamics=(self.collision_dynamic,),
         )
-        builder.add_dynamic(self.collision_dynamic)
+
         particulator = builder.build(
             products=products,
             attributes={
