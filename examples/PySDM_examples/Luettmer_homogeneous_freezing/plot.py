@@ -16,10 +16,8 @@ T_frz_bins_kelvin = np.linspace(230, 240, num=100, endpoint=True)
 
 
 def cumulative_histogram(data, bins, reverse=False, density=True):
-    # Compute regular histogram using given bins
     hist, bin_edges = np.histogram(data, bins=bins, density=False)
 
-    # Cumulative sum
     if reverse:
         cum_hist = np.cumsum(hist[::-1])[::-1]
         cum_hist_0 = cum_hist[0]
@@ -27,7 +25,6 @@ def cumulative_histogram(data, bins, reverse=False, density=True):
         cum_hist = np.cumsum(hist)
         cum_hist_0 = cum_hist[-1]
 
-    # Normalize
     if density:
         cum_hist = cum_hist / cum_hist_0
 
@@ -56,8 +53,7 @@ def plot_thermodynamics_and_bulk(
     qv = np.asarray(output["qv"])
     T_frz = np.asarray(output["T_frz"])
     if show_conc:
-        nc = np.asarray(output["ns"])
-        ni = np.asarray(output["ni"])
+        nc, ni = np.asarray(output["ns"]), np.asarray(output["ni"])
 
     if t_lim is None:
         t_lim = np.amax(time)
@@ -67,8 +63,7 @@ def plot_thermodynamics_and_bulk(
     first_T_frz = T[first_ice_idx]
 
     if not show_tf:
-        rc = np.asarray(output["rs"])
-        ri = np.asarray(output["ri"])
+        rc, ri = np.asarray(output["rs"]), np.asarray(output["ri"])
 
     if show_jhom:
         svp = Formulae(
@@ -90,9 +85,7 @@ def plot_thermodynamics_and_bulk(
         radius = np.asarray(output["radius"])
         multiplicity = np.asarray(output["multiplicity"])
 
-    _, axs = pyplot.subplots(
-        1, 4, figsize=(20, 5), sharex=False, constrained_layout=True
-    )
+    _, axs = pyplot.subplots(1, 4, figsize=(20, 5), constrained_layout=True)
 
     # Temperture profile
     iax = 0
@@ -247,30 +240,40 @@ def plot_thermodynamics_and_bulk(
     ax.grid(visible=True)
 
 
-def plot_freezing_temperatures_histogram(ax, simulation):
+def plot_freezing_temperatures_histogram(ax, simulation, plot_rhi=False):
 
     number_of_ensemble_runs = simulation["settings"]["number_of_ensemble_runs"]
 
     for i in range(number_of_ensemble_runs):
         output = simulation["ensemble_member_outputs"][i]
-        T_frz = np.asarray(output["T_frz"])
+        if plot_rhi:
+            var = np.asarray(output["RHi_frz"])
+            bins = np.linspace(1, 1.6, num=60, endpoint=True)
+            cumulative = 1
+        else:
+            var = np.asarray(output["T_frz"])
+            bins = T_frz_bins_kelvin
+            cumulative = -1
         title = "Nucleation rate=" + simulation["settings"]["hom_freezing"]
 
-        # Freezing temperatures
         ax.hist(
-            T_frz,
-            bins=T_frz_bins_kelvin,
+            var,
+            bins=bins,
             density=True,
-            cumulative=-1,
+            cumulative=cumulative,
             alpha=1.0,
             histtype="step",
             linewidth=1.5,
         )
 
-        ax.set_xlim(left=234, right=239)
-        ax.axvline(x=235, color="k", linestyle="--")
+        if plot_rhi:
+            ax.set_xlim(left=1.0, right=1.6)
+            ax.set_xlabel("freezing supersaturation wrt ice", fontsize=ax_lab_fsize)
+        else:
+            ax.set_xlim(left=234, right=239)
+            ax.axvline(x=235, color="k", linestyle="--")
+            ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
         ax.set_title(title, fontsize=ax_lab_fsize)
-        ax.set_xlabel("freezing temperature [K]", fontsize=ax_lab_fsize)
         ax.set_ylabel("frozen fraction", fontsize=ax_lab_fsize)
         ax.tick_params(labelsize=tick_fsize)
     return ax
