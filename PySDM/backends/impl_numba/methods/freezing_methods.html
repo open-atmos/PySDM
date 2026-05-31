@@ -89,6 +89,9 @@
                         <li>
                                 <a class="function" href="#FreezingMethods.record_freezing_temperatures">record_freezing_temperatures</a>
                         </li>
+                        <li>
+                                <a class="function" href="#FreezingMethods.record_freezing_supersaturations">record_freezing_supersaturations</a>
+                        </li>
                 </ul>
 
             </li>
@@ -417,6 +420,32 @@ heterogeneous freezing (singular and time-dependent immersion freezing)</p>
 </span><span id="L-299"><a href="#L-299"><span class="linenos">299</span></a>            <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="L-300"><a href="#L-300"><span class="linenos">300</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="L-301"><a href="#L-301"><span class="linenos">301</span></a>        <span class="p">)</span>
+</span><span id="L-302"><a href="#L-302"><span class="linenos">302</span></a>
+</span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a>    <span class="nd">@cached_property</span>
+</span><span id="L-304"><a href="#L-304"><span class="linenos">304</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_record_freezing_supersaturations_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="L-305"><a href="#L-305"><span class="linenos">305</span></a>        <span class="n">ff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae_flattened</span>
+</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a>
+</span><span id="L-307"><a href="#L-307"><span class="linenos">307</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">,</span> <span class="s2">&quot;fastmath&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+</span><span id="L-308"><a href="#L-308"><span class="linenos">308</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">):</span>
+</span><span id="L-309"><a href="#L-309"><span class="linenos">309</span></a>            <span class="k">for</span> <span class="n">drop_id</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
+</span><span id="L-310"><a href="#L-310"><span class="linenos">310</span></a>                <span class="k">if</span> <span class="n">ff</span><span class="o">.</span><span class="n">trivia__unfrozen</span><span class="p">(</span><span class="n">signed_water_mass</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]):</span>
+</span><span id="L-311"><a href="#L-311"><span class="linenos">311</span></a>                    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-312"><a href="#L-312"><span class="linenos">312</span></a>                        <span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</span><span id="L-313"><a href="#L-313"><span class="linenos">313</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="L-314"><a href="#L-314"><span class="linenos">314</span></a>                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]):</span>
+</span><span id="L-315"><a href="#L-315"><span class="linenos">315</span></a>                        <span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">relative_humidity_ice</span><span class="p">[</span><span class="n">cell_id</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]]</span>
+</span><span id="L-316"><a href="#L-316"><span class="linenos">316</span></a>
+</span><span id="L-317"><a href="#L-317"><span class="linenos">317</span></a>        <span class="k">return</span> <span class="n">body</span>
+</span><span id="L-318"><a href="#L-318"><span class="linenos">318</span></a>
+</span><span id="L-319"><a href="#L-319"><span class="linenos">319</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">record_freezing_supersaturations</span><span class="p">(</span>
+</span><span id="L-320"><a href="#L-320"><span class="linenos">320</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">,</span> <span class="n">signed_water_mass</span>
+</span><span id="L-321"><a href="#L-321"><span class="linenos">321</span></a>    <span class="p">):</span>
+</span><span id="L-322"><a href="#L-322"><span class="linenos">322</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_record_freezing_supersaturations_body</span><span class="p">(</span>
+</span><span id="L-323"><a href="#L-323"><span class="linenos">323</span></a>            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-324"><a href="#L-324"><span class="linenos">324</span></a>            <span class="n">cell_id</span><span class="o">=</span><span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-325"><a href="#L-325"><span class="linenos">325</span></a>            <span class="n">relative_humidity_ice</span><span class="o">=</span><span class="n">relative_humidity_ice</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-326"><a href="#L-326"><span class="linenos">326</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-327"><a href="#L-327"><span class="linenos">327</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -713,6 +742,32 @@ heterogeneous freezing (singular and time-dependent immersion freezing)</p>
 </span><span id="FreezingMethods-300"><a href="#FreezingMethods-300"><span class="linenos">300</span></a>            <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="FreezingMethods-301"><a href="#FreezingMethods-301"><span class="linenos">301</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="FreezingMethods-302"><a href="#FreezingMethods-302"><span class="linenos">302</span></a>        <span class="p">)</span>
+</span><span id="FreezingMethods-303"><a href="#FreezingMethods-303"><span class="linenos">303</span></a>
+</span><span id="FreezingMethods-304"><a href="#FreezingMethods-304"><span class="linenos">304</span></a>    <span class="nd">@cached_property</span>
+</span><span id="FreezingMethods-305"><a href="#FreezingMethods-305"><span class="linenos">305</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_record_freezing_supersaturations_body</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="FreezingMethods-306"><a href="#FreezingMethods-306"><span class="linenos">306</span></a>        <span class="n">ff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formulae_flattened</span>
+</span><span id="FreezingMethods-307"><a href="#FreezingMethods-307"><span class="linenos">307</span></a>
+</span><span id="FreezingMethods-308"><a href="#FreezingMethods-308"><span class="linenos">308</span></a>        <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">default_jit_flags</span><span class="p">,</span> <span class="s2">&quot;fastmath&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+</span><span id="FreezingMethods-309"><a href="#FreezingMethods-309"><span class="linenos">309</span></a>        <span class="k">def</span><span class="w"> </span><span class="nf">body</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">,</span> <span class="n">signed_water_mass</span><span class="p">):</span>
+</span><span id="FreezingMethods-310"><a href="#FreezingMethods-310"><span class="linenos">310</span></a>            <span class="k">for</span> <span class="n">drop_id</span> <span class="ow">in</span> <span class="n">numba</span><span class="o">.</span><span class="n">prange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>  <span class="c1"># pylint: disable=not-an-iterable</span>
+</span><span id="FreezingMethods-311"><a href="#FreezingMethods-311"><span class="linenos">311</span></a>                <span class="k">if</span> <span class="n">ff</span><span class="o">.</span><span class="n">trivia__unfrozen</span><span class="p">(</span><span class="n">signed_water_mass</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]):</span>
+</span><span id="FreezingMethods-312"><a href="#FreezingMethods-312"><span class="linenos">312</span></a>                    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="FreezingMethods-313"><a href="#FreezingMethods-313"><span class="linenos">313</span></a>                        <span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+</span><span id="FreezingMethods-314"><a href="#FreezingMethods-314"><span class="linenos">314</span></a>                <span class="k">else</span><span class="p">:</span>
+</span><span id="FreezingMethods-315"><a href="#FreezingMethods-315"><span class="linenos">315</span></a>                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]):</span>
+</span><span id="FreezingMethods-316"><a href="#FreezingMethods-316"><span class="linenos">316</span></a>                        <span class="n">data</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">relative_humidity_ice</span><span class="p">[</span><span class="n">cell_id</span><span class="p">[</span><span class="n">drop_id</span><span class="p">]]</span>
+</span><span id="FreezingMethods-317"><a href="#FreezingMethods-317"><span class="linenos">317</span></a>
+</span><span id="FreezingMethods-318"><a href="#FreezingMethods-318"><span class="linenos">318</span></a>        <span class="k">return</span> <span class="n">body</span>
+</span><span id="FreezingMethods-319"><a href="#FreezingMethods-319"><span class="linenos">319</span></a>
+</span><span id="FreezingMethods-320"><a href="#FreezingMethods-320"><span class="linenos">320</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">record_freezing_supersaturations</span><span class="p">(</span>
+</span><span id="FreezingMethods-321"><a href="#FreezingMethods-321"><span class="linenos">321</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">,</span> <span class="n">signed_water_mass</span>
+</span><span id="FreezingMethods-322"><a href="#FreezingMethods-322"><span class="linenos">322</span></a>    <span class="p">):</span>
+</span><span id="FreezingMethods-323"><a href="#FreezingMethods-323"><span class="linenos">323</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_record_freezing_supersaturations_body</span><span class="p">(</span>
+</span><span id="FreezingMethods-324"><a href="#FreezingMethods-324"><span class="linenos">324</span></a>            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods-325"><a href="#FreezingMethods-325"><span class="linenos">325</span></a>            <span class="n">cell_id</span><span class="o">=</span><span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods-326"><a href="#FreezingMethods-326"><span class="linenos">326</span></a>            <span class="n">relative_humidity_ice</span><span class="o">=</span><span class="n">relative_humidity_ice</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods-327"><a href="#FreezingMethods-327"><span class="linenos">327</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods-328"><a href="#FreezingMethods-328"><span class="linenos">328</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -909,6 +964,32 @@ heterogeneous freezing (singular and time-dependent immersion freezing)</p>
 </span><span id="FreezingMethods.record_freezing_temperatures-300"><a href="#FreezingMethods.record_freezing_temperatures-300"><span class="linenos">300</span></a>            <span class="n">temperature</span><span class="o">=</span><span class="n">temperature</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="FreezingMethods.record_freezing_temperatures-301"><a href="#FreezingMethods.record_freezing_temperatures-301"><span class="linenos">301</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
 </span><span id="FreezingMethods.record_freezing_temperatures-302"><a href="#FreezingMethods.record_freezing_temperatures-302"><span class="linenos">302</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="FreezingMethods.record_freezing_supersaturations" class="classattr">
+                                        <input id="FreezingMethods.record_freezing_supersaturations-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">record_freezing_supersaturations</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">data</span>, </span><span class="param"><span class="n">cell_id</span>, </span><span class="param"><span class="n">relative_humidity_ice</span>, </span><span class="param"><span class="n">signed_water_mass</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="FreezingMethods.record_freezing_supersaturations-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#FreezingMethods.record_freezing_supersaturations"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="FreezingMethods.record_freezing_supersaturations-320"><a href="#FreezingMethods.record_freezing_supersaturations-320"><span class="linenos">320</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">record_freezing_supersaturations</span><span class="p">(</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-321"><a href="#FreezingMethods.record_freezing_supersaturations-321"><span class="linenos">321</span></a>        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">cell_id</span><span class="p">,</span> <span class="n">relative_humidity_ice</span><span class="p">,</span> <span class="n">signed_water_mass</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-322"><a href="#FreezingMethods.record_freezing_supersaturations-322"><span class="linenos">322</span></a>    <span class="p">):</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-323"><a href="#FreezingMethods.record_freezing_supersaturations-323"><span class="linenos">323</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">_record_freezing_supersaturations_body</span><span class="p">(</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-324"><a href="#FreezingMethods.record_freezing_supersaturations-324"><span class="linenos">324</span></a>            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-325"><a href="#FreezingMethods.record_freezing_supersaturations-325"><span class="linenos">325</span></a>            <span class="n">cell_id</span><span class="o">=</span><span class="n">cell_id</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-326"><a href="#FreezingMethods.record_freezing_supersaturations-326"><span class="linenos">326</span></a>            <span class="n">relative_humidity_ice</span><span class="o">=</span><span class="n">relative_humidity_ice</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-327"><a href="#FreezingMethods.record_freezing_supersaturations-327"><span class="linenos">327</span></a>            <span class="n">signed_water_mass</span><span class="o">=</span><span class="n">signed_water_mass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="FreezingMethods.record_freezing_supersaturations-328"><a href="#FreezingMethods.record_freezing_supersaturations-328"><span class="linenos">328</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
