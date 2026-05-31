@@ -14,9 +14,6 @@ fig_5.ipynb:
 fig_6_7_8.ipynb:
 .. include:: ./fig_6_7_8.ipynb.badges.md
 
-fig_10.ipynb:
-.. include:: ./fig_10.ipynb.badges.md
-
 fig_A1.ipynb:
 .. include:: ./fig_A1.ipynb.badges.md
 
