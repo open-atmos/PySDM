@@ -81,8 +81,8 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
                 fill_array_with_thread_id(arr := np.full(numba.get_num_threads(), -1))
                 if not max(arr) == arr[-1] == numba.get_num_threads() - 1:
                     raise ValueError(
-                        "Numba threading enabled but does not work"
-                        " (try other setting of the NUMBA_THREADING_LAYER env var?)"
+                        "Numba threading enabled but does not work as expected"
+                        " (try setting the NUMBA_THREADING_LAYER env var to 'workqueue')"
                     )
 
         assert "fastmath" not in (override_jit_flags or {})

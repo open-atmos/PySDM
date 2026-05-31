@@ -75,9 +75,11 @@ def make_particulator(
                 diffusion_ice_capacity=diffusion_ice_capacity,
             ),
         ),
+        dynamics=(
+            AmbientThermodynamics(),
+            VapourDepositionOnIce(adaptive=adaptive),
+        ),
     )
-    builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(VapourDepositionOnIce(adaptive=adaptive))
     particulator = builder.build(
         attributes={
             "multiplicity": np.full(

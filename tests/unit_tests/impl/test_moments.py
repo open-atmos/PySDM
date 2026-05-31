@@ -19,7 +19,7 @@ class TestMaths:
         n_sd = 32
 
         spectrum = Lognormal(n_part, v_mean, d)
-        v, n = Linear(spectrum).sample(n_sd)
+        v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)
@@ -80,7 +80,7 @@ class TestMaths:
         n_sd = 32
 
         spectrum = Lognormal(n_part, v_mean, d)
-        v, n = Linear(spectrum).sample(n_sd)
+        v, n = Linear(spectrum).sample_deterministic(n_sd)
         T = 300.0
         n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)

@@ -64,11 +64,10 @@ class TestFallVelocity:
             n_sd=len(default_attributes["multiplicity"]),
             backend=backend_instance,
             environment=env,
+            # needed to use relative fall velocity instead of terminal
+            # velocity behind the scenes
+            dynamics=(RelaxedVelocity(),),
         )
-
-        # needed to use relative fall velocity instead of terminal
-        # velocity behind the scenes
-        builder.add_dynamic(RelaxedVelocity())
 
         builder.request_attribute("relative fall velocity")
 
@@ -90,16 +89,15 @@ class TestFallVelocity:
             n_sd=len(default_attributes["multiplicity"]),
             backend=backend_instance,
             environment=env,
+            dynamics=(
+                RelaxedVelocity(),
+                Coalescence(collision_kernel=ConstantK(a=1), adaptive=False),
+            ),
         )
 
         # add and remove relaxed velocity to prevent warning
-        builder.add_dynamic(RelaxedVelocity())
 
         builder.request_attribute("relative fall momentum")
-
-        builder.add_dynamic(
-            Coalescence(collision_kernel=ConstantK(a=1), adaptive=False)
-        )
 
         particulator = builder.build(attributes=default_attributes, products=())
 
@@ -145,8 +143,13 @@ class TestFallVelocity:
             builder_no_relax.req_attr["relative fall velocity"], TerminalVelocity
         )
         env = Box(dt=1, dv=1)
-        builder = Builder(n_sd=1, backend=backend_instance, environment=env)
-        builder.add_dynamic(RelaxedVelocity())
+        builder = Builder(
+            n_sd=1,
+            backend=backend_instance,
+            environment=env,
+            dynamics=(RelaxedVelocity(),),
+        )
+
         builder.request_attribute("relative fall velocity")
         _ = builder.build(
             attributes={

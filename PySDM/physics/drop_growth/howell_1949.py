@@ -34,7 +34,8 @@ class Howell1949(Fick):  # pylint: disable=too-few-public-methods
         Parameters
         ----------
         Fk
-            Thermodynamic term associated with heat conduction from Rogers & Yau 1989.
+            Thermodynamic term associated with heat conduction from
+            [Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).
         Fd
             Term associated with vapour diffusion.
         """

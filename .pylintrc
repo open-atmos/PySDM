@@ -1,0 +1,8 @@
+[DESIGN]
+max-positional-arguments=7
+max-args=20
+
+[OPTIONS]
+# TODO #682
+disable=
+    possibly-used-before-assignment #used-before-assignment still active

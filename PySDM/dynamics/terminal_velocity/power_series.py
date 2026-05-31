@@ -1,7 +1,8 @@
 """
 Power series expression - a simple and mutable power-law (where the coefficients are specified
 by the user), which is a form used in many more complex terminal velocity parameterizations
-such as Rogers & Yau. This formulation emerges from balancing drag and gravitational forces on
+such as [Rogers & Yau 1989](https://archive.org/details/shortcourseinclo0000roge_m3k2).
+This formulation emerges from balancing drag and gravitational forces on
 a spherical object, and the power depends on the drag coefficient (and thus the Reynolds number
 and flow regime). Rogers and Yau distinguishes different power law parameters for three regimes,
 whereas this much simpler formulation applies across the full range of particle sizes.

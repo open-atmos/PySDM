@@ -26,34 +26,32 @@ class Simulation:
             dt=dt_output / self.n_substeps,
             mass_of_dry_air=settings.mass_of_dry_air,
             p0=settings.p0,
-            initial_water_vapour_mixing_ratio=self.formulae.constants.eps
-            / (
-                settings.p0
-                / settings.RH0
-                / self.formulae.saturation_vapour_pressure.pvs_water(settings.T0)
-                - 1
-            ),
+            initial_relative_humidity=settings.RH0,
             T0=settings.T0,
             w=settings.w,
             z0=settings.z0,
         )
-        builder = Builder(
-            backend=backend(
-                formulae=self.formulae, override_jit_flags={"parallel": False}
-            ),
-            n_sd=settings.n_sd,
-            environment=env,
-        )
 
-        environment = builder.particulator.environment
-        builder.add_dynamic(AmbientThermodynamics())
         condensation = Condensation(
             adaptive=settings.adaptive,
             rtol_x=settings.rtol_x,
             rtol_thd=settings.rtol_thd,
             dt_cond_range=settings.dt_cond_range,
         )
-        builder.add_dynamic(condensation)
+
+        builder = Builder(
+            backend=backend(
+                formulae=self.formulae, override_jit_flags={"parallel": False}
+            ),
+            n_sd=settings.n_sd,
+            environment=env,
+            dynamics=(
+                AmbientThermodynamics(),
+                condensation,
+            ),
+        )
+
+        environment = builder.particulator.environment
 
         products = [
             PySDM_products.ParticleSizeSpectrumPerVolume(
@@ -84,10 +82,10 @@ class Simulation:
         _sp = self.particulator
         cell_id = 0
         output["r_bins_values"].append(
-            _sp.products["Particles Wet Size Spectrum"].get()
+            (_sp.products["Particles Wet Size Spectrum"].get()).T
         )
         volume = _sp.attributes["volume"].to_ndarray()
-        output["r"].append(self.formulae.trivia.radius(volume=volume))
+        output["r"].append((self.formulae.trivia.radius(volume=volume)).T)
         output["S"].append(_sp.environment["RH"][cell_id] - 1)
         output["t"].append(_sp.products["t"].get())
         for key in ("water_vapour_mixing_ratio", "T", "z"):
@@ -124,4 +122,6 @@ class Simulation:
         for _ in range(self.n_steps):
             self.particulator.run(self.n_substeps)
             self.save(output)
+        for k, v in output.items():
+            output[k] = np.asarray(v)
         return output

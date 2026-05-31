@@ -59,8 +59,8 @@ class TestSDMBreakup:
             n_sd,
             backend_class(Formulae(fragmentation_function="AlwaysN")),
             environment=env,
+            dynamics=(breakup,),
         )
-        builder.add_dynamic(breakup)
         particulator = builder.build(attributes=attributes, products=())
 
         # Act
@@ -98,7 +98,7 @@ class TestSDMBreakup:
         # Arrange
         backend = backend_instance
         n_sd = 2
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend, environment=env)
         n_init = [6, 6]
         particulator = builder.build(
@@ -178,7 +178,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
@@ -347,7 +347,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend_class(double_precision=True), environment=env)
         particulator = builder.build(
             attributes={
@@ -467,7 +467,7 @@ class TestSDMBreakup:
         def run_simulation(_n_times, _gamma):
             n_init = params["n_init"]
             n_sd = len(n_init)
-            env = Box(dv=np.NaN, dt=np.NaN)
+            env = Box(dv=np.nan, dt=np.nan)
             builder = Builder(n_sd, backend_class(), environment=env)
             particulator = builder.build(
                 attributes={
@@ -546,7 +546,7 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend, environment=env)
         particulator = builder.build(
             attributes={
@@ -615,7 +615,7 @@ class TestSDMBreakup:
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend, environment=env)
         particulator = builder.build(
             attributes={
@@ -713,7 +713,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(n_sd, backend_instance, environment=env)
         particulator = builder.build(
             attributes={
@@ -793,7 +793,6 @@ class TestSDMBreakup:
         dv = 1 * si.m**3
         dt = 1 * si.s
         env = Box(dv=dv, dt=dt)
-        builder = Builder(n_sd=n_sd, backend=backend, environment=env)
 
         norm_factor = 100 / si.cm**3 * si.m**3
         X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
@@ -801,7 +800,7 @@ class TestSDMBreakup:
         attributes = {}
         attributes["volume"], attributes["multiplicity"] = ConstantMultiplicity(
             spectrum
-        ).sample(n_sd)
+        ).sample_deterministic(n_sd)
 
         mu = Trivia.volume(const, radius=100 * si.um)
         fragmentation = breakup_fragmentations.Exponential(scale=mu)
@@ -815,7 +814,9 @@ class TestSDMBreakup:
             fragmentation_function=fragmentation,
             warn_overflows=False,
         )
-        builder.add_dynamic(breakup)
+        builder = Builder(
+            n_sd=n_sd, backend=backend, environment=env, dynamics=(breakup,)
+        )
 
         radius_bins_edges = np.logspace(
             np.log10(0.01 * si.um), np.log10(5000 * si.um), num=64, endpoint=True
@@ -866,7 +867,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        env = Box(dv=np.NaN, dt=np.NaN)
+        env = Box(dv=np.nan, dt=np.nan)
         builder = Builder(
             n_sd, backend_class(Formulae(handle_all_breakups=True)), environment=env
         )

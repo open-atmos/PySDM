@@ -95,7 +95,15 @@ def _solve_equilibrium_radii(
         return radii_out
 
     iters = np.empty_like(radii_in, dtype=int)
-    radii_out = impl(radii_in, iters, T, RH, cell_id, kappa, f_org)
+    radii_out = impl(
+        radii_in,
+        iters,
+        T,
+        RH,
+        cell_id,
+        kappa,
+        f_org,
+    )
     assert (iters != max_iters).all() and (iters != -1).all()
     return radii_out
 
@@ -145,6 +153,7 @@ def equilibrate_dry_radii(
         rtol=rtol,
         max_iters=max_iters,
         skip_fa_lt_zero=False,
+        RH_range=(0, 1),
     )
 
 
@@ -195,4 +204,5 @@ def equilibrate_wet_radii(
         rtol=rtol,
         max_iters=max_iters,
         skip_fa_lt_zero=True,
+        RH_range=(0, 1),
     )

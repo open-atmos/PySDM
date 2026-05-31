@@ -63,8 +63,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "n_cell",
             ),
             "fake_i",
-            self.commons
-            + """
+            self.commons + """
             auto i = idx[fake_i];
             if (min_x <= x_attr[i] && x_attr[i] < max_x) {
                 atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(multiplicity[i]));
@@ -76,9 +75,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], value);
                }
             }
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
@@ -116,8 +113,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                 "n_cell",
             ),
             "fake_i",
-            self.commons
-            + """
+            self.commons + """
             auto i = idx[fake_i];
             for (auto k = 0; k < n_bins; k+=1) {
                 if (x_bins[k] <= x_attr[i] and x_attr[i] < x_bins[k + 1]) {
@@ -130,9 +126,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     break;
                 }
             }
-        """.replace(
-                "real_type", self._get_c_type()
-            ),
+        """.replace("real_type", self._get_c_type()),
         )
 
     @cached_property
