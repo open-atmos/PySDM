@@ -25,6 +25,17 @@ class Simulation(BasicSimulation):
                 T0=settings.T0,
                 w=settings.w,
             ),
+            dynamics=(
+                AmbientThermodynamics(),
+                Condensation(),
+                AqueousChemistry(
+                    environment_mole_fractions=settings.ENVIRONMENT_MOLE_FRACTIONS,
+                    system_type=settings.system_type,
+                    n_substep=settings.n_substep,
+                    dry_rho=settings.DRY_RHO,
+                    dry_molar_mass=settings.dry_molar_mass,
+                ),
+            ),
         )
 
         attributes = builder.particulator.environment.init_attributes(
@@ -37,18 +48,6 @@ class Simulation(BasicSimulation):
             **attributes,
             **settings.starting_amounts,
         }
-
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
-        builder.add_dynamic(
-            AqueousChemistry(
-                environment_mole_fractions=settings.ENVIRONMENT_MOLE_FRACTIONS,
-                system_type=settings.system_type,
-                n_substep=settings.n_substep,
-                dry_rho=settings.DRY_RHO,
-                dry_molar_mass=settings.dry_molar_mass,
-            )
-        )
 
         products = products or (
             PySDM_products.AmbientRelativeHumidity(name="RH", unit="%"),

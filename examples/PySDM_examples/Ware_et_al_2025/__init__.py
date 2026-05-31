@@ -17,6 +17,9 @@ fig_6_7_8.ipynb:
 fig_10.ipynb:
 .. include:: ./fig_10.ipynb.badges.md
 
+fig_A1.ipynb:
+.. include:: ./fig_A1.ipynb.badges.md
+
 """
 
 # pylint: disable=invalid-name
