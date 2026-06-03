@@ -61,7 +61,7 @@ class Builder:
         self._resolve_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute_name):
+    def _request_attribute(self, attribute_name):
         """can be called either before or during build()"""
         if self.req_attr_names is not None:
             self.req_attr_names.append(attribute_name)
@@ -73,6 +73,7 @@ class Builder:
         attributes: dict,
         products: tuple = (),
         int_caster=discretise_multiplicities,
+        req_attr_names: tuple = (),
     ):
         assert self.particulator.environment is not None
 
@@ -86,7 +87,7 @@ class Builder:
                     attributes.pop("volume")
                 )
             )
-            self.request_attribute("volume")
+            self._request_attribute("volume")
 
         if (
             "water mass" in attributes
@@ -94,7 +95,10 @@ class Builder:
             and not self.particulator.formulae.particle_shape_and_density.supports_mixed_phase()
         ):
             attributes["signed water mass"] = attributes.pop("water mass")
-            self.request_attribute("water mass")
+            self._request_attribute("water mass")
+
+        for name in req_attr_names:
+            self._request_attribute(name)
 
         self.req_attr = {}
         for attr_name in self.req_attr_names:
@@ -109,7 +113,7 @@ class Builder:
             self._register_product(product, single_buffer_for_all_products)
 
         for attribute in attributes:
-            self.request_attribute(attribute)
+            self._request_attribute(attribute)
         if "Condensation" in self.particulator.dynamics:
             self.particulator.condensation_solver = (
                 self.particulator.backend.make_condensation_solver(
