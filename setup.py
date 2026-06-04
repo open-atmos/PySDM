@@ -1,6 +1,5 @@
 # pylint:disable=missing-module-docstring
 import os
-import sys
 
 from setuptools import setup
 
@@ -10,25 +9,12 @@ dependencies = [
     "ThrustRTC>=0.3.20",
     "CURandRTC>=0.1.2",
     "numba>=0.51.2",
-    # TODO #1344: (numpy 2.0.0 incompatibility in https://github.com/bjodah/chempy/issues/234)
-    "numpy"
-    + (
-        {
-            8: "==1.24.4",
-            9: "==1.24.4",
-            10: "==1.24.4",
-            11: "==1.24.4",
-            12: "==1.26.4",
-            13: "==1.26.4",
-        }[sys.version_info.minor]
-        if CI
-        else ""
-    ),
+    "numpy",
     "Pint",
     "chempy",
-    "scipy" + ("=" if CI else ">") + "=1.15.0",  # needed for scipy.optimize.elementwise
+    "scipy>=1.15.0",  # needed for scipy.optimize.elementwise
     "pyevtk",
-    "pyparsing" + ("==3.2.5" if CI else ""),
+    "pyparsing",
 ]
 
 optional_dependencies = {
@@ -37,10 +23,13 @@ optional_dependencies = {
     "CI_version_pins": [
         "PyPartMC==2.0.7",
         "numba==0.60.0",
+        "numpy==1.26.4",
+        "scipy==1.15.0",
         "CURandRTC==0.1.7",
         "Pint==0.24.4",
         "chempy==0.10.1",
         "pyevtk==1.7.0",
+        "pyparsing==3.2.5",
     ],
 }
 
