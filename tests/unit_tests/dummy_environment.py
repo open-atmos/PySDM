@@ -24,7 +24,7 @@ class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
         else:
             if size is None:
                 size = tuple(1 for _ in range(len(grid)))
-            self.mesh = Mesh(grid, size)
+            self.mesh = Mesh(grid=grid, size=size)
             if halo is not None:
                 self.halo = halo
                 self.water_vapour_mixing_ratio = np.empty(

@@ -17,7 +17,8 @@ class Settings:
         dt: float,
         n_sd: int,
         n_substep: int,
-        spectral_sampling: spec_sampling.SpectralSampling = spec_sampling.Logarithmic,
+        spectral_sampling_class: spec_sampling.SpectralSampling = spec_sampling.Logarithmic,
+        spectral_sampling_method: str = "sample_deterministic",
     ):
         self.formulae = Formulae(
             saturation_vapour_pressure="AugustRocheMagnus",
@@ -51,13 +52,16 @@ class Settings:
         # note: rho is not specified in the paper
         rho0 = 1
 
-        self.r_dry, self.n_in_dv = spectral_sampling(
-            spectrum=spectra.Lognormal(
-                norm_factor=566 / si.cm**3 / rho0 * self.mass_of_dry_air,
-                m_mode=0.08 * si.um / 2,
-                s_geom=2,
-            )
-        ).sample(n_sd)
+        self.r_dry, self.n_in_dv = getattr(
+            spectral_sampling_class(
+                spectrum=spectra.Lognormal(
+                    norm_factor=566 / si.cm**3 / rho0 * self.mass_of_dry_air,
+                    m_mode=0.08 * si.um / 2,
+                    s_geom=2,
+                )
+            ),
+            spectral_sampling_method,
+        )(n_sd)
 
         self.ENVIRONMENT_MOLE_FRACTIONS = {
             "SO2": 0.2 * PPB,

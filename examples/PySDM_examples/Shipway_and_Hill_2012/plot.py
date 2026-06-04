@@ -6,7 +6,7 @@ from PySDM.physics import convert_to, si
 
 
 def plot(
-    var, qlabel, fname, output, vmin=None, vmax=None, cmin=None, cmax=None, line=None,colors=None,
+    var, qlabel, fname, output, *, vmin=None, vmax=None, cmin=None, cmax=None, line=None, colors=None,
 ):
     line = line or {15: ":", 20: "--", 25: "-", 30: "-."}
     colors = colors or {15: 'k', 20: 'tab:blue', 25: 'tab:orange', 30: 'tab:green'}
@@ -61,6 +61,7 @@ def plot_plusminus(
     qlabel,
     fname,
     output,
+    *,
     vmin=None,
     vmax=None,
     line=None,

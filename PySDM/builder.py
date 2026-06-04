@@ -3,7 +3,6 @@ The Builder class handling creation of  `PySDM.particulator.Particulator` instan
 """
 
 import inspect
-import warnings
 
 import numpy as np
 
@@ -17,15 +16,8 @@ from PySDM.particulator import Particulator
 from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSpheres
 
 
-def _warn_env_as_ctor_arg():
-    warnings.warn(
-        "PySDM > v2.31 Builder expects environment instance as argument",
-        DeprecationWarning,
-    )
-
-
 class Builder:
-    def __init__(self, n_sd, backend, environment=None):
+    def __init__(self, n_sd, backend, environment=None, dynamics=None):
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
@@ -33,25 +25,15 @@ class Builder:
         self.req_attr = None
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
-
-        if environment is None:
-            _warn_env_as_ctor_arg()
-        else:
-            self._set_environment(environment)
+        self.particulator.environment = environment.instantiate(builder=self)
+        if dynamics is not None:
+            for dynamic in dynamics:
+                self._register_dynamic(dynamic)
 
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
-    def set_environment(self, environment):
-        _warn_env_as_ctor_arg()
-        self._set_environment(environment)
-
-    def _set_environment(self, environment):
-        if self.particulator.environment is not None:
-            raise AssertionError("environment has already been set")
-        self.particulator.environment = environment.instantiate(builder=self)
-
-    def add_dynamic(self, dynamic):
+    def _register_dynamic(self, dynamic):
         assert self.particulator.environment is not None
         key = inspect.getmro(type(dynamic))[-2].__name__
         assert key not in self.particulator.dynamics
@@ -93,14 +75,6 @@ class Builder:
         int_caster=discretise_multiplicities,
     ):
         assert self.particulator.environment is not None
-
-        if "n" in attributes and "multiplicity" not in attributes:
-            attributes["multiplicity"] = attributes["n"]
-            del attributes["n"]
-            warnings.warn(
-                'renaming attributes["n"] to attributes["multiplicity"]',
-                DeprecationWarning,
-            )
 
         if "volume" in attributes and "water mass" not in attributes:
             assert self.particulator.formulae.particle_shape_and_density.__name__ in (
