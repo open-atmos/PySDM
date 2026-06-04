@@ -1,0 +1,40 @@
+import numpy as np
+from PySDM.physics import si
+from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
+from PySDM.initialisation.spectra import Gamma
+
+
+class Settings:  # pylint: disable=too-many-instance-attributes,too-few-public-methods,missing-class-docstring,too-many-positional-arguments
+    def __init__(
+        self,
+        kernel: object,
+        output_interval: float,
+        n_part: float,
+        radius_bins_edges: np.ndarray,
+        t_max: float,
+        n_sd: int,
+        dt=1 * si.s,
+        L=1e-6 * si.cm**3 / si.cm**3,  # total volumetric liquid water content
+    ):
+        self.kernel = kernel
+        self.n_sd = n_sd
+        self.n_part = n_part
+        self.dv = 1 * si.m**3
+        self.rho = 1000 * si.kg / si.m**3
+        self.rhod = 1 * si.kg / si.m**3
+        self.dt = dt
+        self.adaptive = True
+        self.output_interval = output_interval
+        self.nt = int(t_max / self.dt)
+        self.coal_eff = ConstEc(Ec=1.0)
+        self.k = 2.0
+
+        self.X0 = L / self.k / self.n_part
+        self.spectrum = Gamma(
+            norm_factor=self.n_part * self.dv, k=self.k, theta=self.X0
+        )
+        self.radius_bins_edges = radius_bins_edges
+
+    @property
+    def steps_per_output_interval(self) -> int:
+        return int(self.output_interval / self.dt)

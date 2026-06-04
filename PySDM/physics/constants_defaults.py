@@ -356,6 +356,16 @@ KOOP_MURRAY_C5 = -1.71736e-4 / si.K**5
 KOOP_MURRAY_C6 = -7.46953e-7 / si.K**6
 """ 〃 """
 
+KOOP_MURRAY_DAW_C0 = -273.111686
+""" homogeneous ice nucleation rate for pure water droplets adapted
+for DAW ([Spichtinger et al. 2023](https://doi.org/10.5194/acp-23-2035-2023)) """
+KOOP_MURRAY_DAW_C1 = 1689.25134
+""" 〃 """
+KOOP_MURRAY_DAW_C2 = -2449.65042
+""" 〃 """
+KOOP_MURRAY_DAW_UNIT = 1 / si.m**3 / si.s
+""" 〃 """
+
 J_HET = np.nan
 J_HOM = np.nan
 """ constant ice nucleation rates """
@@ -775,7 +785,6 @@ def compute_derived_values(c: dict):
     water molar mass is computed from molecular masses and VSMOW isotope abundances
     (and neglecting molecular binding energies)
     for discussion, see:
-    - caption of Table 2.1 in [Gat 2010](https://doi.org/10.1142/p027)
     - [IAPWS Guidelines](http://www.iapws.org/relguide/fundam.pdf)
     """
 
@@ -788,22 +797,41 @@ def compute_derived_values(c: dict):
     c["Mv"] = (
         (
             1
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
-            - 2 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"])
-            - 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"])
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_2H"]
+            )
+            - 2
+            * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_3H"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_17O"]
+            )
+            - Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+                isotopic_ratio=c["VSMOW_R_18O"]
+            )
         )
         * c["M_1H2_16O"]
         + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_2H"])
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_2H"]
+        )
         * c["M_2H_1H_16O"]
         + 2
-        * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_3H"])
+        * Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_3H"]
+        )
         * c["M_3H_1H_16O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_17O"]) * c["M_1H2_17O"]
-        + 1 * Trivia.mixing_ratio_to_specific_content(c["VSMOW_R_18O"]) * c["M_1H2_18O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_17O"]
+        )
+        * c["M_1H2_17O"]
+        + Trivia.isotopic_fraction_assuming_single_heavy_isotope(
+            isotopic_ratio=c["VSMOW_R_18O"]
+        )
+        * c["M_1H2_18O"]
     )
-
     c["eps"] = c["Mv"] / c["Md"]
     c["Rd"] = c["R_str"] / c["Md"]
     c["Rv"] = c["R_str"] / c["Mv"]

@@ -11,20 +11,14 @@ on:
 jobs:
   url-check:
     runs-on: ubuntu-24.04
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4.1.6
       - name: URLs-checker
+        id: urlcheck
         uses: urlstechie/urlchecker-action@master
         with:
-          # A subfolder or path to navigate to in the present or cloned repository
-          # subfolder: docs
-
           # A comma-separated list of file types to cover in the URL checks
           file_types: .md,.py,.json,.ipynb,.yaml,.yml,.jinja2,.toml
-
-          # Choose whether to include file with no URLs in the prints.
-          print_all: false
 
           # Choose whether to print a more verbose end summary with files and broken URLs.
           verbose: true
@@ -42,4 +36,4 @@ jobs:
           exclude_patterns: http://purl.org,http://www.w3.org,https://doi.org/10.1175/
 
           # A comma separated list of file patterns (direct paths work as well) to exclude
-          exclude_files: docs/generate_html.py,.github/workflows/precommit.yml
+          exclude_files: docs/generate_html.py,.github/workflows/urlcheck.yml

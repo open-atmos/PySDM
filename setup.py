@@ -13,33 +13,24 @@ dependencies = [
     "numpy",
     "Pint",
     "chempy",
-    "scipy"
-    + (
-        {
-            8: "==1.10.1",
-            9: "==1.10.1",
-            10: "==1.10.1",
-            11: "==1.10.1",
-            12: "==1.13.0",
-            13: "==1.13.0",
-        }[sys.version_info.minor]
-        if CI
-        else ""
-    ),
+    "scipy>=1.15.0",  # needed for scipy.optimize.elementwise
     "pyevtk",
-    "pyparsing" + ("==3.2.5" if CI else ""),
+    "pyparsing",
 ]
 
 optional_dependencies = {
     "unit-tests": ["pytest", "pytest-timeout", "matplotlib!=3.9.1"],
     "nonunit-tests": ["pytest", "PySDM-examples", "PyPartMC"],
     "CI_version_pins": [
-        "PyPartMC==1.7.2",
+        "PyPartMC==2.0.7",
         "numba==0.60.0",
+        "numpy==2.4.0",
+        "scipy==1.15.0",
         "CURandRTC==0.1.7",
         "Pint==0.24.4",
-        "chempy==0.8.3",
-        "pyevtk==1.6.0",
+        "chempy==0.10.1",
+        "pyevtk==1.7.0",
+        "pyparsing==3.2.5",
     ],
 }
 
