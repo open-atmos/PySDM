@@ -215,6 +215,9 @@
                         <li>
                                 <a class="function" href="#Particulator.thaw_instantaneous">thaw_instantaneous</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Particulator.sedimentation_removal">sedimentation_removal</a>
+                        </li>
                 </ul>
 
             </li>
@@ -838,6 +841,22 @@
 </span><span id="L-595"><a href="#L-595"><span class="linenos">595</span></a>            <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
 </span><span id="L-596"><a href="#L-596"><span class="linenos">596</span></a>        <span class="p">)</span>
 </span><span id="L-597"><a href="#L-597"><span class="linenos">597</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="L-598"><a href="#L-598"><span class="linenos">598</span></a>
+</span><span id="L-599"><a href="#L-599"><span class="linenos">599</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sedimentation_removal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stochastic_sedimentation_removal</span><span class="p">,</span> <span class="n">length_scale</span><span class="p">):</span>
+</span><span id="L-600"><a href="#L-600"><span class="linenos">600</span></a>        <span class="k">if</span> <span class="n">stochastic_sedimentation_removal</span><span class="p">:</span>
+</span><span id="L-601"><a href="#L-601"><span class="linenos">601</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">sedimentation_removal_stochastic</span><span class="p">(</span>
+</span><span id="L-602"><a href="#L-602"><span class="linenos">602</span></a>                <span class="n">relative_fall_velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;relative fall velocity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-603"><a href="#L-603"><span class="linenos">603</span></a>                <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-604"><a href="#L-604"><span class="linenos">604</span></a>                <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span>
+</span><span id="L-605"><a href="#L-605"><span class="linenos">605</span></a>                <span class="n">timestep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+</span><span id="L-606"><a href="#L-606"><span class="linenos">606</span></a>            <span class="p">)</span>
+</span><span id="L-607"><a href="#L-607"><span class="linenos">607</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-608"><a href="#L-608"><span class="linenos">608</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">sedimentation_removal_deterministic</span><span class="p">(</span>
+</span><span id="L-609"><a href="#L-609"><span class="linenos">609</span></a>                <span class="n">relative_fall_velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;relative fall velocity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-610"><a href="#L-610"><span class="linenos">610</span></a>                <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="L-611"><a href="#L-611"><span class="linenos">611</span></a>                <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span>
+</span><span id="L-612"><a href="#L-612"><span class="linenos">612</span></a>                <span class="n">timestep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+</span><span id="L-613"><a href="#L-613"><span class="linenos">613</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -1430,6 +1449,22 @@
 </span><span id="Particulator-596"><a href="#Particulator-596"><span class="linenos">596</span></a>            <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
 </span><span id="Particulator-597"><a href="#Particulator-597"><span class="linenos">597</span></a>        <span class="p">)</span>
 </span><span id="Particulator-598"><a href="#Particulator-598"><span class="linenos">598</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span><span id="Particulator-599"><a href="#Particulator-599"><span class="linenos">599</span></a>
+</span><span id="Particulator-600"><a href="#Particulator-600"><span class="linenos">600</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sedimentation_removal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stochastic_sedimentation_removal</span><span class="p">,</span> <span class="n">length_scale</span><span class="p">):</span>
+</span><span id="Particulator-601"><a href="#Particulator-601"><span class="linenos">601</span></a>        <span class="k">if</span> <span class="n">stochastic_sedimentation_removal</span><span class="p">:</span>
+</span><span id="Particulator-602"><a href="#Particulator-602"><span class="linenos">602</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">sedimentation_removal_stochastic</span><span class="p">(</span>
+</span><span id="Particulator-603"><a href="#Particulator-603"><span class="linenos">603</span></a>                <span class="n">relative_fall_velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;relative fall velocity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator-604"><a href="#Particulator-604"><span class="linenos">604</span></a>                <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator-605"><a href="#Particulator-605"><span class="linenos">605</span></a>                <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span>
+</span><span id="Particulator-606"><a href="#Particulator-606"><span class="linenos">606</span></a>                <span class="n">timestep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+</span><span id="Particulator-607"><a href="#Particulator-607"><span class="linenos">607</span></a>            <span class="p">)</span>
+</span><span id="Particulator-608"><a href="#Particulator-608"><span class="linenos">608</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Particulator-609"><a href="#Particulator-609"><span class="linenos">609</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">sedimentation_removal_deterministic</span><span class="p">(</span>
+</span><span id="Particulator-610"><a href="#Particulator-610"><span class="linenos">610</span></a>                <span class="n">relative_fall_velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;relative fall velocity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator-611"><a href="#Particulator-611"><span class="linenos">611</span></a>                <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator-612"><a href="#Particulator-612"><span class="linenos">612</span></a>                <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span>
+</span><span id="Particulator-613"><a href="#Particulator-613"><span class="linenos">613</span></a>                <span class="n">timestep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+</span><span id="Particulator-614"><a href="#Particulator-614"><span class="linenos">614</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
@@ -2688,6 +2723,38 @@ to fall within <code>attr_range</code>. The moment ranks are defined by <code>sp
 </span><span id="Particulator.thaw_instantaneous-596"><a href="#Particulator.thaw_instantaneous-596"><span class="linenos">596</span></a>            <span class="n">temperature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">environment</span><span class="p">[</span><span class="s2">&quot;T&quot;</span><span class="p">],</span>
 </span><span id="Particulator.thaw_instantaneous-597"><a href="#Particulator.thaw_instantaneous-597"><span class="linenos">597</span></a>        <span class="p">)</span>
 </span><span id="Particulator.thaw_instantaneous-598"><a href="#Particulator.thaw_instantaneous-598"><span class="linenos">598</span></a>        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">mark_updated</span><span class="p">(</span><span class="s2">&quot;signed water mass&quot;</span><span class="p">)</span>
+</span></pre></div>
+
+
+    
+
+                            </div>
+                            <div id="Particulator.sedimentation_removal" class="classattr">
+                                        <input id="Particulator.sedimentation_removal-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">sedimentation_removal</span><span class="signature pdoc-code condensed">(<span class="param"><span class="bp">self</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">stochastic_sedimentation_removal</span>, </span><span class="param"><span class="n">length_scale</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="Particulator.sedimentation_removal-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#Particulator.sedimentation_removal"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="Particulator.sedimentation_removal-600"><a href="#Particulator.sedimentation_removal-600"><span class="linenos">600</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">sedimentation_removal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stochastic_sedimentation_removal</span><span class="p">,</span> <span class="n">length_scale</span><span class="p">):</span>
+</span><span id="Particulator.sedimentation_removal-601"><a href="#Particulator.sedimentation_removal-601"><span class="linenos">601</span></a>        <span class="k">if</span> <span class="n">stochastic_sedimentation_removal</span><span class="p">:</span>
+</span><span id="Particulator.sedimentation_removal-602"><a href="#Particulator.sedimentation_removal-602"><span class="linenos">602</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">sedimentation_removal_stochastic</span><span class="p">(</span>
+</span><span id="Particulator.sedimentation_removal-603"><a href="#Particulator.sedimentation_removal-603"><span class="linenos">603</span></a>                <span class="n">relative_fall_velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;relative fall velocity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-604"><a href="#Particulator.sedimentation_removal-604"><span class="linenos">604</span></a>                <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-605"><a href="#Particulator.sedimentation_removal-605"><span class="linenos">605</span></a>                <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-606"><a href="#Particulator.sedimentation_removal-606"><span class="linenos">606</span></a>                <span class="n">timestep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-607"><a href="#Particulator.sedimentation_removal-607"><span class="linenos">607</span></a>            <span class="p">)</span>
+</span><span id="Particulator.sedimentation_removal-608"><a href="#Particulator.sedimentation_removal-608"><span class="linenos">608</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="Particulator.sedimentation_removal-609"><a href="#Particulator.sedimentation_removal-609"><span class="linenos">609</span></a>            <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">sedimentation_removal_deterministic</span><span class="p">(</span>
+</span><span id="Particulator.sedimentation_removal-610"><a href="#Particulator.sedimentation_removal-610"><span class="linenos">610</span></a>                <span class="n">relative_fall_velocity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;relative fall velocity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-611"><a href="#Particulator.sedimentation_removal-611"><span class="linenos">611</span></a>                <span class="n">multiplicity</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="s2">&quot;multiplicity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-612"><a href="#Particulator.sedimentation_removal-612"><span class="linenos">612</span></a>                <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-613"><a href="#Particulator.sedimentation_removal-613"><span class="linenos">613</span></a>                <span class="n">timestep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span>
+</span><span id="Particulator.sedimentation_removal-614"><a href="#Particulator.sedimentation_removal-614"><span class="linenos">614</span></a>            <span class="p">)</span>
 </span></pre></div>
 
 
