@@ -36,7 +36,7 @@ requires-python = ">= 3.8"
 authors = [
     {name = "https://github.com/open-atmos/PySDM/graphs/contributors", email = "sylwester.arabas@agh.edu.pl"}
 ]     
-dynamic = ["version", "dependencies", "optional-dependencies"]
+dynamic = ["version"]
 dependencies = [
   "ThrustRTC>=0.3.20",
   "CURandRTC>=0.1.2",
