@@ -24,7 +24,7 @@ optional_dependencies = {
     "CI_version_pins": [
         "PyPartMC==2.0.7",
         "numba==0.60.0",
-        "numpy==2.4.0",
+        "numpy==1.26.4",
         "scipy==1.15.0",
         "CURandRTC==0.1.7",
         "Pint==0.24.4",
