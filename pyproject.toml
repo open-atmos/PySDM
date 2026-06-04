@@ -37,14 +37,14 @@ authors = [
     {name = "https://github.com/open-atmos/PySDM/graphs/contributors", email = "sylwester.arabas@agh.edu.pl"}
 ]     
 dynamic = ["version"]
-dependencies = [
-  "ThrustRTC",
-  "CURandRTC",
-  "numba",
+dependencies = [ 
+  "ThrustRTC>=0.3.20",
+  "CURandRTC>=0.1.2",
+  "numba>=0.51.2",
+  "scipy>=1.15.0", 
   "numpy",
   "Pint",
   "chempy",
-  "scipy",
   "pyevtk",
   "pyparsing",
 ]
@@ -68,7 +68,7 @@ CI_version_pins = [
   "numpy==1.26.4",
   "scipy==1.15.0",
   "ThrustRTC==0.3.20",
-  "CURandRTC==1.0.7",
+  "CURandRTC==0.1.7",
   "Pint==0.24.4",
   "chempy==0.10.1",
   "pyevtk==1.7.0",
