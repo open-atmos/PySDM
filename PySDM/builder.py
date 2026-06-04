@@ -18,26 +18,26 @@ from PySDM.physics.particle_shape_and_density import LiquidSpheres, MixedPhaseSp
 
 class Builder:
     def __init__(self, n_sd, backend, environment=None, dynamics=None):
-        assert not inspect.isclass(backend)
-        self.formulae = backend.formulae
-        self.particulator = Particulator(n_sd, backend)
-        self.req_attr_names = ["multiplicity", "water mass", "cell id"]
-        self.req_attr = None
+        # assert not inspect.isclass(backend)
+        # self.formulae = backend.formulae
+        # self.particulator = Particulator(n_sd, backend)
+        # self.req_attr_names = ["multiplicity", "water mass", "cell id"]
+        # self.req_attr = None
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
-        self.particulator.environment = environment.instantiate(builder=self)
-        if dynamics is not None:
-            for dynamic in dynamics:
-                self._register_dynamic(dynamic)
+        # self.particulator.environment = environment.instantiate(builder=self)
+        # if dynamics is not None:
+        #     for dynamic in dynamics:
+        #         self._register_dynamic(dynamic)
 
     def _set_condensation_parameters(self, **kwargs):
         self.condensation_params = kwargs
 
-    def _register_dynamic(self, dynamic):
-        assert self.particulator.environment is not None
-        key = inspect.getmro(type(dynamic))[-2].__name__
-        assert key not in self.particulator.dynamics
-        self.particulator.dynamics[key] = dynamic
+    # def _register_dynamic(self, dynamic):
+    #     assert self.particulator.environment is not None
+    #     key = inspect.getmro(type(dynamic))[-2].__name__
+    #     assert key not in self.particulator.dynamics
+    #     self.particulator.dynamics[key] = dynamic
 
     def _register_product(self, product, buffer):
         if product.name in self.particulator.products:
@@ -46,27 +46,27 @@ class Builder:
             builder=self, buffer=buffer
         )
 
-    def _resolve_attribute(self, attr_name):
-        if attr_name not in self.req_attr:
-            self.req_attr[attr_name] = get_attribute_class(
-                attr_name,
-                self.particulator.dynamics.keys(),
-                self.formulae,
-            )(self)
-            assert self.req_attr is not None
+    # def _resolve_attribute(self, attr_name):
+    #     if attr_name not in self.req_attr:
+    #         self.req_attr[attr_name] = get_attribute_class(
+    #             attr_name,
+    #             self.particulator.dynamics.keys(),
+    #             self.formulae,
+    #         )(self)
+    #         assert self.req_attr is not None
+    #
+    # def get_attribute(self, attribute_name):
+    #     """intended for obtaining attribute instances during build() logic,
+    #     from within register() methods"""
+    #     self._resolve_attribute(attribute_name)
+    #     return self.req_attr[attribute_name]
 
-    def get_attribute(self, attribute_name):
-        """intended for obtaining attribute instances during build() logic,
-        from within register() methods"""
-        self._resolve_attribute(attribute_name)
-        return self.req_attr[attribute_name]
-
-    def _request_attribute(self, attribute_name):
-        """can be called either before or during build()"""
-        if self.req_attr_names is not None:
-            self.req_attr_names.append(attribute_name)
-        else:
-            self._resolve_attribute(attribute_name)
+    # def _request_attribute(self, attribute_name):
+    #     """can be called either before or during build()"""
+    #     if self.req_attr_names is not None:
+    #         self.req_attr_names.append(attribute_name)
+    #     else:
+    #         self._resolve_attribute(attribute_name)
 
     def build(
         self,
