@@ -124,23 +124,23 @@ class CollisionsMethods(BackendMethods):
         #     indices,
         # )
 
-        print(f"pre-coalescence: {multiplicity.data=}")
-        multiplicity.data = self._collision_coalescence_body(
+        # print(f"pre-coalescence: {multiplicity.data=}")
+        # print(f"pre-coalescence pairs: {is_first_in_pair.indicator.data}")
+        multiplicity.data, attributes.data = self._collision_coalescence_body(
             multiplicity.data,
             idx.data,
             attributes.data,
             gamma.data,
             is_first_in_pair.indicator.data,
         )
-        print(f"post-coalescence: {multiplicity.data=}")
-
+        multiplicity.data.block_until_ready()
+        # print(f"post-coalescence: {multiplicity.data=}")
 
         # print(f"{mult_pos_updates=} \n {mult_j_zero=} \n {mult_k_zero=} \n {mult_k=} \n {pos_mask=}")
 
     @cached_property
     def _compute_gamma_body(self):
         # pylint: disable=too-many-arguments,too-many-locals
-        @jax.jit
         def body(prob, rand, idx, multiplicity, is_first_in_pair, i):
             out = jnp.ceil(prob[i] - rand[i])
             offset = 1 - is_first_in_pair[2 * i]
@@ -150,7 +150,7 @@ class CollisionsMethods(BackendMethods):
             prop = multiplicity[j] // multiplicity[k]
             return jnp.minimum(out.astype(int), prop)
 
-        return body
+        return jax.jit(jax.vmap(body, (None, None, None, None, None, 0)))
 
     def compute_gamma(
         self,
@@ -165,25 +165,34 @@ class CollisionsMethods(BackendMethods):
         out,
     ):
         indices = jnp.arange(len(multiplicity) // 2)
-        mapped_compute_gamma_body = jax.vmap(
-            self._compute_gamma_body, (None, None, None, None, None, 0)
-        )
-        out.data = mapped_compute_gamma_body(
+        out.data = self._compute_gamma_body(
             prob.data,
             rand.data,
             multiplicity.idx.data,
             multiplicity.data,
             is_first_in_pair.indicator.data,
             indices,
-        )
+        ).block_until_ready()
 
     @staticmethod
     def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme="default"):
-        class DummyCaretaker:
-            def __call__(self, *args, **kwds):
-                return
+        class CellCaretaker:
+            def __init__(self, idx_shape, idx_dtype, scheme):
+                assert scheme == "default"
+                self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
 
-        return DummyCaretaker()
+            def __call__(self, cell_id, cell_idx, cell_start, idx):
+                length = len(idx)
+                CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
+                    self.tmp_idx.data,
+                    idx.data,
+                    cell_id.data,
+                    cell_idx.data,
+                    length,
+                    cell_start.data,
+                )
+
+        return CellCaretaker(idx_shape, idx_dtype, scheme)
 
     @cached_property
     def _normalize_body(self):
@@ -197,17 +206,17 @@ class CollisionsMethods(BackendMethods):
             prob = prob.at[i].set(norm_factor)
             return prob
 
-        return body
+        return jax.jit(jax.vmap(body, (None, None, None, None, 0)))
 
     # pylint: disable=too-many-arguments
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-        # FIX THIS FUNCTION!!!
+        # FIX THIS FUNCTION!!! (check)
         indices = jax.numpy.arange(prob.shape[0])
         temp_prob = jax.numpy.empty(prob.shape)
 
-        normalize_func = jax.vmap(self._normalize_body, (None, None, None, None, 0))
-
-        temp_prob = normalize_func(temp_prob, cell_start.data, timestep, dv, indices)
+        temp_prob = self._normalize_body(
+            temp_prob, cell_start.data, timestep, dv, indices
+        ).block_until_ready()
 
         prob.data = jax.numpy.sum(temp_prob, axis=0)
 
@@ -216,4 +225,5 @@ class CollisionsMethods(BackendMethods):
     def _counting_sort_by_cell_id_and_update_cell_start(
         new_idx, idx, cell_id, cell_idx, length, cell_start
     ):
-        raise NotImplementedError()
+        # TODO: implement sorting
+        cell_start = cell_start.at[0].set(0)

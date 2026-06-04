@@ -33,9 +33,9 @@ class Storage(StorageBase):
 
     def __imul__(self, other):
         if hasattr(other, "data"):
-            impl.multiply(self.data, other.data)
+            self.data = impl.multiply(self.data, other.data).block_until_ready()
         else:
-            impl.multiply(self.data, other)
+            self.data = impl.multiply(self.data, other).block_until_ready()
         return self
 
     def __itruediv__(self, other):
@@ -78,7 +78,7 @@ class Storage(StorageBase):
         return get_data_from_ndarray(
             array=array,
             storage_class=Storage,
-            copy_fun=lambda array_astype: array_astype.copy(),
+            copy_fun=lambda array_astype: jnp.array(array_astype),
         )
 
     @staticmethod
@@ -105,5 +105,8 @@ class Storage(StorageBase):
         return np.array(self.data)
 
     def ratio(self, dividend, divisor):
-        impl.divide_out_of_place(self.data, dividend.data, divisor.data)
+        # TODO: does this work?
+        impl.divide_out_of_place(
+            self.data, dividend.data, divisor.data
+        ).block_until_ready()
         return self

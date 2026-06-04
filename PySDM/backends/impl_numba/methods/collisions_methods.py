@@ -474,6 +474,7 @@ class CollisionsMethods(BackendMethods):
             coalescence_rate=coalescence_rate.data,
             is_first_in_pair=is_first_in_pair.indicator.data,
         )
+        print(f"post-coalescence pairs: {is_first_in_pair.indicator.data=}")
 
     def collision_coalescence_breakup(
         self,

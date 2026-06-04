@@ -119,8 +119,10 @@ class TestPairMethods:
         # act
         idx.length = length
         backend.find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx)
+        expected = ([True, False] * (length // 2))[: length - 1] + [False]
 
         # assert
+        assert all(is_first_in_pair.indicator.to_ndarray()[:length] == expected)
         assert not is_first_in_pair.indicator.to_ndarray()[length - 1]
 
     @staticmethod

@@ -9,6 +9,24 @@ import jax
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
+@jax.jit
+def moments_helper(min_x, max_x, x_attr, idx, idx_i):
+    i = idx[idx_i]
+    return (min_x <= x_attr[i]) & (x_attr[i] < max_x)
+
+
+@jax.jit
+def spectrum_moments_helper(x_bins, x_attr, idx, idx_i):
+    def cond_fun(k):
+        return (k < x_bins.shape[0] - 1) & (
+            (x_bins[k] > x_attr[i]) | (x_attr[i] > x_bins[k + 1])
+        )
+
+    i = idx[idx_i]
+    bin_to_calculate = jax.lax.while_loop(cond_fun, lambda k: k + 1, 0)
+    return bin_to_calculate
+
+
 class MomentsMethods(BackendMethods):
     @cached_property
     def _moments_body(self):
@@ -64,15 +82,11 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
-        @jax.jit
-        def moments_helper(min_x, max_x, x_attr, idx, idx_i):
-            i = idx[idx_i]
-            return (min_x <= x_attr[i]) & (x_attr[i] < max_x)
 
         moment_0.data = moment_0.data.at[:].set(0)
         moments.data = moments.data.at[:, :].set(0)
         idx_idxs = jax.numpy.arange(length)
-
+        assert False
         count_bins_func = jax.vmap(moments_helper, (None, None, None, None, 0))
         idx_to_count = count_bins_func(min_x, max_x, x_attr.data, idx.data, idx_idxs)
         mapped_spectrum = jax.vmap(
@@ -99,15 +113,12 @@ class MomentsMethods(BackendMethods):
             attr_data.data,
             cell_id.data,
             idx.data,
-            length,
             ranks.data,
-            x_attr.data,
             weighting_attribute.data,
             weighting_rank,
             idx_to_count,
             idx_idxs,
-            skip_division_by_m0,
-        )
+        ).block_until_ready()
 
         moments.data = moments.data.sum(0)
         moment_0.data = moment_0.data.sum(0)
@@ -168,17 +179,6 @@ class MomentsMethods(BackendMethods):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
 
-        @jax.jit
-        def spectrum_moments_helper(x_bins, x_attr, idx, idx_i):
-            def cond_fun(k):
-                return (k < x_bins.shape[0] - 1) & (
-                    (x_bins[k] > x_attr[i]) | (x_attr[i] > x_bins[k + 1])
-                )
-
-            i = idx[idx_i]
-            bin_to_calculate = jax.lax.while_loop(cond_fun, lambda k: k + 1, 0)
-            return bin_to_calculate
-
         new_moment_0 = jax.numpy.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
         new_moments = jax.numpy.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
         idx_idxs = jax.numpy.arange(length)
@@ -203,7 +203,7 @@ class MomentsMethods(BackendMethods):
             weighting_rank,
             bins_to_count,
             idx_idxs,
-        )
+        ).block_until_ready()
 
         moments.data = jax.numpy.sum(new_moments[:, :-1, :], axis=0)
         moment_0.data = jax.numpy.sum(new_moment_0[:, :-1, :], axis=0)

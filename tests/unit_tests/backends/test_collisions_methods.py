@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU, GPU
+from PySDM.backends import CPU, GPU, JAX
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
@@ -206,7 +206,12 @@ class TestCollisionMethods:
     @staticmethod
     @pytest.mark.parametrize(
         "backend_class, scheme",
-        ((CPU, "counting_sort"), (CPU, "counting_sort_parallel"), (GPU, "default")),
+        (
+            (CPU, "counting_sort"),
+            (CPU, "counting_sort_parallel"),
+            (GPU, "default"),
+            (JAX, "default"),
+        ),
     )
     def test_cell_caretaker(backend_class, scheme):
         # Arrange

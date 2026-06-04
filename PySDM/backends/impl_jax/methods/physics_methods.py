@@ -31,4 +31,4 @@ class PhysicsMethods(BackendMethods):
 
     def volume_of_water_mass(self, volume, mass):
         mapped_func = jax.vmap(self._volume_of_mass_body, (0))
-        volume.data = mapped_func(mass.data)
+        volume.data = mapped_func(mass.data).block_until_ready()
