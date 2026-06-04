@@ -38,13 +38,13 @@ authors = [
 ]     
 dynamic = ["version"]
 dependencies = [
-  "ThrustRTC>=0.3.20",
-  "CURandRTC>=0.1.2",
-  "numba>=0.51.2",
+  "ThrustRTC",
+  "CURandRTC",
+  "numba",
   "numpy",
   "Pint",
   "chempy",
-  "scipy>=1.15.0",
+  "scipy",
   "pyevtk",
   "pyparsing",
 ]
@@ -67,6 +67,7 @@ CI_version_pins = [
   "numba==0.60.0",
   "numpy==1.26.4",
   "scipy==1.15.0",
+  "ThrustRTC==0.3.20",
   "CURandRTC==1.0.7",
   "Pint==0.24.4",
   "chempy==0.10.1",
