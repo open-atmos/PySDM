@@ -72,7 +72,7 @@ CI_version_pins = [
   "Pint==0.24.4",
   "chempy==0.10.1",
   "pyevtk==1.7.0",
-  "pyparsing==3.2.5",
+  "pyparsing==3.3.2",
 ]
 
 [project.urls]
