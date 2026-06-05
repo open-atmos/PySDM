@@ -212,18 +212,20 @@ class SpectrumPlotter:
 
 
 def run(settings, backend, observers=(), sampling_method="deterministic"):
-    env = Box(dv=settings.dv, dt=settings.dt)
-    builder = Builder(n_sd=settings.n_sd, backend=backend, environment=env)
+    builder = Builder(
+        n_sd=settings.n_sd,
+        backend=backend,
+        environment=Box(dv=settings.dv, dt=settings.dt),
+        dynamics=(
+            Coalescence(collision_kernel=settings.kernel, adaptive=settings.adaptive),
+        ),
+    )
     builder.particulator.environment["rhod"] = 1.0
     attributes = {}
     sampling = settings.sampling
     attributes["volume"], attributes["multiplicity"] = getattr(
         sampling, f"sample_{sampling_method}"
     )(settings.n_sd, backend=backend)
-    coalescence = Coalescence(
-        collision_kernel=settings.kernel, adaptive=settings.adaptive
-    )
-    builder.add_dynamic(coalescence)
     products = (
         ParticleVolumeVersusRadiusLogarithmSpectrum(
             settings.radius_bins_edges, name="dv/dlnr"
