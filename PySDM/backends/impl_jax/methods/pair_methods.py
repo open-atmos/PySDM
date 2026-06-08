@@ -44,46 +44,33 @@ class PairMethods(BackendMethods):
 
     @cached_property
     def _max_pair_body(self):
-        def body(data_out, data_in, is_first_in_pair, idx, i):
-            data_out.at[i // 2].set(
-                jnp.maximum(data_in[idx[i]], data_in[idx[i + 1]]) * is_first_in_pair[i]
-            )
-            return data_out
-
-        return jax.jit(jax.vmap(body, (None, None, None, None, 0)))
+        def body(data_out, data_in, is_first_in_pair, idx):
+            def loop_body(i, data_out):
+                def max_pair(i, data_out):
+                    # data_out = data_out.at[i//2].set(
+                    #     ((data_in[idx[i]] + data_in[idx[i + 1]]) + 
+                    #      jnp.abs(data_in[idx[i]] - data_in[idx[i + 1]]))/2
+                    #     )
+                    # data_out = data_out.at[i//2].set(data_in[idx[i]] + data_in[idx[i + 1]])
+                    data_out = data_out.at[i//2].set(jnp.maximum(data_in[idx[i]], data_in[idx[i + 1]]))
+                    return data_out
+                return jax.lax.cond(is_first_in_pair[i], max_pair, lambda _, data_out: data_out, i, data_out)
+            return jax.lax.fori_loop(0, len(idx), loop_body, data_out)
+        return body
 
     def max_pair(self, data_out, data_in, is_first_in_pair, idx):
-        temp_data_out = jnp.empty(data_out.shape)
-        indices = jnp.arange(len(idx))
-
-        temp_data_out = self._max_pair_body(
-            temp_data_out,
-            data_in.data,
+        
+        # Why is attributes["multiplicity"] a numpy array? (data_in here)
+        data_in_jax = jnp.array(data_in.data)
+        data_out.data = self._max_pair_body(
+            data_out.data,
+            data_in_jax,
             is_first_in_pair.indicator.data,
             idx.data,
-            indices,
         ).block_until_ready()
-
-        data_out.data = jnp.sum(temp_data_out, axis=0)
 
     @cached_property
     def _sort_within_pair_by_attr_body(self):
-        # @jax.jit
-        # def body(idx, attr, i, is_first_in_pair):
-        #     j = i + 1
-        #     h = i - 1
-        #     idx_i = idx[i]
-        #     idx_j = idx[j]
-        #     idx_h = idx[h]
-
-        #     inverse_j = (attr[idx_i] < attr[idx_j]) & is_first_in_pair[i]
-        #     inverse_h = (attr[idx_h] < attr[idx_i]) & is_first_in_pair[h]
-        #     # idx = idx.at[i].set(idx_j * inverse + idx_i * (not inverse))
-        #     # idx = idx.at[i + 1].set(idx_i * inverse + idx_j * (not inverse))
-
-        #     return [idx_j * inverse + idx_i * ~inverse,
-        #             idx_i * inverse + idx_j * ~inverse]
-        # return [inverse, inverse]
 
         @jax.jit
         def body(is_first_in_pair, attr, idx):
@@ -104,54 +91,23 @@ class PairMethods(BackendMethods):
         idx.data = self._sort_within_pair_by_attr_body(
             is_first_in_pair.indicator.data, attr.data, idx.data
         ).block_until_ready()
-        # indices = [i for i, val in enumerate(is_first_in_pair.indicator.data) if val]
-        # indices = jnp.array(indices)
-        # print(f"{indices=}")
-
-        # # padding
-
-        # mapped_sort_within_pair_by_attr = jax.vmap(
-        #     self._sort_within_pair_by_attr_body,
-        #     (None, None, 0),
-        # )
-        # # print(f"{indices=}")
-        # pairs = mapped_sort_within_pair_by_attr(
-        #     idx.data, attr.data, indices
-        # )
-        # print(f"{pairs=}")
-        # stacked_pairs = jnp.stack(pairs, 1)
-        # temp = idx.data[-1]
-        #     # stacked_pairs = jnp.append(stacked_pairs, jnp.array(idx.data[-1]))
-        # print(f"{stacked_pairs=}")
-        # idx.data = jnp.concatenate(stacked_pairs, 0)
-        # if len(idx) % 2 != 0:
-        #     idx.data = jnp.append(idx.data, temp)
 
     @cached_property
     def _sum_pair_body(self):
-        def body(data_out, data_in, is_first_in_pair, idx, i):
-            data_out = data_out.at[i // 2].set(
-                (data_in[idx[i]] + data_in[idx[i + 1]]) * is_first_in_pair[i]
-            )
-            return data_out
-
-        return jax.jit(jax.vmap(body, (None, None, None, None, 0)))
+        def body(data_out, data_in, is_first_in_pair, idx):
+            data_out = data_out.at[:].set(0) #?? might slow it down
+            def loop_body(i, data_out):
+                def sum_pair(i, data_out):
+                    data_out = data_out.at[i//2].set(data_in[idx[i]] + data_in[idx[i + 1]])
+                    return data_out
+                return jax.lax.cond(is_first_in_pair[i], sum_pair, lambda _, data_out: data_out, i, data_out)
+            return jax.lax.fori_loop(0, len(idx), loop_body, data_out)
+        return body
 
     def sum_pair(self, data_out, data_in, is_first_in_pair, idx):
-        # temp_data_out = jnp.zeros(data_out.shape)
-        temp_data_out = jnp.empty(data_out.shape)
-        indices = jnp.arange(len(idx) - 1)
-
-        # mapped_sum_pair = jax.vmap(
-        #     self._sum_pair_body,
-        #     (None, None, None, None, 0),
-        # )
-        temp_data_out = self._sum_pair_body(
-            temp_data_out,
+        data_out.data = self._sum_pair_body(
+            data_out.data,
             data_in.data,
             is_first_in_pair.indicator.data,
             idx.data,
-            indices,
         ).block_until_ready()
-
-        data_out.data = jnp.sum(temp_data_out, axis=0)
