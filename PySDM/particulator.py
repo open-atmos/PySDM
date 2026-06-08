@@ -40,15 +40,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         requested_attributes: tuple = (),
         int_caster=discretise_multiplicities,
     ):
-        self.particulator = self
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
 
         self.backend = backend
         self.formulae = backend.formulae
-        self.environment = (
-            environment.instantiate(builder=self) if environment else None
-        )
+        self.environment = environment.instantiate(self) if environment else None
         self.req_attr_names = [
             "multiplicity",
             "water mass",
@@ -708,7 +705,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.req_attr_names = None
 
         for key, dynamic in self.dynamics.items():
-            self.dynamics[key] = dynamic.instantiate(builder=self)
+            self.dynamics[key] = dynamic.instantiate(self)
 
         single_buffer_for_all_products = np.empty(self.mesh.grid)
         for product in products:
@@ -738,4 +735,5 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         if (attributes["multiplicity"] == 0).any():
             self.attributes.healthy = False
             self.attributes.sanitize()
-        return self
+
+        self.request_attribute = None

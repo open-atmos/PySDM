@@ -27,8 +27,8 @@ class Box:
         else:
             self._ambient_air[key][:] = value
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
 
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}

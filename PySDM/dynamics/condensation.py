@@ -58,10 +58,10 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
 
         self.update_thd = update_thd
 
-    def register(self, builder):
-        self.particulator = builder.particulator
+    def register(self, particulator):
+        self.particulator = particulator
 
-        builder._set_condensation_parameters(
+        particulator._set_condensation_parameters(
             dt_range=self.dt_cond_range,
             adaptive=self.adaptive,
             fuse=32,
@@ -69,10 +69,10 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
             RH_rtol=1e-7,
             max_iters=self.max_iters,
         )
-        builder.request_attribute("critical volume")
-        builder.request_attribute("kappa")
-        builder.request_attribute("dry volume organic fraction")
-        builder.request_attribute("Reynolds number")
+        particulator.request_attribute("critical volume")
+        particulator.request_attribute("kappa")
+        particulator.request_attribute("dry volume organic fraction")
+        particulator.request_attribute("Reynolds number")
 
         for counter in ("n_substeps", "n_activating", "n_deactivating", "n_ripening"):
             self.counters[counter] = self.particulator.Storage.empty(
