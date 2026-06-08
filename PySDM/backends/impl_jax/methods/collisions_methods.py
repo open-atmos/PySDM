@@ -194,31 +194,38 @@ class CollisionsMethods(BackendMethods):
 
         return CellCaretaker(idx_shape, idx_dtype, scheme)
 
+    # @cached_property
+    # def _normalize_body(self):
+    #     # pylint: disable=too-many-arguments
+    #     def body(prob, cell_start, timestep, dv, i):
+    #         sd_num = cell_start[1] - cell_start[0]
+    #         # Fixed this with (sd_num >= 2), need to add the n_cell loop, and then the normalization pass
+    #         norm_factor = (sd_num >= 2) * (
+    #             timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+    #         )
+    #         prob = prob.at[i].set(norm_factor)
+    #         return prob
+
+    #     return jax.jit(jax.vmap(body, (None, None, None, None, 0)))
+
     @cached_property
     def _normalize_body(self):
-        # pylint: disable=too-many-arguments
-        def body(prob, cell_start, timestep, dv, i):
+        def body(prob, cell_start, timestep, dv):
             sd_num = cell_start[1] - cell_start[0]
-            # Fixed this with (sd_num >= 2), need to add the n_cell loop, and then the normalization pass
-            norm_factor = (sd_num >= 2) * (
-                timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-            )
-            prob = prob.at[i].set(norm_factor)
-            return prob
-
-        return jax.jit(jax.vmap(body, (None, None, None, None, 0)))
+            def loop_body(i, prob):
+                norm_factor = (sd_num >= 2) * (
+                    timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                )
+                prob = prob.at[i].set(norm_factor)
+                return prob
+            return jax.lax.fori_loop(0, prob.shape[0], loop_body, prob)
+        return body
 
     # pylint: disable=too-many-arguments
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-        # FIX THIS FUNCTION!!! (check)
-        indices = jax.numpy.arange(prob.shape[0])
-        temp_prob = jax.numpy.empty(prob.shape)
-
-        temp_prob = self._normalize_body(
-            temp_prob, cell_start.data, timestep, dv, indices
+        prob.data = self._normalize_body(
+            prob.data, cell_start.data, timestep, dv
         ).block_until_ready()
-
-        prob.data = jax.numpy.sum(temp_prob, axis=0)
 
     @staticmethod
     # pylint: disable=too-many-arguments
