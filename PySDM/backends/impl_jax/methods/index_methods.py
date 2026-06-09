@@ -17,3 +17,7 @@ class IndexMethods(BackendMethods):
             idx.data = idx.data.at[:].set(jax.numpy.argsort(u01))
 
         return body
+
+    def shuffle_local(self, idx, u01, cell_start):
+        # TODO: implement shuffle_local
+        self.shuffle_global(idx, u01)

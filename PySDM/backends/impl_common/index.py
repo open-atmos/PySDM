@@ -43,7 +43,7 @@ def make_Index(backend):
                 backend.shuffle_global(idx=self, u01=temporary.data)
             else:
                 backend.shuffle_local(
-                    idx=self.data, u01=temporary.data, cell_start=parts.data
+                    idx=self, u01=temporary.data, cell_start=parts.data
                 )
 
         def remove_zero_n_or_flagged(self, indexed_storage):

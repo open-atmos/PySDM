@@ -203,7 +203,8 @@ class MomentsMethods(BackendMethods):
             weighting_rank,
             bins_to_count,
             idx_idxs,
-        ).block_until_ready()
+        )
+        new_moment_0.block_until_ready()
 
         moments.data = jax.numpy.sum(new_moments[:, :-1, :], axis=0)
         moment_0.data = jax.numpy.sum(new_moment_0[:, :-1, :], axis=0)

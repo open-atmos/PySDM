@@ -33,7 +33,7 @@ class IndexMethods(BackendMethods):
         self._shuffle_global_body(idx.data, idx.length, u01)
 
     @cached_property
-    def shuffle_local(self):
+    def _shuffle_local_body(self):
         @numba.njit(**self.default_jit_flags)
         def body(idx, u01, cell_start):
             # pylint: disable=not-an-iterable
@@ -45,6 +45,9 @@ class IndexMethods(BackendMethods):
                     idx[i], idx[j] = idx[j], idx[i]
 
         return body
+
+    def shuffle_local(self, idx, u01, cell_start):
+        self._shuffle_local_body(idx.data, u01, cell_start)
 
     @staticmethod
     def sort_by_key(idx, attr):

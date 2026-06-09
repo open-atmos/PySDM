@@ -36,6 +36,7 @@ class CollisionsMethods(BackendMethods):
             gamma,
             is_first_in_pair,
         ):
+            # TODO: multiplicity not working with test_single_collision
             i = jnp.arange(len(multiplicity) // 2)
 
             offset = 1 - is_first_in_pair[2 * i]
@@ -212,13 +213,16 @@ class CollisionsMethods(BackendMethods):
     def _normalize_body(self):
         def body(prob, cell_start, timestep, dv):
             sd_num = cell_start[1] - cell_start[0]
+
             def loop_body(i, prob):
                 norm_factor = (sd_num >= 2) * (
                     timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
                 )
                 prob = prob.at[i].set(norm_factor)
                 return prob
+
             return jax.lax.fori_loop(0, prob.shape[0], loop_body, prob)
+
         return body
 
     # pylint: disable=too-many-arguments

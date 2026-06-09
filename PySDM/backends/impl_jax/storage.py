@@ -94,9 +94,9 @@ class Storage(StorageBase):
 
     def fill(self, other):
         if isinstance(other, Storage):
-            self.data = other.data
+            self.data = self.data.at[:].set(other.data)
         else:
-            self.data = other
+            self.data = self.data.at[:].set(other)
 
     def row_view(self, i):
         return Storage(StorageSignature(self.data[i], (*self.shape[1:],), self.dtype))
@@ -105,8 +105,8 @@ class Storage(StorageBase):
         return np.array(self.data)
 
     def ratio(self, dividend, divisor):
+        # assert False
         # TODO: does this work?
-        impl.divide_out_of_place(
+        self.data = impl.divide_out_of_place(
             self.data, dividend.data, divisor.data
         ).block_until_ready()
-        return self

@@ -48,23 +48,32 @@ class PairMethods(BackendMethods):
             def loop_body(i, data_out):
                 def max_pair(i, data_out):
                     # data_out = data_out.at[i//2].set(
-                    #     ((data_in[idx[i]] + data_in[idx[i + 1]]) + 
+                    #     ((data_in[idx[i]] + data_in[idx[i + 1]]) +
                     #      jnp.abs(data_in[idx[i]] - data_in[idx[i + 1]]))/2
                     #     )
                     # data_out = data_out.at[i//2].set(data_in[idx[i]] + data_in[idx[i + 1]])
-                    data_out = data_out.at[i//2].set(jnp.maximum(data_in[idx[i]], data_in[idx[i + 1]]))
+                    data_out = data_out.at[i // 2].set(
+                        jnp.maximum(data_in[idx[i]], data_in[idx[i + 1]])
+                    )
                     return data_out
-                return jax.lax.cond(is_first_in_pair[i], max_pair, lambda _, data_out: data_out, i, data_out)
+
+                return jax.lax.cond(
+                    is_first_in_pair[i],
+                    max_pair,
+                    lambda _, data_out: data_out,
+                    i,
+                    data_out,
+                )
+
             return jax.lax.fori_loop(0, len(idx), loop_body, data_out)
+
         return body
 
     def max_pair(self, data_out, data_in, is_first_in_pair, idx):
-        
-        # Why is attributes["multiplicity"] a numpy array? (data_in here)
-        data_in_jax = jnp.array(data_in.data)
+
         data_out.data = self._max_pair_body(
             data_out.data,
-            data_in_jax,
+            data_in.data,
             is_first_in_pair.indicator.data,
             idx.data,
         ).block_until_ready()
@@ -95,13 +104,25 @@ class PairMethods(BackendMethods):
     @cached_property
     def _sum_pair_body(self):
         def body(data_out, data_in, is_first_in_pair, idx):
-            data_out = data_out.at[:].set(0) #?? might slow it down
+            data_out = data_out.at[:].set(0)  # ?? might slow it down
+
             def loop_body(i, data_out):
                 def sum_pair(i, data_out):
-                    data_out = data_out.at[i//2].set(data_in[idx[i]] + data_in[idx[i + 1]])
+                    data_out = data_out.at[i // 2].set(
+                        data_in[idx[i]] + data_in[idx[i + 1]]
+                    )
                     return data_out
-                return jax.lax.cond(is_first_in_pair[i], sum_pair, lambda _, data_out: data_out, i, data_out)
+
+                return jax.lax.cond(
+                    is_first_in_pair[i],
+                    sum_pair,
+                    lambda _, data_out: data_out,
+                    i,
+                    data_out,
+                )
+
             return jax.lax.fori_loop(0, len(idx), loop_body, data_out)
+
         return body
 
     def sum_pair(self, data_out, data_in, is_first_in_pair, idx):
