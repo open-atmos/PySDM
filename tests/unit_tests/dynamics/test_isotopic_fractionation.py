@@ -296,6 +296,11 @@ class TestIsotopicFractionation:
                 w=1 * si.m / si.s,
                 variables=(ambient_var,),
             ),
+            dynamics=[
+                AmbientThermodynamics(),
+                Condensation(),
+                IsotopicFractionation((isotope,)),
+            ],
             backend=backend_class(
                 formulae=Formulae(
                     isotope_relaxation_timescale="ZabaEtAl",
@@ -305,9 +310,6 @@ class TestIsotopicFractionation:
             ),
             n_sd=(n_sd := 1),
         )
-        builder.add_dynamic(AmbientThermodynamics())
-        builder.add_dynamic(Condensation())
-        builder.add_dynamic(IsotopicFractionation((isotope,)))
         particulator = builder.build(
             attributes={
                 "moles_2H": np.ones(n_sd) / 1e10,
