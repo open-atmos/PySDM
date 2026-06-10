@@ -8,6 +8,7 @@ from matplotlib import pyplot
 
 from PySDM import Formulae
 from PySDM.physics import si, constants_defaults
+from PySDM.physics.isotope_ratio_evolution import GedzelmanAndArnold1994, ZabaEtAl
 from PySDM.physics.constants import PER_MILLE
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
@@ -196,3 +197,44 @@ class TestGedzelmanAndArnold1994:
 
             # assert
             assert S.check(si.dimensionless)
+
+
+class TestZabaEtAl:
+    @staticmethod
+    @pytest.mark.parametrize("phase", ("liquid", "vapour"))
+    @pytest.mark.parametrize("iso_ratio_v", np.linspace(0, 1.1, 5))
+    @pytest.mark.parametrize("iso_ratio_r", np.linspace(0, 1.1, 5))
+    def test_saturation_for_zero_dR_condition(phase, iso_ratio_v, iso_ratio_r):
+        """test ZabaEtAl result against GedzelmanAndArnold1994"""
+        # arrange
+        GA = GedzelmanAndArnold1994.saturation_for_zero_dR_condition
+        Z = ZabaEtAl.saturation_for_zero_dR_condition
+
+        # TODO
+        kwargs = {"iso_ratio_v": iso_ratio_v, "iso_ratio_r": 0.4, "alpha_w": 1.01}
+        kwargs["iso_ratio_x"] = (
+            kwargs["iso_ratio_v"] if phase == "vapour" else kwargs["iso_ratio_r"]
+        )
+
+        diff_rat_heavy_to_light = np.linspace(0.11, 1.11, 8)
+        Fd = 0.999
+        Fk = 1.444
+
+        # act
+        result_ga = GA(
+            "",
+            diff_rat_light_to_heavy=1 / diff_rat_heavy_to_light,
+            b=Fk / Fd,
+            **kwargs,
+        )
+
+        result_z = Z(
+            "",
+            diff_rat_heavy_to_light=diff_rat_heavy_to_light,
+            Fd=Fd,
+            Fk=Fk,
+            **kwargs,
+        )
+
+        # assert
+        np.testing.assert_allclose(result_ga, result_z)

@@ -17,9 +17,9 @@ class ZabaEtAl:
         iso_ratio_x,
         iso_ratio_r,
         iso_ratio_v,
-        alpha,
+        alpha_w,
         Fd,
         Fk,
     ):
-        A = alpha / diff_rat_heavy_to_light * iso_ratio_x / iso_ratio_r - 1
-        return A / ((1 + Fk / Fd) * (1 - alpha * iso_ratio_v / iso_ratio_r) + A)
+        A = alpha_w / diff_rat_heavy_to_light * iso_ratio_x / iso_ratio_r - 1
+        return A / ((1 + Fk / Fd) * (1 - alpha_w * iso_ratio_v / iso_ratio_r) + A)
