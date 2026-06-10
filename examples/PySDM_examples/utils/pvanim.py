@@ -20,7 +20,7 @@ def cli_using_argparse(argp):
     )
     argp.add_argument(
         "--multiplicity_preset",
-        default="Inferno (matplotlib)",
+        default="Inferno",
         help="Preset for multiplicity",
     )
     argp.add_argument(

@@ -37,7 +37,12 @@ class IsotopicFractionation:
 
         builder.request_attribute("diffusional growth mass change")
         for isotope in self.isotopes:
+            if isotope not in HEAVY_ISOTOPES:
+                raise AssertionError(
+                    f"Isotopic fractionation not implemented for {isotope}"
+                )
             builder.request_attribute(f"moles_{isotope}")
+            builder.request_attribute(f"Bolin number for {isotope}")
 
     def __call__(self):
         self.particulator.isotopic_fractionation(self.isotopes)

@@ -111,10 +111,15 @@ TEST_SUITES = {
         "Kreidenweis_et_al_2003",
         "Toon_et_al_1980",
     ],
+    "homogeneous_freezing": [
+        "Luettmer_homogeneous_freezing",
+        "Murray_et_al_2010",
+    ],
     "condensation_a": [
         "Lowe_et_al_2019",
         "Singer_Ward",
         "Rogers_1975",
+        "Arabas_and_Pawlowska_2011",
     ],
     "condensation_b": [
         "Abdul_Razzak_Ghan_2000",
@@ -127,7 +132,7 @@ TEST_SUITES = {
         "Jensen_and_Nugent_2017",
         "Abade_and_Albuquerque_2024",
     ],
-    "coagulation_freezing": [
+    "coagulation_immersion_freezing": [
         "Berry_1967",
         "Shima_et_al_2009",
         "Alpert_and_Knopf_2016",
@@ -136,6 +141,7 @@ TEST_SUITES = {
         "Spichtinger_et_al_2023",
         "Ware_et_al_2025",
         "Matsushima_et_al_2023",
+        "Long_1974",
     ],
     "multi-process_a": [
         "Arabas_et_al_2015",
