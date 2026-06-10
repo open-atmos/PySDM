@@ -202,15 +202,19 @@ class TestGedzelmanAndArnold1994:
 class TestZabaEtAl:
     @staticmethod
     @pytest.mark.parametrize("phase", ("liquid", "vapour"))
-    @pytest.mark.parametrize("iso_ratio_v", np.linspace(0, 1.1, 5))
-    @pytest.mark.parametrize("iso_ratio_r", np.linspace(0, 1.1, 5))
+    @pytest.mark.parametrize("iso_ratio_v", (1e-12, 1e-6, 1e-2, 1))
+    @pytest.mark.parametrize("iso_ratio_r", (1e-12, 1e-6, 1e-2, 1))
     def test_saturation_for_zero_dR_condition(phase, iso_ratio_v, iso_ratio_r):
         """test ZabaEtAl result against GedzelmanAndArnold1994"""
         # arrange
         GA = GedzelmanAndArnold1994.saturation_for_zero_dR_condition
         Z = ZabaEtAl.saturation_for_zero_dR_condition
 
-        kwargs = {"iso_ratio_v": iso_ratio_v, "iso_ratio_r": 0.4, "alpha_w": 1.01}
+        kwargs = {
+            "iso_ratio_v": iso_ratio_v,
+            "iso_ratio_r": iso_ratio_r,
+            "alpha_w": 1.01,
+        }
         kwargs["iso_ratio_x"] = (
             kwargs["iso_ratio_v"] if phase == "vapour" else kwargs["iso_ratio_r"]
         )
