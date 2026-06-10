@@ -79,6 +79,7 @@ class Simulation:
             "signed water mass": self.initial_mass,
         }
         builder.request_attribute("temperature of last freezing")
+        builder.request_attribute("supersaturation of last freezing")
         builder.request_attribute("radius")
         builder.request_attribute("wet to critical volume ratio")
 
@@ -140,6 +141,9 @@ class Simulation:
         output["T_frz"] = self.particulator.attributes[
             "temperature of last freezing"
         ].data.tolist()
+        output["RHi_frz"] = self.particulator.attributes[
+            "supersaturation of last freezing"
+        ].data.tolist()
         if not output["radius"]:
             output["radius"] = self.particulator.attributes["radius"].data.tolist()
             output["multiplicity"] = self.particulator.attributes[
@@ -153,6 +157,7 @@ class Simulation:
 
         output = {
             "T_frz": [],
+            "RHi_frz": [],
             "radius": [],
             "multiplicity": [],
         }
