@@ -210,7 +210,6 @@ class TestZabaEtAl:
         GA = GedzelmanAndArnold1994.saturation_for_zero_dR_condition
         Z = ZabaEtAl.saturation_for_zero_dR_condition
 
-        # TODO
         kwargs = {"iso_ratio_v": iso_ratio_v, "iso_ratio_r": 0.4, "alpha_w": 1.01}
         kwargs["iso_ratio_x"] = (
             kwargs["iso_ratio_v"] if phase == "vapour" else kwargs["iso_ratio_r"]
