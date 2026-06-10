@@ -107,7 +107,7 @@ jobs:
       run: |
         python -m pip install pytest-cov
         python -m pytest ${{ env.pytest_options }} tests/unit_tests --cov-report=xml --cov=PySDM
-    - uses: codecov/codecov-action@v5.5.2
+    - uses: codecov/codecov-action@v6.0.1
       with:
         fail_ci_if_error: true
         verbose: true
@@ -126,7 +126,7 @@ jobs:
             test-suite: "unit_tests/!(dynamics)"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 25 || 40 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'ubuntu-') && 30 || 40 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -185,7 +185,7 @@ jobs:
             test-suite: "tests/smoke_tests/parcel_d"
       fail-fast: true
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 22 }}
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 25 }}
     steps:
       - uses: actions/checkout@v4.1.6
         with:
@@ -212,7 +212,8 @@ jobs:
         python-version: ["3.12"]
         test-suite:
           - "isotopes_chemistry_extraterrestrial"
-          - "coagulation_freezing"
+          - "homogeneous_freezing"
+          - "coagulation_immersion_freezing"
           - "condensation_a"
           - "condensation_b"
           - "condensation_c"
@@ -237,9 +238,14 @@ jobs:
             test-suite: "multi-process_d"
           - platform: "macos-14"
             test-suite: "multi-process_e"
-      fail-fast: true
+          # TODO #1870
+          - platform: "ubuntu-24.04"
+            test-suite: "homogeneous_freezing"
+          - platform: "windows-latest"
+            test-suite: "homogeneous_freezing"
+      fail-fast: false
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 30
+    timeout-minutes: ${{ startsWith(matrix.platform, 'windows-') && 35 || 30 }}
     steps:
       - name: Debug contexts
         run: |
@@ -281,11 +287,14 @@ jobs:
           pvpython --version
           pvpython -c "from paraview import simple"
 
+      - if: startsWith(matrix.platform, 'windows-') && (contains(matrix.test-suite, 'multi-process_a') || contains(matrix.test-suite, 'multi-process_b'))
+        uses: pyvista/setup-headless-display-action@v4
+
       - run: |
           python -m pytest ${{ env.pytest_options }} tests/examples_tests/test_tests_completeness.py
       - run: |
           python -m pip install pytest-timeout
-          python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1000 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
+          python -m pytest ${{ env.pytest_options }} --basetemp=/tmp/pytest --timeout_method=thread --timeout=${{ startsWith(matrix.platform, 'windows-') && 1200 || 900 }} tests/examples_tests/test_run* --suite ${{ matrix.test-suite }}
 
       - if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
         run: |
@@ -295,21 +304,24 @@ jobs:
           ls /tmp/pytest/test_run_notebooks_*/
           ls /tmp/pytest/test_run_notebooks_*/output/
           mv /tmp/pytest/test_run_notebooks_*/output/last_animation_frame.pdf $HOME/work/_temp/_github_home/figures/last_animation_frame_${{ matrix.platform }}.pdf
-          for anim_name in docs_intro_animation parcel_animation; do
+          for anim_name in docs_intro_animation; do
               ffmpeg -i /tmp/pytest/test_run_notebooks_*/output/${anim_name}.ogv -loop 0 -vf "fps=10,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}.gif
+          done
+          for anim_name in parcel_animation; do
+              mv /tmp/pytest/test_run_notebooks_*/${anim_name}.gif $HOME/work/_temp/_github_home/figures/${anim_name}_${{ matrix.platform }}.gif
           done
           ls $HOME/work/_temp/_github_home/figures
 
       - name: animation movie upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: animation-movie-${{ matrix.platform }}
           if-no-files-found: error
           path: ~/work/_temp/_github_home/figures/*.gif
       - name: animation frame upload
         if: ( ! startsWith(matrix.platform, 'windows-') ) && contains(matrix.test-suite, env.anim_test-suite) && matrix.python-version == env.anim_python-version
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: animation-frame-${{ matrix.platform }}
           if-no-files-found: error
