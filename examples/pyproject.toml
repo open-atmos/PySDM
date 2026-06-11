@@ -33,6 +33,8 @@ dependencies = [
     "pyvinecopulib",
     "networkx",
     "PyVista",
+    "cmcrameri",
+    "cmap",
 ]
 
 [project.optional-dependencies]
@@ -49,6 +51,8 @@ CI_version_pins = [
     "vtk==9.6.2",
     "pyrcel==1.3.4",
     "pyvinecopulib==0.7.6",
+    "cmcrameri==1.9",
+    "cmap==0.7.2",
 ]
 
 [project.urls]
