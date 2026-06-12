@@ -40,8 +40,6 @@ class TestSDMSingleCell:
 
         # Assert
         particles = particulator.attributes
-        # print(f"{particles['multiplicity'].to_ndarray()=}")
-        # print(f"{np.sum(particles['multiplicity'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray())=}")
         # print("AFTER")
         # print(f"{particles['temperature'].to_ndarray()=}")
         # print(f"{particles['volume'].to_ndarray()=}")

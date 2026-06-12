@@ -28,6 +28,7 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         # TODO: investigate creation of extensive_attribute_storage
         # is attributes a jax array??
         self.__extensive_attribute_storage = extensive_attribute_storage
+
         self.__extensive_keys = extensive_keys
 
         self.cell_idx = particulator.Index.identity_index(len(cell_start) - 1)

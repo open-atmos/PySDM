@@ -3,6 +3,7 @@ CPU Numpy-based implementation of Storage class
 """
 
 import jax.numpy as jnp
+import jax
 import numpy as np
 
 from PySDM.backends.impl_common.storage_utils import (
@@ -99,7 +100,9 @@ class Storage(StorageBase):
             self.data = self.data.at[:].set(other)
 
     def row_view(self, i):
-        return Storage(StorageSignature(self.data[i], (*self.shape[1:],), self.dtype))
+        return RowStorage(
+            StorageSignature(self.data, (*self.shape[1:],), self.dtype), i, self
+        )
 
     def to_ndarray(self):
         return np.array(self.data)
@@ -110,3 +113,23 @@ class Storage(StorageBase):
         self.data = impl.divide_out_of_place(
             self.data, dividend.data, divisor.data
         ).block_until_ready()
+
+
+class RowStorage(
+    Storage
+):  # ??? (doing this since we can't just pass a reference to a row in row_view)
+    def __init__(self, signature, row, parent):
+        self.parent = parent
+        self.row = row
+        super().__init__(StorageSignature(self.data, signature.shape, signature.dtype))
+
+    @property
+    def data(self):
+        return self.parent.data[self.row]
+
+    @data.setter
+    def data(self, value):
+        # print(f"{value=}")
+        self.parent.data = self.parent.data.at[self.row].set(value)
+        # print(f"{self._data=}")
+        # raise AttributeError("read-only view")

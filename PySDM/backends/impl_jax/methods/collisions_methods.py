@@ -28,7 +28,7 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 class CollisionsMethods(BackendMethods):
     @cached_property
     def _collision_coalescence_body(self):
-        # @jax.jit
+        @jax.jit
         def body(
             multiplicity,
             idx,
@@ -36,9 +36,7 @@ class CollisionsMethods(BackendMethods):
             gamma,
             is_first_in_pair,
         ):
-            # # TODO: is_first_in_pair not working with test_single_collision
             i = jnp.arange(len(multiplicity) // 2)
-            print(f"{attributes=}")
             offset = 1 - is_first_in_pair[2 * i]
             # offset = 0
             j = idx[2 * i + offset]
@@ -53,9 +51,7 @@ class CollisionsMethods(BackendMethods):
 
             # CASE new_n > 0
             mult_pos_updates = jnp.where(pos_mask, new_n, multiplicity[j])
-            # attr_pos_delta = gamma[i] * attributes[:, j]
-            attr_pos_delta = gamma[i] * attributes[0, j]
-            attr_pos_delta = gamma[i] * attributes[1, j]
+            attr_pos_delta = gamma[i] * attributes[:, j]
 
             attr_pos_delta = attr_pos_delta * pos_mask
 
@@ -66,9 +62,7 @@ class CollisionsMethods(BackendMethods):
             mult_j_zero = jnp.where(zero_mask, mj_new, multiplicity[j])
             mult_k_zero = jnp.where(zero_mask, mk_new, multiplicity[k])
 
-            # new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
-            new_attr = gamma[i] * attributes[0, j] + attributes[0, k]
-            new_attr = gamma[i] * attributes[1, j] + attributes[1, k]
+            new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
 
             new_attr = new_attr * zero_mask
 
@@ -82,30 +76,30 @@ class CollisionsMethods(BackendMethods):
             # return mult_j, mult_k
 
             # update attr for new_n > 0
-            # attributes = attributes.at[:, k].add(attr_pos_delta)
-            attributes = attributes.at[0, k].add(attr_pos_delta)
-            attributes = attributes.at[1, k].add(attr_pos_delta)
+            attributes = attributes.at[:, k].add(attr_pos_delta)
+            # attributes = attributes.at[0, k].add(attr_pos_delta)
+            # attributes = attributes.at[1, k].add(attr_pos_delta)
 
             # update attr for new_n == 0
-            # attributes = attributes.at[:, j].set(
-            #     jnp.where(zero_mask, new_attr, attributes[:, j])
-            # )
-            # attributes = attributes.at[:, k].set(
-            #     jnp.where(zero_mask, new_attr, attributes[:, k])
-            # )
+            attributes = attributes.at[:, j].set(
+                jnp.where(zero_mask, new_attr, attributes[:, j])
+            )
+            attributes = attributes.at[:, k].set(
+                jnp.where(zero_mask, new_attr, attributes[:, k])
+            )
 
-            attributes = attributes.at[0, j].set(
-                jnp.where(zero_mask, new_attr, attributes[0, j])
-            )
-            attributes = attributes.at[0, k].set(
-                jnp.where(zero_mask, new_attr, attributes[0, k])
-            )
-            attributes = attributes.at[1, j].set(
-                jnp.where(zero_mask, new_attr, attributes[1, j])
-            )
-            attributes = attributes.at[1, k].set(
-                jnp.where(zero_mask, new_attr, attributes[1, k])
-            )
+            # attributes = attributes.at[0, j].set(
+            #     jnp.where(zero_mask, new_attr, attributes[0, j])
+            # )
+            # attributes = attributes.at[0, k].set(
+            #     jnp.where(zero_mask, new_attr, attributes[0, k])
+            # )
+            # attributes = attributes.at[1, j].set(
+            #     jnp.where(zero_mask, new_attr, attributes[1, j])
+            # )
+            # attributes = attributes.at[1, k].set(
+            #     jnp.where(zero_mask, new_attr, attributes[1, k])
+            # )
             # # return multiplicity
 
             # if new_n > 0:
@@ -288,6 +282,7 @@ class CollisionsMethods(BackendMethods):
 
     @cached_property
     def _normalize_body(self):
+        @jax.jit
         def body(prob, cell_start, timestep, dv):
             sd_num = cell_start[1] - cell_start[0]
 

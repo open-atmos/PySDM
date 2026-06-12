@@ -77,6 +77,8 @@ class ParticleAttributesFactory:
             extensive_attribute_storage,
             extensive_keys,
         )
+        # print(f"{extensive_attribute_storage.data=}")
+
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
 
         n = req_attr["multiplicity"]

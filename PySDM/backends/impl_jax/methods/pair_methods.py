@@ -13,7 +13,8 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 class PairMethods(BackendMethods):
 
     @cached_property
-    def _find_pairs_body(self):
+    def _find_pairs_body(self):  # TODO: check this for performance?
+        @jax.jit
         def body(cell_start, cell_id, cell_idx, idx, i):
 
             is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
@@ -23,7 +24,7 @@ class PairMethods(BackendMethods):
             # return jnp.array([True])
             return jnp.logical_and(is_in_same_cell, is_even_index)
 
-        return jax.jit(jax.vmap(body, (None, None, None, None, 0)))
+        return jax.vmap(body, (None, None, None, None, 0))
 
     # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
@@ -105,6 +106,7 @@ class PairMethods(BackendMethods):
 
     @cached_property
     def _sum_pair_body(self):
+        @jax.jit
         def body(data_out, data_in, is_first_in_pair, idx):
             data_out = data_out.at[:].set(0)  # ?? might slow it down
 
