@@ -28,7 +28,7 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 class CollisionsMethods(BackendMethods):
     @cached_property
     def _collision_coalescence_body(self):
-        @jax.jit
+        # @jax.jit
         def body(
             multiplicity,
             idx,
@@ -36,23 +36,27 @@ class CollisionsMethods(BackendMethods):
             gamma,
             is_first_in_pair,
         ):
-            # TODO: multiplicity not working with test_single_collision
+            # # TODO: is_first_in_pair not working with test_single_collision
             i = jnp.arange(len(multiplicity) // 2)
-
+            print(f"{attributes=}")
             offset = 1 - is_first_in_pair[2 * i]
+            # offset = 0
             j = idx[2 * i + offset]
             k = idx[2 * i + 1 + offset]
             mj = multiplicity[j]
             mk = multiplicity[k]
 
-            new_n = mj - gamma[i] * mk
+            new_n = mj - jnp.int64(gamma[i]) * mk  # ?
 
             pos_mask = new_n > 0
             zero_mask = ~pos_mask
 
             # CASE new_n > 0
             mult_pos_updates = jnp.where(pos_mask, new_n, multiplicity[j])
-            attr_pos_delta = gamma[i] * attributes[:, j]
+            # attr_pos_delta = gamma[i] * attributes[:, j]
+            attr_pos_delta = gamma[i] * attributes[0, j]
+            attr_pos_delta = gamma[i] * attributes[1, j]
+
             attr_pos_delta = attr_pos_delta * pos_mask
 
             # CASE new_n <= 0
@@ -62,7 +66,10 @@ class CollisionsMethods(BackendMethods):
             mult_j_zero = jnp.where(zero_mask, mj_new, multiplicity[j])
             mult_k_zero = jnp.where(zero_mask, mk_new, multiplicity[k])
 
-            new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
+            # new_attr = gamma[i] * attributes[:, j] + attributes[:, k]
+            new_attr = gamma[i] * attributes[0, j] + attributes[0, k]
+            new_attr = gamma[i] * attributes[1, j] + attributes[1, k]
+
             new_attr = new_attr * zero_mask
 
             mult_j = jnp.where(pos_mask, mult_pos_updates, mult_j_zero)
@@ -73,15 +80,33 @@ class CollisionsMethods(BackendMethods):
             multiplicity = multiplicity.at[k].set(mult_k)
 
             # return mult_j, mult_k
-            attributes = attributes.at[:, k].add(attr_pos_delta)
 
-            attributes = attributes.at[:, j].set(
-                jnp.where(zero_mask, new_attr, attributes[:, j])
+            # update attr for new_n > 0
+            # attributes = attributes.at[:, k].add(attr_pos_delta)
+            attributes = attributes.at[0, k].add(attr_pos_delta)
+            attributes = attributes.at[1, k].add(attr_pos_delta)
+
+            # update attr for new_n == 0
+            # attributes = attributes.at[:, j].set(
+            #     jnp.where(zero_mask, new_attr, attributes[:, j])
+            # )
+            # attributes = attributes.at[:, k].set(
+            #     jnp.where(zero_mask, new_attr, attributes[:, k])
+            # )
+
+            attributes = attributes.at[0, j].set(
+                jnp.where(zero_mask, new_attr, attributes[0, j])
             )
-            attributes = attributes.at[:, k].set(
-                jnp.where(zero_mask, new_attr, attributes[:, k])
+            attributes = attributes.at[0, k].set(
+                jnp.where(zero_mask, new_attr, attributes[0, k])
             )
-            # return multiplicity
+            attributes = attributes.at[1, j].set(
+                jnp.where(zero_mask, new_attr, attributes[1, j])
+            )
+            attributes = attributes.at[1, k].set(
+                jnp.where(zero_mask, new_attr, attributes[1, k])
+            )
+            # # return multiplicity
 
             # if new_n > 0:
             #     multiplicity[j] = new_n
@@ -93,6 +118,55 @@ class CollisionsMethods(BackendMethods):
             #     for a in range(len(attributes)):
             #         attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
             #         attributes[a, k] = attributes[a, j]
+
+            # offset = 0
+            # j = idx[2 * 0 + offset]
+            # k = idx[2 * 0 + 1 + offset]
+            # print(f"{j=}, {k=}")
+            # print(f"{idx=}")
+            # print(f"{multiplicity=}")
+            # print(f"{is_first_in_pair=}")
+
+            # def loop_body(i, multiplicity_attributes):
+            #     mult, attr = multiplicity_attributes
+
+            #     # offset = 1 - is_first_in_pair[2 * i]
+            #     offset = 0
+            #     # j = idx[2 * i + offset]
+            #     # k = idx[2 * i + 1 + offset]
+            #     j = 0
+            #     k = 1
+            #     new_n = mult[j] - jnp.int64(gamma[i]) * mult[k]
+            #     a = jnp.arange(len(attr))
+            #     def n_above_0(i, _multiplicity_attributes):
+            #         _mult, _attr = _multiplicity_attributes
+            #         _mult = _mult.at[j].set(new_n)
+            #         _attr = _attr.at[a, k].add(gamma[i] * _attr[a, j])
+
+            #         return (_mult, _attr)
+
+            #     def n_equal_0(i, _multiplicity_attributes):
+            #         _mult, _attr = _multiplicity_attributes
+            #         temp = _mult[k] // 2
+            #         _mult = _mult.at[j].set(temp).at[k].set(_mult[k] - temp)
+            #         # _mult = _mult.at[j].set(1).at[k].set(2)
+
+            #         # _mult = _mult.at[0].set(1).at[1].set(1)
+            #         # _mult = _mult.at[k].set(_mult[k] - _mult[j])
+            #         _attr = _attr.at[a, j].set(gamma[i] * _attr[a, j] + _attr[a, k])
+            #         _attr = _attr.at[a, k].set(_attr[a, j])
+
+            #         return (_mult, _attr)
+
+            #     return jax.lax.cond(
+            #         new_n > 0,
+            #         n_above_0,
+            #         n_equal_0,
+            #         i, multiplicity_attributes
+            #     )
+
+            # return jax.lax.fori_loop(0, len(multiplicity // 2), loop_body, (multiplicity, attributes))
+
             return multiplicity, attributes
 
             # return multiplicity, attributes
@@ -127,6 +201,7 @@ class CollisionsMethods(BackendMethods):
 
         # print(f"pre-coalescence: {multiplicity.data=}")
         # print(f"pre-coalescence pairs: {is_first_in_pair.indicator.data}")
+        # breakpoint()
         multiplicity.data, attributes.data = self._collision_coalescence_body(
             multiplicity.data,
             idx.data,
@@ -184,13 +259,15 @@ class CollisionsMethods(BackendMethods):
 
             def __call__(self, cell_id, cell_idx, cell_start, idx):
                 length = len(idx)
-                CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
-                    self.tmp_idx.data,
-                    idx.data,
-                    cell_id.data,
-                    cell_idx.data,
-                    length,
-                    cell_start.data,
+                cell_start.data = (
+                    CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
+                        self.tmp_idx.data,
+                        idx.data,
+                        cell_id.data,
+                        cell_idx.data,
+                        length,
+                        cell_start.data,
+                    )
                 )
 
         return CellCaretaker(idx_shape, idx_dtype, scheme)
@@ -238,3 +315,4 @@ class CollisionsMethods(BackendMethods):
     ):
         # TODO: implement sorting
         cell_start = cell_start.at[0].set(0)
+        return cell_start

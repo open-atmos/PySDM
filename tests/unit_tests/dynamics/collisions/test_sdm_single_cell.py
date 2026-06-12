@@ -31,16 +31,28 @@ class TestSDMSingleCell:
         particulator.request_attribute("temperature")
         particulator.build(attributes)
 
+        # print("BEFORE")
+        # print(f"{particulator.attributes['temperature'].to_ndarray()=}")
+        # print(f"{particulator.attributes['volume'].to_ndarray()=}")
+
         # Act
         sut()
 
         # Assert
         particles = particulator.attributes
-        print(f"{particles['multiplicity'].to_ndarray()=}")
+        # print(f"{particles['multiplicity'].to_ndarray()=}")
         # print(f"{np.sum(particles['multiplicity'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray())=}")
-        print(f"{particles['temperature'].to_ndarray()=}")
-        print(f"{np.sum(particles['multiplicity'].to_ndarray() * particles['volume'].to_ndarray())=}")
-        
+        # print("AFTER")
+        # print(f"{particles['temperature'].to_ndarray()=}")
+        # print(f"{particles['volume'].to_ndarray()=}")
+        # print(f"{particles['signed water mass'].to_ndarray()=}")
+
+        # print(f"{np.sum(particles['multiplicity'].to_ndarray() * particles['volume'].to_ndarray())=}")
+
+        assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
+            n_2
+        ) - np.amin(n_2)
+
         np.testing.assert_approx_equal(
             const
             * np.sum(
@@ -64,9 +76,7 @@ class TestSDMSingleCell:
             ),
             np.sum(n_2 * v_2),
         )
-        assert np.sum(particulator.attributes["multiplicity"].to_ndarray()) == np.sum(
-            n_2
-        ) - np.amin(n_2)
+
         if np.amin(n_2) > 0:
             np.testing.assert_approx_equal(
                 np.amax(particulator.attributes["volume"].to_ndarray()), np.sum(v_2)
@@ -79,8 +89,8 @@ class TestSDMSingleCell:
     @pytest.mark.parametrize(
         "n_in, n_out",
         [
-            # pytest.param(1, np.array([1, 0])),
-            # pytest.param(2, np.array([1, 1])),
+            pytest.param(1, np.array([1, 0])),
+            pytest.param(2, np.array([1, 1])),
             pytest.param(3, np.array([2, 1])),
         ],
     )

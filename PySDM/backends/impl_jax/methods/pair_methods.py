@@ -28,6 +28,7 @@ class PairMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     def find_pairs(self, cell_start, is_first_in_pair, cell_id, cell_idx, idx):
 
+        # print(f"{cell_start.data=}, {cell_id.data=}, {cell_idx.data=}, {idx.data=}")
         indices = jnp.arange(len(idx) - 1)
 
         is_first_in_pair.indicator.data = jnp.append(
@@ -44,6 +45,7 @@ class PairMethods(BackendMethods):
 
     @cached_property
     def _max_pair_body(self):
+        @jax.jit  # TODO: test with jit
         def body(data_out, data_in, is_first_in_pair, idx):
             def loop_body(i, data_out):
                 def max_pair(i, data_out):
