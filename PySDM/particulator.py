@@ -34,7 +34,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         backend,
         *,
         environment,
-        attributes: dict,
+        attributes: dict | None = None,
         products: tuple = (),
         dynamics=None,
         requested_attributes: tuple = (),
@@ -45,7 +45,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
         self.backend = backend
         self.formulae = backend.formulae
-        self.environment = environment.instantiate(self) if environment else None
         self.req_attr_names = [
             "multiplicity",
             "water mass",
@@ -58,6 +57,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.products = {}
         self.observers = []
         self.initialisers = []
+
+        self.environment = environment.instantiate(self) if environment else None
 
         self.n_steps = 0
 
@@ -82,8 +83,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         if dynamics is not None:
             for dynamic in dynamics:
                 self._register_dynamic(dynamic)
-
-        self._build(attributes, products, int_caster)
+        if attributes is not None:
+            self._build(attributes, products, int_caster)
 
     def run(self, steps):
         if len(self.initialisers) > 0:
@@ -645,7 +646,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
     def _register_product(self, product, buffer):
         if product.name in self.products:
             raise ValueError(f'product name "{product.name}" already registered')
-        self.products[product.name] = product.instantiate(builder=self, buffer=buffer)
+        self.products[product.name] = product.instantiate(
+            particulator=self, buffer=buffer
+        )
 
     def _request_attribute(self, attribute_name):
         if self.req_attr_names is not None:
@@ -670,6 +673,14 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 self.dynamics.keys(),
                 self.formulae,
             )(self)
+
+    def build(
+        self,
+        attributes: dict,
+        products: tuple = (),
+        int_caster=discretise_multiplicities,
+    ):
+        self._build(attributes, products, int_caster)
 
     def _build(
         self,
@@ -737,3 +748,4 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.attributes.sanitize()
 
         self.request_attribute = None
+        self.build = None
