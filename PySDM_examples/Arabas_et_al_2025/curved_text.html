@@ -508,13 +508,14 @@ added to the handles of a legend.</p>
     animated: bool
     antialiased: bool
     backgroundcolor: :mpltype:<code>color</code>
-    bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
+    bbox: dict with properties for <code>.FancyBboxPatch</code> or None
     clip_box: unknown
     clip_on: unknown
     clip_path: unknown
     color or c: :mpltype:<code>color</code>
     figure: <code>~matplotlib.figure.Figure</code> or <code>~matplotlib.figure.SubFigure</code>
     fontfamily or family or fontname: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
+    fontfeatures: list of str, or tuple of str, or None
     fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
     fontsize or size: float or {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}
     fontstretch or stretch: {a numeric value in range 0-1000, 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded'}
@@ -525,7 +526,8 @@ added to the handles of a legend.</p>
     horizontalalignment or ha: {'left', 'center', 'right'}
     in_layout: bool
     label: object
-    linespacing: float (multiple of font size)
+    language: str or None
+    linespacing: 'normal' or float, default: 'normal'
     math_fontfamily: str
     mouseover: bool
     multialignment or ma: {'left', 'right', 'center'}
@@ -535,7 +537,7 @@ added to the handles of a legend.</p>
     position: (float, float)
     rasterized: bool
     rotation: float or {'vertical', 'horizontal'}
-    rotation_mode: {None, 'default', 'anchor'}
+    rotation_mode: {None, 'default', 'anchor', 'xtick', 'ytick'}
     sketch_params: (scale: float, length: float, randomness: float)
     snap: bool or None
     text: object
@@ -742,17 +744,37 @@ angles of self.__Characters.</p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">set</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">agg_filter</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">alpha</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">animated</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">antialiased</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">backgroundcolor</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">bbox</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">clip_box</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">clip_on</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">clip_path</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">color</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontfamily</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontproperties</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontsize</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontstretch</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontstyle</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontvariant</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontweight</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">gid</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">horizontalalignment</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">in_layout</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">label</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">linespacing</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">math_fontfamily</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">mouseover</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">multialignment</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">parse_math</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">path_effects</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">picker</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">position</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">rasterized</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">rotation</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">rotation_mode</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">sketch_params</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">snap</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">text</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">transform</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">transform_rotates_text</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">url</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">usetex</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">verticalalignment</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">visible</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">wrap</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">x</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">y</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">zorder</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span></span><span class="return-annotation">):</span></span>
+        <span class="name">set</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">agg_filter</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">alpha</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">animated</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">antialiased</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">backgroundcolor</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">bbox</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">clip_box</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">clip_on</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">clip_path</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">color</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontfamily</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontfeatures</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontproperties</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontsize</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontstretch</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontstyle</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontvariant</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">fontweight</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">gid</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">horizontalalignment</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">in_layout</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">label</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">language</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">linespacing</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">math_fontfamily</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">mouseover</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">multialignment</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">parse_math</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">path_effects</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">picker</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">position</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">rasterized</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">rotation</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">rotation_mode</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">sketch_params</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">snap</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">text</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">transform</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">transform_rotates_text</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">url</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">usetex</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">verticalalignment</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">visible</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">wrap</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">x</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">y</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span>,</span><span class="param">	<span class="n">zorder</span><span class="o">=&lt;</span><span class="n">UNSET</span><span class="o">&gt;</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="CurvedText.set-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#CurvedText.set"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="CurvedText.set-147"><a href="#CurvedText.set-147"><span class="linenos">147</span></a>        <span class="bp">cls</span><span class="o">.</span><span class="n">set</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Artist</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="CurvedText.set-141"><a href="#CurvedText.set-141"><span class="linenos">141</span></a>        <span class="bp">cls</span><span class="o">.</span><span class="n">set</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Artist</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></pre></div>
 
 
             <div class="docstring"><p>Set multiple properties at once.</p>
+
+<p>::</p>
+
+<pre><code>a.set(a=A, b=B, c=C)
+</code></pre>
+
+<p>is equivalent to ::</p>
+
+<pre><code>a.set_a(A)
+a.set_b(B)
+a.set_c(C)
+</code></pre>
+
+<p>In addition to the full property names, aliases are also supported, e.g.
+<code>set(lw=2)</code> is equivalent to <code>set(linewidth=2)</code>, but it is an error
+to pass both simultaneously.</p>
+
+<p>The order of the individual setter calls matches the order of parameters
+in <code><a href="#CurvedText.set">set()</a></code>. However, most properties do not depend on each other so
+that order is rarely relevant.</p>
 
 <p>Supported properties are</p>
 
@@ -762,13 +784,14 @@ angles of self.__Characters.</p>
     animated: bool
     antialiased: bool
     backgroundcolor: :mpltype:<code>color</code>
-    bbox: dict with properties for <code>.patches.FancyBboxPatch</code>
+    bbox: dict with properties for <code>.FancyBboxPatch</code> or None
     clip_box: <code>~matplotlib.transforms.BboxBase</code> or None
     clip_on: bool
     clip_path: Patch or (Path, Transform) or None
     color or c: :mpltype:<code>color</code>
     figure: <code>~matplotlib.figure.Figure</code> or <code>~matplotlib.figure.SubFigure</code>
     fontfamily or family or fontname: {FONTNAME, 'serif', 'sans-serif', 'cursive', 'fantasy', 'monospace'}
+    fontfeatures: list of str, or tuple of str, or None
     fontproperties or font or font_properties: <code>.font_manager.FontProperties</code> or <code>str</code> or <code>pathlib.Path</code>
     fontsize or size: float or {'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'}
     fontstretch or stretch: {a numeric value in range 0-1000, 'ultra-condensed', 'extra-condensed', 'condensed', 'semi-condensed', 'normal', 'semi-expanded', 'expanded', 'extra-expanded', 'ultra-expanded'}
@@ -779,7 +802,8 @@ angles of self.__Characters.</p>
     horizontalalignment or ha: {'left', 'center', 'right'}
     in_layout: bool
     label: object
-    linespacing: float (multiple of font size)
+    language: str or None
+    linespacing: 'normal' or float, default: 'normal'
     math_fontfamily: str
     mouseover: bool
     multialignment or ma: {'left', 'right', 'center'}
@@ -789,7 +813,7 @@ angles of self.__Characters.</p>
     position: (float, float)
     rasterized: bool
     rotation: float or {'vertical', 'horizontal'}
-    rotation_mode: {None, 'default', 'anchor'}
+    rotation_mode: {None, 'default', 'anchor', 'xtick', 'ytick'}
     sketch_params: (scale: float, length: float, randomness: float)
     snap: bool or None
     text: object
