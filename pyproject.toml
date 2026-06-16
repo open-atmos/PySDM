@@ -63,7 +63,7 @@ nonunit-tests = [
 ]
 
 CI_version_pins = [
-  "PyPartMC==2.0.7",
+  "PyPartMC==2.0.8",
   "numba==0.60.0",
   "numpy==1.26.4",
   "scipy==1.15.0",
