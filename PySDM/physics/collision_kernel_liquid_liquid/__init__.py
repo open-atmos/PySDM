@@ -5,4 +5,5 @@ Collision kernels including
 and other...
 """  # pylint: disable=line-too-long
 
-from .test import test
+from .neglect import Neglect
+from .golovin import Golovin

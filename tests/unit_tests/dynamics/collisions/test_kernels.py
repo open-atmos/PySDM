@@ -20,14 +20,15 @@ class TestKernels:
     )
     def test_golovin_analytic_solution_underflow(x):
         # Arrange
-        formulae = Formulae()
+        formulae = Formulae(collision_kernel_liquid_liquid="Golovin")
         b = 1.5e3
         x_0 = formulae.trivia.volume(radius=30.531e-6)
         N_0 = 2**23
-        sut = Golovin(b)
+        # sut = Golovin(b)
+        sut = formulae.collision_kernel_liquid_liquid.analytic_solution
 
         # Act
-        value = sut.analytic_solution(x=x, t=1200, x_0=x_0, N_0=N_0)
+        value = sut(b=b, x=x, t=1200, x_0=x_0, N_0=N_0)
 
         # Assert
         assert np.all(np.isfinite(value))
