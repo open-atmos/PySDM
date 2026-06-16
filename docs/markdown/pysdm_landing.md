@@ -744,7 +744,7 @@ See [README.md](https://github.com/open-atmos/PySDM/tree/main/README.md)
 - Particula (Python)
   https://github.com/uncscode/particula/blob/main/particula/dynamics/coagulation/particle_resolved_step/super_droplet_method.py
 - CM1-SDM (FORTRAN)
-  https://doi.org/10.5281/zenodo.18896133
+  https://zenodo.org/records/18896134
 
 ### non-SDM probabilistic particle-based coagulation solvers
 
