@@ -55,5 +55,7 @@ from . import (
     terminal_velocity_ice,
     bulk_phase_partitioning,
     collision_kernel_liquid_liquid,
+    collision_kernel_ice_ice,
+    collision_kernel_liquid_ice,
 )
 from .constants import convert_to, in_unit, si
