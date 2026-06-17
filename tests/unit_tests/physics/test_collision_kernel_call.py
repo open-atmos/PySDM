@@ -31,7 +31,7 @@ class TestCollisionKernel:
             dynamics=(
                 [
                     Coalescence(
-                        collision_kernel=Golovin(b=5e3 * si.s),
+                        collision_kernel=Golovin(),
                     )
                 ]
             ),

@@ -370,6 +370,9 @@ J_HET = np.nan
 J_HOM = np.nan
 """ constant ice nucleation rates """
 
+GOLOVIN_b = 5e3 * si.s
+""" Golovin collision kernel constant """
+
 STRAUB_E_D1 = 0.04 * si.cm
 """ [Straub et al. 2010](https://doi.org/10.1175/2009JAS3175.1) """
 STRAUB_MU2 = 0.095 * si.cm
