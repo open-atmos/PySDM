@@ -11,6 +11,11 @@ class Golovin:
         pass
 
     @staticmethod
+    def collision_kernel(const, output, is_first_in_pair, volume):
+        output.sum(volume, is_first_in_pair)
+        output *= const.GOLOVIN_b
+
+    @staticmethod
     def analytic_solution(b, x, t, x_0, N_0):
 
         def analytic_solution_helper(x, tau, x_0):
@@ -29,6 +34,7 @@ class Golovin:
         if isinstance(x, np.ndarray):
             func = np.vectorize(lambda i: analytic_solution_helper(x[int(i)], tau, x_0))
             result = np.fromfunction(func, x.shape, dtype=float)
-            return result
+        else:
+            result = analytic_solution_helper(x, tau, x_0)
 
-        return analytic_solution_helper(x, tau, x_0)
+        return result

@@ -8,5 +8,5 @@ class Neglect:
         pass
 
     @staticmethod
-    def __call__(output, is_first_in_pair):
+    def collision_kernel(const, output, is_first_in_pair):
         pass

@@ -5,7 +5,6 @@ import pytest
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics.collisions.collision_kernels import (
-    Golovin,
     SimpleGeometric,
     Long1974,
 )
@@ -24,7 +23,6 @@ class TestKernels:
         b = 1.5e3
         x_0 = formulae.trivia.volume(radius=30.531e-6)
         N_0 = 2**23
-        # sut = Golovin(b)
         sut = formulae.collision_kernel_liquid_liquid.analytic_solution
 
         # Act
