@@ -7,7 +7,6 @@ import pytest
 from PySDM import Builder, Formulae
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.products import (
     LiquidWaterContent,
     ParticleConcentration,
@@ -31,13 +30,7 @@ class TestCollisionKernel:
             n_sd=2,
             backend=backend_class(formulae=formulae),
             environment=env,
-            dynamics=(
-                [
-                    Coalescence(
-                        collision_kernel=Golovin(),
-                    )
-                ]
-            ),
+            dynamics=([Coalescence()]),
         )
         particulator = builder.build(
             products=(LiquidWaterContent(name="qc"), ParticleConcentration(name="nc")),
