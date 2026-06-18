@@ -16,6 +16,8 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
         self.key = random.key(seed)
 
     def __call__(self, storage):
+        new_key, subkey = random.split(self.key)
         storage.data = storage.data.at[:].set(
-            random.uniform(self.key, storage.shape, storage.dtype, 0, 1)
+            random.uniform(subkey, storage.shape, storage.dtype, 0, 1)
         )
+        self.key = new_key
