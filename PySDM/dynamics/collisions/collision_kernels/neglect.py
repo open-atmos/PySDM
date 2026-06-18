@@ -1,14 +1,14 @@
 """
-#TODO #744
+kernel for disabling collision
 """
 
 
-class ConstantK:
+class Neglect:
     def __init__(self):
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.fill(self.particulator.formulae.constants.CONSTANTK_a)
+        output.fill(0)
 
     def register(self, builder):
         self.particulator = builder.particulator
