@@ -20,7 +20,7 @@ class PhysicsMethods(BackendMethods):
         #     self.formulae_flattened.particle_shape_and_density__mass_to_volume.py_func)
         ff = self.formulae_flattened
 
-        @jax.jit
+        # @jax.jit
         def body(mass):
             # volume = particle_shape_and_density__mass_to_volume(mass)
             return ff.particle_shape_and_density__mass_to_volume.py_func(mass)
@@ -32,3 +32,4 @@ class PhysicsMethods(BackendMethods):
     def volume_of_water_mass(self, volume, mass):
         mapped_func = jax.vmap(self._volume_of_mass_body, (0))
         volume.data = mapped_func(mass.data).block_until_ready()
+        # volume.data = self._volume_of_mass_body(mass.data).block_until_ready()

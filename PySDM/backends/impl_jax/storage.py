@@ -16,9 +16,15 @@ from PySDM.backends.impl_jax import storage_impl as impl
 
 
 class Storage(StorageBase):
-    FLOAT = jnp.float64
-    INT = jnp.int64
-    BOOL = jnp.bool_
+    # Changed things with types here so that Storage dtypes identify as numpy dtypes
+    FLOAT = np.float64
+    JAX_FLOAT = jnp.float64
+
+    INT = np.int64
+    JAX_INT = jnp.int64
+
+    BOOL = np.bool_
+    JAX_BOOL = jnp.bool_
 
     def ravel(self, other):
         if isinstance(other, Storage):
@@ -55,14 +61,14 @@ class Storage(StorageBase):
 
     @staticmethod
     def _get_empty_data(shape, dtype):
-        if dtype in (float, Storage.FLOAT):
-            data = jnp.full(shape, jnp.nan, dtype=Storage.FLOAT)
+        if dtype in (float, Storage.FLOAT, Storage.JAX_FLOAT):
+            data = jnp.full(shape, jnp.nan, dtype=Storage.JAX_FLOAT)
             dtype = Storage.FLOAT
-        elif dtype in (int, Storage.INT):
-            data = jnp.full(shape, -1, dtype=Storage.INT)
+        elif dtype in (int, Storage.INT, Storage.JAX_INT):
+            data = jnp.full(shape, -1, dtype=Storage.JAX_INT)
             dtype = Storage.INT
-        elif dtype in (bool, Storage.BOOL):
-            data = jnp.full(shape, -1, dtype=Storage.BOOL)
+        elif dtype in (bool, Storage.BOOL, Storage.JAX_BOOL):
+            data = jnp.full(shape, -1, dtype=Storage.JAX_BOOL)
             dtype = Storage.BOOL
         else:
             raise NotImplementedError()

@@ -18,4 +18,3 @@ def multiply(output, multiplier):
 def divide_out_of_place(output, dividend, divisor):
     output = output.at[:].set(dividend / divisor)
     return output
-    # TODO return ?

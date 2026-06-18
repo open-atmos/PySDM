@@ -39,15 +39,16 @@ class TestPhysicsMethods:
 
     @staticmethod
     @pytest.mark.parametrize("variant", ("LiquidSpheres", "MixedPhaseSpheres"))
-    def test_mass_to_volume(backend_class, variant):
+    def test_mass_to_volume(backend_class_with_jax, variant):
         # Arrange
         formulae = Formulae(particle_shape_and_density=variant)
-        backend = backend_class(formulae, double_precision=True)
+        backend = backend_class_with_jax(formulae, double_precision=True)
         sut = backend.volume_of_water_mass
         mass = np.asarray([1.0, -1.0])
         mass_in = backend.Storage.from_ndarray(mass)
-        volume_out = backend.Storage.from_ndarray(np.zeros_like(mass_in))
+        volume_out = backend.Storage.from_ndarray(np.zeros_like(mass_in.to_ndarray()))
 
+        print(f"{mass_in.data=}")
         # Act
         sut(volume=volume_out, mass=mass_in)
 

@@ -14,6 +14,7 @@ from PySDM.backends.impl_jax.storage import Storage
 
 
 def pair_indices(i, idx, is_first_in_pair, prob_like):
+    assert False
     offset = 1 - is_first_in_pair[2 * i]
     j = idx[2 * i + offset]
     k = idx[2 * i + 1 + offset]

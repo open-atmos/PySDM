@@ -5,6 +5,7 @@ CPU implementation of moment calculation backend methods
 from functools import cached_property
 
 import jax
+import jax.numpy as jnp
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
@@ -23,8 +24,7 @@ def spectrum_moments_helper(x_bins, x_attr, idx, idx_i):
         )
 
     i = idx[idx_i]
-    bin_to_calculate = jax.lax.while_loop(cond_fun, lambda k: k + 1, 0)
-    return bin_to_calculate
+    return jax.lax.while_loop(cond_fun, lambda k: k + 1, 0)
 
 
 class MomentsMethods(BackendMethods):
@@ -82,11 +82,10 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
-
+        assert False
         moment_0.data = moment_0.data.at[:].set(0)
         moments.data = moments.data.at[:, :].set(0)
-        idx_idxs = jax.numpy.arange(length)
-        assert False
+        idx_idxs = jnp.arange(length)
         count_bins_func = jax.vmap(moments_helper, (None, None, None, None, 0))
         idx_to_count = count_bins_func(min_x, max_x, x_attr.data, idx.data, idx_idxs)
         mapped_spectrum = jax.vmap(
@@ -118,13 +117,14 @@ class MomentsMethods(BackendMethods):
             weighting_rank,
             idx_to_count,
             idx_idxs,
-        ).block_until_ready()
+        )
+        moment_0.data.block_until_ready()
 
         moments.data = moments.data.sum(0)
         moment_0.data = moment_0.data.sum(0)
 
         if not skip_division_by_m0:
-            moments.data = jax.numpy.where(
+            moments.data = jnp.where(
                 moment_0.data != 0, moments.data / moment_0.data, 0.0
             )
 
@@ -176,12 +176,27 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
+        # print(f"{moment_0.data=}")
+        # print(f"{moments.data=}")
+        # print(f"{multiplicity.data=}")
+        # print(f"{attr_data.data=}")
+        # print(f"{cell_id.data=}")
+        # print(f"{idx.data=}")
+        # print(f"{length=}")
+        # print(f"{rank=}")
+        # print(f"{x_bins.data=}")
+        # print(f"{x_attr.data=}")
+        # print(f"{weighting_attribute.data=}")
+        # print(f"{weighting_rank=}")
+        # print(f"{skip_division_by_m0=}")
+
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
-
-        new_moment_0 = jax.numpy.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
-        new_moments = jax.numpy.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
-        idx_idxs = jax.numpy.arange(length)
+        new_moment_0 = jnp.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
+        # moment_0.data = moment_0.data.at[:].set(0)
+        # moments.data = moments.data.at[:].set(0)
+        new_moments = jnp.zeros((moment_0.shape[0] + 1, moment_0.shape[1]))
+        idx_idxs = jnp.arange(length)
 
         count_bins_func = jax.vmap(spectrum_moments_helper, (None, None, None, 0))
         bins_to_count = count_bins_func(x_bins.data, x_attr.data, idx.data, idx_idxs)
@@ -192,6 +207,8 @@ class MomentsMethods(BackendMethods):
         )
 
         new_moment_0, new_moments = mapped_spectrum(
+            # moment_0.data,
+            # moments.data,
             new_moment_0,
             new_moments,
             multiplicity.data,
@@ -206,10 +223,11 @@ class MomentsMethods(BackendMethods):
         )
         new_moment_0.block_until_ready()
 
-        moments.data = jax.numpy.sum(new_moments[:, :-1, :], axis=0)
-        moment_0.data = jax.numpy.sum(new_moment_0[:, :-1, :], axis=0)
+        moments.data = jnp.sum(new_moments[:, :-1, :], axis=0)
+        moment_0.data = jnp.sum(new_moment_0[:, :-1, :], axis=0)
 
         if not skip_division_by_m0:
-            moments.data = jax.numpy.where(
+            moments.data = jnp.where(
                 moment_0.data != 0, moments.data / moment_0.data, 0.0
             )
+
