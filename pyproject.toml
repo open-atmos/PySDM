@@ -19,7 +19,7 @@ readme = "README.md"
 keywords = ["physics-simulation", "monte-carlo-simulation", "gpu-computing",
     "atmospheric-modelling", "particle-system", "numba", "thrust",
     "nvrtc", "pint", "atmospheric-physics",
-    ]
+]
 license = "GPL-3.0-only"
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -36,7 +36,45 @@ requires-python = ">= 3.8"
 authors = [
     {name = "https://github.com/open-atmos/PySDM/graphs/contributors", email = "sylwester.arabas@agh.edu.pl"}
 ]     
-dynamic = ["version", "dependencies", "optional-dependencies"]
+dynamic = ["version"]
+dependencies = [ 
+  "ThrustRTC>=0.3.20",
+  "CURandRTC>=0.1.2",
+  "numba>=0.51.2",
+  "scipy>=1.15.0", 
+  "numpy",
+  "Pint",
+  "chempy",
+  "pyevtk",
+  "pyparsing",
+]
+
+[project.optional-dependencies]
+unit-tests = [
+  "pytest",
+  "pytest-timeout",
+  "matplotlib!=3.9.1",
+]
+
+nonunit-tests = [
+  "pytest",
+  "PySDM-examples",
+  "PyPartMC",
+]
+
+CI_version_pins = [
+  "PyPartMC==2.0.8",
+  "numba==0.60.0",
+  "numpy==1.26.4",
+  "scipy==1.15.0",
+  "ThrustRTC==0.3.20",
+  "CURandRTC==0.1.7",
+  "Pint==0.24.4",
+  "chempy==0.10.1",
+  "pyevtk==1.7.0",
+  "pyparsing==3.2.5",
+]
+
 [project.urls]
 Tracker = "https://github.com/open-atmos/PySDM/issues"
 Documentation = "https://open-atmos.github.io/PySDM"
