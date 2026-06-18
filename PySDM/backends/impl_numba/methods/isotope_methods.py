@@ -2,7 +2,7 @@
 CPU implementation of isotope-relates backend methods
 """
 
-from functools import cached_property
+from functools import cached_property, lru_cache
 
 import numba
 
@@ -172,8 +172,6 @@ class IsotopeMethods(BackendMethods):
                 )
 
         return body
-
-    from functools import lru_cache
 
     @lru_cache
     def alpha_l(self, isotope):
