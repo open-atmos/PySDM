@@ -131,7 +131,8 @@ class IsotopeMethods(BackendMethods):
             *,
             output,
             cell_id,
-            isotope,
+            alpha,
+            D_ratio,
             relative_humidity,
             temperature,
             density_dry_air,
@@ -152,22 +153,9 @@ class IsotopeMethods(BackendMethods):
                     density_dry_air=density_dry_air[cell_id[i]],
                     total_vap_concentration=conc_vap_total,
                 )
-                if isotope == "2H":
-                    D_ratio = ff.isotope_diffusivity_ratios__ratio_2H_heavy_to_light(T)
-                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_2H(T)
-                if isotope == "3H":
-                    D_ratio = ff.isotope_diffusivity_ratios__ratio_3H_heavy_to_light(T)
-                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_3H(T)
-                elif isotope == "18O":
-                    D_ratio = ff.isotope_diffusivity_ratios__ratio_18O_heavy_to_light(T)
-                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_18O(T)
-                elif isotope == "17O":
-                    D_ratio = ff.isotope_diffusivity_ratios__ratio_17O_heavy_to_light(T)
-                    alpha = ff.isotope_equilibrium_fractionation_factors__alpha_l_17O(T)
-
                 output[i] = ff.isotope_relaxation_timescale__bolin_number(
-                    D_ratio_heavy_to_light=D_ratio,
-                    alpha=alpha,
+                    D_ratio_heavy_to_light=D_ratio(T),
+                    alpha=alpha(T),
                     Fk=ff.drop_growth__Fk(
                         T=T, K=ff.constants.K0, lv=ff.constants.l_tri
                     ),
@@ -184,6 +172,22 @@ class IsotopeMethods(BackendMethods):
                 )
 
         return body
+
+    from functools import lru_cache
+
+    @lru_cache
+    def alpha_l(self, isotope):
+        return getattr(
+            self.formulae_flattened,
+            f"isotope_equilibrium_fractionation_factors__alpha_l_{isotope}",
+        )
+
+    @lru_cache
+    def D_ratio(self, isotope):
+        return getattr(
+            self.formulae_flattened,
+            f"isotope_diffusivity_ratios__ratio_{isotope}_heavy_to_light",
+        )
 
     def bolin_number(
         self,
@@ -202,7 +206,8 @@ class IsotopeMethods(BackendMethods):
         self._bolin_number_body(
             output=output.data,
             cell_id=cell_id.data,
-            isotope=isotope,
+            D_ratio=self.D_ratio(isotope),
+            alpha=self.alpha_l(isotope),
             relative_humidity=relative_humidity.data,
             temperature=temperature.data,
             density_dry_air=density_dry_air.data,
