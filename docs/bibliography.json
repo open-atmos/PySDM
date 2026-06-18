@@ -757,7 +757,8 @@
       "PySDM/physics/drop_growth/howell_1949.py",
       "PySDM/physics/drop_growth/mason_1971.py",
       "PySDM/dynamics/terminal_velocity/rogers_and_yau.py",
-      "PySDM/dynamics/terminal_velocity/power_series.py"
+      "PySDM/dynamics/terminal_velocity/power_series.py",
+      "examples/PySDM_examples/Gedzelman_and_Arnold_1994/fig_2.ipynb"
     ],
     "title": "A short course in clouds physics",
     "label": "Rogers & Yau 1989 (Pergamon Press)"
