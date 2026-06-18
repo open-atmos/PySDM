@@ -33,7 +33,7 @@ class TestIsotopeMethods:
         backend_instance = backend_class(Formulae())
         arr2storage = backend_instance.Storage.from_ndarray
 
-        multiplicity = 3.0
+        multiplicity = 3
         dm_total = 0.2
         signed_water_mass = 1.0
         molar_mass_heavy_molecule = 2.0
@@ -72,6 +72,7 @@ class TestIsotopeMethods:
         )
 
         # assert
+        assert expected_molality_air >= 0
         assert np.isclose(
             moles_heavy.to_ndarray()[0],
             expected_moles_heavy,
