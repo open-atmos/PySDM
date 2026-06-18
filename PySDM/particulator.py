@@ -749,3 +749,19 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
 
         self.request_attribute = None
         self.build = None
+
+    def sedimentation_removal(self, *, stochastic_sedimentation_removal, length_scale):
+        if stochastic_sedimentation_removal:
+            self.backend.sedimentation_removal_stochastic(
+                relative_fall_velocity=self.attributes["relative fall velocity"].data,
+                multiplicity=self.attributes["multiplicity"].data,
+                length_scale=length_scale,
+                timestep=self.dt,
+            )
+        else:
+            self.backend.sedimentation_removal_deterministic(
+                relative_fall_velocity=self.attributes["relative fall velocity"].data,
+                multiplicity=self.attributes["multiplicity"].data,
+                length_scale=length_scale,
+                timestep=self.dt,
+            )
